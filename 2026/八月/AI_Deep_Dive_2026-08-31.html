@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Top Papers Deep Dive — 2026-08-31</title>
+<style>
+body{margin:0;background:#f6f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1180px;margin:auto;padding:30px 24px 90px}.card,.paper{background:#fff;border:1px solid #e3e7ef;border-radius:16px;padding:24px 26px;margin:18px 0;box-shadow:0 4px 16px rgba(20,30,50,.04)}
+h1{font-size:35px;line-height:1.25}h2{font-size:27px;border-bottom:1px solid #e5e7eb;padding-bottom:8px;margin-top:38px}h3{font-size:20px;margin-top:27px}
+a{color:#3158cf;text-decoration:none}.muted{color:#667085}.small{font-size:13px}
+nav{background:#fff;border:1px solid #e3e7ef;border-radius:14px;padding:16px 20px;columns:2;margin-bottom:20px}nav a{display:block;padding:3px}
+.flow{font-family:ui-monospace,Menlo,monospace;background:#111827;color:#f8fafc;padding:15px;border-radius:11px;white-space:pre-wrap;overflow:auto}
+.eq{font-family:Georgia,serif;background:#fafbff;border:1px solid #e3e7ef;padding:13px;border-radius:10px;margin:10px 0;overflow:auto}
+.tablewrap{overflow-x:auto;margin:14px 0}table{width:100%;border-collapse:collapse;min-width:800px}th,td{border:1px solid #e3e7ef;padding:9px 10px;vertical-align:top;text-align:left}th{background:#f3f5f9}
+.good{background:#edf8f1;border-left:5px solid #338754;padding:14px 16px;border-radius:10px}.warn{background:#fff3d5;border-left:5px solid #c98a12;padding:14px 16px;border-radius:10px}
+@media(max-width:760px){nav{columns:1}.card,.paper{padding:18px}h1{font-size:29px}h2{font-size:23px}}
+</style>
+</head>
+<body><main>
+<section class="card">
+<div class="muted">Daily Top Papers Deep Dive · 2026-08-31</div>
+<h1>今天最值得真正读透的两篇论文</h1>
+<p>本期使用高价值 BACKFILL，并避免近期已精读方向的重复。最终选择：<b>Control-Plane Placement Shapes Forgetting</b> 与 <b>Can Scientific Claims Be Removed from Large Language Models?</b>。前者研究 Agent Memory 的真正删除控制面，后者研究 LLM unlearning 是否跨语义表达真正迁移。两篇共同说明：<b>局部操作成功，并不等于系统级或语义级 closure。</b></p>
+</section>
+<nav>
+<a href="#sel">Selection</a><a href="#p1">Paper 1 — Control Plane</a><a href="#p2">Paper 2 — SciUnlearn</a><a href="#syn">Cross-Paper Synthesis</a><a href="#opp">Combined Opportunities</a><a href="#collision">Collision</a><a href="#priority">Reading/Reproduction</a><a href="#sources">Sources</a>
+</nav>
+
+<section id="sel" class="card"><h2>Today's Deep Dive Selection</h2>
+<ol>
+<li><b>Control-Plane Placement Shapes Forgetting: An Architectural Study of Agent Memory Across Thirteen System Configurations</b> — Dongxu Yang, DeepLethe, arXiv:2606.15903v2, 2026-06-16。</li>
+<li><b>Can Scientific Claims Be Removed from Large Language Models? A Systematic Evaluation of Claim-Level Unlearning</b> — Snigdha Paul, Manasi Patwardhan, Arman Cohan, TCS Research / Yale University, arXiv:2608.20960v1, 2026-08-21。</li>
+</ol>
+<p><b>为什么选：</b>第一篇把 memory forgetting 从“召回正确”拆成 supersede / release / purge 控制面，并显示 LLM 放置位置决定 forgetting failure coverage；第二篇用共享 claim 的不重合 F1/F2 视图，直接证明多数优化方法只压制 seen surface，而没有可靠删除 underlying claim。</p></section>
+
+<section id="p1" class="paper">
+<h2>Paper 1 — Control-Plane Placement Shapes Forgetting</h2>
+<p><b>Title：</b>Control-Plane Placement Shapes Forgetting: An Architectural Study of Agent Memory Across Thirteen System Configurations<br>
+<b>Author：</b>Dongxu Yang<br><b>Affiliation：</b>DeepLethe<br><b>Date：</b>2026-06-16, arXiv v2<br>
+<b>Status：</b>arXiv preprint<br>
+<b>Paper：</b><a href="https://arxiv.org/pdf/2606.15903">PDF</a> · <a href="https://arxiv.org/abs/2606.15903">arXiv</a></p>
+<h3>一句话定位</h3>
+<p>它不是研究“Agent 能不能记住”，而是研究 Agent Memory 系统究竟有没有被命令忘掉的能力，以及 LLM 放在写入、召回还是 mutation control plane 的哪个位置，决定了它能修复哪类 forgetting failure。</p>
+<h3>人话版</h3>
+<p>多数 Agent Memory 工作把“记忆好不好”理解成 retrieval 准不准，但真实系统还必须支持 supersede、release、purge。论文将 memory system 分成 recall plane 与 control plane，并用统一六方法 Adapter Protocol 对 13 种系统配置进行测试。标准 template case 上多个系统接近 99%，但进入 adversarial deletion 后，deterministic 系统普遍只有约 63–68%。关键不是有没有 LLM，而是 LLM 放在哪里：inscribe-time LLM 擅长 canonicalization，却帮不了 later intent-aware deletion；mutation-time LLM hook 则能把大量 non-primitive-existence cases 提升到约 93–94%，同时几乎不改变 recall hot path。</p>
+<h3>Background & Research Gap</h3>
+<p>长期记忆系统至少有两类操作。第一类是 <b>Recall Plane</b>：inscribe 事实并在 query 时召回。第二类是 <b>Control Plane</b>：旧事实被更新时 supersede、临时信息失效时 release、用户要求彻底删除时 purge。传统 LongMemEval、LOCOMO 等更偏向第一类，因此一个系统可以 Recall 很强，却没有真正 purge 能力。</p>
+<p>例如用户原先职位是 Research Assistant，后来改成 Research Scientist。一个 retrieval-first 系统可能只是让新职位排名更高，但旧职位仍在 store 中；这不等价于真正删除。</p>
+<h3>Core Insight</h3>
+<p>作者真正观察到的是 <b>intelligence placement 决定 ambiguity coverage</b>。Deterministic primitives 对 substring、temporal qualifier 等规则性删除强，但对 identifier obfuscation、cross-lingual alias 弱。Inscribe-time LLM 可以在写入时做 entity linking 和 canonicalization，却无法理解之后某次 mutation 的精确 intent。Mutation-time LLM planner 位于 supersede / purge / release 决策点，正好解决“该删谁、删多少、哪个 alias 属于同一对象”的问题。</p>
+<h3>Method Deep Dive</h3>
+<div class="flow">Memory system
+→ reset / inscribe / recall_texts
+→ supersede / release / purge
+→ Template Suite (1000)
+→ Adversarial Layer (385, 10 categories)
+→ mutation through native/composed primitives
+→ deterministic top-k oracle
+→ compare deterministic / vector / inscribe-LLM / mutation-LLM regimes
+→ cross-evaluate recall benchmarks
+→ characterize Recall × Forgetting plane</div>
+<p><b>Adapter Protocol：</b>六方法是行为契约而非固定 API。不同 backend 可以用自己的 primitives 实现。如果某能力根本不存在，就记 N/A，而不是把 API coverage 与 algorithmic failure 混为一谈。</p>
+<p><b>Adversarial Layer：</b>覆盖 substring trap、prefix collision、paraphrase supersession、negation trap、temporal qualifier、shared attribute、compound fact、identifier obfuscation、cross-lingual identifier、recursive supersession 十类。它的价值是把“easy forget”进一步拆成稳定 failure signatures。</p>
+<h3>核心公式与数学直觉</h3>
+<div class="eq">Adapter = {reset, inscribe, recall, supersede, release, purge}</div>
+<div class="eq">Pass(case)=1 iff every must_contain survives AND every must_not_contain disappears from top-k</div>
+<p>这个评价函数同时惩罚“忘不掉”和“误删 retain”。它比单纯 target disappearance 更合理，因为 deletion 不应以大规模 collateral damage 为代价。论文没有复杂训练 objective；真正的“数学对象”是 operation algebra 与 per-category success geometry。</p>
+<h3>Toy Example</h3>
+<p>Memory 中有 Alice-ID-123、Alice-ID-1234 和 Alice 的旧/新邮箱。用户要求 purge Alice-ID-123：substring delete 可能误删 1234；用户改用中文别名“爱丽丝”发起删除，BM25 可能匹配不到；compound fact “Alice 住北京并在 TCS 工作”里用户只删除单位，如果 backend 不支持 partial edit，再强 planner 也无法创造缺失 primitive。这说明 semantic planning 与 primitive existence 是两个独立层次。</p>
+<h3>Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Regime</th><th>怎么做</th><th>失败点</th><th>论文发现</th></tr>
+<tr><td>Deterministic lexical</td><td>精确词法/规则 mutation</td><td>alias/cross-lingual 弱</td><td>prefix 强，overall 约 63%</td></tr>
+<tr><td>Vector-driven</td><td>embedding soft matching</td><td>prefix precision、partial fact 弱</td><td>cross-lingual 较强</td></tr>
+<tr><td>Inscribe-time LLM</td><td>写入时 canonicalization</td><td>later intent-aware deletion 无帮助</td><td>identifier 类改善</td></tr>
+<tr><td>Mutation-time LLM</td><td>删除时解析 intent</td><td>latency/cost 增加</td><td>overall 约 92–93%，最强</td></tr>
+</table></div>
+<h3>Experiment Setup Deep Dive</h3>
+<p>论文覆盖 13 个配置，包括 LETHE、MEM0、LangGraph、MEMPALACE、Letta、OpenMemory、A-MEM、Graphiti、HippoRAG 及若干 +LLM variants。主 embedding 使用 all-MiniLM-L6-v2 384-d ONNX，并做 multilingual embedder swap。Template Suite 1000 cases，Adversarial Layer 385 cases。人类验证使用 10 位 NLP/CS annotators，100-case stratified sample，Fleiss κ=.958、observed agreement 99.1%；还提供 external-authored subset 与 cross-family judge audit。</p>
+<h3>Metrics 教学式解释</h3>
+<p><b>Pass Rate↑：</b>应保留内容还在、应删除内容消失。<b>N/A：</b>系统没有某 primitive 时单独报告。<b>Recall score↑：</b>独立衡量记忆召回。<b>Latency/Cost↓：</b>评估将 LLM 放到 mutation control plane 后的系统代价。重要的是不要把 Recall 和 Forgetting 合成一个 scalar。</p>
+<h3>Results Deep Dive</h3>
+<ol>
+<li>Template Suite：LETHE 99.3%、LangGraph 99.5%、MEM0 88.8%、MEMPALACE 0%，说明 easy benchmark 极易高估 readiness。</li>
+<li>Adversarial 上 deterministic 系统聚集于 63–68%：LETHE 63.4、MEM0 68.3、LangGraph 62.9。</li>
+<li>prefix_collision：LETHE 32/39，MEM0 12/39，词法精确匹配更稳。</li>
+<li>cross_lingual_identifier：MEM0 21/38，LETHE 0/38，向量 matching 反而占优。</li>
+<li>LETHE+LLM overall 91.7%，排除 primitive-existence compound_fact 后约 93.3%。</li>
+<li>LangGraph+LLM overall 93.2%，说明 placement effect 跨 backend。</li>
+<li>345 个 non-primitive-existence cases 中，deterministic 约 70%→hook 93–94%，提升超过 22pp。</li>
+<li>换 Qwen-2.5-72B 后依然有明显 lift，说明不是单模型特例。</li>
+<li>换 multilingual embedder 并没有自动修复 cross-lingual deletion，证明核心 lever 不是 embedding。</li>
+<li>Recall 轴基本不因 mutation hook 改变，支持两个 plane 的独立性。</li>
+</ol>
+<p><b>Strongest result：</b>两个不同 backend 在相同 mutation-hook contract 下都升到约 93%，且 recall hot path 不变。<br><b>Weakest/failure：</b>底层缺少 partial edit primitive 时，LLM planner 也无法凭空创造能力。</p>
+<h3>Table / Figure Reading</h3>
+<p><b>Table 1：</b>标准 case 接近满分，展示 easy evaluation 的误导性。<br><b>Table 2：</b>最重要的 per-category 表格，不同架构在 prefix、cross-lingual、compound 上互有胜负。<br><b>Figure 1：</b>Recall–Forgetting 二维图最直接证明两个 axis 不是同一能力。<br><b>Figure 2：</b>13 系统 × 10 类别 heatmap 显示 placement-specific fingerprint。<br><b>Cross-eval table：</b>MEMPALACE 在 ForgetEval 很差，却能在 recall-heavy benchmark 中得分，形成强反例。</p>
+<h3>Ablation / Mechanistic Analysis</h3>
+<p>Embedder swap 不解决关键问题；cross-backend hook 复现提升；cross-LLM family 方向一致；在不触发 mutation 的 FactConsolidation 任务中，+LLM 版本和 deterministic backbone 基本一样，这个 negative control 很有价值，因为它说明 hook 并不是“加一个大模型所有指标都涨”。</p>
+<h3>Claim vs Evidence</h3>
+<p><b>Authors Claim：</b>Control-plane placement 决定 forgetting failure coverage。<br><b>Experiments Actually Show：</b>13 配置、十类 adversarial、backend/model/embedder ablation 与 external subset 都支持这种结构性差异。<br><b>Not Yet Proven：</b>真实 agent skill、trajectory、多模态 memory deletion 更复杂，literal oracle 也不能覆盖所有 semantic equivalence。</p>
+<h3>Contribution</h3>
+<p>New Benchmark：FORGETEVAL；New Protocol：六方法 Adapter + honest N/A；New Empirical Finding：Recall 与 Forgetting 是两个 plane；New Architectural Finding：mutation-time LLM 对 intent-aware deletion 最有效；New Evaluation Principle：memory system 应同时报告 recall 与 control-plane forgetting。</p>
+<h3>Limitation & Failure Modes</h3>
+<p>系统覆盖仍有限；部分 adversarial data 为 LLM-drafted；substring oracle 对抽象语义有局限；compound fact 受 primitive existence 约束。额外还没有 multi-agent shared memory、image/OCR carrier、skill/trajectory forgetting，也没评估删除后 long-horizon reacquisition。</p>
+<h3>Reproduction View</h3>
+<p>最小复现建议做三个 backend：exact lexical SQLite、embedding vector store、lexical + LLM mutation hook。选四类 prefix_collision、cross_lingual_identifier、compound_fact、recursive_supersession 各 20 case。严格区分 N/A 与 FAIL，固定 top-k，先复现 architecture fingerprint，再扩大到完整 benchmark。</p>
+<h3>Research Value</h3>
+<p>Baseline Potential ★★★★★；Migration Potential ★★★★★；Attack Potential ★★★★☆；Evaluation Potential ★★★★★；Benchmark Potential ★★★★★；New Paper Potential ★★★★★。</p>
+<h3>Migration 1 — Multimodal Control-Plane ForgetEval</h3>
+<p><b>Original Problem →</b>文本 memory control-plane；<b>Transferable Mechanism →</b>primitive-specific forgetting + placement；<b>New RQ →</b>MLLM memory 的 delete planner 应该放在 image ingestion、retrieval 还是 mutation？；<b>Minimum Experiment →</b>20 identities × 4 categories × 3 placements；<b>Model →</b>Qwen-VL / LLaVA agent；<b>Dataset →</b>MLLMU + synthetic memory；<b>Baseline →</b>text purge、vector delete、ingest canonicalization、mutation planner；<b>Metric →</b>Cross-Modal Forget Pass、Retain FPR、Recall、Latency；<b>Expected Contribution →</b>Multimodal Agent Memory Control-Plane Benchmark；<b>Risk →</b>semantic oracle；<b>Collision Risk →</b>低。</p>
+<h3>Migration 2 — Black-Box Control-Plane Fingerprinting</h3>
+<p><b>Original →</b>white-box architectural study；<b>Mechanism →</b>placement 产生稳定 failure fingerprint；<b>New RQ →</b>只用外部 delete/update/query 接口能否识别 memory regime 并预测最弱 deletion surface？；<b>MVE →</b>6 systems，每系统≤40 probes；<b>Metric →</b>Regime AUROC、Attack Success@budget、Retain FPR；<b>Expected →</b>Black-Box Memory Deletion Surface Auditor；<b>Collision →</b>低。</p>
+<h3>Attack / Verification Lens</h3>
+<p>把 prefix alias、cross-lingual alias、partial compound、recursive update 变成对抗 deletion probes；再将 per-category profile 作为黑盒 fingerprint，自动选择下一类最有信息的 query，即可从 benchmark 升级为 adaptive verifier。</p>
+<h3>如果只让我记住这篇论文</h3>
+<ol><li>Agent Memory 有 recall plane 和 control plane。</li><li>过去 benchmark 多数只测 recall。</li><li>能记住不代表能按命令忘掉。</li><li>Template 99% 不代表 adversarial forgetting 强。</li><li>lexical/vector/inscribe-LLM 有不同 failure fingerprint。</li><li>mutation-time LLM 最能解决 intent-aware deletion。</li><li>两个不同 backend 加 hook 都到约 93%。</li><li>Recall 几乎不因 mutation hook 改变。</li><li>底层没有 partial edit primitive 时 LLM 也救不了。</li><li>Agent Unlearning 必须把 control plane 独立纳入 benchmark。</li></ol>
+</section>
+
+<section id="p2" class="paper">
+<h2>Paper 2 — Can Scientific Claims Be Removed from Large Language Models?</h2>
+<p><b>Title：</b>Can Scientific Claims Be Removed from Large Language Models? A Systematic Evaluation of Claim-Level Unlearning<br>
+<b>Authors：</b>Snigdha Paul, Manasi Patwardhan, Arman Cohan<br><b>Affiliation：</b>TCS Research；Yale University<br><b>Date：</b>2026-08-21<br>
+<b>Paper：</b><a href="https://arxiv.org/html/2608.20960">arXiv HTML</a><br><b>Code：</b><a href="https://github.com/snigdhapaul2003/Scientific-Claim-Unlearning/">Scientific-Claim-Unlearning</a></p>
+<h3>一句话定位</h3>
+<p>它把 scientific claim 是否真正被删除定义成跨不同 QA 形式、不同 paraphrase view 的 forget transfer，并发现 GD/NPO/SimNPO 等往往只压制训练中看到的 forget subset。</p>
+<h3>人话版</h3>
+<p>传统 LLM unlearning 常拿一批 forget QA 做优化，再看这些 QA 的 accuracy 是否下降。但科学知识不是一个字符串，而是一个 underlying claim。SciUnlearn 为每个 claim 生成 8 个 QA，再拆成互不重合的 F1/F2；在 F1 上 unlearn 后，F2 就是 semantic holdout。如果模型只在 F1 上坏掉，却仍能正确回答 F2，就说明它忘的是 surface pattern，而不是 claim。结果显示这种 cross-view asymmetry 非常普遍；而真正把 F1/F2 都压低的强更新，经常伴随 retain/general utility 损失。</p>
+<h3>Background & Research Gap</h3>
+<p>科学知识会更新、撤稿、被推翻，而且同一 claim 往往通过多种措辞、多种题型、多条引用和推理路径存在。传统 instance-level forget set 很容易只让见过的问法失效，却保留底层语义。因此 scientific unlearning 的关键不是“这个 QA 会不会了”，而是“同一 claim 的所有可合理访问 surface 是否都闭合”。</p>
+<h3>Core Insight</h3>
+<p>论文最关键设计是 <b>paired semantic forget views</b>：F1∩F2=∅，但来自同一 claim set。若 unlearning 真正在 claim representation 层生效，优化 F1 后 F2 也应明显下降；如果只是 surface suppression，就会出现 F1 大跌而 F2 高位保持的方向性不对称。</p>
+<h3>Method Deep Dive</h3>
+<div class="flow">Dolma scientific papers
+→ choose CS / Medical / Retracted
+→ extract 1–5 claims per paper
+→ quality judge: accuracy / independence / clarity
+→ generate 8 QA per claim:
+   MCQ / True-False / Fill-Blank / Assertion-Reason
+→ validate QA
+→ split into disjoint F1 / F2 semantic views
+→ construct R_ext / R_int
+→ apply GD / NPO / NPO+RT / SimNPO / SimNPO+RT
+→ LoRA and full-parameter variants
+→ evaluate target view + complementary view
+→ evaluate retain + general benchmarks
+→ diagnose claim-level transfer vs surface suppression</div>
+<h3>核心公式与数学直觉</h3>
+<div class="eq">min_{θ'} E_{(q,a)∈F_i}[ℓ_f(a|q;θ')] + λ E_{(q,a)∈R}[ℓ_r(a|q;θ')]</div>
+<p>forget loss 压低 target answer，retain loss 保持非目标知识，λ 控制 forget-retain trade-off。不同算法的具体 objective 不同，但都面临同一个问题：训练 objective 只直接看到 F_i，并不自动保证 semantic closure。</p>
+<div class="eq">Claim-level transfer = drop on F_j, j≠i, after optimizing only F_i</div>
+<p>这不是训练 loss，而是最重要的评价原则：真正 claim-level unlearning 应该让互补 view 也一起下降。</p>
+<h3>Toy Example</h3>
+<p>Claim：“药物 X 在高剂量下增加肝损伤风险。”F1 用 MCQ 和 fill-blank；F2 用 T/F 和 assertion-reason。若 GD 让 F1 从 95% 降到 40%，但 F2 仍 92%，模型明显还记得 claim。只有 F1/F2 都显著下降，同时 R_ext/R_int 与 MMLU 等基本保持，才更接近真正 removal。</p>
+<h3>Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>怎么做</th><th>失败点</th><th>论文观察</th></tr>
+<tr><td>GD</td><td>梯度破坏 target answer</td><td>surface-specific、可能伤 utility</td><td>target 降，counterpart 常保持</td></tr>
+<tr><td>NPO</td><td>negative preference 压低 forget response</td><td>无 retain 项时 utility 易掉</td><td>general benchmark 更容易退化</td></tr>
+<tr><td>NPO+RT</td><td>NPO + retain objective</td><td>仍不保证 claim transfer</td><td>retain 更稳，但 asymmetry 仍在</td></tr>
+<tr><td>SimNPO(+RT)</td><td>简化 NPO</td><td>仍围绕 seen forget forms</td><td>总体趋势类似</td></tr>
+</table></div>
+<p><b>Strongest baseline：</b>NPO+RT，因为它显式控制 retain utility，更适合作为严肃的 forget-retain baseline。</p>
+<h3>Experiment Setup Deep Dive</h3>
+<p><b>Datasets：</b>Computer Science、Medical、Retracted。<b>规模：</b>CS 76 papers / 170 claims / F1 536 / F2 536 / Rext 1060 / Rint 418；Medical 78 / 127 / 508 / 508 / 908 / 543；Retracted 91 / 141 / 390 / 390 / 884 / 671。<b>Models：</b>OLMo-3-7B-Instruct、Llama-3-8B-Instruct。<b>Training：</b>full-parameter 与 rank-8 LoRA。<b>Baselines：</b>GD、NPO、NPO+RT、SimNPO、SimNPO+RT。<b>Metrics：</b>EM、ROUGE-L F1、R_ext/R_int、MMLU、ARC-Challenge、HellaSwag，以及附录中的 Min-K% MIA / reference-model score。</p>
+<h3>Metrics 教学式解释</h3>
+<p><b>EM↓ on forget：</b>答案完全匹配，越低越好，但对 free-form 很严格。<b>ROUGE-L F1↓ on forget：</b>允许部分表面变化，却仍不是真正 semantic correctness。<b>R_ext↑：</b>保护引用链里的外部科学知识。<b>R_int↑：</b>保护同 paper 的非 target context。<b>MMLU/ARC/HellaSwag↑：</b>防止“整个模型坏掉所以忘得好”。<b>Cross-view transfer：</b>最重要，应看 F1 优化后 F2 降多少以及反向结果。</p>
+<h3>Results Deep Dive</h3>
+<ol>
+<li>OLMo CS Base F1 R-F1=97.54；GD(F1)=71.70，但 F2 仍 93.51。</li>
+<li>OLMo CS NPO+RT(F1)：F1=88.81，F2=93.67，forget 本身并不强。</li>
+<li>LLaMA CS NPO+RT(F1)：F1=73.56，F2=90.91，cross-view gap 明显。</li>
+<li>LLaMA CS GD(F2)：F2 降到 59.18，但 F1 仍 93.31，方向性 asymmetry 再次出现。</li>
+<li>Medical OLMo GD(F1)：F1 92.16→58.20，F2 仍 75.40，有 spillover 但远非 complete removal。</li>
+<li>Retracted LLaMA NPO+RT(F1)：F1 88.63→36.96、F2 也约 35.69，但 MMLU 64.75→51.05，HellaSwag 55.89→50.50。</li>
+<li>Retracted LLaMA NPO+RT(F2)：F2 R-F1=24.43、EM=1.79，F1 也 48.25，但 MMLU 仍有明显下降。</li>
+<li>Retain-aware methods 整体比无 retain 版本更能保护 utility。</li>
+<li>T/F 与 AR 等较简单 question format 更容易被忘。</li>
+<li>更 rooted 于 pretraining/citation structure 的 claims 往往更难删除。</li>
+</ol>
+<p><b>Strongest result：</b>跨模型/domain 出现的 F1/F2 directional asymmetry。<br><b>Weakest/failure：</b>个别 setting 的确可以同时压 F1/F2，但经常伴随 utility 损失，不能把所有成功都解释成 clean claim deletion。</p>
+<h3>Table / Figure Reading</h3>
+<p><b>Figure 1：</b>完整 benchmark pipeline，重点是同一 claim 的多 surface 与 R_ext/R_int。<br><b>Figure 2：</b>具体 claim 与 QA forms，直观解释“不同问题、同一语义对象”。<br><b>Table 3：</b>三 domain 的数据规模，F1/F2 等量且 disjoint。<br><b>Table 4：</b>CS LoRA 主结果；最该看对角与非对角，即优化哪一边、哪一边下降。<br><b>Table 6：</b>Retracted 中强 cross-view forgetting 出现，但 general utility 同时下滑。<br><b>Figure 3：</b>展示模型依旧会自信输出 retracted/falsified knowledge，强化现实动机。</p>
+<h3>Ablation / Mechanistic Analysis</h3>
+<p><b>LoRA vs full parameter：</b>LoRA 往往形成更局部、较浅的 suppression。<b>Question format：</b>T/F、AR 更容易忘，暗示 output decision geometry 会影响难度。<b>QA density：</b>一个 claim 对应的 paraphrased QA 越多，forgetting 往往越强。<b>Rootedness：</b>更深嵌入 pretraining/citation structure 的 claim 更难删，与 hard-to-unlearn / difficulty predictor 方向高度一致，但仍主要是相关性证据。</p>
+<h3>Claim vs Evidence</h3>
+<p><b>Authors Claim：</b>当前 unlearning 多数实现 surface suppression，不能可靠删除 scientific claim。<br><b>Experiments Actually Show：</b>多数方法/setting 存在显著 F1/F2 asymmetry，强更新还可能损伤 utility。<br><b>Not Yet Proven：</b>论文没有直接证明内部 representation 仍保留 claim；模型规模有限；F1/F2 仍来自自动生成 QA；没有 adaptive recovery / reacquisition attack。</p>
+<h3>Contribution</h3>
+<p>New Task：Scientific Claim Unlearning；New Benchmark：SciUnlearn；New Protocol：paired semantic forget views；New Empirical Finding：当前方法大多 subset-specific；New Failure Characterization：rootedness、question format、QA density 会影响 forgetting。</p>
+<h3>Limitation & Failure Modes</h3>
+<p>只覆盖部分 optimization-based methods；缺少更广泛 mechanistic/representation approaches；retracted set 与模型规模有限；claim extraction 和 QA generation 引入 LLM bias；EM/ROUGE 仍偏 surface；最重要的是未系统测试 retain premises 是否能 multi-hop 重新推导 target claim。</p>
+<h3>Reproduction View</h3>
+<p>最小复现可先选 20–30 claims，每个 claim 生成 4 种 QA × 2，均衡拆成 F1/F2；用 7B/8B 模型 LoRA 跑 GD 与 NPO+retain。第一目标是复现“F1 掉、F2 不掉”的 cross-view gap，而不是先追求最强 forget score。然后再加入 paraphrase、cloze、multi-hop reconstruction，就可以自然连接 black-box residual auditor。</p>
+<h3>Research Value</h3>
+<p>Baseline Potential ★★★★★；Migration Potential ★★★★★；Attack Potential ★★★★★；Evaluation Potential ★★★★★；Benchmark Potential ★★★★★；New Paper Potential ★★★★☆。</p>
+<h3>Migration 1 — Claim-View Residual Tensor</h3>
+<p><b>Original →</b>F1/F2 两 view；<b>Mechanism →</b>同 target 跨 surface transfer；<b>New RQ →</b>direct/paraphrase/cloze/pairwise/multi-hop/reasoning/cross-modal residual 是否形成稳定 profile？；<b>MVE →</b>30 targets × 6 views × 3 methods；<b>Model →</b>Llama/Qwen/VLM；<b>Dataset →</b>SciUnlearn + MLLMU；<b>Baseline →</b>direct ASR、F1/F2 transfer、white-box residual score；<b>Metric →</b>Worst-View Leakage、View Transfer Matrix、Spearman、ASR@budget；<b>Expected →</b>Black-Box Multi-View Residual Auditor；<b>Risk →</b>view quality；<b>Collision →</b>中。</p>
+<h3>Migration 2 — Derivational Claim Closure</h3>
+<p><b>Original →</b>paraphrased claim forgetting；<b>Mechanism →</b>semantic equivalence；<b>New RQ →</b>direct claim 忘掉后能否由 retain premises 重新推导？；<b>Method →</b>构造 claim premise graph：direct / paraphrase / decomposed premises / multi-hop derivation / counterfactual；<b>MVE →</b>20 claims，每 claim 3 derivation paths；<b>Baseline →</b>SciUnlearn F1/F2、direct/paraphrase attacks；<b>Metric →</b>Derivational Recovery Rate、Minimum Premise Count、Retain Utility；<b>Expected →</b>logical closure；<b>Risk →</b>premise annotation；<b>Collision →</b>低。</p>
+<h3>Attack / Verification Lens</h3>
+<p>最自然的 attack 是 complementary-view attack：如果只在 F1 unlearn，攻击者就搜索 F2 或新 question format，寻找 suppression boundary 外的等价表达。Verification 不应只给平均 forget accuracy，而应报告 worst-view leakage 与 cross-view transfer matrix。</p>
+<h3>如果只让我记住这篇论文</h3>
+<ol><li>scientific claim 不是一个 QA 字符串。</li><li>同 claim 可以有多种 QA surface。</li><li>F1/F2 不重合但共享 underlying claim。</li><li>真正 claim forgetting 应从 F1 迁移到 F2。</li><li>大多数方法只让被训练的一边明显下降。</li><li>OLMo CS GD(F1)：97.54→71.70，但 F2 仍 93.51。</li><li>强 cross-view forgetting 常伴随 utility 下降。</li><li>rooted claims 往往更难忘。</li><li>它非常适合扩成 multi-view black-box residual audit。</li><li>下一步更值得做 logical derivation closure，而不仅是更多 paraphrase。</li></ol>
+</section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2>
+<p>两篇共同击中一个核心：<b>局部成功 ≠ 等价类上的 closure</b>。Control Plane 里，单个 purge query 成功不代表 alias / prefix / cross-lingual / compound 都正确删除；SciUnlearn 里，F1 accuracy 下降不代表 F2 semantic view 一起消失。真正的 unlearning 对象应从“一个输入/一个 API 调用”升级成一组语义或操作等价 surfaces。</p>
+<div class="tablewrap"><table>
+<tr><th>维度</th><th>Control Plane</th><th>SciUnlearn</th><th>统一启发</th></tr>
+<tr><td>局部操作</td><td>purge/supersede query</td><td>在 F1 优化 forget loss</td><td>局部动作不是最终目标</td></tr>
+<tr><td>等价变化</td><td>prefix/alias/cross-lingual/compound</td><td>MCQ/T-F/cloze/AR</td><td>必须覆盖 equivalence class</td></tr>
+<tr><td>失败原因</td><td>placement/primitive 不足</td><td>surface-specific optimization</td><td>架构或 objective 未覆盖真实 closure</td></tr>
+<tr><td>新 metric</td><td>per-category pass</td><td>cross-view transfer</td><td>Worst-Surface Closure</td></tr>
+</table></div></section>
+
+<section id="opp" class="card good"><h2>Best Migration Direction — Equivalence-Class Unlearning Closure</h2>
+<p>把 target 定义成 equivalence class 而非单样本：文本 claim 有 paraphrase/cloze/multi-hop；Agent memory 有 alias/prefix/cross-lingual/compound；MLLM 有 image/caption/OCR/text-only；Agent skill 有 direct execution/tool path/memory reconstruction。只有所有 equivalent surfaces 都关闭 target、retain surfaces 不误删，才算 closure。</p>
+<p><b>MVE：</b>30 targets × 6 surfaces × 3 methods。指标：Worst-Surface Leakage、Closure Rate、Retain FPR、Surface Transfer Matrix。这个方向可以把 black-box residual auditor、Agent Memory control plane 和 Multimodal Unlearning 统一到一套语言中。</p></section>
+
+<section id="collision" class="card warn"><h2>Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>多 view forgetting 与 SciUnlearn、Erasure Illusion、REBEL/Can LLMs Truly Forget 相邻；Agent Memory forgetting 也已有 ForgetEval、FactConsolidation、FAMA。单纯“再加更多 paraphrase probe”或“再做 delete benchmark”不够。真正差异化应放在 <b>统一等价类 closure、cross-modal surfaces、sample-level hardness prediction、logical derivation recovery、black-box surface fingerprinting</b>。</p></section>
+
+<section id="priority" class="card"><h2>Reading / Reproduction Priority</h2>
+<div class="tablewrap"><table>
+<tr><th>Paper</th><th>READ NOW</th><th>最小复现</th></tr>
+<tr><td>Control-Plane Placement</td><td>Adapter Protocol；Table 1/2；Figure 1/2；placement ablations</td><td>lexical vs vector vs mutation-LLM，四类 adversarial cases</td></tr>
+<tr><td>SciUnlearn</td><td>Task Definition；Figure 1/2；Table 3/4/6；format/rootedness analysis</td><td>20 claims × 4 QA types，F1/F2 paired LoRA GD/NPO+RT</td></tr>
+</table></div></section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2606.15903">Control-Plane Placement — arXiv</a></li>
+<li><a href="https://arxiv.org/pdf/2606.15903">Control-Plane Placement — PDF</a></li>
+<li><a href="https://arxiv.org/abs/2608.20960">Scientific Claim Unlearning — arXiv</a></li>
+<li><a href="https://arxiv.org/html/2608.20960">Scientific Claim Unlearning — HTML</a></li>
+<li><a href="https://github.com/snigdhapaul2003/Scientific-Claim-Unlearning/">SciUnlearn code/data</a></li>
+</ul>
+<p class="small muted">本 HTML 为本轮重新生成版本；方法、实验、数字与研究迁移分析沿用此前完成的 Deep Dive 内容。</p></section>
+</main></body></html>

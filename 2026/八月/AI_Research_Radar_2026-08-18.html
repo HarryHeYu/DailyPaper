@@ -1,0 +1,195 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-08-18</title><style>
+body{margin:0;background:#f6f8fb;color:#172033;font:16px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+main{max-width:1100px;margin:auto;padding:28px 22px 72px}
+header,.card,details{background:#fff;border:1px solid #e1e7ef;border-radius:16px;box-shadow:0 2px 10px rgba(20,30,50,.04)}
+header{padding:30px}h1{font-size:34px;margin:.1em 0 .35em}h2{margin-top:40px;border-top:2px solid #e1e7ef;padding-top:14px}
+nav{position:sticky;top:6px;z-index:4;background:#fff;border:1px solid #e1e7ef;border-radius:14px;padding:14px 16px;margin:20px 0}
+nav a{margin-right:12px;white-space:nowrap}a{color:#1757a6;text-decoration:none}
+.card{padding:20px;margin:16px 0}.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-right:6px}
+.s{background:#f8e8ee;color:#8b1e3f}.a{background:#fff2d4;color:#8a5a00}.b{background:#e8f2f7;color:#245b78}.top{background:#ece9ff;color:#5145a8}.idea{background:#e9f5e7;color:#2e6a3d}.warn{background:#fdeae4;color:#a23b22}
+details{padding:0 18px;margin:18px 0}summary{cursor:pointer;padding:18px 0;font-size:19px;font-weight:700}
+details[open] summary{border-bottom:1px solid #e1e7ef;margin-bottom:14px}
+.flow{white-space:pre-wrap;background:#f7f9fc;border-left:4px solid #70839c;border-radius:8px;padding:13px 15px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.callout{background:#f0f5ff;border:1px solid #d8e5ff;border-radius:10px;padding:13px 15px}
+.warning{background:#fff1ed;border:1px solid #ffd4ca;border-radius:10px;padding:13px 15px}.good{background:#eef8ed;border:1px solid #d4ead0;border-radius:10px;padding:13px 15px}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:760px}th,td{border:1px solid #e1e7ef;padding:9px 10px;vertical-align:top}th{background:#f3f6fa}
+.meta,.small{color:#667085;font-size:14px}
+</style></head><body><main>
+<header>
+<span class="badge top">Daily AI Research Radar</span><span class="badge s">Machine Unlearning</span><span class="badge s">Agent / Multi-Agent</span>
+<h1>Daily AI Research Radar & Idea Miner</h1>
+<p class="meta">2026-08-18 · 重新生成版</p>
+<p>今日主线：<b>不同 forget object 的遗忘难度并不相同</b>，以及<b>Agent trajectory 中局部“错误”并不等于全局无价值</b>。因此未来 unlearning 更应该估计 memory depth、causal value、传播路径与恢复难度，而不是只依赖统一 loss 或表面正确率。</p>
+</header>
+
+<nav>
+<a href="#summary">Summary</a><a href="#top">Top Papers</a><a href="#tiers">Tier S/A/B</a><a href="#ideas">Ideas</a><a href="#collision">Collision</a><a href="#priority">Reading</a><a href="#stats">统计</a><a href="#sources">Sources</a>
+</nav>
+
+<section id="summary"><h2>Executive Summary</h2><div class="card">
+<p><b>Total Papers: 8</b>；Tier S/A/B = <b>2 / 3 / 3</b>。</p>
+<p><b>Today's Most Important Paper：</b><i>The More Popular, The Harder to Forget</i>。它显示 popular facts 更难忘，uniform unlearning pressure 容易造成热门事实 under-erasure 与冷门事实 over-erasure。</p>
+<p><b>Best Research Idea：</b><b>Depth-and-Propagation Adaptive Agent Unlearning</b>：根据 retrieval frequency、provenance degree、cross-agent copy count、LOO causal value 与 recovery frequency，自适应决定 deletion pressure 与 closure 范围。</p>
+<p><b>Collision Warning：</b>YES。OBLIVION 已经把 operational skill unlearning 扩展到 transcript/schema/archive/memory 等多 surface，Agent Skill Unlearning 不能只做 registry deletion。</p>
+</div></section>
+
+<section id="top"><h2>Today's Most Important Paper / Top 3 / Top 5</h2>
+<div class="card"><h3>#1 — AdaPop</h3><p>核心创新不是另一个简单 weighting，而是把“fact popularity / memory depth”引入 forget pressure。最值得看的是 popularity exponent、retain controller、robust reformulation 与 internal-state analysis。</p></div>
+<div class="card"><h3>Top 3 必读</h3><ol>
+<li><b>AdaPop</b>：看 popularity-conditioned exponent、robustness table、internal-state metrics。</li>
+<li><b>OBLIVION</b>：看 source-to-sink skill reconstruction 与 cross-surface coherent erasure。</li>
+<li><b>Wrong but Useful</b>：看 fixed-pool LOO replay 与 reasoning-vs-answer masking。</li>
+</ol></div>
+<div class="card"><h3>Top 5</h3><ol><li>AdaPop</li><li>OBLIVION</li><li>Wrong but Useful</li><li>RippleMem</li><li>Task-Agnostic Training Data Influence</li></ol></div>
+</section>
+
+<section id="tiers"><h2>Tier S / A / B</h2>
+
+<details open>
+<summary><span class="badge s">Tier S</span>The More Popular, The Harder to Forget: Adaptive Popularity for LLM Unlearning</summary>
+<p><b>人话版：</b>这篇论文指出：不同事实不是同样难忘。热门事实因为在预训练中被反复强化，往往具有更深、更分布式的参数表示；冷门事实则更脆弱。如果对所有 forget samples 使用相同压力，就会出现热门事实残留、冷门事实过度擦除。AdaPop 用外部 popularity score 为每个 fact 自适应设置梯度指数，同时用 dual-ascent retain controller 防止 utility collapse。</p>
+<h3>Background & Gap</h3><p>这篇论文指出：不同事实不是同样难忘。热门事实因为在预训练中被反复强化，往往具有更深、更分布式的参数表示；冷门事实则更脆弱。如果对所有 forget samples 使用相同压力，就会出现热门事实残留、冷门事实过度擦除。AdaPop 用外部 popularity score 为每个 fact 自适应设置梯度指数，同时用 dual-ascent retain controller 防止 utility collapse。</p>
+<h3>Core Insight / Method</h3><div class="flow">forget fact → popularity score s_i → β_i = a·s_i^{-b} → token probability p_i,t → adaptive weight p_i,t^{β_i} → forget loss + dynamic retain controller → update</div>
+<h3>Experiments & Main Results</h3><p>在 Llama-3.1-8B、Gemma-7B-it、Qwen2.5-7B-Instruct 与 DUET/RWKU 上，AdaPop 在 adversarial reformulation 和内部表示指标上优于 WGA/NPO；热门 fact 的收益尤其明显。其价值不在于所有表面 ROUGE 都绝对最低，而在于对深层残余的持续追击更强。</p>
+<h3>Contribution</h3><p>提出 popularity gap；提出 per-fact adaptive unlearning pressure；加入动态 retain constraint；使用内部表示和鲁棒改写评估真正 erase 程度。</p>
+<h3>Limitation</h3><p>Popularity 只是 memory depth proxy，不等于真实参数因果贡献；主要仍是 factual text knowledge，规模集中在 7B–8B。</p>
+<h3>Research Value</h3><p>最值得迁移到 Agent Unlearning：把 popularity 替换为 retrieval frequency、provenance out-degree、cross-agent copy count、LOO sensitive influence，形成 depth-adaptive deletion。</p>
+</details>
+<details open>
+<summary><span class="badge s">Tier S</span>Wrong but Useful: Trajectory Value Beyond Answer Correctness in Multi-Agent Messages</summary>
+<p><b>人话版：</b>这篇多智能体工作证明：一条消息自己答错，不代表它对最终 trajectory 没价值。作者固定 candidate pool，只做 leave-one-out replay，直接测某条消息是否提升最终任务成功率。大量 wrong-but-helpful 消息的价值主要来自 reasoning，而不是错误 final answer。对 Trajectory Unlearning 的启示是：不能按局部 correctness 或关键词来决定删哪一段，而要估计真正的 downstream causal influence。</p>
+<h3>Background & Gap</h3><p>这篇多智能体工作证明：一条消息自己答错，不代表它对最终 trajectory 没价值。作者固定 candidate pool，只做 leave-one-out replay，直接测某条消息是否提升最终任务成功率。大量 wrong-but-helpful 消息的价值主要来自 reasoning，而不是错误 final answer。对 Trajectory Unlearning 的启示是：不能按局部 correctness 或关键词来决定删哪一段，而要估计真正的 downstream causal influence。</p>
+<h3>Core Insight / Method</h3><div class="flow">same question → 5 role-diverse agent proposals → fixed candidate pool → integrator K5 → hide one message → replay → helpful/harmful/neutral → reasoning/answer component masking</div>
+<h3>Experiments & Main Results</h3><p>Omni-MATH-2、JEEBench、SciBench、LAB-Bench、MaScQA 上，wrong-helpful 在所有 model-benchmark 组合都出现；错误但能改变最终结果的消息中，约 39.5%–48.1% 是 helpful。component masking 显示隐藏 reasoning 比隐藏错误 final answer 损失更大。</p>
+<h3>Contribution</h3><p>提出 proposal correctness 与 trajectory value 的分离；提供固定候选池 LOO evaluation；实证定位 wrong-but-helpful 的价值主要来自 reasoning。</p>
+<h3>Limitation</h3><p>LOO 成本高；当前主要是静态 candidate-pool + integrator；accuracy contribution 也不等价于安全/隐私上应该保留。</p>
+<h3>Research Value</h3><p>可直接迁移成 Sensitive Influence / Utility Influence 双 attribution，用于 Causal-Value-Aware Trajectory Unlearning。</p>
+</details>
+<details>
+<summary><span class="badge a">Tier A</span>OBLIVION: Workflow-Level Operational Skill Unlearning for Deployed Agents</summary>
+<p><b>人话版：</b>OBLIVION 研究 deployed agent 的 operational skill unlearning。作者强调：删掉 skill registry 并不够，因为 skill 还可能藏在 transcript、tool schema、archive、memory 中，被 agent 重新拼出来。真正的 skill unlearning 必须覆盖 source-to-sink reconstruction path。</p>
+<h3>Background & Gap</h3><p>OBLIVION 研究 deployed agent 的 operational skill unlearning。作者强调：删掉 skill registry 并不够，因为 skill 还可能藏在 transcript、tool schema、archive、memory 中，被 agent 重新拼出来。真正的 skill unlearning 必须覆盖 source-to-sink reconstruction path。</p>
+<h3>Core Insight / Method</h3><div class="flow">enumerate skill carriers → cross-surface coherent erasure → source-to-sink path tracking → sink-side remediation → attack episodes → benign utility check</div>
+<h3>Experiments & Main Results</h3><p>在受控 attack episodes 中，OBLIVION 将 skill resurrection ASR 从 1.0 显著降到约 0.114，同时保持 locked utility。独立 sandbox 中也明显降低 exposure。</p>
+<h3>Contribution</h3><p>提出 operational skill unlearning、cross-surface reconstruction model、coherent erasure 与 sink-side remediation。</p>
+<h3>Limitation</h3><p>环境仍受控；主要是外部 operational recipe，而非模型参数内部 procedural capability；跨 agent 与 continual reacquisition 尚未覆盖。</p>
+<h3>Research Value</h3><p>对 Agent Skill Unlearning 是直接 collision paper。后续必须强调 cross-agent propagation、procedural distillation、parameter-memory-tool closure 或 adaptive reconstruction attack。</p>
+</details>
+<details>
+<summary><span class="badge a">Tier A</span>Measuring Task-Agnostic Training Data Influence Across Language Model Pretraining</summary>
+<p><b>人话版：</b>这篇论文尝试回答：不用 downstream task，能否直接从整个 pretraining trajectory 判断某条训练样本对最终参数有多重要？作者把 influence 定义为该样本更新是否让参数更接近最终 checkpoint。</p>
+<h3>Background & Gap</h3><p>这篇论文尝试回答：不用 downstream task，能否直接从整个 pretraining trajectory 判断某条训练样本对最终参数有多重要？作者把 influence 定义为该样本更新是否让参数更接近最终 checkpoint。</p>
+<h3>Core Insight / Method</h3><div class="flow">checkpointed pretraining trajectory → estimate θ_t and final θ* → per-example contribution aligned with θ*−θ_t → aggregate across training phases</div>
+<h3>Experiments & Main Results</h3><p>在多种 Pythia 规模上观察到 influence 并非训练越晚越高，而是在中期达到峰值；后期还会出现更多 negative/opponent examples。不同 perplexity 与 domain 的贡献也随阶段变化。</p>
+<h3>Contribution</h3><p>提出 task-agnostic pretraining influence 定义；把 influence 放回完整训练过程分析 phase/domain/difficulty。</p>
+<h3>Limitation</h3><p>真实优化器与理论近似存在差异；checkpoint sampling 会丢掉细粒度过程。</p>
+<h3>Research Value</h3><p>可检验 influence 是否比 popularity 更能预测 forget difficulty，形成 Influence-Adaptive Unlearning。</p>
+</details>
+<details>
+<summary><span class="badge a">Tier A</span>MobileMem: Learning from a Year of Mobile Experiences</summary>
+<p><b>人话版：</b>MobileMem 把长期 agent memory 拉到一年级别的移动端生活轨迹，覆盖跨 app、多模态、时间更新与长期偏好。对 Agent Unlearning 来说，它很适合构造“删除某月/某 app/某旧地址后，跨 app blackboard 是否仍能恢复”的 continual deletion benchmark。</p>
+<h3>Background & Gap</h3><p>MobileMem 把长期 agent memory 拉到一年级别的移动端生活轨迹，覆盖跨 app、多模态、时间更新与长期偏好。对 Agent Unlearning 来说，它很适合构造“删除某月/某 app/某旧地址后，跨 app blackboard 是否仍能恢复”的 continual deletion benchmark。</p>
+<h3>Core Insight / Method</h3><div class="flow">year-scale experience synthesis → cross-app/multimodal trajectory → memory update → multi-hop/temporal/relational/update evaluation</div>
+<h3>Experiments & Main Results</h3><p>结构化 memory systems 明显优于简单 long-context / naive RAG；同时 hard distractors 会让浅层检索更容易失败，说明长期 memory 需要真正的组织机制。</p>
+<h3>Contribution</h3><p>year-scale mobile-memory benchmark、跨模态长期经验构造、app-specific + blackboard memory 视角。</p>
+<h3>Limitation</h3><p>长期数据仍有较强合成成分；真实权限、删除合规与生产生态仍未完整覆盖。</p>
+<h3>Research Value</h3><p>适合做 Continual Agent Unlearning、Cross-App Leakage、Historical Forget、Reacquisition benchmark。</p>
+</details>
+<details>
+<summary><span class="badge b">Tier B</span>RippleMem: From Isolated Retrieval to Associative Recollection for Long-Term Agent Memory</summary>
+<p><b>人话版：</b>RippleMem 将长期 memory 从一次 top-k retrieval 改成多轮 associative recollection：先找到 cue，再沿事件图、人物关系和缺失证据继续扩展。对 unlearning 来说，它天然就是一个 recovery adversary。</p>
+<h3>Background & Gap</h3><p>RippleMem 将长期 memory 从一次 top-k retrieval 改成多轮 associative recollection：先找到 cue，再沿事件图、人物关系和缺失证据继续扩展。对 unlearning 来说，它天然就是一个 recovery adversary。</p>
+<h3>Core Insight / Method</h3><div class="flow">cue-rich episodic memory + event graph → initial recall → controller chooses anchors / missing support → expand neighborhood → evidence consolidation</div>
+<h3>Experiments & Main Results</h3><p>LoCoMo、LongMemEval-S 上相较简单 memory baseline 有稳定提升，multi-session 场景尤其受益，说明间接邻接证据能够补足 direct retrieval 的不足。</p>
+<h3>Contribution</h3><p>提出 controlled associative recollection 与 provenance-aware evidence consolidation。</p>
+<h3>Limitation</h3><p>它不是安全/删除方法，主要关注恢复正确答案。</p>
+<h3>Research Value</h3><p>最适合直接改造成 Agent Memory Unlearning attack：direct retrieval 已失败但 associative recollection 仍成功，就说明 deletion closure 不完整。</p>
+</details>
+<details>
+<summary><span class="badge b">Tier B</span>Envs-FORGE: Frontier-Optimized Reward-Grounded Environment Synthesis for Agent RL</summary>
+<p><b>人话版：</b>Envs-FORGE 的重点是根据当前 agent 能力，把训练环境生成到“刚好有学习价值”的 frontier，而不是固定模板生成。它可迁移到 black-box unlearning audit：把 query budget 集中到“刚好可能恢复”的 probe 区域。</p>
+<h3>Background & Gap</h3><p>Envs-FORGE 的重点是根据当前 agent 能力，把训练环境生成到“刚好有学习价值”的 frontier，而不是固定模板生成。它可迁移到 black-box unlearning audit：把 query budget 集中到“刚好可能恢复”的 probe 区域。</p>
+<h3>Core Insight / Method</h3><div class="flow">estimate seed pass rate → evaluate environment transformations → optimize per-seed choice → gold verification → RL</div>
+<h3>Experiments & Main Results</h3><p>在 agent RL benchmark 上，自适应 frontier synthesis 比固定 transformation 有额外收益。</p>
+<h3>Contribution</h3><p>把 environment synthesis 变成 model-conditioned frontier optimization。</p>
+<h3>Limitation</h3><p>本身不是 unlearning；若直接搬成 bandit query search，创新可能不足。</p>
+<h3>Research Value</h3><p>可用于 Frontier-Guided Black-Box Forget Probe Synthesis：主动搜索 recovery boundary。</p>
+</details>
+<details>
+<summary><span class="badge b">Tier B</span>Predictive Memory Localization: Forecasting Selective Intervention Paths from Internal Signals</summary>
+<p><b>人话版：</b>Predictive Memory Localization 关注一个比普通 activation steering 更实用的问题：找到 direction 后，能不能预测它是否存在一个“既能改变 target、又不伤 neighbors”的选择性 intervention window？</p>
+<h3>Background & Gap</h3><p>Predictive Memory Localization 关注一个比普通 activation steering 更实用的问题：找到 direction 后，能不能预测它是否存在一个“既能改变 target、又不伤 neighbors”的选择性 intervention window？</p>
+<h3>Core Insight / Method</h3><div class="flow">low-dose causal probes → observe target/collateral response → predict higher-strength path → selector chooses coefficient or abstains</div>
+<h3>Experiments & Main Results</h3><p>在多域 intervention paths 上，低剂量响应能够预测后续更强干预的可用性，并比固定强度策略减少 collateral damage。</p>
+<h3>Contribution</h3><p>把 direction discovery 推进到 selective operating-regime prediction。</p>
+<h3>Limitation</h3><p>依赖内部信号，不适合纯黑盒；仍需验证是否能迁移到真正 knowledge unlearning。</p>
+<h3>Research Value</h3><p>适合作 inference-time selective forgetting 的 gating：若不存在低 collateral window，就 abstain 或切换训练式方法。</p>
+</details>
+</section>
+
+<section id="ideas"><h2>Idea Mining</h2>
+<div class="card"><span class="badge idea">Best Idea</span><h3>Depth-and-Propagation Adaptive Agent Unlearning</h3>
+<p><b>Inspiration：</b>AdaPop + MobileMem + RippleMem + Wrong but Useful。</p>
+<p><b>Research Gap：</b>当前 Agent Unlearning 很少显式建模不同 memory / trajectory / skill 的删除难度差异。</p>
+<div class="flow">score(o_i) =
+retrieval frequency
++ provenance out-degree
++ cross-agent copy count
++ LOO sensitive influence
++ associative recovery frequency
+
+→ adaptive deletion pressure
+→ adaptive closure radius
+→ re-probe until residual leakage disappears</div>
+<p><b>MVE：</b>AppWorld / AgentDojo 派生 3-agent workflow；控制同一 fact 被引用 1/5/20 次并传播到 1/2/3 agent。比较 local delete、uniform suppression、whole-store purge、adaptive closure。</p>
+<p><b>Metric：</b>Direct Forget、Associative Recovery、Cross-Agent Leakage、Utility、Deleted Mass、Reacquisition。</p>
+<p class="score">Novelty ★★★★★　Feasibility ★★★★☆　Compute Cost ★★★☆☆</p>
+<p><b>Risk：</b>depth score 可能只是 heuristic。<b>Collision Risk：</b>中。<b>Best Venue：</b>NeurIPS / ICLR / ACL。</p>
+</div>
+
+<div class="card"><span class="badge idea">Idea</span><h3>Causal-Value-Aware Trajectory Unlearning</h3>
+<p>用 LOO 或 cheaper surrogate 同时估计 Sensitive Influence 与 Utility Influence；优先删除高敏感/低 utility component，对高敏感/高 utility component 采用局部重写或 targeted suppression，而不是整段删除。</p>
+<p class="score">Novelty ★★★★☆　Feasibility ★★★★★　Compute Cost ★★☆☆☆</p>
+</div>
+
+<div class="card"><span class="badge idea">Idea</span><h3>Associative Recollection Attack on Agent Unlearning</h3>
+<p>把 RippleMem 的多轮 recollection 反过来做攻击：从 benign cue 开始，自适应选择下一跳 anchor，尝试从邻接 memory/summary/trajectory 中重建被删知识。</p>
+<p class="score">Novelty ★★★★☆　Feasibility ★★★★★　Compute Cost ★★☆☆☆</p>
+</div>
+</section>
+
+<section id="collision"><h2>Collision Detection</h2>
+<div class="warning"><span class="badge warn">⚠️ Collision Warning</span><h3>Agent Skill Unlearning — OBLIVION</h3><p>如果新工作只是“从 skill library 删除，然后测直接调用失败”，会明显撞题。差异化应转向 cross-agent propagation、continual reacquisition、parameter-memory-tool closure 或 adaptive reconstruction search。</p></div>
+<div class="warning"><h3>Uniform Factual Unlearning — AdaPop</h3><p>如果所有 forget facts 仍使用统一 pressure，只靠新 loss 提升平均指标，容易被质疑没有处理 forget difficulty heterogeneity。</p></div>
+<div class="warning"><h3>Agent Memory Evaluation — RippleMem</h3><p>只测 direct retrieval / direct QA 已不够，至少需要加入 associative recollection 与 derived-memory recovery。</p></div>
+</section>
+
+<section id="priority"><h2>Daily Reading Priority</h2>
+<div class="table-wrap"><table>
+<tr><th>Priority</th><th>Paper</th><th>最该看</th></tr>
+<tr><td>READ NOW</td><td>AdaPop</td><td>β_i、retain controller、robustness/internal-state analysis</td></tr>
+<tr><td>READ NOW</td><td>OBLIVION</td><td>source-to-sink reconstruction、cross-surface erasure</td></tr>
+<tr><td>READ NOW</td><td>Wrong but Useful</td><td>LOO trajectory value、reasoning masking</td></tr>
+<tr><td>READ THIS WEEK</td><td>Task-Agnostic Influence</td><td>influence 定义与 pretraining phase dynamics</td></tr>
+<tr><td>READ THIS WEEK</td><td>RippleMem</td><td>associative recollection controller</td></tr>
+<tr><td>READ THIS WEEK</td><td>MobileMem</td><td>year-scale memory / blackboard vs app memory</td></tr>
+<tr><td>SAVE</td><td>Envs-FORGE / PML</td><td>frontier search / selective intervention</td></tr>
+</table></div>
+</section>
+
+<section id="stats"><h2>今日统计</h2><div class="card">
+<ul><li>Total Papers: <b>8</b></li><li>Tier S: <b>2</b></li><li>Tier A: <b>3</b></li><li>Tier B: <b>3</b></li><li>Today's Most Important Paper: <b>AdaPop</b></li><li>Best Research Idea: <b>Depth-and-Propagation Adaptive Agent Unlearning</b></li><li>Collision Warning: <b>YES</b></li></ul>
+</div></section>
+
+<section id="sources"><h2>Sources / Links</h2><div class="card"><ul>
+<li><span class="badge s">S</span><a href="https://arxiv.org/abs/2608.14229">The More Popular, The Harder to Forget: Adaptive Popularity for LLM Unlearning</a></li><li><span class="badge s">S</span><a href="https://arxiv.org/abs/2608.14375">Wrong but Useful: Trajectory Value Beyond Answer Correctness in Multi-Agent Messages</a></li><li><span class="badge a">A</span><a href="https://arxiv.org/abs/2608.08264">OBLIVION: Workflow-Level Operational Skill Unlearning for Deployed Agents</a></li><li><span class="badge a">A</span><a href="https://arxiv.org/abs/2608.13515">Measuring Task-Agnostic Training Data Influence Across Language Model Pretraining</a></li><li><span class="badge a">A</span><a href="https://arxiv.org/abs/2608.13606">MobileMem: Learning from a Year of Mobile Experiences</a></li><li><span class="badge b">B</span><a href="https://arxiv.org/abs/2608.13334">RippleMem: From Isolated Retrieval to Associative Recollection for Long-Term Agent Memory</a></li><li><span class="badge b">B</span><a href="https://arxiv.org/abs/2608.14312">Envs-FORGE: Frontier-Optimized Reward-Grounded Environment Synthesis for Agent RL</a></li><li><span class="badge b">B</span><a href="https://arxiv.org/abs/2608.12892">Predictive Memory Localization: Forecasting Selective Intervention Paths from Internal Signals</a></li>
+</ul>
+<li><a href="https://github.com/Anya-wUw/open-unlearning">AdaPop Code</a></li>
+<li><a href="https://github.com/zjunlp/MobileMem">MobileMem GitHub</a></li>
+<li><a href="https://github.com/DataArcTech/DataArc-SynData-Toolkit/">Envs-FORGE Code</a></li>
+<p class="small">本文件为重新生成版，沿用上一轮已完成的研究筛选与结论；未再次改变论文集合。</p>
+</div></section>
+
+<footer class="small" style="margin-top:40px;text-align:center">Daily AI Research Radar — 2026-08-18 · regenerated</footer>
+</main></body></html>

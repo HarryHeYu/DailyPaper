@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-08-16</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#22252b;--muted:#667085;--line:#e4e7ec;--accent:#3155cc;--warn:#b54708;--green:#18794e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.76}
+main{max-width:1080px;margin:auto;padding:28px 18px 72px}
+header{background:linear-gradient(135deg,#fff,#eef2ff);border:1px solid var(--line);border-radius:18px;padding:26px}
+h1{margin:0 0 8px;font-size:31px} h2{margin-top:42px;border-bottom:2px solid #dfe3ef;padding-bottom:8px} h3{margin-top:24px} h4{margin-bottom:4px}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px} nav a{background:#fff;border:1px solid var(--line);padding:6px 11px;border-radius:999px}
+a{color:var(--accent);text-decoration:none}
+.card,details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px;margin:13px 0;box-shadow:0 3px 12px rgba(16,24,40,.04)}
+summary{cursor:pointer;font-size:17px}
+.badge{font-weight:700;background:#eef2ff;color:#2949c7;padding:2px 8px;border-radius:999px}
+.tag{font-size:12px;color:#7a4a00;background:#fff2cc;padding:2px 7px;border-radius:999px}
+.meta{color:var(--muted);font-size:14px;margin:8px 0}
+.callout{border-left:4px solid var(--accent);background:#f1f4ff;padding:14px 16px;border-radius:8px}
+.warn{border-left:4px solid var(--warn);background:#fff7ed;padding:14px 16px;border-radius:8px}
+.idea{border-left:4px solid var(--green);background:#effaf4;padding:14px 16px;border-radius:8px}
+table{width:100%;border-collapse:collapse;background:#fff} th,td{border:1px solid var(--line);padding:10px;text-align:left;vertical-align:top} .scroll{overflow:auto}
+footer{margin-top:48px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body><main>
+<header>
+<h1>Daily AI Research Radar — 2026-08-16</h1>
+<p>Machine Unlearning × Agent / Multi-Agent × Memory / Provenance / Recovery / Verification</p>
+<nav>
+<a href="#exec">摘要</a><a href="#top">Top Papers</a><a href="#S">Tier S</a><a href="#A">Tier A</a><a href="#B">Tier B</a><a href="#ideas">Ideas</a><a href="#collision">Collision</a><a href="#priority">Reading Priority</a><a href="#sources">Sources</a>
+</nav>
+</header>
+
+<section id="exec">
+<h2>Executive Summary</h2>
+<div class="callout">
+<p><b>今日最重要的新信号：</b>Multi-Agent 系统中的错误、泄漏和遗忘不能默认彼此独立。<b>Agent Behavioral Contracts II</b> 在 18,000 个预注册双 Agent handoff 任务上观察到极强共失败，说明 shared backbone 会制造共享 blind spot。迁移到 Multi-Agent Unlearning 后，Local Forget 不能简单相乘得到 Collective Forget。</p>
+<p>第二条强信号来自 <b>Reconcile Once, Write Anytime</b>：point-in-time snapshot、claim graph、trust tier 与 authoritative ledger 提供了一套非常适合 <b>Temporal Deletion Closure</b> 的系统原语。删除不应只处理 current memory，还必须考虑历史 snapshot、派生 claim 和 future replay。</p>
+<p>第三条持续重要的信号是 <b>Measure, Don't Optimize</b>：internal accessibility 能预测 recovery，但 audit metric 本身可以被优化过程 game。因此新的 unlearning verification 不能只追求“probe 分数低”。</p>
+</div>
+<div class="scroll"><table>
+<tr><th>总论文</th><th>Tier S</th><th>Tier A</th><th>Tier B</th><th>NEW</th><th>BACKFILL</th></tr>
+<tr><td>8</td><td>2</td><td>3</td><td>3</td><td>5</td><td>3</td></tr>
+</table></div>
+</section>
+
+<section id="top">
+<h2>🥇 Today's Most Important Paper</h2>
+<div class="card">
+<h3>Agent Behavioral Contracts II</h3>
+<p>今天它排第一，因为它击穿了 Multi-Agent Unlearning 很容易不自觉采用的一个评估假设：<b>不同 Agent 的遗忘成功率可以当独立事件组合。</b>如果 Agent 共用同一 backbone、同一 memory substrate 或同源训练数据，它们很可能共享 residual leakage 与 recovery channel。</p>
+<p><b>最值得看：</b>共失败实验、moment-constrained certificate、anytime-valid certification。</p>
+<p><b>最直接迁移：</b>Dependence-Aware Collective Forgetting Certificate。</p>
+</div>
+
+<h3>🔥 Top 3 必读</h3>
+<ol>
+<li><b>Agent Behavioral Contracts II</b> — independence gap、co-failure moments、distribution-free certificate。</li>
+<li><b>Reconcile Once, Write Anytime</b> — claim graph、metric ledger、immutable point-in-time snapshot。</li>
+<li><b>Measure, Don't Optimize</b> — J-Access、recovery forecasting、audit gaming。</li>
+</ol>
+
+<h3>🥈 Top 5 最重要论文</h3>
+<ol><li>Agent Behavioral Contracts II</li><li>Reconcile Once, Write Anytime</li><li>Measure, Don't Optimize</li><li>E2-Explainer</li><li>RippleMem</li></ol>
+</section>
+
+<section id="S"><h2>Tier S — 深度精读</h2><details open><summary><span class="badge">S</span> <span class="tag">NEW</span> <b>Agent Behavioral Contracts II: Certifying Compositional Reliability Without Assuming Independence</b></summary>
+<div class="meta">日期：2026-08-13 ｜ <a href="https://arxiv.org/abs/2608.12895" target="_blank">arXiv</a></div>
+<h4>① 背景与问题 / 核心摘要</h4>
+<p>这篇论文直接挑战多智能体系统里一个很常见但危险的默认假设：组件可靠性可以按独立事件相乘。作者在预注册的 18,000 个双 Agent handoff 任务上发现，同一模型的两个实例高度共失败——在“至少一个失败”的任务中，90.0% 是共同失败，φ=0.916。换成不同模型后相关性显著降低，但仅换供应商而模型已经不同，并没有进一步稳定改善。</p>
+<h4>② Method Pipeline</h4>
+<p>Input：一个由多个 Agent 组成、每个 Agent 有行为契约的 pipeline → 对 co-execution 事件做统计 → 不假设独立性，而是以观测到的联合矩（moment constraints）约束所有可能联合分布 → 在线性规划中求最坏情况下的系统可靠性下界 → 进一步加入 anytime-valid certificate，使持续部署监控在可选停止下仍控制错误率。</p>
+<h4>③ 关键实验与结果</h4>
+<p>核心数字：同模型双 Agent 的共失败高度集中；把 moment functionals 从 10 个增加到 14 个后，识别区间缩窄 85.7%，可靠性认证下界从 0.2455 提高到 0.4116；anytime-valid certificate 的经验 type-I error 为 0.0471 或更低。论文还证明：如果错误地拟合一个依赖模型，样本越多，置信区间反而可能越来越确定地覆盖错误目标。</p>
+<h4>④ 与 Unlearning / 当前研究的关系</h4>
+<p>对 Multi-Agent Unlearning 的直接启示不是“可靠性认证”，而是：不能把各 Agent 的 forgetting success 当成独立事件。若多个 Agent 共享 backbone、共享 memory 或共享训练数据，它们的 residual leakage 很可能强相关。于是 Collective Forget 的估计不能简单乘 Local Forget。更强的新问题是：如何给“整个多智能体系统已忘记”做 dependence-aware certificate。</p>
+<h4>⑤ Migration / Minimum Experiment</h4>
+<p>迁移为 Dependence-Aware Collective Forgetting Certificate：测每个 Agent 的 leak indicator、pairwise/triple co-leak moments，再求不依赖独立假设的 collective-forgetting lower bound。可以进一步研究同 backbone、异 backbone、共享 memory、异构 Agent 对泄漏相关性的影响。</p>
+<h4>⑥ Limitation</h4>
+<p>论文验证的是一般任务可靠性，不是遗忘；任务域只有少数场景，而且 model identity 与 capability 仍有混杂。迁移到 unlearning 时还需要定义 leak event、retain utility 和 recovery event。</p>
+<h4>如果只让我记住 5 句话</h4><ol>
+<li>Multi-Agent 的失败或泄漏不能默认独立。</li>
+<li>同 backbone Agent 会出现非常强的共失败。</li>
+<li>dependence-aware certificate 比 independence product 更可信。</li>
+<li>这可以直接迁移到 Collective Forget 的系统级认证。</li>
+<li>最有潜力的新问题是 co-leak structure 与 shared residual knowledge。</li>
+</ol>
+</details><details open><summary><span class="badge">S</span> <span class="tag">NEW</span> <b>Reconcile Once, Write Anytime: A Trust-Tiered Librarian and a Multi-Agent Writer for Drift-Free, Point-in-Time Research</b></summary>
+<div class="meta">日期：2026-08-13 ｜ <a href="https://arxiv.org/abs/2608.12984" target="_blank">arXiv</a></div>
+<h4>① 背景与问题 / 核心摘要</h4>
+<p>这篇论文解决长报告 Agent 的“事实漂移、冲突和 provenance 丢失”：同一个数字在不同章节被写成不同版本、旧事实覆盖新事实、低可信来源压过官方来源。作者把知识维护与写作彻底分离：前者由确定性 Librarian 管理 evidence cards、metric ledger 和 claim graph；后者的多 Agent writer 只读取某一截止时点的不可变 snapshot。</p>
+<h4>② Method Pipeline</h4>
+<p>Public sources → 可信度分层与 as_of 时间戳 → quote-grounded evidence cards → authoritative metric ledger → contradiction / supersede / qualify claim graph → 在截止时间 T 做 immutable snapshot → 多 Agent 并行写作 → deterministic QC → red-team verdict 写回知识库，供下一时点使用。关键是 writer 不能直接修改当前 snapshot，因此同一轮不会发生知识竞争写入。</p>
+<h4>③ 关键实验与结果</h4>
+<p>作者收集 6,130 个来源、555,926 个 evidence cards；共享 metric ledger 把 6,845 个跨章节数值冲突降到 0；trust-tier-first 在 22/22 gold cases 上选择正确来源，而 popularity-first 只有 9/22；7 个历史 cutoff replay 中 0 look-ahead violation；难度路由比 all-Opus 串行写作快 3.7×。</p>
+<h4>④ 与 Unlearning / 当前研究的关系</h4>
+<p>对 Agent Unlearning 的价值非常高：它给了一个清晰的“知识生命周期 + 时间语义 + authoritative state”模型。删除请求不应只删一条 memory，而应处理 claim graph 上 superseded / derived / conflicting evidence，并确保历史 snapshot、缓存和 writer side copies 不会把被删知识重新带回。尤其适合研究 point-in-time unlearning 与 rollback / tombstone / historical replay。</p>
+<h4>⑤ Migration / Minimum Experiment</h4>
+<p>迁移为 Temporal Deletion Closure：每条 memory 带 as_of、source、claim lineage。删除 target K 后，需要证明所有 cutoff ≥ deletion_time 的 authoritative snapshots 都不可恢复 K，但历史审计 snapshot 仍可在隔离环境保留。这个问题能把法律意义上的删除、系统审计和 Agent memory provenance 结合起来。</p>
+<h4>⑥ Limitation</h4>
+<p>本质是研究写作系统，不是隐私删除；其 consistency 很大程度来自确定性架构和不可变 snapshot。真实 Agent 中 memory 会被总结、重写、蒸馏到参数，删除闭包会更复杂。</p>
+<h4>如果只让我记住 5 句话</h4><ol>
+<li>知识维护和写作被彻底分离。</li>
+<li>immutable snapshot 可以防止同轮漂移。</li>
+<li>claim graph 和 metric ledger 提供明确 provenance。</li>
+<li>对 Unlearning 的直接迁移是 Temporal Deletion Closure。</li>
+<li>删除当前 state 不够，还要考虑历史 snapshot 与 future replay。</li>
+</ol>
+</details></section>
+<section id="A"><h2>Tier A — 重要论文</h2><details ><summary><span class="badge">A</span> <span class="tag">BACKFILL</span> <b>Measure, Don&#x27;t Optimize: Forecasting Recovery in LLM Unlearning</b></summary>
+<div class="meta">日期：2026-08-11 ｜ <a href="https://arxiv.org/abs/2608.11408" target="_blank">arXiv</a></div>
+<h4>① 背景与问题 / 核心摘要</h4>
+<p>论文提出 J-Access：用 Jacobian Lens 把中间层表征映射到词表空间，测已经不再出现在输出里的 target concept 是否仍沿输出通路可访问。对 398 个公开 unlearned checkpoints、8 种方法审计后发现，大多数模型内部仍有高于 retain-only gold 的 target accessibility。</p>
+<h4>② Method Pipeline</h4>
+<p>Forget probe → 仅保留最终未表达 target 的样本 → Jacobian Lens 将中间残差态运输到后层输出空间 → 检查目标 token 的 top-k 可访问性 → 相对 Original 与 retain-only gold 归一化为 J-Access → 再做 relearning attack，检验预攻击 accessibility 是否预测恢复。</p>
+<h4>③ 关键实验与结果</h4>
+<p>关键结论：pre-attack accessibility 能预测 checkpoint-level recovery speed 与 recovery extent，但无法可靠预测具体哪条 fact 会回来；更重要的是，直接最小化 J-Access 会让模型学会“躲过 audit”，而不是更深地删除知识，出现 audit score 下降、post-attack recovery 反而更强。</p>
+<h4>④ 与 Unlearning / 当前研究的关系</h4>
+<p>这是当前 unlearning verification 的高优先基线。它意味着新的 audit metric 不能只证明与 forget score 相关，还应该证明：能预测 recovery、与 causal deletion 一致、并且在 optimization pressure 下不容易被 game。</p>
+<h4>⑤ Migration / Minimum Experiment</h4>
+<p>最自然迁移是 Multimodal J-Access：分别在 vision tower、connector、LLM hidden states 测 target accessibility，观察哪一模块的 residual accessibility 最能预测 image attack、text paraphrase、cross-modal query 或 relearning 的恢复。Worth Deep Reading = YES。</p>
+</details><details ><summary><span class="badge">A</span> <span class="tag">NEW</span> <b>Discovering Efficient and Explainable Communication Topologies for LLM-based Multi-Agent Systems via Causal Inference (E2-Explainer)</b></summary>
+<div class="meta">日期：2026-08-13 ｜ <a href="https://arxiv.org/abs/2608.12921" target="_blank">arXiv</a></div>
+<h4>① 背景与问题 / 核心摘要</h4>
+<p>E2-Explainer 把 Multi-Agent communication topology 解释成 edge-level causal attribution：真的遮掉一条通信边，再看任务输出与最终响应稳定性变化，由此识别维持协作所需的紧凑子图。</p>
+<h4>② Method Pipeline</h4>
+<p>Optimized MAS graph → 逐边 mask → 重跑任务 → 计算 task-outcome change + semantic stability change → 得到 edge utility → 选 budgeted causal subgraph → 将昂贵 intervention signal 蒸馏成 amortized explainer，部署时不必逐边重跑。</p>
+<h4>③ 关键实验与结果</h4>
+<p>在多个 reasoning/code benchmark 和不同 topology generator 上，得到的子图能减少约 20%–26% communication tokens，同时总体性能保持竞争力；论文的 ablation 显示去掉 causal signal 后效果明显下降。</p>
+<h4>④ 与 Unlearning / 当前研究的关系</h4>
+<p>直接可迁移为 Causal Deletion Closure：把 task success 换成 forgotten-knowledge leakage，定义删边后 leak 降多少、retain utility 损失多少，寻找“最大切断泄漏、最小损失 utility”的 communication cut。</p>
+<h4>⑤ Migration / Minimum Experiment</h4>
+<p>Minimum experiment：3–5 个 Agent，一个 Agent 持有 target information，其他 Agent 有 shared memory / summaries。对每条通信边做 intervention，测 Collective Forget、Leakage ASR、utility、minimum cut size。Worth Deep Reading = YES。</p>
+</details><details ><summary><span class="badge">A</span> <span class="tag">NEW</span> <b>RippleMem: From Isolated Retrieval to Associative Recollection for Long-Term Agent Memory</b></summary>
+<div class="meta">日期：2026-08-13 ｜ <a href="https://arxiv.org/abs/2608.13334" target="_blank">arXiv</a></div>
+<h4>① 背景与问题 / 核心摘要</h4>
+<p>RippleMem 的核心不是“存更多 memory”，而是把 one-shot retrieval 改成 associative recollection：先通过多种 cue 找到 anchor memory，再沿 semantic/structural association 扩展，补齐缺失证据。</p>
+<h4>② Method Pipeline</h4>
+<p>Query → hybrid cue recall → memory anchors → event-centric memory graph → 沿关联扩展若干 hop → 重新收集 supporting evidence → 组成回答上下文。</p>
+<h4>③ 关键实验与结果</h4>
+<p>在 LoCoMo 与 LongMemEval-S 上取得最好或领先的总体表现；论文报告 LoCoMo LLM-as-a-Judge accuracy 提升 3.95%，LongMemEval-S 最高提升 11.87%，同时 graph construction cost 约降低 30×。</p>
+<h4>④ 与 Unlearning / 当前研究的关系</h4>
+<p>这几乎天然形成 Agent Memory Unlearning 攻击：target record 已删，但邻居 memory 通过 associative completion 可以把 target reconstruct 出来。也就是说 direct retrieval failure ≠ deletion closure。</p>
+<h4>⑤ Migration / Minimum Experiment</h4>
+<p>定义 Direct Recovery Rate、Associative Recovery Rate、Recovery Hop、Minimum Evidence Set。若后者显著高于前者，就能证明现有 memory deletion benchmark 系统性低估 residual knowledge。Worth Deep Reading = YES。</p>
+</details></section>
+<section id="B"><h2>Tier B — 值得保存</h2><details ><summary><span class="badge">B</span> <span class="tag">NEW</span> <b>LittleLearner: Language Models Under Pedagogically Controlled Knowledge Exposure</b></summary>
+<div class="meta">日期：2026-08-13 ｜ <a href="https://arxiv.org/abs/2608.13545" target="_blank">arXiv</a></div>
+<h4>① 背景与问题 / 核心摘要</h4>
+<p>作者构造 88B-token LittleCurriculum，只保留美国 K–5 范围内的知识、概念和词汇，并从头训练 5B LittleLearner，使模型拥有相对可解释的“见过/没见过”知识边界。过滤流程采用 AoA 预筛、LLM judge 标注、FastText/ModernBERT 分类和符号过滤，明确以 precision-first 方式逼近知识暴露边界。</p>
+<h4>③ 关键实验与结果</h4>
+<p>在验证集上 Beyond-K–5 内容保留接近 0，而仍保留约 35%–42% K–5 内容。作者用 post-training 与 ICL 展示：模型可以更好利用已有知识，但没有明显把 out-of-scope capability 一起抬起来。</p>
+<h4>④ 与 Unlearning / 当前研究的关系</h4>
+<p>Unlearning 最大的问题之一是“恢复出来的知识到底是 residual memory，还是刚重新学会”。LittleLearner 这种受控 exposure sandbox 可以帮助解耦 elicitation、relearning 与真正 novel acquisition，适合用作 verification / recovery benchmark 设计参考。</p>
+<h4>⑤ Migration / Minimum Experiment</h4>
+<p>Potential Use：Controlled Gold Model、Recovery Evaluation、Never-Seen Control。</p>
+</details><details ><summary><span class="badge">B</span> <span class="tag">BACKFILL</span> <b>Rethinking Agent Security as a Networking Problem</b></summary>
+<div class="meta">日期：2026-08-12 ｜ <a href="https://arxiv.org/abs/2608.12172" target="_blank">arXiv</a></div>
+<h4>① 背景与问题 / 核心摘要</h4>
+<p>论文主张不要让 LLM Agent 自己同时承担语义判断和安全强制执行，而应借鉴网络系统：centralized control + distributed enforcement、capability-based access、zero trust / least privilege，再用语义策略处理静态规则无法表达的上下文。</p>
+<h4>③ 关键实验与结果</h4>
+<p>这是一篇架构/立场型论文，贡献不在 benchmark 数字，而在安全边界重构：把 deterministic enforcement 和 semantic policy 分离。</p>
+<h4>④ 与 Unlearning / 当前研究的关系</h4>
+<p>对 Agent Unlearning 的迁移点很清晰：删除后的“不可访问”不应该只靠 Agent 自己拒答，而应在 memory/tool/resource 层做可强制执行的 revocation。可以把 forgetting 分成 semantic forgetting 与 capability revocation 两条线，并比较哪一种更抗 prompt injection / trajectory recovery。</p>
+<h4>⑤ Migration / Minimum Experiment</h4>
+<p>Potential Use：Agent Security Related Work、Inference-time Guard、Tool/Memory Revocation baseline。</p>
+</details><details ><summary><span class="badge">B</span> <span class="tag">BACKFILL</span> <b>EvoGraph-Mem: Failure-Aware Editable Graph Memory for Long-Term Language Agents</b></summary>
+<div class="meta">日期：2026-08-03 ｜ <a href="https://arxiv.org/abs/2608.11248" target="_blank">arXiv</a></div>
+<h4>① 背景与问题 / 核心摘要</h4>
+<p>EvoGraph-Mem 研究长期 Agent memory 中“旧 insight 变得过时、过度泛化或有害”的问题。每个 insight node 维护 positive evidence、negative evidence 与 activation state，执行后由 graph controller 决定 keep、archive、revise 或 add。</p>
+<h4>③ 关键实验与结果</h4>
+<p>作者的 ablation 指出 append-only memory 对长期任务不够；evidence-aware retrieval 与 graph-level editing 能提高 memory reliability 和 downstream performance。</p>
+<h4>④ 与 Unlearning / 当前研究的关系</h4>
+<p>它提供了比“delete record”更细的 memory lifecycle：inactive / archived / revised / active。对 unlearning 来说必须区分逻辑失效与物理删除，并测试 archived/revised node 是否仍能通过 graph relation 或 later consolidation 重新激活。</p>
+<h4>⑤ Migration / Minimum Experiment</h4>
+<p>Potential Use：Agent Memory Unlearning、Deletion Semantics、Continual Memory Editing。</p>
+</details></section>
+
+<section id="ideas">
+<h2>💡 Idea Mining</h2>
+
+<div class="card idea">
+<h3>Idea 1 — Dependence-Aware Collective Forgetting Certificate</h3>
+<p><b>Inspiration：</b>Agent Behavioral Contracts II。</p>
+<p><b>Research Gap：</b>Multi-Agent Unlearning 通常分别测每个 Agent，再把系统级 forgetting 当成各局部成功的组合；但同 backbone / shared memory 可能让 leakage 高度相关。</p>
+<p><b>Hypothesis：</b>同 backbone MAS 的 co-leak 显著高于异构 MAS；independence product 会系统性高估 collective forgetting。</p>
+<p><b>Proposed Method：</b>记录各 Agent 的 leak indicator，估计 pairwise / triple co-leak moments；在满足这些 moments 的所有 joint distributions 上，用线性规划求 collective-forgetting 的最坏情况下界。</p>
+<p><b>Minimum Viable Experiment：</b>3 Agent、100–300 forget targets；same-model / heterogeneous-model / shared-memory / isolated-memory 四组；Baseline：independence product、union bound、empirical joint rate。</p>
+<p><b>Metric：</b>Local Forget、Collective Forget、Co-Leak Odds Ratio、certificate lower bound、utility。</p>
+<p><b>Expected Contribution：</b>第一次把“整个 MAS 是否真的忘记”做成 dependence-aware certificate。</p>
+<p>Novelty ★★★★★ ｜ Feasibility ★★★★★ ｜ Compute Cost ★★★☆☆ ｜ Collision Risk ★★☆☆☆</p>
+<p><b>Risk：</b>低泄漏率场景需要大量 paired trials 才能稳定估计 moments。</p>
+<p><b>Best Venue：</b>NeurIPS / ICLR；安全故事强可考虑 CCS / USENIX Security。</p>
+</div>
+
+<div class="card idea">
+<h3>Idea 2 — Temporal Deletion Closure for Agent Memory</h3>
+<p><b>Inspiration：</b>Reconcile Once + point-in-time snapshot。</p>
+<p><b>Research Gap：</b>现有 memory unlearning 主要看 current state；历史 snapshot、summary、superseded claim、cached evidence 可能在未来 replay 中复活 target。</p>
+<p><b>Hypothesis：</b>Current direct retrieval 已找不到 K 时，historical replay 与 derived claim graph 仍能产生显著 recovery。</p>
+<p><b>Proposed Method：</b>给 memory/claim 加 source、as_of、derived_from；删除 target 后构建 closure graph，定位 descendants、historical snapshots、materialized summaries；测试 current、historical replay、future consolidation 三类恢复。</p>
+<p><b>MVE：</b>LoCoMo / LongMemEval 派生 deletion request；Baseline：record delete、tombstone、graph-closure delete。</p>
+<p><b>Metric：</b>Current Leak、Historical Replay Leak、Future Reacquisition、Utility、Deletion Closure Coverage。</p>
+<p>Novelty ★★★★★ ｜ Feasibility ★★★★☆ ｜ Compute Cost ★★☆☆☆ ｜ Collision Risk ★★☆☆☆</p>
+<p><b>Best Venue：</b>ACL / EMNLP / NeurIPS D&B。</p>
+</div>
+
+<div class="card idea">
+<h3>Idea 3 — Associative Recovery Attack on Agent Memory Unlearning</h3>
+<p><b>Inspiration：</b>RippleMem。</p>
+<p><b>Research Gap：</b>Direct retrieval benchmark 不测试 target 由邻居 memories 重新组合而成。</p>
+<p><b>Hypothesis：</b>删除 target node 后，2–4 hop semantic / temporal neighbors 仍能 reconstruct target。</p>
+<p><b>Method：</b>indirect cue generation → anchor retrieval → graph expansion → evidence set compression → reconstruction judge。</p>
+<p><b>Metric：</b>Direct Recovery、Associative Recovery、Hop-to-Recovery、Minimum Evidence Set、query budget。</p>
+<p>Novelty ★★★★★ ｜ Feasibility ★★★★★ ｜ Compute Cost ★★☆☆☆ ｜ Collision Risk ★★☆☆☆</p>
+<p><b>Best Venue：</b>ACL / EMNLP / USENIX Security。</p>
+</div>
+
+<div class="card idea">
+<h3>Idea 4 — Multimodal Recovery Forecasting from Module-Specific Accessibility</h3>
+<p><b>Inspiration：</b>J-Access。</p>
+<p><b>Gap：</b>文本 LLM 的 checkpoint-level residual accessibility 已被研究，但 MLLM 的 vision、connector、LLM 可能对应不同恢复通道。</p>
+<p><b>Hypothesis：</b>vision-side accessibility 更能预测 image-transform / cross-modal recovery；LLM-side accessibility 更能预测 paraphrase / relearning。</p>
+<p><b>Method：</b>分别从 vision tower、projector、LLM mid-layers 提取 target accessibility profile，并预测多类 attack 的 recovery ASR。</p>
+<p>Novelty ★★★★☆ ｜ Feasibility ★★★★☆ ｜ Compute Cost ★★★☆☆ ｜ Collision Risk ★★★☆☆</p>
+<p><b>Best Venue：</b>NeurIPS / ICLR / ACL。</p>
+</div>
+</section>
+
+<section id="collision">
+<h2>⚠️ Collision Detection</h2>
+<div class="warn"><h3>Collision 1 — Representation-level Unlearning Audit</h3><p><b>重合程度：高。</b>“hidden state 还能 probe 出 forgotten knowledge”已经不足以成为主贡献。Measure, Don't Optimize 已经做到 residual accessibility → recovery forecasting → audit gaming。差异化应转向 multimodal、item-level、black-box、causal localization 或 optimization-resistant auditing。</p></div>
+<div class="warn"><h3>Collision 2 — Multi-Agent Communication Attribution</h3><p><b>重合程度：中。</b>E2-Explainer 已经做 edge-level causal attribution。若只研究“哪条边重要”会撞题；仍有价值的是把 outcome 换成 forgotten-information leakage，并提出 forgetting minimum cut / causal deletion closure。</p></div>
+<div class="warn"><h3>Collision 3 — Agent Memory Deletion</h3><p><b>重合程度：中。</b>RippleMem、EvoGraph-Mem 让 memory 从 flat record 快速转向 associative graph 与 editable lifecycle。只删除单 record、只测 direct retrieval 将越来越不够，应测试 associative reconstruction、archive/reactivation、temporal replay 与 provenance closure。</p></div>
+<div class="warn"><h3>Collision 4 — Multi-Agent Unlearning Verification</h3><p><b>新风险：</b>如果未来 benchmark 只汇报每个 Agent 的 Local Forget 再取平均，可能会错过 shared-backbone 的 co-leak。今天的新论文说明，系统级认证必须把依赖结构显式纳入。</p></div>
+</section>
+
+<section id="priority">
+<h2>📚 Reading Priority</h2>
+<h3>READ NOW</h3>
+<ul>
+<li>Agent Behavioral Contracts II</li>
+<li>Reconcile Once, Write Anytime</li>
+<li>Measure, Don't Optimize</li>
+</ul>
+<h3>THIS WEEK</h3>
+<ul><li>E2-Explainer</li><li>RippleMem</li><li>LittleLearner</li></ul>
+<h3>SAVE</h3>
+<ul><li>Rethinking Agent Security as a Networking Problem</li><li>EvoGraph-Mem</li></ul>
+<h3>SKIP</h3>
+<p>本轮没有为了凑数量加入弱相关论文。对 Unlearning / Agent Memory / Multi-Agent information flow 缺少明确迁移机制的稿件暂不推荐。</p>
+</section>
+
+<section id="sources">
+<h2>Sources</h2>
+<ul><li><a href="https://arxiv.org/abs/2608.12895" target="_blank">Agent Behavioral Contracts II: Certifying Compositional Reliability Without Assuming Independence</a> — 2026-08-13 — NEW</li><li><a href="https://arxiv.org/abs/2608.12984" target="_blank">Reconcile Once, Write Anytime: A Trust-Tiered Librarian and a Multi-Agent Writer for Drift-Free, Point-in-Time Research</a> — 2026-08-13 — NEW</li><li><a href="https://arxiv.org/abs/2608.11408" target="_blank">Measure, Don&#x27;t Optimize: Forecasting Recovery in LLM Unlearning</a> — 2026-08-11 — BACKFILL</li><li><a href="https://arxiv.org/abs/2608.12921" target="_blank">Discovering Efficient and Explainable Communication Topologies for LLM-based Multi-Agent Systems via Causal Inference (E2-Explainer)</a> — 2026-08-13 — NEW</li><li><a href="https://arxiv.org/abs/2608.13334" target="_blank">RippleMem: From Isolated Retrieval to Associative Recollection for Long-Term Agent Memory</a> — 2026-08-13 — NEW</li><li><a href="https://arxiv.org/abs/2608.13545" target="_blank">LittleLearner: Language Models Under Pedagogically Controlled Knowledge Exposure</a> — 2026-08-13 — NEW</li><li><a href="https://arxiv.org/abs/2608.12172" target="_blank">Rethinking Agent Security as a Networking Problem</a> — 2026-08-12 — BACKFILL</li><li><a href="https://arxiv.org/abs/2608.11248" target="_blank">EvoGraph-Mem: Failure-Aware Editable Graph Memory for Long-Term Language Agents</a> — 2026-08-03 — BACKFILL</li></ul>
+<p>注：Tier S/A 尽量依据可获取正文结构与结果信息整理；Tier B 中若正文未完整精读，则按 Abstract / 可获取信息总结。</p>
+</section>
+
+<footer>AI Research Radar · 2026-08-16 · Standalone UTF-8 HTML</footer>
+</main></body></html>

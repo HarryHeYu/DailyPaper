@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Top Papers Deep Dive — 2026-09-01</title>
+<style>
+body{margin:0;background:#f6f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1180px;margin:auto;padding:30px 24px 90px}
+.card,.paper{background:#fff;border:1px solid #e3e7ef;border-radius:16px;padding:24px 28px;margin:18px 0;box-shadow:0 4px 16px rgba(20,30,50,.04)}
+h1{font-size:35px;line-height:1.25}h2{font-size:27px;border-bottom:1px solid #e5e7eb;padding-bottom:8px;margin-top:38px}h3{font-size:20px;margin-top:27px;color:#28439d}h4{font-size:17px;margin-top:22px}
+a{color:#3158cf;text-decoration:none}.muted{color:#667085}.small{font-size:13px}
+nav{background:#fff;border:1px solid #e3e7ef;border-radius:14px;padding:16px 20px;columns:2;margin-bottom:20px}nav a{display:block;padding:3px}
+.flow{font-family:ui-monospace,Menlo,monospace;background:#111827;color:#f8fafc;padding:15px;border-radius:11px;white-space:pre-wrap;overflow:auto}
+.eq{font-family:Georgia,serif;background:#fafbff;border:1px solid #e3e7ef;padding:13px;border-radius:10px;margin:10px 0;overflow:auto}
+.tablewrap{overflow-x:auto;margin:14px 0}table{width:100%;border-collapse:collapse;min-width:800px}th,td{border:1px solid #e3e7ef;padding:9px 10px;vertical-align:top;text-align:left}th{background:#f3f5f9}
+.good{background:#edf8f1;border-left:5px solid #338754;padding:14px 16px;border-radius:10px}.warn{background:#fff3d5;border-left:5px solid #c98a12;padding:14px 16px;border-radius:10px}.bad{background:#fff0f0;border-left:5px solid #c84545;padding:14px 16px;border-radius:10px}
+.badge{display:inline-block;padding:4px 9px;background:#eef2ff;color:#3048a5;border-radius:999px;font-size:12px;font-weight:700;margin-right:6px}
+@media(max-width:760px){nav{columns:1}.card,.paper{padding:18px}h1{font-size:29px}h2{font-size:23px}}
+</style>
+</head>
+<body><main>
+
+<section class="card">
+<div class="muted">Daily Top Papers Deep Dive · 2026-09-01 · regenerated</div>
+<h1>今天最值得真正读透的两篇论文</h1>
+<p>本期继续坚持“深度优先于数量”，只保留 2 篇 BACKFILL：一篇研究 Machine Unlearning 的精确忘记边界，一篇研究 Multi-Agent Shared Memory 的治理与一致性。二者共同指向同一个关键命题：<b>局部 query/API 成功，不等于整个等价类与访问闭包都正确。</b></p>
+</section>
+
+<nav>
+<a href="#selection">Today's Deep Dive Selection</a>
+<a href="#p1">Paper 1 — Forget Narrowly, Retain Broadly</a>
+<a href="#p2">Paper 2 — Governed Shared Memory</a>
+<a href="#syn">Cross-Paper Synthesis</a>
+<a href="#opp">Combined Research Opportunities</a>
+<a href="#collision">Collision / Overlap</a>
+<a href="#priority">Reading / Reproduction Priority</a>
+<a href="#sources">Sources / Links</a>
+</nav>
+
+<section id="selection" class="card">
+<h2>Today's Deep Dive Selection</h2>
+<p><span class="badge">Machine Unlearning</span><span class="badge">BACKFILL</span><b>Forget Narrowly, Retain Broadly: Unlearning as an Asymmetric Generalization Problem</b></p>
+<p><span class="badge">Agent / Multi-Agent</span><span class="badge">BACKFILL</span><b>Governed Shared Memory for Multi-Agent LLM Systems</b></p>
+<p>没有为了“当天新论文数量”降低精读质量。今天的选择逻辑是：Paper 1 提供更精细的 forget-retain boundary 与强 evaluation protocol；Paper 2 提供多智能体长期记忆中 access control、temporal consistency、provenance、propagation 的系统级 verification 视角。</p>
+</section>
+
+<section id="p1" class="paper">
+<h2>Paper 1 — Forget Narrowly, Retain Broadly: Unlearning as an Asymmetric Generalization Problem</h2>
+<p><b>Authors：</b>Amit Peleg, Naman Deep Singh, Naama Pearl, Bibhabasu Mohapatra, Matthias Hein<br>
+<b>Affiliation：</b>Tübingen AI Center, University of Tübingen<br>
+<b>Date / Status：</b>2026-07-10 · arXiv preprint<br>
+<b>Paper：</b><a href="https://arxiv.org/abs/2607.09236">arXiv</a> · <a href="https://arxiv.org/pdf/2607.09236">PDF</a><br>
+<b>Project：</b><a href="https://amitpeleg.github.io/forget-narrowly-retain-broadly">Project page</a></p>
+
+<h3>5.2 一句话定位</h3>
+<p>它把 unlearning 从“把 forget accuracy 降下来”重新定义为<b>非对称泛化</b>：目标知识必须跨多种表达被彻底忘掉，而巨大而隐式的非目标知识空间必须被广泛保留。</p>
+
+<h3>5.3 人话版</h3>
+<p>传统 unlearning 很容易出现两类假成功。第一类是 under-forgetting：训练时那句问题答不出来了，但换成反向问法、paraphrase、间接推理或 jailbreak，又能把目标知识恢复。第二类是 over-forgetting：目标知识确实没了，但与它同实体、同主题、甚至只是词面相似的无关知识也被一起损坏。作者提出 SUITE，把 forget 侧分成 direct、reverse、indirect 等表达，把 retain 侧细分为 16 级 semantic tiers，再补 lexical、syntactic、general probes。然后在此基础上提出 JensUn++，用 refusal target、prefix mixing、动态梯度平衡与 hard pairing，让模型既更彻底忘记，又少误伤。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>以往方法包括 GA/GradDiff、NPO/SimNPO、PDU、RMU、JensUn 等。它们都试图在 forget 与 retain 间平衡，但问题在于：如果 benchmark 只问训练过的那条 direct question，就会把“表面 suppression”错当成真正删除。</p>
+<p>例如目标事实是“某航天事故在发射后 73 秒发生”。如果只问“多少秒后发生事故”，模型可能答不出；但换成“哪次事故发生在 73 秒后？”或通过 1986 年、航天器名称等间接线索，知识仍可能恢复。与此同时，与目标词共享同一个实体名但语义无关的问题也可能被误伤。</p>
+<p>本文真正填的 gap 是：建立一个能同时测 <b>forget intensive generalization</b> 和 <b>retain extensive generalization</b> 的结构化 benchmark，使“忘得不够”和“忘得太多”可以同时被看见。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>作者的第一个经验发现是：粗 benchmark 会显著高估 unlearning。切换到 SUITE 后，一些方法在 reverse/indirect 查询上暴露出非常高的 residual knowledge，同时最靠近目标的 retain tier 也会显著受损。第二个经验发现是：forget 与 retain 两项 loss 的梯度尺度在训练过程中会变化甚至反转，固定权重并不稳定。</p>
+<p>因此 JensUn++ 的设计不是单纯“换一个 loss”，而是把三个失败点分别对齐：prefix mixing 处理旧答案轨迹恢复；dynamic gradient balancing 处理训练阶段的尺度漂移；hard pairing 迫使模型根据语义而不是句式 cue 区分 forget 与 retain。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Real-world topic
+→ 25 atomic forget facts
+→ Direct / Reverse training queries
+→ Indirect multi-hop queries held out for evaluation
+→ paraphrase + fill-in-the-blank augmentation
+→ retain construction:
+   semantic tiers s0...s15
+   lexical probes
+   syntactic probes
+   general knowledge
+→ strict train/test separation
+→ JensUn++:
+   refusal target
+   prefix mixing
+   JS-based forget objective
+   retain distribution matching
+   dynamic gradient balancing
+   augmentation-matched hard pairing
+→ evaluate worst-case forget leakage
+→ evaluate nearest-neighbor retain damage
+→ sequential / joint / adversarial stress tests</div>
+
+<h4>Atomic facts 与 Query Views</h4>
+<p>每个 topic 先拆成原子事实，再生成 direct、reverse、indirect 三种信息访问方式。Indirect 不进入训练，因此它是判断模型是否只记住“该拒绝哪种 prompt 模板”的关键。</p>
+
+<h4>Retain Boundary</h4>
+<p>Retain 不再是随便抽一批无关样本，而是 s0 到 s15 的分层语义邻域。s0 与 target 极近但不属于待删事实，是最难的 collateral-damage 区；越往后语义越远。另加 lexical/syntactic probes，用于区分“删知识”与“删词面/句式”。</p>
+
+<h4>Prefix Mixing</h4>
+<p>训练时把原正确答案的一段 prefix 与 refusal target 拼接，使模型学习：即使已经进入旧答案轨迹，也要能切换到 refusal。它本质上是在训练 trajectory-level recovery resistance。</p>
+
+<h4>Dynamic Balancing</h4>
+<p>在 logits 上计算 forget/retain 梯度范数，并按比例动态调整 forget loss，使训练过程中两边不会因尺度漂移而失衡。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="eq">
+g_f = ∇_z L_f<br>
+g_r = ∇_z L_r<br><br>
+α = ||g_r||₂ / (||g_f||₂ + ε)<br><br>
+L = λ_f · α · L_f + λ_r · L_r
+</div>
+<p>直觉上，如果某阶段 forget 梯度过强，α 会缩小它；如果 forget 梯度已经很弱，则不会继续使用固定的大权重粗暴推进。相比单纯 NPO/GradDiff，JensUn++ 还明确把输出分布拉向稳定 refusal，而不仅仅是“降低原正确答案概率”。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>目标：忘记“事故发生在发射后 73 秒”。训练只见 direct 与 reverse。测试时加入 indirect：“1986 年那次航天灾难在起飞后多久发生？”以及 lexical probe：“Challenger 这个单词中第二次出现的字母是什么？”如果模型 direct 忘了但 indirect 还能答 73，属于 under-forgetting；如果 lexical 题也坏了，则属于 over-forgetting。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>核心做法</th><th>本文 setting 中的问题</th></tr>
+<tr><td>GradDiff</td><td>forget 反向梯度 + retain CE</td><td>容易造成生成质量与邻近 retain 损坏</td></tr>
+<tr><td>NPO</td><td>负偏好优化降低目标答案 preference</td><td>学习率稍高可导致 utility collapse，仍有 indirect leakage</td></tr>
+<tr><td>PDU</td><td>约束式 primal-dual unlearning</td><td>在 SUITE 下暴露 under-forgetting</td></tr>
+<tr><td>RMU</td><td>表示空间随机化/重映射</td><td>粗 benchmark 容易掩盖 residual knowledge</td></tr>
+<tr><td><b>JensUn</b></td><td>JS-based refusal/distribution matching</td><td>最强 baseline，但可能出现“先拒答再继续生成”与高 gibberish</td></tr>
+</table></div>
+<p><b>Strongest baseline：JensUn。</b>它与 JensUn++ 最接近，因此能更准确体现新增 prefix mixing、dynamic balance 与 pairing 的真实贡献。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Topics：</b>Challenger disaster、Salem witch trials、Steve Jobs medical、Britney Spears conservatorship。每个 topic 25 个 atomic facts。<br>
+<b>Models：</b>Llama-3.2-3B-Instruct、Ministral-3-3B-Instruct、Qwen3.5-9B。<br>
+<b>Retain：</b>s0–s15 semantic tiers + lexical + syntactic + general knowledge。<br>
+<b>Adversarial：</b>多语言、role-playing、jailbreak query。<br>
+<b>Utility：</b>MMLU、AlpacaEval 子集、repetitiveness、RGQ。<br>
+<b>Setting：</b>sequential 与 joint unlearning。</p>
+<p><b>Research Question：</b>粗 benchmark 是否高估遗忘？SUITE training 能否单独提升旧方法？JensUn++ 是否在多模型与 adversarial queries 下取得更好的 forget-retain Pareto？收益是否以 utility 为代价？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Q_All / Q*All：</b>forget knowledge rate，越低越好；Q*All 还加入 adversarial query，是更严格的 worst-case。<br>
+<b>Gibberish：</b>胡言乱语比例，越低越好；错误输出不等于合格的忘记。<br>
+<b>s0 accuracy：</b>最靠近 target 的 retain 能力，越高越好，是过度遗忘的敏感指标。<br>
+<b>MMLU：</b>一般 utility，但可能掩盖局部 collateral damage，因此只能作为补充。<br>
+<b>RGQ：</b>LLM judge 比较通用生成质量，需要警惕 judge bias。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li>粗 benchmark 会显著高估遗忘；SUITE 中 reverse/indirect query 暴露出 massive under-forgetting。</li>
+<li>最靠近 target 的 s0 retain 也会被明显误伤，说明很多方法不是“精确删一个事实”，而是在抹掉周围知识。</li>
+<li>Llama sequential：JensUn++ 的 Q_All≈3%、Q*All≈3%、Gibberish=0；JensUn 约 14%/16%，且 gibberish 很高。</li>
+<li>Ministral 上 forget rate 的绝对差距较小，但 JensUn++ 主要胜在把高比例 gibberish 压到接近 0。</li>
+<li>Retain 总体只小幅下降，说明 strongest result 并非单纯用 utility 换 forgetting。</li>
+<li>s0 仍是最明显 failure region，最近邻知识没有被完全保护。</li>
+<li>未见的多语言/role-play/jailbreak 只带来较小 worst-case 增幅，说明其 query-form 泛化有一定韧性。</li>
+<li>Sequential 中前几个 topic 不容易被后续 unlearning 重新学回，但个别 topic 仍明显更难。</li>
+</ol>
+<div class="good"><b>Strongest result：</b>低 worst-case forget leakage + 0 gibberish + 小幅 retain drop 同时出现。</div>
+<div class="warn"><b>Weakest / failure：</b>s0 邻近知识仍有明显 collateral damage，且 topic hardness 不均匀。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 2：</b>展示 direct/reverse/indirect 与 semantic tiers，是整篇 benchmark 设计核心。它告诉你 target 是“查询等价类”，retain 是“有结构的边界”，而不是两堆独立数据。</p>
+<p><b>Figure 3：</b>lexical false positive 例子揭示很多方法会把实体 token 本身当成删除目标，证明“词面抑制 ≠ 知识删除”。</p>
+<p><b>Figure 5：</b>learning-rate Pareto 图显示某些 baseline 为了降低 forget rate 会快速牺牲 retain 与 generation quality，而 JensUn++ 的 frontier 更优。</p>
+<p><b>Table 3：</b>核心 sequential 结果；应同时看 forget、gibberish、retain，不能只看一个数字。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>Prefix mixing 负责抵抗从旧答案 prefix 恢复；dynamic balance 负责训练过程 forget/retain 梯度尺度变化；hard pairing 负责防止模型利用 augmentation type 作为 shortcut。需要强调，这些是输出/优化层面的机制证据，并不能证明内部 representation 中目标知识被真正擦除。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="good"><b>Experiments Actually Show：</b>更细粒度 benchmark 确实会改变对现有方法的判断，JensUn++ 在多模型、多 setting 下总体 Pareto 更好。</div>
+<div class="warn"><b>What Is Not Yet Proven：</b>没有 retraining-equivalence，也没有证明 representation-level deletion；没有覆盖超大模型、multimodal、agent memory 与长期 reacquisition。</div>
+
+<h3>5.16 Contribution</h3>
+<ul>
+<li><b>New Benchmark/Protocol：</b>SUITE 的 asymmetric generalization evaluation。</li>
+<li><b>New Empirical Finding：</b>训练/评测边界定义的重要性可与算法本身相当。</li>
+<li><b>New Mechanism：</b>JensUn++ 的 prefix mixing + dynamic balancing + hard pairing。</li>
+<li><b>New Evaluation：</b>sequential/joint/adversarial + nearest-neighbor retain boundary。</li>
+</ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p>Topic 数量有限；主要是文本事实；semantic tiers 仍需要辅助标注；部分 utility 使用 LLM judge；缺少 adaptive recovery、cross-modal leakage、membership/retraining-equivalence 与表示层审计；完整 protocol 的调参与 compute 成本较高。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最小复现不必复制全部 benchmark。可选 1 个 topic、10 个 atomic facts，每个构造 direct/reverse/indirect，再做 s0、s3、lexical、syntactic retain。使用 3B–7B 模型比较 NPO、GradDiff、JensUn-style refusal 与 JensUn++-lite。最先验证的核心现象是：<b>direct 看似成功，但 indirect/lexical 会暴露 residual 与 collateral。</b></p>
+
+<h3>5.19 Research Value</h3>
+<p>Baseline Potential ★★★★★；Migration Potential ★★★★★；Attack Potential ★★★★★；Evaluation Potential ★★★★★；Benchmark Potential ★★★★★；New Paper Potential ★★★★★。最值得迁移的不是单一 loss，而是“等价查询 + 分级 retain 邻域”这套 evaluation philosophy。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Multimodal SUITE</h4>
+<p><b>Original Problem →</b>文本事实 under/over-forgetting。<br>
+<b>Transferable Mechanism →</b>同一 target 的多 surface + graded retain boundary。<br>
+<b>New RQ →</b>text 忘了之后 image/caption/OCR/cross-modal cue 是否仍可恢复？<br>
+<b>Minimum Experiment →</b>20 identities × 6 surfaces × 3 methods × 2 VLM；每个 target 至少 5 paraphrases/surface。<br>
+<b>Models →</b>LLaVA-1.5-7B、Qwen2.5-VL-7B。<br>
+<b>Dataset →</b>MLLMU-Bench + paired retain neighborhoods。<br>
+<b>Metrics →</b>Worst-Surface Leakage、Surface Transfer Matrix、Retain FPR、ASR@budget。</p>
+
+<h4>方向 B — Difficulty-Aware Curriculum</h4>
+<p>用 unlearning 前的 direct preference、paraphrase variance、nearest-retain confusion 等预测 post-unlearning worst-surface leakage，再按 hardness 分配步骤与 probe budget。Minimum Experiment：50 targets，比较 uniform sampling、random curriculum、loss-based curriculum；主指标 Spearman(hardness,residual)、AUROC(hard target)、forget-retain Pareto。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>可直接形成 black-box probe：direct→reverse→indirect→paraphrase→lexical collision→multi-hop 自适应查询。Verification 应报告 worst-surface leakage，而不是平均 forget accuracy。可定义 <b>Boundary Closure Rate</b>：目标所有等价查询都无法恢复、而所有 non-target boundary probes 仍正确的 target 比例。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>Paper 1 处理内容空间中的 semantic/query closure；Paper 2 处理系统访问空间中的 path/provenance closure。二者都在说：一个 surface 成功，不能推出全局成功。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol>
+<li>Unlearning 不是单纯降低 forget accuracy。</li>
+<li>真正问题是 simultaneously 解决 under-forgetting 与 over-forgetting。</li>
+<li>Forget 侧必须跨 direct/reverse/indirect/paraphrase 泛化。</li>
+<li>Retain 侧必须在离 target 最近的邻域也保持准确。</li>
+<li>SUITE 把这两个边界显式化。</li>
+<li>粗 benchmark 会让很多方法看起来比实际更好。</li>
+<li>JensUn++ 的价值来自 refusal trajectory、动态平衡与 paired training 的组合。</li>
+<li>它在多个模型上取得更好的 forget-retain-generation Pareto。</li>
+<li>s0 仍然是最明显的失败区。</li>
+<li>最值得迁移的是“等价类 + 分级边界”而不是某个单一 objective。</li>
+</ol>
+</section>
+
+<section id="p2" class="paper">
+<h2>Paper 2 — Governed Shared Memory for Multi-Agent LLM Systems</h2>
+<p><b>Authors：</b>Yanki Margalit, Nurit Cohen-Inger, Erni Avram, Ran Taig, Oded Margalit<br>
+<b>Affiliation：</b>Caura.ai; Ben-Gurion University of the Negev<br>
+<b>Date / Status：</b>2026-06-23 · arXiv preprint<br>
+<b>Paper：</b><a href="https://arxiv.org/abs/2606.24535">arXiv</a> · <a href="https://arxiv.org/pdf/2606.24535">PDF</a><br>
+<b>Code / System：</b><a href="https://github.com/caura-ai/caura">Caura GitHub</a> · <a href="https://caura.ai/">Project site</a></p>
+
+<h3>5.2 一句话定位</h3>
+<p>这篇论文把 multi-agent memory 从“向量检索组件”提升为<b>受治理的分布式状态系统</b>，要求同时满足 scope、temporal consistency、provenance 与 propagation。</p>
+
+<h3>5.3 人话版</h3>
+<p>一个 agent 自己记东西时，memory benchmark 往往只问“能不能找到”；但多 agent 共享记忆时，问题变成：谁能看哪条？旧事实如何被新事实 supersede？一条总结是由哪些 agent 的哪些 observation 推导出来？一条 memory 写入后多久对同 fleet 可见？论文定义 fleet memory F=(A,M,G,P,T)，并用 ArgusFleet 对真实生产系统 MemClaw/Caura 做 live probe。最有价值的不是漂亮的 provenance 数字，而是作者实际发现 GET-by-id 曾绕过更细 scope、dedup gate 会在 contradiction detector 之前拒绝输入等 production failure，并用实验定位与修复。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>LoCoMo、LongMemEval 等更关注长期记忆召回；vector DB/RAG 关注 top-k relevance；很多 single-agent memory framework 默认“读者与写者边界简单”。但在 fleet 中，relevance 只是必要条件，不是充分条件。授权、时间、来源、传播都必须参与“这条 memory 是否应该出现在结果里”的判断。</p>
+<p>最具代表性的失败是：semantic search path 可能有 fleet filter，但如果 caller 已知 memory_id，另一个 GET endpoint 曾经只检查 tenant，不检查更细的 fleet/agent/scope/trust。于是“search 没泄漏”并不能证明系统整体没泄漏。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>Shared memory correctness 由多个正交 primitive 决定：scope 是 access control；supersession 是 temporal/state resolution；provenance 是 event sourcing；propagation 是 distributed consistency。任何一个 primitive 没有在所有 path 一致执行，局部正确都会变成系统错误。</p>
+<p>第二个关键发现是 pipeline ordering：contradiction detector 在“两个写入都被接受”的条件下可以几乎完美，但 synchronous near-duplicate gate 会先把冲突写入当成重复而拒绝，导致 detector 根本没有机会运行。因此 module accuracy ≠ end-to-end system correctness。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Agents A
+→ write memory w_i=(agent, content, scope, time, provenance)
+→ governance G checks authorization / trust
+→ storage M
+→ temporal semantics T handle supersession / contradiction
+→ provenance P records derived_from
+→ retrieval r_j=f(query, requester, governance, time)
+→ propagation to authorized peers
+→ ArgusFleet live probes:
+   leakage
+   contradiction
+   provenance
+   propagation
+→ compare observed behavior with invariants
+→ save traces + latency + CIs
+→ localize handler / ordering / policy failure</div>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="eq">
+F = (A, M, G, P, T)<br>
+w_i = (a_i, c_i, s_i, t_i, p_i)<br>
+r_j = f(q_j, a_j, g_j, t_j)<br><br>
+w_i ∈ r_j ⇒ auth(a_j, s_i, G)<br><br>
+LEAK_RATE = n_leaks / n_expected-deny<br>
+MISS_RATE = n_misses / n_expected-allow
+</div>
+<p>这里最关键的是 invariant，而不是复杂 loss。普通 retrieval benchmark 只看召回率；本文把“该看到”和“不该看到”拆开，因此一个系统完全可能 recall 很高却同时泄漏严重。Leak 与 miss 必须成对报告。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>Support fleet 写入客户争议款信息，Finance fleet 不应读取。后来新状态写入“争议已解决”。正确系统必须：Finance 无论 semantic search 还是 direct GET 都看不到 secret；新状态 supersede 旧状态；如果 Manager 生成周报总结，provenance 能追溯到原始 observation。只满足其中任何一个都不能叫“共享记忆正确”。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>范式</th><th>合理性</th><th>本文指出的缺口</th></tr>
+<tr><td>Long-context only</td><td>简单，不需要外部状态</td><td>无法表达细粒度 scope、supersession、来源链</td></tr>
+<tr><td>Vector DB / RAG</td><td>检索成熟</td><td>relevance ≠ authorization</td></tr>
+<tr><td>Single-agent memory</td><td>适合个人助手</td><td>缺 fleet trust/policy 与跨 agent 一致性</td></tr>
+<tr><td>Knowledge graph memory</td><td>结构化关系强</td><td>仍不能自动替代 access-control consistency</td></tr>
+</table></div>
+<p>论文没有系统横向比较多个 memory backend，这是明显 limitation。因此这里的 strongest baseline 更像 conceptual baseline，而不是被完整击败的实验对手。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>System：</b>MemClaw/Caura production multi-tenant service；ArgusFleet 是 live REST harness。<br>
+<b>Leakage：</b>4 fleets × 6 agents，多类 expected-allow / expected-deny probe，并重点覆盖 search 与 GET-by-id。<br>
+<b>Provenance：</b>50 条 depth-4 derivation chains。<br>
+<b>Propagation：</b>40 fleet-scoped facts，多 sibling 与 foreign-fleet readers。<br>
+<b>Contradiction：</b>100 facts，sequential/concurrent 写入。<br>
+<b>Metrics：</b>leak/miss、Wilson CI、chain completeness、writer identity、depth fidelity、visibility rate、cross-fleet leak、detection/stale rate、p50/p95/p99 latency。</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Leak rate↓：</b>本应拒绝却返回的比例。<br>
+<b>Miss rate↓：</b>本应允许却没返回的比例。<br>
+<b>Wilson CI：</b>适合极端二项比例，如 0/80。<br>
+<b>Chain completeness↑：</b>来源链每一跳是否完整。<br>
+<b>Writer identity↑：</b>来源节点是否对应正确写作者。<br>
+<b>Visibility rate↑ / cross-fleet leak↓：</b>传播效率与隔离性必须同时满足。<br>
+<b>Conditional detection：</b>在两个 write 都成功 admission 的前提下测 contradiction module，能把 admission failure 与 detector failure 分开。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li>GET-by-id 曾存在 sub-tenant enforcement gap；修复后更低 trust 的 cross-fleet read 被阻断。</li>
+<li>Semantic search 同时存在 leak 与 miss，说明 relevance ranking 与 auth filter 是两个独立维度。</li>
+<li>Provenance 是 strongest result：depth-4 chains 可完整恢复，writer identity 也稳定。</li>
+<li>Propagation 对 same-fleet sibling 基本可见，而 foreign-fleet 维持隔离。</li>
+<li>Tight polling 把早期看起来很长的 visibility latency 修正为约交互级别，证明 harness 自身也可能产生假结论。</li>
+<li>Contradiction detector 在两条冲突 write 都被接受时表现很好。</li>
+<li>但 end-to-end contradiction detection 明显更差，因为 dedup gate 抢先拒绝大量本应进入 contradiction pipeline 的写入。</li>
+<li>Strong consistency 的主要成本体现在 write latency，而不是 read visibility。</li>
+</ol>
+<div class="good"><b>Strongest result：</b>provenance chain 完整性与 writer identity 的稳定表现。</div>
+<div class="bad"><b>关键 failure：</b>GET path authorization gap 与 dedup-before-contradiction ordering failure。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Table 2：</b>四类实验 headline；最重要的是 contradiction 的 overall 与 conditional 指标差距，它揭示 module success 与 pipeline success 的不同。</p>
+<p><b>Table 3：</b>trust ladder probe 定位 GET-by-id scope gap，说明安全验证必须覆盖 direct-id path。</p>
+<p><b>Figure 2：</b>同时展示 leak 与 miss，说明“零泄漏”并不等于系统可用。</p>
+<p><b>Figure 4：</b>provenance per-hop latency 的 tail，显示来源链在交互场景可行但仍受 rate limit 影响。</p>
+<p><b>Figure 5：</b>same-fleet 可见与 cross-fleet 隔离并列展示，强调 propagation 与 isolation 是两个目标。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>虽然不是传统 ML ablation，但它做了很强的系统诊断：tenant-key vs agent-scoped credential、synchronous response vs post-settle re-fetch、batched probe vs tight polling、overall vs conditional contradiction detection。通过控制这些条件，作者能把失败定位到具体 handler、pipeline ordering 或测量 artifact，系统层面的因果证据反而很强。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="good"><b>Experiments Actually Show：</b>在一个真实 production system 上，scope、provenance、propagation、contradiction 的确可以通过 invariant-driven live probe 被审计，并且能发现设计图上看不到的问题。</div>
+<div class="warn"><b>What Is Not Yet Proven：</b>没有跨多个 memory systems 的大规模比较；没有 cross-tenant adversarial benchmark；实验规模仍有限；不能证明该架构在任务成功率上优于 Mem0/Letta/Graphiti 等。</div>
+
+<h3>5.16 Contribution</h3>
+<ul>
+<li><b>New Formalization：</b>F=(A,M,G,P,T) 的 governed fleet memory。</li>
+<li><b>New Evaluation Harness：</b>ArgusFleet live-service invariant testing。</li>
+<li><b>New Empirical Finding：</b>GET scope gap、dedup starvation、write-side consistency cost。</li>
+<li><b>System/Engineering：</b>Caura/MemClaw production implementation。</li>
+</ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p>单 tenant；每类实验规模有限；tight polling sample 较少；缺跨系统 comparand；项目作者自己评估自家系统存在 self-evaluation bias；没有 multi-agent deletion/unlearning primitive；没有恶意/Byzantine agent、policy conflict、cross-region partition 与长期任务成功关联。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>用 SQLite/Postgres + vector index 搭最小 3-scope memory service：tenant/fleet/agent。实现 write、search、GET-by-id、supersede、derived_from，然后做 4 个测试模块：unauthorized canary、contradictory pair、depth-3 provenance、fleet propagation。最先跑 <b>access-path equivalence test</b>：同一个 unauthorized memory 分别走 search、GET、list、summary/cache path，检查 auth 决策是否一致。</p>
+
+<h3>5.19 Research Value</h3>
+<p>Baseline Potential ★★★★☆；Migration Potential ★★★★★；Attack Potential ★★★★★；Evaluation Potential ★★★★★；Benchmark Potential ★★★★★；New Paper Potential ★★★★★。尤其适合迁到 agent memory deletion/unlearning verification。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Multi-Agent Memory Unlearning Closure</h4>
+<p><b>Original Problem →</b>scope/temporal/provenance correctness。<br>
+<b>Transferable Mechanism →</b>invariant + multi-path live probes。<br>
+<b>New RQ →</b>删除某用户/事实后，search、GET-by-id、summary cache、derived memory、propagated copies 是否全部消失？<br>
+<b>Minimum Experiment →</b>4 fleets×5 agents；30 deletion targets；每 target 构造 raw、summary、derived chain、propagated copy、vector cache；删除后从 6 条路径探测。<br>
+<b>Baseline →</b>physical delete、tombstone、semantic purge、control-plane planner。<br>
+<b>Metric →</b>Delete Closure Rate、Residual Path Count、Derived Leakage Depth、Retain Miss Rate、Delete-to-Invisible latency。</p>
+
+<h4>方向 B — Black-Box Memory Architecture Fingerprinting</h4>
+<p>通过 cross-fleet canary、near-duplicate contradiction、rapid supersession、derived-chain probes 等行为差分推断内部 architecture regime。Minimum Experiment：5 backends × 40 probes × 5 seeds；指标 Regime AUROC、Probe@95% confidence、Failure Localization Accuracy。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>Attack 可利用 search/GET 路径差异、dedup starvation、rapid concurrent write 与 derived memory residual。Verification 应定义 Access-Path Closure、Derived Residual Depth、Scope-Conditional Leakage、Supersession Consistency、Delete-to-Invisible latency。</p>
+
+<h3>5.22 与 Paper 1 的关系</h3>
+<p>Paper 1 的 closure 是语义/查询等价类；Paper 2 的 closure 是系统访问路径与 provenance/propagation。二者组合后，可以得到一个比普通 multi-view unlearning 更强的统一验证框架。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol>
+<li>Multi-agent shared memory 不是“大一点的 RAG”。</li>
+<li>它本质上是一个受治理的分布式状态系统。</li>
+<li>scope、time、provenance、propagation 都是 correctness 的一部分。</li>
+<li>search path 安全不代表 GET-by-id 也安全。</li>
+<li>论文实际发现并修复了这类 gap。</li>
+<li>Provenance 是最强正结果之一。</li>
+<li>Propagation 与 isolation 必须一起评估。</li>
+<li>Contradiction module 正确不代表端到端 pipeline 正确。</li>
+<li>评测 harness 自己也可能制造错误结论。</li>
+<li>最值得迁到 unlearning 的思想是：删除必须跨所有访问路径与派生副本形成 closure。</li>
+</ol>
+</section>
+
+<section id="syn" class="card">
+<h2>Cross-Paper Synthesis</h2>
+<p>两篇论文共同说明：<b>Local success ≠ equivalence-class closure。</b> Paper 1 中 direct prompt 失败不代表 reverse/indirect 也失败；Paper 2 中 semantic search 不泄漏不代表 GET-by-id、derived memory 或 propagated copy 也安全。</p>
+<div class="tablewrap"><table>
+<tr><th>维度</th><th>Paper 1</th><th>Paper 2</th></tr>
+<tr><td>局部成功</td><td>direct query forget</td><td>某一 read path 不泄漏</td></tr>
+<tr><td>隐藏残留</td><td>reverse / indirect / paraphrase</td><td>GET / cache / derived / propagated state</td></tr>
+<tr><td>误伤</td><td>s0 / lexical / syntactic retain</td><td>allowed memory miss / legitimate update rejection</td></tr>
+<tr><td>统一视角</td><td colspan="2">Target 必须定义成一个 closure，而不是一个样本或一个 API endpoint</td></tr>
+</table></div>
+</section>
+
+<section id="opp" class="card">
+<h2>Combined Research Opportunities</h2>
+<h3>Best Migration Direction — Equivalence-Class Unlearning Closure</h3>
+<div class="flow">Target
+→ Semantic closure:
+   direct / reverse / paraphrase / indirect / multi-hop / cloze
+→ Modality closure:
+   image / caption / OCR / text-only / cross-modal
+→ System-path closure:
+   generation / search / GET / cache / summary
+→ Provenance closure:
+   raw / derived / propagated / superseded
+→ Retain boundary:
+   semantic-near / lexical-near / visual-near / sibling memory
+
+Metrics:
+Worst-Surface Leakage
+Delete Closure Rate
+Retain FPR
+Derived Residual Depth
+ASR@probe-budget</div>
+<p>Minimum viable paper：30 targets × 6 semantic surfaces × 4 access/provenance paths × 3 unlearning/deletion methods × 2 models/systems。真正 novelty 不应只是“多加几个 paraphrase”，而是统一内容等价类与系统访问闭包。</p>
+</section>
+
+<section id="collision" class="card">
+<h2>Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>纯粹的 multi-view unlearning evaluation 已经较拥挤，因此“direct + paraphrase + cloze + multi-hop”本身不够新。更低 collision 的方向是把 semantic surfaces 与 <b>Agent memory access-path / provenance / propagation closure</b> 组合起来，尤其检查删除后 derived summary、sibling propagation、direct GET、cache 是否仍可恢复。</p>
+</section>
+
+<section id="priority" class="card">
+<h2>Reading / Reproduction Priority</h2>
+<p><b>Paper 1：</b>优先看 Figure 2、Figure 3、JensUn++ 的 prefix mixing / gradient balancing、Table 3、LR Pareto/Appendix sweep。最小复现先做 1 topic × 10 facts × direct/reverse/indirect + s0/lexical。</p>
+<p><b>Paper 2：</b>优先看 F=(A,M,G,P,T) 与 Inv-Scope、四类 live experiments、Table 2/3、dedup-before-contradiction failure。最小复现先做同一 unauthorized memory 的 search / GET / list path consistency。</p>
+</section>
+
+<section id="sources" class="card">
+<h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2607.09236">Forget Narrowly, Retain Broadly — arXiv</a></li>
+<li><a href="https://arxiv.org/pdf/2607.09236">Forget Narrowly, Retain Broadly — PDF</a></li>
+<li><a href="https://amitpeleg.github.io/forget-narrowly-retain-broadly">SUITE / JensUn++ project page</a></li>
+<li><a href="https://arxiv.org/abs/2606.24535">Governed Shared Memory for Multi-Agent LLM Systems — arXiv</a></li>
+<li><a href="https://arxiv.org/pdf/2606.24535">Governed Shared Memory — PDF</a></li>
+<li><a href="https://github.com/caura-ai/caura">Caura official GitHub</a></li>
+<li><a href="https://caura.ai/">Caura project site</a></li>
+</ul>
+</section>
+
+<p class="small muted" style="text-align:center">Regenerated · Daily Top Papers Deep Dive · 2026-09-01</p>
+</main></body></html>

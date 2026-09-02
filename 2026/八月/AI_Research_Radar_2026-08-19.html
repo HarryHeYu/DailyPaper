@@ -1,0 +1,230 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-08-19</title><style>
+body{margin:0;background:#f6f8fb;color:#172033;font:16px/1.82 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+main{max-width:1160px;margin:auto;padding:30px 24px 80px}
+header,.card,details{background:#fff;border:1px solid #e1e7ef;border-radius:16px;box-shadow:0 2px 10px rgba(20,30,50,.04)}
+header{padding:30px;background:linear-gradient(135deg,#fff,#eef3fb)}
+h1{font-size:36px;margin:.1em 0 .35em}h2{margin-top:44px;border-top:2px solid #e1e7ef;padding-top:13px}h3{margin-top:25px}
+nav{position:sticky;top:6px;z-index:5;background:rgba(255,255,255,.96);border:1px solid #e1e7ef;border-radius:14px;padding:14px 16px;margin:20px 0}
+nav a{margin-right:12px;white-space:nowrap}a{color:#1757a6;text-decoration:none}
+.card{padding:20px;margin:16px 0}details{padding:0 18px;margin:18px 0}
+summary{cursor:pointer;padding:18px 0;font-size:19px;font-weight:750}
+details[open] summary{border-bottom:1px solid #e1e7ef;margin-bottom:14px}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:750;margin-right:6px}
+.s{background:#f8e8ee;color:#8b1e3f}.a{background:#fff2d4;color:#8a5a00}.b{background:#e8f2f7;color:#245b78}
+.top{background:#ece9ff;color:#5145a8}.idea{background:#e9f5e7;color:#2f6b3e}.warn{background:#fdeae4;color:#a33a22}.backfill{background:#edf0f5;color:#505b6e}
+.flow{white-space:pre-wrap;background:#f7f9fc;border-left:4px solid #70839c;border-radius:8px;padding:13px 15px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.warning{background:#fff1ed;border:1px solid #ffd4ca;border-radius:10px;padding:13px 15px}
+.good{background:#eef8ed;border:1px solid #d4ead0;border-radius:10px;padding:13px 15px}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:800px}th,td{border:1px solid #e1e7ef;padding:9px 10px;vertical-align:top}th{background:#f3f6fa}
+.meta,.small{color:#667085;font-size:14px}
+</style></head><body><main>
+<header><span class="badge top">Daily AI Research Radar</span><span class="badge s">Machine Unlearning</span><span class="badge s">Agent / Multi-Agent</span>
+<h1>Daily AI Research Radar & Idea Miner</h1>
+<p class="meta">2026-08-19 · 重新生成版 · Candidate Pool 47 · 收录 18 · Tier S/A/B = 3/7/8</p>
+<p>今日核心判断：Agent 删除不能只定义在可见 transcript 或单一 memory entry 层面。最新工作表明，KV cache、provenance descendants、skill hypergraph、external memory 与 parameters 都可能保留 residual influence。最值得推进的是统一的 <b>State-Complete Agent Unlearning</b>。</p></header>
+
+<nav><a href="#summary">Summary</a><a href="#top">Top Papers</a><a href="#tiers">Tier S/A/B</a><a href="#ideas">Ideas</a><a href="#collision">Collision</a><a href="#priority">Reading</a><a href="#stats">统计</a><a href="#sources">Sources</a></nav>
+
+<section id="summary"><h2>Executive Summary</h2><div class="card">
+<p><b>Candidate Pool：47</b>；最终收录 <b>18</b>；Tier S/A/B = <b>3 / 7 / 8</b>；BACKFILL = <b>7</b>。</p>
+<p><b>Today's Most Important Paper：</b><i>Aborted but Not Forgotten</i>。它证明 logical rollback 与 physical inference-state rollback 可以分离：即使最终 token 完全一致，stale KV cache 仍能改变后续行为。</p>
+<p><b>Best Research Idea：</b><b>State-Complete Agent Unlearning (SC-AU)</b>：Transcript → KV Cache → External Memory → Provenance Descendants → Skill Hypergraph → Parameters 六层 deletion closure。</p>
+<p><b>Collision Warning：</b>YES。OBLIVION 已覆盖 cross-surface skill reconstruction，Agentic Unlearning 已覆盖 parameter+memory，因此新工作必须加入 KV/inference-state、hypergraph lineage、cross-agent reacquisition 或 black-box verification。</p>
+</div></section>
+
+<section id="top"><h2>Today's Most Important / Top 3 / Top 5</h2>
+<div class="card"><h3>#1 Aborted but Not Forgotten</h3><p>最关键的实验范式是 <b>same-token / different-cache</b> paired audit：逻辑 transcript 相同，只改变 KV cache 是否携带已撤销分支。若行为发生差异，就证明 rollback/deletion 尚未 closure。这个范式对 Agent Unlearning 的价值高于单纯“还能不能答出被删事实”。</p></div>
+<div class="card"><h3>Top 3 必读</h3><ol>
+<li><b>Aborted but Not Forgotten</b>：重点看 threat model、same-token/different-cache audit、cache fixes。</li>
+<li><b>HyperSkill</b>：重点看 hypergraph skill memory、trajectory hyperedge、skill merge / pruning。</li>
+<li><b>AdaPop</b>：重点看 popularity-conditioned exponent、popular/rare strata 与 robust recovery。</li>
+</ol></div>
+<div class="card"><h3>Top 5</h3><ol><li>Aborted but Not Forgotten</li><li>HyperSkill</li><li>AdaPop</li><li>OBLIVION</li><li>QUMem</li></ol></div>
+</section>
+
+<section id="tiers"><h2>Tier S / A / B</h2>
+
+<details open>
+<summary><span class="badge s">Tier S</span>Aborted but Not Forgotten: KV-Cache Retention Breaks Rollback Consistency in Language Agents</summary>
+<p><b>人话版：</b>这篇论文发现：Agent 框架把一条分支逻辑回滚后，最终 transcript 看似干净，但如果底层继续复用旧 KV cache，模型的隐藏推理状态仍可能携带被拒绝分支的行为影响。作者用 token 完全一致的 paired audit 把 prompt 差异排除掉，证明风险来自 cache residue 本身。</p>
+<h3>Background & Gap</h3><p>这篇论文发现：Agent 框架把一条分支逻辑回滚后，最终 transcript 看似干净，但如果底层继续复用旧 KV cache，模型的隐藏推理状态仍可能携带被拒绝分支的行为影响。作者用 token 完全一致的 paired audit 把 prompt 差异排除掉，证明风险来自 cache residue 本身。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">common prefix → rejected branch → logical rollback → construct same final tokens with stale vs rebuilt KV → protected decision → compare behavioral flip → re-prefill / cache crop / checkpoint restore</div>
+<h3>Research Value</h3><p>直接打开了 State-Complete Agent Unlearning：删除不应只覆盖 transcript/memory，还要覆盖 inference-time state；非常适合作 deletion closure benchmark。</p>
+</details>
+<details open>
+<summary><span class="badge s">Tier S</span>HyperSkill: Self-Evolving LLM Agents via Hypergraph-Structured Skill Memory</summary>
+<p><b>人话版：</b>HyperSkill 把 agent skill memory 从扁平条目升级为 hypergraph：多个 subtasks 与 reusable skills 通过 trajectory-level hyperedge 绑定，并记录 lesson/utility。检索和维护都会沿结构关系工作。对 Skill Unlearning 来说，target skill 被共用、merge、组合后，局部删除很可能无法清除其 procedural influence。</p>
+<h3>Background & Gap</h3><p>HyperSkill 把 agent skill memory 从扁平条目升级为 hypergraph：多个 subtasks 与 reusable skills 通过 trajectory-level hyperedge 绑定，并记录 lesson/utility。检索和维护都会沿结构关系工作。对 Skill Unlearning 来说，target skill 被共用、merge、组合后，局部删除很可能无法清除其 procedural influence。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">trajectory → subtask nodes + skill nodes → hyperedge binding → dual-path retrieval → execution → utility-based pruning / merge → updated hypergraph</div>
+<h3>Research Value</h3><p>适合研究 Merge-Aware Skill Unlearning、Hypergraph Deletion Closure 与 compositional skill reconstruction attack。</p>
+</details>
+<details open>
+<summary><span class="badge s">Tier S</span><span class="badge backfill">BACKFILL</span>The More Popular, The Harder to Forget: Adaptive Popularity for LLM Unlearning</summary>
+<p><b>人话版：</b>AdaPop 说明不同事实不是同样难忘：popular facts 更可能被深度、分布式编码，uniform pressure 会导致热门事实 residual 与冷门事实 over-erasure。它为每个 fact 根据 popularity 设置自适应梯度压力。</p>
+<h3>Background & Gap</h3><p>AdaPop 说明不同事实不是同样难忘：popular facts 更可能被深度、分布式编码，uniform pressure 会导致热门事实 residual 与冷门事实 over-erasure。它为每个 fact 根据 popularity 设置自适应梯度压力。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">forget fact → popularity score → adaptive exponent β_i → token-level weighted forget loss → dynamic retain controller → update</div>
+<h3>Research Value</h3><p>可把 popularity 迁移为 agent retrieval frequency、provenance degree、cross-agent copy count、skill reuse count，形成 depth-adaptive Agent Unlearning。</p>
+</details>
+<details>
+<summary><span class="badge a">Tier A</span>QUMem: Personalized Memory for Query-Conditioned User-State Inference in LLM Agents</summary>
+<p><b>人话版：</b>把长期用户 memory 分成 typed units，并结合时间与来源推断当前 user state。对 unlearning 的风险是：删掉一条 raw fact 后，其他 surviving evidence 仍可能把同一 preference/state 重新推断出来。</p>
+<h3>Background & Gap</h3><p>把长期用户 memory 分成 typed units，并结合时间与来源推断当前 user state。对 unlearning 的风险是：删掉一条 raw fact 后，其他 surviving evidence 仍可能把同一 preference/state 重新推断出来。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">episodes → typed memory + time/source → query-conditioned retrieval → current-state inference</div>
+<h3>Research Value</h3><p>Personalized Memory Unlearning / derived-state leakage。</p>
+</details>
+<details>
+<summary><span class="badge a">Tier A</span>ClawGym II: Exploring Black-Box RL on Agent Harness</summary>
+<p><b>人话版：</b>把真实 agent harness 当黑盒 RL 环境，通过 serving proxy 截获模型调用并重建分叉 prefix tree。它能成为 black-box Agent Unlearning / recovery audit 的基础设施。</p>
+<h3>Background & Gap</h3><p>把真实 agent harness 当黑盒 RL 环境，通过 serving proxy 截获模型调用并重建分叉 prefix tree。它能成为 black-box Agent Unlearning / recovery audit 的基础设施。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">agent harness → proxy intercept calls → reconstruct prefix tree → assign reward/advantage → PPO/GRPO</div>
+<h3>Research Value</h3><p>适合自动搜索能恢复已删除行为的真实 harness trajectories。</p>
+</details>
+<details>
+<summary><span class="badge a">Tier A</span>Model Hypnosis: Strong control of AI via additive subliminal effects</summary>
+<p><b>人话版：</b>多个单独很弱的 cue 可以累积成强行为控制。对 unlearning attack 的启发是自动寻找很多 weak leakage-promoting cues，再做 stacking，而不是只找一个强 prompt。</p>
+<h3>Background & Gap</h3><p>多个单独很弱的 cue 可以累积成强行为控制。对 unlearning attack 的启发是自动寻找很多 weak leakage-promoting cues，再做 stacking，而不是只找一个强 prompt。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">candidate weak cues → estimate directional effects → select consistent cues → additive stacking</div>
+<h3>Research Value</h3><p>适合 Weak-Cue Stacking Recovery Attack。</p>
+</details>
+<details>
+<summary><span class="badge a">Tier A</span><span class="badge backfill">BACKFILL</span>Beyond Visual Evidence: Revealing and Mitigating Relational Privacy Leakage in Document MLLMs</summary>
+<p><b>人话版：</b>弱视觉证据会让 document MLLM 从 visual grounding 转向 memorized relational leakage；每轮 probing 当前 student，再动态更新 forget set。</p>
+<h3>Background & Gap</h3><p>弱视觉证据会让 document MLLM 从 visual grounding 转向 memorized relational leakage；每轮 probing 当前 student，再动态更新 forget set。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">weak/no-visual probes → detect leaked pairs → dynamic forget set → relation suppression → re-probe</div>
+<h3>Research Value</h3><p>可迁移为 adaptive black-box deletion verification。</p>
+</details>
+<details>
+<summary><span class="badge a">Tier A</span><span class="badge backfill">BACKFILL</span>OBLIVION: Workflow-Level Operational Skill Unlearning for Deployed Agents</summary>
+<p><b>人话版：</b>删 skill registry 不够，技能还能从 transcript/schema/archive/memory 等 surface 重建。</p>
+<h3>Background & Gap</h3><p>删 skill registry 不够，技能还能从 transcript/schema/archive/memory 等 surface 重建。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">enumerate skill carriers → cross-surface coherent erasure → source-to-sink audit → resurrection attacks</div>
+<h3>Research Value</h3><p>Agent Skill Unlearning 的直接 collision baseline。</p>
+</details>
+<details>
+<summary><span class="badge a">Tier A</span><span class="badge backfill">BACKFILL</span>MAP-Graph: Provenance-Aware Shared Memory for Multi-Agent Workflows</summary>
+<p><b>人话版：</b>将 source、memory、claim、action、permission、revocation 建成 typed provenance graph，运行时用 ancestry 控制 memory admissibility。</p>
+<h3>Background & Gap</h3><p>将 source、memory、claim、action、permission、revocation 建成 typed provenance graph，运行时用 ancestry 控制 memory admissibility。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">source/tool/message → provenance graph → permission filter → path trust → action gate</div>
+<h3>Research Value</h3><p>为 Multi-Agent deletion lineage / descendant closure 提供结构底座。</p>
+</details>
+<details>
+<summary><span class="badge a">Tier A</span><span class="badge backfill">BACKFILL</span>Leak-Resistant Unlearning: A New Benchmark for Evaluating Multi-Hop Reasoning Consistency and Recovery Robustness</summary>
+<p><b>人话版：</b>同一被删知识可沿多条 reasoning path 和 recovery attack 重新出现。</p>
+<h3>Background & Gap</h3><p>同一被删知识可沿多条 reasoning path 和 recovery attack 重新出现。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">forget target → multi-hop path suite → recovery attacks → FQ/RR</div>
+<h3>Research Value</h3><p>黑盒 attack 必须超越固定 paraphrase / multi-hop，走 stateful/adaptive recovery。</p>
+</details>
+<details>
+<summary><span class="badge b">Tier B</span>Towards Computational Provenance: Carrying Causal-State Evidence in Generated Text</summary>
+<p><b>人话版：</b>让生成文本携带可验证的内部 causal-state 证据，是非常早期但值得保存的“可验证 unlearning”机制灵感。</p>
+<h3>Background & Gap</h3><p>让生成文本携带可验证的内部 causal-state 证据，是非常早期但值得保存的“可验证 unlearning”机制灵感。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">controlled internal states → authenticated evidence → output signature → verifier</div>
+<h3>Research Value</h3><p>未来可研究模型是否能证明自己真正经过了 forget-state transition。</p>
+</details>
+<details>
+<summary><span class="badge b">Tier B</span>FTA-Mem: Fact-Time-Affect Anchored Memory for Low-Density Long-Term Dialogue</summary>
+<p><b>人话版：</b>Fact-Time-Affect 三锚点 memory 说明删 fact 本身不够，time/affect anchor 仍可能间接触发恢复。</p>
+<h3>Background & Gap</h3><p>Fact-Time-Affect 三锚点 memory 说明删 fact 本身不够，time/affect anchor 仍可能间接触发恢复。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">segment dialogue → extract fact/time/affect → structured memory → anchor-aware retrieval</div>
+<h3>Research Value</h3><p>适合构造 derived-cue leakage benchmark。</p>
+</details>
+<details>
+<summary><span class="badge b">Tier B</span>Skill2Query: Exploiting Skill Structure to Generate Pseudo-Queries for Agent Skill Retrieval</summary>
+<p><b>人话版：</b>根据 skill 结构生成大量 pseudo-query，提高 skill retrieval；反过来可以作为删除后的 adversarial query generator。</p>
+<h3>Background & Gap</h3><p>根据 skill 结构生成大量 pseudo-query，提高 skill retrieval；反过来可以作为删除后的 adversarial query generator。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">skill docs → skill graph → pseudo-query synthesis → retrieval/index training</div>
+<h3>Research Value</h3><p>适合检测被删 skill 是否仍能被间接触发。</p>
+</details>
+<details>
+<summary><span class="badge b">Tier B</span>From Sequence to Structure: Relational Uncertainty Propagation for LLM Agents</summary>
+<p><b>人话版：</b>把 agent trajectory 从序列变图，并沿 temporal/semantic edge 传播不确定性。</p>
+<h3>Background & Gap</h3><p>把 agent trajectory 从序列变图，并沿 temporal/semantic edge 传播不确定性。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">trajectory graph → local uncertainty → relational propagation → risk estimate</div>
+<h3>Research Value</h3><p>可迁移为 residual contamination propagation / verification priority。</p>
+</details>
+<details>
+<summary><span class="badge b">Tier B</span>PCA-guided Activation Scaling for Monotonic Bidirectional Control over LLM Sycophancy</summary>
+<p><b>人话版：</b>使用 PCA behavioral subspace 做近似单调、双向 activation control。</p>
+<h3>Background & Gap</h3><p>使用 PCA behavioral subspace 做近似单调、双向 activation control。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">activations → PCA subspace → scale target/orthogonal components</div>
+<h3>Research Value</h3><p>适合 inference-time selective forgetting path。</p>
+</details>
+<details>
+<summary><span class="badge b">Tier B</span>BabelSteering: Multilingual Safety Alignment via English Steering Vectors</summary>
+<p><b>人话版：</b>英文 refusal direction 能迁移到多语言，提示 representation intervention 具有跨语言 transfer。</p>
+<h3>Background & Gap</h3><p>英文 refusal direction 能迁移到多语言，提示 representation intervention 具有跨语言 transfer。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">English examples → refusal direction → multilingual inference steering</div>
+<h3>Research Value</h3><p>适合 cross-lingual unlearning / recovery transfer study。</p>
+</details>
+<details>
+<summary><span class="badge b">Tier B</span><span class="badge backfill">BACKFILL</span>Long-Horizon Agent Trajectory Attribution: A Unified Benchmark and Fine-Grained Annotation Framework</summary>
+<p><b>人话版：</b>定位长 horizon agent 行为由哪一段 instruction/tool/memory/skill 导致。</p>
+<h3>Background & Gap</h3><p>定位长 horizon agent 行为由哪一段 instruction/tool/memory/skill 导致。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">trajectory → component schema → primary/chain attribution → LOO / incremental</div>
+<h3>Research Value</h3><p>可直接作为 Trajectory Unlearning localization baseline。</p>
+</details>
+<details>
+<summary><span class="badge b">Tier B</span><span class="badge backfill">BACKFILL</span>A Model Merging Approach for Continual MLLM Unlearning</summary>
+<p><b>人话版：</b>continual MLLM unlearning 通过独立 LoRA + shared subspace / singular dependency-aware merge 降低 rebound。</p>
+<h3>Background & Gap</h3><p>continual MLLM unlearning 通过独立 LoRA + shared subspace / singular dependency-aware merge 降低 rebound。</p>
+<h3>Core Method / Mechanism</h3><div class="flow">per-request LoRA → shared projection → SVD → dependency-aware merge</div>
+<h3>Research Value</h3><p>为 relationship-aware continual unlearning 提供几何证据。</p>
+</details>
+</section>
+
+<section id="ideas"><h2>Idea Mining</h2>
+<div class="card"><span class="badge idea">Best Idea</span><h3>State-Complete Agent Unlearning (SC-AU)</h3>
+<p><b>Inspiration：</b>Aborted but Not Forgotten + HyperSkill + MAP-Graph + OBLIVION + QUMem。</p>
+<div class="flow">Forget Request
+→ Transcript sanitation
+→ KV cache rebuild / crop / restore
+→ External memory delete
+→ Provenance descendant closure
+→ Skill hypergraph incident-edge / merge-lineage closure
+→ Parameter-side unlearning if needed
+→ Same-token/different-state paired audit
+→ Adaptive recovery probing</div>
+<p><b>MVE：</b>Qwen/Llama + LangGraph/HF cache + external memory + HyperSkill-style store；AgentDojo/AppWorld 派生 canary deletion tasks。</p>
+<p><b>Metrics：</b>Direct Forget、Stale-KV Recovery、Derived-Memory Leakage、Skill Reconstruction ASR、Cross-Agent Leakage、Utility、Deleted Mass、Reacquisition。</p>
+<p class="score">Novelty ★★★★★　Feasibility ★★★★☆　Compute Cost ★★★☆☆</p>
+<p><b>Collision Risk：</b>中高。差异化必须靠 inference-state/KV + hypergraph/provenance + unified paired verification。</p>
+</div>
+
+<div class="card"><span class="badge idea">Idea</span><h3>Merge-Aware Hypergraph Skill Unlearning</h3><p>保留 skill provenance 与 merge ancestry，对 target skill 计算 hypergraph deletion closure；重点验证 node-only deletion 后的 compositional resurrection。</p><p class="score">Novelty ★★★★☆　Feasibility ★★★★★　Compute Cost ★★☆☆☆</p></div>
+<div class="card"><span class="badge idea">Idea</span><h3>Weak-Cue Stacking Recovery Attack</h3><p>对每个弱 cue 测微小 leakage bias，再自动组合成强 recovery direction；避免仅做普通 prompt mutation。</p><p class="score">Novelty ★★★★☆　Feasibility ★★★★☆　Compute Cost ★★☆☆☆</p></div>
+<div class="card"><span class="badge idea">Idea</span><h3>Uncertainty-Propagated Deletion Verification</h3><p>将 local residual-leakage score 沿 provenance/semantic/temporal edges 传播，用于决定下一轮 probing 和 deletion closure 半径。</p><p class="score">Novelty ★★★★☆　Feasibility ★★★★☆　Compute Cost ★★☆☆☆</p></div>
+</section>
+
+<section id="collision"><h2>Collision Detection</h2>
+<div class="warning"><span class="badge warn">⚠️ Collision Warning</span><h3>Agent Skill Unlearning</h3><p>OBLIVION 已覆盖 cross-surface skill reconstruction；不能再把“删 registry + transcript + memory”本身作为主 novelty。新的空间是 cross-agent、KV/inference-state、hypergraph merge lineage、continual reacquisition。</p></div>
+<div class="warning"><h3>Black-box Unlearning Attack</h3><p>Leak-Resistant 已覆盖多跳/recovery。更值得做的是 stateful KV residue、weak-cue stacking、adaptive memory recollection、unknown-GT scoring。</p></div>
+<div class="warning"><h3>Inference-time Unlearning</h3><p>activation steering / multilingual steering 已经很活跃。需要强调 forget-scope gate、selective operating window、robustness against recovery。</p></div>
+</section>
+
+<section id="priority"><h2>Daily Reading Priority</h2>
+<div class="table-wrap"><table>
+<tr><th>Priority</th><th>Paper</th><th>最该关注</th></tr>
+<tr><td>READ NOW</td><td>Aborted but Not Forgotten</td><td>same-token/different-cache audit、cache fixes</td></tr>
+<tr><td>READ NOW</td><td>HyperSkill</td><td>hypergraph construction、merge/prune</td></tr>
+<tr><td>READ NOW</td><td>AdaPop</td><td>difficulty heterogeneity、robust/internal metrics</td></tr>
+<tr><td>READ NOW</td><td>OBLIVION</td><td>cross-surface reconstruction</td></tr>
+<tr><td>READ THIS WEEK</td><td>QUMem / Model Hypnosis / MAP-Graph / DRUF</td><td>derived state、weak cue、provenance、adaptive forget target</td></tr>
+<tr><td>SAVE</td><td>Computational Provenance / RUPA / Skill2Query / Steering papers / MCU</td><td>verification、risk propagation、query generation、inference-time、continual</td></tr>
+</table></div>
+</section>
+
+<section id="stats"><h2>今日统计</h2><div class="card">
+<ul><li>Candidate Pool：<b>47</b></li><li>实际收录：<b>18</b></li><li>Tier S：<b>3</b></li><li>Tier A：<b>7</b></li><li>Tier B：<b>8</b></li><li>BACKFILL：<b>7</b></li><li>淘汰：约 <b>29</b></li><li>Today's Most Important Paper：<b>Aborted but Not Forgotten</b></li><li>Best Research Idea：<b>State-Complete Agent Unlearning</b></li><li>Collision Warning：<b>YES</b></li></ul>
+</div></section>
+
+<section id="sources"><h2>Sources / Links</h2><div class="card"><ul>
+<li><span class="badge s">S</span><a href="https://arxiv.org/abs/2608.15939">Aborted but Not Forgotten: KV-Cache Retention Breaks Rollback Consistency in Language Agents</a></li><li><span class="badge s">S</span><a href="https://arxiv.org/abs/2608.16114">HyperSkill: Self-Evolving LLM Agents via Hypergraph-Structured Skill Memory</a></li><li><span class="badge s">S</span><a href="https://arxiv.org/abs/2608.14229">The More Popular, The Harder to Forget: Adaptive Popularity for LLM Unlearning</a> <span class="badge backfill">BACKFILL</span></li><li><span class="badge a">A</span><a href="https://arxiv.org/abs/2608.16168">QUMem: Personalized Memory for Query-Conditioned User-State Inference in LLM Agents</a></li><li><span class="badge a">A</span><a href="https://arxiv.org/abs/2608.16798">ClawGym II: Exploring Black-Box RL on Agent Harness</a></li><li><span class="badge a">A</span><a href="https://arxiv.org/abs/2608.16834">Model Hypnosis: Strong control of AI via additive subliminal effects</a></li><li><span class="badge a">A</span><a href="https://arxiv.org/abs/2608.12911">Beyond Visual Evidence: Revealing and Mitigating Relational Privacy Leakage in Document MLLMs</a> <span class="badge backfill">BACKFILL</span></li><li><span class="badge a">A</span><a href="https://arxiv.org/abs/2608.08264">OBLIVION: Workflow-Level Operational Skill Unlearning for Deployed Agents</a> <span class="badge backfill">BACKFILL</span></li><li><span class="badge a">A</span><a href="https://arxiv.org/abs/2608.10509">MAP-Graph: Provenance-Aware Shared Memory for Multi-Agent Workflows</a> <span class="badge backfill">BACKFILL</span></li><li><span class="badge a">A</span><a href="https://arxiv.org/abs/2608.04519">Leak-Resistant Unlearning: A New Benchmark for Evaluating Multi-Hop Reasoning Consistency and Recovery Robustness</a> <span class="badge backfill">BACKFILL</span></li><li><span class="badge b">B</span><a href="https://arxiv.org/abs/2608.16868">Towards Computational Provenance: Carrying Causal-State Evidence in Generated Text</a></li><li><span class="badge b">B</span><a href="https://arxiv.org/abs/2608.16303">FTA-Mem: Fact-Time-Affect Anchored Memory for Low-Density Long-Term Dialogue</a></li><li><span class="badge b">B</span><a href="https://arxiv.org/abs/2608.16071">Skill2Query: Exploiting Skill Structure to Generate Pseudo-Queries for Agent Skill Retrieval</a></li><li><span class="badge b">B</span><a href="https://arxiv.org/abs/2608.16002">From Sequence to Structure: Relational Uncertainty Propagation for LLM Agents</a></li><li><span class="badge b">B</span><a href="https://arxiv.org/abs/2608.16650">PCA-guided Activation Scaling for Monotonic Bidirectional Control over LLM Sycophancy</a></li><li><span class="badge b">B</span><a href="https://arxiv.org/abs/2608.16577">BabelSteering: Multilingual Safety Alignment via English Steering Vectors</a></li><li><span class="badge b">B</span><a href="https://arxiv.org/abs/2608.06909">Long-Horizon Agent Trajectory Attribution: A Unified Benchmark and Fine-Grained Annotation Framework</a> <span class="badge backfill">BACKFILL</span></li><li><span class="badge b">B</span><a href="https://arxiv.org/abs/2608.04548">A Model Merging Approach for Continual MLLM Unlearning</a> <span class="badge backfill">BACKFILL</span></li>
+<li><a href="https://github.com/Anya-wUw/open-unlearning">AdaPop Code</a></li>
+<li><a href="https://github.com/eboix/model_hypnosis">Model Hypnosis Code</a></li>
+<li><a href="https://github.com/Bellafc/PCS">PCA-guided Activation Scaling Code</a></li>
+</ul>
+<p class="small">本文件为重新生成版，沿用上一轮已完成的 47→18 候选筛选与研究结论，不重新改变论文集合。</p>
+</div></section>
+<footer class="small" style="margin-top:40px;text-align:center">Daily AI Research Radar — 2026-08-19 · regenerated</footer>
+</main></body></html>

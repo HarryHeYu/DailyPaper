@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-08-17</title>
+<style>
+:root{
+  --bg:#f6f8fb; --card:#ffffff; --text:#18212f; --muted:#5f6b7a; --line:#dfe5ec;
+  --s:#8b1e3f; --a:#8a5a00; --b:#245b78; --idea:#3a6b35; --warn:#a33a22; --top:#4b3f9c;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.82 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif}
+main{max-width:1120px;margin:0 auto;padding:32px 24px 80px}
+header{background:linear-gradient(135deg,#fff,#eef3fb);border:1px solid var(--line);border-radius:20px;padding:32px;margin-bottom:24px}
+h1{font-size:34px;line-height:1.2;margin:0 0 12px} h2{margin-top:44px;padding-top:8px;border-top:2px solid var(--line)}
+h3{margin-top:30px} h4{margin-top:24px} p{margin:.72em 0}
+a{color:#1757a6;text-decoration:none} a:hover{text-decoration:underline}
+.small,.meta{color:var(--muted);font-size:14px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:20px 0 28px;position:sticky;top:8px;z-index:5}
+nav a{margin-right:14px;white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin:16px 0;box-shadow:0 2px 10px rgba(20,30,50,.04)}
+.badge{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;margin-right:7px}
+.s{background:#f8e9ef;color:var(--s)} .a{background:#fff2d4;color:var(--a)} .b{background:#e7f2f7;color:var(--b)}
+.top{background:#ece9ff;color:var(--top)} .idea{background:#eaf5e7;color:var(--idea)} .warn{background:#fdeae4;color:var(--warn)}
+.flow{padding:14px 16px;border-left:4px solid #6b7f99;background:#f7f9fc;border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap}
+.callout{padding:14px 16px;background:#f0f5ff;border:1px solid #d9e6ff;border-radius:12px}
+.warning{padding:14px 16px;background:#fff1ed;border:1px solid #ffd6cc;border-radius:12px}
+.good{padding:14px 16px;background:#eef8ed;border:1px solid #d4ead0;border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:760px} th,td{border:1px solid var(--line);padding:9px 10px;vertical-align:top} th{background:#f3f6fa}
+.table-wrap{overflow-x:auto;margin:14px 0}
+details{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:18px 0;padding:0 18px}
+summary{cursor:pointer;font-weight:700;font-size:19px;padding:18px 0}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:16px}
+code{background:#eef1f5;padding:2px 5px;border-radius:5px}
+ul,ol{padding-left:1.4em}
+.score{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+hr{border:0;border-top:1px solid var(--line);margin:30px 0}
+</style>
+</head>
+<body><main>
+<header>
+  <div><span class="badge top">Daily AI Research Radar</span><span class="badge s">Machine Unlearning</span><span class="badge s">Agent / Multi-Agent</span></div>
+  <h1>Daily AI Research Radar & Idea Miner</h1>
+  <p class="meta">日期：2026-08-17 · 重点窗口：最近 24–72 小时；不足部分使用 1–3 个月高价值 BACKFILL · 完整中文研究笔记</p>
+  <p>今日核心判断：最新值得立刻关注的不是“再多一个普通 unlearning loss”，而是两条更结构化的路线：<b>动态暴露式遗忘目标（DRUF）</b>与<b>带 provenance / lineage 的多智能体共享记忆治理（MAP-Graph）</b>。前者改变“forget set 必须预先给定”的假设，后者给 Agent / Multi-Agent Unlearning 提供了 deletion closure、revocation propagation 与跨代理信息流的直接结构基础。</p>
+</header>
+
+<nav>
+<a href="#summary">Executive Summary</a>
+<a href="#important">Most Important</a>
+<a href="#top3">Top 3</a>
+<a href="#top5">Top 5</a>
+<a href="#tiers">Tier S/A/B</a>
+<a href="#ideas">Ideas</a>
+<a href="#collision">Collision</a>
+<a href="#priority">Reading Priority</a>
+<a href="#stats">统计</a>
+<a href="#sources">Sources</a>
+</nav>
+
+<section id="summary">
+<h2>1. Executive Summary</h2>
+<div class="card">
+<p><b>今日筛选：8 篇。</b> Tier S：2；Tier A：3；Tier B：3。</p>
+<p><b>最重要论文：</b> <i>Beyond Visual Evidence: Revealing and Mitigating Relational Privacy Leakage in Document MLLMs</i>（DRUF）。它将遗忘目标从“训练前已知的静态 forget set”改成“通过当前模型 probing 暴露出来的关系泄漏对，再动态更新 forget set”。这一点既是方法创新，也是攻击/评测范式创新。</p>
+<p><b>Agent 方向最重要：</b> <i>MAP-Graph: Provenance-Aware Shared Memory for Multi-Agent Workflows</i>。它不是 unlearning 论文，但它把 shared memory 中的来源、派生、权限、revocation、action risk 显式编码成 typed provenance graph，并在检索与执行两个时点进行约束。对 Multi-Agent Unlearning 而言，这几乎就是“该删什么、删除应沿什么 lineage 传播、何时算 deletion closure”的基础设施。</p>
+<p><b>最值得做的新 Idea：</b> <b>Probe-to-Closure Agent Unlearning</b>：先通过黑盒 probing 找到仍会泄漏的 agent memory / trajectory / tool-history 路径，再借助 provenance/attribution graph 追踪祖先与后代，把动态暴露出的泄漏边界转化为 continual deletion closure。</p>
+</div>
+</section>
+
+<section id="important">
+<h2>2. Today's Most Important Paper</h2>
+<div class="card">
+<span class="badge top">#1 Today</span><span class="badge s">Tier S</span>
+<h3>Beyond Visual Evidence: Revealing and Mitigating Relational Privacy Leakage in Document MLLMs</h3>
+<p><b>为什么今天最重要：</b>它不只是“提出一个 MLLM unlearning 方法”，而是把 unlearning 的监督对象从预定义知识单元改成<b>模型当前行为暴露出来的关系泄漏</b>。这一改变与你关心的 black-box probing、adaptive attack、relationship-aware unlearning、continual deletion 都有可迁移接口。</p>
+<p><b>最值得关注的方法：</b>Dynamic Forget-Set Update + Relational Decoupling Unlearning（RDU）。每轮先用弱/无视觉证据输入 probing 当前 student，找出真实发生的敏感字段联合泄漏，再把这些 pair 放入本轮 forget set；随后用 RDU 抑制“联合生成关系”，而不是只对单字段做遗忘。</p>
+<p><b>最值得关注的实验：</b>在 LLaVA-1.5-hf / DocXPand-25k 的两敏感字段设置中，DRUF 把 Prompt-Driven leakage accuracy 降到 0.000、Image-Driven 降到 0.001，同时正常 KIE 的 LC 仍为 0.808。GA 虽也能几乎清零 leakage，但 KIE LC 仅 0.119，说明 DRUF 的价值在于更好的 privacy–utility trade-off，而不是单纯“忘得更狠”。</p>
+<p><b>与当前研究的直接关系：</b>它提示一种更强的黑盒攻击/验证逻辑：攻击者不必知道真正的 forget answer；只需持续探测模型在输入空间中“哪里会重新暴露关系”，即可把这些暴露点当成遗忘不完备性的证据。这与 output-only black-box recovery 的研究目标高度一致。</p>
+</div>
+</section>
+
+<section id="top3">
+<h2>3. Top 3 必读</h2>
+<div class="card">
+<ol>
+<li><b>DRUF / Beyond Visual Evidence</b> — 重点看 Method §3 的 dynamic forget set、Table 2 和 Figure 5。你最应该学习的是“行为暴露 → 动态构造 forget target → 再遗忘”的闭环。</li>
+<li><b>MAP-Graph</b> — 重点看 Figure 1、§2.3 provenance-aware retrieval、Table 1、Appendix 的 path-trust 公式。最关键的是把“相关性”与“是否有资格使用该记忆”分离，并让 revocation 沿 lineage 生效。</li>
+<li><b>Long-Horizon Agent Trajectory Attribution</b> — 重点看 benchmark schema、Table 5/6 和 long-range attribution。它可以直接变成 Agent Unlearning 中“哪一段 trajectory 应删”的 attribution baseline。</li>
+</ol>
+</div>
+</section>
+
+<section id="top5">
+<h2>4. Top 5 Most Important Papers</h2>
+<div class="table-wrap"><table>
+<tr><th>Rank</th><th>Paper</th><th>为什么排这里</th><th>直接用途</th></tr>
+<tr><td>1</td><td>Beyond Visual Evidence / DRUF</td><td>最新、直接 unlearning、动态 target、关系泄漏、黑盒 probing 接口最强</td><td>Adaptive unlearning / black-box leakage / relational forgetting</td></tr>
+<tr><td>2</td><td>MAP-Graph</td><td>给 Multi-Agent Unlearning 提供 provenance、revocation、lineage、action gating 的结构底座</td><td>Deletion closure / cross-agent removal / provenance-aware benchmark</td></tr>
+<tr><td>3</td><td>Long-Horizon Agent Trajectory Attribution</td><td>把 agent trajectory 的因果来源定位标准化，可直接迁移到 trajectory unlearning</td><td>Forget-object localization / causal attribution metric</td></tr>
+<tr><td>4</td><td>Leak-Resistant Unlearning</td><td>多跳路径 + recovery attacks 已经成为 unlearning robustness 的强 benchmark 范式</td><td>黑盒攻击、reasoning leakage、robust evaluation</td></tr>
+<tr><td>5</td><td>MCU</td><td>continual MLLM unlearning 的 adapter geometry 与 cross-task dependency 很成熟</td><td>Continual baseline / relationship-aware sequence study</td></tr>
+</table></div>
+</section>
+
+<section id="tiers">
+<h2>5. Tier S / A / B</h2>
+
+<details open>
+<summary><span class="badge s">Tier S</span> 1. Beyond Visual Evidence: Revealing and Mitigating Relational Privacy Leakage in Document MLLMs</summary>
+<p class="meta">ACM Multimedia 2026 · arXiv:2608.12911 · 代码/benchmark 已公开</p>
+
+<h3>基本信息</h3>
+<p><b>Title：</b>Beyond Visual Evidence: Revealing and Mitigating Relational Privacy Leakage in Document MLLMs</p>
+<p><b>Status：</b>Proceedings of ACM Multimedia 2026。论文正文公开，并提供官方 GitHub / DocPrivacyBench。</p>
+<p><b>Paper：</b><a href="https://arxiv.org/abs/2608.12911">arXiv</a> · <b>Code：</b><a href="https://github.com/xubeining/Beyond-Visual-Evidence">GitHub</a></p>
+
+<h3>背景与问题</h3>
+<p>文档 MLLM 做 KIE（Key Information Extraction）时，正常逻辑应当是“图像里看见什么，就抽取什么”。但模型经过大量带结构字段的数据训练后，会记住字段之间的统计关系。于是当图像被遮挡、换成空白图、无关图片，视觉证据不足时，模型可能不再真正读图，而是凭训练记忆补全敏感字段。</p>
+<p>更危险的是，泄漏不是单字段。例如模型可能不仅吐出姓氏，还同时吐出 document number。两个字段联合出现时，隐私风险远高于单字段。因此作者将其称为 <b>relational privacy leakage</b>。</p>
+<div class="callout"><b>直观例子：</b>一张身份证图片被替换为空白图，但 prompt 仍要求抽取姓名、证件号。模型如果输出训练中见过的“Zhang + 1234…”，说明它依赖的是记忆中的字段关系，而非当前视觉证据。</div>
+
+<h3>旧方法不足</h3>
+<ul>
+<li>GA / GA+KL：能压低敏感输出，但容易把整个 KIE 能力一起打坏。</li>
+<li>DPO / FTF / DP：utility 保得较好，却不能稳定阻止关系级泄漏。</li>
+<li>SCRUB：privacy–utility 相对均衡，但依然存在 residual relational leakage。</li>
+<li>共同问题：forget set 往往是预先固定的，但真正会泄漏哪个字段对取决于当前模型行为。</li>
+</ul>
+
+<h3>核心 Insight</h3>
+<p>真正应该遗忘的目标，不一定能在 unlearning 开始前一次性写死。对于行为依赖型 privacy leakage，更合理的方法是：</p>
+<div class="flow">当前 student
+→ 用弱视觉证据 / 无视觉证据输入 probing
+→ 观察当前实际泄漏的敏感字段 pair
+→ 本轮动态构造 forget set
+→ 对关系联合生成进行 RDU
+→ 再 probing
+→ 更新下一轮 forget set</div>
+<p>这本质上把 unlearning 改造成一个 <b>probe–unlearn closed loop</b>。</p>
+
+<h3>Method Deep Dive</h3>
+<h4>Step 1 — Retain Branch</h4>
+<p>正常文档样本同时输入 frozen teacher 与 trainable student，通过 prediction alignment 构造 <code>L_retain</code>。直觉：student 在遗忘隐私关系时，仍应维持原本的 KIE schema 与提取格式。</p>
+
+<h4>Step 2 — Dynamic Forget Set</h4>
+<p>第 t 轮用 text-free / weak-evidence image + 固定 prompt probing student，收集当前模型实际泄漏的敏感字段对：</p>
+<div class="flow">F^(t) = {(s_a, s_b) | 当前 probing round 中检测到该敏感 pair 泄漏}</div>
+<p>它不试图穷尽所有潜在隐私项，而是只对模型当前暴露出来的失败点提供监督，下一轮再重新测。</p>
+
+<h4>Step 3 — RDU</h4>
+<p>Relational Decoupling Unlearning 的目标不是让某个字段单独消失，而是降低 student 在无视觉证据条件下<b>联合生成高风险字段 pair</b>的倾向。即把“关系”本身作为 forgetting object。</p>
+
+<h4>Step 4 — Joint Objective</h4>
+<div class="flow">L = L_retain + λ · L_forget</div>
+<p><code>λ</code> 控制 privacy suppression 与正常 KIE preservation 的权衡。</p>
+
+<h3>Toy Example</h3>
+<div class="flow">目标文档包含：
+Name = Alice Smith
+ID = A39201
+Address = Boston
+
+Round 1 probing：
+空白图 + “extract all fields”
+→ student 泄漏 “Smith, A39201”
+
+Dynamic forget set：
+F¹ = {(Smith, A39201)}
+
+RDU：
+压低这两个敏感字段在弱视觉条件下被联合恢复的倾向
+
+Round 2 probing：
+可能不再泄漏 ID，但泄漏 “Smith, Boston”
+
+更新：
+F² = {(Smith, Boston)}
+
+继续 unlearning，直到关系级 leakage 收敛。</div>
+
+<h3>Experiment Deep Dive</h3>
+<p>论文构建 <b>DocPrivacyBench</b>，评估 Prompt-Driven 与 Image-Driven 两类弱证据攻击。核心模型包含 LLaVA-1.5-hf 等 3 个文档 MLLM，并比较 6 个 unlearning baseline。正常 KIE 使用 1000 个样本评估 utility。</p>
+<p><b>关键 metric：</b>Leakage Accuracy（是否泄漏）与 Leakage Completeness（输出字段完整程度）；正常 KIE 也用 LC 衡量结构化提取能力。低 leakage accuracy 越好，正常 KIE LC 越高越好。</p>
+
+<h3>关键 Results</h3>
+<div class="table-wrap"><table>
+<tr><th>Method</th><th>Prompt Leak Acc</th><th>Image Leak Acc</th><th>KIE LC</th><th>含义</th></tr>
+<tr><td>Base</td><td>0.659</td><td>0.642</td><td>0.852</td><td>弱证据下严重泄漏</td></tr>
+<tr><td>GA</td><td>0.000</td><td>0.000</td><td>0.119</td><td>忘得狠，但正常能力几乎被破坏</td></tr>
+<tr><td>SCRUB</td><td>0.029</td><td>0.049</td><td>0.837</td><td>较好折中但仍有泄漏</td></tr>
+<tr><td>DRUF</td><td><b>0.000</b></td><td><b>0.001</b></td><td><b>0.808</b></td><td>接近清零关系泄漏，仍保持较强 KIE</td></tr>
+</table></div>
+<p>作者还发现 Image-Driven 通常比 Prompt-Driven 更容易诱发泄漏，说明异常视觉特征可能把模型从 visual grounding 推向 memorized association。数据越 noisy，这一现象越明显。</p>
+
+<h3>Ablation / Analysis</h3>
+<p>Figure 5 显示：不同无效图像输入都能触发类似的隐私行为，说明漏洞不是某一个固定 trigger，而是当视觉证据被削弱后，模型更依赖记忆关系。这个观察对黑盒攻击尤其关键，因为它意味着可以搜索输入扰动空间寻找 leakage boundary，而不一定需要知道模型内部梯度。</p>
+
+<h3>Contribution</h3>
+<ul>
+<li><b>真正的新贡献 1：</b>把 document MLLM 的隐私失败从 single-field leakage 扩展到 relational leakage。</li>
+<li><b>真正的新贡献 2：</b>动态 forget-set 更新，使 forgetting target 与模型当前行为绑定，而不是静态预定义。</li>
+<li><b>真正的新贡献 3：</b>DocPrivacyBench，同步评估弱视觉证据下的 relation leakage 与 KIE utility。</li>
+</ul>
+
+<h3>Limitation</h3>
+<p><b>Authors' / empirical limitation：</b>主要集中在 document KIE 场景；关系对象是字段 pair，尚未覆盖更复杂的多跳实体关系、agent trajectory 或多代理传播。</p>
+<p><b>Additional limitation：</b>动态 probing 仍依赖能够自动判定“泄漏了什么”；如果攻击场景没有 GT 或字段 schema，如何从纯文本输出自动发现未知敏感 target 仍是开放问题。另一个问题是反复 probe–unlearn 可能产生 adaptive overfitting：只修补当前触发器，而不是消除底层知识。</p>
+
+<h3>Research Value</h3>
+<ul>
+<li><b>Baseline Potential：</b>高。可以作为 adaptive / relational unlearning baseline。</li>
+<li><b>Migration Potential：</b>极高。可迁移到 continual unlearning、agent memory、trajectory deletion。</li>
+<li><b>Attack Potential：</b>极高。把 probing 从“找 forget set”反过来，就变成黑盒 leakage discovery。</li>
+<li><b>Evaluation Potential：</b>高。弱证据条件是一种非常自然的 robustness test。</li>
+<li><b>New Paper Potential：</b>高。动态 target + provenance closure 很可能形成 Agent Unlearning 新方法。</li>
+</ul>
+
+<h3>Migration Analysis</h3>
+<div class="flow">Original Problem:
+document MLLM 中关系级隐私泄漏
+
+↓ Transferable Mechanism:
+probe 当前模型 → 动态发现真实 leakage target → 迭代更新 forget set
+
+↓ New Research Question:
+Agent / Multi-Agent 系统中，删除请求完成后，哪些 memory / trajectory / tool-history 路径仍会在后续行为中暴露被删信息？
+
+↓ Method Modification:
+把敏感 field pair 换成 memory/trajectory causal chain；
+用 agent interaction probing 暴露 residual leakage；
+用 provenance / attribution closure 扩展删除范围
+
+↓ Minimum Experiment:
+AgentDojo / AppWorld + memory-augmented agent
+删除一条 memory 或 trajectory fact
+构造 direct / indirect / tool / multi-turn probes
+比较 static deletion vs dynamic probe-to-closure deletion
+
+↓ Metric:
+Direct Forget / Indirect Leakage / Cross-Agent Leakage / Historical Forget / Utility / Reacquisition
+
+↓ Risk:
+需要定义可靠的 leakage detector；动态闭环可能造成过删
+
+↓ Collision Risk:
+中等。Agentic Unlearning 已覆盖 parameter + memory，但“动态 probing 驱动的 deletion closure”仍明显不同。</div>
+
+<h3>如果只让我记住这篇论文</h3>
+<ol>
+<li>文档 MLLM 即使看不到有效视觉证据，也可能靠训练记忆补出多个相关隐私字段。</li>
+<li>真正危险的是字段之间的关系联合泄漏，而不只是单个字段泄漏。</li>
+<li>DRUF 不预先固定 forget set，而是每轮先 probing 当前模型，找真实泄漏 pair。</li>
+<li>它用 RDU 抑制联合泄漏，同时用 teacher–student retain branch 保 KIE utility。</li>
+<li>最值得迁移的是“行为暴露 → 动态确定遗忘对象 → 继续遗忘”的闭环范式。</li>
+</ol>
+</details>
+
+<details open>
+<summary><span class="badge s">Tier S</span> 2. MAP-Graph: Provenance-Aware Shared Memory for Multi-Agent Workflows</summary>
+<p class="meta">arXiv:2608.10509 · Submitted 2026-08-11</p>
+<p><b>Paper：</b><a href="https://arxiv.org/abs/2608.10509">arXiv</a> · <a href="https://arxiv.org/html/2608.10509">HTML</a></p>
+
+<h3>背景与问题</h3>
+<p>多智能体系统常用 shared memory 让不同 agent 共享中间结果。但“检索到最相关的记忆”不代表“当前 agent 有权使用这条记忆”。更麻烦的是，限制会沿派生链传播：一个 summary 可能来自 private source，却在摘要文本里丢掉了 private 标记；一个被 revoke 的资源，其派生 memory 仍可能继续被另一个 agent 使用。</p>
+<div class="callout"><b>核心区分：</b>Retrieval ≠ Authorization。语义相关性只回答“有用吗”，provenance admissibility 回答“这条信息在当前 agent + 当前 action 下能不能用”。</div>
+
+<h3>核心 Insight</h3>
+<p>要真正治理 shared memory，必须同时解决三个层面：</p>
+<ol>
+<li><b>Recursive Ancestry：</b>不能只看当前 memory 的 metadata，要追祖先。</li>
+<li><b>Heterogeneous Constraints：</b>permission 是 hard gate，trust 是 soft score，两者不能混成一个 similarity score。</li>
+<li><b>Action-Dependent Admissibility：</b>检索时允许，不代表执行高风险 action 时仍允许。</li>
+</ol>
+
+<h3>Method Deep Dive</h3>
+<div class="flow">Source / Tool / Agent message
+→ 写入 Typed Provenance Graph
+→ Retrieve:
+   先 CanRead hard filter
+   再 Semantic Similarity × Path Trust rerank
+→ Agent proposes action
+→ Risk-sensitive action gate 再检查 ancestry
+→ Allow / Block / Reverify / Redact / AskUser
+→ revoke 时保留 lineage，并标记受影响 descendants</div>
+<p>Memory entry 不只包含 content，还包括 owner、visibility、source/parent references、trust label 等。图中显式表示 Agent、Source、Memory、Claim、Action 及 derived_from、summarized_from、invalidated_by、used_for_action 等边。</p>
+
+<h4>Path Trust</h4>
+<div class="flow">ρ(m,a) = clip(S · I · F · P · V · A)</div>
+<ul>
+<li><b>S：</b>source trust；</li>
+<li><b>I：</b>ancestry integrity，遇到 poisoned/private/revoked 会衰减；</li>
+<li><b>F：</b>多次 transformation / summary 带来的可信度损失；</li>
+<li><b>P：</b>permission validity；</li>
+<li><b>V：</b>verification factor；</li>
+<li><b>A：</b>writer reliability。</li>
+</ul>
+<p>关键不是公式本身，而是 <b>permission 仍然作为硬过滤</b>；path trust 只对有资格的候选做 rerank，避免“很相关”把越权信息重新救回来。</p>
+
+<h3>Toy Example</h3>
+<div class="flow">Agent A 读取 private contract
+→ 写 memory M1：“客户预算 2M”
+
+Agent B 总结 M1
+→ M2：“预算较高，可采用 premium plan”
+（文本里已看不出 private）
+
+随后原 contract 被 revoke
+
+普通 vector memory：
+B/C 仍可能检索 M2
+
+MAP-Graph：
+M2 --derived_from→ M1 --observed_from→ private/revoked source
+→ recursive ancestry 命中 revoked/private
+→ retrieve 或 high-risk action gate 阻断</div>
+
+<h3>Baseline Difference</h3>
+<ul>
+<li><b>Shared Vector Memory：</b>只按相似度找，完全看不到权限与 lineage。</li>
+<li><b>Isolated Memory：</b>每个 agent 分开存，减少跨代理泄漏，但无法处理共享派生与撤销传播。</li>
+<li><b>Collaborative Memory adaptation：</b>有 private/shared tier，但缺少递归 ancestry 与 action risk。</li>
+<li><b>MemLineage adaptation：</b>已有 lineage，但没有完整 permission-aware retrieval + graded path trust + multi-outcome gate。</li>
+</ul>
+
+<h3>Experiments</h3>
+<p>受控 benchmark：每种方法 2,700 个 synthetic tasks，3 个 domain（corporate workflow、software engineering、research assistance），覆盖 clean utility、poisoned propagation、private leakage、permission revocation、action-risk sensitivity、compression/overhead；另有 540-task 三 backbone transfer subset。</p>
+<div class="table-wrap"><table>
+<tr><th>Method</th><th>TSR↑</th><th>Exact Acc↑</th><th>Clean↑</th><th>Unsafe↓</th><th>ASR↓</th><th>Leak↓</th><th>Revocation↓</th></tr>
+<tr><td>Best strong baseline（MemLineage adaptation）</td><td>74.37</td><td>51.07</td><td>88.11</td><td>21.19</td><td>22.22</td><td>23.33</td><td>23.78</td></tr>
+<tr><td><b>MAP-Graph</b></td><td><b>94.96</b></td><td><b>72.70</b></td><td><b>90.22</b></td><td><b>1.52</b></td><td><b>0.00</b></td><td><b>0.00</b></td><td><b>0.00</b></td></tr>
+</table></div>
+<p>最有信息量的 ablation 是：去掉 hard permission filter 时 aggregate utility 可能上升，但观测到的 unauthorized read 全部会成功。这说明仅看总体 task success 会掩盖严重安全漏洞。</p>
+
+<h3>Contribution</h3>
+<ul>
+<li>将 provenance 从“事后 audit metadata”升级为“运行时控制信号”。</li>
+<li>提出 permission hard filtering + ancestry trust reranking + risk-sensitive action gate 三阶段机制。</li>
+<li>提供受控 benchmark，将 private / poisoned / revoked / high-risk action 分开测。</li>
+</ul>
+
+<h3>Limitation</h3>
+<p>benchmark 主要为 synthetic controlled tasks，且论文明确说是 single-run controlled result，不应直接外推为部署级安全保证。规则与 trust coefficient 大量依赖显式 metadata，现实系统中的 provenance 可能不完整或被伪造。</p>
+
+<h3>Research Value</h3>
+<p><b>对 Agent Unlearning 的迁移价值极高。</b>一个删除请求真正完成，不应只是删掉目标 memory M，而应考虑：</p>
+<div class="flow">M 的 parent/source
+→ M 的 summaries
+→ downstream claims
+→ other agents copied memories
+→ tool-generated artifacts
+→ actions derived from M</div>
+<p>这正是 deletion closure / information lineage 的问题。MAP-Graph 已提供“怎么把这些东西连起来”的结构，但它做的是 authorization/revocation，不是 behavioral unlearning。你的空间就在这里。</p>
+
+<h3>Migration Analysis</h3>
+<div class="flow">Original Problem:
+多智能体共享 memory 的权限、trust、revocation 治理
+
+↓ Transferable Mechanism:
+typed provenance graph + recursive ancestry + descendant marking
+
+↓ New Research Question:
+一次 unlearning request 应沿哪些 provenance edges 传播，才能真正让多智能体系统“忘掉”信息？
+
+↓ Method Modification:
+把 invalidated_by / revoked 扩展成 forget-request node
+计算 deletion closure
+对 memory / claim / trajectory / skill / tool artifact 分类型执行删除或行为抑制
+再用 black-box probe 验证是否仍可通过其他 agent 恢复
+
+↓ Minimum Experiment:
+3-agent shared-memory workflow
+注入一个可追踪事实
+让其经过 summarize / forward / tool call 传播
+发起删除
+比较 local delete、recursive delete、probe-to-closure
+
+↓ Metrics:
+Local Forget, Cross-Agent Forget, Descendant Closure, Reacquisition, Utility, False Deletion
+
+↓ Expected Contribution:
+把 multi-agent unlearning 从“删一个 memory”提升到“provenance-aware deletion closure”。
+
+↓ Collision Risk:
+低到中。MAP-Graph 本身不解决 unlearning，只解决 admissibility / safety。</div>
+
+<h3>如果只让我记住这篇论文</h3>
+<ol>
+<li>Shared memory 中“相关”不等于“有权使用”。</li>
+<li>权限和风险可能藏在多跳 derivation ancestry 里。</li>
+<li>MAP-Graph 用 typed provenance graph 追溯 source → memory → claim → action。</li>
+<li>它将 hard permission、soft trust 与 action risk 分开处理。</li>
+<li>对 Multi-Agent Unlearning 最重要的启示是：删除必须考虑 lineage 与 descendants，而不是只删本地 memory。</li>
+</ol>
+</details>
+
+<details>
+<summary><span class="badge a">Tier A</span> 3. Long-Horizon Agent Trajectory Attribution: A Unified Benchmark and Fine-Grained Annotation Framework</summary>
+<p><b>Paper：</b><a href="https://arxiv.org/abs/2608.06909">arXiv</a></p>
+<h3>Background & Gap</h3>
+<p>Agent benchmark 大多判断最终 action 是否正确/安全，却不回答“前面哪一段 trajectory 导致了这个行为”。长 horizon 中，关键原因可能是很早之前的 user instruction、tool observation、memory、skill、configuration，经过多步传播才导致最终行为。</p>
+<h3>Core Insight</h3>
+<p>作者把 trajectory attribution 定义成：给定已观察到的 agent behavior，对此前 trajectory components 排序，找出 primary attribution component，并在需要时恢复 multi-step attribution chain。</p>
+<h3>Method / Benchmark</h3>
+<div class="flow">AgentDojo / Agent3Sigma Stage / Canary raw traces
+→ 统一 component schema
+→ 找 target behavior
+→ 标 primary causal component
+→ 对部分 unsafe trajectories 标 attack chain / execution chain
+→ 结构校验 + LLM semantic review
+→ 形成 1,351 条 unified trajectories</div>
+<p>组件类型包括 instruction、assistant response、tool call、observation、persistent memory、configuration、skill context 等。</p>
+<h3>Baselines</h3>
+<p><b>Incremental attribution：</b>逐步加入 component，观察 target log-likelihood 增量。</p>
+<p><b>Leave-One-Out：</b>从完整 history 中删除某 component，看 target log-likelihood 降多少。</p>
+<h3>Results</h3>
+<p>整体上 LOO 的 All-Targets Hit@1=0.537、MRR=0.713，高于 incremental 的 0.369/0.616，但两者在不同 behavior 上差异明显。最关键的现象是 <b>long-range attribution 明显更难</b>：例如 LOO 在 task-aligned action 的 d=1 Hit@1 为 1.000，而 d≥2 仅 0.120；unsafe action 从 0.852 降到 0.368。</p>
+<h3>Contribution</h3>
+<ul><li>统一异构 agent trajectory schema；</li><li>component-level primary attribution + chain annotation；</li><li>系统揭示 long-range causal attribution 的困难。</li></ul>
+<h3>Limitation</h3>
+<p>只覆盖三个 benchmark family，annotation 仍部分依赖 LLM reviewer；粒度目前是 component，不是 token / state / action span。</p>
+<h3>Research Value</h3>
+<p><b>Migration Potential：极高。</b>Trajectory Unlearning 最大的前置问题就是“删哪一段”。这篇论文直接给了 attribution target、baseline 和 metric，可以把 target behavior 换成“泄漏被删知识”。</p>
+<h3>Minimum Experiment</h3>
+<div class="flow">给 agent 一条含敏感 fact 的长 trajectory
+→ 让 fact 经 memory/tool/summary 多步影响最终回答
+→ 用 LOO / incremental attribution 找责任 component
+→ 只删除 Top-k attribution components
+→ 测 Forget / Utility / Cross-step leakage
+→ 与 random deletion / whole-trajectory deletion 比较</div>
+<p><b>Worth Deep Reading：YES。</b>建议重点看 §4 benchmark construction、Table 5/6、§7.2 distance analysis。</p>
+</details>
+
+<details>
+<summary><span class="badge a">Tier A</span> 4. Leak-Resistant Unlearning: A New Benchmark for Evaluating Multi-Hop Reasoning Consistency and Recovery Robustness</summary>
+<p><b>Paper：</b><a href="https://arxiv.org/abs/2608.04519">arXiv</a> · <a href="https://leak-resistant.site">Project</a></p>
+<h3>Background & Gap</h3>
+<p>传统 unlearning benchmark 常用 direct QA 或单一 chain-style multi-hop。问题是：知识不是孤立点，同一事实可以通过不同逻辑结构间接访问；而且 post-unlearning 的“低准确率”可能只是表面抑制，轻量 recovery attack 就能恢复。</p>
+<h3>Core Insight</h3>
+<p>一个真正 leak-resistant 的 unlearning 至少要满足两点：<b>Path Consistency</b>（不同多跳路径都访问不到）和 <b>Recovery Robustness</b>（经过恢复攻击仍访问不到）。</p>
+<h3>Method</h3>
+<p>构造 6 类 logic-inspired multi-hop reasoning path，并配合 Probab、FocusOnKey、Quantization 三类 recovery。评估 3 个 LLM、6 个 unlearning algorithm、MQuAKE 与 Books 两类数据。</p>
+<h3>Metric</h3>
+<p><b>FQ：</b>相对 forget quality，按 unlearned accuracy / pretrained accuracy 归一化；越高表示忘得越彻底。</p>
+<p><b>RR：</b>recovery rate，攻击后有多少目标知识重新可访问；越低越好。</p>
+<h3>Main Results</h3>
+<ul>
+<li>同一方法在不同 reasoning structures 上 FQ 差异巨大，说明“方法是否成功”依赖访问路径。</li>
+<li>多跳 query 经常比 single-hop 更容易恢复。</li>
+<li>例如 Llama-3.1-8B 的 GA 在 Probab recovery 下 SH=42.4、MH=56.3；Quantization 下 SH=85.7、MH=88.5。</li>
+<li>PALU、AS 等 token-specific 方法对不同逻辑结构呈现与 GA/NPO 不同的脆弱模式，说明 token-level suppression 并不自动带来 reasoning-path robustness。</li>
+</ul>
+<h3>Contribution</h3>
+<p>新 benchmark / reasoning taxonomy / recovery-aware evaluation，而不是新 unlearning algorithm。</p>
+<h3>Limitation</h3>
+<p>主要还是 open-weight LLM；作者也明确指出 black-box commercial API 未覆盖。逻辑结构是构造化的，离真实 multi-turn / multimodal / agentic recovery 还有距离。</p>
+<h3>Research Value</h3>
+<p><b>Attack Potential：极高。</b>它证明“换推理路径”本身就是攻击面。但如果你要做新的黑盒 attack，不能只把它的 6 种逻辑模板搬到 MLLM；需要新的搜索机制、边界信号或 adaptive query policy。</p>
+<h3>Minimum Migration</h3>
+<p>将 multi-hop path 从“纯文本逻辑图”扩展成“图像证据 → memory → tool output → textual answer”的 cross-modal / agentic reasoning paths，并测试 output-only recovery。</p>
+<p><b>Worth Deep Reading：YES。</b>重点看 §3 六类 path、Table 2 FQ、Table 3 recovery。</p>
+</details>
+
+<details>
+<summary><span class="badge a">Tier A</span> 5. A Model Merging Approach for Continual MLLM Unlearning (MCU)</summary>
+<p><b>Paper：</b><a href="https://arxiv.org/abs/2608.04548">arXiv</a></p>
+<h3>Background & Gap</h3>
+<p>continual unlearning 中如果每次 request 都在当前模型上继续更新，会积累 utility degradation、unlearning rebound 和 retention drift。MCU 改成：每个 request 都从同一个 base 独立训练 one-shot LoRA，然后统一 merge。</p>
+<h3>Core Insight</h3>
+<p>不同 unlearning adapter 并非独立：dominant singular directions 之间存在 cross-task dependencies。这些依赖既可能产生有益 transfer，也可能互相干扰，所以不能简单相加，也不能全正交化。</p>
+<h3>Method</h3>
+<div class="flow">每个 request 独立 one-shot LoRA
+→ 投影到 shared core space
+→ SVD 得到 task singular directions
+→ dominant direction selection
+→ channel capacity control
+→ Gram dependency reconfiguration
+→ Procrustes recovery
+→ merge 回统一 adapter</div>
+<p>核心是只压制 antagonistic interaction，同时尽量保留 synergistic unlearning transfer。</p>
+<h3>Experiments</h3>
+<p>ICU-Bench + MLLMU-Bench。Task 100 时 MCU 的 FR=1.12、RSR=1.10，相对 MMUnlearner 将 historical rebound 与 retention drift 分别减少 4.33、5.72 个点；同时 GQ-F/GQ-R=1.990/1.993，说明低 forget accuracy 不是模型输出崩溃造成的。</p>
+<p>几何分析显示 leading 4 / 6 singular components 保留 74.1% / 89.6% update energy；row norm 呈长尾，最大值约为 median 的 12.9×，支持其 capacity control 设计。</p>
+<h3>Contribution</h3>
+<ul><li>把 continual MLLM unlearning 重新表述成 adapter merging；</li><li>实证发现 cross-task unlearning transfer；</li><li>用 shared-space geometry 处理 synergy/interference。</li></ul>
+<h3>Limitation</h3>
+<p>依赖 one-shot adapters，主要解决参数更新层面的 sequential unlearning，不覆盖 agent memory / tool / trajectory 等外部载体。</p>
+<h3>Research Value</h3>
+<p>对你现有 <b>Relationship-Aware Continual Unlearning</b> 很重要：MCU 已经证明“request 间关系”在参数几何上真实存在，所以新工作不能再只说 sequence length；应该显式控制 semantic / causal / representational relationship，并解释何种关系导致 transfer 或 interference。</p>
+<p><b>Worth Deep Reading：YES。</b>重点 Figure 2、Figure 3/4、Table 3/4。</p>
+</details>
+
+<details>
+<summary><span class="badge b">Tier B</span> 6. Toward Fine-Grained Forgetting: Attribute Unlearning for Multimodal Large Language Models</summary>
+<p><span class="badge b">BACKFILL</span> <a href="https://arxiv.org/abs/2608.01008">arXiv</a></p>
+<h3>Background / Problem</h3>
+<p>profile-level deletion 太粗。现实请求经常是“忘掉同一身份的某个敏感属性，但保留其他属性”。这比删整个人更难，因为 target attribute 与 retain attribute 共享身份与视觉证据。</p>
+<h3>Core Method</h3>
+<p>CLRP（Causal Localization and Retain-Aware Projection）是 training-free 路线：先用 activation patching 找到对目标属性披露具有因果作用的 layer，再估计 target-attribute subspace，并进行 retain-aware projection，移除目标方向的同时尽量保留同身份其他证据。</p>
+<h3>Main Finding</h3>
+<p>作者发现现有方法在 attribute-level 任务上经常出现 residual leakage 或 collateral degradation，说明细粒度选择性遗忘比 profile-level 更能暴露忘-留纠缠。</p>
+<h3>Contribution</h3>
+<ul><li>attribute-level MLLM unlearning task/benchmark；</li><li>causal localization；</li><li>retain-aware projection 的 training-free unlearning。</li></ul>
+<h3>Why It Matters</h3>
+<p>它把“forget object 的粒度”进一步缩小，也证明 causal localization 可以直接服务 unlearning，而不仅是 interpretability。</p>
+<h3>Connection / Potential Use</h3>
+<p>适合用于 Token/Representation-level Unlearning、fine-grained benchmark、causal localization baseline。对黑盒攻击本身帮助有限，因为 activation patching 需要内部访问。</p>
+</details>
+
+<details>
+<summary><span class="badge b">Tier B</span> 7. Remember When It Matters: Proactive Memory Agent for Long-Horizon Agents</summary>
+<p><span class="badge b">BACKFILL</span> <a href="https://arxiv.org/abs/2607.08716">arXiv</a></p>
+<h3>Background / Problem</h3>
+<p>长 horizon 中，重要状态会被后续轨迹淹没，作者称之为 behavioral state decay。传统 memory 往往“被动检索”，但不是每一步都应该插 memory，乱插反而干扰 action agent。</p>
+<h3>Core Method</h3>
+<p>独立的 memory agent 并行观察近期 trajectory，维护结构化 memory bank，并主动决定“此刻是否注入 reminder，还是保持 silent”。因此 memory 变成主动 intervention policy。</p>
+<h3>Main Finding</h3>
+<p>Terminal-Bench 2.0 上 pass@1 提升 +8.3 pp，τ²-Bench +6.8 pp；selective intervention 优于 passive exposure、always-on injection、advisor-only 与普通 retrieval。作者还用 SFT + GRPO 训练 Qwen3.5-27B memory policy。</p>
+<h3>Contribution</h3>
+<p>把 memory management 从 retrieval problem 升级成 intervention/credit assignment problem。</p>
+<h3>Connection to My Research</h3>
+<p>Agent Unlearning 可以反向使用这个机制：不是决定“何时提醒”，而是决定“何时必须 suppress / quarantine / forget 某条 memory”。也可以研究 memory agent 是否会导致被删除知识的 <b>reacquisition</b>。</p>
+<h3>Potential Use</h3>
+<p>Agent Memory Unlearning baseline、inference-time suppression、RL credit assignment、reacquisition evaluation。</p>
+</details>
+
+<details>
+<summary><span class="badge b">Tier B</span> 8. Agent Memory Distillation: Empowering Small LLM Agents with Hierarchical Teacher Memory</summary>
+<p><a href="https://arxiv.org/abs/2608.07169">arXiv</a> · <a href="https://agent-memory-distillation.github.io/">Project</a></p>
+<h3>Background / Problem</h3>
+<p>直接把大模型 agent 的 memory 给小模型，并不一定有效。小模型可能无法理解长而扁平的经验，甚至被噪声拖累。</p>
+<h3>Core Method</h3>
+<p>AMD 将 teacher 成功 trajectories 蒸馏成三层 memory：</p>
+<ul><li><b>Workflow memory：</b>任务级高层策略；</li><li><b>Subtask memory：</b>子任务级执行知识；</li><li><b>Function memory：</b>具体 tool function 的失败恢复经验。</li></ul>
+<p>Workflow/Subtask 主动注入；Function 在 tool error 时被动触发。</p>
+<h3>Main Finding</h3>
+<p>GPT-5-mini 作 teacher；学生为 Qwen3-4B/8B、Gemma4-E4B、Llama3.1-8B。Qwen3-4B 的平均准确率从 15.55 升至 36.02；Gemma4-E4B 从 26.62 升到 40.63。AppWorld 上 Gemma4-E4B+AMD 达 54.17，超过 teacher 的 50.00。说明 memory transfer 并非简单 trajectory imitation，而是可以抽象出可复用 decision pattern。</p>
+<h3>Contribution</h3>
+<p>系统研究 teacher-to-student memory distillation，并显示 memory 的层级粒度对小 agent 能否使用经验非常关键。</p>
+<h3>Why It Matters / Connection</h3>
+<p>对 Agent Unlearning 的启示非常直接：如果 memory 被抽象成 workflow/subtask/function 三层，那么删除一个事实或技能时，也可能需要跨层删除。只删 raw trajectory 不够，因为高层 workflow memory 已经“蒸馏”了该知识。</p>
+<h3>Potential Use</h3>
+<p>Skill Unlearning / Procedural Memory Unlearning / cross-level deletion closure / distilled-memory leakage。</p>
+</details>
+</section>
+
+<section id="ideas">
+<h2>6. Idea Mining</h2>
+
+<div class="card">
+<span class="badge idea">Best Idea</span>
+<h3>Idea 1 — Probe-to-Closure Agent Unlearning</h3>
+<p><b>Inspiration：</b>DRUF 的 dynamic probing + MAP-Graph 的 provenance lineage + trajectory attribution。</p>
+<p><b>Research Gap：</b>Agentic Unlearning 已意识到 parameter-memory backflow，但现有工作通常仍假设删除对象已经明确。现实系统中，真正的 residual leakage 可能藏在 summary、skill、tool artifact、other-agent memory 中，删除范围事前并不知道。</p>
+<p><b>Hypothesis：</b>如果用黑盒 interaction probing 持续暴露“删除后仍会恢复的行为路径”，再沿 provenance/attribution graph 扩展 deletion closure，可以比静态 memory deletion 更完整，同时减少 whole-memory purge 带来的 utility loss。</p>
+<p><b>Proposed Method：</b></p>
+<div class="flow">Forget request
+→ Local delete / initial unlearning
+→ Black-box probe generator
+→ Detect residual leakage behavior
+→ Attribution: 找最可能的 memory / trajectory / tool / skill source
+→ Provenance closure: 扩展到 parents + derived descendants + cross-agent copies
+→ 分类型删除 / suppress
+→ Re-probe until leakage stops or budget exhausted</div>
+<p><b>Minimum Viable Experiment：</b>3-agent workflow；AppWorld/AgentDojo 派生 100–300 条带可追踪敏感事实的任务；比较 Local Delete、SBU-like parameter+memory、Recursive Provenance Delete、Probe-to-Closure。Metric：Direct Forget、Indirect Leakage、Cross-Agent Leakage、Utility、Deletion Size、Reacquisition。</p>
+<p class="score">Novelty ★★★★★　Feasibility ★★★★☆　Compute Cost ★★☆☆☆</p>
+<p><b>Risk：</b>最大风险是 leakage detector 依赖 GT；可先用 synthetic canary / known-fact 设置做 proof-of-concept，再转 unknown-GT。</p>
+<p><b>Collision Risk：</b>中。与 Agentic Unlearning / provenance memory 有邻近，但“black-box probe 驱动的动态 closure”区分度清楚。</p>
+<p><b>Best Venue：</b>NeurIPS / ICLR / ACL（Agent + safety/unlearning），如果 benchmark 与方法都做扎实，A 会故事完整。</p>
+</div>
+
+<div class="card">
+<span class="badge idea">Idea</span>
+<h3>Idea 2 — Trajectory Attribution Guided Unlearning</h3>
+<p><b>Inspiration：</b>Long-Horizon Agent Trajectory Attribution。</p>
+<p><b>Gap：</b>Trajectory Unlearning 如果直接删除整条 trajectory，utility 代价大；如果只删最后输出，又不能阻断前面 causally responsible components。</p>
+<p><b>Hypothesis：</b>删除 attribution top-k components，比 random/local/whole-trajectory deletion 能以更小删除量达到更好的 behavioral forgetting。</p>
+<p><b>Method：</b>先用 LOO / incremental / learned attribution 找目标行为的 causal components，再进行 component-level memory/trajectory removal 或 inference-time masking。</p>
+<p><b>MVE：</b>AgentDojo 中选含 prompt injection / sensitive observation 的 trajectories；forget target 是某 unsafe/sensitive behavior 的来源；比较 Top-k Attribution Delete vs Last-k vs Random-k vs Whole Trajectory。</p>
+<p class="score">Novelty ★★★★☆　Feasibility ★★★★★　Compute Cost ★★☆☆☆</p>
+<p><b>Risk：</b>attribution 未必等于真正因果；LOO 在长距离上准确率下降明显。</p>
+<p><b>Collision Risk：</b>低到中。现有 attribution 论文没有做 unlearning。</p>
+<p><b>Best Venue：</b>ACL / EMNLP / NeurIPS D&B 或 Agent workshop 后扩 full paper。</p>
+</div>
+
+<div class="card">
+<span class="badge idea">Idea</span>
+<h3>Idea 3 — Relational Continual Unlearning Stress Test</h3>
+<p><b>Inspiration：</b>DRUF 的 relation-level target + MCU 的 cross-task adapter dependency。</p>
+<p><b>Gap：</b>continual unlearning 常按 request 数量评估，却很少系统控制 request_i 与 request_j 的 semantic / causal / representational overlap。</p>
+<p><b>Hypothesis：</b>rebound 与 retention drift 主要由请求关系结构决定，而非 request count 本身。</p>
+<p><b>Method：</b>构造 Random / Same Entity / Same Attribute Family / Semantic Neighbor / Derived Fact / Cross-Modal Equivalent / Contradictory request sequences，并测 adapter singular overlap、historical forget、retain drift。</p>
+<p><b>MVE：</b>MLLMU-Bench + ICU-Bench；LLaVA/Qwen2-VL；GA/NPO/MMUnlearner/MCU；FR、RSR、HistoricalForget、HistoricalRetain + direction overlap。</p>
+<p class="score">Novelty ★★★★☆　Feasibility ★★★★★　Compute Cost ★★★☆☆</p>
+<p><b>Risk：</b>如果只做 benchmark 可能贡献感不足；最好再给 relationship-aware scheduler / merge weighting。</p>
+<p><b>Collision Risk：</b>中。MCU 已经研究 cross-task dependency，但没有把 request relationship 系统化为 benchmark control variable。</p>
+<p><b>Best Venue：</b>NeurIPS D&B / AAAI / ACL。</p>
+</div>
+</section>
+
+<section id="collision">
+<h2>7. Collision Detection</h2>
+<div class="warning">
+<span class="badge warn">⚠️ Collision Warning</span>
+<h3>Black-box Unlearning Attack / Reasoning Leakage：中高重合风险</h3>
+<p><b>Leak-Resistant Unlearning</b> 已经覆盖 6 类多跳 reasoning structure + 3 类 recovery attack，并明确显示 multi-hop 经常比 single-hop 更易恢复。因此，如果新攻击只是“换 indirect prompt / 多跳问题 / 重复 key token / 多采样”，创新性会被明显压缩。</p>
+<p><b>仍然存在的 gap：</b>single post-unlearning model、output-only、unknown-GT、multimodal semantic path search、adaptive boundary localization、agentic cross-memory recovery 仍未被这篇 benchmark 解决。要继续做黑盒 attack，建议把创新点放在“如何自动搜索恢复路径/行为边界”，而不是手工枚举 prompt 变体。</p>
+</div>
+
+<div class="warning">
+<h3>Continual Unlearning：中等重合风险</h3>
+<p><b>MCU</b> 已经证明 cross-task adapter dependency 与 synergy/interference。你的 Relationship-Aware Continual Unlearning 仍可做，但必须更进一步：把“relationship”显式成为 benchmark controlled variable，并证明不同关系类型对 rebound / retain drift 有统计稳定影响；最好再提出 relationship-aware mitigation。</p>
+</div>
+
+<div class="good">
+<h3>Multi-Agent Unlearning：仍有明显空间</h3>
+<p>MAP-Graph、AMD、Trajectory Attribution 都在快速补齐 shared memory / provenance / trajectory / procedural memory 的基础设施，但它们都没有真正回答“发起删除请求后，该信息及其派生行为应如何跨 agent、跨 memory abstraction、跨 trajectory 删除”。因此 Agent / Multi-Agent Unlearning 仍值得继续，而且现在反而有了更强的可迁移机制。</p>
+</div>
+</section>
+
+<section id="priority">
+<h2>8. Daily Reading Priority</h2>
+<div class="table-wrap"><table>
+<tr><th>Priority</th><th>Paper</th><th>阅读时最该看什么</th></tr>
+<tr><td><b>READ NOW</b></td><td>Beyond Visual Evidence / DRUF</td><td>§3 dynamic forget set；Table 2；Figure 5。重点理解 probing 如何变成 unlearning supervision。</td></tr>
+<tr><td><b>READ NOW</b></td><td>MAP-Graph</td><td>Figure 1；§2.3；Table 1；Appendix path-trust。重点想 deletion closure 如何替换 revocation。</td></tr>
+<tr><td><b>READ NOW</b></td><td>Long-Horizon Agent Trajectory Attribution</td><td>Benchmark schema；Table 5/6；long-range attribution。重点看能否作为 trajectory unlearning 的 localization baseline。</td></tr>
+<tr><td><b>READ THIS WEEK</b></td><td>Leak-Resistant Unlearning</td><td>6 reasoning categories + Table 2/3。重点规避黑盒攻击撞题。</td></tr>
+<tr><td><b>READ THIS WEEK</b></td><td>MCU</td><td>Figure 2/3/4；Table 3/4。重点理解 request 间依赖的参数几何证据。</td></tr>
+<tr><td><b>SAVE</b></td><td>Attribute Unlearning / CLRP</td><td>用于 fine-grained / causal localization related work。</td></tr>
+<tr><td><b>SAVE</b></td><td>Proactive Memory Agent</td><td>用于 memory intervention / reacquisition / RL memory policy。</td></tr>
+<tr><td><b>SAVE</b></td><td>Agent Memory Distillation</td><td>用于 procedural memory / cross-level deletion closure。</td></tr>
+</table></div>
+</section>
+
+<section id="stats">
+<h2>9. 今日统计</h2>
+<div class="card">
+<ul>
+<li>Total Papers: <b>8</b></li>
+<li>Tier S: <b>2</b></li>
+<li>Tier A: <b>3</b></li>
+<li>Tier B: <b>3</b></li>
+<li>24–72h 直接新高价值：DRUF（重点）；Agent 方向结合 8 月上旬最新高相关工作补齐。</li>
+<li>BACKFILL：Attribute Unlearning、Proactive Memory Agent 等用于补齐关键 mechanism，不用弱论文凑数。</li>
+<li>Today's Most Important Paper: <b>Beyond Visual Evidence / DRUF</b></li>
+<li>Best Research Idea: <b>Probe-to-Closure Agent Unlearning</b></li>
+<li>Collision Warning: <b>YES</b>（Black-box reasoning recovery 与 continual unlearning 两处需要差异化）</li>
+</ul>
+</div>
+</section>
+
+<section id="sources">
+<h2>10. Sources / Links</h2>
+<div class="card">
+<ul>
+<li><a href="https://arxiv.org/abs/2608.12911">Beyond Visual Evidence: Revealing and Mitigating Relational Privacy Leakage in Document MLLMs</a></li>
+<li><a href="https://github.com/xubeining/Beyond-Visual-Evidence">DRUF / DocPrivacyBench GitHub</a></li>
+<li><a href="https://arxiv.org/abs/2608.10509">MAP-Graph: Provenance-Aware Shared Memory for Multi-Agent Workflows</a></li>
+<li><a href="https://arxiv.org/abs/2608.06909">Long-Horizon Agent Trajectory Attribution</a></li>
+<li><a href="https://arxiv.org/abs/2608.04519">Leak-Resistant Unlearning</a></li>
+<li><a href="https://leak-resistant.site">Leak-Resistant Unlearning Project</a></li>
+<li><a href="https://arxiv.org/abs/2608.04548">A Model Merging Approach for Continual MLLM Unlearning</a></li>
+<li><a href="https://arxiv.org/abs/2608.01008">Toward Fine-Grained Forgetting: Attribute Unlearning for MLLMs</a></li>
+<li><a href="https://arxiv.org/abs/2607.08716">Remember When It Matters: Proactive Memory Agent</a></li>
+<li><a href="https://arxiv.org/abs/2608.07169">Agent Memory Distillation</a></li>
+<li><a href="https://agent-memory-distillation.github.io/">Agent Memory Distillation Project</a></li>
+</ul>
+<p class="small">说明：报告优先依据 arXiv HTML / abstract、官方 project/code 页面与论文正文可获取信息。未核实的信息未写成确定事实。</p>
+</div>
+</section>
+
+<footer class="small" style="margin-top:40px;text-align:center">Daily AI Research Radar — 2026-08-17</footer>
+</main></body></html>

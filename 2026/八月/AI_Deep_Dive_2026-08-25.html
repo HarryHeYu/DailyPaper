@@ -1,0 +1,75 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Deep Dive — 2026-08-25</title><style>
+body{margin:0;background:#f6f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;line-height:1.8}
+main{max-width:1160px;margin:auto;padding:28px 22px 84px}.card,details{background:#fff;border:1px solid #e4e7ec;border-radius:15px;padding:20px 22px;margin:14px 0}
+h1{font-size:34px}h2{font-size:25px;margin-top:40px;border-bottom:1px solid #e4e7ec;padding-bottom:7px}h3{font-size:20px}h4{font-size:17px;margin-bottom:4px}
+details.s{background:#fff4da}details.a{background:#eef4ff}details.b{background:#f1f7f2}summary{font-size:19px;font-weight:800;cursor:pointer}
+a{color:#3457d5;text-decoration:none}.muted{color:#667085}.small{font-size:13px}nav{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:15px 20px;columns:2}
+nav a{display:block;padding:3px}.flow{font-family:ui-monospace,Menlo,monospace;background:#111827;color:#f8fafc;border-radius:10px;padding:13px;white-space:pre-wrap}
+.eq{font-family:'Times New Roman',serif;background:#fafbff;border:1px solid #e4e7ec;padding:12px;border-radius:10px}
+.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{border:1px solid #e4e7ec;padding:9px;text-align:left;vertical-align:top}th{background:#f4f6f9}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.kpi{font-size:28px;font-weight:850}.idea{border-left:5px solid #3457d5}.warn{background:#fff1cf;border-left:5px solid #d68a00}
+</style></head><body><main>
+<div class="card"><div class="muted">Daily Top Papers Deep Dive · regenerated · 2026-08-25</div><h1>今天最值得精读的 2 篇论文</h1>
+<p>本轮独立重新检索，不依赖Radar，并执行7天冷却。最终选择 <b>Coalition-Aware Skill Reliability</b> 与 <b>InjecMEM</b>：一篇告诉我们Skill可靠性取决于coalition/domain，一篇告诉我们一次interaction写入memory后可跨session重新触发。共同主题是：<b>Unlearning不能只验证单个对象，必须验证未来composition和retrieval context。</b></p></div>
+<nav><a href="#p1">Paper 1</a><a href="#p2">Paper 2</a><a href="#syn">Synthesis</a><a href="#opp">Opportunities</a><a href="#col">Collision</a><a href="#pri">Priority</a><a href="#src">Sources</a></nav>
+
+<section id="p1" class="card"><h2>Paper 1 — Coalition-Aware Skill Reliability for Self-Evolving Agents</h2>
+<p><a href="https://arxiv.org/html/2608.22610v1">Full HTML</a></p>
+<h3>基本信息 / 一句话定位</h3><p>arXiv:2608.22610v1，2026-08-23。把Skill reliability从per-skill scalar改写为R(s;B,D)，并用SMRA、CASS、u-SMCO分别诊断/修复coalition pollution与cross-domain utility reversal。</p>
+<h3>人话版</h3><p>Bank整体涨分不等于刚加入的Skill有用。作者发现一个新accept的Skill实际Δ=-0.005，而旧Skill_IN Δ=+0.084；移除partner后Skill_IN掉到+0.018；到target domain方向甚至变成-0.035。CASS因此不只看outcome，而采样coalitions做knockout；u-SMCO则在target domain无label情况下，根据删掉某Skill是否改善retrieval quality来mask。CASS 12个candidate proposals只accept1个，MemSkill accept6个；后者新增Skills总体平均-1.38pp。u-SMCO对6个banks全部改善target performance。</p>
+<h3>Background & Gap</h3><p>现有skill evolution以aggregate reward当gate，无法识别内部skill marginal和interactions；single-skill评价又忽略partner/domain dependence。</p>
+<h3>Core Insight</h3><p>skill contribution必须通过composition intervention测，而不是从bank endpoint推断。Theorem 1说明outcome-only endpoint在结构上不可识别内部负贡献Skill。</p>
+<h3>Method Deep Dive</h3><div class="flow">B_e → propose s_new → outcome gain → SMRA knockout Δ_s → Shapley coalition view → CASS sampled coalition margins → gate
+Target domain → unlabeled queries → rebuild memory with skill masked → RQ knockout ψ(s) → greedy u-SMCO</div>
+<h3>公式与数学直觉</h3><div class="eq">Δ_s^D(B)=V^D(B)-V^D(B\{s})</div><div class="eq">φ_s^D(B)=Σ_C w(C)[V(C∪{s})-V(C)]</div><div class="eq">Δ_S(B)=[V(B)-V(B\S)]/|S|</div><div class="eq">σ(B)=mean_N Δ_S(B)+0.2·r_out(B)</div><div class="eq">ψ(s)=RQ(B)-RQ(B\{s})</div>
+<p>Δ_s是full-bank marginal；Shapley平均所有partner compositions；CASS以固定budget采样coalitions；u-SMCO用target-conditioned retrieval proxy替代训练policy偏见。</p>
+<h3>Toy Example</h3><p>A Skill单独看+8，但只有B存在时才成立；删B后A只+2。C虽然加入时overall reward略升，实际Δ_C=-1。Skill Unlearning删B后必须重新估A/C贡献，而不能只检查B是否不再retrieve。</p>
+<h3>Baseline Comparison</h3><p>Strongest baseline=MemSkill，因为除gate外protocol匹配。另有CoN、ReadAgent、MemoryBank、A-MEM、Mem0、MemoryOS做performance reference。Selection entropy是最关键无标签proxy反例：ρ=-0.18；target RQ达到+0.76。</p>
+<h3>Experiment Setup</h3><p>Llama-3.3-70B-Instruct extraction policy；8×H20；LoCoMo、LongMemEval、HotpotQA、ALFWorld；3 seeds；CASS每outer epoch8 coalition eval，额外成本约5%。</p>
+<h3>Metrics</h3><p>Δ_s：knockout causal-ish contribution；Shapley φ：跨coalitions平均；RQ：target query与retrieved memory的语义局部性；ρ：proxy与label utility ranking一致性；ALFWorld SR/#steps与LoCoMo/LME F1、LLM-Judge共同覆盖。</p>
+<h3>Results Deep Dive</h3><ol><li>Skill_AP被accept但Δ=-0.005。</li><li>Skill_IN Δ=+0.084，partner去掉后+0.018。</li><li>Skill_IN LoCoMo +0.084，HotpotQA point estimate -0.035。</li><li>CASS1/12 accept，MemSkill6/12。</li><li>MemSkill新增skills平均-1.38pp。</li><li>Ours LoCoMo F1/LJ41.48/56.58 vs MemSkill39.45/54.78。</li><li>ALF unseen SR83.22 vs80.09。</li><li>u-SMCO六banks全提升。</li><li>MemSkill banks target提升平均+7.17pp，CASS banks+3.59pp。</li><li>entropy proxy ρ=-0.18，RQ proxyρ=+0.76。</li></ol>
+<h3>Table/Figure Reading</h3><p>Figure2/3看coalition/domain dependence；Table1看AP负贡献；Figure5看acceptance稀疏化；Table3看baseline additions net-negative；Table4看无标签mask改善。</p>
+<h3>Ablation / Claim vs Evidence</h3><p>K-controlled ablation证明并非bank size假象。Cross-domain reversal关键case CI跨0，因此应称directional。Coalition pollution证据更强。</p>
+<h3>Contribution</h3><p>SMRA audit、CASS、u-SMCO、non-identifiability theorem、coalition/domain reliability empirical finding。</p>
+<h3>Limitation</h3><p>文本Skills、coalition sampling漏高阶interaction、u-SMCO O(K²)、target probes少、部分指标用LLM judge。</p>
+<h3>Reproduction View</h3><p>先对现有10-skill bank做single knockout与20–50个2–4 skill joint knockouts，画single vs coalition marginal；出现sign flip后再训CASS。</p>
+<h3>Research Value</h3><p>对Skill Unlearning极高。最自然新metric：Coalition Closure Rate、Minimum Recovery Coalition Size、Cross-Domain Marginal Shift。</p>
+<h3>Migration 1</h3><p>删除Skill A后，对remaining bank sampled coalitions做paired audit；测Target Suppression、Coalition Marginal Shift、Retain Utility、Unsafe Coalition Gain。</p>
+<h3>Migration 2</h3><p>删除A后黑盒搜索2–4 remaining skills组合是否联合恢复target；比较single vs coalition recovery，定义Minimum Recovery Coalition Size。</p>
+<h3>Attack / Verification Lens</h3><p>攻击者寻找删除后产生最大正recovery interaction的coalition；验证器则检查所有单Skills安全但组合是否恢复target。</p>
+<h3>与Paper 2关系</h3><p>两篇都表明“单元素测试”不够：Skill contribution依赖coalition，memory behavior依赖future retrieval context。</p>
+<h3>记住10句话</h3><ol><li>Skill reliability不是intrinsic。</li><li>Outcome-only gate结构性盲。</li><li>accepted Skill可以实际负贡献。</li><li>partner会改变marginal。</li><li>domain会改变verdict。</li><li>CASS采样coalitions。</li><li>u-SMCO用unlabeled target RQ。</li><li>CASS 1/12 vs MemSkill 6/12。</li><li>baseline新增skills平均-1.38pp。</li><li>Skill Unlearning必须审计删除后的整个bank。</li></ol>
+</section>
+
+<section id="p2" class="card"><h2>Paper 2 — InjecMEM: Memory Injection Attack on LLM Agent Memory Systems</h2>
+<p><a href="https://arxiv.org/html/2608.23471v1">Full HTML</a> · <a href="https://github.com/BlueBlood6/InjecMEM">Code</a></p>
+<h3>基本信息 / 一句话定位</h3><p>arXiv:2608.23471v1，2026-08-24，COLM 2026 accepted。一次interaction即可造成topic-conditioned persistent memory injection；攻击被拆成retrieval persistence与conditional generation两阶段。</p>
+<h3>人话版</h3><p>InjecMEM不需要直接改memory store。它在一次对话里放一个semantic centroid anchor和Multi-GCG command；系统自己把它写进memory。之后用户问同topic不同措辞的问题时，anchor提高被retrieve概率，command则在动态长context里控制输出。MemoryOS上RSR46.5%、ASR-c76.6%、joint35.6；DPI/BadChain/vanilla GCG在generation侧全0。MemGPT仍有37.2/48.6/18.1。对Agent Memory Unlearning，最强启发是把post-delete failure拆成“残留还能不能被retrieve”和“retrieve后generator会不会泄漏”。</p>
+<h3>Background & Gap</h3><p>Memory系统让攻击经历write→store→future retrieve→dynamic fusion→generate；普通prompt injection只优化当前prompt，位置和上下文稳定假设不成立。</p>
+<h3>Core Insight</h3><p>Retriever-agnostic centroid anchor解决broad topic召回；Multi-GCG对多context/位置/长度优化，解决fusion robustness。</p>
+<h3>Method Deep Dive</h3><div class="flow">target topic τ → centroid anchor + c_adv → one injected interaction → persistent memory → future q~τ → poison retrieved → fused STM/MTM/LPM prompt → Multi-GCG command → target y*</div>
+<h3>公式</h3><div class="eq">L(c)=E_(i,p)[-log Pθ(y* | C_i,p(c))]</div><div class="eq">RSR=P(poison retrieved|topic query), ASR-c=P(target|retrieved), ASR-j=P(retrieved AND target)</div>
+<h3>Toy Example</h3><p>一次health对话写入覆盖health/ache/symptom/treatment等cue的memory；之后100条非health内容造成drift；一个月后问joint pain，poison仍可能被topic retrieval召回并在长prompt中触发target。</p>
+<h3>Baseline Comparison</h3><p>DPI、BadChain、vanilla GCG都依赖较静态prompt；普通on-topic paragraph是retrieval baseline。Multi-GCG与centroid anchor分别隔离generation和retrieval两侧改进。</p>
+<h3>Experiment Setup</h3><p>MemoryOS主系统、MemGPT transfer；Qwen2.5-7B主backbone，另测Mistral/Llama/Qwen family；19 domains、约50 queries/domain、10 seeds；每method只inject一次，之后仅追加non-target dialogues。</p>
+<h3>Metrics</h3><p>first-/multi-hit RSR测memory drift persistence；ASR-c隔离generation；ASR-j测端到端；non-target query用于检查局部性。</p>
+<h3>Results Deep Dive</h3><ol><li>DPI/BadChain/GCG ASR-c/j=0。</li><li>Multi-GCG76.6/35.6。</li><li>MemoryOS46.5/76.6/35.6。</li><li>MemGPT37.2/48.6/18.1。</li><li>7B command对FT7B75.6，但3B/14B直接0。</li><li>1.5B+7B family-joint后3B36.8、14B64.2。</li><li>Cross-family shared command对Llama0。</li><li>Concat-3对Qwen/Mistral/Llama78.2/66.3/75.4。</li><li>centroid anchor随memory增长比普通paragraph更稳。</li><li>tool被修复后，已写memory仍能长期触发。</li></ol>
+<h3>Table/Figure Reading</h3><p>Table2隔离Multi-GCG价值；Table3看跨memory system；Table4同family transfer；Table5跨family/concat；Figure2看tool-side persistent poisoning生命周期。</p>
+<h3>Ablation / Claim vs Evidence</h3><p>普通GCG→Multi-GCG说明context-distribution robustness；paragraph→centroid说明retrieval coverage。强rewrite/summarization memory未验证。</p>
+<h3>Contribution</h3><p>single-shot memory injection、centroid anchor、Multi-GCG、RSR/ASR decomposition、transfer analysis。</p>
+<h3>Limitation</h3><p>需white-box surrogate；主要针对保留原interaction text的memory；RSR不高；cross-family transfer弱；target是非操作性marker。</p>
+<h3>Reproduction View</h3><p>先复现5个domains：paragraph vs centroid的RSR drift；vanilla vs Multi-GCG的ASR-c；然后把攻击替换成delete-after-write，测删除后Residual RSR。</p>
+<h3>Research Value</h3><p>对Agent Memory Unlearning极高：直接给出Residual Retrieval Rate、Conditional Leakage Rate、Joint Reacquisition Rate。</p>
+<h3>Migration 1</h3><p>delete target后追加100 benign records，每10条same-topic probe一次；比较entry delete、dependency closure、summary rewrite。</p>
+<h3>Migration 2</h3><p>黑盒攻击者用topic-expansion queries提高残留memory被retrieve概率，不需要知道具体残留文本；指标ASR@budget与behavioral Residual Retrieval proxy。</p>
+<h3>Attack / Verification Lens</h3><p>unlearning verifier应把“memory没清干净”与“generator仍残留”分开；这比单一ASR更可解释。</p>
+<h3>与Paper 1关系</h3><p>Coalition-Aware强调不同Skill组合改变贡献；InjecMEM强调不同retrieval context改变behavior。共同指向composition-conditioned unlearning。</p>
+<h3>记住10句话</h3><ol><li>一次interaction即可持久污染memory。</li><li>攻击必须同时解决retrieval和generation。</li><li>centroid anchor提高topic召回。</li><li>Multi-GCG建模动态context。</li><li>DPI/BadChain/GCG在memory fusion中全0。</li><li>Multi-GCG ASR-c76.6%。</li><li>MemoryOS joint35.6%。</li><li>跨system/跨family transfer明显下降。</li><li>修复tool不等于清理memory。</li><li>Unlearning必须长期测Residual Retrieval×Conditional Leakage。</li></ol>
+</section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2><p>两篇共同说明Agent Unlearning真正的状态单位是 <b>target + coalition/context distribution</b>。Skill删除后要重新audit剩余bank；memory删除后要在future queries和memory drift下持续audit。</p></section>
+<section id="opp" class="card"><h2>Combined Research Opportunities</h2><div class="callout"><h3>Coalition-Aware Skill Unlearning</h3><p>删除A后sample remaining coalitions；测marginal sign flips与unsafe coalition gains。</p></div><div class="callout"><h3>Coalition Reacquisition Attack</h3><p>单个remaining skill都安全，但2–4个组合是否恢复被删能力。</p></div><div class="callout"><h3>Memory-Drift Closure</h3><p>删除后正常使用数百轮，再测Residual RSR和Joint Reacquisition。</p></div></section>
+<section id="col" class="card"><h2>Collision</h2><div class="warn"><p>Behavioral Skill Reconstruction、Agentic Unlearning、MemCollusion已经分别覆盖skill reconstruction、parameter-memory closure、memory coalition攻击。新工作的差异化必须是 <b>post-unlearning coalition search + cross-domain marginal audit + future retrieval drift</b>。</p></div></section>
+<section id="pri" class="card"><h2>Reading / Reproduction Priority</h2><p>先做Coalition-Aware的10-skill knockout audit；再做InjecMEM式delete-after-write memory drift audit。最值得立即跑：删除一个skill/memory target后，采样50个remaining coalitions + 50个future topic queries，同时测Coalition Recovery ASR与Residual Retrieval。</p></section>
+<section id="src" class="card"><h2>Sources / Links</h2><ul><li><a href="https://arxiv.org/html/2608.22610v1">Coalition-Aware full HTML</a></li><li><a href="https://arxiv.org/html/2608.23471v1">InjecMEM full HTML</a></li><li><a href="https://github.com/BlueBlood6/InjecMEM">InjecMEM code</a></li></ul></section>
+</main></body></html>

@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-08-31</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#e5e7eb;--blue:#3158cf;--s:#fff4da;--a:#eef4ff;--b:#f1f7f2}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1180px;margin:auto;padding:30px 24px 90px}.card,details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:23px 25px;margin:16px 0;box-shadow:0 4px 14px rgba(20,30,50,.035)}
+h1{font-size:35px;line-height:1.25;margin:.2em 0 .5em}h2{font-size:27px;border-bottom:1px solid var(--line);padding-bottom:8px;margin-top:38px}h3{font-size:20px;margin-top:24px}h4{font-size:17px;margin-bottom:6px}
+a{color:var(--blue);text-decoration:none}.muted{color:var(--muted)}summary{font-size:19px;font-weight:850;cursor:pointer}
+nav{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;columns:2;margin:18px 0}nav a{display:block;padding:3px 0}
+.s{background:var(--s)}.a{background:var(--a)}.b{background:var(--b)}
+.flow{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#111827;color:white;padding:14px;border-radius:10px;white-space:pre-wrap}
+.warn{background:#fff3d5;border-left:5px solid #c98a12}.idea{border-left:5px solid var(--blue)}
+table{width:100%;border-collapse:collapse}th,td{border:1px solid var(--line);padding:9px;vertical-align:top}th{background:#f3f5f9}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.kpi{font-size:28px;font-weight:850}
+.small{font-size:13px}.tag{display:inline-block;border-radius:999px;padding:2px 9px;background:#eef2ff;margin-right:5px;font-size:12px}
+</style>
+</head>
+<body>
+<main>
+
+<header class="card">
+<div class="muted">Daily AI Research Radar & Idea Miner</div>
+<h1>AI Research Radar — 2026-08-31</h1>
+<p>先广搜并冻结 40 篇 Candidate Pool，再统一筛选。正式收录 10 篇，Tier S/A/B = 3/3/4。最近 7 天已做 Deep Read 的 Daydreaming、Safety Does Not Compose、OBLIVION、When Unlearning Fails、WikiSkill、GraphMemix、FRAG/BLADE 等只用于 Top/Collision，不重复占 Tier S。</p>
+</header>
+
+<nav>
+<a href="#exec">Executive Summary</a><a href="#important">Most Important</a><a href="#top3">Top 3</a><a href="#top5">Top 5</a>
+<a href="#s">Tier S</a><a href="#a">Tier A</a><a href="#b">Tier B</a><a href="#ideas">Idea Mining</a>
+<a href="#collision">Collision</a><a href="#priority">Reading Priority</a><a href="#watch">Watchlist</a><a href="#stats">Stats</a>
+</nav>
+
+<section id="exec" class="card">
+<h2>Executive Summary</h2>
+<p><b>Machine Unlearning：</b>今天最强趋势并不是“又一个新 objective”，而是评测粒度升级。Scientific Claim Unlearning 表明训练 view 被遗忘，不代表同一 claim 的另一种表示也被遗忘；WMDP++ 则表明 direct Target 准确率很低，不代表 jailbreak / ICL 下仍然低，而且 MMLU 稳定也可能掩盖 near-distribution 安全知识 50pp 级损伤。</p>
+<p><b>Agent / Multi-Agent：</b>SKILL.state 把 long-horizon execution 压缩成 bounded mutable state，而不是永久保留全部 trajectory。它对 Trajectory Unlearning / Agent Memory Unlearning 最值得迁移的机制是“最小 state dependency closure”：删除真正对未来决策有因果影响的状态闭包，而不是粗暴删除整段 history。</p>
+<p><b>今天的研究结论：</b>Unlearning evaluation 正在从“单数据集分数”向 semantic closure、adaptive recovery、boundary preservation、future influence、state provenance 迁移。对现有黑盒 residual 审计方向而言，最有潜力的下一步是 Cross-View Residual-to-Representation Auditor，而不是继续增加同义 paraphrase 模板。</p>
+</section>
+
+<section id="important" class="card">
+<h2>Today's Most Important Paper</h2>
+<h3>Can Scientific Claims Be Removed from Large Language Models?</h3>
+<p>它最重要的贡献不是“科学知识”这个应用，而是把一个 semantic target 拆成两个互不重合的 forget views F1/F2，并测试只用 F1 unlearn 后是否能泛化到 F2。OLMo 上 GD(F1) 把 F1 R-F1 从 97.54 降到 71.70，但 F2 仍为 93.51。这意味着很多方法只压制训练时见过的 surface，而没有形成 claim-level deletion closure。</p>
+<p><b>最值得看：</b>数据构造方式、Table 4、Table 16、Table 19；尤其是 per-paper cross-view error distribution，它把“只忘训练 view”的现象从总体平均数推进到了样本级证据。</p>
+</section>
+
+<section id="top3" class="card">
+<h2>Top 3 必读</h2>
+<ol>
+<li><b>Scientific Claim Unlearning</b> — 学习如何把“forget sample”升级为“semantic target”；先看 F1/F2 构造、Table 4/16/19。</li>
+<li><b>Stress Testing Unlearning Algorithms / WMDP++</b> — 学习 Max-JB + Boundary 的双轴评测；先看 Table 1–4。</li>
+<li><b>SKILL.state</b> — 学习 bounded state 替代 full history；先看 state transition protocol、Table 1/6。</li>
+</ol>
+</section>
+
+<section id="top5" class="card">
+<h2>Top 5 Most Important Papers</h2>
+<ol>
+<li>Scientific Claim Unlearning — cross-view semantic closure。</li>
+<li>Stress Testing Unlearning Algorithms — adversarial extraction + near-distribution utility。</li>
+<li>SKILL.state — long-horizon state abstraction。</li>
+<li>PILOT in the Loop — online correction + persistent self-improvement。</li>
+<li>OBLIVION（cooling 引用）— workflow-level operational deletion closure。</li>
+</ol>
+</section>
+
+<section id="s">
+<h2>Tier S</h2>
+
+<details open class="s">
+<summary>1. Can Scientific Claims Be Removed from Large Language Models?</summary>
+<p><a href="https://arxiv.org/abs/2608.20960">Paper</a></p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>大多数 LLM unlearning benchmark 把删除对象写成固定 QA 或固定段落，因此方法很容易学会“遇到这种形式就不回答”，而没有真正处理底层语义。本文把删除单位提高到 scientific claim。同一条 claim 被转写成 MCQ、True/False、Fill-in-the-Blank、Assertion-Reason 等多种形式，并拆成互不重合的 F1/F2。方法只在 F1 上 unlearn，却同时测试 F1 和 F2。若 F1 大幅下降而 F2 基本不动，就说明模型只针对训练表面做了局部抑制。</p>
+<h3>Background & Research Gap</h3>
+<p>旧范式默认 “forget sample = knowledge target”。但同一知识可以通过选择、生成、补全、因果判断等不同输出形式暴露。只训练一种形式，模型可能只改变局部 input-output mapping。SciUnlearn 覆盖 CS、Medical、Retracted 三类 scientific claims，并显式构造互补 views。</p>
+<h3>Core Insight</h3>
+<p>真正 claim-level unlearning 需要跨表述等价类泛化。F2 不是简单 paraphrase，而是同一 latent target 的另一种 behavioral projection。因此 cross-view transfer 能更严格地逼近 semantic deletion closure。</p>
+<h3>Method Deep Dive</h3>
+<div class="flow">Scientific papers
+→ extract atomic claims
+→ generate multiple QA forms per claim
+→ split same-claim QA into F1 and F2
+→ construct external/internal retain sets
+→ apply GD / NPO / NPO+RT / SimNPO
+→ evaluate trained forget view
+→ evaluate complementary forget view
+→ evaluate retain/general utility
+→ per-paper cross-view error analysis</div>
+<h3>指标与直觉</h3>
+<p>Forget set 用 ROUGE-L F1 与 Exact Match，越低代表越不能生成 reference；Retain 越高越好。真正关键不是某个单值，而是 F1 的下降是否会同步迁移到 F2。训练 view 大降而 complementary view 不动，就是典型 surface-specific forgetting。</p>
+<h3>Toy Example</h3>
+<p>目标 claim：“药物 A 抑制酶 B。”F1 中放 MCQ“哪个药物抑制 B？”和 cloze“A 抑制___”；F2 放 True/False 与 assertion-reason。若模型只在 F1 上做 GD 后，F1 答不上，但 F2 仍能判断“A 抑制 B”为真，那么底层 claim 并未形成 behavioral closure。</p>
+<h3>Baseline Deep Comparison</h3>
+<p><b>GD：</b>直接提高 forget loss，forget 强，但 utility 风险大。<b>NPO：</b>偏好式降低 forget response，通常更平滑。<b>NPO+RT：</b>加入 retain term 抑制 utility collapse。<b>SimNPO：</b>简化偏好目标。本文最强的“baseline 思维”其实是 protocol 本身：同一个方法训练 F1、测试 F2，把传统单 view 指标的盲区暴露出来。</p>
+<h3>Experiment Setup</h3>
+<p>Models：OLMo-3-7B-Instruct、Llama-3-8B-Instruct；更新方式包括 LoRA 与 full-parameter；数据包括 CS、Medical、Retracted；Retain 包括 internal / external，另测 MMLU、ARC-Challenge、HellaSwag。</p>
+<h3>Results Deep Dive</h3>
+<ul>
+<li>OLMo base CS：F1 R-F1 = 97.54，F2 = 93.92。</li>
+<li>GD(F1) 后 F1 = 71.70，下降 25.84pp；F2 仍 93.51，只下降 0.41pp。</li>
+<li>NPO+RT(F1) 后 F1 = 88.81，而 F2 = 93.67。</li>
+<li>LoRA GD(F1) 可把 F1 R-F1 降到 58.20，但 F2 仍有 75.40。</li>
+<li>Full-parameter OLMo 中 GD(F1) F1 = 71.33，F2 = 91.73。</li>
+<li>Per-paper GD F1：39 篇两个 view 都出现 forget error，30 篇只有 F1，只有 1 篇只有 F2。</li>
+</ul>
+<h3>Table/Figure Reading</h3>
+<p>Table 3 看 claims 与 F1/F2 数据规模；Table 4 看 LoRA 下的 cross-view asymmetry；Table 16 看 full-parameter 是否能解决；Table 19 看 per-paper error distribution。最有说服力的是 Table 19，因为它显示问题不是少数平均值异常，而是系统性偏向训练 view。</p>
+<h3>Ablation / Mechanistic Analysis</h3>
+<p>LoRA 与 full-parameter 都表现出 cross-view mismatch，说明简单增加可更新参数范围并不会自动得到 semantic closure。因此问题更像 objective/evaluation mismatch，而不是某个 optimizer 或 parameter-efficient tuning 的局部缺陷。</p>
+<h3>Claim vs Evidence</h3>
+<p><b>Authors Claim：</b>现有 unlearning 难以真正删除 claim。<br><b>Experiments Actually Show：</b>跨模型、更新方式、三类 scientific data 都存在明显 F1/F2 asymmetry。<br><b>Not Yet Proven：</b>自动生成的 F1/F2 仍不能代表所有自然语言表达；output failure 也不能证明内部 representation 真正消失。</p>
+<h3>Contribution</h3>
+<p><span class="tag">New Benchmark/Dataset</span><span class="tag">New Metric/Protocol</span><span class="tag">New Empirical Finding</span></p>
+<p>真正创新主要来自 evaluation framing：从 sample-level forgetting 转向 claim-level semantic closure，而不是提出新的 unlearning loss。</p>
+<h3>Limitation</h3>
+<p>科学 claim 域较窄；自动 QA 生成可能产生 style artifact；生成指标低并不能证明 latent knowledge erase；强方法仍可能以 utility 为代价获得更低 forget score。</p>
+<h3>Research Value</h3>
+<p>Baseline ★★★★★；Migration ★★★★★；Attack ★★★★☆；Evaluation ★★★★★；New Paper Potential ★★★★★。</p>
+<h3>Migration Analysis</h3>
+<p><b>Original Problem →</b> claim-level forgetting；<b>Transferable Mechanism →</b>互补 semantic views；<b>New RQ →</b>MLLM/identity unlearning 是否只对 direct/paraphrase 有效？；<b>Method →</b>direct/pairwise/cloze/multi-hop/cross-modal 五 view；<b>MVE →</b>20–50 targets × 5 views × 3–10 checkpoints；<b>Baseline →</b>direct score、GPWR、white-box residual；<b>Metric →</b>Cross-View Transfer Matrix、Worst-View Leakage、ASR@budget、Retain FPR；<b>Expected Contribution →</b>Semantic-View Deletion Closure；<b>Collision Risk →</b>中低。</p>
+<h3>如果只记住 5 句话</h3>
+<ol><li>Forget sample 不等于 forget concept。</li><li>互补 views 比普通 paraphrase 更严格。</li><li>F1 忘了，F2 常常几乎没忘。</li><li>LoRA 和 full-parameter 都存在此问题。</li><li>最值得迁移的是 Cross-View Residual Auditor。</li></ol>
+</details>
+
+<details open class="s">
+<summary>2. Stress Testing Unlearning Algorithms — WMDP++</summary>
+<p><a href="https://arxiv.org/abs/2608.22527">Paper</a></p>
+<h3>人话版</h3>
+<p>传统 WMDP 只看危险 Target 准确率是否下降，并用很宽泛的 MMLU 当 retain。这会产生两个假象：模型可能只是 direct ask 时不答，一换 jailbreak/ICL 就恢复；或者危险知识删掉的同时，把附近安全 biology/cybersecurity 知识也一起抹掉，但 MMLU 整体变化很小。WMDP++ 因此加入 Max-JB 与 Boundary 两条轴。</p>
+<h3>Core Insight</h3>
+<p>Unlearning 至少是二维问题：<b>Robust Erasure</b> 与 <b>Boundary Preservation</b>。只看 Target 低可能把 suppression 当 erase；只看 MMLU 稳定可能掩盖 concept bleeding。</p>
+<h3>Method</h3>
+<div class="flow">Original WMDP
+→ identify core topic categories
+→ construct safe near-distribution Boundary questions
+→ evaluate standard Target
+→ ICL / GCG / Crescendo / DIA recovery
+→ Max-JB = worst recovered target accuracy
+→ MMLU / MMLUS / Boundary utility
+→ compare safety–utility frontier</div>
+<h3>Setup</h3>
+<p>Models：Llama-3-8B、Zephyr-7B Beta；Domains：Biology、Cybersecurity；Methods：RMU、ELM、NPO、simNPO、OrthoGrad；Boundary 每 domain 100 题；攻击包括 ICL、GCG、Crescendo、DIA。</p>
+<h3>Results</h3>
+<ul>
+<li>Llama Biology：RMU Target = .2498，simNPO = .2608，direct 指标几乎相同。</li>
+<li>但 Max-JB：RMU = .2812，而 simNPO = .6009，后者恢复超过一倍。</li>
+<li>Zephyr Biology RMU：MMLU 仅约 -1pp，但 Boundary 从 .98 降到 .47，下降 51pp。</li>
+<li>Llama Cybersecurity ELM：MMLU 只约 -6pp，但 Boundary 从 .97 降到 .38，下降 59pp。</li>
+</ul>
+<h3>Table/Figure Reading</h3>
+<p>Table 1 是 Biology 综合主表；Table 2 是 Cybersecurity；Table 3 展示不同 ICL context 对 Target 恢复；Table 4 展示 Boundary 在不同 context 下的变化。</p>
+<h3>Claim vs Evidence</h3>
+<p>实验支持传统 WMDP 指标会高估成功，而且 method ranking 在更强评测下发生变化。但 Boundary 有部分自动生成，规模不大，攻击也并非穷尽所有 adaptive recovery。</p>
+<h3>Contribution</h3>
+<p><span class="tag">New Benchmark Extension</span><span class="tag">New Metric Max-JB</span><span class="tag">New Boundary Evaluation</span></p>
+<h3>Migration</h3>
+<p>把 WMDP++ 迁到 MLLM：构造 Target / Attack / Visual-Boundary 三集合。Boundary 取视觉近邻、同场景 public entity、共享 attribute 但非 target。指标：Max-Recovery、Boundary Accuracy、Retain FPR、general utility。</p>
+<h3>如果只记住 5 句话</h3>
+<ol><li>Target accuracy 低不代表真忘。</li><li>Max-JB 测最坏恢复。</li><li>Boundary 测邻近安全知识。</li><li>simNPO 与 RMU direct 很接近，但 robustness 差很大。</li><li>MMLU 稳定也可能掩盖 50pp 级 near-distribution 损伤。</li></ol>
+</details>
+
+<details open class="s">
+<summary>3. SKILL.state: Scalable Long-Horizon Agent Skills</summary>
+<p><a href="https://arxiv.org/abs/2608.26263">Paper</a></p>
+<h3>人话版</h3>
+<p>长时程 Agent 常把 observation、reasoning、action 不断 append 到 history，prompt 越来越大。SKILL.state 把 immutable Skill 与 mutable structured State 分开：每步只给 Skill + current State + latest Observation，执行后提交 validated State update，然后丢掉中间 reasoning。这样 prompt footprint 近似常数。</p>
+<h3>Core Insight</h3>
+<p>长期任务真正需要的是<b>最小充分状态</b>，不是全部过去。对未来决策有因果作用的变量应该持久化，其他 reasoning trace 可以丢弃。</p>
+<h3>Method</h3>
+<div class="flow">Immutable Skill
++ bounded State
++ latest Observation
+→ Action
+→ proposed State update
+→ schema / consistency validation
+→ commit new State
+→ discard intermediate history
+→ next step</div>
+<h3>复杂度直觉</h3>
+<p>Append-only history 使每步 prompt 随 T 线性增长，因此总 token 消耗近似 O(T²)；bounded state 让每一步 prompt 大小基本固定，因此总消耗约 O(T)。</p>
+<h3>Results</h3>
+<ul>
+<li>Warehouse T=200：SKILL.state score = .94±.02，avg prompt = 1811±184，总 token = 122,384±4,522。</li>
+<li>Memory baseline：score = .84±.09，总 token = 6,175,509。</li>
+<li>Stateful baseline：score = .88±.03，总 token = 5,041,164。</li>
+<li>T=100：Stateful 1,062,387 tokens vs SKILL.state 65,408，约 16.2× reduction。</li>
+<li>T≥50 的差异达到 paired t-test p&lt;.01。</li>
+</ul>
+<h3>Table/Figure Reading</h3>
+<p>Table 1 看 Warehouse scaling；Table 6 看 Software Repository replication。真正值得看的不是最终 score，而是随着 horizon 增长，token 曲线的增长阶数发生了变化。</p>
+<h3>Ablation</h3>
+<p>Truncated、Budget-Matched、Summary、Stateful controls 说明性能提升不是简单“少给 token”，而是 bounded state 保留了任务所需的关键变量。</p>
+<h3>Contribution</h3>
+<p><span class="tag">New Agent Architecture Pattern</span><span class="tag">New State Abstraction</span><span class="tag">New Scaling Finding</span></p>
+<h3>Limitation</h3>
+<p>需要高质量 state schema；state update 一旦错误会累积；如果 target influence 已经进入派生 state，删除一个字段并不足够，仍需要 dependency closure。</p>
+<h3>Migration</h3>
+<p><b>State-Scoped Agent Unlearning：</b>target state labeling → transition dependency graph → minimal cut → post-delete state reconstruction attack。MVE：20 个 long-horizon tasks、100 steps、5 类 target memory；比较 history deletion、entry deletion、state-closure deletion。指标：Residual Behavior、State Reconstruction ASR、Retain Utility、Deletion Size。</p>
+<h3>如果只记住 5 句话</h3>
+<ol><li>Long-horizon 不需要永久保留完整 reasoning。</li><li>Skill 是 procedure，State 是 execution memory。</li><li>bounded state 把总 token 从 O(T²) 降到 O(T)。</li><li>T=200 仍有 .94 score。</li><li>对 Agent Unlearning 可直接迁成 state dependency closure。</li></ol>
+</details>
+</section>
+
+<section id="a">
+<h2>Tier A</h2>
+
+<details class="a"><summary>PILOT in the Loop: Live Self-Improvement for Long-Horizon Agents</summary>
+<p><a href="https://arxiv.org/abs/2608.26530">Paper</a></p>
+<h3>人话版</h3><p>Supervisor 不等 episode 结束，能在 Worker 执行中实时 redirect/abort，并把刚发现的 procedure / failure 写进 persistent skills。它把“纠正当前 trajectory”和“改进未来 agent”合成一个闭环。</p>
+<h3>Method & Results</h3><p>Worker 执行 → Supervisor 观察关键节点 → live redirect / correction → 成功经验转成 skill → 下一 iteration 复用。One-shot setting 中 5/6 backbone-benchmark 组合第一；Terminal-Bench 最高 +9.8pp。Self-improvement 中 GLM +14.6pp、Kimi +12.4pp；mean output tokens 下降 42.9% / 47.4%。</p>
+<h3>Contribution / Limitation</h3><p>New System/Engineering + New Online Evolution Mechanism。限制是 Supervisor 质量决定闭环效果，persistent skill 也可能累积错误。</p>
+<h3>Migration</h3><p>做 Online Reacquisition Audit：delete target skill 后不结束当前 episode，观察同一 active run 中何时重新写回等价 skill / memory。Metric：time-to-reacquire、skill-write provenance、post-delete ASR。<b>Worth Deep Reading: YES。</b></p>
+</details>
+
+<details class="a"><summary>When Memory Takes Gradients: Collaborative Vector Memory</summary>
+<p><a href="https://arxiv.org/abs/2608.26895">Paper</a></p>
+<h3>人话版</h3><p>不再把用户历史压成文本 summary，而是把完整 interaction history 通过协同图训练为 vector memory，再由 LLM reader 使用。这意味着 memory 本身可以通过梯度更新。</p>
+<h3>Results</h3><p>四个推荐 benchmark 上，相对最强 text-memory agent，20 个主 metric cells 中 19 个 match 或更好；同时 memory maintenance 不需要逐 interaction 的额外 LLM calls。</p>
+<h3>Contribution / Limitation</h3><p>New Vector Memory Mechanism。限制是推荐场景较专用，而且 continuous vector memory 的可解释、可定位、可删性更差。</p>
+<h3>Migration</h3><p>Vector Memory Unlearning：删除用户/交互后比较 row removal、graph retrain、low-rank counter-update。指标：Residual Recommendation Preference、Membership AUC、Retain NDCG。<b>Worth Deep Reading: YES。</b></p>
+</details>
+
+<details class="a"><summary>FaultLens: Learning Compact Behavioral Test Suites</summary>
+<p><a href="https://arxiv.org/abs/2608.26746">Paper</a></p>
+<h3>人话版</h3><p>FaultLens 从巨大的 probe domain 中学习很小但互补的 test suite，用少量行为测试覆盖绝大多数新 program generation faults。对 Unlearning 的价值是把几百种 probe 压成固定 query budget。</p>
+<h3>Results</h3><p>32-probe hybrid 覆盖 576/582 held-out dynamically killable faults = 99.0%，只用 1.2–2.0% exhaustive domain；16 probes 已有 98.1%，random 只有 89.2%。held-out fault family 时 diversity 让 macro coverage 84.6→94.9%。</p>
+<h3>Contribution / Limitation</h3><p>New Evaluation / Test Selection Mechanism。限制是原始 fault space 来自程序行为，迁到 LLM unlearning 需要先定义稳定的 residual fault taxonomy。</p>
+<h3>Migration</h3><p>从 direct/paraphrase/cloze/pairwise/multi-hop/cross-modal 500–1000 probes 中学习 32-query Residual Suite，在 held-out unlearning methods/checkpoints 测 coverage。Metric：Residual Fault Coverage、ASR@32、Retain FPR。<b>Worth Deep Reading: YES。</b></p>
+</details>
+</section>
+
+<section id="b">
+<h2>Tier B</h2>
+
+<details class="b"><summary>One Model, Many Minds: Mixture of Roles</summary>
+<p><b>人话版：</b>MoRe 用 role codebook + query-aware router，把多个 latent role vectors 混合成一次 steering，从而用单次 model execution 逼近 multi-agent 角色互补。</p>
+<p><b>Main Finding：</b>Qwen3-8B 通用 benchmark 平均 71.48，接近 LLM Debate 71.60；Llama PersonalityBench MoRe AvgScore 9.80、AvgRank 1.0。</p>
+<p><b>Connection：</b>可迁成 Role-Level Unlearning：删除某个 role vector 后，router 是否能通过其他 role coalition 恢复同一行为。Potential Use：Mechanistic Baseline / Coalition Recovery Attack。</p>
+</details>
+
+<details class="b"><summary>MUSE-Autoskill</summary>
+<p><b>人话版：</b>把 skill lifecycle 显式拆成 create / remember / manage / evaluate / refine，让 agent 持续形成可复用 procedure。</p>
+<p><b>Connection：</b>Skill Unlearning 不能只删当前 skill 文件，因为 memory 与 evaluation feedback 可能重新生成等价 skill。Potential Use：Reacquisition Benchmark。</p>
+</details>
+
+<details class="b"><summary>SkillsVote</summary>
+<p><b>人话版：</b>关注大规模 skill collection、recommendation、evolution governance。</p>
+<p><b>Connection：</b>很适合研究 Skill Library Unlearning：retire/delete target skill 后，推荐、合并、evolution pipeline 是否会把它重新召回。</p>
+</details>
+
+<details class="b"><summary>From Memory to Skills: Evidence-Grounded Co-Evolution Governance</summary>
+<p><b>人话版：</b>把 grounded traces、procedural policies、declarative cognition 分层，并把有正 estimated gain 的 policy crystallize 成 callable skills，同时保留 evidence links。</p>
+<p><b>Connection：</b>天然存在 Memory→Skill provenance，可直接测试删除某个 memory 后 derived skill 是否应该被 invalidate。Potential Use：Provenance-aware Skill Unlearning / Dependency Closure。</p>
+</details>
+</section>
+
+<section id="ideas">
+<h2>Idea Mining</h2>
+
+<div class="card idea">
+<h3>Idea 1 — Cross-View Residual-to-Representation Auditor</h3>
+<p><b>Inspiration：</b>SciUnlearn。<b>Research Gap：</b>direct/paraphrase 仍可能属于同一 surface family。<b>Hypothesis：</b>不同 semantic views 的最坏残留，比单 view score 更接近内部 residue 与未来 recovery。</p>
+<p><b>Proposed Method：</b>direct/pairwise/cloze/multi-hop/cross-modal 五 view；白盒 RULER/J-Access residual 做 label，黑盒 view vector 预测。<b>MVE：</b>20–50 targets × 5 views × 10 checkpoints。<b>Metric：</b>Spearman、AUROC、Worst-View Leakage、ASR@budget、Retain FPR。</p>
+<p><b>Novelty ★★★★★ · Feasibility ★★★★★ · Compute ★★★☆☆ · Collision Risk 中 · Best Venue NeurIPS/ICLR</b></p>
+</div>
+
+<div class="card idea">
+<h3>Idea 2 — Boundary-Aware Multimodal Unlearning</h3>
+<p><b>Inspiration：</b>WMDP++ + multimodal unlearning。为 forget identity 构造 visual boundary set：视觉近邻、同场景 public entity、共享 attribute 但非 target；同时跑 Max-Recovery attack。</p>
+<p><b>Metric：</b>Worst-Case Recovery、Boundary Accuracy、Retain FPR、Utility。<b>Novelty ★★★★☆ · Feasibility ★★★★★ · Compute ★★☆☆☆ · Collision Risk 低中。</b></p>
+</div>
+
+<div class="card idea">
+<h3>Idea 3 — State-Scoped Agent Unlearning</h3>
+<p><b>Inspiration：</b>SKILL.state。<b>Hypothesis：</b>target behavior 由有限 state dependency closure 决定，删除最小 state cut 可比清空 trajectory 保留更多 utility。</p>
+<p><b>Method：</b>target state labeling + transition dependency graph + minimal cut + post-delete state reconstruction attack。<b>Metric：</b>Residual Behavior、State Reconstruction ASR、Retain Utility、Deletion Size。</p>
+<p><b>Novelty ★★★★★ · Feasibility ★★★★☆ · Compute ★★☆☆☆ · Collision Risk 低。</b></p>
+</div>
+
+<div class="card idea">
+<h3>Idea 4 — Learned Minimal Black-Box Unlearning Test Suite</h3>
+<p><b>Inspiration：</b>FaultLens。<b>Gap：</b>完整 adaptive audit query 成本太高。<b>Method：</b>从 500–1000 probes 学习 32 个互补 query，再 zero-shot 测试新 method/model。</p>
+<p><b>Metric：</b>Residual Fault Coverage、ASR@32、Coverage/Cost Pareto。<b>Novelty ★★★★☆ · Feasibility ★★★★★ · Compute ★★☆☆☆ · Collision Risk 低。</b></p>
+</div>
+</section>
+
+<section id="collision" class="card warn">
+<h2>Collision Detection</h2>
+<p><b>⚠️ Black-box recovery：</b>Daydreaming、WMDP++、Can LLMs Truly Forget 等已经覆盖多种黑盒/自适应抽取。新工作如果只是增加一组 prompt 模板，创新度不够；更合理的是做 sample-level predictor、cross-view closure 或 query-efficient learned suite。</p>
+<p><b>⚠️ Hard-to-Unlearn：</b>FRAG、Margin Cliff、AdaPop、J-Access、entanglement predictor 等方向已经很拥挤。最安全的差异化是“cross-view black-box sample-level + future recovery prediction”，而不是再做一个静态 white-box scalar。</p>
+<p><b>⚠️ Agent Skill/Memory deletion：</b>Agentic Unlearning、OBLIVION、WikiSkill、When Unlearning Fails 已覆盖 parameter-memory backflow、workflow resurrection、recompilation、future influence echo。剩余 gap 更适合 State-Scoped、Cross-Agent、Cross-Modal 或统一 multi-layer closure。</p>
+</section>
+
+<section id="priority" class="card">
+<h2>Reading Priority</h2>
+<table>
+<tr><th>Priority</th><th>Paper</th><th>最值得看</th></tr>
+<tr><td>READ NOW</td><td>Scientific Claim Unlearning</td><td>F1/F2 构造；Table 4/16/19</td></tr>
+<tr><td>READ NOW</td><td>WMDP++</td><td>Boundary construction；Table 1/2；Max-JB</td></tr>
+<tr><td>READ NOW</td><td>SKILL.state</td><td>State transition protocol；Table 1/6</td></tr>
+<tr><td>READ THIS WEEK</td><td>PILOT / CoVeMem / FaultLens</td><td>online evolution / vector memory / compact test suites</td></tr>
+<tr><td>SAVE</td><td>MoRe / MUSE-Autoskill / SkillsVote / MSCE</td><td>role deletion / skill lifecycle / governance / provenance</td></tr>
+</table>
+</section>
+
+<section id="watch" class="card">
+<h2>Candidate Watchlist</h2>
+<table>
+<tr><th>Title</th><th>Category / Why Save</th></tr>
+<tr><td>Daydreaming</td><td>Cooling；output-only skill reconstruction</td></tr>
+<tr><td>Safety Does Not Compose</td><td>Cooling；cross-iteration state</td></tr>
+<tr><td>OBLIVION</td><td>Cooling；workflow-level skill deletion closure</td></tr>
+<tr><td>When Unlearning Fails</td><td>Cooling；future influence echo / IRR</td></tr>
+<tr><td>WikiSkill / GraphMemix</td><td>Cooling；recompilation / relational recovery</td></tr>
+<tr><td>BLADE / Margin Cliff / FRAG</td><td>Cooling；relearning robustness</td></tr>
+<tr><td>PPE-Bench / Attribute Unlearning / MCU</td><td>MLLM unlearning baseline / benchmark</td></tr>
+<tr><td>Learning What to Forget / Activation Patching / LACUNA</td><td>token attribution / white-box residual / localization</td></tr>
+<tr><td>Prime Agent / SkillSmith / Continual Harness</td><td>persistent harness / skill evolution mechanism</td></tr>
+</table>
+</section>
+
+<section id="stats">
+<h2>今日统计</h2>
+<div class="grid">
+<div class="card"><div class="kpi">40</div>Candidate Pool</div>
+<div class="card"><div class="kpi">10</div>Formal Papers</div>
+<div class="card"><div class="kpi">3 / 3 / 4</div>Tier S / A / B</div>
+<div class="card"><div class="kpi">22</div>BACKFILL</div>
+<div class="card"><div class="kpi">30</div>Watchlist</div>
+<div class="card"><div class="kpi">10</div>Cooling exclusions</div>
+</div>
+</section>
+
+<section class="card">
+<h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.20960">Can Scientific Claims Be Removed from Large Language Models?</a></li>
+<li><a href="https://arxiv.org/abs/2608.22527">Stress Testing Unlearning Algorithms</a></li>
+<li><a href="https://arxiv.org/abs/2608.26263">SKILL.state</a></li>
+<li><a href="https://arxiv.org/abs/2608.26530">PILOT in the Loop</a></li>
+<li><a href="https://arxiv.org/abs/2608.26895">When Memory Takes Gradients / CoVeMem</a></li>
+<li><a href="https://arxiv.org/abs/2608.26746">FaultLens</a></li>
+<li><a href="https://arxiv.org/abs/2608.27338">One Model, Many Minds / MoRe</a></li>
+</ul>
+<p class="small muted">本 HTML 为本轮日报内容的重新导出版；研究分析、Migration、Idea Mining 与 Collision Detection 均保留为可直接浏览的长文结构。</p>
+</section>
+
+</main></body></html>

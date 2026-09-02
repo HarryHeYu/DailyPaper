@@ -1,0 +1,227 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-09-02</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#182132;--muted:#667085;--line:#e5e7eb;--blue:#3157d5;--s:#fff4d6;--a:#eef5ff;--b:#f1f8f1;--warn:#fff2df}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.8}
+main{max-width:1220px;margin:auto;padding:30px 24px 90px}h1{font-size:36px;line-height:1.25}h2{font-size:27px;margin-top:38px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:20px;margin-top:24px}
+a{color:var(--blue);text-decoration:none}.card,details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 25px;margin:16px 0;box-shadow:0 4px 16px rgba(20,30,50,.035)}
+summary{font-size:19px;font-weight:850;cursor:pointer}.s{background:var(--s)}.a{background:var(--a)}.b{background:var(--b)}.warn{background:var(--warn);border-left:5px solid #d58a15}.idea{border-left:5px solid var(--blue)}
+nav{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;columns:2;margin:18px 0}nav a{display:block;padding:3px 0}.muted{color:var(--muted)}
+.flow,.eq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;border-radius:10px;padding:14px;white-space:pre-wrap}.flow{background:#111827;color:#fff}.eq{background:#f1f3f6}
+table{width:100%;border-collapse:collapse;margin:12px 0}th,td{border:1px solid var(--line);padding:9px;vertical-align:top}th{background:#f3f5f9}
+.tag{display:inline-block;background:#eef2ff;border-radius:999px;padding:2px 9px;font-size:12px;margin-right:5px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.kpi{font-size:29px;font-weight:850}
+</style></head><body><main>
+<header class="card"><div class="muted">Daily AI Research Radar & Idea Miner</div><h1>AI Research Radar — 2026-09-02</h1>
+<p>今日先冻结 <b>43</b> 篇 Candidate Pool，再统一筛选；正式深读 <b>10</b> 篇，Tier S/A/B=<b>3/4/3</b>。昨日高深度论文按 7 天 cooling 不重复占位。今日最强信号集中在 <b>Deletion-calibrated memory credit</b>、<b>representation-level capability recovery</b>、<b>latent procedural skills</b>。</p></header>
+
+<nav><a href="#exec">Executive Summary</a><a href="#important">Today's Most Important</a><a href="#top3">Top 3</a><a href="#top5">Top 5</a><a href="#s">Tier S</a><a href="#a">Tier A</a><a href="#b">Tier B</a><a href="#ideas">Idea Mining</a><a href="#collision">Collision</a><a href="#priority">Reading Priority</a><a href="#watch">Candidate Watchlist</a><a href="#stats">Stats</a><a href="#sources">Sources</a></nav>
+
+<section id="exec" class="card"><h2>Executive Summary</h2>
+<p><b>最重要变化：</b>Hindsight Memory-PRM 把“删除某 memory entry，然后让同一个 reader 重新回答，看答案是否 flip”直接做成 operation-level supervision。这为 Agent Memory Unlearning 提供了一个天然的 causal deletion primitive；而论文观察到单-entry deletion 仍会因 redundancy 不 flip，正好对应 deletion closure。</p>
+<p><b>Recovery / Representation：</b>Reference-Grafting 与 causal sandbagging model 进一步强化“suppressed output ≠ capability deletion”。在静态 lock 中，少量 paired captures 和少数 layers 就能恢复大部分能力；dynamic rerouting 则形成边界。</p>
+<p><b>Agent Skill：</b>Latent Skill Directions 表明 procedural skill 不只存在于 SKILL.md / prompt surface，也可表现为 activation-space direction。结合 trajectory→skill promotion，Skill Unlearning 很自然地形成 artifact、latent residue、trajectory reacquisition 三层 closure。</p></section>
+
+<section id="important" class="card"><h2>Today's Most Important Paper</h2>
+<h3>Hindsight Memory-PRM: Supervising Memory Management with Auditable Hindsight Credit</h3>
+<p>今天最重要，因为它把“删掉 memory 后行为是否改变”从 audit 工具推进成训练监督。最值得看 deletion protocol、Figure 2 signal ladder、Table 1 主结果，以及 deletion-causality acceptance。直接迁移方向：Source→Memory Version→Summary→Skill 的 descendant-level causal labels 与 minimal joint deletion closure。</p></section>
+
+<section id="top3" class="card"><h2>Top 3 必读</h2><ol>
+<li><b>Hindsight Memory-PRM</b> — controlled deletion-and-reanswer + version-chain credit。</li>
+<li><b>Reference-Grafting</b> — coordinate replacement 而非 additive steering；重点看 cross-dataset transfer 与 circuit-breaking。</li>
+<li><b>Latent Skill Directions</b> — skill steerability/composition/evolution；重点看 composition 与 non-monotonic optimization。</li>
+</ol></section>
+
+<section id="top5" class="card"><h2>Top 5 Most Important Papers</h2><ol>
+<li>Hindsight Memory-PRM</li><li>Reference-Grafting</li><li>Latent Skill Directions</li><li>A Causal Model for Locating and Unlocking Sandbagging</li><li>Agent Zero Memory</li>
+</ol></section>
+
+<section id="s"><h2>Tier S</h2><details open class="s"><summary>1. Hindsight Memory-PRM: Supervising Memory Management with Auditable Hindsight Credit</summary>
+<p><b>基本信息：</b>Hindsight Memory-PRM: Supervising Memory Management with Auditable Hindsight Credit；arXiv:2608.29605v1，2026-08-30；<a href="https://arxiv.org/abs/2608.29605">Paper</a>。Policy=Qwen3-8B，critic=Qwen3-1.7B，均 LoRA；评测 LoCoMo、LongMemEval。</p>
+<h3>人话版：这篇论文到底干了什么？</h3><p>长期 Agent memory 的难点不是“写入/合并/删除有哪些动作”，而是当时根本不知道某次 memory operation 以后有没有用。作者发现 memory 会留下可审计痕迹：后来是否被检索、是否被答案引用，以及如果把这条 memory 临时删掉，答案会不会变。论文把这些事后证据变成 operation-level credit，并进一步做 controlled deletion-and-reanswer 校准因果贡献。对 unlearning 来说，这几乎直接提供了“某条 memory 是否仍然 load-bearing”的可操作原语。</p>
+<h3>Background & Research Gap</h3><p>最终 answer reward 太稀疏，teacher imitation 只能模仿 policy，Monte-Carlo rollout critic 成本又高。memory 操作却天然产生 audit trail，但旧方法没有把它转成 credit。单纯 citation 仍只是 observational evidence：另一条 near-duplicate memory 也可能让答案保持正确，因此需要删除 intervention 才更接近必要性。</p>
+<h3>Core Insight</h3><p>把 credit 拆成两层：retrieval/citation/outcome 提供高覆盖 observational attribution；controlled deletion 提供低覆盖但更强的 intervention-calibrated attribution。然后沿 memory version chain 把 entry-level credit 回传给早期 Write/Merge。</p>
+<h3>Method Deep Dive</h3><div class="flow">Dialogue/session stream
+→ Write / Merge / Noop
+→ source-turn IDs + version chain
+→ later retrieval + citations
+→ construct anchored probes
+→ delete cited anchor entry
+→ re-answer with same reader
+→ answer flip calibrates presence credit
+→ propagate through version chain
+→ critic + GRPO trains manager</div>
+<p>关键是 source anchoring 和 deletion probe：若删掉某条被引用 memory 后答案从正确变错，则它在当前 bank 与 fixed reader 下确实是 load-bearing。若删除后仍答对，则说明可能存在 redundancy。</p>
+<h3>Results Deep Dive</h3><ul><li>LoCoMo full method 77.5±0.8%，高于 untrained 58.6、SFT 62.5、outcome-only GRPO 63.4、MC-rollout 65.0、observational attribution 70.2。</li><li>Mem0 官方约 19.6k context tokens 为 74.7%；本文约 2,480 tokens 达 77.5%。</li><li>68% online deletion 会令答案 flip；剩余 32% 多由 duplicate/near-duplicate evidence 覆盖。</li><li>删除 74.6% 从未进入 logged read path 的 entries，accuracy 仅 -0.1pp；删除 7.2% cited entries，accuracy -12.4pp。</li><li>LongMemEval：Untrained 61.0、MemBuilder 66.0、Observational 72.5、Full 79.0。</li></ul>
+<h3>Ablation / Mechanistic Analysis</h3><p>matched-scale 与 shuffled-flip 近似 observational baseline，说明提升不是 reward scale 或随机 signal；去 synthetic probes 后 intervention coverage 大幅下降，支持“可定位的 deletion intervention”确实是有效成分。</p>
+<h3>Claim vs Evidence</h3><p><b>Authors Claim：</b>memory audit trail 能提供可审计 hindsight credit。<br><b>Actually Show：</b>controlled ladder、deletion causality、两 benchmark 都支持。<br><b>Not Proven：</b>single-entry deletion 不是 joint necessity；跨 agent shared-memory descendants、skill promotion 尚未覆盖。</p>
+<h3>Contribution</h3><p><span class="tag">New Mechanism</span><span class="tag">New Objective/Reward</span><span class="tag">New Evaluation Protocol</span> 真正值得迁移的是 source anchoring + deletion-and-reanswer + version-chain propagation。</p>
+<h3>Limitation & Failure Modes</h3><p>counterfactual 是 model-relative；redundancy 下单条 deletion 可能不 flip；schema/domain transfer 仍有依赖。对 unlearning 来说，这正是下一步 deletion closure 的入口。</p>
+<h3>Research Value</h3><p>Baseline ★★★★★；Migration ★★★★★；Attack ★★★★★；Evaluation ★★★★★；New Paper Potential ★★★★★。</p>
+<h3>Migration Analysis</h3><p><b>Original Problem →</b>memory operation hindsight credit。<b>Transferable Mechanism →</b>source anchoring + deletion-and-reanswer。<b>New RQ →</b>删除请求是否切断所有对 target behavior 有 causal support 的 descendants？<b>Minimum Experiment →</b>LoCoMo/LongMemEval 各 50 target facts，人工制造 1/2/4 redundant descendants；比较 source-only、retrieved-entry、lineage-closure deletion。<b>Metric →</b>Deletion Flip Rate、Residual ASR、Minimum Cut Size、Retain FPR、Reacquisition Time。</p>
+<h3>如果只让我记住 5 句话</h3><ol><li>这篇把“删 memory 后重答”做成训练信号。</li><li>citation 是 observational，deletion flip 更接近 causal necessity。</li><li>full method 在 LoCoMo 达 77.5%。</li><li>32% 单-entry deletion 不 flip 主要暴露 redundancy。</li><li>它非常适合扩成 Agent Memory Unlearning 的 deletion closure。</li></ol>
+</details>
+<details open class="s"><summary>2. Reference-Grafting Matches Fine-Tuning at Eliciting Sandbagged Capabilities</summary>
+<p><b>基本信息：</b>Reference-Grafting Matches Fine-Tuning at Eliciting Sandbagged Capabilities；arXiv:2608.29458，2026-08-30；<a href="https://arxiv.org/abs/2608.29458">Paper</a>。</p>
+<h3>人话版</h3><p>作者研究“模型明明会但故意表现不会”的 sandbagging。关键发现是：与其给 activation 加一个方向，不如直接把某个内部坐标改成 honest reference 中对应的真实值。这个 reference grafting 在 11 个 password-locked models 上恢复 honest–sandbagged gap 的约 94–101%，几乎匹配 fine-tuning。对 unlearning 的启发非常直接：若所谓遗忘只是静态 suppression gate，那么 internal coordinate replacement 可能把能力几乎完整恢复。</p>
+<h3>Core Insight / Formula</h3><div class="eq">v = normalize(E[h|honest] − E[h|sandbag])
+s = hᵀv
+h' = h + (t* − s)v</div><p>与 additive steering 的区别是把目标坐标精确写到 honest value t*，而不是猜一个 α。</p>
+<h3>Experiment Setup</h3><p>11 个 fine-tuned password-locked models，1.5B–32B、多 architecture lineage；ARC-Easy 为主，迁移到 WMDP-bio/cyber、OpenBookQA，并测试 code generation。</p>
+<h3>Results Deep Dive</h3><ul><li>11 models 上恢复 +94% 到 +101% gap，匹配 fine-tuning。</li><li>WMDP 上多个 scale 也接近完整恢复。</li><li>m=2 paired captures 即约 +97%，m=5 接近 +100%。</li><li>同一 axis 可跨内容迁移，但跨 suppression mechanism 失败。</li><li>circuit-breaking 后 grafting 基本失败，说明动态 rerouting 是硬边界。</li></ul>
+<h3>Table/Figure Reading</h3><p>Table 1 看主恢复结果；Figure 1 看 cross-dataset transfer；circuit-breaking 图表是最关键反例：静态 lock 能解，持续 rerouting 不能。</p>
+<h3>Claim vs Evidence</h3><p>实验支持“静态低维 gate 可被 reference graft 解锁”，但不能证明真实 unlearning residue 也总是这种形式。</p>
+<h3>Contribution / Limitation</h3><p><span class="tag">New Mechanism</span><span class="tag">New Attack/Elicitation</span> 需要 white-box activation 与 honest reference，是主要限制。</p>
+<h3>Migration Analysis</h3><p>可做 Unlearning Suppression Axis Audit：对 GA/NPO/RMU 分别从少量 calibration targets 拟合 pre/post axis，再在 held-out forget targets 上做 graft recovery，测试“同 method 跨 target transfer”和“跨 method 不 transfer”。指标：Gap Recovery%、Worst-View ASR、Retain Δutility、Axis AUROC。</p>
+<h3>5 句话</h3><ol><li>静态 suppression gate 可能被极少样本内部 graft 完整解锁。</li><li>关键不是加向量，而是写回 honest coordinate。</li><li>方向跨内容但不跨机制。</li><li>动态 rerouting 能击败固定 graft。</li><li>它是 unlearning recovery attack 的强模板。</li></ol>
+</details>
+<details open class="s"><summary>3. Toward Latent Language Model Skills Steering and Optimization</summary>
+<p><b>基本信息：</b>Toward Latent Language Model Skills Steering and Optimization；arXiv:2608.29459，2026-08-30；<a href="https://arxiv.org/abs/2608.29459">Paper</a>。</p>
+<h3>人话版</h3><p>论文把 procedural skill 从 SKILL.md / prompt surface 推进到 activation space。很多数学与代码 skill 可以由 hidden-state direction 表示、注入、组合、个性化，并沿 optimization trajectory 演化。Qwen3-0.6B 上 34 个数学技能中 29 个被 steering 提升，平均约 +19.1pp；atomic directions 组合后，18 个 composite skills 平均 77.1%，高于文本 CoT 74.2%。对 Skill Unlearning 的核心启发：删外部 artifact 后，latent skill direction 可能仍在。</p>
+<h3>Method</h3><div class="flow">skill examples
+→ collect hidden states
+→ PCA or mean-difference
+→ latent direction v
+→ inject into later layers
+→ test atomic skill
+→ compose directions
+→ optimize skill direction over trajectory</div>
+<h3>关键公式</h3><div class="eq">v_comp = normalize(Σ α_i v_i)
+h'_l = h_l + αv_l</div>
+<h3>Results Deep Dive</h3><ul><li>29/34 math skills 提升，平均 +19.1pp。</li><li>Composite：Base 51.9、Txt-C 75.7、Txt-CoT 74.2、Vec 77.1。</li><li>18 composite skills 中 13 个 vector 最优。</li><li>个性化有 model-dependent failure，例如某些 1.7B 设置退化。</li><li>skill direction optimization 非单调，很多 setting 最佳 checkpoint 早于最终 step。</li></ul>
+<h3>Claim vs Evidence</h3><p>论文支持“procedural skill 有可操纵向量结构”，但方向提取在部分实验中使用了带正确答案/完整 derivation 的 worked examples，因此不能等同于自然自主状态中的唯一 causal skill representation。</p>
+<h3>Contribution / Limitation</h3><p><span class="tag">New Representation View</span><span class="tag">New Empirical Finding</span> 真创新是系统研究 steerability/composition/personalization/evolution。限制是 controlled tasks、线性组合不总成立、个性化有负例。</p>
+<h3>Migration Analysis</h3><p>做 Latent Skill Residue after Skill Unlearning：删除 external skill artifact 或做 weight-level unlearning 后，继续测 latent direction probe、steering recovery、atomic→composite recomposition，以及历史 trajectory 是否能重新生成 skill。</p>
+<h3>5 句话</h3><ol><li>Skill 不只存在于文件系统。</li><li>程序性能力可以表现成 latent direction。</li><li>atomic skill 有时能线性组合成 composite skill。</li><li>优化轨迹并不单调。</li><li>Skill Unlearning 应同时审计 artifact、latent representation 与 reacquisition。</li></ol>
+</details></section>
+
+<section id="a"><h2>Tier A</h2><details  class="a"><summary>4. Agent Zero Memory: Provenance-Aware Long-Term Memory for LLM Agents</summary>
+<p><a href="https://arxiv.org/abs/2608.29606">Paper</a></p>
+<h3>人话版</h3><p>Agent Zero Memory 同时维护 timeline、entity-event graph 与 Hierarchical Documentary Memory 三个 store；每条 learned item 带 origin、timestamp、evidence pointer，并要求回答只能引用真正打开过的 evidence。它对 unlearning 的价值主要在 provenance/version semantics，而非单纯 accuracy。</p>
+<h3>Method / Results</h3><p>Build 阶段生成多种 memory representation；Read 阶段 intent gate + source router + 三路 retrieval，再在 citation lock 下整合。论文报告 LongMemEval 95.60%、LoCoMo 93.60%，并强调不同 backbone 之间 accuracy 差距小于成本差距。</p>
+<h3>Migration</h3><p>做 Cross-Store Deletion Closure：同一 source 同时产生 event、graph edge、HDM note，删除后分别测三个 store 与 integrated answer 的 residue。<b>Worth Deep Reading: YES</b>。</p>
+</details><details  class="a"><summary>5. A Causal Model for Locating and Unlocking Sandbagging in Model Organisms</summary>
+<p><a href="https://arxiv.org/abs/2608.29461">Paper</a></p>
+<h3>人话版</h3><p>论文把 sandbagging 写成 write→intervention window→answer commit 的因果模型：早层写入 suppression signal，晚层 commit 答案，中间存在 single-layer graft 能解锁的窗口。</p>
+<h3>Main Results</h3><p>Prompt/FT/RL 多种 static locks 中，多数 run 的 single-layer graft 能恢复大部分能力；circuit-breaking 则几乎全部失败。说明静态 gate 与动态 rerouting 有机制级差异。</p>
+<h3>Migration</h3><p>对 unlearning 做 Write–Commit Residual Window Audit：比较 pre/post unlearn，在 token generation 中找 target evidence 的 write/commit，测试 single-layer patch recovery。<b>Worth Deep Reading: YES</b>。</p>
+</details><details  class="a"><summary>6. Last Step Matters: Early Uncertainty Cannot Predict Failure in Long-Horizon Agents</summary>
+<p><a href="https://arxiv.org/abs/2608.29685">Paper</a></p>
+<h3>人话版</h3><p>深度 research Agent 的早期 confidence 基本预测不了最终失败：50% progress 时主流 uncertainty metric 平均 AUROC 不超过约 0.60；最终 step verbal confidence 才明显变强。原因之一是 trajectory 中途会切换路径。</p>
+<h3>Main Results</h3><p>90% progress 之前大多数指标仍弱；external monitor 在部分 benchmark 上明显优于 verbal confidence；path switch 后 failure predictability 会显著提高。</p>
+<h3>Migration</h3><p>Continual Agent Unlearning 不应只在早期看一个 residual score；应监控 retrieval/path switch 与最后 decisive step，并定义 Time-to-Reacquire。<b>Worth Deep Reading: YES</b>。</p>
+</details><details  class="a"><summary>7. When Experience Becomes Instruction: Trajectory Poisoning in Self-Evolving Agent Skill Systems</summary>
+<p><a href="https://arxiv.org/abs/2608.05563">Paper</a></p>
+<h3>人话版</h3><p>自演化 skill system 会把成功 trajectory 蒸馏成未来可调用 skill。PoisonedEvolution 展示少量一致、因果叙述明确的恶意 trajectory 可以被 promotion 成长期 skill behavior。</p>
+<h3>Main Results</h3><p>多次一致支持比单次异常更容易跨 evolution boundary；在另一结构不同系统中，同类攻击仍可达到较高 skill embedding success。</p>
+<h3>Migration</h3><p>这是 Skill Unlearning 的反面镜像：删除 skill 后，如果 source trajectories 还在，系统可能再次 promotion。指标：Time-to-Reacquire、SER、minimum supporting trajectories。<b>Worth Deep Reading: YES</b>。</p>
+</details></section>
+<section id="b"><h2>Tier B</h2><details  class="b"><summary>8. Diachronic Hypergraphs for Orchestrated Multi-Agent Multimodal Memory Curation (MAGE)</summary>
+<p><a href="https://arxiv.org/abs/2608.29678">Paper</a>。<b>仅根据 Abstract / 可获取信息总结。</b></p>
+<p>用 heterogeneous temporal hypergraph 表示多 Agent 事件中的 agent/tool/document/evidence/decision 高阶关系。对 Multi-Agent Unlearning，可把 deletion closure 定义到 hyperedge level：删 evidence 后追踪所有含它的 higher-order event/decision descendants。由于只拿到摘要，未可靠引用具体数字。Potential Use: Benchmark / Future Idea。</p>
+</details><details  class="b"><summary>9. AgentLogs: A Dataset for Opening the Black Box of GitHub's Cloud Agent</summary>
+<p><a href="https://arxiv.org/abs/2608.29204">Paper</a></p>
+<p>AgentLogs 提供大规模真实 GitHub cloud agent 行为日志，包括 prompts、intermediate reasoning、tool calls、file/git/GitHub operations。对 Trajectory Unlearning 的价值在于：可以从真实 session 中抽 target file/tool interaction，研究删除某段 trajectory 后后续任务是否仍复用该 pattern。Potential Use: Dataset / Benchmark。</p>
+</details><details  class="b"><summary>10. RePair: Turning Retrieval Failures into Counterfactual Hard Pairs</summary>
+<p><a href="https://arxiv.org/abs/2608.29604">Paper</a></p>
+<p>RePair 从 retriever 的 top false positive 出发，用最小 counterfactual edit 制造 hard positive，并保留原样作为 hard negative，构造跨 decision boundary 的局部 pair。对 black-box unlearning attack，可以从“最接近恢复但尚未恢复”的 probe 出发做 minimal edit，学习 query-efficient residual boundary。Potential Use: Attack / Evaluation。</p>
+</details></section>
+
+<section id="ideas"><h2>Idea Mining</h2>
+<div class="card idea"><h3>Idea 1 — Deletion-Calibrated Memory Credit → Auditable Agent Unlearning Closure（Best Idea）</h3>
+<p><b>Inspiration：</b>Hindsight Memory-PRM。<b>Research Gap：</b>现有 Agent memory unlearning 很少有 entry-level causal deletion labels。</p>
+<p><b>Hypothesis：</b>source anchoring + controlled deletion-and-reanswer 能把 residual behavior 分解成 descendant-level causal support，并自动找到最小 deletion closure。</p>
+<p><b>Minimum Viable Experiment：</b>LoCoMo 50 facts，每个制造 1/2/4 redundant descendants；比较 source-only、retrieved-entry、all-descendant、learned minimal cut。<b>Metric：</b>Residual ASR、Deletion Flip Rate、Cut Size、Retain FPR、Query Budget。</p>
+<p><b>Novelty ★★★★★ · Feasibility ★★★★★ · Compute ★★☆☆☆ · Collision Risk 中 · Best Venue NeurIPS/ICLR。</b></p></div>
+
+<div class="card idea"><h3>Idea 2 — Mechanism-Axis Grafting Audit for Machine Unlearning</h3>
+<p><b>Inspiration：</b>Reference-Grafting + Causal Sandbagging。<b>Hypothesis：</b>GA/NPO/RMU 可能各自产生内容无关、机制特异 suppression axis，可从少量 calibration targets 学出并迁到 held-out forget targets。</p>
+<p><b>MVE：</b>TOFU/MLLMU，Qwen/LLaVA，GA/NPO/RMU，direct/cloze/pairwise/free-gen。<b>Metric：</b>Gap Recovery%、Worst-View ASR、Axis AUROC、Retain Δutility。<b>Novelty ★★★★★ · Feasibility ★★★★☆ · Compute ★★★☆☆ · Collision Risk 高。</b></p></div>
+
+<div class="card idea"><h3>Idea 3 — Latent Skill Residue after Explicit Skill Deletion</h3>
+<p><b>Inspiration：</b>Latent Skill Directions + PoisonedEvolution。三层 closure：Artifact deletion → Latent direction audit → Trajectory-driven reacquisition audit。</p>
+<p><b>Metric：</b>Latent Skill AUROC、Steering Recovery、Reacquisition Rate、Time-to-Reacquire、Retain Skill FPR。<b>Novelty ★★★★★ · Feasibility ★★★★★ · Compute ★★☆☆☆ · Collision Risk 低中。</b></p></div>
+
+<div class="card idea"><h3>Idea 4 — Last-Decisive-Step Leakage Monitor for Continual Agent Unlearning</h3>
+<p><b>Inspiration：</b>Last Step Matters。删除后早期低 leakage 不代表后面不会重新获取 target；更应监控最后一次 path switch / retrieval reacquisition 之后的局部状态。</p>
+<p><b>Metric：</b>AUROC over time、Time-to-Reacquire、ASR after last switch。<b>Novelty ★★★★☆ · Feasibility ★★★★☆ · Compute ★★★☆☆ · Collision Risk 中。</b></p></div>
+</section>
+
+<section id="collision" class="card warn"><h2>Collision Detection</h2>
+<p><b>⚠️ Activation/Recovery：</b>Reference-Grafting、Causal Sandbagging、activation patching/RULER/LENS-U 共同说明表示侧恢复已经很拥挤。单纯“某层还能看出 target”不够，新差异化应强调同 unlearning method 跨 target suppression axis、mechanism-specific transfer、few-shot graft recovery、dynamic rerouting boundary。</p>
+<p><b>⚠️ Agent Memory Unlearning：</b>Hindsight Memory-PRM 已经使用 single-entry deletion-and-reanswer；Stale Constraints 已研究 provenance verification budget；Agent Zero/MAGE 强化 provenance/multi-store structure。剩余 gap 是 deletion request semantics、redundant descendants、joint/minimal deletion closure、cross-store/cross-agent descendants。</p>
+<p><b>⚠️ Skill Unlearning：</b>Latent Skill Directions 证明 latent skill object，PoisonedEvolution 证明 trajectory 可重新 promotion。只删 external skill artifact 不足，应该做 Artifact→Latent Direction→Trajectory Reacquisition 三层闭包。</p></section>
+
+<section id="priority" class="card"><h2>Reading Priority</h2><table><tr><th>Priority</th><th>Paper</th><th>最值得看</th></tr>
+<tr><td>READ NOW</td><td>Hindsight Memory-PRM</td><td>Deletion protocol；Figure 2；Table 10；68% flip / 32% redundancy</td></tr>
+<tr><td>READ NOW</td><td>Reference-Grafting</td><td>Table 1；transfer matrix；mechanism specificity；circuit-breaking</td></tr>
+<tr><td>READ NOW</td><td>Latent Skill Directions</td><td>composition table；evolution trajectory；extraction disclosure</td></tr>
+<tr><td>READ THIS WEEK</td><td>Causal Sandbagging Model</td><td>write/recovery/commit 三层曲线</td></tr>
+<tr><td>READ THIS WEEK</td><td>Agent Zero Memory / PoisonedEvolution</td><td>provenance definitions；trajectory→skill promotion</td></tr>
+<tr><td>SAVE</td><td>Last Step Matters / MAGE / AgentLogs / RePair</td><td>trajectory monitor、hypergraph lineage、real logs、counterfactual hard pairs</td></tr>
+</table></section>
+
+<section id="watch" class="card"><h2>Candidate Pool / Watchlist</h2><p>完整 43 篇 Candidate Pool 如下。正式收录 10 篇，其余进入 Watchlist、Related Work 或 7-day Cooling。</p><table><tr><th>#</th><th>Title</th><th>Category</th><th>Status</th></tr><tr><td>1</td><td><a href='https://arxiv.org/abs/2608.29605'>Hindsight Memory-PRM: Supervising Memory Management with Auditable Hindsight Credit</a></td><td>Agent Memory / Credit / Deletion</td><td>NEW</td></tr>
+<tr><td>2</td><td><a href='https://arxiv.org/abs/2608.29606'>Agent Zero Memory: Provenance-Aware Long-Term Memory for LLM Agents</a></td><td>Agent Memory / Provenance</td><td>NEW</td></tr>
+<tr><td>3</td><td><a href='https://arxiv.org/abs/2608.29678'>Diachronic Hypergraphs for Orchestrated Multi-Agent Multimodal Memory Curation</a></td><td>Multi-Agent Multimodal Memory</td><td>NEW</td></tr>
+<tr><td>4</td><td><a href='https://arxiv.org/abs/2608.29685'>Last Step Matters: Early Uncertainty Cannot Predict Failure in Long-Horizon Agents</a></td><td>Agent Trajectory / Monitoring</td><td>NEW</td></tr>
+<tr><td>5</td><td><a href='https://arxiv.org/abs/2608.29458'>Reference-Grafting Matches Fine-Tuning at Eliciting Sandbagged Capabilities</a></td><td>Activation / Recovery Audit</td><td>NEW</td></tr>
+<tr><td>6</td><td><a href='https://arxiv.org/abs/2608.29459'>Toward Latent Language Model Skills Steering and Optimization: An Empirical Study</a></td><td>Latent Skill / Activation</td><td>NEW</td></tr>
+<tr><td>7</td><td><a href='https://arxiv.org/abs/2608.29460'>Can escalation channels redirect reward hacking toward defect disclosure?</a></td><td>Agent Safety / Reward Hacking</td><td>NEW</td></tr>
+<tr><td>8</td><td><a href='https://arxiv.org/abs/2608.29461'>A Causal Model for Locating and Unlocking Sandbagging in Model Organisms</a></td><td>Causal Representation / Recovery</td><td>NEW</td></tr>
+<tr><td>9</td><td><a href='https://arxiv.org/abs/2608.29204'>AgentLogs: A Dataset for Opening the Black Box of GitHub&#x27;s Cloud Agent</a></td><td>Agent Trajectory / Dataset</td><td>NEW</td></tr>
+<tr><td>10</td><td><a href='https://arxiv.org/abs/2608.29604'>RePair: Turning Retrieval Failures into Counterfactual Hard Pairs</a></td><td>Counterfactual Retrieval</td><td>NEW</td></tr>
+<tr><td>11</td><td><a href='https://arxiv.org/abs/2608.05563'>When Experience Becomes Instruction: Trajectory Poisoning in Self-Evolving Agent Skill Systems</a></td><td>Agent Skill / Security</td><td>BACKFILL</td></tr>
+<tr><td>12</td><td><a href='https://arxiv.org/abs/2608.01558'>Securing Agentic AI: From Per-Action Checks to Trajectory Assurance</a></td><td>Agent Security / Trajectory</td><td>BACKFILL</td></tr>
+<tr><td>13</td><td><a href='https://arxiv.org/abs/2604.16548'>A Survey on the Security of Long-Term Memory in LLM Agents</a></td><td>Agent Memory Security</td><td>BACKFILL</td></tr>
+<tr><td>14</td><td><a href='https://arxiv.org/abs/2604.08224'>Externalization in LLM Agents: Memory, Skills, Protocols and Harness Engineering</a></td><td>Agent Externalization / Survey</td><td>BACKFILL</td></tr>
+<tr><td>15</td><td><a href='https://arxiv.org/abs/2602.12430'>Agent Skills for Large Language Models: Architecture, Acquisition, Security, and the Path Forward</a></td><td>Agent Skills / Survey</td><td>BACKFILL</td></tr>
+<tr><td>16</td><td><a href='https://arxiv.org/abs/2604.02837'>Towards Secure Agent Skills: Architecture, Threat Taxonomy, and Security Analysis</a></td><td>Agent Skill Security</td><td>BACKFILL</td></tr>
+<tr><td>17</td><td><a href='https://arxiv.org/abs/2607.25270'>Where Steering Signals Come From: Activation Source Selection in Activation Steering</a></td><td>Activation Steering</td><td>BACKFILL</td></tr>
+<tr><td>18</td><td><a href='https://arxiv.org/abs/2605.11887'>Qwen-Scope: Turning Sparse Features into Development Tools for Large Language Models</a></td><td>SAE / Interpretability</td><td>BACKFILL</td></tr>
+<tr><td>19</td><td><a href='https://arxiv.org/abs/2604.09839'>Steered LLM Activations are Non-Surjective</a></td><td>Activation Steering / Theory</td><td>BACKFILL</td></tr>
+<tr><td>20</td><td><a href='https://arxiv.org/abs/2602.06022'>Correctness-Optimized Residual Activation Lens (CORAL)</a></td><td>Inference-Time Steering</td><td>BACKFILL</td></tr>
+<tr><td>21</td><td><a href='https://arxiv.org/abs/2608.04548'>A Model Merging Approach for Continual MLLM Unlearning</a></td><td>Continual MLLM Unlearning</td><td>BACKFILL</td></tr>
+<tr><td>22</td><td><a href='https://arxiv.org/abs/2607.05898'>Auditing of Unlearning Algorithms</a></td><td>Machine Unlearning / Audit</td><td>COOLING</td></tr>
+<tr><td>23</td><td><a href='https://arxiv.org/abs/2605.01129'>Revisiting Privacy Leakage in Machine Unlearning: Membership Inference Beyond the Forgotten Set</a></td><td>Unlearning / MIA</td><td>COOLING</td></tr>
+<tr><td>24</td><td><a href='https://arxiv.org/abs/2608.28233'>REINS: Refusal-Enhanced Inhibitory Steering with Sparse Autoencoder Features</a></td><td>SAE Steering</td><td>COOLING</td></tr>
+<tr><td>25</td><td><a href='https://arxiv.org/abs/2608.28241'>Beyond Task-Only Matching: Personalized Skill Routing with Counterfactual Evaluation</a></td><td>Skill Routing</td><td>COOLING</td></tr>
+<tr><td>26</td><td><a href='https://arxiv.org/abs/2608.25553'>When Stale Constraints Go Unchecked</a></td><td>Agent Memory / Provenance</td><td>COOLING</td></tr>
+<tr><td>27</td><td><a href='https://arxiv.org/abs/2608.20960'>Can Scientific Claims Be Removed from Large Language Models?</a></td><td>LLM Unlearning / Evaluation</td><td>COOLING</td></tr>
+<tr><td>28</td><td><a href='https://arxiv.org/abs/2608.22527'>Stress Testing Unlearning Algorithms</a></td><td>Unlearning / Robustness</td><td>COOLING</td></tr>
+<tr><td>29</td><td><a href='https://arxiv.org/abs/2608.26263'>SKILL.state: Scalable Long-Horizon Agent Skills</a></td><td>Agent State / Skill</td><td>COOLING</td></tr>
+<tr><td>30</td><td><a href='https://arxiv.org/abs/2608.26530'>PILOT in the Loop</a></td><td>Agent Self-Improvement</td><td>BACKFILL</td></tr>
+<tr><td>31</td><td><a href='https://arxiv.org/abs/2608.26895'>When Memory Takes Gradients</a></td><td>Vector Agent Memory</td><td>BACKFILL</td></tr>
+<tr><td>32</td><td><a href='https://arxiv.org/abs/2608.26746'>FaultLens</a></td><td>Behavioral Test Suite</td><td>BACKFILL</td></tr>
+<tr><td>33</td><td><a href='https://arxiv.org/abs/2605.27366'>MUSE-Autoskill</a></td><td>Agent Skill Lifecycle</td><td>BACKFILL</td></tr>
+<tr><td>34</td><td><a href='https://arxiv.org/abs/2605.18401'>SkillsVote</a></td><td>Skill Governance</td><td>BACKFILL</td></tr>
+<tr><td>35</td><td><a href='https://arxiv.org/abs/2607.16621'>From Memory to Skills: Evidence-Grounded Co-Evolution Governance</a></td><td>Memory→Skill Provenance</td><td>BACKFILL</td></tr>
+<tr><td>36</td><td><a href='https://arxiv.org/abs/2602.17692'>Agentic Unlearning</a></td><td>Agent Unlearning</td><td>BACKFILL</td></tr>
+<tr><td>37</td><td><a href='https://arxiv.org/abs/2604.19108'>Robust Continual Unlearning against Knowledge Erosion and Forgetting Reversal</a></td><td>Continual Unlearning</td><td>BACKFILL</td></tr>
+<tr><td>38</td><td><a href='https://arxiv.org/abs/2607.07907'>Multimodal Unlearning Across Vision, Language, Video, and Audio</a></td><td>Multimodal Unlearning / Survey</td><td>BACKFILL</td></tr>
+<tr><td>39</td><td><a href='https://arxiv.org/search/?query=Learning+What+to+Forget+Learned+Token-Level+Importance&searchtype=all'>Learning What to Forget: Learned Token-Level Importance</a></td><td>Token-Level Unlearning</td><td>BACKFILL</td></tr>
+<tr><td>40</td><td><a href='https://arxiv.org/search/?query=Measuring+Depth+of+LLM+Unlearning+via+Activation+Patching&searchtype=all'>Measuring Depth of LLM Unlearning via Activation Patching</a></td><td>Representation Audit</td><td>BACKFILL</td></tr>
+<tr><td>41</td><td><a href='https://arxiv.org/abs/2608.25210'>Bolt-on, Verifiable Provenance for LLM-Powered Data Processing</a></td><td>Provenance / Verification</td><td>BACKFILL</td></tr>
+<tr><td>42</td><td><a href='https://arxiv.org/abs/2608.22339'>When Not to Imitate: Boundary-Aware Skill Memory</a></td><td>Skill Memory / Boundary</td><td>BACKFILL</td></tr>
+<tr><td>43</td><td><a href='https://arxiv.org/abs/2608.28264'>Finding Where the Buck Stops: Automated Failure Attribution for Multi-Agent Collaboration</a></td><td>Multi-Agent / Credit Assignment</td><td>BACKFILL</td></tr></table></section>
+
+<section id="stats"><h2>今日统计</h2><div class="grid">
+<div class="card"><div class="kpi">43</div>Candidate Pool</div>
+<div class="card"><div class="kpi">10</div>Formal Papers</div>
+<div class="card"><div class="kpi">3 / 4 / 3</div>Tier S / A / B</div>
+<div class="card"><div class="kpi">22</div>BACKFILL</div>
+<div class="card"><div class="kpi">33</div>Watchlist / Cooling</div>
+<div class="card"><div class="kpi">8</div>7-day Deep-Read Cooling exclusions</div>
+</div></section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2><ul>
+<li><a href="https://arxiv.org/html/2608.29605">Hindsight Memory-PRM</a></li>
+<li><a href="https://arxiv.org/html/2608.29458">Reference-Grafting</a></li>
+<li><a href="https://arxiv.org/html/2608.29459">Latent Skill Directions</a></li>
+<li><a href="https://arxiv.org/html/2608.29461">Causal Sandbagging Model</a></li>
+<li><a href="https://arxiv.org/html/2608.29606">Agent Zero Memory</a></li>
+<li><a href="https://arxiv.org/html/2608.29685">Last Step Matters</a></li>
+<li><a href="https://arxiv.org/html/2608.05563">PoisonedEvolution</a></li>
+<li><a href="https://arxiv.org/abs/2608.29678">MAGE</a></li>
+<li><a href="https://arxiv.org/abs/2608.29204">AgentLogs</a></li>
+<li><a href="https://arxiv.org/abs/2608.29604">RePair</a></li>
+</ul></section>
+</main></body></html>

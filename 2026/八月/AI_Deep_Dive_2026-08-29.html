@@ -1,0 +1,83 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Deep Dive — 2026-08-29</title>
+<style>
+body{margin:0;background:#f6f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1160px;margin:auto;padding:30px 24px 90px}.card,.paper{background:#fff;border:1px solid #e3e7ef;border-radius:16px;padding:24px 26px;margin:18px 0}
+h1{font-size:35px}h2{font-size:27px;border-bottom:1px solid #e5e7eb;padding-bottom:8px}h3{font-size:20px;margin-top:27px}a{color:#3158cf;text-decoration:none}
+nav{background:#fff;border:1px solid #e3e7ef;border-radius:14px;padding:16px 20px;columns:2}nav a{display:block;padding:3px}
+.flow{font-family:ui-monospace,Menlo,monospace;background:#111827;color:#f8fafc;padding:15px;border-radius:11px;white-space:pre-wrap}.eq{font-family:Georgia,serif;background:#fafbff;border:1px solid #e3e7ef;padding:13px;border-radius:10px}
+table{width:100%;border-collapse:collapse}th,td{border:1px solid #e3e7ef;padding:9px;vertical-align:top}th{background:#f3f5f9}
+.good{background:#edf8f1;border-left:5px solid #338754;padding:14px}.warn{background:#fff3d5;border-left:5px solid #c98a12;padding:14px}
+</style></head><body><main>
+<section class="card"><div>Daily Top Papers Deep Dive · regenerated</div><h1>AI Deep Dive — 2026-08-29</h1>
+<p>独立检索后只保留2篇保证深度：<b>WikiSkill</b> 与 <b>GraphMemix</b>。前者对应未来重新编译，后者对应query-time关系恢复；两者合起来构成 Agent Unlearning 的 <b>Recompilation Closure + Retrieval Closure</b>。</p></section>
+<nav><a href="#p1">Paper 1 — WikiSkill</a><a href="#p2">Paper 2 — GraphMemix</a><a href="#syn">Synthesis</a><a href="#opp">Opportunities</a><a href="#collision">Collision</a><a href="#priority">Reproduction</a></nav>
+
+<section id="p1" class="paper"><h2>Paper 1 — WikiSkill: Compiling Agent Experience into Persistent Knowledge for Skill Evolution</h2>
+<p><b>Authors:</b> Liyan Tang, Cyrus Rashtchian, Chun-Sung Ferng, Andrew Tomkins, Da-Cheng Juan, Tu Vu · <b>Date:</b> 2026-08-27 · <b>Status:</b> arXiv preprint · <a href="https://arxiv.org/html/2608.27454">Paper</a></p>
+<h3>5.2 一句话定位</h3><p>把Agent经验拆成Raw→Wiki→Skill三层，让失败与成功经验先沉淀成persistent knowledge，再编译成procedural skill。</p>
+<h3>5.3 人话版</h3><p>传统self-improving agent往往直接从trajectory改skill，失败原因散落在历史中。WikiSkill加入中间Wiki：Raw层保存原始trajectory；Wiki层保存patterns、proposal diff、accept/reject与skill-impact；Skill层保留最终可执行procedure。Skill proposal失败时只rollback skill，Wiki仍保留失败知识。五benchmark五模型上WikiSkill稳定超过skill-evolution baselines；Qwen-3.6-27B平均39.4→63.3，Gemini-3.5-Flash49.5→68.1。最关键ablation：Proposer无Wiki avg48.7，有Wiki63.7；但Inference Agent也直接看Wiki反而63.7→60.9，说明knowledge accumulation和execution access应该分离。</p>
+<h3>5.4 Background & Research Gap</h3><p>Trace2Skill/EvoSkill/SkillOpt能利用execution history，但经验往往仍附着在优化过程上，没有成为独立、可累积、可检索、可审计的知识层。WikiSkill填的是“经验如何变成persistent declarative knowledge，再反向生成procedure”的gap。</p>
+<h3>5.5 Core Insight</h3><p>Raw trace保真但冗长；Skill简洁但容易丢失失败原因。Wiki是中间表示，尤其保存rejected proposals，这些negative evidence会影响下一轮skill development。</p>
+<h3>5.6 Method Deep Dive</h3><div class="flow">Dtrain/Dval/Dtest → Inference Agent with current Skills → immutable Raw trajectories → Wiki Maintainer → pattern pages / logs / skill-impact → Skill Proposer → one atomic edit → validation gate → accept or rollback Skill → Wiki always persists → next iteration</div>
+<h3>5.7 核心公式</h3><div class="eq">τ_i ~ π(x_i;S_{k-1})</div><div class="eq">W'_k ← M_WM(W_{k-1},T_sample,k)</div><div class="eq">P_k ← M_P(W'_k,S_{k-1},T_train,k)</div><div class="eq">S_k=S'_k if R(T_val,k)&gt;R_best, else S_{k-1}</div><p>真正关键不是accept/reject gate，而是Wiki不随rollback消失。</p>
+<h3>5.8 Toy Example</h3><p>ALFWorld里Agent反复“拿物品→查看→移动→又放回原位”。第一次proposal失败被rollback，但Wiki记录failure pattern。下一轮Proposer看到失败历史后生成更具体skill。若只删除最终SKILL.md，Wiki与Raw仍可能把它重新编译出来。</p>
+<h3>5.9 Baseline Deep Comparison</h3><table><tr><th>Baseline</th><th>机制</th><th>问题</th><th>WikiSkill差异</th></tr>
+<tr><td>Trace2Skill</td><td>trace→skill</td><td>长期知识弱</td><td>persistent Wiki</td></tr>
+<tr><td>EvoSkill</td><td>proposal/eval history</td><td>历史偏优化artifact</td><td>structured patterns</td></tr>
+<tr><td>SkillOpt</td><td>rejected feedback</td><td>无独立knowledge layer</td><td>Wiki compounding</td></tr></table>
+<h3>5.10 Experiment Setup</h3><p>Benchmarks：LiveMathematicianBench、SealQA、SpreadsheetBench、OfficeQA、ALFWorld。Models：Qwen-3.5-4B/9B、Qwen-3.6-27B、Gemma-4-31B-It、Gemini-3.5-Flash。所有方法从empty skills开始，完整evolution独立跑3次。</p>
+<h3>5.11 Metrics</h3><p>各benchmark原生task score/accuracy；validation score用于proposal gate，最终generalization看unseen test split；cross-model transfer用于衡量procedure portability。</p>
+<h3>5.12 Results Deep Dive</h3><ol>
+<li>Qwen4B 26.2→38.5。</li><li>Qwen9B 29.9→47.4。</li><li>Qwen27B 39.4→63.3。</li><li>Gemma31B 41.3→54.9。</li><li>Gemini Flash49.5→68.1。</li>
+<li>Qwen9B+WikiSkill47.4超过Qwen27B NoSkill39.4。</li><li>Cross-model transfer可显著正迁移，例如Spreadsheet24.3→50.5。</li><li>也会严重负迁移，例如Gemini Spreadsheet50.5→18.1。</li><li>Proposer无Wiki48.7→有Wiki63.7。</li><li>Inference也看Wiki时63.7→60.9。</li></ol>
+<h3>5.13 Table / Figure Reading</h3><p>Figure2：Raw/Wiki/Skill生命周期；Table1：五模型×五benchmark；Table2：cross-model transfer正负迁移；Table3：Wiki access ablation；Figure3：失败proposal如何成为后续negative evidence。</p>
+<h3>5.14 Ablation</h3><p>去掉Wiki使平均下降15分；给Inference Agent Wiki又下降2.8分，说明knowledge accumulation和execution-time context不是一回事。</p>
+<h3>5.15 Claim vs Evidence</h3><p>支持persistent knowledge促进skill evolution；未证明长期Wiki不会stale、不会泄露敏感信息，也没有直接测试delete/privacy。</p>
+<h3>5.16 Contribution</h3><p>Raw/Wiki/Skill三层架构；persistent pattern consolidation；proposal provenance；cross-model transfer与negative-transfer发现。</p>
+<h3>5.17 Limitation</h3><p>Wiki永久积累可能保存错误/敏感信息；validation可能逐轮过拟合；cross-model portability不稳定。</p>
+<h3>5.18 Reproduction View</h3><p>最小复现选ALFWorld+Qwen9B，跑Direct trace→skill、ProposerWiki、Inference+ProposerWiki三版，优先验证Table3方向。</p>
+<h3>5.19 Research Value</h3><p>Baseline ★★★★★；Migration ★★★★★；Attack ★★★★★；Evaluation ★★★★★；Benchmark ★★★★☆；New Paper ★★★★★。</p>
+<h3>5.20 Migration 1 — Wiki-to-Skill Reacquisition Attack</h3><p>删除target skill后继续3轮evolution，比较Wiki intact / Wiki pattern delete / full lineage delete。Metric：Skill Reacquisition Rate、Behavioral Equivalence、Iterations-to-Recovery、Retain Utility。</p>
+<h3>5.20 Migration 2 — Provenance-Closed Agent Unlearning</h3><p>构建Raw→Wiki→Skill→later proposals lineage graph，比较Skill-only、Wiki+Skill、Raw+Wiki+Skill deletion。Metric：Residual Influence、Minimum Lineage Cut、Retain Collateral。</p>
+<h3>5.21 Attack / Verification Lens</h3><p>最直接attack是delete then evolve。可定义Recompilation Recovery Rate：target procedure被删后经正常经验编译重新出现的概率。</p>
+<h3>5.22 与Paper 2关系</h3><p>WikiSkill是写入/重新编译路径；GraphMemix是读取/重新发现路径。</p>
+<h3>5.23 记住10句话</h3><ol><li>Raw、Wiki、Skill三层。</li><li>Skill可rollback，Wiki不rollback。</li><li>Wiki保存失败知识。</li><li>Proposer看Wiki48.7→63.7。</li><li>Inference也看Wiki反而60.9。</li><li>Qwen27B39.4→63.3。</li><li>小模型+skill可超过大模型无skill。</li><li>跨模型skill可正迁移。</li><li>也可严重负迁移。</li><li>删除skill不删Wiki可能重建。</li></ol></section>
+
+<section id="p2" class="paper"><h2>Paper 2 — GraphMemix: Query-Aware Evidence Forests for Long-Term Multimodal Agent Memory</h2>
+<p><b>Authors:</b> Geng Li, Yuhao Wang, Dong Li, Jianye Hao, Yuxin Peng · <b>Date:</b> 2026-08-27 · <a href="https://arxiv.org/html/2608.26983">Paper</a></p>
+<h3>5.2 一句话定位</h3><p>把长期多模态memory retrieval从独立Top-K改成query-conditioned evidence forest，在固定K条memory预算下联合选node和relation。</p>
+<h3>5.3 人话版</h3><p>传统Top-K会拿到相似但重复的memory，漏掉语义不相似却沿session/事件关系才能找到的关键证据。GraphMemix用多view检索24个seed，扩成最多48个candidate；Node Verifier判断direct support，ECV判断相对anchor的new fact/clarification/corroboration，最后在K=10预算下选evidence forest。Qwen3-VL macro Judge Accuracy49.80→61.55，Gemma4也+12.33pp；不同dataset中15.14%–39.70%的gold原本不在top-10，却是relation-recoverable。</p>
+<h3>5.4 Background & Gap</h3><p>长期多模态memory常需要跨时间、跨模态组合。提前summary可能压掉未来query才需要的细节，embedding Top-K又看不到relation。本文填的是joint evidence-set construction。</p>
+<h3>5.5 Core Insight</h3><p>一条memory有direct utility；另一条memory可能单独不强，但相对anchor提供incremental utility。这两种价值不应压成单一pointwise score。</p>
+<h3>5.6 Method Deep Dive</h3><div class="flow">archive+query → multi-view seeds L=24 → schema + mutual-kNN expansion → candidates M=48 → Node Verifier → anchors → ECV edge roles → trusted graph → forest optimization under K=10 → ordered evidence → frozen reader</div>
+<h3>5.7 核心公式</h3><div class="eq">max_(S,F) U_node(S|q) − C_edge(F|q) − C_open(S,F)</div><p>奖励有用node，惩罚不可靠edge和过多独立chain。</p>
+<h3>5.8 Toy Example</h3><p>用户问“东京旅行最后订了哪家酒店？”Top-K抓到东京照片和酒店页面，但漏掉后续聊天“就订第二家”。GraphMemix从hotel-B anchor沿same-session relation找到聊天并补全证据链。若删除direct booking memory但聊天仍可达，target仍可恢复。</p>
+<h3>5.9 Baseline Deep Comparison</h3><table><tr><th>Baseline</th><th>机制</th><th>Failure</th><th>GraphMemix差异</th></tr>
+<tr><td>A-MEM</td><td>structured notes</td><td>question-agnostic</td><td>query-time graph</td></tr>
+<tr><td>UniversalRAG</td><td>multimodal retrieval</td><td>relation弱</td><td>evidence forest</td></tr>
+<tr><td>MemGuide</td><td>intent-guided</td><td>仍偏pointwise</td><td>incremental edges</td></tr>
+<tr><td>Top-K</td><td>embedding similarity</td><td>漏低相似gold</td><td>relation expansion</td></tr></table>
+<h3>5.10 Experiment Setup</h3><p>Datasets：ATM-Bench、Mem-Gallery、MemEye、H2HMem。Readers：Qwen3-VL-8B、Gemma4 12B。Encoder：gme-Qwen2-VL-2B，1536-d。L=24、H=1、k=8、M=48、K=10。</p>
+<h3>5.11 Metrics</h3><p>Judge Accuracy、EM、MCQ EM、Lexical Recall、Recall@K/Hit@K、Lifecycle time。</p>
+<h3>5.12 Results Deep Dive</h3><ol><li>Qwen macro49.80→61.55。</li><li>ATM +6.80。</li><li>Mem-Gallery +12.57。</li><li>MemEye +5.66。</li><li>H2HMem +16.60。</li><li>Gemma macro +12.33。</li><li>Ablation49.20→53.60→58.80→59.70→61.55。</li><li>15.14%–39.70% gold relation-recoverable。</li><li>eligible questions中40.08%–68.48%至少恢复一个gold。</li><li>lifecycle相对A-MEM/VimRAG/LightMem快约1.78×/4.27×/4.74×。</li></ol>
+<h3>5.13 Table / Figure Reading</h3><p>Figure1：三阶段架构；Table1：主结果；Table3：增量ablation；Table4：Direct/Recoverable/NoAccess；Table6：ECV压缩edge但提高Hit@10。</p>
+<h3>5.14 Ablation</h3><p>Multi-view提高candidate recall；Node Verifier是最大单步增益；ECV过滤relation；Forest比pointwise relation bonus再有额外增益。</p>
+<h3>5.15 Claim vs Evidence</h3><p>支持query-conditioned evidence forest提升准确率和生命周期效率；未证明relation是严格因果，也未直接测试delete/privacy。</p>
+<h3>5.16 Contribution</h3><p>Query-conditioned Evidence Forest；node/edge分离verification；relation-recoverable gold发现；accuracy–lifecycle Pareto。</p>
+<h3>5.17 Limitation</h3><p>LLM-as-judge偏差；No Access证据仍找不到；relation本身可能成为隐私恢复通道。</p>
+<h3>5.18 Reproduction View</h3><p>先跑ATM或MemEye子集，按Top-K→Multi-view→Node→ECV→Forest逐步复现Table3。</p>
+<h3>5.19 Research Value</h3><p>Baseline ★★★★★；Migration ★★★★★；Attack ★★★★★；Evaluation ★★★★★；Benchmark ★★★★★；New Paper ★★★★★。</p>
+<h3>5.20 Migration 1 — Direct / Recoverable / Closed Memory Unlearning</h3><p>删除target后把状态分成Direct、Relation-Recoverable、Closed。Metric：Direct Leakage、Relation Recovery Rate、Closure Rate、Retain Recall。</p>
+<h3>5.20 Migration 2 — Cross-Modal Recovery Graph Attack</h3><p>把image/caption/OCR/session-neighbor视为attack edges，搜索最短recovery path。Metric：ASR@budget、Minimum Recovery Path、Cross-Modal Closure。</p>
+<h3>5.21 Attack / Verification Lens</h3><p>GraphMemix几乎可以直接当memory recovery attacker；最自然metric是Directly Accessible / Relationally Recoverable / Closed三态。</p>
+<h3>5.22 与Paper 1关系</h3><p>WikiSkill负责未来重新编译；GraphMemix负责当前关系恢复。Agent Unlearning需要同时关闭两条路径。</p>
+<h3>5.23 记住10句话</h3><ol><li>不是Top-K，而是evidence forest。</li><li>Node看direct support。</li><li>Edge看incremental support。</li><li>Qwen macro49.80→61.55。</li><li>Gemma也+12.33pp。</li><li>15%–40% gold可由relation找回。</li><li>Node verifier是最大单步增益。</li><li>Forest还有额外增益。</li><li>NoAccess仍是硬上限。</li><li>最强迁移是Direct/Recoverable/Closed三态。</li></ol></section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2><p>WikiSkill揭示写入侧重建：experience→wiki→skill；GraphMemix揭示读取侧恢复：query→anchor→relation→evidence chain。完整Agent Unlearning必须同时防止Recompilation和Retrieval Recovery。</p></section>
+<section id="opp" class="card good"><h2>Best Migration — Recompilation + Retrieval Closure</h2><p>MVE：20 target skills/events；删除后继续3轮WikiSkill evolution，同时运行GraphMemix-style relation recovery；比较source-only、lineage delete、relation closure、full closure。Metric：Recompilation Recovery Rate、Relation Recovery Rate、Minimum Recovery Path、Retain Utility。</p></section>
+<section id="collision" class="card warn"><h2>Collision</h2><p>Skill lifecycle已有EvoMal/Repo2Skill-Evo/Coalition-Aware；Memory recovery已有InjecMEM/Agentic Unlearning/GraphMemix。真正的新意应放在benign procedural reacquisition + provenance closure + multimodal relation recovery + direct/recoverable/closed三态verification。</p></section>
+<section id="priority" class="card"><h2>Reading / Reproduction Priority</h2><table><tr><th>Paper</th><th>先看</th><th>最小复现</th></tr>
+<tr><td>WikiSkill</td><td>Figure2；Table1/2/3；Figure3</td><td>ALFWorld：NoWiki / ProposerWiki / Inference+ProposerWiki</td></tr>
+<tr><td>GraphMemix</td><td>Figure1；Table1/3/4/6</td><td>ATM/MemEye：Top-K→Multi-view→Node→ECV→Forest</td></tr></table></section>
+</main></body></html>

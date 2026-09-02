@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-09-01</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#182132;--muted:#667085;--line:#e5e7eb;--blue:#3157d5;--s:#fff4d6;--a:#eef5ff;--b:#f1f8f1;--warn:#fff2df}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1220px;margin:auto;padding:30px 24px 90px}
+h1{font-size:36px;line-height:1.25;margin:.2em 0 .45em}
+h2{font-size:27px;margin-top:38px;border-bottom:1px solid var(--line);padding-bottom:8px}
+h3{font-size:20px;margin-top:24px}
+a{color:var(--blue);text-decoration:none}
+.card,details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 25px;margin:16px 0;box-shadow:0 4px 16px rgba(20,30,50,.035)}
+summary{font-size:19px;font-weight:850;cursor:pointer}
+.s{background:var(--s)}.a{background:var(--a)}.b{background:var(--b)}
+.warn{background:var(--warn);border-left:5px solid #d58a15}.idea{border-left:5px solid var(--blue)}
+nav{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;columns:2;margin:18px 0}
+nav a{display:block;padding:3px 0}.muted{color:var(--muted)}
+.flow{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#111827;color:#fff;border-radius:10px;padding:14px;white-space:pre-wrap}
+table{width:100%;border-collapse:collapse;margin:12px 0}th,td{border:1px solid var(--line);padding:9px;vertical-align:top}th{background:#f3f5f9}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.kpi{font-size:29px;font-weight:850}
+</style>
+</head>
+<body><main>
+
+<header class="card">
+<div class="muted">Daily AI Research Radar & Idea Miner</div>
+<h1>AI Research Radar — 2026-09-01</h1>
+<p>本文件为 2026-09-01 日报的重新导出版。Candidate Pool 45 篇，正式收录 12 篇，Tier S/A/B = 3/5/4。重点继续围绕 Machine Unlearning、Agent / Multi-Agent、Agent Memory、Skill、Provenance、Inference-time Steering 与 Black-box Auditing。</p>
+</header>
+
+<nav>
+<a href="#exec">Executive Summary</a><a href="#important">Today's Most Important</a><a href="#top3">Top 3</a><a href="#top5">Top 5</a>
+<a href="#s">Tier S</a><a href="#a">Tier A</a><a href="#b">Tier B</a><a href="#ideas">Idea Mining</a>
+<a href="#collision">Collision Detection</a><a href="#priority">Reading Priority</a><a href="#watch">Watchlist</a><a href="#stats">Stats</a>
+</nav>
+
+<section id="exec" class="card">
+<h2>Executive Summary</h2>
+<p><b>Machine Unlearning：</b>今日新增高价值材料主要落在 auditing 与 privacy leakage，而不是新的 forget objective。值得重点补读的是 <i>Auditing of Unlearning Algorithms</i> 与 <i>Membership Inference Beyond the Forgotten Set</i>：前者尝试把黑盒攻击结果转换为 unlearning guarantee 的经验下界；后者把隐私面从 forget 扩展到 retain，提示 unlearning 可能让保留训练样本更容易被识别。</p>
+<p><b>Agent / Multi-Agent：</b>今日最明显趋势是 memory/skill evaluation 从“能否检索”升级到“是否仍有效、适用于谁、是否值得验证、错误应归因给谁”。Stale Constraints、SkillFeed、DoCtOR 分别从 verification budget、profile counterfactual、multi-agent credit assignment 三个角度给出可迁移机制。</p>
+<p><b>Inference-time：</b>REINS 的核心不是又一个 refusal vector，而是将 harmful-path inhibition 与 refusal-path enhancement 拆成两路 SAE feature control，再用 Gate 控制 locality。对 representation-level unlearning 很有启发，但必须与 true deletion 明确区分。</p>
+</section>
+
+<section id="important" class="card">
+<h2>Today's Most Important Paper</h2>
+<h3>When Stale Constraints Go Unchecked: Budgeted Verification Failures in Inherited Agent Memory</h3>
+<p>它最值得关注的不是一个新 Agent architecture，而是一个非常干净的 failure decomposition：source 已经被更新或撤销、provenance link 仍存在、derived memory 仍然保留、Agent 只有有限验证预算，于是关键 provenance path 根本没有被检查。研究上可以直接迁移为 <b>Provenance-Budgeted Agent Unlearning Auditor</b>：删除源信息后，不只问“源还在不在”，而要问 summary、memory、skill、decision 这条 descendant chain 是否会因为 verification allocation 失败继续影响未来行为。</p>
+</section>
+
+<section id="top3" class="card">
+<h2>Top 3 必读</h2>
+<ol>
+<li><b>Stale Constraints</b> — 最值得学：same-budget forced-critical intervention；适合迁到 Agent Memory deletion closure。</li>
+<li><b>REINS</b> — 最值得学：Harm-Inhibit + Refusal-Enhance 双路 SAE feature control，以及 Gate 对 locality 的修复。</li>
+<li><b>SkillFeed</b> — 最值得学：保持 task 不变、只改变 profile 的 counterfactual routing evaluation。</li>
+</ol>
+</section>
+
+<section id="top5" class="card">
+<h2>Top 5 Most Important Papers</h2>
+<ol>
+<li>When Stale Constraints Go Unchecked — provenance reachability 不等于 operational deletion closure。</li>
+<li>REINS — 对 inference-time / representation-level unlearning 迁移价值最高。</li>
+<li>Beyond Task-Only Matching / SkillFeed — counterfactual evaluation 可直接用于 revoked-skill recovery。</li>
+<li>Auditing of Unlearning Algorithms — 把攻击结果与 formal guarantee 语言连接起来。</li>
+<li>When Not to Imitate / BASM — skill boundary 与 wrong-tool preference 有直接机制联系。</li>
+</ol>
+</section>
+
+<section id="s">
+<h2>Tier S</h2>
+
+<details open class="s">
+<summary>1. REINS: Refusal-Enhanced Inhibitory Steering with Sparse Autoencoder Features</summary>
+<p><a href="https://arxiv.org/abs/2608.28233">Paper</a> · <a href="https://github.com/Geralt1020/REINS">Code</a></p>
+<h3>人话版</h3>
+<p>REINS 不把安全 steering 简化为“往拒答方向推”。它先根据当前 prompt 的早期 continuation，用 SAE feature attribution 找出正在支持 harmful continuation 的特征并抑制；再用一组拒答校准样本挑出真正与 coherent refusal 有关的 features 并增强。最后用 Gate 决定哪些请求需要 intervention，以减少对正常任务的副作用。</p>
+<h3>Background & Gap</h3>
+<p>单一 dense steering vector 往往把内容、格式与安全行为混在一起。复杂 wrapper 下，模型已经进入“继续正常完成任务”的 harmful trajectory，此时只增加 refusal signal 等价于踩刹车但不松油门。SAE 提供稀疏 feature coordinates，使“压危险路径”与“增强安全替代路径”可以分开处理。</p>
+<h3>Core Insight</h3>
+<p>安全控制应拆成两个不同目标：<b>Harm-Inhibit</b> 降低当前 unsafe continuation 的 feature support；<b>Refusal-Enhance</b> 提高 coherent refusal trajectory 的可达性。两者都在 SAE feature space 操作，但前者是 prompt-specific，后者是 calibration-derived。</p>
+<h3>Method Deep Dive</h3>
+<div class="flow">Prompt
+→ unsteered early continuation
+→ SAE feature attribution
+→ Top-K harmful-support features
+→ suppress harmful features
+→ refusal calibration pairs
+→ refusal-specific features
+→ enhance refusal features
+→ optional Gate
+→ final generation</div>
+<p>第一步先让模型生成短 early prefix，避免只根据输入文本猜测危险机制。随后用 gradient×activation 找到对该 prefix 有正贡献的 features。拒答分支则比较 refusal、neutral answer 与原始 harmful continuation 中的 feature activation，只保留在 refusal 中特异增强的 features。最终联合 intervention。</p>
+<h3>Experiment / Results</h3>
+<p>在 Qwen3.5-4B 上，GUISE harmful response rate 从 90.3% 降到 26.3%；strong baseline CorrSteer-A 为 43.7%。REINS 的 coherent refusal rate 达 63.7%，同时 collapse rate 约 2.7%，说明它并非主要靠输出崩坏制造“安全”。直接 REINS 会带来 utility/locality 损伤，而 Gate 可把 MMLU-Pro、GPQA 基本恢复，并把无关输出变化显著压低，同时 harmful behavior 指标几乎不变。</p>
+<h3>Contribution / Limitation</h3>
+<p><b>New Mechanism：</b>将 harmful inhibition 与 refusal enhancement 解耦。<b>New Evaluation：</b>同时关注 HRR、SRR、collapse、utility 与 collateral effect。限制是它本质仍是 inference-time control，不能证明 underlying knowledge 已删除；如果 early prefix 被攻击者刻意伪装，feature attribution 也可能选错。</p>
+<h3>Migration</h3>
+<p>可改成 Bidirectional Feature-Level Unlearning：将 harmful continuation 换成 forget-target continuation，将 refusal calibration 换成 retain-neighbor behavior calibration。最小实验：Qwen/LLaVA 选 20 个 forget targets，direct/paraphrase/cloze 三 views，比较单向 suppression、双路 intervention、GA/NPO；指标包括 worst-view recovery、retain FPR、CE 与 representation residual。</p>
+<h3>如果只记住 5 句话</h3>
+<ol><li>只增强 refusal 不够，因为 harmful path 仍活跃。</li><li>REINS 把 suppression 与 replacement 拆成两套 feature controllers。</li><li>安全指标提升不能只看 harmful rate，还要看 collapse 与 utility。</li><li>Gate 的主要作用是恢复 locality。</li><li>迁到 unlearning 时必须加入 recovery audit，避免把 steering 误称为 deletion。</li></ol>
+</details>
+
+<details open class="s">
+<summary>2. Beyond Task-Only Matching: Personalized Skill Routing with Counterfactual Evaluation</summary>
+<p><a href="https://arxiv.org/abs/2608.28241">Paper</a> · <a href="http://www.aiskillfeed.com">Project</a></p>
+<h3>人话版</h3>
+<p>普通 skill router 只问“这个 task 像不像某个 skill”。论文指出，同一个 task 对不同用户 profile 可能应该选择完全不同的 skill，因此构造 profile-counterfactual pairs：task 保持不变，只改 profile，并要求正确 skill 切换。SkillFeed 用 task retrieval、skill body evidence 与 profile-aware reranking 联合解决这个问题。</p>
+<h3>Core Insight</h3>
+<p>Skill applicability = task relevance ∩ profile compatibility。真正严格的 routing benchmark 不是平均 Hit@k，而是保持 task 不变、仅改变 profile 后，router 是否能按约束切换到另一 skill。</p>
+<h3>Method</h3>
+<div class="flow">Task + Profile
+→ dense/BM25 candidate retrieval
+→ skill body chunk retrieval
+→ profile-aware evidence fusion
+→ listwise reranker
+→ selected skill</div>
+<p>第一阶段学 task-skill relevance；第二阶段加入 profile-sensitive counterfactual negatives。关键不在 InfoNCE/listwise loss 本身，而在 hard negative 设计：负样本在 task 层高度相似，只在 profile suitability 上冲突。</p>
+<h3>Experiment / Results</h3>
+<p>SkillFeed-Bench 包含 profile-sensitive、profile-insensitive 与 profile-counterfactual splits。task-only router 在普通 query 上可以很强，但在 counterfactual split 上显著失效；加入 profile conditioning 后，counterfactual routing 有大幅恢复。Full pipeline 的总体 Hit@1 约 75.1%，而 profile-sensitive setting 是最明显的增益来源。</p>
+<h3>Contribution / Limitation</h3>
+<p><b>New Benchmark / Protocol：</b>profile-counterfactual routing。<b>Engineering：</b>retrieval + rerank 组件较标准。限制是 benchmark 中 profile 明确且结构化，而真实用户约束可能缺失或冲突；论文也没有直接研究 skill revocation/deletion。</p>
+<h3>Migration</h3>
+<p>最直接方向是 Counterfactual Revoked-Skill Routing：删除某 skill 后，在相同 task、不同 profile、不同 alias/body paraphrase 下测试它是否被重新召回。指标：Revoked-Skill Hit@1/5、Substitute Recovery、Retain Routing Accuracy、ASR@budget。</p>
+<h3>如果只记住 5 句话</h3>
+<ol><li>Skill 是否适用不能只由 task 决定。</li><li>Counterfactual profile 是更严格的 evaluation。</li><li>平均 Hit@k 会掩盖 profile-sensitive failure。</li><li>最重要创新是 benchmark/evaluation，而不是 loss。</li><li>它可以直接迁成 Skill Unlearning 的 revoked-skill closure test。</li></ol>
+</details>
+
+<details open class="s">
+<summary>3. When Stale Constraints Go Unchecked: Budgeted Verification Failures in Inherited Agent Memory</summary>
+<p><a href="https://arxiv.org/abs/2608.25553">Paper</a></p>
+<h3>人话版</h3>
+<p>论文研究一个很实际的问题：Agent 的 inherited memory 有 provenance，但 source 后来已被新记录撤销；Agent 每轮只有两个验证槽位。结果多数模型不会把预算花在“看起来已经确定”的旧约束上，于是继续服从 stale memory。只要在相同预算下强制把一个验证槽位分给关键 lineage，大多数错误马上消失。</p>
+<h3>Core Insight</h3>
+<p>失败不是“没有 provenance”，而是 <b>verification allocation failure</b>。可追踪性只保证“理论上能查到”，却不保证有限预算下 Agent 会真的去查。</p>
+<h3>Method</h3>
+<div class="flow">Inherited memories
+→ target consolidated memory
+→ underlying source becomes superseded
+→ budget=2 verification slots
+→ native allocation
+→ decision
+vs.
+→ forced-critical same-budget allocation
+→ decision</div>
+<p>最关键实验保持验证预算完全相同，只改变哪个 source record 被曝光，因此能较干净地区分“预算不足”与“预算分配错误”。</p>
+<h3>Experiment / Results</h3>
+<p>Primary、fresh-wording、held-out/corrected replication 都出现相同趋势：在 superseded world 的 native policy 下，大约四分之三决策仍服从 stale constraint；forced-critical 同预算 intervention 可带来约 60–80pp 的 authoritative-consistent decision 增益。尤其重要的是：native policy 一旦真正拿到 target current record，决策通常就能修正，说明瓶颈主要在 exposure/allocation，而不是 evidence integration。</p>
+<h3>Contribution / Limitation</h3>
+<p><b>New Empirical Finding / Evaluation Protocol：</b>把 provenance failure 从“是否可追踪”推进到“有限预算下会不会检查”。限制是 controlled task 较小，forced-critical 使用 oracle knowledge，不能直接当 deployment scheduler。</p>
+<h3>Migration</h3>
+<p>构建 Source→Summary→Memory→Skill lineage；删除 source 后比较 native verification、forced-critical oracle 与 risk-aware scheduler。指标：Deletion-Consistent Decision、Critical-Path Visit Rate、Residual ASR、Budget@95%Closure、Retain Utility。这个方向是今天最强 Research Idea。</p>
+<h3>如果只记住 5 句话</h3>
+<ol><li>Provenance link 存在不等于 Agent 会去看。</li><li>Stale memory 可以因为验证预算分配而持续影响决策。</li><li>相同预算只改变检查对象，就能修复大部分错误。</li><li>这说明 deletion closure 必须覆盖 derived memory 与 verification policy。</li><li>它非常适合直接改造成 Agent Memory Unlearning benchmark。</li></ol>
+</details>
+</section>
+
+<section id="a">
+<h2>Tier A</h2>
+<details class="a"><summary>4. Auditing of Unlearning Algorithms</summary>
+<p><a href="https://arxiv.org/abs/2607.05898">Paper</a></p>
+<p><b>人话版：</b>把 membership inference 从“分类准确率”升级为对 unlearning claim 的统计审计，并尝试给出与 certified guarantee 对齐的 ε lower bound。高 ε_LB 表示 unlearned model 与真正 retrained reference 仍然容易区分。</p>
+<p><b>Method：</b>用 balanced sign vector 决定多个 candidate forget batches 是否参与删除，再从 unlearned model 输出中猜 sign vector，通过 hypothesis testing 把猜测能力转换成经验 ε 下界。</p>
+<p><b>Research Value：</b>Evaluation ★★★★★，Attack ★★★★★。迁到 LLM/MLLM 时，可把 candidate batches 换成 identity/claim groups，比较 GA/NPO/RMU/retain oracle。<b>Worth Deep Reading: YES。</b></p>
+</details>
+
+<details class="a"><summary>5. Membership Inference Beyond the Forgotten Set</summary>
+<p><a href="https://arxiv.org/abs/2605.01129">Paper</a></p>
+<p><b>人话版：</b>攻击目标从“forget vs non-member”改成 forget / retain / unseen 三分类。关键发现是 unlearning 也会改变 retain samples 的输出分布，导致本来应该保留的训练样本更容易被识别。</p>
+<p><b>Migration：</b>MLLM 中构造 Forget、Retain-near、Holdout 三类，测 score-side、teacher-forced likelihood、pairwise preference 与 Δscore。指标：macro-AUROC、retain-member AUC、privacy-utility curve。<b>Worth Deep Reading: YES。</b></p>
+</details>
+
+<details class="a"><summary>6. When Not to Imitate: Boundary-Aware Skill Memory</summary>
+<p><a href="https://arxiv.org/abs/2608.22339">Paper</a></p>
+<p><b>人话版：</b>成功 trajectory 蒸馏出的 skill 可能在 near-miss task 上把 Agent 带进错误工具。BASM 为 skill 增加 applicability、risk、avoidance、recovery boundary，使“照着做”变成“满足条件才做”。</p>
+<p><b>Main Finding：</b>论文报告普通 success-distilled memory 会显著增加 risky state 的 wrong-tool preference；boundary-aware memory 在 AppWorld/BFCL/AgentDojo 上同时改善 success、安全与步骤效率。</p>
+<p><b>Migration：</b>删除 skill core 后还要测试 boundary text 是否能恢复 target tool preference，适合作为 Skill Unlearning 的 descendant leakage test。<b>Worth Deep Reading: YES。</b></p>
+</details>
+
+<details class="a"><summary>7. Finding Where the Buck Stops / DoCtOR</summary>
+<p><a href="https://arxiv.org/abs/2608.28264">Paper</a></p>
+<p><b>人话版：</b>Multi-Agent 失败后，不让所有 agent 都反思，而是先找 decisive error agent + step，再生成 counterfactual correction，只让真正负责的 agent 写 reflection。</p>
+<p><b>Migration：</b>把“谁造成 target information propagation”当 causal credit assignment，删除决定性 communication chain，而不是全局清空 shared memory。<b>Worth Deep Reading: YES。</b></p>
+</details>
+
+<details class="a"><summary>8. What Makes Agent Memory Useful for Reliable Unanswerable Question Handling?</summary>
+<p><a href="https://arxiv.org/abs/2608.27924">Paper</a></p>
+<p><b>人话版：</b>同一历史 experience 可被写成 compact trajectory、insight、principle、success trace、workflow，不同 representation 对 Agent 的长期行为影响明显不同；组合更多 memory 也不一定更好。</p>
+<p><b>Migration：</b>做 Representation-Specific Memory Unlearning：同一个 target experience 同时写成 trajectory/principle/workflow，删除一种后测试其他 representation 是否继续保留 target behavior。<b>Worth Deep Reading: YES。</b></p>
+</details>
+</section>
+
+<section id="b">
+<h2>Tier B</h2>
+<details class="b"><summary>9. ITER: Interaction-Aware Retrieval for Agentic Search</summary>
+<p>Agentic search 的 retriever 不应该只看当前 sub-query，而应结合 main question 与之前 sub-queries。价值在 trajectory-conditioned retrieval：删除一个 trajectory segment 后，未来 retrieval distribution 可能仍因剩余 history 而保留 target influence。Potential Use: Trajectory Unlearning Evaluation。</p>
+</details>
+
+<details class="b"><summary>10. GOD: Govern, Observe, and Direct</summary>
+<p>多 Agent control room：支持实时观察、提问、干预与 replay。对 unlearning 的核心价值不是 SOTA 算法，而是把 deletion before/after intervention 做成可重复 experiment harness。Potential Use: Multi-Agent Unlearning Benchmark Infrastructure。</p>
+</details>
+
+<details class="b"><summary>11. Bolt-on, Verifiable Provenance for LLM-Powered Data Processing</summary>
+<p><a href="https://arxiv.org/abs/2608.25210">Paper</a></p>
+<p>BLIP 要求找到一个输入子集，使 LLM 仅看到这部分时仍能复现同一答案，并尽量最小。对 deletion closure 的迁移非常直接：先找 target behavior 的多个 minimal provenances，再执行删除；只有所有可验证 provenance 都失效，才更接近 operational closure。</p>
+</details>
+
+<details class="b"><summary>12. CoCoBench</summary>
+<p><a href="https://arxiv.org/abs/2608.28266">Paper</a></p>
+<p>把 embodied multi-agent coordination 拆成 task allocation、sequential ordering、mutual exclusion、handoff coordination。对 Multi-Agent Unlearning 可用于判断删除某共享信息后，到底是哪类 coordination mechanism 被误伤，而不是只看最终 success。</p>
+</details>
+</section>
+
+<section id="ideas">
+<h2>Idea Mining</h2>
+
+<div class="card idea">
+<h3>Idea 1 — Provenance-Budgeted Agent Unlearning Auditor</h3>
+<p><b>Inspiration：</b>Stale Constraints + provenance verification。<b>Gap：</b>现有 Agent Unlearning 很少区分 source deletion、derived-memory persistence 与 verification allocation failure。</p>
+<p><b>Hypothesis：</b>很多 deletion failure 的主因不是 deleted source 仍可检索，而是 stale summary/skill 在有限验证预算下继续被当作 authoritative。</p>
+<p><b>MVE：</b>Source→Summary→Memory→Skill→Action lineage；6/20/100 memories 三规模；20 deletion targets；Qwen/Llama/DeepSeek；比较 hard-delete source、delete retrieved memory、full reset、provenance-aware invalidation。</p>
+<p><b>Metric：</b>Deletion-Consistent Decision、Critical Path Visit Rate、Residual ASR、Budget@95%Closure、Retain Utility。<b>Novelty ★★★★★ · Feasibility ★★★★★ · Compute ★★☆☆☆ · Collision Risk 中 · Best Venue NeurIPS/ICLR。</b></p>
+</div>
+
+<div class="card idea">
+<h3>Idea 2 — Counterfactual Revoked-Skill Routing</h3>
+<p><b>Inspiration：</b>SkillFeed + BASM。删除 target skill 后，在相同 task、不同 profile/constraints 下测试它是否通过 alias、body evidence 或 substitute routing 被重新召回。</p>
+<p><b>Metric：</b>Revoked Hit@1/5、CF-Recovery、Retain Routing、Task Success。<b>Novelty ★★★★★ · Feasibility ★★★★★ · Compute ★★☆☆☆ · Collision Risk 低中。</b></p>
+</div>
+
+<div class="card idea">
+<h3>Idea 3 — Bidirectional Feature-Level Inference-Time Unlearning</h3>
+<p><b>Inspiration：</b>REINS。SAE attribution 定位 forget continuation features，同时从 retain-near samples 校准 retain features，联合 suppression + enhancement，再用 adaptive recovery attack 测真实性。</p>
+<p><b>风险：</b>最主要问题是 steering ≠ true unlearning，因此论文必须把 verification/recovery 放到核心，而不是只报告 output suppression。<b>Novelty ★★★★☆ · Feasibility ★★★★☆ · Compute ★★★☆☆ · Collision Risk 中高。</b></p>
+</div>
+
+<div class="card idea">
+<h3>Idea 4 — Causal Multi-Agent Communication Unlearning</h3>
+<p><b>Inspiration：</b>DoCtOR。用 counterfactual failure attribution 找 target information 的 first decisive propagation step，再只删除 decisive message/memory lineage，与 all-agent reset 比较。</p>
+<p><b>Metric：</b>cross-agent leakage、retain success、deletion size、reacquisition time。<b>Novelty ★★★★☆ · Feasibility ★★★★☆ · Collision Risk 中。</b></p>
+</div>
+</section>
+
+<section id="collision" class="card warn">
+<h2>Collision Detection</h2>
+<p><b>⚠️ Agent Memory / Skill Unlearning：</b>Agentic Unlearning、From Recall to Forgetting、OBLIVION、WikiSkill、When Unlearning Fails、MAP-Graph、BASM、SkillFeed 已覆盖多个邻近角度。单纯“删 memory 后测性能”创新不足。更清晰的 gap 是 verification-budgeted deletion closure、profile-counterfactual revoked-skill recovery 与 cross-representation closure。</p>
+<p><b>⚠️ Inference-time / SAE Unlearning：</b>SAE steering、activation editing、representation intervention 已很拥挤。如果只是找到 forget features 并抑制，容易被归类为 steering/editing。必须加入 unlearning-specific threat model、adaptive recovery、retain-neighbor locality、semantic-view closure。</p>
+<p><b>⚠️ Black-box Audit：</b>MIA AUC 或单一 prompt ASR 已不足；更值得做 sample-level residual predictor + query budget + counterfactual views + formal/statistical lower bound。</p>
+</section>
+
+<section id="priority" class="card">
+<h2>Reading Priority</h2>
+<table>
+<tr><th>Priority</th><th>Paper</th><th>优先看什么</th></tr>
+<tr><td>READ NOW</td><td>Stale Constraints</td><td>same-budget forced-critical intervention；Table 2 / Figure 2</td></tr>
+<tr><td>READ NOW</td><td>REINS</td><td>双路 SAE mechanism；主结果表；component ablation</td></tr>
+<tr><td>READ NOW</td><td>SkillFeed</td><td>profile-counterfactual split；routing ablation</td></tr>
+<tr><td>READ THIS WEEK</td><td>Auditing of Unlearning Algorithms</td><td>ε lower-bound derivation 与 cross-method audit</td></tr>
+<tr><td>READ THIS WEEK</td><td>BASM / TC-UMIA / DoCtOR</td><td>boundary mechanism / tri-class privacy / causal attribution</td></tr>
+<tr><td>SAVE</td><td>ITER / BLIP / GOD / CoCoBench</td><td>trajectory retrieval、minimal provenance、harness、coordination diagnostics</td></tr>
+</table>
+</section>
+
+<section id="watch" class="card">
+<h2>Candidate Watchlist</h2>
+<p>完整搜索阶段冻结 45 篇 Candidate Pool；正式收录 12 篇，其余 33 篇进入 Watchlist、Cooling 或 Related Work。重点候选包括 SkillSafetyBench、HyperSkill、MAP-Graph、Multi-Agent Transactive Memory、Governed Shared Memory、Multimodal Unlearning Survey、Continual MLLM Unlearning、Leak-Resistant Unlearning、Learning What to Forget、Activation-Patching Unlearning、Agentic Unlearning、Robust Continual Unlearning、SKILL.state、Scientific Claim Unlearning、WMDP++、PILOT、When Memory Takes Gradients、FaultLens、MUSE-Autoskill、SkillsVote、Memory-to-Skills Governance 等。</p>
+</section>
+
+<section id="stats">
+<h2>今日统计</h2>
+<div class="grid">
+<div class="card"><div class="kpi">45</div>Candidate Pool</div>
+<div class="card"><div class="kpi">12</div>Formal Papers</div>
+<div class="card"><div class="kpi">3 / 5 / 4</div>Tier S / A / B</div>
+<div class="card"><div class="kpi">19</div>BACKFILL</div>
+<div class="card"><div class="kpi">33</div>Watchlist / Cooling</div>
+<div class="card"><div class="kpi">8</div>7-day Cooling exclusions</div>
+</div>
+</section>
+
+<section class="card">
+<h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.28233">REINS</a></li>
+<li><a href="https://arxiv.org/abs/2608.28241">SkillFeed</a></li>
+<li><a href="https://arxiv.org/abs/2608.25553">Stale Constraints</a></li>
+<li><a href="https://arxiv.org/abs/2607.05898">Auditing of Unlearning Algorithms</a></li>
+<li><a href="https://arxiv.org/abs/2605.01129">Membership Inference Beyond the Forgotten Set</a></li>
+<li><a href="https://arxiv.org/abs/2608.22339">Boundary-Aware Skill Memory</a></li>
+<li><a href="https://arxiv.org/abs/2608.28264">DoCtOR</a></li>
+<li><a href="https://arxiv.org/abs/2608.27924">Agent Memory / UAQ</a></li>
+<li><a href="https://arxiv.org/abs/2608.27912">ITER</a></li>
+<li><a href="https://arxiv.org/abs/2608.25210">BLIP Provenance</a></li>
+<li><a href="https://arxiv.org/abs/2608.28266">CoCoBench</a></li>
+</ul>
+</section>
+
+</main></body></html>

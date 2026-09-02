@@ -1,0 +1,267 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Deep Dive — 2026-08-24</title>
+<style>
+body{margin:0;background:#f6f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1120px;margin:auto;padding:30px 22px 84px}.card{background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:22px 24px;margin:0 0 18px;box-shadow:0 4px 16px rgba(20,30,50,.04)}
+h1{font-size:35px}h2{font-size:26px;margin-top:38px;border-bottom:1px solid #e4e7ec;padding-bottom:7px}h3{font-size:20px;margin-top:26px}h4{font-size:17px;margin:20px 0 5px}
+a{color:#3457d5;text-decoration:none}.muted{color:#667085}.badge{display:inline-block;background:#172033;color:#fff;padding:4px 8px;border-radius:7px;font-size:12px;font-weight:800;margin-right:5px}
+.tag{display:inline-block;background:#eef3ff;padding:3px 9px;border-radius:999px;font-size:12px;margin-right:4px}
+nav{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:16px 20px;columns:2;margin-bottom:22px}nav a{display:block;padding:3px}
+.flow{font-family:ui-monospace,Menlo,monospace;background:#111827;color:#f8fafc;border-radius:11px;padding:14px 16px;white-space:pre-wrap}
+.eq{font-family:"Times New Roman",serif;background:#fafbff;border:1px solid #e4e7ec;border-radius:10px;padding:12px}
+.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{border:1px solid #e4e7ec;padding:9px;text-align:left;vertical-align:top}th{background:#f4f6f9}
+.idea{background:#eef3ff;border-left:5px solid #3457d5;padding:14px;border-radius:10px}.warn{background:#fff1cf;border-left:5px solid #d68a00;padding:14px;border-radius:10px}
+</style></head><body><main>
+
+<section class="card"><div class="muted">Daily Top Papers Deep Dive · regenerated · 2026-08-24</div><h1>今天最值得精读的 2 篇论文</h1>
+<p>本轮独立重新检索并严格执行 7 天冷却，不重复今天较早版本已经精读的 Cross-Domain Unlearning 与 Backdoor Decontamination，也不重复近几日的 ConceptGuard、StateMem、EchoCoT、TMI、Knowledge Holes、CAMA。最终选择 <b>Fragility of Self-Improving Agents</b> 与 <b>D²ACCI</b>：前者回答“在线历史/任务顺序如何改变最终状态”，后者回答“失败后如何定位证据在哪一stage丢失”。</p>
+<span class="tag">Continual / Online</span><span class="tag">Task Order</span><span class="tag">Agent Memory</span><span class="tag">Diagnostics</span><span class="tag">Unlearning Verification</span></section>
+
+<nav><a href="#sel">Selection</a><a href="#p1">Paper 1 Fragility</a><a href="#p2">Paper 2 D²ACCI</a><a href="#syn">Cross-Paper Synthesis</a><a href="#opp">Combined Opportunities</a><a href="#col">Collision</a><a href="#pri">Reading/Reproduction</a><a href="#src">Sources</a></nav>
+
+<section class="card" id="sel"><h2>Today's Deep Dive Selection</h2>
+<p><b>#1 On the Fragility of Self-Improving Agents: Variance, Task Order, and Underspecification</b></p>
+<p><b>#2 D²ACCI: A Dual-Loop Diagnostic Protocol for Evidence-Preserving Agent Memory</b></p>
+<p>选择理由：第一篇直接对应“hard-to-unlearn curriculum是否会被固定顺序confound”；第二篇已经内置Forget Guard、preference revision、paired ablation和stage traces，几乎可以直接迁移成Agent Unlearning诊断框架。</p></section>
+
+<section class="card" id="p1"><span class="badge">PAPER 1 · NEW</span><span class="badge">SELF-IMPROVING AGENTS</span>
+<h2>On the Fragility of Self-Improving Agents: Variance, Task Order, and Underspecification</h2>
+<p class="muted">Qinyuan Ye, Yu Li, Yada Pruksachatkun, Jiaxin Zhang, Chien-Sheng Wu · Salesforce AI Research · arXiv:2608.18066v1 · 2026-08-18 · Code/Data links in paper</p>
+<p><a href="https://arxiv.org/html/2608.18066v1">Full HTML</a> · <a href="https://arxiv.org/abs/2608.18066">Abstract</a></p>
+
+<h3>5.2 一句话定位</h3>
+<p>重新评估 memory-based self-improving agents，证明 run variance 和 task order 足以把“小幅持续提升”翻转成明显退化，默认 benchmark 顺序甚至暗含 easy→hard curriculum。</p>
+
+<h3>5.3 人话版</h3>
+<p>AWM、ReasoningBank 这类 agent 会把每次任务后的成功/失败总结成 memory，再让后续任务读取。过去多数实验只按 benchmark 默认 task ID 顺序跑一遍，因此看起来“做得越多越聪明”。这篇论文指出，在线 memory 是有历史的：第一次任务偶然成功还是失败，会决定 memory bank 里出现什么；错误memory一旦被写入，会在后续反复被retrieve，最终形成完全不同的状态轨迹。作者在 WebArena、VisualWebArena、SCUBA 上做多次重复和两种随机打乱。结果显示，加入self-improvement后17/24个domain×method case的跨run方差上升，11个相对增加超过50%；RBank在GitLab的best–worst gap从4.44%扩大到7.78%，Map从2.75到8.26，Multisite甚至2.08到10.42。更关键的是，默认task顺序本来就是隐式curriculum：前段成功率高、后段低；RBank默认order平均+1.5%，但shuffle后很多setting不升反降。作者进一步发现“用API”“等待用户确认”“Haversine估计地图距离”等错误memory会自我强化。加rubric、environment feedback和更明确prompt只能追回约31%的退化。对continual unlearning，这几乎就是一个现成警告：同一组forget requests的顺序可能决定最终模型状态，因此所谓easy→hard curriculum不能只在一个固定order上证明有效。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>普通静态模型的evaluation噪声通常被当成测量噪声；而self-improving agent会把早期输出变成未来输入，因此噪声具有因果后果。已有工作很少报告run-level variance，也很少打乱task order。与此同时，benchmark默认task ID往往不是随机生成，而是随着构造过程从简单到复杂。于是“memory帮助学习”与“benchmark给了有利课程”混在一起。</p>
+<p>对unlearning而言，完全类似的confound是：forget requests常按数据集ID、identity batch或固定难度顺序执行。若模型在前几次删除中先形成某种参数/拒答/记忆状态，后面的“更难样本”可能被这个状态帮助或拖累。若不换序，很难判断hardness predictor与curriculum到底是真机制还是order artifact。</p>
+
+<h3>5.5 Core Insight</h3>
+<p><b>1. Stateful variance：</b>memory construction受trajectory和LLM sampling影响，早期随机性会累积。<br>
+<b>2. Order as intervention：</b>任务顺序改变state evolution，因此不能假设exchangeable。<br>
+<b>3. Hidden curriculum：</b>default task IDs常表现easy→hard。<br>
+<b>4. Underspecification：</b>memory constructor不知道环境约束时，会生成“合理但不可执行”的经验。<br>
+<b>5. Strong initialization：</b>更强backbone会显著缩小旧memory方法的边际收益。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Online task stream Q
+→ no-memory baseline
+→ AWM / ReasoningBank
+→ each setting repeated 3 full runs
+→ report mean, std, best–worst gap
+→ run Default / Shuffle-1 / Shuffle-2
+→ inspect written/retrieved memories
+→ identify underspecification / contagious memories
+→ inject Rubric + Environment Feedback + Prompt Modification
+→ re-run shuffled conditions
+→ measure recovered gap and remaining fragility</div>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="eq">Pass@1_r = (1/N) Σ_i 1[task_i success in run r]</div>
+<div class="eq">Std = sqrt((1/(R-1)) Σ_r (Pass@1_r-Mean)^2)</div>
+<div class="eq">Best–Worst = max_r Pass@1_r - min_r Pass@1_r</div>
+<p>R=3。对stateful agent，best–worst特别重要：10point gap意味着不是“同一个系统小抖动”，而是历史已经把系统带到不同memory states。论文还对RBank WebArena +1.5%的mean gain做t-test，p=0.23，说明这种headline提升并不稳定。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>考虑四个delete requests：A/B容易、C/D困难。默认A→B→C→D时，模型先在A/B上学到稳定forget pattern，后面C/D更容易；换成D→C→A→B，早期D更新过强造成retain损伤，C又在受损state上训练，最后A/B也出现rebound。若agent还有memory，D失败后生成“这类请求一律拒答”的错误策略，后续反复retrieve，就像论文中的API/Haversine contagious memory。于是同一forget set得到完全不同结果。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>做法</th><th>为什么合理</th><th>本文暴露的问题</th></tr>
+<tr><td>No-memory GPT-5-mini</td><td>无持久memory</td><td>隔离memory loop收益</td><td>自身也有噪声，但不累积</td></tr>
+<tr><td>AWM</td><td>成功trajectory抽workflow</td><td>减少失败noise</td><td>仍order-sensitive，部分setting低于baseline</td></tr>
+<tr><td>RBank</td><td>成功/失败都抽reasoning memory</td><td>可从失败学习</td><td>错误reflection可contagious，variance更大</td></tr>
+</table></div>
+<p><b>Strongest baseline：</b>更新后的no-memory GPT-5-mini，因为WebArena54.8左右已达到/超过旧memory-enhanced headline，迫使memory方法证明真正稳定的边际收益。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p>WebArena812 tasks、VisualWebArena910、SCUBA过滤后267；GPT-5-mini作为agent和memory constructor；每关键setting 3完整runs；Default + Shuffle-1 + Shuffle-2；ground-truth reward。RQ分别是variance、order、hidden curriculum、memory failure root cause、specification mitigation。</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Pass@1↑</b>：run成功率。<b>Std↓</b>：完整run之间稳定性。<b>Best–Worst Gap↓</b>：最幸运与最差history的部署风险。<b>Order degradation↓</b>：default到shuffle的性能落差。对于continual unlearning，应直接对应Final Forget、Retain和Rebound的run/order distribution。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li>17/24 cases self-improvement后std上升，11/24相对增幅&gt;50%。</li>
+<li>GitLab baseline std1.98→RBank3.34；best–worst4.44→7.78。</li>
+<li>Map std1.30→3.89；gap2.75→8.26。</li>
+<li>Multisite gap2.08→10.42。</li>
+<li>Overall baseline WebArena54.8、VWA54.9、SCUBA49.6。</li>
+<li>RBank56.3/55.6/51.1，仅+1.5/+0.7/+1.5；WebArena p=0.23。</li>
+<li>默认order前段moving success约75%，高ID后低于40%，显示easy→hard。</li>
+<li>Shuffle-1 WebArena AWM49.1、RBank49.8，低于no-memory54.8。</li>
+<li>论文汇总6/8主要shuffle cases出现显著退化。</li>
+<li>Rubric+Env Feedback+Prompt Mod只追回约31%退化。</li>
+</ol>
+<p><b>Strongest result：</b>同一方法default +1.5%与shuffle退化的定性翻转。<br><b>Weakest：</b>仅3 runs；shuffle同时改变difficulty、domain adjacency、semantic similarity。</p>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Table1</b>看std与best-worst；<b>Table2</b>看strong initialization；<b>Table3</b>看mean gain与variance对比；<b>Figure2</b>直接展示implicit curriculum；<b>Figure3</b>展示order sensitivity；<b>Figure4</b>展示API、confirmation、Haversine错误memory如何持续传播。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>ground-truth reward先去掉judge confound；shuffle是history intervention；Rubric/Env/Prompt是underspecification干预。只追回31%说明underspecification是部分原因而非全部。Strong-vs-old initialization还揭示method benefit依赖base capability。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<p><b>Authors Claim：</b>当前self-improvement评价低估variance和order dependence。<br><b>Actually Show：</b>三benchmark、多run、两shuffle、memory inspection支持。<br><b>Not Proven：</b>RL memory、embodied/multi-agent、数千任务stream、order effect的完全因果拆分仍未知。</p>
+
+<h3>5.16 Contribution</h3><ul><li>New Evaluation Protocol：multi-run + order stress。</li><li>New Empirical Finding：71% cases variance amplification。</li><li>New Empirical Finding：hidden easy→hard curriculum。</li><li>Failure Analysis：underspecification与contagious memory。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p>3 runs统计力有限；主要web agent与text memory；shuffle不是纯difficulty控制。迁移到unlearning时还必须严格匹配每个request的training dose，否则order effect可能被总optimizer steps混淆。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最小复现可以不跑完整WebArena：选100–200 tasks，no-memory/RBank各3 seeds，default+2 shuffles，记录memory写入/检索。若直接服务unlearning研究，更建议对现有continual pipeline直接跑10种delete order，先看order std和best-worst是否足够大。</p>
+
+<h3>5.19 Research Value</h3>
+<p>Baseline Potential高；Migration极高；Attack极高；Evaluation极高；Benchmark高；New Paper Potential极高。最值得借的是“顺序鲁棒性必须成为claim的一部分”。</p>
+
+<h3>5.20 Migration 1 — Adversarial Deletion Order Attack</h3>
+<p>同一20个forget targets，生成default/random/easy-first/hard-first以及基于pairwise interference/preference geometry的adversarial order。每种3 seeds。指标Final Forget、Retain、Rebound、Order Std、Best–Worst。若最坏顺序显著破坏unlearning，就得到黑盒/continual attack surface。</p>
+
+<h3>5.20 Migration 2 — Order-Robust Hardness Curriculum</h3>
+<p>静态hardness不够，应估计conditional hardness H(target | current deletion state)。训练时随机化邻接并优化worst-order objective。最小实验50 targets，对比easy→hard、hard→easy、random、robust curriculum；看mean和worst-order forgetting。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>定义 <b>Order Robustness Envelope</b>：同一forget set在多种request order下的Forget/Retain/Rebound范围。若某method只在一个有利顺序成功，就不能称continual unlearning稳定。攻击者只需控制合法删除请求的提交顺序即可放大残留或collateral。</p>
+
+<h3>5.22 与 Paper 2 的关系</h3>
+<p>Paper1负责“stress”：先制造/发现order-dependent failure；Paper2负责“diagnose”：再定位failure第一次在哪一stage出现。组合为 <b>Stress first, diagnose second</b>。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>早期随机性会被memory写进未来state。</li><li>17/24 case中self-improvement放大variance。</li><li>best–worst gap可到约10points。</li><li>默认task order常暗含easy→hard curriculum。</li><li>RBank default小幅提升，shuffle可明显退化。</li><li>强no-memory baseline会缩小旧memory方法收益。</li><li>错误memory会自我强化。</li><li>补specification只能修约31%。</li><li>continual unlearning必须把request order当一级变量。</li><li>最强方向是Adversarial Deletion Order与Order-Robust Curriculum。</li></ol>
+</section>
+
+<section class="card" id="p2"><span class="badge">PAPER 2 · NEW</span><span class="badge">AGENT MEMORY DIAGNOSTICS</span>
+<h2>D²ACCI: A Dual-Loop Diagnostic Protocol for Evidence-Preserving Agent Memory</h2>
+<p class="muted">Xule Liu, Yijun Liu, Chao Li, Shao Kun · arXiv:2608.17756v2 · revision 2026-08-19 · Status: preprint</p>
+<p><a href="https://arxiv.org/html/2608.17756v2">Full HTML</a> · <a href="https://arxiv.org/abs/2608.17756">Abstract</a></p>
+
+<h3>5.2 一句话定位</h3>
+<p>用inner memory loop + outer diagnostic loop把memory改动变成可审计决策：不仅看accuracy，还要求paired evidence、protected-slice non-regression和stage-level Diagnostic Coverage Rate。</p>
+
+<h3>5.3 人话版</h3>
+<p>Memory system常见开发方式是“加一个BM25、session memory或forget guard，总分涨了就上线”。D²ACCI认为这样很危险，因为总分可能被少数slice拉高，关键用户场景却退化；更糟的是，最后答错时你不知道问题在store、retrieve、forget filter、context packing还是generation。作者把系统拆成两层。Inner loop执行真实memory pipeline：ingestion、L0原子事实/L1 topic rollup/L2 profile、session memory、retrieval、constraint cache里的forget/update filtering、context assembly、generation；每个stage都必须产生typed trace。Outer loop对每个candidate feature做Full vs Ablated paired evaluation，计算McNemar、bootstrap CI、protected slice delta和DCR，再决定Accept、Reject、Feature-Flag或Accept-with-Monitor。DCR是这篇最关键的metric：它不问“答对了吗”，而问“失败样本至少有几个stage留下了足够ID、score、filter decision、packed context等可行动证据”。MemStack在LoCoMo/LongMemEval/PersonaMem-V2为93.59%/90.93%/57.20%；Supplement、Session、Forget Guard分别+2.71/+3.67/+1.92pp且p≤.003，而BM25/RRF在不同benchmark平均数方向不一致，统计上均被判null feature flag。更强的证据是：某slice trace-adapted与result-only accuracy同为43.33%，但DCR@3=100% vs0%。PersonaMem错误中57.1%来自generation/option scoring、29.8% constraint handling、只有13.0% retrieval miss。这说明“继续优化retriever”可能完全修错地方。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>Agent memory至少有五六个stage，一个final error无法唯一定位。对unlearning尤其明显：目标重新泄漏，可能是旧memory没删、retrieval绕过filter、context重新塞入target，或memory完全干净但parameter仍记得。Aggregate-only evaluation没有root-cause information，也无法安全决定feature是否上线。</p>
+
+<h3>5.5 Core Insight</h3>
+<p><b>Paired evidence</b>比overall delta强；<b>protected slices</b>防止silent regression；<b>diagnosability</b>与accuracy正交；<b>feature governance</b>允许null组件保留feature flag而非强行promotion。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">INNER
+conversation/events
+→ ingestion & supplement extraction
+→ L0/L1/L2/session storage
+→ retrieval channels
+→ constraint cache / Forget Guard
+→ context assembly
+→ generation / option scoring
+→ typed trace
+
+OUTER
+Full vs one-feature ablation on same examples
+→ discordant pairs
+→ delta + McNemar p + bootstrap CI
+→ protected slices
+→ DCR threshold
+→ Reject / Feature-Flag / Accept-with-Monitor / Accept
+→ archive evidence</div>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="eq">DCR_tau(F;S) = (1/|F|) * Sum_i Indicator[C(d_i) &gt;= tau]</div>
+<p>F是failure/discordance集合，C(d_i)是该trace中actionable stages数量。默认DCR@3并要求coverage≥0.90。Actionable由schema验证：retrieval要有top-k IDs/scores，forget guard要有constraint IDs/filter decisions，assembly要有最终packed context，generation要有output/judge metadata。</p>
+<p>DCR的价值是accuracy orthogonality：同样43.33% accuracy，一个系统的失败可定位、另一个完全不可定位。它不能保证root cause一定判断正确，但能保证“证据还在”。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>用户要求忘掉“喜欢咖啡”，agent之后仍推荐咖啡。Trace显示delete constraint已创建；L2 profile已删除coffee；但旧session summary仍保留，session retriever把它召回；Forget Guard只过滤L2 facts；assembled context再次含coffee。于是最早泄漏点是session retrieval/filter coverage，而不是generator“参数记忆”。没有trace时两种完全不同的问题会被统称为unlearning失败。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>对照</th><th>做法</th><th>为什么合理</th><th>不足</th><th>D²ACCI差异</th></tr>
+<tr><td>Aggregate-only</td><td>比较总accuracy</td><td>简单常见</td><td>无significance/root cause</td><td>paired+slice+trace</td></tr>
+<tr><td>Metric-only gate</td><td>delta&gt;0就promote</td><td>工程直观</td><td>BM25/RRF跨benchmark决策矛盾</td><td>null→feature flag</td></tr>
+<tr><td>Result-only logs</td><td>保存answer+score</td><td>成本低</td><td>DCR@3=0，大量unresolved</td><td>stage typed traces</td></tr>
+<tr><td>External MemBrain</td><td>外部reference</td><td>提供数量级</td><td>非same-stack</td><td>主证据依赖内部paired ablation</td></tr>
+</table></div>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p>LoCoMo1540 non-adversarial QA；LongMemEval500；PersonaMem-V2 5000 MCQ/200 personas。MemStack含L0/L1/L2/session layers。Ablations：No BM25/RRF、No Supplement、No Session、No Forget Guard。统计：McNemar、bootstrap95%CI、BH correction、slice monitoring、trace relabel/root-cause agreement。</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Accuracy↑</b>最终任务；<b>delta pp</b>Full−Ablated；<b>McNemar p↓</b>paired discordances显著性；<b>CI不跨0</b>支持稳定方向；<b>DCR@tau↑</b>failure可诊断覆盖；<b>Cohen kappa↑</b>root-cause agreement；<b>Protected slice delta</b>防止overall gain掩盖局部退化。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li>LoCoMo93.59 vs MemBrain93.25，仅+0.34pp，作者不夸大。</li>
+<li>LongMemEval90.93 vs85.60，+5.33pp。</li>
+<li>PersonaMem57.20 vs55.72，+1.48pp。</li>
+<li>No Supplement：Full +2.71pp，p=.0009，CI[1.26,4.20]。</li>
+<li>No Session：+3.67pp，p=.0026，CI[1.33,6.00]。</li>
+<li>No Forget Guard：+1.92pp，p=.0030，CI[0.64,3.18]。</li>
+<li>BM25/RRF：LoCoMo -0.41pp p=.4426；LME +1.00pp p=.4583，均不显著。</li>
+<li>同一slice accuracy43.33%，trace-adapted DCR100%，result-only0%。</li>
+<li>enriched trace root-cause GPT-4o relabel kappa=.571 fine/.619 coarse；result-only=.258/.272，且36/60 unresolved。</li>
+<li>pair-level DCR@3为99.21%、99.47%、98.63%、100%；110个result-only为0/110。</li>
+<li>PersonaMem 2140 errors：generation57.1%、constraint29.8%、retrieval13.0%、ingestion0.1%。</li>
+</ol>
+<p><b>Strongest result：</b>同accuracy不同DCR，最直接证明新metric不是accuracy换皮。<br><b>Weakest：</b>DCR只保证trace存在，不保证解释正确；logging越多天然coverage越高，因此schema质量是前提。</p>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure2</b>看dual loop；<b>Table1</b>看slice（LoCoMo open86.8、LME multi-session85.0、PersonaMem therapy44.5）；<b>Table2</b>看enriched-vs-result-only kappa；<b>Table3</b>看paired gate与metric-only冲突；<b>trace masking</b>看result-only/retrieval-only/full trace如何对应DCR@1/3/5/6。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>No Supplement证明long-session evidence extraction；No Session证明cross-session temporal memory；No Forget Guard证明preference revision filtering；BM25/RRF null结果说明“多一个retrieval channel”并不自动值得上线。PersonaMem root-cause distribution还提示memory retrieval已不是主要瓶颈，generation才是。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<p><b>Claim：</b>agent memory changes应由paired stats、slice guard和trace治理。<br><b>Actually Show：</b>三个benchmark、五paired comparisons、trace-label contrast和masking支持。<br><b>Not Proven：</b>DCR是否降低真实维护成本、schema是否覆盖未知failure、closed API如何适配。</p>
+
+<h3>5.16 Contribution</h3>
+<ul><li>New Protocol：D²ACCI dual loop。</li><li>New Metric：DCR。</li><li>New Evaluation Artifact：paired gate replay与discordance archive。</li><li>New System：MemStack。</li><li>New Empirical Finding：aggregate-only feature promotion会误导。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p>需要instrumentation；external baseline非同栈；actionability schema人工定义；DCR具有stage monotonicity；未知protected slice仍可能漏；parameter-level residual超出当前memory trace边界。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最小复现只需4-stage agent：store→retrieve→forget-filter→generate。100个update/delete QA，Full vs No Forget Guard；计算McNemar、CI、DCR@2/3/4；再屏蔽不同stage trace验证DCR下降。跑通后再接现有unlearning pipeline。</p>
+
+<h3>5.19 Research Value</h3>
+<p>Baseline Potential极高；Migration极高；Attack中高；Evaluation极高；Benchmark极高；New Paper Potential极高。最自然迁移就是Deletion-DCR。</p>
+
+<h3>5.20 Migration 1 — Deletion-DCR</h3>
+<p>给每个delete request一个provenance ID，storage/retrieval/filter/context/generation都记录target lineage。200 scenarios，比较entry deletion、dependency closure、guard-only。指标Leakage、Retain、Deletion-DCR、Earliest Leakage Stage accuracy、False Promotion Rate。</p>
+
+<h3>5.20 Migration 2 — Order Stress + Root-Cause Attribution</h3>
+<p>同一target set跑10种order；取best/worst两个order的discordant targets，追踪parameter/memory/retrieval/filter/generation差异。这样不只证明order effect，还解释为什么order effect发生。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>白盒/可观测agent可直接stage audit；黑盒时可把stage换成外部interaction phases（direct prompt→retrieval/tool plan→final answer）。Verification不应只报告“泄漏了”，还要报告 <b>where it came back</b>。</p>
+
+<h3>5.22 与 Paper 1 的关系</h3>
+<p>Paper1负责stress：改变history发现fragility；Paper2负责diagnose：对discordant failures做stage attribution。合起来是完整研究流程：<b>Stress first, diagnose second.</b></p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>Memory系统不能只看overall accuracy。</li><li>D²ACCI把运行与诊断分成inner/outer loop。</li><li>每个stage需要可行动typed trace。</li><li>DCR测可诊断性，不是正确率。</li><li>同accuracy可以DCR100% vs0%。</li><li>Supplement、Session、Forget Guard有显著paired gain。</li><li>BM25/RRF平均数变化不等于可靠feature。</li><li>PersonaMem多数错误来自generation而非retrieval。</li><li>它几乎可以直接改造成Deletion-DCR。</li><li>与order stress组合后，可同时发现并解释continual unlearning fragility。</li></ol>
+</section>
+
+<section class="card" id="syn"><h2>Cross-Paper Synthesis</h2>
+<p>两篇共同给出一套非常适合unlearning的方法论：<b>History is an intervention; failure must be diagnosable.</b> Fragility要求多run、多order；D²ACCI要求paired、slice、stage trace。统一后可定义 Order-Robust Continual Unlearning：同一delete set先做order stress，再对best/worst order的discordances做Deletion-DCR。</p>
+<div class="tablewrap"><table><tr><th>维度</th><th>Fragility</th><th>D²ACCI</th><th>Unlearning迁移</th></tr><tr><td>隐藏变量</td><td>task order/early randomness</td><td>pipeline stage</td><td>delete order + leakage stage</td></tr><tr><td>评价</td><td>std/best-worst/order</td><td>paired/CI/DCR</td><td>Order Envelope + D-DCR</td></tr><tr><td>攻击</td><td>adversarial order</td><td>stage bypass</td><td>最坏order触发最早leak</td></tr></table></div></section>
+
+<section class="card" id="opp"><h2>Combined Research Opportunities</h2>
+<div class="idea"><h3>1. Order-Robust Continual Unlearning Benchmark</h3><p>固定同一forget set，只变request order；报告mean/std/best-worst/worst-order，不允许只给一个默认sequence。</p></div>
+<div class="idea"><h3>2. Deletion-DCR</h3><p>每次泄漏输出root stage：memory store、retrieval、filter、context、generation/parameter。</p></div>
+<div class="idea"><h3>3. Adversarial Order Search with Diagnostic Feedback</h3><p>攻击器根据前几次sequence的discordance和stage traces学习哪些request pairs干扰最强，再组合最坏顺序。</p></div>
+<div class="idea"><h3>4. Conditional Hardness Predictor</h3><p>不只预测H(target)，而预测H(target | current deletion state)，把“难忘程度”变成sequence-dependent quantity。</p></div></section>
+
+<section class="card" id="col"><h2>Collision / Overlap</h2><div class="warn"><p><b>Strongest Collision：</b>MCU已有continual MLLM unlearning；Agentic Unlearning已有parameter-memory closure；StateMem/CAMA/MAPLE覆盖dependency/source/lifecycle。差异化必须是：<b>hidden deletion curriculum实证 + adversarial order + stage-level root-cause + order-robust method/evaluation</b>，而不是仅报告不同order有差异。</p></div></section>
+
+<section class="card" id="pri"><h2>Reading / Reproduction Priority</h2><p><b>先做Fragility迁移实验：</b>20个forget identities、10种order、3 seeds，看看order gap到底多大。</p><p><b>再实现最小D²ACCI：</b>给现有pipeline加delete provenance ID和stage trace，挑best/worst order中的discordant targets做root-cause audit。</p><p><b>最值得形成论文的组合：</b>Adversarial Deletion Order Attack + Deletion-DCR + Order-Robust Curriculum。</p></section>
+
+<section class="card" id="src"><h2>Sources / Links</h2>
+<ul><li><a href="https://arxiv.org/html/2608.18066v1">Fragility — full HTML</a></li><li><a href="https://arxiv.org/abs/2608.18066">Fragility — arXiv</a></li><li><a href="https://arxiv.org/html/2608.17756v2">D²ACCI — full HTML</a></li><li><a href="https://arxiv.org/abs/2608.17756">D²ACCI — arXiv</a></li></ul>
+<p class="muted">实验数字、表格与公式来自本次重新检索的一手正文；Migration、Attack/Verification Lens与Combined Opportunities为独立研究分析。</p></section>
+
+</main></body></html>

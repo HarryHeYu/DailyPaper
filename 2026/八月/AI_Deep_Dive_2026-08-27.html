@@ -1,0 +1,58 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>AI Deep Dive — 2026-08-27</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82;background:#f6f7fb;color:#172033;margin:0}
+main{max-width:1140px;margin:auto;padding:30px 24px 86px}.card{background:white;border:1px solid #e4e7ec;border-radius:16px;padding:24px;margin:18px 0}
+h1{font-size:35px}h2{font-size:27px;border-bottom:1px solid #e4e7ec;padding-bottom:7px}h3{font-size:20px;margin-top:27px}.flow{font-family:monospace;background:#111827;color:#fff;padding:14px;border-radius:10px;white-space:pre-wrap}.eq{font-family:serif;background:#fafbff;border:1px solid #e4e7ec;padding:12px;border-radius:9px}a{color:#3158cf;text-decoration:none}.warn{background:#fff2cf;border-left:5px solid #d39118;padding:14px}.good{background:#edf8f1;border-left:5px solid #3b8f5d;padding:14px}
+</style></head><body><main>
+<div class="card"><h1>Daily Top Papers Deep Dive — 2026-08-27</h1><p>本轮独立重新检索，只选2篇保证深度：<b>Recuris</b> 与 <b>Memory Is Not Always Needed</b>。它们分别回答两个新问题：deletion residual位于哪个memory-control组件，以及同一memory residual在什么query/layer条件下才会真正生效。</p></div>
+
+<section class="card"><h2>Paper 1 — Recursive Experiential-Working Memory Evolution for Long-Horizon Agent Harnesses</h2>
+<p><a href="https://arxiv.org/html/2608.24876">Full HTML</a> · <a href="https://github.com/Gen-Verse/Recuris">Code</a></p>
+<h3>一句话定位</h3><p>固定base model，仅进化外部memory-control layer，并用structured trace把失败定位到Experiential Memory、Working Memory、Invocation Policy或Checker。</p>
+<h3>人话版</h3><p>长horizon Agent经常不是不会做，而是状态被历史淹没、skill在错误时机调用、旧状态没有被正确更新。Recuris把memory拆成E/W/ρ/C四部分，执行时生成结构化trace，Meta-Agent只patch出错组件，并用held-out validation gate接受/拒绝patch。37个完成model-benchmark pair有35个提升；GPT-5.6 Sol +17.8pp，Claude Opus 5 +15.6pp；最长horizon +32.2pp。更关键的是故障定位：只看outcome 13.0%，raw trajectory 37.0%，structured trace 64.8%。</p>
+<h3>Background & Gap</h3><p>Initial-query retrieval无法处理中途状态变化；full-history retrieval会引入旧状态与噪声；final outcome无法定位究竟是skill、state、invocation policy还是checker出错。Agent Unlearning面临同构问题：显式target删掉后，残留可能仍存在于其他control component。</p>
+<h3>Core Insight</h3><p>真正创新是把memory execution变成结构化可观测对象，使局部诊断和局部修改成为可能。对于Unlearning，可以把failure localization改成residual localization。</p>
+<h3>Method Deep Dive</h3><div class="flow">Task → Working State → Invocation Policy → Experiential Skill → Frozen LLM Action → Environment Observation → Checker → Verified State → Structured Trace → Component Diagnosis → Scoped Patch → Held-out Validation</div>
+<div class="eq">M_k=(E_k,W_k,ρ_k,C_k)</div>
+<h3>Toy Example</h3><p>旧地址profile skill已删，但Working Memory schema仍把旧地址设为默认，或ρ仍在付款前触发旧profile，或Checker拒绝新地址更新。只删entry会误判成功；component knockout能定位真正残留。</p>
+<h3>Experiment Setup</h3><p>4个long-horizon benchmark、10个target models，从3B open-weight到frontier。核心实验包括总体success、按horizon分层、failure mode、component fault localization、memory transfer和test-time adaptation。</p>
+<h3>Metrics</h3><p>Task Success看完成率；Horizon-stratified success看方法是否只对短任务有效；Fault Localization Accuracy是在已知注入故障下猜对组件的比例。Balanced setup的constant-answer floor是33.3%，outcome-only的13.0%甚至低于这个floor。</p>
+<h3>Results Deep Dive</h3><ol><li>35/37 pairs提升。</li><li>GPT-5.6 Sol +17.8pp。</li><li>Claude Opus 5 +15.6pp到87.9%。</li><li>Qwen3.6-27B 42.2→58.7。</li><li>Qwen3.6-35B 35.3→48.8。</li><li>最长horizon +32.2pp。</li><li>常见failure最多下降80%。</li><li>Outcome-only localization 13.0%。</li><li>Raw trajectory 37.0%。</li><li>Structured trace 64.8%，Macro-F1 63.4。</li></ol>
+<h3>Figure/Table Reading</h3><p>Figure1看整体/horizon/failure reduction；Figure2看state-grounded retrieval；Figure3看双闭环；Table4最关键：E/W/ρ fault在不同evidence下的可诊断性。</p>
+<h3>Ablation / Mechanistic Analysis</h3><p>Working Memory fault recall从raw trajectory 50.0%到structured trace 83.3%；Invocation fault从0到38.9%；Skill-content fault只61.1→72.2，因为skill错误本来就容易出现在文本里。这符合“structured trace主要补充隐藏control events”的机制预期。</p>
+<h3>Claim vs Evidence</h3><p>强支持component-localized memory evolution；不证明这些component label是严格因果解释，也尚未直接做deletion/privacy。</p>
+<h3>Contribution</h3><p>New Memory Architecture / Harness Mechanism / Trace Diagnostic / Validation-Gated Evolution。</p>
+<h3>Limitation</h3><p>依赖environment observation与checker；Meta-Agent可能patch错；validation需要held-out evidence；未测对抗delete request和multi-agent shared memory。</p>
+<h3>Reproduction View</h3><p>先选一个tau-bench环境和Qwen Agent，仅实现E/W/ρ三个组件，人为注入fault，复现Outcome→Raw→Structured定位趋势。确认机制后再做递归evolution。</p>
+<h3>Research Value</h3><p>Baseline ★★★★★；Migration ★★★★★；Evaluation ★★★★★；New Paper Potential ★★★★★。</p>
+<h3>Migration 1 — Component-Scoped Agent Unlearning</h3><p>20 targets×4 component knockouts；把fault label换成target-residual label；指标Localization Accuracy、Residual Leakage、Closure、Retain Utility。</p>
+<h3>Migration 2 — Minimum Component Cut</h3><p>删除E后保留W/ρ/C，测试target behavior是否可重构；交换删除顺序，定义使target不可恢复所需的最小组件集合。</p>
+<h3>Attack / Verification Lens</h3><p>白盒可直接component knockout；黑盒可用事件序列诱发component-specific signatures，预测target residual所在control path。</p>
+<h3>记住10句话</h3><ol><li>Recuris拆成E/W/ρ/C。</li><li>Working State驱动skill调用。</li><li>base model冻结。</li><li>35/37 pairs提升。</li><li>GPT-5.6 Sol +17.8pp。</li><li>最长horizon +32.2pp。</li><li>常见failure最多降80%。</li><li>structured trace定位64.8%。</li><li>outcome-only只有13.0%。</li><li>最强迁移是Component-Scoped Agent Unlearning。</li></ol></section>
+
+<section class="card"><h2>Paper 2 — Memory Is Not Always Needed: Characterizing Conditional Memory in Scientific Reasoning</h2>
+<p><a href="https://arxiv.org/html/2608.23982">Full HTML</a></p>
+<h3>一句话定位</h3><p>证明memory是否有益取决于input与knowledge-circuit位置，最优策略不是Always ON，而是conditional memory allocation。</p>
+<h3>人话版</h3><p>如果base model本来就知道答案，memory可能引入错误shortcut；如果缺知识，memory才有帮助；即使要用memory，也不是所有layer都适合注入。作者用External Data Router决定哪些query开memory，用Internal Parameter Router决定在哪些layer-stage注入。最关键控制是Activation-Rate-Matched Random Router：它和方法拥有相同memory-on比例，因此可以排除“只是少用memory所以更好”。Data Router在展示setting里全部胜出；Qwen2.5-7B internal router让MolEdit accuracy 0.495→0.513，MolUnd MAE 0.536→0.501、accuracy 0.562→0.573。</p>
+<h3>Background & Gap</h3><p>Always ON、固定layer injection默认memory总有益，但现实中memory effect随input/task/backbone/location变化。Unlearning同样不应默认“删了整个memory模块就最好”。</p>
+<h3>Core Insight</h3><p>memory utility是input×task×backbone×injection location联合属性。Unlearning可把这个结论反转成target influence的conditionality。</p>
+<h3>Method Deep Dive</h3><div class="flow">Input → Knowledge Boundary Proxy → External Router ON/OFF → screened cohort → Internal Router layer-stage/strength → memory-augmented reasoning → output</div>
+<h3>Baseline Comparison</h3><p>Always OFF测试纯parametric能力；Always ON测试固定memory；Matched Random控制memory access rate；S0 internal control在同cohort上测试固定注入。最强机制对照是Matched Random。</p>
+<h3>Experiment Setup</h3><p>Qwen2.5-7B、Qwen3-8B；biology/chemistry scientific reasoning；BioProBench和ChemCoTBench；Random Router使用100个fixed masks匹配activation rate；Internal Router使用same-cohort offline replay。</p>
+<h3>Results</h3><ol><li>Feature Data Router在展示的matched-random settings全部更好。</li><li>MolEdit acc 0.495→0.513。</li><li>MolUnd MAE 0.536→0.501。</li><li>MolUnd acc 0.562→0.573。</li><li>不同metric不存在一个固定memory配置全局最优。</li></ol>
+<h3>Figure Reading</h3><p>Figure2：knowledge boundary到两级router；Figure4：Always OFF/ON、Matched Random、Feature Router；Figure5：Internal Router同cohort paired replay；Figure6：不同layer的memory effect。</p>
+<h3>Ablation / Mechanistic Analysis</h3><p>Random Router严格匹配activation rate，所以Data Router的额外收益来自sample selection；Internal Router同cohort排除“换了更容易样本”的解释。但它仍是mechanism validation，而不是独立generalization。</p>
+<h3>Claim vs Evidence</h3><p>强支持conditional memory allocation优于static strategy；尚未证明router找到严格因果knowledge boundary，也未在长期Agent memory或隐私删除中验证。</p>
+<h3>Contribution</h3><p>New Empirical Characterization / Boundary-Aware External Router / Internal Parameter Router / Matched-Random Control。</p>
+<h3>Limitation</h3><p>scientific reasoning领域较窄；task-specific proxy迁移成本；internal router需白盒；没有unlearning攻击。</p>
+<h3>Reproduction View</h3><p>Qwen2.5-7B选一个Chem task，先做Always OFF/ON、Matched Random、Feature Router；Random用100 fixed masks匹配memory-on rate。确认External Router后再做Internal Router。</p>
+<h3>Research Value</h3><p>Migration ★★★★★；Evaluation ★★★★★；New Paper Potential ★★★★★。</p>
+<h3>Migration 1 — Conditional Memory Unlearning Router</h3><p>30 targets×50 query variants；router目标改成target leakage suppression + benign memory preservation。Metric：Conditional Leakage、Retain Benefit Preservation。</p>
+<h3>Migration 2 — Layer-Conditional Residual Probe</h3><p>unlearning后在不同layer-stage注入target cue/memory，测Layer Residual Influence、Recovery Surface、Retain FPR；可与RULER-style white-box residual结合。</p>
+<h3>Attack / Verification Lens</h3><p>攻击者寻找最容易打开target memory的query family，形成Conditional Recovery Attack；Verifier报告worst-case conditional leakage，而不是平均值。</p>
+<h3>记住10句话</h3><ol><li>Memory不是越多越好。</li><li>作用依赖input/task/layer。</li><li>Matched Random控制memory-on rate。</li><li>Feature Router仍赢。</li><li>MolEdit 0.495→0.513。</li><li>MolUnd MAE 0.536→0.501。</li><li>MolUnd acc 0.562→0.573。</li><li>Internal Router有独立收益。</li><li>不存在固定memory配置统治所有metric。</li><li>最强迁移是Conditional Memory Unlearning。</li></ol></section>
+
+<section class="card"><h2>Cross-Paper Synthesis</h2><p>Recuris给出<b>Component轴</b>：E/W/ρ/C；Conditional Memory给出<b>Condition轴</b>：query/task/layer-stage。两者组合后，Agent Unlearning的自然审计对象变成一个二维Residual Tensor：target influence在哪个组件、什么条件下重新出现。</p></section>
+<section class="card good"><h2>Best Migration Direction — Component × Condition Residual Auditor</h2><p>20 target memories；4 component interventions；5 query/event families；每个cell 3–5 probes。白盒先得到Residual Leakage tensor，再用纯黑盒最终行为预测该tensor，测Spearman/AUROC。这样可以把Agent Unlearning、black-box verification、hard-to-unlearn prediction真正连起来。</p></section>
+<section class="card warn"><h2>Collision</h2><p>Coalition-Aware已覆盖skill composition，InjecMEM覆盖future retrieval，Agentic Unlearning/ATU覆盖parameter-memory-tool恢复通道。因此新工作应明确差异化为<b>component-conditioned + query/layer-conditioned residual localization + black-box prediction</b>。</p></section>
+</main></body></html>

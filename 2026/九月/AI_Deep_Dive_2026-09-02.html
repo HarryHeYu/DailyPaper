@@ -1,0 +1,428 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Daily Top Papers Deep Dive — 2026-09-02</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#e1e6ef;--blue:#3158cf;--soft:#eef3ff;--green:#eaf7ee;--warn:#fff5d9;--red:#fff0f0;--dark:#111827}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1200px;margin:auto;padding:30px 24px 88px}.hero,.card,.paper{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 30px;margin:18px 0;box-shadow:0 4px 18px rgba(20,30,50,.045)}
+.hero{background:linear-gradient(135deg,#1b2556,#3158cf);color:#fff;border:0;padding:38px 42px}.hero h1{margin:0 0 10px;font-size:38px}.hero p{margin:5px 0;color:#edf1ff}
+h2{font-size:28px;margin:36px 0 16px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:21px;margin:28px 0 10px;color:#28439d}h4{font-size:17px;margin:22px 0 7px}
+p{margin:10px 0}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+nav{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px 20px;columns:2;margin:18px 0}nav a{display:block;padding:4px 0;border-bottom:1px dashed #edf0f5}
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--soft);color:#3048a5;font-size:12px;font-weight:700;margin:2px 5px 2px 0}
+.kv{display:grid;grid-template-columns:190px 1fr;gap:5px 14px}.kv>div:nth-child(odd){font-weight:750;color:#384354}
+.flow,.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--dark);color:#f5f7ff;border-radius:12px;padding:16px 18px;white-space:pre-wrap;overflow:auto;margin:12px 0}
+.callout{border-left:5px solid var(--blue);background:var(--soft);border-radius:10px;padding:14px 17px;margin:13px 0}.good{border-left-color:#2f855a;background:var(--green)}.warn{border-left-color:#c78a10;background:var(--warn)}.bad{border-left-color:#c74343;background:var(--red)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:14px 0}table{border-collapse:collapse;width:100%;min-width:820px;background:#fff}th,td{border-bottom:1px solid var(--line);padding:10px 11px;text-align:left;vertical-align:top}th{background:#f2f4f8}
+.score{font-weight:750;color:#2748bd}.small{font-size:13px;color:var(--muted)}ul,ol{padding-left:23px}li{margin:6px 0}
+@media(max-width:760px){main{padding:18px 12px 60px}.hero,.card,.paper{padding:20px}.hero h1{font-size:30px}nav{columns:1}.kv{grid-template-columns:1fr}}
+</style></head><body><main>
+<section class="hero"><h1>Daily Top Papers Deep Dive — 2026-09-02</h1><p><b>Machine Unlearning × Agent Capability Confinement</b></p><p>重新生成版 · 只保留2篇保证精读深度：UDS 与 SkillGuard。</p></section>
+<nav><a href="#selection">1. Today's Deep Dive Selection</a><a href="#why">2. 为什么选这2篇</a><a href="#p1">3. Paper 1 — UDS</a><a href="#p2">4. Paper 2 — SkillGuard</a><a href="#syn">5. Cross-Paper Synthesis</a><a href="#opp">6. Combined Research Opportunities</a><a href="#collision">7. Collision / Overlap</a><a href="#priority">8. Reading / Reproduction Priority</a><a href="#sources">9. Sources / Links</a></nav>
+<section id="selection" class="card"><h2>Today's Deep Dive Selection</h2><p><span class="badge">Machine Unlearning</span><span class="badge">EMNLP 2026 Main</span><b>#1 Measuring the Depth of LLM Unlearning via Activation Patching</b></p><p><span class="badge">Agent / Multi-Agent</span><span class="badge">2026-08-30</span><b>#2 Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection</b></p></section>
+<section id="why" class="card"><h2>为什么选这2篇</h2><p>UDS 直接切中“输出 suppression 与内部 erasure 是否一致”，且8月29日更新 v2、已标注 EMNLP 2026 Main；SkillGuard 是最近72小时内高迁移价值 Agent 安全新工作。二者共同围绕 causal recoverability / reachability，而不是单纯表面 output score。</p><div class="callout good"><b>共同主线：</b>从“现在看起来安全/忘记”升级到“是否仍存在一条因果路径把残留恢复成目标结果”。</div></section>
+
+<section id="p1" class="paper">
+<h2>Paper 1 Full Deep Dive — Measuring the Depth of LLM Unlearning via Activation Patching</h2>
+
+<h3>5.1 基本信息</h3>
+<div class="kv">
+<div>Title</div><div>Measuring the Depth of LLM Unlearning via Activation Patching</div>
+<div>Authors</div><div>Jaeung Lee, Dohyun Kim, Jaemin Jo</div>
+<div>Affiliation</div><div>Sungkyunkwan University</div>
+<div>Date</div><div>arXiv v1: 2026-05-23；v2: 2026-08-29</div>
+<div>Venue / Status</div><div>Accepted to EMNLP 2026 Main Conference；arXiv v2</div>
+<div>Paper</div><div><a href="https://arxiv.org/abs/2605.24614">arXiv</a> · <a href="https://arxiv.org/pdf/2605.24614">PDF</a> · <a href="https://arxiv.org/html/2605.24614v2">HTML</a></div>
+<div>Project</div><div><a href="https://gnueaj.github.io/unlearning-depth-score/">Project page</a></div>
+<div>Code</div><div><a href="https://github.com/gnueaj/unlearning-depth-score">Official GitHub</a></div>
+</div>
+
+<h3>5.2 一句话定位</h3>
+<p>UDS 把“模型只是学会不说，还是目标知识已经从可被后续网络恢复的中间表示中真正消失”变成一个通过 cross-model activation patching 得到的 0–1 因果分数。</p>
+
+<h3>5.3 人话版</h3>
+<p>普通 unlearning 评测只看最终输出是否还会说出 forget knowledge，但这容易把“出口抑制”误判成“内部删除”。作者构造三个模型：学过全部数据的 M_full、从未见过 forget set 的理想参考 M_ret、以及执行过 unlearning 的 M_unl。对每个 forget QA，只取真正承载知识的实体 token，然后逐层把 M_ret 或 M_unl 的 hidden state patch 到 M_full 的同一层，让 M_full 剩余 Transformer blocks 继续计算。如果 patch M_unl 后 M_full 仍能恢复正确实体，说明该层 residual 仍携带可用知识；如果其影响接近 M_ret，则更接近真正 retraining。作者把这一相对因果退化归一化成 Unlearning Depth Score。UDS 在 faithfulness、量化稳定性、relearning 稳定性上都显著优于 CKA、Fisher、Logit Lens 和多数输出指标。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>现有 LLM unlearning 常用 Exact Memorization、answer probability、Truth Ratio、ROUGE、MIA、retain-normalized score 等输出侧指标。白盒侧又有 CKA、Fisher、Logit Lens、probe、causal tracing 等方法。问题是：输出失败并不等于 hidden representation 无知识；CKA 只测表示几何相似，Logit Lens 只测当前 hidden state 经最终 LM head 能否线性读出，trained probe 又引入额外模型容量和训练争议。</p>
+<p>例子：一个 unlearned 模型对“作者 X 写了哪本书？”回答“I don't know”。中间层 Logit Lens 也看不到书名，但把该层状态送回原始 full model 后，后续 blocks 仍能把它变换成正确书名。这说明知识不是消失，而是“当前 readout 暂时看不到”。本文的 gap 是把这种 <b>functional recoverability</b> 变成一个标准化、可跨 checkpoint 比较的因果 metric。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>核心 observation：<b>linear decodability ≠ causal recoverability</b>。Unlearning 可能旋转、重编码或扰动 hidden state，使固定 LM head 无法直接读出知识，但原模型后半段 nonlinear computation 仍能恢复。于是作者让 M_full 充当“知道目标知识的 nonlinear decoder”，再让 M_ret 提供“真正没学过”的 gold-standard erasure anchor。</p>
+<p>这属于经验观察 + 因果测量设计。它不声称找到唯一“知识存储位置”，而是把“如果把这个状态放回原本会使用该知识的计算图中，它还能不能被利用”定义成 operational residual。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Forget example (x_i, entity y_i)
+→ M_full = train(D_r ∪ D_f)
+→ M_ret  = train(D_r)
+→ M_unl  = unlearn(M_full, D_f)
+→ teacher-force entity tokens
+→ Stage 1: patch M_ret residual stream into M_full
+→ compute ΔS¹ per layer
+→ KE_i = {l | ΔS¹_i,l > τ}
+→ Stage 2: patch M_unl residual stream into M_full
+→ compute ΔS²
+→ LER = clip(ΔS²/ΔS¹,0,1)
+→ weight by ΔS¹
+→ UDS_i∈[0,1]
+→ average across forget examples
+→ meta-evaluate faithfulness / quantization / relearning robustness</div>
+
+<h4>Step 1 — 三模型的角色</h4>
+<p>M_full 是具备目标知识的 decoder；M_ret 是理想 retraining 参考；M_unl 是待评对象。因此 UDS 不是问“这个 hidden state 绝对像什么”，而是问它的功能状态离 retraining target 多近。</p>
+
+<h4>Step 2 — Entity span 与 teacher forcing</h4>
+<p>作者只 patch 真正承载事实的实体 token，避免模板词稀释信号。Teacher forcing 使每个 token 都在相同 ground-truth prefix 下比较，避免 free generation 的路径分叉。</p>
+
+<h4>Step 3 — Stage 1 校准知识编码强度</h4>
+<p>把 M_ret 第 l 层状态替换进 M_full。如果正确实体 log-probability 大幅下降，说明该层对这条事实有 causal contribution。若 ΔS¹ 接近 0，分母会非常噪，因此通过 τ=0.05 只保留 Knowledge-Encoding layers。</p>
+
+<h4>Step 4 — Stage 2 测残留</h4>
+<p>同样位置改用 M_unl 状态。若 M_unl 已像 M_ret 一样“没有知识”，ΔS²≈ΔS¹；若仍保留知识，M_full 后半段能继续恢复，ΔS²≈0。</p>
+
+<h4>Step 5 — 聚合</h4>
+<p>层级 LER 由 ΔS²/ΔS¹ 归一化，再按 ΔS¹ 加权。知识编码越强的层权重越高；最终 UDS=0 代表像 full 一样可恢复，UDS=1 代表达到 retraining-level erasure。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">ΔS¹ᵢ,ₗ = (1/Tᵢ) Σₜ [s_fullᵢ,ₜ - s_S1ᵢ,ₜ]
+
+KEᵢ = {l : ΔS¹ᵢ,ₗ > τ},  τ=0.05
+
+ΔS²ᵢ,ₗ = (1/Tᵢ) Σₜ [s_fullᵢ,ₜ - s_S2ᵢ,ₜ]
+
+LERᵢ,ₗ = clip(ΔS²ᵢ,ₗ / ΔS¹ᵢ,ₗ, 0, 1)
+
+UDSᵢ = Σₗ ΔS¹ᵢ,ₗ·LERᵢ,ₗ / Σₗ ΔS¹ᵢ,ₗ
+
+UDS = (1/N)Σᵢ UDSᵢ</div>
+<p>ΔS¹ 是“真正从没学过”造成的标准退化；ΔS² 是 unlearned state 造成的退化。比值直接回答：M_unl 达到了理想 deletion 的几成。clip 到 1 的好处是解释清晰，坏处是 over-unlearning 也可能被记成 1，所以 UDS 必须和 retain utility 联合看。</p>
+<p>与 strongest white-box baseline Logit Lens 的本质区别是：Logit Lens 只做 LM_head(h_l)，而 UDS 让 M_full 的后续 nonlinear blocks 参与解码。最关键超参 τ 控制噪声层过滤；τ 太低分母不稳，太高会丢掉过多样本。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>忘记事实：“Alice Vane 写了 Blue Orchard”。M_unl 最终回答“I don't know”。第12层 patch M_ret 后正确实体下降2.0 nats，ΔS¹=2.0；patch M_unl 仅下降0.2，ΔS²=0.2，因此 LER=0.1。也就是说最终输出虽然拒答，第12层仍保留大量可被原模型后续计算恢复的信息。如果后层 LER≈0.9，说明 suppression 可能主要发生在网络后部。加权后 UDS 可能只有0.25，直接暴露“输出成功、内部仍残留”。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>怎么做</th><th>合理性</th><th>问题</th><th>UDS 改进</th></tr>
+<tr><td>Truth Ratio</td><td>真实/替代回答概率比</td><td>output forget 常用</td><td>量化/relearning 下很脆</td><td>改测 hidden-state causal recoverability</td></tr>
+<tr><td>Normalized MIA</td><td>成员性分数校正</td><td>与训练痕迹相关</td><td>membership≠knowledge</td><td>直接测目标实体能否被恢复</td></tr>
+<tr><td>CKA</td><td>表示几何相似</td><td>training-free white-box</td><td>相似度不等于功能可用性</td><td>做 intervention</td></tr>
+<tr><td>Fisher</td><td>参数敏感度</td><td>参数知识相关性</td><td>难校准为 erasure 比例</td><td>M_ret 提供0–1 anchor</td></tr>
+<tr><td><b>Logit Lens</b></td><td>中间层直接过 LM head</td><td>最接近 UDS</td><td>只能测线性可读性</td><td>用完整后续网络非线性解码</td></tr>
+</table></div>
+<p><b>Strongest baseline：Logit Lens。</b>总体 meta-score 约0.902，是最有竞争力白盒指标；Truth Ratio 的 faithfulness 很强，但 robustness 明显弱。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Dataset：</b>TOFU forget10，共400 forget QA；GPT-5.2 定位 answer entity span。<br>
+<b>Models：</b>Llama-3.2-1B-Instruct 为主；scale validation 还覆盖1B/3B/8B。<br>
+<b>Faithfulness：</b>30个训练过 D_f 的 P-pool vs 30个没训练 D_f 的 N-pool，以 AUC-ROC 区分。<br>
+<b>Robustness：</b>150个 unlearned models，8类方法/多组超参；做4-bit NF4 quantization与1-epoch relearning。<br>
+<b>Metrics：</b>20类输出/MIA/白盒指标。<br>
+<b>Relearning：</b>1 epoch，LR=2e-5，batch=8，grad accumulation=4，effective batch=32，AdamW。<br>
+<b>Compute：</b>单RTX A6000；8B UDS约184.1s，对比 Logit Lens约26s、Fisher约211.7s。</p>
+<p><b>Research Questions：</b>跨规模 calibration 是否稳定？是否更 faithful？对量化/relearning 是否稳？是否会改变 method ranking 和最佳超参？Logit Lens 与 UDS 冲突时谁更能解释 residual？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Faithfulness AUC-ROC↑：</b>区分明确“知道”和“没见过”的能力，1最好。<br>
+<b>Quantization Robustness↑：</b>量化前后指标应尽量稳定。<br>
+<b>Relearning Robustness↑：</b>同样轻量relearning后，指标变化应合理且与reference一致。<br>
+<b>UDS↑：</b>1表示更接近 retraining-level erasure；必须与 utility 一起读。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li>Scale calibration：full UDS约0.002/0.008/0.000；retain99约0.153/0.151/0.101；retain95约0.496/0.482/0.455；retain90均为1.0，随“未见目标数据比例”严格单调。</li>
+<li>Faithfulness AUC：UDS=0.971，高于 Truth Ratio 0.947、Logit Lens 0.927、Fisher 0.712、CKA 0.648。</li>
+<li>Overall meta-score：UDS=0.951，为20个指标最高；Logit Lens≈0.902。</li>
+<li>Aggregate robustness：UDS=0.932，其中 quantization≈0.968、relearning≈0.900；Logit Lens≈0.879。</li>
+<li>Truth Ratio 虽 faithfulness 0.947，但 aggregate robustness 仅约0.379，说明传统指标“会区分”不等于“适合长期评测”。</li>
+<li>关键 disagreement case：某模型 Logit Lens aggregate≈0.801，看起来 erased；UDS≈0.209，中间层 LER 多数≤0.230，证明后续非线性计算仍能恢复。</li>
+<li>Prompt-type heterogeneity：IdkNLL 对 Yes/No UDS≈0.624，而 Person Name≈0.025、Book/Title≈0.038、Biographical≈0.049、Descriptive≈0.042。</li>
+<li>加入 UDS 会改变 method ranking：SimNPO 与 NPO 名次交换，说明 output-only 选择 checkpoint 可能系统性错。</li>
+<li>NPO 最佳超参也发生变化：更高 LR + 更强 retain coefficient 被 UDS 选中，UDS 提升约0.199。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>UDS 同时取得 faithfulness 0.971、robustness 0.932、overall 0.951，并能解释 Logit Lens 明显误判的案例。</div>
+<div class="callout warn"><b>Weakest / Failure：</b>严格[0,1] calibration依赖 M_ret；Stage2-only 虽与完整UDS rank高度相关，但失去绝对“达到retraining几成”的解释。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 1：</b>完整两阶段 patch pipeline，是整篇最核心图。重点是 Stage1 先用 M_ret 建因果 baseline，再让 M_unl 相对它归一化。</p>
+<p><b>Table 2：</b>1B/3B/8B上 source model unseen比例增加时UDS严格单调，证明 scale calibration。</p>
+<p><b>Table 3：</b>20个metric三轴对比。Truth Ratio是faithful-but-brittle，CKA/Fisher各有明显短板，UDS最均衡。</p>
+<p><b>Table 4：</b>最关键机制证据，展示 linear decodability 与 causal recoverability 的分裂。</p>
+<p><b>Table 5：</b>不同问题类型UDS差异巨大，提示 hard-to-unlearn 样本存在结构异质性。</p>
+<p><b>Table 6/7：</b>UDS 会改变方法排名和超参选择，说明它不是“多报一个metric”，而会实际改变研究结论。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>完整 residual stream patch 比单独 attention/MLP 更稳定，说明层输出更适合作为功能性因果状态。τ sensitivity 显示0.05在噪声和覆盖率间折中；entity length 与 UDS 的相关性弱，排除了明显长度偏置。Mechanistically，UDS证明的是“状态在 M_full 后半网络中可恢复”，不是现实黑盒 attacker 必然可恢复，也不是定位到某个唯一 neuron/circuit。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>UDS是training-free、causal、稳定的unlearning-depth metric。</div>
+<div class="callout good"><b>Experiments Actually Show：</b>TOFU、Llama 1B–8B、150个unlearned models、8类方法上，scale calibration、faithfulness、robustness与case study均支持其价值。</div>
+<div class="callout warn"><b>What Is Not Yet Proven：</b>尚未证明它等于真实隐私泄漏概率，也未充分验证 WMDP/MUSE/MLLMU、long-form/multi-hop、跨architecture patch alignment和纯黑盒恢复。</div>
+
+<h3>5.16 Contribution</h3>
+<ul><li><b>New Metric/Protocol：</b>UDS。</li><li><b>New Causal Evaluation Mechanism：</b>M_full 后续网络作为 nonlinear decoder。</li><li><b>New Meta-Evaluation：</b>faithfulness + quantization/relearning robustness。</li><li><b>New Empirical Finding：</b>输出/MIA、线性可读性、causal erasure 可以严重不一致。</li><li><b>Engineering：</b>Stage1 caching。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors' Limitation：</b>需要 M_ret；clipping 无法区分理想删除与 over-unlearning；集中 TOFU；实体 teacher forcing 不覆盖 long-form/multi-hop。<br>
+<b>Additional：</b>要求模型结构/层/tokenization 对齐；M_full 是强白盒 decoder；8B 成本明显高；M_ret 的分布差异可能混入无关变化；multimodal 模块无法直接照搬。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>核心模块：三模型统一loader、entity-span locator、forward hook/residual patcher、teacher-forced logprob collector、Stage1 cache、LER/UDS aggregator。最小复现用 Llama-3.2-1B + TOFU 30–50 QA，做 NPO 弱/中/强三个checkpoint，优先找“output forget很好但UDS低”的模型，再加入Logit Lens复现 disagreement。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline Potential ★★★★★</span> representation-level unlearning必备强baseline。<br>
+<span class="score">Migration Potential ★★★★★</span> 适合MLLM模块深度、Agent state、black-box teacher label。<br>
+<span class="score">Attack Potential ★★★★★</span> 低UDS层是白盒recovery target。<br>
+<span class="score">Evaluation Potential ★★★★★</span> suppression vs erasure 的核心新轴。<br>
+<span class="score">Benchmark Potential ★★★★☆</span> 可为现有benchmark加入depth track。<br>
+<span class="score">New Paper Potential ★★★★★</span> black-box prediction of UDS、cross-modal UDS、UDS↔ASR都是明显机会。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Black-Box Residual-to-Representation Auditor</h4>
+<p><b>Original Problem →</b>UDS需要白盒和M_ret。<br>
+<b>Transferable Mechanism →</b>把UDS_i当内部残留ground-truth label。<br>
+<b>New Research Question →</b>只观察最终输出能否预测某target的UDS？<br>
+<b>Method Modification →</b>direct/paraphrase/cloze/pairwise/multi-hop/prefix probes做feature，再做rank aggregation或轻量calibrator。<br>
+<b>Minimum Experiment →</b>50 targets×8 method-hyperparameter checkpoints×6 probe families，预算20/50/100 queries。<br>
+<b>Model →</b>Llama-3.2-3B/8B、Qwen3-8B。<br>
+<b>Dataset →</b>TOFU→MLLMU。<br>
+<b>Baseline →</b>single-direct、MIA-like、random、Logit Lens white-box upper bound。<br>
+<b>Metric →</b>Spearman(pred,1-UDS)、AUROC(UDS&lt;0.3)、ASR@budget、Retain FPR。<br>
+<b>Expected Contribution →</b>把 representation verification 迁到 deployable black-box auditor。<br>
+<b>Risk →</b>probe可能只学到output suppression。<br>
+<b>Collision Risk →</b>高但可差异化：UDS作为teacher而不是竞争对象。</p>
+
+<h4>方向 B — Multimodal Unlearning Depth Map</h4>
+<p><b>Original Problem →</b>文本 residual stream。<br>
+<b>Transferable Mechanism →</b>reference-state calibrated causal degradation。<br>
+<b>New RQ →</b>MLLM残留究竟在vision、connector还是LLM？<br>
+<b>Method Modification →</b>分别patch vision hidden、projector output、LLM visual/answer residual，形成module-layer UDS matrix。<br>
+<b>Minimum Experiment →</b>20 identities×4 methods×3 module settings×2 VLM。<br>
+<b>Model →</b>LLaVA-1.5-7B、Qwen2.5-VL-7B。<br>
+<b>Dataset →</b>MLLMU-Bench。<br>
+<b>Baseline →</b>output score、CKA、Logit Lens、linear probe。<br>
+<b>Metric →</b>Module UDS、Worst-Module Residual、Recovery-ASR correlation、retain utility。<br>
+<b>Expected Contribution →</b>因果module-depth map。<br>
+<b>Risk →</b>跨模块对齐难。<br>
+<b>Collision Risk →</b>中等。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>Activation patching 本身就是 white-box causal recovery existence proof；UDS 可作为黑盒 probe 的 teacher label；verification 应联合 output forgetting、UDS、retain utility，并检查低UDS target是否更易 recovery。可定义 <b>Residual Recoverability Gap</b>：行为恢复强但普通 output leakage 低的程度。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>UDS 看“hidden representation → target knowledge”的后续 computation path；SkillGuard 看“contaminated state → forbidden action”的未来 execution path。一个在模型内部，一个在系统外部，本质都是 residual 到危险结果是否仍然可达。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>最终不输出目标知识，不代表hidden state中没有知识。</li><li>Logit Lens测线性可读性，UDS测后续非线性网络能否恢复。</li><li>M_full是decoder，M_ret是真正没见过的anchor。</li><li>Stage1测知识编码强度，Stage2测unlearned residual。</li><li>UDS=0像full可恢复，1接近retraining-level erasure。</li><li>faithfulness 0.971、robustness 0.932、overall 0.951。</li><li>Table4证明linear decodability不等于causal recoverability。</li><li>不同prompt type的UDS差异很大。</li><li>最大限制是M_ret依赖和over-unlearning不可区分。</li><li>最值得做的新方向是用黑盒probe预测UDS。</li></ol>
+</section>
+
+
+<section id="p2" class="paper">
+<h2>Paper 2 Full Deep Dive — Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection</h2>
+
+<h3>5.1 基本信息</h3>
+<div class="kv">
+<div>Short Name</div><div>SkillGuard</div>
+<div>Title</div><div>Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection</div>
+<div>Authors</div><div>Wujie Xiong, Rabimba Karanjai, Yang Lu, Weidong Shi, Lei Xu</div>
+<div>Affiliation</div><div>Kent State University；PayPal AI Labs；University of Houston</div>
+<div>Date</div><div>2026-08-30</div>
+<div>Venue / Status</div><div>arXiv v1 preprint；论文未标注正式 venue</div>
+<div>Paper</div><div><a href="https://arxiv.org/abs/2608.30041">arXiv</a> · <a href="https://arxiv.org/pdf/2608.30041">PDF</a> · <a href="https://arxiv.org/html/2608.30041v1">HTML</a></div>
+<div>Project / Code</div><div>论文正文未给出独立 project page 或官方代码仓库链接</div>
+</div>
+
+<h3>5.2 一句话定位</h3>
+<p>SkillGuard 不试图让 LLM 准确识别每一段恶意文本，而是在 untrusted output 已污染 Agent 状态后，计算从当前状态到 forbidden state 的未来能力路径，并用最小代价 restriction 切断它们。</p>
+
+<h3>5.3 人话版</h3>
+<p>Indirect Prompt Injection 把恶意指令藏在网页、邮件、文档等工具返回内容里。传统防御往往问“这段话是不是恶意”或“这个动作现在是否危险”。SkillGuard 把问题改写成：Agent 一旦受到污染，从当前状态出发，未来还有没有一条 tool/skill sequence 能走到禁止状态？它建立 Skill Impact Graph，给每个 skill 配参数级 steerability signature，再用 Inline Reference Monitor 在可信 harness 上强制检查。当进入 contaminated state 后，系统求 binary 或 fractional min-cut：要么移除整个 capability，要么只收紧参数 envelope。AgentDojo 实验表明，binary cut 能把大量攻击 ASR 压到 0，但 utility 损失明显；fractional-flow 能保留更多能力。不过 adaptive attacks 也证明，如果 URL/email 等参数语义等价类没有被 policy 正确 canonicalize，形式化 reachability guarantee 仍会失效。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>Prompt-level defense 如 Spotlighting 通过标记不可信数据，让模型区分 instruction/data；CaMeL 更偏信息流/能力控制；AttriGuard 通过 attribution/provenance 约束来源与动作关系。这些方法大多围绕当前 prompt 或当前 action。</p>
+<p>SkillGuard 的 gap 是“future capability”。例如 Travel Agent 读取恶意网页，当前只是 read，但它后续可能走 <code>read_profile→send_email</code> 把敏感信息发给攻击者。如果只检查当前 action，仍可能漏掉多步组合路径。作者把安全对象从“动作分类”提升为“状态 reachability”。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>危险存在于 contaminated state 与可组合 skills 共同形成的可达空间，而不只存在于某一段文本。第二个 insight 是 capability restriction 可以是参数级的：send_email 本身可能必须保留，真正危险的只是 recipient/body 的部分取值。因此引入 steerability signature，把能力删除变成 envelope tightening。</p>
+<p>这是系统 formalization + optimization。只要 restricted graph 从当前 q 到 forbidden B 不可达，且 IRM 真正执行这些 restriction，未来 continuation 就满足给定安全属性。弱点也因此非常清楚：policy/signature/B 定义错误时，数学优化再完美也没用。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Registered skills Σ + deployment policy
+→ define q0, K0, Sig0
+→ build Skill Impact Graph G=(Q,Σ,δ,q0)
+→ LLM proposes invocation (σ,p)
+→ IRM pre-check:
+   σ enabled?
+   p inside current envelope?
+→ execute skill
+→ post-check output
+→ commit event e=(σ,p,o)
+→ q'=δ(q,e)
+→ contamination changed?
+   YES → compute paths q→B
+       → binary cut / fractional / fractional-flow
+       → update K and Sig
+       → rebuild restricted SIG
+→ continue only in safe reachable region</div>
+<p>SIG 中 Q 是安全相关状态，Σ 是注册 skill，δ 是执行事件改变状态的函数。Steerability signature 对每个参数定义允许 envelope。IRM 在 harness 层而不是 LLM 层执行检查。Binary restriction 从所有 q→B 路径中选最小代价 capability cut；fractional-flow 则在完整图上联合收紧参数范围，使危险路径断开而尽量保留正常用法。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">IRM:
+σ ∈ K(q)
+AND ∀p_i: Valid(p_i, Sig(σ)[p_i])
+
+Binary cut:
+min Σ_c w(c)(1-x_c)
+
+s.t. Σ_{c∈C(π)}(1-x_c) ≥ 1
+for every π∈Π(q,B)
+
+x_c=1 retain, x_c=0 remove
+
+Fractional:
+min_y Σ_c w_c(y_c)
+
+s.t. Reach_{G[y]}(q) ∩ B = ∅
+y_c∈[0,1]</div>
+<p>Binary 约束要求每条危险路径至少有一个 capability 被删，因此没有完整 q→B 路径存活。w(c) 是 utility cost。Fractional 把“整把删掉”变成“收紧参数空间”。与 strongest baseline CaMeL 的差异不只是更快：CaMeL 偏 runtime data-flow / auxiliary analysis，SkillGuard 则把未来风险写成 deterministic reachability optimization，执行时不需要额外 LLM calls。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>Travel Agent 有 get_webpage、read_profile、book_flight、send_email。恶意网页让它把护照号发往 evil@example.com。读取后 q 变 contaminated。Binary cut 可能直接删除 send_email，最安全但用户也收不到 itinerary；fractional restriction 只把 recipient envelope 收紧到 verified address，保留正常邮件。如果攻击者用 plus-tag、URL 重写或其它语义等价形式绕过 envelope，而 policy 没做 canonicalization，则 graph 看似安全、现实仍可到 forbidden state。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>怎么做</th><th>合理性</th><th>弱点</th><th>SkillGuard 差异</th></tr>
+<tr><td>No Defense</td><td>依赖system prompt</td><td>零额外成本</td><td>ASR高</td><td>trusted harness enforcement</td></tr>
+<tr><td>Spotlighting</td><td>标记不可信文本</td><td>轻量</td><td>组合攻击下不稳</td><td>不依赖模型识别恶意语义</td></tr>
+<tr><td><b>CaMeL</b></td><td>细粒度能力/数据流控制</td><td>安全性能强</td><td>额外calls/tokens和高latency</td><td>reachability + deterministic restriction</td></tr>
+<tr><td>AttriGuard</td><td>attribution/provenance检查</td><td>来源感知</td><td>多步组合和成本不足</td><td>从单action扩展到future path</td></tr>
+</table></div>
+<p><b>Strongest baseline：CaMeL。</b>Gemini compositional 中 CaMeL ASR≈14.00% 略好于 SkillGuard≈14.29%，所以 SkillGuard 不是每个 setting 都绝对最好；但 Llama 上 SkillGuard≈8.00% vs CaMeL≈17.50%，且零额外 LLM tokens/calls。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Benchmark：</b>AgentDojo v1.2.2；从949实例中过滤文本攻击相关任务，涉及97 user tasks、929 attack instances；Workspace、Slack、Travel、Banking。<br>
+<b>Models：</b>Gemini 2.5 Flash、Llama-3.3-70B。<br>
+<b>Variants：</b>IRM Only、IRM+Binary Capability cut、IRM+Fractional-Flow Confinement。<br>
+<b>Baselines：</b>No Defense、Spotlighting、CaMeL、AttriGuard。<br>
+<b>Metrics：</b>ASR、Benign Utility、Utility under Attack、Retained Capability Ratio、TPR/FPR restriction、Average Capabilities Removed、latency、extra tokens/calls。<br>
+<b>Adaptive stress：</b>8个 mechanism-aware attacks，覆盖 restriction scope、enforcement timing、parameter representation robustness。</p>
+<p><b>Research Questions：</b>IRM 单独有多少价值？Binary 是否能压到近0 ASR？Flow 能否恢复 utility？相对 CaMeL/AttriGuard 成本优势多大？知道机制的 attacker 能否绕过 policy/envelope？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>ASR↓：</b>攻击目标成功率，但不能单看，因为禁掉所有工具也能0。<br>
+<b>BU↑：</b>无攻击时正常任务成功率。<br>
+<b>UA↑：</b>有攻击时仍完成用户任务的能力，是安全-可用性的核心指标。<br>
+<b>RCR↑：</b>污染后保留多少 capability，衡量 restriction 粗不粗。<br>
+<b>TPR/FPR：</b>危险 capability 是否正确限制、无辜 capability 是否误限。<br>
+<b>ACR↓：</b>平均删掉多少工具。<br>
+<b>Latency/tokens/calls↓：</b>部署成本。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li>IRM Only：Gemini ASR 22.34→14.19%，Llama 50.83→10.37%，证明 trusted invocation validation 本身就很强。</li>
+<li>IRM+Binary：两模型增量实验中 ASR 可到0、TPR=100%，但 BU/RCR 明显下降，安全来自粗暴能力删除。</li>
+<li>IRM+FFC：Gemini ASR仍0，RCR≈93.21%，相对binary约+16.96pp；Llama RCR≈94.08%，约+14.79pp。</li>
+<li>Slack 等 domain 的 RCR 增益可超过27–30pp，说明 fractional restriction 的 utility 恢复不是 Travel 特例。</li>
+<li>Flow 安全不单调：Llama Slack ASR 从 binary 8.57→flow 14.29%，换来 RCR 大幅提高，存在明确 security-utility trade-off。</li>
+<li>Gemini compositional：SkillGuard BU≈92.27、UA≈54.55、ASR≈14.29；CaMeL≈82.27/75.00/14.00。安全上 SkillGuard 并未赢。</li>
+<li>Llama compositional：SkillGuard≈86.82/81.82/8.00，CaMeL≈87.73/71.82/17.50；ASR低约9.5pp、UA高约10pp。</li>
+<li>成本：Gemini compositional CaMeL 延迟约178.62s、42258 extra tokens、7.36 calls；SkillGuard约13.88s、0 extra tokens/calls。</li>
+<li>Adaptive attacks：binary 阻断6/8，fractional-flow仅3/8，暴露 parameter-equivalence/canonicalization 弱点。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>Llama compositional 中 SkillGuard 同时更低ASR、更高UA、0额外LLM calls。</div>
+<div class="callout warn"><b>Weakest：</b>Gemini compositional 中 ASR 不优于 CaMeL，UA 也明显更低。</div>
+<div class="callout bad"><b>Failure：</b>fractional-flow 的数学保证依赖 envelope 完整，URL/email 等价表示未覆盖就会重开危险路径。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Algorithm 1：</b>pre-check→execute→post-check→commit→contamination→restriction 的时序说明它不能回滚污染识别前已经发生的危险 action，adaptive timing attack 就利用这一点。</p>
+<p><b>Table 1：</b>No Defense→IRM→Binary→Flow 清楚显示模块职责：IRM负责低成本挡显然非法动作；Binary负责强安全；Flow负责恢复 utility。</p>
+<p><b>Table 2：</b>RCR 大幅增加，但部分 ASR 变差，说明 fractional 不是“更安全”，而是把 Pareto 往保留能力方向移动。</p>
+<p><b>Table 5：</b>突出 CaMeL/AttriGuard 的辅助模型成本与 SkillGuard 的0 extra calls。</p>
+<p><b>Table 7：</b>复杂 compositional attack 下 Spotlighting 不稳定；SkillGuard在Llama最强，但Gemini没有全面胜过CaMeL。</p>
+<p><b>Adaptive analysis：</b>binary6/8 vs flow3/8说明真正瓶颈是 policy/envelope semantics，不是 min-cut solver。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>IRM only 证明 local validation 能显著降低攻击但无法保证 future-path 安全；加 Binary 后 ASR 接近0但 utility/RCR下降，说明 binary 模块承担强 reachability guarantee；Binary→Flow 后 RCR 提升10–30pp，说明 steerability envelope 承担 utility recovery。Adaptive attack 又证明 envelope 本身就是安全边界，而不是无关工程细节。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>reachability-based confinement 可在 contamination 后主动限制未来 capability，且无需额外 LLM inference。</div>
+<div class="callout good"><b>Experiments Actually Show：</b>AgentDojo、两个模型、多suite和compositional attacks上明显降低ASR；flow通常保留更多能力；成本低；adaptive test也揭露真实弱点。</div>
+<div class="callout warn"><b>What Is Not Yet Proven：</b>开放世界动态工具、真实browser agents、错误 skill summary/signature、自动policy生成、未知forbidden state 等尚未充分验证。</div>
+
+<h3>5.16 Contribution</h3>
+<ul><li><b>New Formalization：</b>contaminated-state→forbidden-state reachability。</li><li><b>New Mechanism：</b>SIG + steerability signatures + IRM。</li><li><b>New Optimization：</b>binary / fractional / fractional-flow confinement。</li><li><b>Security Guarantee：</b>明确假设下的未来路径安全。</li><li><b>New Empirical Finding：</b>compositional/adaptive attacks 揭示真实 policy weakness。</li><li><b>Engineering：</b>0 extra LLM calls/tokens。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors' Limitation：</b>SIG scalability、复杂 suite 有秒级 overhead、restriction 会伤 utility、需要 policy refinement。<br>
+<b>Additional：</b>安全性强依赖 skill summary/signature/B 正确；未写入 B 的攻击不会被处理；late enforcement 不可回滚；fractional envelope 对 canonicalization 脆弱；论文未给官方代码链接；模型只有 Gemini 2.5 Flash 和 Llama-3.3-70B。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>核心模块：AgentDojo wrapper、skill registry、SIG builder、state tracker、signature validator、IRM hooks、binary min-cut、fractional optimizer、trace logger。最小复现建议不用全套 AgentDojo：搭8–12 skill Travel mini-agent，3个forbidden states，20 benign+20 injection，先跑 No Defense→IRM→Binary，再加 Flow 和 URL/email canonicalization attack。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline Potential ★★★★☆</span> Agent security/unlearning强baseline。<br>
+<span class="score">Migration Potential ★★★★★</span> 直接迁到skill unlearning、memory deletion、multi-agent communication。<br>
+<span class="score">Attack Potential ★★★★★</span> scope/timing/equivalence probes适合黑盒audit。<br>
+<span class="score">Evaluation Potential ★★★★★</span> ASR+UA+RCR非常适合“删能力但保邻近能力”。<br>
+<span class="score">Benchmark Potential ★★★★☆</span> 可扩成Agent Unlearning reachability benchmark。<br>
+<span class="score">New Paper Potential ★★★★★</span> “被删skill是否仍可达”非常有潜力。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Agent Unlearning as Residual Capability Reachability</h4>
+<p><b>Original Problem →</b>污染后切断危险capability。<br>
+<b>Transferable Mechanism →</b>SIG+forbidden state+min-cut。<br>
+<b>New RQ →</b>skill/memory被unlearn后，environment/tool composition/memory/peer-agent还能否重构？<br>
+<b>Method Modification →</b>“目标skill重新成功执行”设forbidden sink；图边加入memory retrieval、skill compilation、reflection、cross-agent messages。<br>
+<b>Minimum Experiment →</b>30 deleted skills×4 recovery paths×3 deletion methods，每skill≤50 probes。<br>
+<b>Model →</b>Qwen3-8B/Llama-3.1-8B agents。<br>
+<b>Dataset →</b>OBLIVION-style workflow + ToolBench/WebArena subset。<br>
+<b>Baseline →</b>delete artifact、memory purge、tool deny-list、prompt refusal、control-plane planner。<br>
+<b>Metric →</b>Reacquisition Reachability Rate、Minimum Residual Cut Size、ASR@budget、Benign Utility、Retain Skill FPR。<br>
+<b>Expected Contribution →</b>把“删入口”升级为“能力全路径不可达”。<br>
+<b>Risk →</b>真实graph巨大。<br>
+<b>Collision Risk →</b>中等，需突出 graph-predicted minimal recovery carriers。</p>
+
+<h4>方向 B — Black-Box Capability-Policy Fingerprinting</h4>
+<p><b>Original Problem →</b>defender 白盒知道policy。<br>
+<b>Transferable Mechanism →</b>不同 restriction 留下行为 signature。<br>
+<b>New RQ →</b>仅通过API行为能否识别 no defense/IRM/binary/fractional？<br>
+<b>Method Modification →</b>canonical vs equivalent URL、base vs plus-tag email、single-step vs delayed action成对probe。<br>
+<b>Minimum Experiment →</b>4 regimes×5 suites×40 templates×5 seeds。<br>
+<b>Model →</b>Gemini/Llama/Qwen agent。<br>
+<b>Dataset →</b>AgentDojo + canonicalization probes。<br>
+<b>Baseline →</b>random probe、single-shot attack、static declaration。<br>
+<b>Metric →</b>Regime AUROC、Probe@95% confidence、Forbidden-Path Discovery Rate、Benign FPR。<br>
+<b>Expected Contribution →</b>black-box policy audit。<br>
+<b>Risk →</b>随机性/rate limit混淆。<br>
+<b>Collision Risk →</b>低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>最有价值攻击不是继续堆 jailbreak 文本，而是系统探测 restriction scope、timing、parameter canonicalization。对 unlearning，可把“被删知识/skill再次使用”定义为 forbidden state，只要 memory/tool/peer 任一路径可达，就判 closure 未完成。可以定义 <b>Minimum Residual Cut Size</b>：彻底阻止目标能力重新出现，至少还要切断多少 carrier。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>UDS 关注内部 representation 到目标知识的恢复路径，SkillGuard 关注系统状态到目标 capability 的执行路径。组合后可以把 representation residual → behavior → tool execution/reacquisition 连成跨层级 causal path。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>Indirect injection真正风险是污染后的future capability。</li><li>SIG表示当前状态还能通过哪些skills走到哪里。</li><li>IRM在trusted harness执行，而不是靠LLM自律。</li><li>污染后求最小cut阻断所有forbidden paths。</li><li>Binary最安全但损utility。</li><li>Fractional/flow可把RCR提升10–30pp。</li><li>Flow并非总更安全，部分ASR会反弹。</li><li>Llama compositional上SkillGuard做到了约8% ASR、81.82% UA且0 extra calls。</li><li>adaptive attack说明policy/envelope语义是最大软肋。</li><li>对unlearning最值得迁移的是“目标能力是否仍然可达”。</li></ol>
+</section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2><p>两篇共同说明：<b>Local suppression ≠ causal closure。</b> UDS 问后续 Transformer 能不能从 residual representation 恢复知识；SkillGuard 问后续 skill/tool sequence 能不能从 contaminated state 到 forbidden capability。二者统一成 Residual Reachability：从当前残留状态到禁止结果是否仍存在 causal path。</p><p><b>最适合作 baseline：</b>UDS。<br><b>最适合产生 attack：</b>SkillGuard 的 scope/timing/equivalence-class adaptive probes。<br><b>最适合产生 benchmark/metric：</b>两者组合。</p></section>
+<section id="opp" class="card"><h2>Combined Research Opportunities</h2><h3>Best Migration Direction — Causal Residual Reachability Auditor</h3><div class="flow">White-box teacher:
+target → UDS / layer residual
+
+Black-box:
+direct / paraphrase / cloze / pairwise / multi-hop / cross-modal
+→ predict 1-UDS
+
+Agent/System:
+target disclosure or deleted-skill execution = forbidden sink
+→ memory / tool / peer-agent / workflow paths
+→ reachability + minimum residual cut
+
+Metrics:
+Spearman(pred,1-UDS)
+AUROC(low-UDS target)
+ASR@budget
+Minimum Residual Cut Size
+Retain FPR</div><p>最小实验：30–50 targets，3 methods×3 strengths；每target算UDS，再用5类黑盒probe各5次预测1-UDS；只对高风险top-20%跑memory/tool/peer-agent recovery。如果 UDS→black-box residual→system reachability 三者显著单调相关，就形成完整证据链。</p></section>
+<section id="collision" class="card"><h2>Collision / Overlap</h2><div class="callout bad"><b>Strongest Collision：Representation-Level Unlearning Residual Measurement / UDS。</b> “白盒hidden-state residual score”本身已被UDS强占位。新的工作应把UDS当strongest baseline或teacher，差异化到black-box prediction、multimodal module-depth、difficulty prediction、Agent capability reachability。</div></section>
+<section id="priority" class="card"><h2>Reading / Reproduction Priority</h2><p><b>UDS：</b>先看 Figure1、Table3、Table4、Table5、Table6/7。最小复现先找 output-forgotten but low-UDS checkpoint，再做black-box probes预测UDS。</p><p><b>SkillGuard：</b>先看 SIG formalization、Algorithm1、Table1、Table2、Table7、adaptive attack。最小复现先做 No Defense→IRM→Binary→Flow，再做 URL/email canonicalization attack。</p></section>
+<section id="sources" class="card"><h2>Sources / Links</h2><ul><li><a href="https://arxiv.org/abs/2605.24614">UDS — arXiv</a></li><li><a href="https://arxiv.org/pdf/2605.24614">UDS — PDF</a></li><li><a href="https://github.com/gnueaj/unlearning-depth-score">UDS — Official GitHub</a></li><li><a href="https://gnueaj.github.io/unlearning-depth-score/">UDS — Project</a></li><li><a href="https://arxiv.org/abs/2608.30041">SkillGuard — arXiv</a></li><li><a href="https://arxiv.org/pdf/2608.30041">SkillGuard — PDF</a></li></ul><p class="small">HTML 重新生成于 2026-09-02；保持 UTF-8、自包含、内联CSS和可点击链接。</p></section>
+</main></body></html>

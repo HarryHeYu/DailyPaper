@@ -1,0 +1,89 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Research Radar — 2026-08-29</title>
+<style>
+body{margin:0;background:#f6f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.8}
+main{max-width:1120px;margin:auto;padding:28px 22px 80px}.card,details{background:#fff;border:1px solid #e4e7ec;border-radius:15px;padding:20px 22px;margin:14px 0}
+h1{font-size:34px}h2{border-bottom:1px solid #e4e7ec;padding-bottom:8px;margin-top:38px}a{color:#3457d5;text-decoration:none}
+nav{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:15px 20px;columns:2}nav a{display:block;padding:3px}
+.s{background:#fff4da}.a{background:#eef4ff}.b{background:#f1f7f2}.warn{background:#fff2cf;border-left:5px solid #d39118}.idea{border-left:5px solid #3457d5}
+table{width:100%;border-collapse:collapse}th,td{border:1px solid #e4e7ec;padding:8px;vertical-align:top}th{background:#f4f6f9}
+</style></head><body><main>
+<div class="card"><div>Daily AI Research Radar & Idea Miner · regenerated</div><h1>AI Research Radar — 2026-08-29</h1>
+<p>重新检索并冻结40篇Candidate Pool后统一筛选；正式收录10篇，Tier S/A/B=3/3/4。WikiSkill、GraphMemix、FRAG等因近期已深读，不重复占Tier S。</p></div>
+<nav><a href="#exec">Executive Summary</a><a href="#important">Most Important</a><a href="#s">Tier S</a><a href="#a">Tier A</a><a href="#b">Tier B</a><a href="#ideas">Ideas</a><a href="#collision">Collision</a><a href="#priority">Priority</a><a href="#watch">Watchlist</a><a href="#stats">Stats</a></nav>
+
+<section id="exec" class="card"><h2>Executive Summary</h2>
+<p><b>今日主线：</b>“不可见/不可直接访问”不能作为真正删除的代理。Daydreaming证明最终输出可重建hidden skill；Safety Does Not Compose证明单trajectory状态无法覆盖跨iteration证据；SARA证明internal induction与final authorization必须分离。</p>
+<p><b>最值得推进：</b>Output-Only Skill Unlearning Recovery Attack；Composable Continual Agent Unlearning；Suppression-vs-Unlearning Induction Gap。</p></section>
+
+<section id="important" class="card"><h2>Today's Most Important Paper</h2>
+<h3>Daydreaming: Stealing Hidden Agent Skills through Black-Box Task Interaction</h3>
+<p>最值得看威胁模型、三阶段attack pipeline、query budget与组件ablation。Output-only下最高恢复86.8%原skill capability，中位约32次victim calls；它几乎可以直接改造成post-unlearning functional recovery audit。</p></section>
+
+<section id="s"><h2>Tier S</h2>
+<details open class="s"><summary><b>Daydreaming</b></summary>
+<p><a href="https://arxiv.org/html/2608.26733">Full paper</a></p>
+<p><b>人话版：</b>不读SKILL.md、不看private reasoning，只用正常任务输出辨识hidden skill。攻击按Property Inference→Shadow Candidate Selection→Per-file Refinement推进，最终评估的是behavioral utility而不是文本相似。</p>
+<p><b>结果：</b>Output最高86.8%，Trace87.0%，Differential86.0%；中位约31–33 victim calls；相对SigLeak接近4×提升；预算从16到96后趋于饱和。</p>
+<p><b>迁移：</b>unlearned agent作为victim，B=16/32/64，比较entry delete、Agentic Unlearning和random probes；Metric=Recovery Utility、ASR@budget、Median Calls、Retain FPR。</p>
+<p><b>结论：</b>artifact不可访问不等于capability不可恢复。</p></details>
+
+<details open class="s"><summary><b>Safety Does Not Compose</b></summary>
+<p><a href="https://arxiv.org/html/2608.27141">Full paper</a></p>
+<p><b>人话版：</b>若每轮trajectory都reset安全状态，决定性证据可被攻击者拆到多个iteration；单轮monitor甚至可退化到TPR=FPR。几何衰减risk state也可能被固定cooldown绕过。</p>
+<p><b>方法：</b>LoopHarness把non-decaying outer state、mediated commits和arbiter放到trajectory之外。</p>
+<p><b>结果：</b>弱local configs outer attack ASR约97.6%，强outer state配置将多个family压到0附近；Clean Goal Completion保持约95%–97%。</p>
+<p><b>迁移：</b>Continual Unlearning需要persistent deletion ledger，不能session-local reset。</p></details>
+
+<details open class="s"><summary><b>SARA: Separating Action Induction from Runtime Authorization</b></summary>
+<p><a href="https://arxiv.org/html/2608.27146">Full paper</a></p>
+<p><b>人话版：</b>Observation诱导动作和动作被授权执行是两层状态。SARA用Action Probe记录origin provenance，并以goal/argument/evidence gate决定tool call是否真正执行。</p>
+<p><b>结果：</b>GPT-4o-mini AgentDojo 15.79%→0.06%，AgentDyn16.07%→0.17%；Gemini对应33.28%→0.62%、30.91%→0.63%。移除Action-Induction Tracking后ASR回到3%级。</p>
+<p><b>迁移：</b>定义Induction Residual Rate、Manifestation Rate、Guard Dependence Gap，区分“真的忘掉”与“只是被输出gate压住”。</p></details>
+</section>
+
+<section id="a"><h2>Tier A</h2>
+<details class="a"><summary>SKILL.state</summary><p>把append-only conversation history替换成显式mutable execution state。迁到Trajectory Unlearning时可研究minimal state deletion：哪些状态变量必须清除，哪些skill spec必须保留。</p></details>
+<details class="a"><summary>PILOT in the Loop</summary><p>Supervisor能在worker执行中redirect/abort并把实时failure写回persistent skills/memory。迁移点：reacquisition可能在同一active run中发生，而不是episode结束后。</p></details>
+<details class="a"><summary>PPE-Bench</summary><p>Private target与public entity同图出现，直接测selective forgetting和adjacent public collateral damage；适合作为MLLM fine-grained unlearning benchmark。</p></details>
+</section>
+
+<section id="b"><h2>Tier B</h2>
+<details class="b"><summary>What the 'Spotless' Mind Remembers</summary><p>更新版研究knowledge entanglement与post-unlearning leakage；与hard-to-unlearn predictor高度collision。</p></details>
+<details class="b"><summary>When Memory Takes Gradients</summary><p>把长期交互历史变成gradient-trained vector memory；说明Memory Unlearning边界不再只包含文本entry。</p></details>
+<details class="b"><summary>FaultLens</summary><p>用32个compact probes覆盖绝大多数behavioral faults；非常适合迁成budgeted black-box residual test suite。</p></details>
+<details class="b"><summary>One Model, Many Minds</summary><p>将latent roles放入codebook并由router融合；可迁到role/codebook-level behavior unlearning与router residual。</p></details>
+</section>
+
+<section id="ideas"><h2>Idea Mining</h2>
+<div class="card idea"><h3>1. Output-Only Skill Unlearning Recovery Attack</h3><p>10–20 target skills，B=16/32/64 calls；比较random、Daydreaming-style adaptive probes、entry delete/Agentic Unlearning。Metric：Recovery Utility、ASR@budget、Median Calls、Retain FPR。Novelty ★★★★★，Feasibility ★★★★★。</p></div>
+<div class="card idea"><h3>2. Composable Continual Agent Unlearning</h3><p>20 targets，delete后跨20 iterations分散注入relearning cues；比较session-local、decaying、persistent deletion ledger。Metric：Cross-Iteration Reacquisition、Deletion-State Violation、False Lock。Novelty ★★★★★。</p></div>
+<div class="card idea"><h3>3. Suppression-vs-Unlearning Induction Gap</h3><p>paired有/无guard测内部诱导与最终manifestation。Metric：Induction Residual、Manifestation、Guard Dependence Gap。Novelty ★★★★★。</p></div>
+<div class="card idea"><h3>4. Compact Adaptive Residual Test Suite</h3><p>从500–1000 probes中学习32-probe suite，在held-out unlearning methods/checkpoints评估Residual Fault Coverage与ASR@32。</p></div>
+</section>
+
+<section id="collision" class="card warn"><h2>Collision Detection</h2>
+<p>Black-box Skill Recovery已有Daydreaming、Behavioral Skill Reconstruction、SigLeak/BBS；新工作必须强调post-unlearning guarantee、query budget和retain FPR。Hard-to-Unlearn已有FRAG/Margin Cliff/AdaPop/Spotless Mind。Agent Memory/Skill Closure已有WikiSkill、GraphMemix、EvoMal、Agentic Unlearning，因此更强新方向应统一recompilation/retrieval/descendant/backflow closure。</p></section>
+
+<section id="priority" class="card"><h2>Reading Priority</h2>
+<table><tr><th>Priority</th><th>Paper</th><th>先看</th></tr>
+<tr><td>READ NOW</td><td>Daydreaming</td><td>Threat Model / Attack Pipeline / Budget Sweep</td></tr>
+<tr><td>READ NOW</td><td>Safety Does Not Compose</td><td>TPR=FPR proposition / outer-state ablation</td></tr>
+<tr><td>READ NOW</td><td>SARA</td><td>Action Probe / No-History-Promotion / ablation</td></tr>
+<tr><td>READ THIS WEEK</td><td>SKILL.state / PILOT / PPE-Bench</td><td>state abstraction / live evolution / entanglement</td></tr>
+</table></section>
+
+<section id="watch"><h2>Candidate Watchlist</h2>
+<table><tr><th>Title</th><th>Category</th></tr>
+<tr><td><a href="https://arxiv.org/abs/2608.27454">WikiSkill</a></td><td>Skill Evolution / Cooling</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2608.26983">GraphMemix</a></td><td>Multimodal Memory / Cooling</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2608.26895">When Memory Takes Gradients</a></td><td>Vector Memory</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2608.26746">FaultLens</a></td><td>Behavioral Verification</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2607.02897">PPE-Bench</a></td><td>MLLM Unlearning Benchmark</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2608.25429">FRAG</a></td><td>Relearning Robustness / Cooling</td></tr>
+</table></section>
+
+<section id="stats" class="card"><h2>今日统计</h2>
+<p>Candidate Pool: 40 · Formal Papers: 10 · Tier S/A/B: 3/3/4 · BACKFILL: 15 · Watchlist: 30 · Cooling exclusions: 7</p></section>
+
+</main></body></html>

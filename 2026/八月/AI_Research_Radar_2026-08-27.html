@@ -1,0 +1,65 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>AI Research Radar — 2026-08-27</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.8;background:#f6f7fb;color:#172033;margin:0}
+main{max-width:1100px;margin:auto;padding:28px}.card,details{background:white;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin:14px 0}
+h1{font-size:34px}h2{margin-top:36px;border-bottom:1px solid #e5e7eb;padding-bottom:6px}h3{margin-top:24px}a{color:#3158cf;text-decoration:none}
+.s{background:#fff5dc}.a{background:#eef4ff}.b{background:#f0f8f2}.warn{background:#fff2d2;border-left:5px solid #d18b12}
+table{width:100%;border-collapse:collapse}th,td{border:1px solid #e5e7eb;padding:8px;vertical-align:top}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.kpi{font-size:28px;font-weight:800}
+</style></head><body><main>
+<div class="card"><h1>Daily AI Research Radar — 2026-08-27</h1>
+<p>重新主动检索并冻结40篇Candidate Pool后统一筛选。正式收录10篇，Tier S/A/B=3/3/4。最近7天已Deep-Read的BLADE、Margin Cliff、J-Access、Coalition-Aware、InjecMEM等不重复占Tier S。</p></div>
+
+<h2>Executive Summary</h2><div class="card"><p><b>今天最强趋势：</b>Agent memory/skill的关键已经从“存了什么”转向“何时调用、在哪个状态调用、调用后是否真正影响行为”。Recuris提供E/W/ρ/C组件级定位；Memory Is Not Always Needed说明同一memory随query/task/layer变化；Reading Is Not Using证明retrieval与decision influence可以完全分离。</p><p><b>Best Research Idea：</b>Component-Scoped Agent Unlearning + Access-vs-Influence Verification。</p></div>
+
+<h2>Today's Most Important Paper</h2><div class="card"><h3>Recursive Experiential-Working Memory Evolution for Long-Horizon Agent Harnesses</h3>
+<p>Structured trace将fault localization从outcome-only 13.0%提升到64.8%，并且最长horizon收益达到+32.2pp。它为Agent Unlearning提供一个直接的component-scoped deletion框架。</p></div>
+
+<h2>Top 3 必读</h2><ol><li>Recuris</li><li>Memory Is Not Always Needed</li><li>Reading Is Not Using</li></ol>
+<h2>Top 5</h2><ol><li>Recuris</li><li>Memory Is Not Always Needed</li><li>Reading Is Not Using</li><li>CAFE</li><li>StepGuard</li></ol>
+
+<h2>Tier S</h2>
+<details open class="s"><summary><b>Recursive Experiential-Working Memory Evolution for Long-Horizon Agent Harnesses</b></summary>
+<p><a href="https://arxiv.org/html/2608.24876">Full text</a></p>
+<h3>人话版</h3><p>Recuris把长期Agent记忆拆成Experiential Memory、Working Memory、Invocation Policy和Checker四个组件。Working Memory维护经过环境验证的当前状态；Invocation Policy基于当前state而不是整段聊天历史调用skill；结构化trace记录state→skill→action→observation→checker；Meta-Agent只patch出错组件，再用held-out validation gate决定是否接受。4个long-horizon benchmark和10个模型中37个完成pair有35个提升；GPT-5.6 Sol在tau²-Retail上+17.8pp，Claude Opus 5 +15.6pp，最长horizon +32.2pp。</p>
+<h3>Core Insight</h3><p>memory-control layer可以被显式分解和局部诊断。对Unlearning而言，删除失败也可定位到E/W/ρ/C具体残留通道。</p>
+<h3>Results</h3><ul><li>35/37 pairs提升</li><li>GPT-5.6 Sol +17.8pp</li><li>Claude Opus 5 +15.6pp</li><li>最长horizon +32.2pp</li><li>常见failure最多下降80%</li><li>fault localization：13.0% → 37.0% → 64.8%</li></ul>
+<h3>Migration</h3><p>Component-Scoped Agent Unlearning：20 targets×E/W/ρ/C四组件，逐层disable/patch，测Localization Accuracy、Residual Leakage、Deletion Closure、Retain Utility。</p>
+</details>
+
+<details open class="s"><summary><b>Memory Is Not Always Needed: Characterizing Conditional Memory in Scientific Reasoning</b></summary>
+<p><a href="https://arxiv.org/html/2608.23982">Full text</a></p>
+<h3>人话版</h3><p>同一memory在不同input、task、backbone和注入layer上可能修复知识缺口，也可能干扰本来正确的推理。作者用External Data Router决定哪些query开memory，再用Internal Parameter Router决定在哪些layer-stage注入。Activation-Rate-Matched Random Router与方法拥有相同memory-on比例，但仍被feature router持续击败，说明关键不是“开多少”，而是“给谁开、在哪开”。</p>
+<h3>Results</h3><ul><li>Matched Random Router在展示setting里全部低于Data Router</li><li>Qwen2.5-7B MolEdit accuracy 0.495→0.513</li><li>MolUnd MAE 0.536→0.501</li><li>MolUnd accuracy 0.562→0.573</li></ul>
+<h3>Migration</h3><p>Conditional Memory Unlearning Router：只在target-specific query/layer条件下block memory influence，保留benign memory benefit。</p>
+</details>
+
+<details open class="s"><summary><b>Reading Is Not Using: Retrieval, Judgment, and the Design of AI Financial Research Workflows</b></summary>
+<p><a href="https://arxiv.org/html/2608.24842">Full text</a></p>
+<h3>人话版</h3><p>模型能retrieve信息，不等于会在最终判断里使用。Qwen3.5-9B的风险披露影响从2k context的+0.032降到128k的+0.004，32k/128k与irrelevant insertion noise floor不可区分；但128k时目标事实仍12/12正确retrieval。Extract-then-decide能把128k influence retention从12%恢复到67%。</p>
+<h3>Migration</h3><p>Access-vs-Influence Unlearning Audit：同时测Residual Access、Residual Decision Influence和Integration Gap。</p>
+</details>
+
+<h2>Tier A</h2>
+<details class="a"><summary><b>CAFE</b></summary><p><a href="https://arxiv.org/abs/2608.24794">Paper</a></p><p>Search Agent与critic共享参数并交替演化。迁到Unlearning：固定verifier可能被更新后的model学会绕开，可研究co-evolving但独立holdout的verifier。</p></details>
+<details class="a"><summary><b>StepGuard</b></summary><p><a href="https://arxiv.org/abs/2608.24777">Paper</a></p><p>在tool action执行前做step-level guard；平均ASR相对no-guard下降77.3%，utility只下降2.8pp。可作为unlearning残余能力到危险action之间的pre-action guard。</p></details>
+<details class="a"><summary><b>StarHarness</b></summary><p><a href="https://arxiv.org/abs/2608.24804">Paper</a></p><p>固定模型，只演化prompt、tools、skills、MCP provider、subagent与loop config，提示Agent Unlearning删除边界不能只覆盖weights/memory。</p></details>
+
+<h2>Tier B</h2>
+<details class="b"><summary><b>SPO++</b></summary><p>修复trajectory-level advantage whitening与token-mean objective的measure mismatch，可迁到sample/token forget-credit对齐。</p></details>
+<details class="b"><summary><b>Hierarchical Skill Retrieval for VLA</b></summary><p>skill sequence decomposition + reliability retrieval，可迁为VLA Skill Unlearning residual probe。</p></details>
+<details class="b"><summary><b>Prime Agent</b></summary><p>persistent harness跨trajectory保存history、memory、skills、prompts、subagent specs，提示删除边界需要覆盖整个harness state。</p></details>
+<details class="b"><summary><b>Trajectory-Guided Forget-Recover Network</b></summary><p>直接continual unlearning baseline：跨请求追踪persistent target channels并恢复retain重要dormant channels。</p></details>
+
+<h2>Idea Mining</h2>
+<div class="card"><h3>1. Component-Scoped Agent Unlearning</h3><p>用structured trace定位E/W/ρ/C中的deletion residual。Novelty ★★★★★ · Feasibility ★★★★☆。</p></div>
+<div class="card"><h3>2. Access-vs-Influence Unlearning Audit</h3><p>构造“可访问/不可访问 × 有影响/无影响”四象限，避免把recall与behavior混为一谈。Novelty ★★★★★ · Feasibility ★★★★★。</p></div>
+<div class="card"><h3>3. Conditional Memory Unlearning Router</h3><p>query-level external blocker + layer-stage blocker，只切断target-specific influence。Novelty ★★★★★。</p></div>
+<div class="card"><h3>4. Co-Evolving Unlearning Verifier</h3><p>verifier根据新恢复失败模式更新，但保留独立holdout，防止直接优化audit导致隐藏。Novelty ★★★★☆。</p></div>
+
+<h2>Collision Detection</h2><div class="card warn"><p>Residual/Relearning已有Margin Cliff、J-Access、AdaPop。新的Residual Auditor必须突出<b>black-box + sample-level + MLLM/cross-modal + Access-vs-Influence</b>。Agent Memory侧已有Coalition-Aware、InjecMEM、Agentic Unlearning；新工作应锁定<b>E/W/ρ/C residual localization + long-horizon closure</b>。</p></div>
+
+<h2>Reading Priority</h2><table><tr><th>Priority</th><th>Paper</th><th>先看</th></tr><tr><td>READ NOW</td><td>Recuris</td><td>Table4 / Figure1–3 / 64.8 vs13.0</td></tr><tr><td>READ NOW</td><td>Memory Is Not Always Needed</td><td>Figure4–6 / Matched Random Router</td></tr><tr><td>READ NOW</td><td>Reading Is Not Using</td><td>Table2/3/7 / 128k gap</td></tr></table>
+
+<h2>Candidate Watchlist</h2><table><tr><th>#</th><th>Title</th></tr><tr><td>1</td><td>BLADE</td></tr><tr><td>2</td><td>Crossing the Margin Cliff</td></tr><tr><td>3</td><td>Measure, Don't Optimize</td></tr><tr><td>4</td><td>Coalition-Aware Skill Reliability</td></tr><tr><td>5</td><td>InjecMEM</td></tr><tr><td>6</td><td>Repo2Skill-Evo</td></tr><tr><td>7</td><td>MaliciousSkillBench</td></tr><tr><td>8</td><td>D²ACCI</td></tr><tr><td>9</td><td>ConceptGuard</td></tr><tr><td>10</td><td>Knowledge Holes</td></tr><tr><td>11</td><td>Cross-Domain Generalization in Machine Unlearning</td></tr><tr><td>12</td><td>AdaPop</td></tr><tr><td>13</td><td>CATA</td></tr><tr><td>14</td><td>MLUBench</td></tr><tr><td>15</td><td>VLA-Forget</td></tr><tr><td>16</td><td>CURaTE</td></tr><tr><td>17</td><td>CROSS-CUT</td></tr><tr><td>18</td><td>Leak-Resistant Unlearning</td></tr><tr><td>19</td><td>QR-Erase</td></tr><tr><td>20</td><td>SCOPE</td></tr><tr><td>21</td><td>Stochastic Meta-Unlearning</td></tr><tr><td>22</td><td>Agentic Unlearning</td></tr><tr><td>23</td><td>Behavioral Skill Reconstruction</td></tr><tr><td>24</td><td>SkillJack</td></tr><tr><td>25</td><td>When Experience Becomes Instruction</td></tr><tr><td>26</td><td>Salami Attack</td></tr><tr><td>27</td><td>MemoryGraft</td></tr><tr><td>28</td><td>MemPoison</td></tr><tr><td>29</td><td>MUSE-Autoskill</td></tr><tr><td>30</td><td>AgentRoom</td></tr></table>
+<h2>今日统计</h2><div class="grid"><div class="card"><div class="kpi">40</div>Candidate Pool</div><div class="card"><div class="kpi">10</div>Formal Papers</div><div class="card"><div class="kpi">3/3/4</div>Tier S/A/B</div><div class="card"><div class="kpi">18</div>BACKFILL</div><div class="card"><div class="kpi">30</div>Watchlist</div><div class="card"><div class="kpi">12</div>Cooling exclusions</div></div>
+</main></body></html>
