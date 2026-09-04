@@ -1,0 +1,459 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Daily Top Papers Deep Dive — 2026-09-04</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#e1e6ef;--blue:#3158cf;--soft:#eef3ff;--green:#edf8f1;--yellow:#fff4d6;--red:#fff0f0;--dark:#111827}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1220px;margin:auto;padding:30px 24px 88px}.hero,.card,.paper{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 30px;margin:18px 0;box-shadow:0 4px 18px rgba(20,30,50,.045)}
+.hero{background:linear-gradient(135deg,#18224d,#3158cf);color:#fff;border:0}.hero h1{margin:0 0 10px;font-size:38px}.hero p{color:#edf1ff}
+h2{font-size:28px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:21px;color:#28439d;margin-top:28px}h4{font-size:17px;margin-top:22px}
+nav{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px 20px;columns:2}nav a{display:block;padding:4px 0;color:var(--blue);text-decoration:none}
+a{color:var(--blue);text-decoration:none}.badge{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--soft);color:#3048a5;font-size:12px;font-weight:700;margin-right:5px}
+.kv{display:grid;grid-template-columns:190px 1fr;gap:5px 14px}.kv>div:nth-child(odd){font-weight:760}
+.flow,.formula{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--dark);color:#f7f8ff;border-radius:12px;padding:16px 18px;white-space:pre-wrap;overflow:auto}
+.callout{border-left:5px solid var(--blue);background:var(--soft);border-radius:10px;padding:14px 17px}.good{border-left-color:#338754;background:var(--green)}.warn{border-left-color:#c98a12;background:var(--yellow)}.bad{border-left-color:#c84545;background:var(--red)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:860px}th,td{border-bottom:1px solid var(--line);padding:10px 11px;text-align:left;vertical-align:top}th{background:#f2f4f8}
+.score{font-weight:760;color:#2748bd}.small{font-size:13px;color:var(--muted)}ul,ol{padding-left:23px}
+@media(max-width:760px){main{padding:18px 12px}.hero,.card,.paper{padding:20px}.hero h1{font-size:30px}nav{columns:1}.kv{grid-template-columns:1fr}}
+</style></head><body><main>
+<!-- regenerated: 2026-09-04 12:48 +08:00 -->
+<section class="hero"><h1>Daily Top Papers Deep Dive — 2026-09-04</h1><p><b>Multimodal Unlearning × Long-Horizon Agent Continual Improvement</b></p><p>今天只精读 2 篇：PURGE 把“去除虚假视觉关联”重写成 partition-aware unlearning；Harness-of-Harness 把 coding agent 从一次性 episode 扩展为证据驱动的多轮持续开发。</p></section>
+
+<nav><a href="#selection">1. Today's Deep Dive Selection</a><a href="#why">2. 为什么选这 2 篇</a><a href="#p1">3. Paper 1 — PURGE</a><a href="#p2">4. Paper 2 — Harness-of-Harness</a><a href="#syn">5. Cross-Paper Synthesis</a><a href="#opp">6. Combined Research Opportunities</a><a href="#collision">7. Collision / Overlap</a><a href="#priority">8. Reading / Reproduction Priority</a><a href="#sources">9. Sources / Links</a></nav>
+
+<section id="selection" class="card"><h2>Today's Deep Dive Selection</h2>
+<p><span class="badge">Machine Unlearning</span><span class="badge">Multimodal</span><span class="badge">2026-08-30</span><b>#1 Partition-Aware Unlearning for Removing Spurious Correlations in Large Vision-Language Models (PURGE)</b></p>
+<p><span class="badge">Agent / Multi-Agent</span><span class="badge">2026-09-01</span><span class="badge">Continual Improvement</span><b>#2 Harness-of-Harness: Multi-Day Autonomous Software Development with Continual Improvement</b></p>
+</section>
+
+<section id="why" class="card"><h2>为什么选这 2 篇</h2>
+<p>PURGE 是非常贴合当前 MLLM unlearning 主线的高价值 BACKFILL：它不是只让模型“不回答某个对象”，而是利用结构化 retain/forget partitions 去删除“对象—背景”虚假关联，同时保留真正 object-grounded reasoning。Harness-of-Harness 则是最近 72 小时最值得精读的 Agent 系统工作之一：它不修改底层模型，而是通过 plan→develop→independent QA 的长期证据闭环，让现有 coding harness 在多轮开发中持续改进。</p>
+<div class="callout good"><b>今天的共同主线：</b>两篇都在做“选择性更新”。PURGE 选择性忘掉错误依赖而保留正确视觉证据；HoH 选择性修复未完成/失败能力而保留已经验证的 artifact 行为。这种“targeted change + preserve verified structure”非常适合迁移到 continual unlearning。</div>
+</section>
+
+<section id="p1" class="paper">
+<h2>Paper 1 Full Deep Dive — PURGE</h2>
+
+<h3>5.1 基本信息</h3>
+<div class="kv"><div>Title</div><div>Partition-Aware Unlearning for Removing Spurious Correlations in Large Vision-Language Models</div>
+<div>Authors</div><div>Aditi Sarker, Nazreen Shah, Rafi Ibn Sultan, Rhongho Jang, Dongxiao Zhu, Prashant Khanduri</div>
+<div>Affiliation</div><div>Wayne State University；IIIT Delhi；Institute for AI and Data Science (AIDaS), Wayne State University</div>
+<div>Date</div><div>2026-08-30（arXiv v1）</div>
+<div>Venue / Status</div><div>arXiv preprint，35 pages，11 figures</div>
+<div>Paper</div><div><a href="https://arxiv.org/abs/2608.29996">arXiv</a> · <a href="https://arxiv.org/html/2608.29996">HTML</a> · <a href="https://arxiv.org/pdf/2608.29996">PDF</a></div>
+<div>Project / Code</div><div>论文正文未提供官方 GitHub / project page；截至本次检索没有验证到官方代码仓库，因此不猜测 code 状态。</div></div>
+
+<h3>5.2 一句话定位</h3>
+<p>PURGE 把 LVLM hallucination 中的“虚假 object–background correlation”显式构造成 retain/forget partitions，再用 unlearning objective 定向压制 context-driven prediction，同时保留 object-grounded prediction。</p>
+
+<h3>5.3 人话版</h3>
+<p>很多 LVLM 看起来能识别物体，其实是在偷看背景。例如训练数据里“牛”经常出现在草地，“船”经常出现在水面，于是模型可能在根本没有目标物体时，仅凭背景就回答“Yes”。PURGE 的关键不是再加一个 hallucination loss，而是先把数据重新组织成“应该保留什么、应该忘掉什么”。作者设计三种 partition：PURGE-D 用 object removal / counterfactual 图像做数据级拆分；PURGE-H 用模型在配对样本上的行为一致性/失败类型做拆分；PURGE-M 则显式发现候选背景 cue，并将“object 在、cue 弱”的样本作为 retain，“object 不在、cue 强”的样本作为 forget。然后在 LLaVA-1.6-7B、Qwen3-VL-8B-Instruct、Qwen3.5-9B 上用 GA/KL/NPO 做 partition-aware unlearning。最强 PURGE-M-NPO 在多个 hallucination / spurious-correlation benchmark 上同时提高准确率、降低 CHAIR/CHR，并且在 Waterbirds 上把 CLIP 的 worst-group accuracy 提到 79.6%。它说明 unlearning 可以被用作“去掉错误因果捷径”的工具，而不只是删除隐私或事实。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>LVLM hallucination 的传统修复路线包括更好 instruction tuning、RLHF/DPO、额外视觉 grounding loss、数据过滤、Group DRO/IRM、spurious-correlation mitigation、post-hoc calibration。它们大多把目标写成“整体提高准确率/减少 hallucination”，但没有显式区分：<b>模型是因为真正看到了 object 才预测，还是因为背景 cue 让它猜出来。</b></p>
+<p>例如一个没有 cow 的草地图片，模型看到 grass 就回答“Yes, a cow is present”。如果只用普通 supervised fine-tuning，你可以给更多 negative examples，但模型仍可能学新的 dataset-specific shortcut；如果直接 gradient ascent 所有 cow 样本，又可能把“真正有 cow 的 object evidence”一起抹掉。</p>
+<p>PURGE 填的 gap 是：先构造一个可控的 counterfactual / semantic partition，让 retain set 专门代表 object-grounded evidence，让 forget set 专门暴露 context-driven error，再把 unlearning 的“forget vs retain”结构用于 spurious correlation removal。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>核心 insight 是把 spurious correlation 写成两个条件概率：希望 <b>P(c|z)→0</b>，其中 z 是背景/上下文；同时保持 <b>P(c|o)</b> 基本不变，其中 o 是真实 object evidence。普通 hallucination mitigation 常把两者混在一个训练分布中，因此无法精准告诉优化器“到底忘哪种关联”。</p>
+<p>PURGE 的 observation 来自反事实样本：当 object absent 但背景 cue 仍强时，模型仍预测 target concept，说明 prediction 在依赖 z；反之 object 存在、cue 弱时仍正确，才更接近 object grounding。PURGE-M 将这一观察显式编码进 semantic partitions，是三种 partition 中最稳定、结果也最强的版本。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Image/question pool
+→ choose target concept c
+→ construct structured partitions
+
+PURGE-D:
+ object-present image
+ → object removal / inpainting counterfactual
+ → retain: object-grounded
+ → forget: object-removed but shortcut-triggering
+
+PURGE-H:
+ paired model responses
+ → consistent correct / consistent negative
+ → failure partitions (1,0)/(0,1)
+ → retain vs forget by observed behavior
+
+PURGE-M:
+ LLM proposes candidate background cues
+ → open-vocabulary detector scores cue s(v)
+ → define C/C^c (object present/absent)
+ → define S/S^c (cue strong/weak)
+ → retain = C ∩ S^c
+ → forget = C^c ∩ S
+ → keep C∩S and C^c∩S^c for evaluation
+
+→ train θ' with retain + λ·forget objective
+→ freeze vision encoder
+→ update LLM LoRA (+ multimodal projector when available)
+→ evaluate object grounding / hallucination / worst-group robustness</div>
+<p><b>PURGE-D：</b>数据级 disentanglement，依赖 object removal / inpainting 生成 counterfactual。优点是直观，缺点是图像编辑 artifact 可能成为新 shortcut。</p>
+<p><b>PURGE-H：</b>让模型行为本身参与分组。模型在原图/对照图上的一致或不一致预测决定 retain/forget，属于 behavior-driven hard-example mining。</p>
+<p><b>PURGE-M：</b>最有研究价值。LLM 先提议可能共现的背景 cue，再用 open-vocabulary detector 给每张图计算 cue score s(v)，得到四个语义区域。作者不把全部四组都训练：C∩S^c 是最“干净”的 object-grounded retain；C^c∩S 是最典型的 spurious forget；其余两组留作 evaluation，避免训练信号被 entangled/trivial samples 污染。</p>
+<p><b>训练层面：</b>vision encoder 全冻结；LLaVA/Qwen3-VL 更新 language-model LoRA 与 multimodal projector，Qwen3.5-9B 因设置中无独立 projector，只训练 LoRA。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">Goal:
+P_{θ'}(c | z) → 0
+while
+P_{θ'}(c | o) ≈ P_θ(c | o)
+
+General objective:
+L^(k) = L_retain^(k) + λ L_forget^(k)
+
+PURGE-M partitions:
+retain = C ∩ S^c
+forget = C^c ∩ S
+
+where:
+C   = target object present
+C^c = target object absent
+S   = strong candidate spurious cue
+S^c = weak/absent cue</div>
+<p><b>λ：</b>最关键的 forgetting-strength knob。增大 λ 会更强压制 forget partition，但可能把附近的合法预测一起拉低；因此作者还用 β 控制 KL/NPO 偏离 pretrained model 的程度，PURGE-D 另用 γ 给 object-absent sample 提供 negative supervision。</p>
+<p>作者将 GA、KL、NPO 都放进同一 partition-aware 框架。最强组合普遍是 NPO，说明核心贡献主要不是“发明新 loss”，而是 <b>给已有 unlearning objective 提供更正确的 forget/retain boundary</b>。这点与你现有研究很契合：boundary 设计可能比优化器本身更重要。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>目标 concept 是“cow”。有四张图：A=有牛+草地，B=有牛+室内，C=无牛+草地，D=无牛+城市。普通模型在 C 上也回答“Yes”。PURGE-M 中 C 表示有牛，S 表示强草地 cue。B 属于 C∩S^c，进入 retain；C 属于 C^c∩S，进入 forget；A 因 object/cue entangled 不用于训练；D 是简单负样本也不用于核心 unlearning。训练后希望模型对 C 从 Yes→No，但对 B 仍保留 Yes。也就是说忘掉“grass→cow”的错误关联，而不是忘掉 cow 本身。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>怎么做</th><th>为什么合理</th><th>失败点</th><th>PURGE 改什么</th></tr>
+<tr><td>ERM / Fine-tuning</td><td>普通经验风险最小化</td><td>直接优化总体准确率</td><td>平均指标会掩盖 minority/spurious group</td><td>显式 retain/forget partitions</td></tr>
+<tr><td>Group DRO</td><td>优化 worst-group risk</td><td>针对 group shift</td><td>需可靠 group annotation；不是“删关联”</td><td>用 unlearning 压制 shortcut dependency</td></tr>
+<tr><td>MSC / spurious mitigation</td><td>多模态 fine-tuning 降低虚假相关</td><td>直接针对 multimodal shortcut</td><td>更依赖全局训练机制</td><td>用可替换 GA/KL/NPO 的统一框架</td></tr>
+<tr><td>GA</td><td>在 forget set 上 ascent</td><td>简单的 unlearning baseline</td><td>容易过度破坏；保留结构弱</td><td>structured retain boundary + projector adaptation</td></tr>
+<tr><td><b>NPO</b></td><td>负偏好式 forget objective</td><td>稳定、避免纯 GA 发散</td><td>若 forget set 定义粗糙仍会删错</td><td>PURGE-M 把 NPO 的“删什么”定义得更精准</td></tr>
+</table></div>
+<p><b>Strongest baseline / objective：NPO。</b>几乎所有关键表中 PURGE-M-NPO 是最强或最稳定配置。真正的机制性创新不是 NPO，而是 partition construction。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Models：</b>CLIP-RN50；LLaVA-1.6-7B；Qwen3-VL-8B-Instruct；Qwen3.5-9B。</p>
+<p><b>Benchmarks：</b>Waterbirds、MM-SpuBench、Causal-HalBench、POPE Random/Popular/Adversarial、CHAIR on COCO val、AMBER、MMHal。</p>
+<p><b>Training pool：</b>COCO-like candidate pool约4万样本；每个 PURGE method 实际约8k retain +8k forget，总约16k parameter-update samples。</p>
+<p><b>Optimization：</b>5 epochs，bf16，AdamW，LoRA LR=2e-5，projector LR=1e-5，LoRA rank 8，alpha 16，dropout 0.05，λ=1.0，β=0.1，γ=1.0。</p>
+<p><b>Trainable components：</b>vision encoder frozen；LLaVA/Qwen3-VL：LLM LoRA + projector；Qwen3.5：LoRA only。</p>
+<p><b>Research Question 1：</b>partition-aware unlearning 能否提升 worst-group / spurious robustness？<br>
+<b>RQ2：</b>D/H/M 三种 partition 哪种最有效？<br>
+<b>RQ3：</b>NPO/KL/GA 哪种 objective 最适合这些 partitions？<br>
+<b>RQ4：</b>更新 projector 是否比 LLM-only 更能删除跨模态 shortcut？<br>
+<b>RQ5：</b>忘记比例增大时性能是否持续增长，还是出现 utility trade-off？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Average Accuracy↑：</b>整体平均正确率，可能掩盖 minority group。</p>
+<p><b>WGA↑：</b>Worst-Group Accuracy，取最差 group 的准确率，是 spurious-correlation 任务最重要指标之一。</p>
+<p><b>POPE Acc/Recall/F1↑：</b>围绕 object existence 的 yes/no hallucination；Yes ratio 还可检查模型是否通过一味回答 No“作弊”。</p>
+<p><b>CHAIR_s / CHAIR_i↓：</b>分别衡量 sentence-level 和 instance-level object hallucination；越低越好。</p>
+<p><b>CAC/AAC/CHR↓：</b>Causal-HalBench 中分别表征 causal/attribute hallucination consistency/rate 类指标；应和总 Accuracy 一起看，避免单纯提高回答拒绝/保守程度。</p>
+<p><b>AMBER CH↓ / Cov↑ / Hal↓ / Cog↓：</b>综合衡量 object hallucination、coverage 和认知性错误，适合检查“降低 hallucination 是否以少说内容换来”。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>Waterbirds：</b>Pretrained CLIP Avg90.8/WGA44.9；Group DRO83.3/73.7；MSC84.7/77.5；PURGE-M-NPO 90.9/79.6。它几乎保持 pretrained 平均准确率，同时把最差群组提高34.7pp，是非常强的“retain utility + robustness”结果。</li>
+<li><b>Causal-HalBench LLaVA：</b>Baseline Acc85.6、CHR12.9；PURGE-M-NPO Acc94.6、CHR3.2。准确率+9.0pp，CHR下降9.7pp，说明不是简单保守回答。</li>
+<li><b>Causal-HalBench Qwen3-VL：</b>Baseline Acc84.7、CHR7.4；PURGE-M-NPO Acc94.1、CHR1.2，+9.4pp / -6.2pp。</li>
+<li><b>MM-SpuBench：</b>LLaVA 59.7→78.3，Qwen3-VL 73.8→88.7，PURGE-M + LLM+Proj 是最强。</li>
+<li><b>CHAIR：</b>LLaVA baseline CHAIR_s41.2/CHAIR_i23.6；PURGE-D-NPO LLM+Proj20.3/12.7，约减半；更完整的 PURGE-M 配置在附录还能到更低水平。</li>
+<li><b>POPE Random：</b>Qwen3-VL baseline Acc79.1/F179.4；PURGE-M-NPO 99.6/99.6，提升约20pp，且 Yes ratio 49.6 接近平衡，不是全答No。</li>
+<li><b>Controlled object-absent：</b>最难 A_ny partition 中，LLaVA32→59、Qwen3-VL46→63、Qwen3.5 47→58，直接证明背景 cue 依赖被削弱。</li>
+<li><b>AMBER Qwen3-VL：</b>CH5.9→2.8，Coverage62.3→85.2，Hallucination26.5→8.3，说明降低幻觉的同时输出覆盖更高。</li>
+<li><b>Forget ratio：</b>25→50→75→100% 一般持续改善，但75–100%开始 plateau，LLaVA 饱和更明显；说明更强 forgetting 有 diminishing returns。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>Waterbirds 上 Avg90.9 + WGA79.6，同时接近 pretrained 的总体准确率并大幅提升 worst-group，最能说明“选择性去 shortcut”而不是简单牺牲 utility。</div>
+<div class="callout warn"><b>Weakest / model-specific：</b>Qwen3.5-9B 没有独立 projector，因此无法获得 projector-adaptation 的完整增益，很多表中的改善小于 LLaVA/Qwen3-VL。</div>
+<div class="callout bad"><b>Failure / trade-off：</b>PURGE-D 的 pixel/inpainting partition 比 PURGE-M 弱，并在高 forget ratio 早早饱和；说明“反事实图像看起来直观”不等于提供最干净的 causal supervision。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Table 1 Waterbirds：</b>不要只看 WGA。Group DRO/MSC 虽 WGA≈74–77，但平均准确率降到83–85；PURGE-M-NPO 把 WGA推到79.6的同时 Avg90.9，这才是最强 Pareto 证据。</p>
+<p><b>Table 3 Causal-HalBench：</b>四个 Q 子指标、Acc、CAC、AAC、CHR 同时改善，说明不是通过“拒绝/少回答”换取低 hallucination。</p>
+<p><b>Table 5/6 projector ablation：</b>LLaVA MM-SpuBench PURGE-M-NPO 从 LLM-only72.3→LLM+Proj78.3；CHAIR_s 也从较高水平进一步降到低十几。说明 shortcut 不只存在 language readout，也编码在 vision-language interface。</p>
+<p><b>Figure 8 forget-ratio curve：</b>PURGE-M 始终最强，PURGE-D最早饱和。做 unlearning 时应把“增加 forget data”与“改进 forget boundary quality”区分开。</p>
+<p><b>Table 16 POPE：</b>Popular/Adversarial 的收益比 Random 更突出，说明方法在 bias 更强时价值更大。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>LLM-only vs LLM+Projector：</b>projector 加入训练后 MM-SpuBench 与 CHAIR 显著继续改善，验证 object-background shortcut 位于跨模态 interface，而不是纯 LLM 末端。</p>
+<p><b>PURGE-D/H/M：</b>M consistently strongest、H second、D weakest，说明 semantic/model-informed partition 比 pixel-level counterfactual 更能隔离“应该忘掉的依赖”。</p>
+<p><b>Forget ratio：</b>性能随 forget samples 增加而改善，但75–100%边际收益变小；机制上支持“足够暴露 shortcut 后，增加数量不如提高 partition informativeness”。</p>
+<p>这些 ablation 支持机制假设，但还不能证明网络内部真正删除了某个 shortcut representation；论文测的是行为与 benchmark robustness，没有 activation-level causal verification。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>partition-aware unlearning 可以选择性删除 spurious object-background dependencies，同时保持或提升 object-grounded reasoning。</div>
+<div class="callout good"><b>Experiments Actually Show：</b>在 CLIP + 3个 LVLM、多种 objective 和多 benchmark 上，PURGE-M/NPO 广泛提高 spurious robustness，并且 projector adaptation 与 partition quality 的 ablation 都支持机制解释。</div>
+<div class="callout warn"><b>What Is Not Yet Proven：</b>没有证明 shortcut representation 从内部彻底删除；没有 adaptive recovery attack；没有真实用户场景的动态 background shift；没有说明这种方法在 identity/knowledge unlearning 上同样有效。</div>
+
+<h3>5.16 Contribution</h3>
+<ul><li><b>New Benchmark/Protocol：</b>三种 structured partition strategy。</li><li><b>New Mechanism：</b>把 spurious-correlation mitigation 写成 retain/forget unlearning。</li><li><b>New Empirical Finding：</b>semantic partition quality 比单纯 forget data 数量更重要。</li><li><b>New Evaluation：</b>跨 Waterbirds、POPE、CHAIR、Causal-HalBench、MM-SpuBench、AMBER、MMHal 的统一验证。</li><li><b>非核心创新：</b>GA/KL/NPO、LoRA、projector tuning 本身是已有组件；真正创新是 partition boundary。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors' limitation：</b>仍依赖构造高质量 structured partitions；不同数据/模型下 cue discovery 可能变化；训练需要额外 counterfactual / detector pipeline。</p>
+<p><b>Additional：</b>PURGE-M 的 LLM cue proposal 可能有遗漏或偏见；open-vocabulary detector score 不是因果真值；对“多个重叠 spurious cues”处理有限；没有 representation residual / recovery 测试；Qwen3.5 projector 不适用；模型规模仍集中7–9B；真实 deployment 的 continual shortcut drift 未覆盖。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>核心代码模块：1) object/cue annotation；2) PURGE-D inpainting；3) PURGE-H paired prediction miner；4) PURGE-M cue proposal + detector scoring；5) retain/forget sampler；6) GA/KL/NPO trainer；7) LLM LoRA/projector freeze policy；8) multi-benchmark evaluator。</p>
+<p>最小复现建议先只做 LLaVA-1.6-7B + MM-SpuBench：约8k retain/8k forget，5 epochs，LoRA r=8、alpha16、dropout0.05，LR2e-5，projector1e-5。先跑 Baseline、PURGE-D-NPO、PURGE-M-NPO；若能复现59.7→约72/78这一量级，再加 projector ablation。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline Potential ★★★★★</span>：对 MLLM unlearning 的“邻近概念/视觉 cue collateral damage”非常适合。</p>
+<p><span class="score">Migration Potential ★★★★★</span>：可以迁到 identity unlearning 的 visual-near / context-near retain boundary。</p>
+<p><span class="score">Attack Potential ★★★★☆</span>：反过来可用 cue-only / object-absent query 做 shortcut residual probe。</p>
+<p><span class="score">Evaluation Potential ★★★★★</span>：四分区思想可以直接变成 multimodal closure matrix。</p>
+<p><span class="score">Benchmark Potential ★★★★★</span>：特别适合构造 forget target 的 context-near / object-near hardest retain。</p>
+<p><span class="score">New Paper Potential ★★★★★</span>：将 PURGE partition 与 UDS / black-box recovery 结合，空间很大。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Identity Unlearning 的 Causal Context Partition</h4>
+<p><b>Original Problem →</b>PURGE 删除 object-background shortcut。<br><b>Transferable Mechanism →</b>用 clean evidence / shortcut evidence 构造 retain/forget partitions。<br><b>New RQ →</b>MLLM identity unlearning 后，模型到底忘的是 identity，还是只压制常见 visual/context cue？<br><b>Method Modification →</b>对每个 forget identity 构造四组：person present+identity cue weak；person absent+identity-associated background strong；person present+cue strong；person absent+cue weak。训练只用前两组，后两组做 closure test。<br><b>Minimum Experiment →</b>20 identities×4 partitions×4 methods×2 VLM；每组100–200 prompts/images。<br><b>Model →</b>LLaVA-1.5/1.6-7B、Qwen2.5/3-VL-7/8B。<br><b>Dataset →</b>MLLMU-Bench + synthetic background/context counterfactual。<br><b>Baseline →</b>NPO、GA_Diff、RMU、MMUnlearner、PURGE-style partition NPO。<br><b>Metric →</b>Forget leakage、Worst-Partition Leakage、Retain Near Accuracy、Context-only ASR、visual utility。<br><b>Expected Contribution →</b>区分“真 identity erase”和“cue suppression”。<br><b>Risk →</b>identity cue discovery 主观。<br><b>Collision Risk →</b>中；需与 SUITE/MLLMU 多视角区别，突出 causal context partitions。</p>
+
+<h4>方向 B — Shortcut Residual Black-Box Auditor</h4>
+<p><b>Original Problem →</b>PURGE 用白盒训练消除 shortcut。<br><b>Transferable Mechanism →</b>object-absent+cue-strong partition 是天然黑盒 residual probe。<br><b>New RQ →</b>unlearning 后哪些 target 仍通过环境 cue 被恢复？<br><b>Method Modification →</b>自动生成 cue-only images/captions、background swaps、OCR/text context、cropped-object variants，按 query budget 自适应选择 probe。<br><b>Minimum Experiment →</b>50 targets×6 cue families×5 seeds，预算10/25/50 queries。<br><b>Baseline →</b>direct image-QA、text-only、random background、single paraphrase。<br><b>Metric →</b>Shortcut Recovery AUROC、ASR@budget、Retain FPR、Spearman with white-box residual score。<br><b>Expected Contribution →</b>黑盒发现“输出已忘、context仍可恢复”的 target。<br><b>Risk →</b>cue generator 可能引入 confound。<br><b>Collision Risk →</b>低到中。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>PURGE-D/H/M 都可以反向变成 attack generator：专门构造 target absent 但 associated context 强的输入，检查模型是否通过 shortcut 恢复目标。对于 unlearning verification，应报告四分区 confusion matrix，而不是只报普通 forget/retain。可以定义 <b>Contextual Residual Leakage</b>：目标实体缺失时，仅靠 context cue 导致目标输出的概率。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>PURGE 强调“只改变错误依赖、保留正确结构”；HoH 强调“只修复 gap / 新增小能力、保留 verified behavior”。两者的共同机制是 incremental selective update。组合后可以研究 <b>continual unlearning loop</b>：每轮独立 evaluator 找 residual leakage / collateral damage，下一轮只对 hardest partition 做小步修正，同时 warm-start 保留已验证 utility。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>PURGE 的真正贡献不是新 loss，而是重新定义 forget/retain boundary。</li><li>目标是压低 P(c|context)，保留 P(c|object)。</li><li>PURGE-D 用图像反事实，H 用行为失败，M 用语义 cue。</li><li>PURGE-M 通常最强，说明语义 partition quality 很关键。</li><li>NPO 是 strongest objective，但不是论文的核心创新。</li><li>Waterbirds 上 PURGE-M-NPO 达到 Avg90.9/WGA79.6。</li><li>Qwen3-VL 的 POPE/AMBER 和 LLaVA 的 CHAIR 都有大幅改善。</li><li>训练 projector 能进一步减少 hallucination，说明 shortcut 存在于跨模态 interface。</li><li>更大 forget ratio 会改善，但75–100%开始饱和。</li><li>最值得迁移到你的工作的是“visual/context-near partition + residual recovery probe”。</li></ol>
+</section>
+
+<section id="p2" class="paper">
+<h2>Paper 2 Full Deep Dive — Harness-of-Harness</h2>
+
+<h3>5.1 基本信息</h3>
+<div class="kv"><div>Title</div><div>Harness-of-Harness: Multi-Day Autonomous Software Development with Continual Improvement</div>
+<div>Authors</div><div>Haoyang Yan, Min-le Su, Hangfan Zhang, Zhanhao Li, Chen Zhang, Shao Zhang, Yang Chen, Lei Bai, Shuyue Hu</div>
+<div>Affiliation</div><div>Shanghai Artificial Intelligence Laboratory</div>
+<div>Date</div><div>2026-09-01（arXiv v1）</div>
+<div>Venue / Status</div><div>arXiv preprint</div>
+<div>Paper</div><div><a href="https://arxiv.org/abs/2609.01481">arXiv</a> · <a href="https://arxiv.org/html/2609.01481v1">HTML</a> · <a href="https://arxiv.org/pdf/2609.01481">PDF</a></div>
+<div>Project</div><div><a href="https://flesymeb.github.io/HarnessOfHarness/">Project Page</a></div>
+<div>Code</div><div><a href="https://github.com/Flesymeb/HarnessOfHarness">GitHub</a>；project page 表示将公开 HoH-lite 与 reproducibility materials，当前仓库已提供项目材料/开发轨迹。</div></div>
+
+<h3>5.2 一句话定位</h3>
+<p>HoH 不重新训练 coding model，而是在现有 coding harness 外面再套一层长期 orchestration，把一次性的“写代码 episode”变成 planning→development→independent QA→evidence feedback 的持续改进过程。</p>
+
+<h3>5.3 人话版</h3>
+<p>现在的 Codex、OpenCode、Pi 等 coding agents 很擅长一次性完成 issue，但真正从零开发一个完整软件时，问题不是“这一轮能不能写出代码”，而是几十轮以后还能不能记住需求、保留已验证功能、避免重复修同一个 bug、同时继续增加新能力。Harness-of-Harness 的做法是把一个固定 coding harness 当作执行器，在外层设置三个角色：Planner 根据高层 specification 和上一轮 QA evidence 选出一个小而可验证的增量；Developer 在当前 artifact 上 warm-start 实现，并做本地 shift-left testing；独立 QA Tester 再从黑盒/白盒证据验证新功能与回归，输出 structured evidence bundle 给下一轮。底层模型、harness、role policy 在整个 run 中固定，变化的只有 development document、artifact 和 evidence。三个 harness-model 组合在 GameCraft-Bench、FrontierSWE、ProgramBench 上平均相对增益 52.25%，三轮最大相对增益 82.86%；70-loop 的 Fusepoint 案例还能持续开发出可玩的 FPS。核心不是多 Agent 数量，而是“证据驱动的长期 artifact state management”。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>现有 coding agents 大多在 bounded episode 内工作：给 issue，模型探索 repo、改代码、跑测试、提交答案。多 Agent 软件工作如 MetaGPT/ChatDev 通常有预定义角色流程，EvoDev/AgileCoder 做迭代 sprint，Self-Harness/Meta-Harness 则直接优化 harness 本身。</p>
+<p>HoH 针对的是更长 horizon：从空 workspace + 高层 PRD 开始，数十轮持续增加 capability。随着时间推移，会出现三类典型 failure：1) agent 忘记早期 requirement；2) 为修当前 bug 破坏已完成组件；3) 陷入重复 repair，缺少新的 capability growth。单纯“再多调用几次 Vanilla coding agent”不能保证这些问题被系统解决。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>作者的核心 insight 是：长周期软件开发需要显式保留三个不断演化的状态——<b>计划 D_t、软件 artifact A_t、测试证据 E_t</b>。下一轮计划不能只看最初 specification，也不能只看当前 code；它必须同时知道“还有哪些 gap”和“哪些行为已经 verified，绝不能被回归破坏”。</p>
+<p>第二个 insight 是不应强行规定 agent 的内部 reasoning/workflow，而应约束 <b>可验证 output contract</b>。Planner/Developer/Tester 各自自由使用底层 harness 工具，但必须交付结构化 artifact；不满足 schema 就重试。</p>
+<p>这是 systems / orchestration insight，而不是新的 RL 算法。它的“学习”发生在 persistent project state 和 evidence feedback 上，不修改模型参数。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">High-level specification S + initial artifact A0
+→ iteration t
+
+Planner:
+ input S + previous evidence E_(t-1)
+ → choose bounded priorities
+ → identify verified functionality to preserve
+ → define observable acceptance criteria
+ → output development document D_t
+
+Developer:
+ input S + D_t + warm-start artifact A_(t-1)
+ → establish behavioral baseline
+ → implement bounded increment
+ → shift-left local tests
+ → output candidate artifact A_t
+
+Independent QA Tester:
+ input S + D_t + A_t + public execution records
+ → derive checkable claims
+ → black-box / white-box / runtime testing
+ → split evidence:
+    E_t^ver = verified behavior
+    E_t^gap = failures / insufficient evidence
+
+Runtime:
+ freeze role inputs
+ enforce single-writer artifact boundary
+ bind evidence to exact tested candidate
+ persist version history
+
+→ next iteration with A_t and E_t</div>
+<p><b>Planner：</b>每轮只选小而相关的任务，既要处理 outstanding failures，也必须推进至少一个 concrete capability，避免陷入 endless repair。</p>
+<p><b>Developer：</b>唯一允许修改 artifact 的 role，warm-start 自 A_(t-1)，使 lineage 清晰。实现前先建立 baseline，每个 meaningful change 后立刻 retest。</p>
+<p><b>QA Tester：</b>与 Developer 自测严格分离。Developer 的“我完成了”只是 claim，只有独立 QA 的 observable evidence 才能进入 verified set。</p>
+<p><b>Runtime：</b>固定 role inputs / permissions，把 evidence 绑定到确切 candidate，并保留版本化 history。长期 coherence 很大一部分来自这个 deterministic outer runtime。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">Planner:
+D_t = Plan(S, E_(t-1))
+
+Developer:
+A_t = Develop(S, D_t, A_(t-1))
+
+QA:
+E_t = Test(S, D_t, A_t)
+
+Evidence split:
+E_t^ver = {(c_i,r_i,s_i) in E_t | s_i = verified}
+E_t^gap = {(c_i,r_i,s_i) in E_t | s_i = gap}
+
+Next loop:
+(S, A_t, E_t) → D_(t+1) → A_(t+1) → E_(t+1)</div>
+<p>这里没有 loss function；数学对象是 persistent state transition。<b>S</b> 是固定 public specification；<b>D_t</b> 是当前增量计划；<b>A_t</b> 是软件状态；<b>E_t</b> 是 claim-evidence bundle。</p>
+<p>与 Vanilla Continuation 的最关键区别不是“多跑几轮”，而是 Vanilla 只有 artifact continuation；HoH 额外保留独立 QA evidence，并基于它更新 D_t。Table 2 的 matched-pass 实验正是为了排除“只是 token 更多”的解释。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>目标是从零做一个任务管理 Web App。S 要求登录、项目、任务、搜索、导出。第一轮 Planner 只安排“登录+最小项目列表”，Developer 实现并本地测试，QA 验证登录成功但发现 session timeout 没处理，于是 E_1^ver 记录登录/项目列表已通过，E_1^gap 记录 timeout。第二轮 Planner 不会重新重写登录，而是计划“修 timeout + 新增任务 CRUD”，明确要求 preserve 已验证登录流程。这样十轮之后，系统不是不断“重新生成一个 app”，而是在一条可追踪 artifact lineage 上持续增加 verified capability。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>怎么做</th><th>为什么合理</th><th>失败点</th><th>HoH 改什么</th></tr>
+<tr><td><b>Vanilla Harness</b></td><td>官方 Codex/OpenCode/Pi 单次开发</td><td>最真实基础线</td><td>bounded episode；无长期 evidence loop</td><td>外层持续 planning/QA</td></tr>
+<tr><td>Vanilla Continuation</td><td>同 session 再 prompt “继续开发”</td><td>控制更多 pass/token</td><td>没有独立 QA evidence 与更新 plan</td><td>D_t + E_t 显式状态</td></tr>
+<tr><td>MetaGPT / ChatDev</td><td>预定义多角色 workflow</td><td>软件工程分工</td><td>流程更固定，长期 evidence accumulation 较弱</td><td>约束 output，不规定内部 workflow</td></tr>
+<tr><td>Self-/Meta-Harness</td><td>修改/搜索 harness 本身</td><td>优化 agent operational layer</td><td>目标是 harness，不是持续 artifact evolution</td><td>底层 harness 固定，项目持续变化</td></tr>
+</table></div>
+<p><b>Strongest baseline：Vanilla Continuation。</b>因为它最直接控制“是不是只是多跑了几遍”，Table 2 证明在相同 development passes 下 HoH 仍明显更强。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Harness–Model pairs：</b>Codex CLI 0.142.5 + GPT-5.5 high；OpenCode 1.14.30 + DeepSeek-V4-Pro；Pi Coding Agent 0.80.10 + MiniMax-M3。</p>
+<p><b>Benchmarks：</b>GameCraft-Bench 45 tasks；FrontierSWE 15 tasks；ProgramBench 使用 hidden behavioral tests。</p>
+<p><b>Main protocol：</b>Vanilla=1 pass；HoH@T=T planning-coding-testing loops，主实验 T=3；benchmark evaluator 输出不回流开发 loop。</p>
+<p><b>Metrics：</b>GameCraft Overall 0–100；FrontierSWE task reward + Dominance；ProgramBench Avg Test Pass Rate；另记录 provider token usage。</p>
+<p><b>Long-run case：</b>Fusepoint，Godot 4.7，70 loops；初始 workspace 只有 PRD；人类只处理网络/API availability，不参与 planning/coding/debug/testing/acceptance。</p>
+<p><b>Research Question 1：</b>HoH 是否跨 harness/model/benchmark 有稳定提升？<br>
+<b>RQ2：</b>提升是否只是因为更多 passes/tokens？<br>
+<b>RQ3：</b>plan update、evidence feedback、warm-start 各承担什么？<br>
+<b>RQ4：</b>10轮乃至70轮后是否仍持续改进，而不是回归/循环？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>GameCraft Overall↑：</b>编译/运行失败直接0分；可运行后综合 Core Mechanics、Content Depth、Functional Visuals、Art & Presentation。比单元测试更适合完整游戏 artifact。</p>
+<p><b>FrontierSWE Reward↑：</b>任务自带 verifier 输出的 official reward。</p>
+<p><b>Dominance↑：</b>相对 12 个 harness-condition configuration 的 task-level win rate，更接近“跨配置竞争力”。</p>
+<p><b>ProgramBench Pass Rate↑：</b>每个任务 hidden behavioral tests 通过比例再取均值，避免只看最终 binary pass/fail。</p>
+<p><b>Token usage：</b>只适合同一 provider/config 内比较，因为不同 provider cache accounting 不一致。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>Codex GameCraft：</b>49.58→71.52，+21.94pp；三轮持续单调增长。</li>
+<li><b>OpenCode GameCraft：</b>26.90→48.98，+22.08pp，说明弱 baseline 也能靠 protocol 显著提升。</li>
+<li><b>Pi GameCraft：</b>42.16→58.78，+16.62pp。</li>
+<li><b>FrontierSWE：</b>Codex 0.31→0.54；OpenCode0.23→0.31；Pi0.26→0.55，其中 Pi +0.29 最强。</li>
+<li><b>ProgramBench：</b>Codex60.41→66.50；OpenCode45.27→57.56；Pi35.83→52.68，Pi +16.85pp。</li>
+<li><b>Matched-pass：</b>HoH@1/2/3=59.71/64.84/71.52；Vanilla continuation1/2/3=49.58/54.99/58.24。HoH@2 用5.67M tokens 已超过 Vanilla 3-pass 6.33M 的58.24，排除“仅仅更多 token”。</li>
+<li><b>Ablation：</b>w/o Plan Update 63.39（-8.13）；w/o Evidence Feedback65.23（-6.28）；w/o Warm-Start63.67（-7.85）。三个信息通道都关键。</li>
+<li><b>Warm-start 还省 token：</b>Full HoH@3=8.41M；w/o Warm-Start=11.12M，重复从空 workspace 重建反而更贵。</li>
+<li><b>FrontierSWE 10 loops：</b>Dominance 从 HoH@3 的39.33%继续到 HoH@10 72.67%，Vanilla27.33%，说明改进不是只发生前三轮。</li>
+<li><b>Fusepoint 70 loops：</b>系统持续经历 initial construction→功能增长/issue accumulation→后期修复收敛，说明长期开发轨迹中会显式 reopen/close issue，而不是只累计代码。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>Matched-pass Table 2。HoH@2 5.67M tokens 得64.84，超过 Vanilla 3-pass 6.33M tokens 的58.24，最有力证明结构化 evidence loop 的贡献。</div>
+<div class="callout warn"><b>Weakest / dataset-specific：</b>ProgramBench 的增益明显小于 GameCraft/FrontierSWE，尤其 Codex只+6.09pp；说明当任务主要由 hidden tests 定义、increment planning空间较小时，HoH收益更有限。</div>
+<div class="callout bad"><b>Failure / cost：</b>HoH 不是免费提升。它增加 planner/tester 调用和 token；70-loop case 还是单个复杂项目，不能据此证明所有长期开发都会稳定收敛。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 3 HoH overview：</b>关键不是三个角色，而是 deterministic runtime 把 role input 冻结、single-writer 权限固定、evidence 与被测 candidate 绑定。否则 QA evidence 可能引用错误版本。</p>
+<p><b>Table 1 Main Results：</b>三种 harness-model、三个 benchmark 全部提升，说明 protocol transferability 比单模型结果更重要。</p>
+<p><b>Table 2 Matched Pass：</b>这是 strongest causal-ish evidence；通过 Vanilla Continuation 控制 pass 数，削弱“只是重复调用”的 alternative explanation。</p>
+<p><b>Table 3 Ablation：</b>Plan Update、Evidence Feedback、Warm-Start 都带来6–8分贡献；没有一个单一模块解释全部收益。</p>
+<p><b>Figure 6 Qualitative：</b>Momentum Lab、Kitchen Rush、Ant Empire 的可视化对应分数34.05→70.61、42.63→73.38、65.52→87.88，显示改进不只是 tests，而是完整 mechanics/visual/workflow。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>去 Plan Update：</b>D_t 固定为 D_1，分数-8.13，说明长期 plan 必须根据新证据重写。</p>
+<p><b>去 Evidence Feedback：</b>Planner 只看 S，不看上一轮 QA，-6.28，证明 testing 的价值不只是最后打分，而是影响下一轮工作选择。</p>
+<p><b>去 Warm-Start：</b>每轮从 A_0 重新开发，-7.85，token 8.41M→11.12M；说明 artifact continuity 同时提高质量与效率。</p>
+<p>这些是清楚的系统机制 ablation，但并不证明三模块之间完全独立；它们可能存在强交互，例如 evidence 没有 warm-start artifact 时可操作性本身就下降。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>HoH 能让固定 coding harness 在长周期自主开发中持续改进，避免 bounded-episode agent 的长期 coherence 问题。</div>
+<div class="callout good"><b>Experiments Actually Show：</b>3种 harness-model、3个 benchmark、matched-pass control、三项 ablation 以及70-loop case 都支持“结构化长期 loop 比简单 repeated execution 更好”。</div>
+<div class="callout warn"><b>What Is Not Yet Proven：</b>没有大规模多项目 multi-day benchmark；70-loop 只有一个 FPS case；没有对长期安全 drift、malicious evidence、错误 QA feedback 做 stress test；没有证明多 Agent 比一个统一 agent 更优。</div>
+
+<h3>5.16 Contribution</h3>
+<ul><li><b>New System/Engineering：</b>Harness-of-Harness outer orchestration。</li><li><b>New Protocol：</b>Planner→Developer→independent QA 的 persistent state loop。</li><li><b>New Evidence Mechanism：</b>verified/gap claim-evidence bundle。</li><li><b>New Empirical Finding：</b>长期 improvement 需要 plan update、evidence feedback、artifact warm-start 三者共同存在。</li><li><b>New Demonstration：</b>70-loop multi-day FPS autonomous development。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors' limitation：</b>multi-day case 规模有限；更多软件领域/真实项目需验证。</p>
+<p><b>Additional：</b>QA 本身可能 hallucinate 或漏测，错误 evidence 会被下一轮放大；长期 token/storage cost 高；重复 loop 可能形成 overfitting to evaluator；role prompt / schema 设计仍人工；没有 adversarial planner/tester；70-loop autonomy 仍依赖网络/API uptime 人工恢复；底层模型快速更新后效果可能改变。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最小实现模块：1) role prompt templates；2) D_t document schema；3) single-writer workspace manager；4) developer self-test hook；5) independent QA runner；6) E_t normalized evidence bundle；7) Git/version state；8) outer loop scheduler。</p>
+<p>最值得先跑不是70-loop游戏，而是 GameCraft-Bench 10个任务、Codex/GPT-5.5 或可替代 coding agent：Vanilla 1/2/3 continuation vs HoH1/2/3，记录 score 和 tokens。然后做三项 ablation，能最快验证机制 claim。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline Potential ★★★★★</span>：任何“长期 Agent 自我改进/continual agent”工作都应对比简单 continuation。</p>
+<p><span class="score">Migration Potential ★★★★★</span>：可以迁到 continual unlearning、Agent memory cleanup、long-horizon red-teaming。</p>
+<p><span class="score">Attack Potential ★★★★☆</span>：evidence poisoning / stale evidence / false closure 很自然。</p>
+<p><span class="score">Evaluation Potential ★★★★★</span>：verified vs gap 的结构特别适合 unlearning closure。</p>
+<p><span class="score">Benchmark Potential ★★★★☆</span>：可做 multi-round unlearning regression benchmark。</p>
+<p><span class="score">New Paper Potential ★★★★★</span>：把 QA evidence 换成 residual/attack evidence，就是新的 continual unlearning framework。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Evidence-Grounded Continual Unlearning</h4>
+<p><b>Original Problem →</b>HoH 对软件做多轮修复/增长。<br><b>Transferable Mechanism →</b>每轮依据 verified/gap evidence 更新小范围计划并 warm-start。<br><b>New RQ →</b>unlearning 能否从“一次优化”变成持续 audit→targeted update→re-audit？<br><b>Method Modification →</b>Planner 读取 forget leakage、retain regression、attack residual；生成本轮最小 unlearning target/partition；Trainer 只更新指定 LoRA/module；Verifier 独立跑 direct/paraphrase/cloze/representation/retain tests，输出 E_t^ver/E_t^gap。<br><b>Minimum Experiment →</b>20 targets，最多5轮；每轮只处理 top-k hardest target；与 one-shot NPO/GA_Diff、固定5轮重复 NPO 对比。<br><b>Model →</b>LLaVA-1.5-7B/Qwen2.5-VL-7B。<br><b>Dataset →</b>MLLMU-Bench forget5%。<br><b>Baseline →</b>one-shot NPO、fixed repeated NPO、random curriculum、loss-based curriculum。<br><b>Metric →</b>Worst-Surface Leakage、Retain Utility、ASR@budget、Rounds-to-Closure、cumulative tokens/GPU hours。<br><b>Expected Contribution →</b>证据驱动、可停止的 continual unlearning protocol。<br><b>Risk →</b>对 verifier overfit。<br><b>Collision Risk →</b>中；需突出 evidence-driven control loop 而非普通 curriculum。</p>
+
+<h4>方向 B — QA Evidence Poisoning as Unlearning Attack</h4>
+<p><b>Original Problem →</b>HoH 假设 QA evidence 可靠。<br><b>Transferable Mechanism →</b>下一轮 plan 强依赖 E_t。<br><b>New RQ →</b>若 unlearning verifier 被少量 false evidence 污染，会不会提前宣布 closure 或把训练预算导向错误 target？<br><b>Method Modification →</b>注入 stale/pass-flipped/missing attack results，比较 planner 的 target selection 变化。<br><b>Minimum Experiment →</b>30 targets×3 evidence corruption rates(5/10/20%)×3 policies。<br><b>Baseline →</b>uncorrupted verifier、majority-vote verifier、cryptographically bound trace。<br><b>Metric →</b>False Closure Rate、Missed Residual Rate、Retain Damage、Attack Success after Stop。<br><b>Expected Contribution →</b>首次把 verifier trustworthiness 纳入 continual unlearning。<br><b>Risk →</b>需要合理的 adversarial evidence model。<br><b>Collision Risk →</b>低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>HoH 最自然的 attack surface 是 evidence：如果 QA 把未验证 capability 标成 verified，下一轮 Planner 会主动“保留”错误状态。迁到 unlearning 时，这对应 false closure attack。可定义 <b>Closure Evidence Integrity</b>：每个“已忘记/已保留”的 claim 必须绑定可复现 probe trace，而不是单个 judge label。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>PURGE 给出高质量的 structured forget/retain partitions；HoH 给出持续的 evidence-driven control loop。最自然组合不是“让 Agent 帮 PURGE 调参”，而是把 PURGE-M partitions 当作每轮 verifier 的 hardest residual groups：发现哪类 context shortcut 仍泄漏，下一轮只针对该 partition unlearn，直到 closure 或 utility boundary 到达。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>HoH 不改底层模型，而是改长期 orchestration。</li><li>持续状态只有三个核心：计划 D_t、artifact A_t、证据 E_t。</li><li>Planner 不能只看原始需求，必须消费上一轮 QA evidence。</li><li>Developer 是 single writer，并从 A_(t-1) warm-start。</li><li>Developer 自测不算 acceptance，独立 QA 才能产生 verified evidence。</li><li>三种 harness-model、三 benchmark 都有提升。</li><li>Matched-pass 证明收益不是简单“多跑几次”。</li><li>去 Plan Update/Evidence/Warm-Start 都会掉6–8分。</li><li>70-loop Fusepoint 说明 protocol 能维持多日 artifact evolution，但仍只是一个 case。</li><li>最值得迁移到 unlearning 的是 audit→targeted update→independent verification 的持续闭环。</li></ol>
+</section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2>
+<p>今天两篇表面上一个做 multimodal unlearning、一个做 coding agent，但共同机制高度一致：<b>不要做无差别全局更新，而要根据结构化 evidence 进行小范围、有边界、可验证的增量变化。</b></p>
+<div class="tablewrap"><table><tr><th>维度</th><th>PURGE</th><th>HoH</th><th>组合启发</th></tr>
+<tr><td>应该改什么</td><td>context-driven shortcut</td><td>unresolved gap / new capability</td><td>只处理 verified failure region</td></tr>
+<tr><td>应该保留什么</td><td>object-grounded reasoning</td><td>verified artifact behavior</td><td>explicit retain invariants</td></tr>
+<tr><td>边界从哪来</td><td>D/H/M structured partitions</td><td>QA evidence bundle</td><td>data boundary + audit evidence</td></tr>
+<tr><td>迭代方式</td><td>一次训练为主</td><td>多轮 continual loop</td><td>continual unlearning closure</td></tr>
+</table></div>
+<p><b>共同趋势：</b>未来的可靠 AI update 更像“带证据的控制系统”而不是单个 loss。<br>
+<b>最适合作 baseline：</b>PURGE-M-NPO（MLLM unlearning）；Vanilla Continuation（Agent continual）。<br>
+<b>最适合产生 attack：</b>HoH 的 evidence poisoning / false closure。<br>
+<b>最适合产生 benchmark：</b>PURGE 的四分区 boundary + HoH 的 multi-round regression protocol。</p>
+</section>
+
+<section id="opp" class="card"><h2>Combined Research Opportunities</h2>
+<h3>Best Migration Direction — Evidence-Grounded Partition-Adaptive Continual Unlearning</h3>
+<div class="flow">Initial unlearning
+→ independent verifier
+   direct / paraphrase / cloze
+   context-only / visual-near partitions
+   retain-near tests
+→ E_t = verified + gaps
+→ Planner selects only hardest residual partition
+→ Trainer updates minimal LoRA/module
+→ warm-start next checkpoint
+→ re-run independent verifier
+→ stop when:
+   worst-surface leakage < threshold
+   AND retain utility > threshold
+   OR marginal improvement plateaus</div>
+<p>这个方向同时吸收 PURGE 的 boundary quality 与 HoH 的 evidence loop。真正的论文问题不是“多训练几轮”，而是：<b>能否在固定 compute budget 下，把 unlearning budget 自适应分配给仍然失败的 target/partition，同时显式保护已经 verified 的 retain behavior？</b></p>
+</section>
+
+<section id="collision" class="card"><h2>Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>PURGE 与已有 spurious-correlation mitigation / multimodal hallucination mitigation 存在较强任务级重叠；它的差异在“用 unlearning 的 retain/forget structure 做 targeted shortcut removal”。如果迁到 MLLM identity unlearning，不能只把 PURGE-M 原样换数据，必须增加 recovery/closure 或 representation residual。</p>
+<p>HoH 与 MetaGPT/ChatDev/AgileCoder/EvoDev/Self-Harness 在“多角色/迭代开发”有 overlap，但 matched-pass、independent evidence feedback、artifact warm-start 三件套构成较清晰机制差异。</p>
+</section>
+
+<section id="priority" class="card"><h2>Reading / Reproduction Priority</h2>
+<p><b>PURGE：</b>先看 Sec.3 的 D/H/M partition；再看 Eq.(1)(2)；Table1 Waterbirds；Table3 Causal-HalBench；Table5/6 projector ablation；Figure8 forget-ratio；最后看 Appendix object-absent/AMBER。复现先做 LLaVA + MM-SpuBench。</p>
+<p><b>HoH：</b>先看 Figure3 和 D_t/A_t/E_t；Table1 main；Table2 matched-pass；Table3 ablation；Appendix Table13 information channels；最后看 Fusepoint 70-loop dynamics。复现先做 10 个 GameCraft tasks 的 Vanilla Continuation vs HoH。</p>
+</section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.29996">PURGE — arXiv abstract</a></li>
+<li><a href="https://arxiv.org/html/2608.29996">PURGE — full HTML</a></li>
+<li><a href="https://arxiv.org/pdf/2608.29996">PURGE — PDF</a></li>
+<li><a href="https://arxiv.org/abs/2609.01481">Harness-of-Harness — arXiv abstract</a></li>
+<li><a href="https://arxiv.org/html/2609.01481v1">Harness-of-Harness — full HTML</a></li>
+<li><a href="https://arxiv.org/pdf/2609.01481">Harness-of-Harness — PDF</a></li>
+<li><a href="https://flesymeb.github.io/HarnessOfHarness/">Harness-of-Harness — Project Page</a></li>
+<li><a href="https://github.com/Flesymeb/HarnessOfHarness">Harness-of-Harness — GitHub</a></li>
+</ul><p class="small">报告基于 2026-09-04 的独立检索和一手论文 HTML/项目页。PURGE 未验证到官方代码仓库，因此未猜测 code 状态。</p></section>
+</main></body></html>

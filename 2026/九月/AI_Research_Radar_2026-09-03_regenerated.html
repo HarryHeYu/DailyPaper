@@ -1,0 +1,153 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Daily AI Research Radar — 2026-09-03</title><style>
+:root{--bg:#f4f6fa;--card:#fff;--text:#182132;--muted:#667085;--line:#e4e7ec;--blue:#3157d5;--s:#fff7df;--a:#eef5ff;--b:#f2f9f2;--warn:#fff0de}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.84}
+main{max-width:1240px;margin:auto;padding:28px 22px 90px}h1{font-size:36px;line-height:1.25}h2{font-size:27px;margin-top:38px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:20px;margin-top:24px}
+a{color:var(--blue);text-decoration:none}.card,details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 25px;margin:16px 0;box-shadow:0 4px 16px rgba(20,30,50,.035)}
+summary{font-size:19px;font-weight:850;cursor:pointer}.s{background:var(--s)}.a{background:var(--a)}.b{background:var(--b)}.warn{background:var(--warn);border-left:5px solid #d58a15}.idea{border-left:5px solid var(--blue)}
+nav{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;columns:2}nav a{display:block;padding:3px 0}.muted{color:var(--muted)}.small{font-size:13px}
+.flow,.eq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;border-radius:10px;padding:14px;white-space:pre-wrap}.flow{background:#111827;color:#fff}.eq{background:#f1f3f6}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}th,td{border:1px solid var(--line);padding:9px;vertical-align:top}th{background:#f3f5f9}
+.tag{display:inline-block;background:#eef2ff;border-radius:999px;padding:2px 9px;font-size:12px;margin-right:5px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.kpi{font-size:29px;font-weight:850}
+</style></head><body><main>
+<header class="card"><div class="muted">Daily AI Research Radar & Idea Miner</div><h1>AI Research Radar — 2026-09-03</h1><p>Candidate Pool 44；正式 11；Tier S/A/B=3/4/4。近7天已深读论文按 cooling 不重复占 Tier S。</p></header>
+<nav><a href="#exec">Executive Summary</a><a href="#important">Most Important</a><a href="#top3">Top3</a><a href="#top5">Top5</a><a href="#s">Tier S</a><a href="#a">Tier A</a><a href="#b">Tier B</a><a href="#ideas">Ideas</a><a href="#collision">Collision</a><a href="#priority">Reading Priority</a><a href="#watch">Watchlist</a><a href="#stats">Stats</a><a href="#sources">Sources</a></nav>
+<section id="exec" class="card"><h2>Executive Summary</h2><p><b>Unlearning：</b>今天最关键的新信号是 forget-set misalignment：问题可能不是 loss 不够强，而是一开始 target set 就不对齐模型真实 memorized knowledge。</p><p><b>Agent：</b>Invalidation Contracts/REVISE 把“哪些 descendants 应失效”形式化；Gated-Memory Routing 打开 control-flow deletion closure。</p></section>
+<section id="important" class="card"><h2>Today's Most Important Paper</h2><h3>Confess What You Know: Forget-Set Misalignment with Model Knowledge in LLM Unlearning</h3><p>最值得看 Section3 gradient decomposition、Figure2、Table1/Table5、Section4 CONFS pipeline。最直接迁移：cross-view active forget-set discovery。</p></section>
+<section id="top3" class="card"><h2>Top 3 必读</h2><ol><li>CONFS — forget-set alignment。</li><li>Invalidation Contracts — Validity vs Compliance。</li><li>Gated-Memory Routing — memory→control flow。</li></ol></section>
+<section id="top5" class="card"><h2>Top 5</h2><ol><li>CONFS</li><li>Invalidation Contracts</li><li>Gated-Memory Routing</li><li>REVISE</li><li>EDGE</li></ol></section>
+<section id="s"><h2>Tier S</h2><details open class="s"><summary>1. Confess What You Know: Forget-Set Misalignment with Model Knowledge in LLM Unlearning</summary>
+<p><b>基本信息：</b><i>Confess What You Know: Forget-Set Misalignment with Model Knowledge in LLM Unlearning</i>；Miso Kim, Georu Lee, Seungwon Jeong, Woojin Lee；Dongguk University-Seoul；arXiv:2609.00605v1，2026-09-01；Accepted to EMNLP 2026 Main；<a href="https://arxiv.org/html/2609.00605v1">Full HTML</a>。</p>
+<h3>人话版</h3><p>绝大多数 unlearning 默认“用户给出的 forget set 就是模型真正记住的知识”。论文指出这个前提常错：用户会漏掉模型实际记住的相关事实，也会要求删除模型根本没学过的事实。前者留下 residue，后者白白伤 retain utility。作者提出 CONFS：Confession→SRO triplets→Reconfession→Competency Questions→多次采样与 NLI consistency filter，构造 model-aligned forget set。核心意义是把研究前提从“如何优化”推进到“到底删对东西没有”。</p>
+<h3>Background & Gap</h3><p>TOFU/CLEAR 等 benchmark 通常知道注入了哪些事实，现实用户却不知道模型真实 memorized boundary。只删一个泄露事实不保证同实体其他 facts 自动一起忘；把 never-learned facts 加入 forget set 也仍会产生梯度，甚至与 retain gradient 高度同向。</p>
+<h3>Core Insight</h3><p>可靠 forget set 需要同时高 Recall 与高 Precision：Recall 不足对应 Under Unlearning，Precision 不足对应 Out-of-Knowledge。gradient inner product 解释了为什么“删错集合”会直接改变 forgetting/utility trade-off。</p>
+<h3>Method Deep Dive</h3><div class="flow">Target entity → Confession → SRO atomicization → Reconfession → QA generation → repeated sampling → NLI filter → model-aligned forget set → GA/GD/NPO/RT</div>
+<p>Reconfession 负责发现遗漏事实，NLI consistency 负责去掉模型不稳定持有/幻觉的 facts；最终 forget-set construction 与 unlearning objective 解耦。</p>
+<h3>关键公式</h3><div class="eq">ΔL_F(D) ≈ η⟨g_F,g_D⟩
+E_tf = ΔL(D_L+) - ΔL(D_retain)
+E_eg = ΔL(D_L-) - ΔL(D_retain)</div>
+<p>D_L+ 是记住且请求删除；D_L- 是记住但漏掉。若 E_tf 高而 E_eg≈0，表示 requested facts 被定向删除，但遗漏 facts 只是跟着 overall utility 衰退。</p>
+<h3>Toy Example</h3><p>Alice 的真实 memorized facts 有 works_at=Lab A、lives_in=Boston、advisor=Bob。用户只请求 works_at，并误加 Company C。CONFS 通过主动 confession/reconfession 补出 Boston/Bob，又通过 consistency filter 丢掉不稳定的 Company C。</p>
+<h3>Baseline Deep Comparison</h3><p>Gold-standard 是上限；FreeRecall-QA 简单但易混入 Out-of-Knowledge；RWKU-style coverage 较强但仍含不稳定 facts；CONFS 通过 reconfession+filter 同时改善 coverage/precision。Table 5 中 FreeRecall-QA D_N+ share 91%、gradient cosine 0.84、retain ΔL +3.53；RWKU-style 68%、0.46、+0.31；CONFS 54%、0.28、+0.11。</p>
+<h3>Experiment Setup</h3><p>Controlled analysis：TOFU 20 targets，每 target 15 QA 分为 D_L+/D_L-/D_N+ 各5。Main：TOFU 10%、CLEAR 10% multimodal、RWKU real-world data-blind；Objectives：GA/GD/NPO/RT。</p>
+<h3>Results Deep Dive</h3><ul>
+<li>Under Unlearning：E_tf 随 GA steps 上升，E_eg 接近0，说明遗漏 facts 没获得额外定向 forgetting。</li>
+<li>GA step60：D_L+ Prob 0.995→0.312；D_L- 仍0.624；retain 0.658。</li>
+<li>加入 Out-of-Knowledge facts 后，retain Prob 可降到 0.412，而 Under setting 为 0.658。</li>
+<li>CONFS 把 out-of-knowledge share 与 gradient cosine 显著压低，同时 targeted forgetting 仍强。</li>
+<li>RWKU 上跨 GA/NPO/RT 也总体优于 RWKU-style。</li>
+<li>Failure：D_N+ share 仍有 54%，不是完美 Gold-standard。</li></ul>
+<h3>Table/Figure Reading</h3><p>Figure1 看两种 misalignment；Figure2 看 E_tf/E_eg 与 retain-gradient coupling；Table1 看 step-wise trajectory；Table5 是最值得迁移的 forget-set quality diagnostic。</p>
+<h3>Ablation</h3><p>去 Reconfession 主要损 coverage；去 Hallucination Verification 主要损 precision，分别对应漏删与错删。</p>
+<h3>Claim vs Evidence</h3><p>论文证明 forget-set alignment 是实质问题，并在 synthetic/multimodal/real-world setting 支持 CONFS；但 stable confession 不等于完整 training-data membership，cross-view residue 仍可能存在。</p>
+<h3>Contribution</h3><p><span class="tag">New Problem Formulation</span><span class="tag">New Protocol</span><span class="tag">New Forget-set Construction</span><span class="tag">New Empirical Finding</span></p>
+<h3>Limitation</h3><p>依赖 target model 与 NLI verifier；构造成本高；probe-family-relative；black-box API 无法直接复现 gradient diagnostic；多语言与 long-horizon Agent memory 未覆盖。</p>
+<h3>Research Value</h3><p>Baseline ★★★★★；Migration ★★★★★；Attack ★★★★☆；Evaluation ★★★★★；New Paper Potential ★★★★★。</p>
+<h3>Migration Analysis</h3><p>Original→forget-set misalignment；Transferable→active probing + atomicization + recursive expansion；New RQ→五视角是否形成 semantic closure；MVE→MLLMU/CLEAR 20–50 identities，direct/paraphrase/cloze/multi-hop/cross-modal，比较 raw request / CONFS / Cross-View-CONFS；Metric→Worst-View Leakage、ASR@budget、Retain FPR、MIA。</p>
+<h3>5句话</h3><ol><li>unlearning 可能一开始就删错集合。</li><li>漏删留 residue，错删伤 utility。</li><li>CONFS 主动构造 model-aligned forget set。</li><li>Table5 把 forget-set quality 变成独立评测对象。</li><li>最值得迁的是 cross-view active forget-set closure。</li></ol>
+</details><details open class="s"><summary>2. Invalidation Contracts for Cross-Episode Agent Memory</summary>
+<p><b>基本信息：</b><i>Invalidation Contracts for Cross-Episode Agent Memory</i>；Michael Wu, Arquimedes Canedo；arXiv:2609.00243v1；<a href="https://arxiv.org/html/2609.00243v1">Full HTML</a>。评测 7 models、3 serving paths、2 domains，约 9,432 episodes。</p>
+<h3>人话版</h3><p>Agent 把 API failure 的 recovery suggestion 缓存进长期 memory 后，一旦 server-side rule/data drift，旧 fix 会变 stale。论文提出 invalidation contract，并把成功拆成 Validity（memory 现在是否仍正确）与 Compliance（planner 第一次会不会真的使用正确状态）。这对 Agent Unlearning 极关键：storage 删对了，不代表行为层真的不再依赖旧知识。</p>
+<h3>Background & Gap</h3><p>No-memory 每次重算，naive memory 会 stale，table-level flush 又过度删除 retain entries。更深问题是：即使系统精确指出哪些 memory 失效，不同 LLM planner 也可能拒绝遵循新的 valid state。</p>
+<h3>Core Insight</h3><p>Validity × Compliance decomposition：前者属于 protocol/lineage，后者属于 behavior。对 unlearning，可映射为 Storage Deletion Correctness 与 Behavioral Forgetting。</p>
+<h3>Method Deep Dive</h3><div class="flow">Failure → suggestion+versions+dependency → cache → drift → row-level diff → pre-reload dependency walk → selective eviction/restamp → planner → measure Validity & Compliance</div>
+<p>最关键是 pre-reload edge walk：必须在覆盖旧 graph 前找 downstream，因为删除/刷新后旧 edge 可能消失。</p>
+<h3>Metrics</h3><div class="eq">Validity = still-correct / cached
+Compliance = valid suggestions used at first try / eligible
+Eviction Precision = correctly invalidated / all evicted</div>
+<h3>Baseline Comparison</h3><p>A0 no memory；A1 naive memory；A2 table-level；A2D row-level。A2D eviction precision=1.00，而 table-level≈0.25。</p>
+<h3>Experiment Setup</h3><p>Payments 36 episodes + Recipe 48 episodes；models 覆盖 Claude/GPT/DeepSeek/Gemini；250 arm-level runs、9,432 episodes。</p>
+<h3>Results</h3><ul>
+<li>约 9,400 episodes，version-stamp validity checks 0 contract failure。</li>
+<li>A2D vs A1：GPT-5-mini +66.7pp、Sonnet4.6 +63.0pp、Haiku +55.6pp、Gemini +48.2pp compliance。</li>
+<li>Token saving 多模型从约 10–22% 提升到 22–33%。</li>
+<li>DeepSeek-V4-Flash 是 failure：protocol 更精确但 compliance/token benefit 没改善。</li>
+<li>Row-level invalidation 明显减少 retain over-deletion。</li></ul>
+<h3>Table/Figure</h3><p>Table1 看 L0–L6；Table3 看 first-try compliance；Table6 看 token savings；pre-reload graph 流程最值得迁。</p>
+<h3>Ablation</h3><p>A1→A2D 是最干净 ablation：只改 invalidation granularity，就能带来多个模型 48–67pp first-try 提升；更丰富 metadata 没稳定继续提升，暴露 planner compliance floor。</p>
+<h3>Claim vs Evidence</h3><p>controlled drift/negative control/多模型支持 validity-compliance decomposition；但自然语言 memory dependency 未必像 API schema 一样清晰。</p>
+<h3>Contribution</h3><p><span class="tag">New Protocol</span><span class="tag">New Evaluation Decomposition</span><span class="tag">System Engineering</span></p>
+<h3>Limitation</h3><p>structured API domain 较理想；dependency graph 相对明确；某些模型存在 schema conservatism。</p>
+<h3>Research Value</h3><p>Baseline ★★★★☆；Migration ★★★★★；Evaluation ★★★★★；New Paper Potential ★★★★★。</p>
+<h3>Migration</h3><p>定义 Unlearning Contract：memory/summary/skill 带 source-version 与 dependency vector；删除前冻结 lineage；删除后分别测 Storage Validity 与 Behavioral Compliance。MVE：LoCoMo 50 facts，每 fact 2 summaries+1 plan+1 skill；Metric：Invalidation Precision/Recall、Compliance@1、Residual ASR、Retain FPR、Token Cost。</p>
+<h3>5句话</h3><ol><li>删对 entry 与行为真正忘记不是一回事。</li><li>Validity 属于 lineage，Compliance 属于 behavior。</li><li>row-level invalidation 更精确。</li><li>删除前冻结旧 graph 很重要。</li><li>它几乎可直接改造成 Agent Unlearning Contract。</li></ol>
+</details><details open class="s"><summary>3. Learning What to Retain: Gated-Memory Routing for Efficient Collaboration in Multi-Agent LLM Systems</summary>
+<p><b>基本信息：</b><i>Learning What to Retain: Gated-Memory Routing for Efficient Collaboration in Multi-Agent LLM Systems</i>；Accepted to EMNLP 2026 Main；arXiv:2609.00237v1；<a href="https://arxiv.org/html/2609.00237v1">Full HTML</a>。</p>
+<h3>人话版</h3><p>论文让 memory 从被动 store 变成 Multi-Agent 控制状态：Write Gate 决定留什么，Retrieval Gate 决定给下一个 Agent 看什么，Role Allocator 选角色，LLM Router 选 backbone，Halting Controller 判断是否停。五 benchmark 平均 accuracy 77.73%，比 strongest baseline +2.44pp。对 Multi-Agent Unlearning 的关键启发是：删除一条 memory 不只影响答案，还可能改变谁行动、选哪个模型、何时停止。</p>
+<h3>Background & Gap</h3><p>query-only routing 无法利用中途 evidence，full-history 又造成冗余和成本。本文把 compact execution memory 当 active control state。</p>
+<h3>Method</h3><div class="flow">Query + memory → Role → Model Router → Retrieve → Agent Execute → Write Gate → Halt → Aggregator</div>
+<h3>公式</h3><div class="eq">u_i = R_i - λ_c Cost(τ_i)
+A_i = u_i - mean_group(u)
+L = -mean[logπ_i · sg(A_i)] + αL_VAE - c_H H(π)</div>
+<p>同一 query 的 trajectories 做 centered advantage，避免小方差下 standardization 放大微小成本差。</p>
+<h3>Experiment Setup</h3><p>MATH、GSM-Hard、MBPP、HumanEval、MMLU-Pro；多种 Qwen2.5 backbones；比较 MASRouter、Puppeteer、full-history。</p>
+<h3>Results</h3><ul>
+<li>平均 accuracy 77.73%，四个 benchmark 最优。</li>
+<li>HumanEval 89.84 vs MASRouter 85.16；cost 0.032 vs 0.057。</li>
+<li>相对 Puppeteer，HumanEval cost 低约31.9%。</li>
+<li>GSM-Hard full-history 70.27/cost0.985，gated 70.55/0.587。</li>
+<li>去 LLM router：GSM-Hard 70.55→56.53，HumanEval 89.84→71.88，是最大 ablation。</li></ul>
+<h3>Table/Figure</h3><p>Figure2 看控制回路；Table2 看 ablation；Table3 看 query/full-history/gated；Figure3 看 accuracy-cost Pareto。</p>
+<h3>Claim vs Evidence</h3><p>结果支持 compact gated memory 是更好的 control state；但没有做单条 memory deletion causality，也没评估 privacy/provenance。</p>
+<h3>Contribution</h3><p><span class="tag">New System/Mechanism</span><span class="tag">RL Objective</span><span class="tag">New Empirical Finding</span></p>
+<h3>Limitation</h3><p>closed benchmark、binary reward、无跨 episode persistence、安全/隐私目标缺失。</p>
+<h3>Research Value</h3><p>Migration ★★★★★；Evaluation ★★★★☆；New Paper Potential ★★★★★。</p>
+<h3>Migration</h3><p>做 Control-Flow Deletion Closure：删除 target record 后比较 role/model/retrieval/halt distributions，并测最终 Residual ASR。MVE：GSM-Hard/HumanEval 各100 queries；Metric：Routing KL、Role Flip、Halt Δstep、Residual ASR、Retain Cost。</p>
+<h3>5句话</h3><ol><li>Multi-Agent memory 是控制面，不只是知识库。</li><li>写/读 memory 会改变 routing 与 halting。</li><li>gated memory 比 full history 更准更省。</li><li>删除应看 control-flow residue。</li><li>这是新的 Multi-Agent Unlearning gap。</li></ol>
+</details></section>
+<section id="a"><h2>Tier A</h2><details  class="a"><summary>4. REVISE: Validity-Guided Recovery for Online Revisions in Agent Workflows</summary><p><b>人话版：</b>用户中途修改需求时，REVISE 用 data/control provenance 精确 invalidate 受影响 nodes，避免 full restart。15,939 executions 中与 latest-version oracle 一致，0 stale output/effect；LangGraph model calls 相对 full restart -56.0%，相对 suffix -43.6%。最值得迁：deletion request≈semantic revision，做 Source→Memory→Tool Plan→Action selective invalidation。<b>Worth Deep Reading: YES</b>。</p></details><details  class="a"><summary>5. SoK: When Safe Agents Fail Together: The Security of Multi Agent LLM Systems</summary><p><b>人话版：</b>作者系统分析 197 works、审计44 MAS security evaluations，用 A-I-R execution-path taxonomy 组织攻击，并把 path closure/recovery列为 open challenge。42/44 固定 membership，只有2个支持有限 runtime spawning；13/44 使用 ASR 但定义不统一。对 Multi-Agent Unlearning，最值得迁成 Source Agent→Message→Shared Memory→Peer→Tool Effect 的 deletion path closure benchmark。<b>Worth Deep Reading: YES</b>。</p></details><details  class="a"><summary>6. Delegation Without Trust: Identity, Authorization, and Runtime Governance in Multi-Agent LLM Systems</summary><p><b>人话版：</b>论文把 authority enforcement 移到模型外 broker：即使 Agent 被 prompt injection 劫持，也不能越权。default runtime 四类 threat 全失败，broker 全阻断；200,000 forged/mutated tokens 接受0。对 Tool-level Unlearning，可把“忘记工具权限”从 prompt prohibition 改成 capability revocation，并测 Behavioral ASR + Authorization Reachability。<b>Worth Deep Reading: YES</b>。</p></details><details  class="a"><summary>7. EDGE: Error Dependency Graph-Guided Multi-Error Attribution in Multi-Agent LLM Systems</summary><p><b>人话版：</b>EDGE 构建 error dependency graph，并用 counterfactual repair rollout 验证 causal edges；推理时只验证当前 trace 可达 hypotheses。TRAIL/MAST 上多模型 F1 提升，GPT-4o MAST F1 22.87→29.96。可迁成 Information Dependency Graph，用 counterfactual deletion 找 minimal causal cut。<b>Worth Deep Reading: YES</b>。</p></details></section>
+<section id="b"><h2>Tier B</h2><details  class="b"><summary>8. I-CARE: Interference as a First-Class Object in Generative Unlearning</summary><p><b>仅根据 Abstract / 可获取信息总结。</b> I-CARE 把 related-concept collateral damage 从附属 utility metric 提升为正式 interference evaluation；可迁到 MLLMU 的 Retain-Near / visual-neighbor boundary。Potential Use: Evaluation / Benchmark。</p></details><details  class="b"><summary>9. TRU: Targeted Reverse Update for Efficient Multimodal Recommendation Unlearning</summary><p>TRU 在 ranking fusion、modality branch、parameter group 三尺度做 targeted reverse update。对 MLLM 可借“vision/connector/LLM 不同分支 sensitivity 不同”的机制。Potential Use: Baseline / Mechanism。</p></details><details  class="b"><summary>10. ContextPipe: Database-Inspired Context Assembly for Long-Horizon Agents</summary><p>ContextPipe 用 Plan→Bind→Optimize→Execute→Feedback 组装长程 Agent context，并输出 EXPLAIN trace。preliminary SWE-bench Pro subset 上 token -31%、calls -23%、response time -9%。Potential Use: Infrastructure / Deletion provenance audit。</p></details><details  class="b"><summary>11. Runtime-Independent Persistent Agents</summary><p>把 persistent agent 拆为 continuity substrate（identity/memory/software body）与可替换 runtime（model/harness/host）。对 unlearning 的提醒：删除必须跨 runtime migration 保持 invariant，否则换模型/服务器后可能 rebound。Potential Use: Threat Model / Future Idea。</p></details></section>
+<section id="ideas"><h2>Idea Mining</h2>
+<div class="card idea"><h3>Idea 1 — Invalidation Contracts for Agent Unlearning（Best Research Idea）</h3><p>Inspiration：Invalidation Contracts + REVISE + Hindsight Memory-PRM。Hypothesis：Storage Validity 与 Behavioral Compliance 必须分开保证。MVE：LoCoMo/LongMemEval 50 facts，每 fact 2 summaries+1 plan+1 skill；比较 source-only/full reset/row contract/graph contract。Metric：Invalidation P/R、Compliance@1、Residual ASR、Retain FPR、Token Cost、Reacquisition Time。Novelty ★★★★★ · Feasibility ★★★★★ · Compute ★★☆☆☆ · Collision Risk 低中 · Venue NeurIPS/ICLR。</p></div>
+<div class="card idea"><h3>Idea 2 — Cross-View Model-Aligned Forget-Set Closure</h3><p>CONFS + Scientific Claim Unlearning。direct/paraphrase/cloze/multi-hop/cross-modal 共同主动扩展 forget set；每轮找 Worst-View leakage→atomicize→加入 target。Metric：Worst-View Leakage、ASR@budget、Retain FPR、MIA。Novelty ★★★★★ · Feasibility ★★★★★ · Collision Risk 中高。</p></div>
+<div class="card idea"><h3>Idea 3 — Control-Flow Deletion Closure in Multi-Agent Systems</h3><p>Gated-Memory Routing + EDGE。删除 target record 后不仅测 output，还测 role/model/retrieval/halt distributions 与 causal propagation graph。Metric：Routing KL、Role Flip、Halt Δsteps、Residual ASR、Minimal Causal Cut。Novelty ★★★★★ · Feasibility ★★★★☆ · Collision Risk 低。</p></div>
+<div class="card idea"><h3>Idea 4 — Runtime-Independent Deletion Invariant</h3><p>persistent agent 中 deletion ledger/tombstone 作为 continuity-bearing policy state；跨 model/harness/server migration 必须继续生效。Metric：Cross-Runtime Residual ASR、Tool Reachability、Rebound Rate。Novelty ★★★★☆ · Feasibility ★★★★☆。</p></div>
+</section>
+<section id="collision" class="card warn"><h2>Collision Detection</h2><p>⚠️ Cross-View/Forget-Set：Scientific Claim Unlearning + CONFS 已占据“view leakage”和“model-aligned target construction”两端；新工作应做 active Worst-View expansion 或 future-recovery predictor。</p><p>⚠️ Agent Memory：Hindsight Memory-PRM、Invalidation Contracts、REVISE 已覆盖 single-entry causality、row invalidation、provenance recovery；剩余 gap 是 privacy deletion semantics + behavioral compliance + incomplete provenance + cross-representation descendants。</p><p>⚠️ Multi-Agent Causal Attribution：DoCtOR/EDGE 已存在；应转向 information path closure / minimal causal cut。</p></section>
+<section id="priority" class="card"><h2>Reading Priority</h2><table><tr><th>Priority</th><th>Paper</th><th>最值得看</th></tr><tr><td>READ NOW</td><td>CONFS</td><td>Figure2/Table5/Section4</td></tr><tr><td>READ NOW</td><td>Invalidation Contracts</td><td>Validity/Compliance、pre-reload walk、Table3/6</td></tr><tr><td>READ NOW</td><td>Gated-Memory Routing</td><td>Figure2、Table2/3、Pareto</td></tr><tr><td>READ THIS WEEK</td><td>REVISE / EDGE</td><td>selective invalidation / causal graph</td></tr><tr><td>SAVE</td><td>I-CARE / TRU / ContextPipe</td><td>evaluation / localized reverse / infrastructure</td></tr></table></section>
+<section id="watch" class="card"><h2>Candidate Watchlist</h2><table><tr><th>#</th><th>Title</th><th>Category</th><th>Status</th></tr><tr><td>1</td><td><a href='https://arxiv.org/abs/2609.00605'>Confess What You Know: Forget-Set Misalignment with Model Knowledge in LLM Unlearning</a></td><td>LLM Unlearning / Forget-set Alignment</td><td>NEW</td></tr>
+<tr><td>2</td><td><a href='https://arxiv.org/abs/2609.00243'>Invalidation Contracts for Cross-Episode Agent Memory</a></td><td>Agent Memory / Invalidation / Provenance</td><td>NEW</td></tr>
+<tr><td>3</td><td><a href='https://arxiv.org/abs/2609.00237'>Learning What to Retain: Gated-Memory Routing for Efficient Collaboration in Multi-Agent LLM Systems</a></td><td>Multi-Agent / Gated Memory / Routing</td><td>NEW</td></tr>
+<tr><td>4</td><td><a href='https://arxiv.org/abs/2609.00643'>REVISE: Validity-Guided Recovery for Online Revisions in Agent Workflows</a></td><td>Agent Workflow / Provenance / Recovery</td><td>NEW</td></tr>
+<tr><td>5</td><td><a href='https://arxiv.org/abs/2609.00595'>SoK: When Safe Agents Fail Together: The Security of Multi Agent LLM Systems</a></td><td>Multi-Agent Security / Path Closure</td><td>NEW</td></tr>
+<tr><td>6</td><td><a href='https://arxiv.org/abs/2609.00267'>Delegation Without Trust: Identity, Authorization, and Runtime Governance in Multi-Agent LLM Systems</a></td><td>Multi-Agent / Delegation / Governance</td><td>NEW</td></tr>
+<tr><td>7</td><td><a href='https://arxiv.org/abs/2609.01360'>EDGE: Error Dependency Graph-Guided Multi-Error Attribution in Multi-Agent LLM Systems</a></td><td>Multi-Agent / Causal Attribution</td><td>NEW</td></tr>
+<tr><td>8</td><td><a href='https://arxiv.org/abs/2609.00003'>I-CARE: Analysis of interference-related phenomena in a controllable, diverse and representative unlearning setting for text-to-image models</a></td><td>Generative Unlearning / Interference</td><td>NEW</td></tr>
+<tr><td>9</td><td><a href='https://arxiv.org/abs/2609.00749'>ContextPipe: Database-Inspired Context Assembly for Long-Horizon Agents</a></td><td>Agent Context / Audit / Replay</td><td>NEW</td></tr>
+<tr><td>10</td><td><a href='https://arxiv.org/abs/2609.00546'>Runtime-Independent Persistent Agents: Preserving Identity, Memory, and Code Across Models, Harnesses, and Servers</a></td><td>Persistent Agent / Memory / Lineage</td><td>NEW</td></tr>
+<tr><td>11</td><td><a href='https://arxiv.org/abs/2604.02183'>TRU: Targeted Reverse Update for Efficient Multimodal Recommendation Unlearning</a></td><td>Multimodal Recommendation Unlearning</td><td>BACKFILL</td></tr>
+<tr><td>12</td><td><a href='https://arxiv.org/abs/2609.00621'>Control-Data Flow Separation: Stable Prompt Optimization in Multi-Agent LLMs</a></td><td>Multi-Agent / Control Plane</td><td>NEW</td></tr>
+<tr><td>13</td><td><a href='https://arxiv.org/abs/2609.00519'>The Safeguard Worked. Is the LLM System Safer?</a></td><td>Security Evaluation / Residual Risk</td><td>NEW</td></tr>
+<tr><td>14</td><td><a href='https://arxiv.org/abs/2609.00103'>Good Memory Has ECC: Evaluating the Memory of Vision-Language Models Beyond Accuracy</a></td><td>VLM Memory / Evaluation</td><td>NEW</td></tr>
+<tr><td>15</td><td><a href='https://arxiv.org/search/?query=EM2Mem+event-centric+multimodal+memory&searchtype=all'>EM2Mem: Event-Centric Multimodal Memory</a></td><td>Multimodal Agent Memory</td><td>NEW</td></tr>
+<tr><td>16</td><td><a href='https://arxiv.org/search/?query=DiagEvo+Hierarchical+Error+Memory&searchtype=all'>DiagEvo: Diagnosis-Guided Self-Evolution via Hierarchical Error Memory</a></td><td>Agent Self-Evolution / Error Memory</td><td>NEW</td></tr>
+<tr><td>17</td><td><a href='https://arxiv.org/abs/2609.00755'>S³martCirc: Self-supervised Smart Circuit Discovery</a></td><td>Mechanistic Interpretability / Circuit</td><td>NEW</td></tr>
+<tr><td>18</td><td><a href='https://arxiv.org/abs/2609.00738'>Escaping Redundant Reasoning: Structure-Aware Search for Inference-Time LLMs</a></td><td>Inference-time Reasoning / Search</td><td>NEW</td></tr>
+<tr><td>19</td><td><a href='https://arxiv.org/abs/2609.00248'>Authority Bias in Conversational Search Engines for Academic Paper Recommendation</a></td><td>Counterfactual Evaluation / Bias</td><td>NEW</td></tr>
+<tr><td>20</td><td><a href='https://arxiv.org/abs/2609.00251'>Hypotheses-Guided Self Distillation for Continual Personalization</a></td><td>Continual Personalization</td><td>NEW</td></tr>
+<tr><td>21</td><td><a href='https://arxiv.org/abs/2608.04548'>A Model Merging Approach for Continual MLLM Unlearning</a></td><td>Continual MLLM Unlearning</td><td>BACKFILL</td></tr>
+<tr><td>22</td><td><a href='https://arxiv.org/abs/2605.08800'>PPU-Bench: Real World Benchmark for Personalized Partial Unlearning in Vision Language Models</a></td><td>VLM Unlearning / Benchmark</td><td>BACKFILL</td></tr>
+<tr><td>23</td><td><a href='https://arxiv.org/abs/2605.14421'>MemLineage: Lineage-Guided Enforcement for LLM Agent Memory</a></td><td>Agent Memory / Lineage</td><td>BACKFILL</td></tr>
+<tr><td>24</td><td><a href='https://arxiv.org/abs/2605.21768'>Memory-R2: Fair Credit Assignment for Long-Horizon Memory-Augmented LLM Agents</a></td><td>Agent Memory / Credit Assignment</td><td>BACKFILL</td></tr>
+<tr><td>25</td><td><a href='https://arxiv.org/abs/2605.08442'>Injection-Execution Dissociation: A Mechanistic Evaluation of Persistent Memory Attacks and Defenses in Stateful LLM Agents</a></td><td>Agent Memory Security</td><td>BACKFILL</td></tr>
+<tr><td>26</td><td><a href='https://arxiv.org/abs/2607.22520'>The Regression Tax: Decomposing Why Skills Help — and Hurt — LLM Agents</a></td><td>Agent Skill / Evaluation</td><td>BACKFILL</td></tr>
+<tr><td>27</td><td><a href='https://arxiv.org/abs/2606.26524'>VIGIL: Runtime Enforcement of Behavioral Specifications in AI Agent Skills</a></td><td>Agent Skill / Runtime Enforcement</td><td>BACKFILL</td></tr>
+<tr><td>28</td><td><a href='https://arxiv.org/abs/2608.25776'>EvoMal: Self-Poisoning in Self-Evolving Coding Agents</a></td><td>Self-Evolving Agent / Security</td><td>BACKFILL</td></tr>
+<tr><td>29</td><td><a href='https://arxiv.org/abs/2608.27146'>When Tool Outputs Become Commands: Separating Action Induction from Runtime Authorization in Tool-Augmented LLM Agents</a></td><td>Tool Agent / Authorization</td><td>BACKFILL</td></tr>
+<tr><td>30</td><td><a href='https://arxiv.org/abs/2607.05029'>Your Agent&#x27;s Memories Are Not Its Own: Forged Reasoning Attacks on LLM Agent Memory and Defenses</a></td><td>Agent Memory / Attack</td><td>BACKFILL</td></tr>
+<tr><td>31</td><td><a href='https://arxiv.org/abs/2603.18272'>Retrieval-Augmented LLM Agents: Learning to Learn from Experience</a></td><td>Agent Trajectory / Experience Retrieval</td><td>BACKFILL</td></tr>
+<tr><td>32</td><td><a href='https://arxiv.org/abs/2606.06960'>FinEvolveBench: A Benchmark for Self-Evolving Agents on Low-Repetition Tasks with Implicit Rewards</a></td><td>Agent Self-Evolution / Benchmark</td><td>BACKFILL</td></tr>
+<tr><td>33</td><td><a href='https://arxiv.org/abs/2602.12430'>Agent Skills for Large Language Models: Architecture, Acquisition, Security, and the Path Forward</a></td><td>Agent Skill / Survey</td><td>BACKFILL</td></tr>
+<tr><td>34</td><td><a href='https://arxiv.org/abs/2604.16548'>A Survey on the Security of Long-Term Memory in LLM Agents</a></td><td>Agent Memory Security / Survey</td><td>BACKFILL</td></tr>
+<tr><td>35</td><td><a href='https://arxiv.org/abs/2604.08224'>Externalization in LLM Agents: Memory, Skills, Protocols and Harness Engineering</a></td><td>Agent Externalization / Survey</td><td>BACKFILL</td></tr>
+<tr><td>36</td><td><a href='https://arxiv.org/abs/2608.20960'>Can Scientific Claims Be Removed from Large Language Models?</a></td><td>LLM Unlearning / Cross-view Evaluation</td><td>COOLING</td></tr>
+<tr><td>37</td><td><a href='https://arxiv.org/abs/2608.22527'>Stress Testing Unlearning Algorithms</a></td><td>Unlearning / Robustness</td><td>COOLING</td></tr>
+<tr><td>38</td><td><a href='https://arxiv.org/abs/2608.29605'>Hindsight Memory-PRM: Supervising Memory Management with Auditable Hindsight Credit</a></td><td>Agent Memory / Causal Credit</td><td>COOLING</td></tr>
+<tr><td>39</td><td><a href='https://arxiv.org/abs/2608.29458'>Reference-Grafting Matches Fine-Tuning at Eliciting Sandbagged Capabilities</a></td><td>Activation / Recovery Audit</td><td>COOLING</td></tr>
+<tr><td>40</td><td><a href='https://arxiv.org/abs/2608.29459'>Toward Latent Language Model Skills Steering and Optimization</a></td><td>Latent Skill / Activation</td><td>COOLING</td></tr>
+<tr><td>41</td><td><a href='https://arxiv.org/abs/2608.28233'>REINS: Refusal-Enhanced Inhibitory Steering with Sparse Autoencoder Features</a></td><td>SAE Steering / Inference-time</td><td>COOLING</td></tr>
+<tr><td>42</td><td><a href='https://arxiv.org/abs/2608.25553'>When Stale Constraints Go Unchecked: Budgeted Verification Failures in Inherited Agent Memory</a></td><td>Agent Memory / Verification</td><td>COOLING</td></tr>
+<tr><td>43</td><td><a href='https://arxiv.org/abs/2608.26263'>SKILL.state: Scalable Long-Horizon Agent Skills</a></td><td>Agent State / Skill</td><td>COOLING</td></tr>
+<tr><td>44</td><td><a href='https://arxiv.org/abs/2607.05898'>Auditing of Unlearning Algorithms</a></td><td>Machine Unlearning / Audit</td><td>BACKFILL</td></tr></table></section>
+<section id="stats"><h2>今日统计</h2><div class="grid"><div class="card"><div class="kpi">44</div>Candidate Pool</div><div class="card"><div class="kpi">11</div>Formal Papers</div><div class="card"><div class="kpi">3/4/4</div>Tier S/A/B</div><div class="card"><div class="kpi">17</div>BACKFILL</div><div class="card"><div class="kpi">33</div>Watchlist / Related / Cooling</div><div class="card"><div class="kpi">8</div>Cooling exclusions</div></div></section>
+<section id="sources" class="card"><h2>Sources</h2><ul><li><a href="https://arxiv.org/html/2609.00605v1">CONFS</a></li><li><a href="https://arxiv.org/html/2609.00243v1">Invalidation Contracts</a></li><li><a href="https://arxiv.org/html/2609.00237v1">Gated-Memory Routing</a></li><li><a href="https://arxiv.org/html/2609.00643v1">REVISE</a></li><li><a href="https://arxiv.org/html/2609.01360v1">EDGE</a></li></ul></section>
+</main></body></html>

@@ -1,0 +1,208 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Daily Top Papers Deep Dive — 2026-09-03</title><style>
+body{margin:0;background:#f5f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1200px;margin:auto;padding:30px 24px 88px}.hero,.card,.paper{background:white;border:1px solid #e1e6ef;border-radius:18px;padding:26px 30px;margin:18px 0;box-shadow:0 4px 18px rgba(20,30,50,.045)}
+.hero{background:linear-gradient(135deg,#18224d,#3158cf);color:white;border:0}.hero h1{margin:0 0 10px;font-size:38px}.hero p{color:#edf1ff}
+h2{font-size:28px;border-bottom:1px solid #e1e6ef;padding-bottom:8px}h3{font-size:21px;color:#28439d;margin-top:28px}h4{font-size:17px;margin-top:22px}
+nav{background:#fff;border:1px solid #e1e6ef;border-radius:15px;padding:17px 20px;columns:2}nav a{display:block;padding:4px 0;color:#3158cf;text-decoration:none}a{color:#3158cf;text-decoration:none}
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;background:#eef3ff;color:#3048a5;font-size:12px;font-weight:700;margin-right:5px}.kv{display:grid;grid-template-columns:190px 1fr;gap:5px 14px}.kv>div:nth-child(odd){font-weight:760}
+.flow,.formula{font-family:ui-monospace,Menlo,Consolas,monospace;background:#111827;color:#f7f8ff;border-radius:12px;padding:16px 18px;white-space:pre-wrap;overflow:auto}.callout{border-left:5px solid #3158cf;background:#eef3ff;border-radius:10px;padding:14px 17px}.good{border-left-color:#338754;background:#edf8f1}.warn{border-left-color:#c98a12;background:#fff4d6}.bad{border-left-color:#c84545;background:#fff0f0}
+.tablewrap{overflow-x:auto;border:1px solid #e1e6ef;border-radius:12px}table{border-collapse:collapse;width:100%;min-width:850px}th,td{border-bottom:1px solid #e1e6ef;padding:10px 11px;text-align:left;vertical-align:top}th{background:#f2f4f8}.score{font-weight:760;color:#2748bd}.small{font-size:13px;color:#667085}ul,ol{padding-left:23px}
+@media(max-width:760px){main{padding:18px 12px}.hero,.card,.paper{padding:20px}.hero h1{font-size:30px}nav{columns:1}.kv{grid-template-columns:1fr}}
+</style></head><body><main>
+<!-- regenerated: 2026-09-03 -->
+<section class="hero"><h1>Daily Top Papers Deep Dive — 2026-09-03</h1><p><b>Agent Memory Mutation Verification × Context-Carrier Privilege Escalation</b></p><p>重新生成版 · 只精读 2 篇，保持单篇深度优先。</p></section>
+
+<nav><a href="#selection">1. Today's Deep Dive Selection</a><a href="#why">2. 为什么选这 2 篇</a><a href="#p1">3. Paper 1 — MutMem V2</a><a href="#p2">4. Paper 2 — Context Privilege Escalation</a><a href="#syn">5. Cross-Paper Synthesis</a><a href="#opp">6. Combined Research Opportunities</a><a href="#collision">7. Collision / Overlap</a><a href="#priority">8. Reading / Reproduction Priority</a><a href="#sources">9. Sources / Links</a></nav>
+
+<section id="selection" class="card"><h2>Today's Deep Dive Selection</h2>
+<p><span class="badge">Agent Memory</span><span class="badge">2026-09-01</span><b>#1 MutMem V2: Cryptographically Authorized Mutation in Persistent Agent Memory — Portable Verification and Reproducible Evidence</b></p>
+<p><span class="badge">Agent Harness</span><span class="badge">2026-09-02 v2</span><b>#2 What’s in Your Agent’s Context? Context Privilege Escalation Attacks against AI Agent Harness</b></p></section>
+
+<section id="why" class="card"><h2>为什么选这 2 篇</h2><p>近期已精读多篇 Machine Unlearning 与 Agent Unlearning 工作，因此今天避免重复。MutMem V2 新增的是“memory mutation/deletion claim 如何被第三方独立验证”；Context CPE 新增的是“真实 harness 中 target 可能通过多少隐式 context carrier 跨 role/scope 持久传播”。二者组合，直接对应 Agent Unlearning 中最容易被忽略的两个问题：<b>删的是真的吗？删全了吗？</b></p></section>
+
+<section id="p1" class="paper">
+<h2>Paper 1 Full Deep Dive — MutMem V2</h2>
+<h3>5.1 基本信息</h3><div class="kv"><div>Title</div><div>MutMem V2: Cryptographically Authorized Mutation in Persistent Agent Memory — Portable Verification and Reproducible Evidence</div><div>Author</div><div>Walid Saidi</div><div>Affiliation</div><div>Independent researcher</div><div>Date</div><div>2026-09-01</div><div>Status</div><div>arXiv preprint / evidence-audited manuscript candidate</div><div>Paper</div><div><a href="https://arxiv.org/abs/2609.01235">arXiv</a> · <a href="https://arxiv.org/pdf/2609.01235">PDF</a> · <a href="https://arxiv.org/html/2609.01235">HTML</a></div><div>Code</div><div><a href="https://github.com/wallidsaydi-creator/HOM-AIMOS">HOM-AIMOS GitHub</a></div></div>
+
+<h3>5.2 一句话定位</h3><p>把 persistent Agent Memory 的 recall / mutation 从“系统自报成功”提升为一个经过 canonical serialization、cryptographic commitment、authorization、provenance 和独立 verifier 共同约束的 portable evidence contract。</p>
+
+<h3>5.3 人话版</h3><p>Agent 的长期记忆会被不断修改、降权、撤销或重写。普通数据库日志只能告诉你“最后值是多少”，却很难证明是谁改的、授权是否有效、旧状态是否对应同一 identity epoch、有没有漏掉不利的 recall result、receipt 是否被伪造。MutMem V2 将一次 recall/mutation 拆成固定结构的 evidence objects，对对象内容、数量、顺序、identity、revocation、authorization、provenance 和 terminal receipt 做交叉约束。对象经过 canonical JSON 和 domain-separated SHA-256 commitment，再进入固定顺序的 Merkle tree；外部 trust anchor 不能由 bundle 自己声明。Mutation 只允许 authorized_transition、signed_noop、occurrence_observation 三类终态。独立 Node/Python verifier 在 72/72 vectors 上 verdict 和 primary reason 完全一致，production-derived corpus 42/42 conformance。对 Agent Unlearning 最有价值的是：它提供了“删除/修改声明是否可信”的证据层。</p>
+
+<h3>5.4 Background & Research Gap</h3><p>传统 Agent Memory 更关注 retrieval utility、compression、conflict resolution。即使系统声明“这条 poisoned memory 已降权/删除”，reviewer 仍需相信生产 DB、运行时和内部对象格式。举例：权重从0.9降到0.1，无法仅从最终 row 判断 old value、actor epoch、revocation、request replay、wrong-memory mutation 或 result omission。本文填的 gap 是 <b>portable mutation verification</b>。</p>
+
+<h3>5.5 Core Insight</h3><p><b>正确的 memory mutation 不是一个 row update，而是一组跨对象 invariant。</b> Reviewer 需要同时检查 canonical bytes、membership、order、trust root、identity epoch、revocation、authorization、request parity、provenance、occurrence、Merkle root 和 terminal receipt。第二个关键点是 verification、installation qualification 与 full reproduction 不能混为一谈。</p>
+
+<h3>5.6 Method Deep Dive</h3><div class="flow">Recall request
+→ external trust anchor
+→ identity epoch / revocation
+→ effective authorization
+→ canonical request + signed receipt
+→ decision objects
+→ r disclosed results × 5 evidence objects
+→ deterministic ordering
+→ per-object SHA-256 commitment
+→ Merkle root
+→ bundle commitment
+→ terminal receipt
+→ independent Node/Python verifier
+
+Mutation
+→ recall commitment
+→ signed outcome
+→ old/new weight + predecessor
+→ authorized_transition / signed_noop / occurrence_observation
+→ mutation commitment
+→ verifier reconstruction</div>
+<p>第一步将每个 evidence object 固定为 kind/schema/body，并使用 canonical JSON。第二步强制 membership completeness：固定 13 个 singleton，加上每个 result 的 5 个对象。第三步以固定顺序进入 Merkle tree。第四步使用外部 master fingerprint 破除循环自证。第五步跨对象验证 authority、admission、decision、per-result evidence 与 terminal receipt。Mutation 则明确区分真正状态变化、合法 no-op 与只记录 occurrence 的事件。</p>
+
+<h3>5.7 核心公式与数学直觉</h3><div class="formula">o_j = H(D_o || LP4(kind_j) || LP4(schema_j) || BE4(|J(body_j)|) || J(body_j))
+
+N_objects(r) = 13 + 5r
+
+L_i = H(0x00 || x_i)
+T(a,b) = H(0x01 || a || b)
+
+B = H(D_b || bundle_id || company_id || master_fingerprint || r || MerkleRoot)
+
+B_mu = H(D_mu || J(M))</div>
+<p><b>N_objects(r)=13+5r</b> 是非常强的 completeness invariant：系统不能选择性隐藏 recall result。Merkle root 绑定 membership 与 order；domain separation 防止不同类型 hash 被混用。相较 strongest baseline——V1 native signed receipts——V2 的机制性增量是把 authorization、revocation、result completeness、ordering、provenance 和 terminal 统一进可独立验证的 contract。</p>
+
+<h3>5.8 Toy Example</h3><p>目标 memory 为“Alpha 的部署 token 是 OLDSECRET”，管理员声称将权重900→100。Reviewer 先从外部获得 trust fingerprint，再验证 actor epoch/revocation/authorization。若 recall 返回2个结果，则 bundle 必须有23个对象；若含 OLDSECRET 的第二个结果被省略，membership 直接 fail。随后 verifier 重构旧/新 weight、memory id、predecessor 和 signer epoch。如果数据库实际没发生变化却声称 transition，协议要求它只能是 signed_noop。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3><div class="tablewrap"><table><tr><th>Baseline</th><th>合理性</th><th>失败</th><th>V2 差异</th></tr><tr><td>DB audit log</td><td>简单</td><td>依赖DB/runtime</td><td>portable evidence</td></tr><tr><td>Signed event log</td><td>防简单篡改</td><td>不证明完整结果/授权状态</td><td>cross-object predicates</td></tr><tr><td>Merkle log</td><td>integrity强</td><td>不表达actor/revocation语义</td><td>typed schemas + semantic checks</td></tr><tr><td><b>V1 receipts</b></td><td>已有mutation integrity</td><td>不可移植</td><td>独立 verifier + closed protocol</td></tr></table></div>
+<p><b>Strongest baseline：V1 native receipt。</b></p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3><p>V2 包含18个 versioned schemas、39 recall vectors、15 mutation vectors、37 closed recall failure codes；Node/Python 双实现共72 vectors。Production-derived conformance corpus 42 cases、28 required classes。Canary：60 marked +60 clean。历史 V1：LongMemEval 459/500=91.80%，LoCoMo judged1472/1986=74.12%，PoisonedRAG induced ASR1/98=1.02%，poison retrieval@5=0/100，mutation authorization7/7、tamper4/4，median latency4.865ms、p95 5.674ms。</p><p><b>Research Question：</b>双实现是否完全一致？production evidence 是否符合 portable protocol？公开数字是否能独立重建？</p>
+
+<h3>5.11 Metrics 教学式解释</h3><p><b>Verdict/reason parity↑：</b>两套 verifier 不只 pass/fail 相同，failure reason 也必须一致。<b>Conformance 42/42：</b>是协议一致性，不是模型准确率。<b>Wilson CI：</b>用于0/60、60/60等极端比例。<b>Poison retrieval@5：</b>只说明 poison 是否进入 top-5，不等于“已删除”。</p>
+
+<h3>5.12 Results Deep Dive</h3><ol><li>Node/Python 72/72 exact parity。</li><li>Production conformance 42/42。</li><li>Canary marked60/60、clean0/60，但只证明显式 marker traversal。</li><li>Historical LongMemEval 91.80%，明确不是 V2 rerun。</li><li>LoCoMo judged74.12%、token-F158.20，protocol不同不能合并。</li><li>PoisonedRAG induced ASR 1/98=1.02%，比直接报3/100更严格。</li><li>A0→A1 poison retrieval@5 从94/100→0/100，说明 stored labels/selection isolation 是主要机制。</li><li>A1→A2 retrieval仍0/100，query-local detector 没进一步改变 selection。</li><li>历史 mutation latency median4.865ms、p95 5.674ms。</li></ol>
+<div class="callout good"><b>Strongest：</b>72/72 双实现一致 +42/42 production conformance。</div><div class="callout warn"><b>Weakest：</b>V2 新增价值主要是 protocol/reproducibility，而不是新的 retrieval SOTA。</div><div class="callout bad"><b>Boundary：</b>不证明 semantic truth、universal poison robustness 或所有 derived copies 已删除。</div>
+
+<h3>5.13 Table / Figure Reading</h3><p><b>Table 1：</b>72/72与42/42必须理解为 conformance denominator。<b>Table 2：</b>V1 数字全部明确标 historical。<b>Table 3：</b>A0→A1 展示 selection isolation 的核心作用。<b>公式2–5：</b>membership→order→Merkle→external trust→bundle 是最关键系统结构。<b>Claim-to-evidence map：</b>把 quantitative claim 与 artifact、denominator、limitation 绑定，非常值得借鉴。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3><p>最关键 system ablation 是 PoisonedRAG A0/A1/A2：去掉 signed stored labels 时 poison 几乎全面进入 top-5；加入后 selection 被隔离；再加 query-local detector 没进一步改变 selection。说明主要机制来自持久状态中的 signed epistemic projection。双实现 parity 则证明 canonicalization 与 closed failure language 真正可执行。</p>
+
+<h3>5.15 Claim vs Evidence</h3><div class="callout"><b>Authors Claim：</b>提供 portable integrity/authorization/traceability/conformance/reproducibility contract。</div><div class="callout good"><b>Actually Show：</b>公开vectors、production corpus与历史aggregate可被独立 verifier 核对。</div><div class="callout warn"><b>Not Proven：</b>不证明 memory 内容为真，不是 universal deletion，也不证明 summary/cache/derived copies 全清。</div>
+
+<h3>5.16 Contribution</h3><ul><li><b>New Protocol：</b>versioned recall-disclosure envelope。</li><li><b>New Verification：</b>membership/order + external trust + cross-object predicates。</li><li><b>New Mutation Profile：</b>三种 terminal。</li><li><b>New Reproducibility Protocol：</b>verification/installation/reproduction分离。</li><li><b>Engineering：</b>独立 Node/Python verifier。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3><p>协议不证明 semantic truth、availability、confidentiality、universal robustness；external trust anchor 分发不在 scope；单作者自评仍需第三方 replication。对 Agent Unlearning 最关键的额外 limitation 是：raw memory 的 mutation receipt 并不自动覆盖 summary、embedding cache、derived fact、skill 或 cross-agent copy。</p>
+
+<h3>5.18 Reproduction View</h3><p>核心模块：canonical encoder、schema validator、membership checker、Merkle builder、trust loader、identity/revocation verifier、mutation terminal verifier、双语言 parity runner。最小复现先运行 offline verifier，再改 nonce、删 result、重排 object、换 fingerprint，检查两套 verifier 是否给完全相同 terminal/reason。</p>
+
+<h3>5.19 Research Value</h3><p><span class="score">Baseline Potential ★★★★☆</span> system-level deletion verification 强 baseline。<br><span class="score">Migration ★★★★★</span> skill/trajectory/shared-memory deletion。<br><span class="score">Attack ★★★★☆</span> structural tamper/fingerprinting。<br><span class="score">Evaluation ★★★★★</span> “声称删了”的证据层。<br><span class="score">Benchmark ★★★★★</span> deletion-closure conformance。<br><span class="score">New Paper ★★★★★</span> cryptographic integrity→semantic closure。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Verifiable Agent Memory Unlearning Closure</h4><p><b>Original Problem →</b>raw mutation可验证但派生副本没覆盖。<br><b>Transferable Mechanism →</b>portable bundle + fixed membership + signed terminal。<br><b>New RQ →</b>delete后summary/cache/derived memory是否都有certificate？<br><b>Method Modification →</b>建立raw→summary→embedding→cache→derived→skill→peer-copy DAG，每个 descendant 提交 deleted/tombstoned/recomputed proof。<br><b>Minimum Experiment →</b>30 targets×5 carrier types×3 deletion methods×2 systems。<br><b>Model →</b>Qwen3-8B/Llama-3.1-8B Agent。<br><b>Dataset →</b>LoCoMo + synthetic secrets。<br><b>Baseline →</b>physical delete、tombstone、semantic purge、raw-only verified mutation。<br><b>Metric →</b>Delete Closure Rate、Verified Descendant Coverage、Residual Path Count、Retain Miss Rate、Tamper Detection Rate。<br><b>Expected →</b>portable semantic deletion certificate。<br><b>Risk →</b>dependency DAG 难枚举。<br><b>Collision Risk →</b>低到中。</p>
+
+<h4>方向 B — Black-Box Mutation-Verifier Fingerprinting</h4><p><b>Original →</b>公开白盒 protocol。<br><b>Transferable →</b>closed failure language。<br><b>New RQ →</b>只看API accept/reject/reason能否推断backend检查哪些 invariant？<br><b>Method →</b>stale epoch、duplicate result、missing provenance、reorder、fake no-op、wrong trust root。<br><b>Minimum Experiment →</b>5 backends×30 templates×5 seeds。<br><b>Baseline →</b>random/single tamper/docs。<br><b>Metric →</b>Regime AUROC、Probe@95%、Localization Accuracy。<br><b>Expected →</b>black-box compliance auditor。<br><b>Risk →</b>商业系统不返回细 reason。<br><b>Collision Risk →</b>低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3><p>可以系统测试 omission、reorder、stale authority、wrong epoch、revoked key、no-op masquerading。对 unlearning，最自然迁移是给 delete 生成 evidence envelope，并要求所有 descendant carrier 都入 bundle。可定义 <b>Verified Deletion Closure (VDC)</b>。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3><p>MutMem 管“声明的 mutation 是否完整可信”；Context CPE 告诉你真实 carrier 远多于 canonical memory API。二者结合意味着 deletion certificate 必须覆盖真实 carrier graph。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3><ol><li>重点是 portable verification，不是新 retriever。</li><li>mutation 要同时验证 identity、epoch、revocation、authorization、request、result、provenance、order、terminal。</li><li>Recall bundle 固定13+5r对象。</li><li>canonical bytes+Merkle绑定完整性。</li><li>trust anchor必须外部提供。</li><li>mutation分三类 terminal。</li><li>72/72双实现一致，42/42 production conformance。</li><li>V1结果被明确标historical。</li><li>它不证明semantic truth或universal deletion。</li><li>最值得迁移是descendant-level deletion certificate。</li></ol>
+</section>
+
+<section id="p2" class="paper">
+<h2>Paper 2 Full Deep Dive — What’s in Your Agent’s Context?</h2>
+<h3>5.1 基本信息</h3><div class="kv"><div>Title</div><div>What’s in Your Agent’s Context? Context Privilege Escalation Attacks against AI Agent Harness</div><div>Authors</div><div>Zichuan Li, Jian Cui, Ashley Chen, Xiaojing Liao, Luyi Xing</div><div>Affiliation</div><div>University of Illinois Urbana-Champaign</div><div>Date</div><div>2026-09-02（v2）</div><div>Status</div><div>arXiv preprint</div><div>Paper</div><div><a href="https://arxiv.org/abs/2609.01222">arXiv</a> · <a href="https://arxiv.org/pdf/2609.01222">PDF</a> · <a href="https://arxiv.org/html/2609.01222">HTML</a></div><div>Project</div><div><a href="https://zichuan.li/LLMAgentCPE">LLMAgentCPE Project / Demos</a></div></div>
+
+<h3>5.2 一句话定位</h3><p>把 Agent Harness 的 context assembly 当作权限系统，系统研究低信任 context source 如何被提升到更高 message role 或更持久 scope，并跨 session/project 长期影响 Agent。</p>
+
+<h3>5.3 人话版</h3><p>真实 coding agent 会从 AGENTS.md、CLAUDE.md、GEMINI.md、skills、plugins、project config、global memory、环境变量、Git metadata、runtime-discovered files 等几十种来源构造 context。作者发现这些 source 的 role/scope 分配本身就是攻击面，并提出 Message-Role CPE 与 Cross-Scope CPE。CoRA 先做 LLM 辅助静态 source discovery，再在真实 model endpoint 上插入 hook，通过 random canary 确认 source 真正进入哪个 role、跨多少 scope；之后自动枚举低→高 privilege path，用两轮实验验证 persistent propagation。12 个 harness 中，GPT-5.4-mini 下 1284 条 path loaded，1028 条触发预期行为。作者还展示 RCE、global-memory propagation、PR manipulation 和 cross-agent Git attack。对 Agent Unlearning 最重要：canonical memory 只是众多 carrier 之一。</p>
+
+<h3>5.4 Background & Research Gap</h3><p>AgentDojo/InjecAgent 等主要研究 external content→当前行为；Instruction Hierarchy、Spotlighting 等默认 role 边界本身正确。现实 harness 的底层问题是“哪些东西进入 context、以哪个 role、什么时候加载、作用于哪个 scope”。例如 project instruction 诱导 save_memory(scope=global)，一次恶意 repo 就可能污染未来所有 project。</p>
+
+<h3>5.5 Core Insight</h3><p>Context 是 <b>role hierarchy × source × lifecycle × scope</b> 的权限对象，不是 flat string。每个 source 表示为 S_k=(s_k,ρ_k,σ_k)。M-CPE 发生在 ρ_b&gt;ρ_a，X-CPE 发生在 σ_b&gt;σ_a。静态分析无法覆盖 runtime plugin/MCP/skill discovery，所以最终必须用 endpoint canary 做确定验证。</p>
+
+<h3>5.6 Method Deep Dive</h3><div class="flow">Harness source
+→ locate LLM endpoint
+→ static context-source discovery
+→ infer candidate role/scope/lifecycle
+→ instrument outbound model request
+→ generate SourceEnvSpec / RuntimeSpec
+→ insert random canary
+→ launch isolated harness
+→ verify role in actual request
+→ same-project / cross-project differential runs
+→ infer scope
+→ enumerate low→high privilege source pairs
+→ Round 1 propagation
+→ remove low source
+→ Round 2 benign prompt
+→ Loaded? → Verified?
+→ context manifest + attack paths + PoV</div>
+<p>CoRA 把 LLM 只用于 candidate discovery 和环境构造，最终 source/role/scope 证据由 deterministic canary 给出。Two-round cleanup 非常关键：它确保第二轮影响来自高权限 persistent carrier，而不是原 malicious source 又被读了一次。</p>
+
+<h3>5.7 核心公式与数学直觉</h3><div class="formula">T_i = M(C_i ; T)
+C_(i+1) = C_i ∪ exec(T_i ; E)
+
+S_k = (s_k, ρ_k, σ_k)
+
+M-CPE: ρ_b > ρ_a
+X-CPE: σ_b > σ_a
+for reachable S_a → S_b</div>
+<p>C_i 是多 role context；ρ 是 message privilege；σ 是 session→project→user/global scope。和传统 IPI benchmark 相比，本文先恢复 harness 自己的 privilege map，再测 propagation，因此把攻击面从“恶意字符串”下沉到 context architecture。</p>
+
+<h3>5.8 Toy Example</h3><p>repo/AGENTS.md 是 project scope/user role，~/.agent/memory.md 是 user scope/developer role。恶意 repo 诱导 Agent 把 instruction 保存到 global memory。第一轮后 project→user 发生 X-CPE。随后删除 AGENTS.md，打开完全不同项目，只给 benign task，global memory 仍加载并影响行为——说明原始 source 已消失，但高权限 carrier 仍持续存在。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3><div class="tablewrap"><table><tr><th>Baseline</th><th>合理性</th><th>不足</th><th>本文差异</th></tr><tr><td>AgentDojo</td><td>标准IPI benchmark</td><td>external data→behavior</td><td>source/role/scope/lifecycle</td></tr><tr><td>InjecAgent</td><td>tool-integrated攻击</td><td>persistent carrier有限</td><td>真实harness source枚举</td></tr><tr><td>Instruction Hierarchy</td><td>优先高权限指令</td><td>harness错配role时无效</td><td>审计role assignment</td></tr><tr><td>Sanitization</td><td>轻量</td><td>tag本身可成攻击面</td><td>markup也纳入source分析</td></tr><tr><td><b>Manual Audit</b></td><td>专家最准确</td><td>不可扩展</td><td>LLM-assisted + deterministic runtime validation</td></tr></table></div><p><b>Strongest baseline：Manual Audit。</b></p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3><p>分析12个真实 harness：Codex、Claude Code、Gemini CLI、Qwen Code、Kimi CLI、Aider、OpenCode、Cline、Goose、Pi-mono、OpenClaw、Hermes Agent。Codex/Gemini CLI 有 manual source ground truth。Path validation 使用 GPT-5.4-mini、GPT-5.5；Claude Code 还测试 Sonnet4.6/Opus4.6；Gemini CLI 测 Gemini2.5 Flash/Pro。463 candidate sources 中过滤161，剩302进入 runtime validation。最终用 two-round path validation 报 Loaded 与 Verified。</p>
+
+<h3>5.11 Metrics 教学式解释</h3><p><b>Source Precision/Recall↑：</b>静态发现是否接近人工真值。<b>Runtime Validation Success↑：</b>source 是否真正进入模型 request。<b>Loaded Rate↑：</b>低 source 是否传播到高 source 并在下一轮加载，是 architecture vulnerability。<b>Verified Rate↑：</b>进一步触发行为，受模型 alignment 与任务影响，所以必须与 Loaded 分开。</p>
+
+<h3>5.12 Results Deep Dive</h3><ol><li>Codex：28/30 source，precision100%、recall93%。</li><li>Gemini CLI：38/42，1 false positive，precision97%、recall91%。</li><li>463 candidates 中161被过滤；人工检查发现5个 false negatives，Aider LANG 是典型漏项。</li><li>302 source 中282成功 runtime validation，93.4%。</li><li>GPT-5.4-mini：1284 paths loaded（73%），1028 verified（58%）。</li><li>GPT-5.5：1315 loaded（74%），1034 verified（58%）。</li><li>Goose loaded 89→97%，但 verified 80→71%，说明传播与行为是两轴。</li><li>Qwen Code 两模型 loaded 都100%，verified58→76%。</li><li>Claude Code 在原生 Sonnet/Opus 下仍有大量 path verified。</li><li>PoV 包含 RCE、global memory propagation、PR manipulation、cross-agent Git chain。</li></ol>
+<div class="callout good"><b>Strongest：</b>12 harness、数百 source、上千 path 的 architecture exposure。</div><div class="callout warn"><b>Weakest：</b>Verified 明显低于 Loaded，现实利用取决于模型与 payload。</div><div class="callout bad"><b>Failure：</b>CoRA 会漏复杂 source，因此 manifest 仍非完备。</div>
+
+<h3>5.13 Table / Figure Reading</h3><p><b>Figure 1：</b>Codex context 是 privilege-bearing messages。<b>Table IV：</b>Gemini 的不同 context wrapper/role 说明 markup 不是安全边界。<b>Table VII：</b>Loaded 与 Verified 是两个核心轴。<b>Table VIII/IX：</b>provider role mapping 与 memory loading path 很适合跨 harness benchmark。<b>Figure 9：</b>Git→Claude→Aider→settings 的跨 Agent chain 证明 carrier 可组合。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3><p>Static-only 会受 LLM hallucination 影响；加 runtime canary 后 source/role/scope 才得到确定证据。Two-round cleanup 排除原 source 残留。Loaded vs Verified 拆分进一步证明：模型 alignment 只能改变执行率，不能修复 context assembly architecture。</p>
+
+<h3>5.15 Claim vs Evidence</h3><div class="callout"><b>Authors Claim：</b>真实 harness 存在系统性 M-CPE/X-CPE。</div><div class="callout good"><b>Actually Show：</b>12 harness 中大量 path 可被 runtime evidence 验证，且多模型仍存在。</div><div class="callout warn"><b>Not Proven：</b>每个 Loaded path 都可现实利用、所有 source 都已发现、非 coding agents 也有相同分布。</div>
+
+<h3>5.16 Contribution</h3><ul><li><b>New Attack Taxonomy：</b>M-CPE/X-CPE。</li><li><b>New System Model：</b>role×scope×lifecycle context source。</li><li><b>New Discovery System：</b>CoRA。</li><li><b>New Evaluation Protocol：</b>two-round persistence validation。</li><li><b>New Empirical Finding：</b>12 harness measurement。</li><li><b>New PoV：</b>RCE、memory propagation、cross-agent chain。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3><p>复杂 source 可能漏检；模型随机性会影响 Verified；版本变化会让 source manifest 过时；云端 proprietary harness 难 instrument；role hierarchy 需要 provider-specific normalization；部分 exploit 细节因 responsible disclosure 不公开；研究以 coding agents 为主。</p>
+
+<h3>5.18 Reproduction View</h3><p>核心模块：static analyzer、endpoint locator、request hook、SourceEnvSpec/RuntimeSpec generator、EnvInterpreter、canary manager、scope differential launcher、path enumerator、two-round validator。最小复现选 Gemini CLI + Codex，各10–20 candidate sources，先做 role/scope canary，再做 project memory→global memory、project skill→user skill、Git metadata→persistent file 三条 path。</p>
+
+<h3>5.19 Research Value</h3><p><span class="score">Baseline Potential ★★★★★</span> Agent Memory/Harness safety/unlearning 都应有 context manifest。<br><span class="score">Migration ★★★★★</span> deletion closure、memory/skill unlearning、cross-agent persistence。<br><span class="score">Attack ★★★★★</span> 结构化 access-path attack。<br><span class="score">Evaluation ★★★★★</span> Loaded vs Verified 双指标。<br><span class="score">Benchmark ★★★★★</span> Agent Unlearning Surface Matrix。<br><span class="score">New Paper ★★★★★</span> 与 deletion certificate 结合空间大。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Context-Carrier Unlearning Closure</h4><p><b>Original →</b>同一 instruction 可跨 source/role/scope 传播。<br><b>Transferable →</b>context manifest + two-round persistence validation。<br><b>New RQ →</b>删除 target memory 后，是否仍存在于 project files、global memory、skill、Git metadata、summary、plugin、cache？<br><b>Method →</b>将 malicious instruction 换成 forget target fact；先扩散，再 delete；第二轮扫描所有 source 并用 direct/paraphrase/cloze/task probe 验证。<br><b>Minimum Experiment →</b>20 targets×8 carriers×3 harnesses×3 deletion strategies。<br><b>Model →</b>原生模型 + 统一 Qwen/Llama 控制。<br><b>Dataset →</b>synthetic secrets + LoCoMo-style memories。<br><b>Baseline →</b>canonical delete、grep purge、control-plane planner、verified raw mutation。<br><b>Metric →</b>Carrier Closure Rate、Loaded Residual Rate、Behavioral Recovery Rate、Cross-Scope Residual Depth、Retain FPR。<br><b>Expected →</b>证明 memory deletion ≠ context deletion。<br><b>Risk →</b>版本不稳定。<br><b>Collision Risk →</b>低。</p>
+
+<h4>方向 B — Black-Box Harness Residual Surface Mapping</h4><p><b>Original →</b>CoRA依赖源码 instrumentation。<br><b>Transferable →</b>carrier lifecycle/role/scope 会留下 behavior signature。<br><b>New RQ →</b>仅通过 API/CLI 行为能否推断 instruction 所处 scope？<br><b>Method →</b>restart、project switch、role conflict、tool-preference differential probes。<br><b>Minimum Experiment →</b>5 harnesses×6 carriers×30 templates×5 seeds。<br><b>Baseline →</b>single-session、docs、random restart。<br><b>Metric →</b>Scope Accuracy、Role Rank Correlation、Probe@95%、False Persistence。<br><b>Expected →</b>无需源码的 context architecture fingerprinting。<br><b>Risk →</b>模型随机性。<br><b>Collision Risk →</b>低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3><p>可做低 scope→高 scope 写入后删除原入口，再在未来 session 恢复的 access-path attack。Black-box 可通过 restart/project switch/role conflict/tool-choice 差分推断隐藏 carrier。Unlearning verification 不能只查 canonical memory DB，必须测所有 context source。可定义 <b>Cross-Scope Residual Depth</b>。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3><p>Context CPE 负责发现真实 carrier graph；MutMem V2 负责验证每个 declared mutation 是否完整可信。最佳组合是 <b>Context Carrier Manifest + Verifiable Deletion Certificate</b>。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3><ol><li>真实 Agent context 远不只 system prompt。</li><li>Memory、skill、config、environment、Git metadata 都可能是 carrier。</li><li>context assembly 本质上是权限系统。</li><li>M-CPE 升 role，X-CPE 升 scope。</li><li>CoRA 用 runtime canary 做最终验证。</li><li>Codex precision100%/recall93%，Gemini约97%/91%。</li><li>GPT-5.4-mini 下1284 paths loaded、1028 verified。</li><li>Loaded 与 Verified 必须分开。</li><li>论文展示 RCE、global memory propagation、PR manipulation、cross-agent Git chain。</li><li>对 Agent Unlearning 最关键：删 canonical memory 不代表所有 carrier 消失。</li></ol>
+</section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2><p>两篇共同说明：<b>Agent Memory / Unlearning 不能再只把研究对象定义成一个 vector DB row。</b> MutMem V2 负责“删除声明是否可信”，Context CPE 负责“carrier 是否找全”。真正的 closure 需要二者同时成立。</p><div class="tablewrap"><table><tr><th>问题</th><th>MutMem V2</th><th>Context CPE</th><th>统一结论</th></tr><tr><td>状态来源</td><td>canonical recall/mutation objects</td><td>memory/skill/config/env/Git/runtime</td><td>完整 carrier manifest</td></tr><tr><td>变化证据</td><td>hash/signature/Merkle/receipt</td><td>runtime canary/two-round</td><td>不能只信系统自述</td></tr><tr><td>失败模式</td><td>漏object/错epoch/伪receipt</td><td>低→高role/scope persistence</td><td>局部正确≠closure</td></tr></table></div></section>
+
+<section id="opp" class="card"><h2>Combined Research Opportunities</h2><h3>Best Migration Direction — Context-Carrier Verifiable Unlearning Closure</h3><div class="flow">Forget target
+→ discover all carriers
+→ execute delete/unlearn
+→ descendant delete/tombstone/recompute
+→ signed deletion terminals
+→ complete evidence bundle
+→ independent verification
+→ fresh session / new project
+→ semantic recovery probes
+→ Verified Deletion Closure
+→ Carrier Closure Rate
+→ Loaded Residual Rate
+→ Behavioral Recovery Rate
+→ Cross-Scope Residual Depth</div><p>Minimum viable：20 targets×3 harnesses×6 carrier types×3 deletion strategies。固定 seed→propagate→delete→evidence→new session/project→probe 流程。</p></section>
+
+<section id="collision" class="card"><h2>Collision / Overlap</h2><p><b>Strongest Collision：</b>“删除 canonical memory / skill artifact 后再测恢复率”已与近期 Agent Unlearning 工作相邻。低碰撞区必须做到：真实 carrier graph discovery + descendant-level deletion certificate + fresh-session cross-scope closure。</p></section>
+
+<section id="priority" class="card"><h2>Reading / Reproduction Priority</h2><p><b>MutMem V2：</b>先看 canonical objects、13+5r、Merkle、三种 mutation terminals，再看72/72与42/42的证据含义；最小复现先做 tamper tests。</p><p><b>Context CPE：</b>先看 role×source×scope×lifecycle，再看 CoRA runtime canary 与 two-round validation；重点看 Loaded vs Verified、global-memory propagation 与 Git cross-agent chain。</p></section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2><ul><li><a href="https://arxiv.org/abs/2609.01235">MutMem V2 — arXiv</a></li><li><a href="https://arxiv.org/pdf/2609.01235">MutMem V2 — PDF</a></li><li><a href="https://github.com/wallidsaydi-creator/HOM-AIMOS">HOM-AIMOS — GitHub</a></li><li><a href="https://arxiv.org/abs/2609.01222">Context CPE — arXiv</a></li><li><a href="https://arxiv.org/pdf/2609.01222">Context CPE — PDF</a></li><li><a href="https://zichuan.li/LLMAgentCPE">LLMAgentCPE — Project</a></li></ul><p class="small">HTML regenerated · 2026-09-03</p></section>
+</main></body></html>
