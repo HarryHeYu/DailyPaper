@@ -1,0 +1,557 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Top Papers Deep Dive — 2026-09-05</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#e1e6ef;--blue:#3158cf;--soft:#eef3ff;--green:#edf8f1;--yellow:#fff4d6;--red:#fff0f0;--dark:#111827}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1220px;margin:auto;padding:30px 24px 88px}.hero,.card,.paper{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 30px;margin:18px 0;box-shadow:0 4px 18px rgba(20,30,50,.045)}
+.hero{background:linear-gradient(135deg,#18224d,#3158cf);color:#fff;border:0;padding:38px 42px}.hero h1{margin:0 0 10px;font-size:38px;line-height:1.25}.hero p{color:#edf1ff}
+h2{font-size:28px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:21px;color:#28439d;margin-top:28px}h4{font-size:17px;margin-top:22px}
+nav{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px 20px;columns:2}nav a{display:block;padding:4px 0;color:var(--blue);text-decoration:none}
+a{color:var(--blue);text-decoration:none}.badge{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--soft);color:#3048a5;font-size:12px;font-weight:700;margin-right:5px}
+.kv{display:grid;grid-template-columns:200px 1fr;gap:5px 14px}.kv>div:nth-child(odd){font-weight:760}
+.flow,.formula{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--dark);color:#f7f8ff;border-radius:12px;padding:16px 18px;white-space:pre-wrap;overflow:auto}
+.callout{border-left:5px solid var(--blue);background:var(--soft);border-radius:10px;padding:14px 17px}.good{border-left-color:#338754;background:var(--green)}.warn{border-left-color:#c98a12;background:var(--yellow)}.bad{border-left-color:#c84545;background:var(--red)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:900px}th,td{border-bottom:1px solid var(--line);padding:10px 11px;text-align:left;vertical-align:top}th{background:#f2f4f8}
+.score{font-weight:760;color:#2748bd}.small{font-size:13px;color:var(--muted)}ul,ol{padding-left:23px}li{margin:6px 0}
+@media(max-width:760px){main{padding:18px 12px}.hero,.card,.paper{padding:20px}.hero h1{font-size:30px}nav{columns:1}.kv{grid-template-columns:1fr}}
+</style></head><body><main>
+<!-- regenerated: 2026-09-05 20:05 +08:00 -->
+<section class="hero"><h1>Daily Top Papers Deep Dive — 2026-09-05</h1>
+<p><b>Black-Box Unlearning Discovery × Continual Multi-Agent Skill Optimization</b></p>
+<p>重新生成版。今天只保留 2 篇：TAS 把攻击目标从“已知 forget prompt 后恢复答案”推进到“黑盒主动发现忘记了哪些 prompt”；MASkills 则把多 Agent 自我改进从整体 prompt 重写变成可归因、可回滚、可合并和可裁剪的 skill-space optimization。</p></section>
+
+<nav>
+<a href="#selection">1. Today's Deep Dive Selection</a>
+<a href="#why">2. 为什么选这 2 篇</a>
+<a href="#p1">3. Paper 1 — TAS</a>
+<a href="#p2">4. Paper 2 — MASkills</a>
+<a href="#syn">5. Cross-Paper Synthesis</a>
+<a href="#opp">6. Combined Research Opportunities</a>
+<a href="#collision">7. Collision / Overlap</a>
+<a href="#priority">8. Reading / Reproduction Priority</a>
+<a href="#sources">9. Sources / Links</a>
+</nav>
+
+<section id="selection" class="card"><h2>Today's Deep Dive Selection</h2>
+<p><span class="badge">Machine Unlearning</span><span class="badge">Black-Box Attack</span><span class="badge">2026-09-03</span><b>#1 Extracting Forgotten Prompts from Targeted Unlearned Models</b></p>
+<p><span class="badge">Multi-Agent</span><span class="badge">Continual Learning</span><span class="badge">EMNLP 2026 Findings</span><b>#2 MASkills: Continual Skills Optimization for Multi-Agent LLM Systems</b></p>
+</section>
+
+<section id="why" class="card"><h2>为什么选这 2 篇</h2>
+<p>最近一周已经连续精读 UDS、SkillGuard、MutMem V2、Context Privilege Escalation、PURGE、Harness-of-Harness 等工作，因此今天主动避开重复做 representation residual、prompt-injection confinement 或 partition-aware unlearning。TAS 是一个明确的新 threat-model shift：攻击者甚至不知道 forget prompt，也能利用 retain data + black-box model 找出被忘记实体，并重建 forget set。MASkills 则给出了一个刚接受到 EMNLP 2026 Findings、代码已公开的 multi-agent continual skill optimization 框架，机制和实验都足够完整，而且与 Agent memory / skill deletion / continual unlearning 迁移空间很大。</p>
+</section>
+
+<section id="p1" class="paper"><h2>Paper 1 Full Deep Dive — Extracting Forgotten Prompts from Targeted Unlearned Models</h2>
+
+<h3>5.1 基本信息</h3>
+<div class="kv">
+<div>Title</div><div>Extracting Forgotten Prompts from Targeted Unlearned Models</div>
+<div>Authors</div><div>Au Ashley Hoi-Ting, Meghdad Kurmanji, William F. Shen, Nicholas D. Lane, Ligang He</div>
+<div>Affiliation</div><div>University of Warwick；University of Cambridge</div>
+<div>Date</div><div>2026-09-03（arXiv v1）</div>
+<div>Venue / Status</div><div>Preprint；Under review</div>
+<div>Paper</div><div><a href="https://arxiv.org/abs/2609.03662">arXiv</a> · <a href="https://arxiv.org/html/2609.03662">HTML</a> · <a href="https://arxiv.org/pdf/2609.03662">PDF</a></div>
+<div>Project / Code</div><div>论文正文未给出官方 project page / code repository；本次检索未验证到作者官方代码链接，因此不猜测 code 状态。</div>
+</div>
+
+<h3>5.2 一句话定位</h3>
+<p>这篇论文把 unlearning attack 的威胁模型从“攻击者已知 forget prompt，只需恢复答案”推进到“攻击者连被忘记的 prompt 都不知道，也能仅靠 retain data 与黑盒 querying 主动发现并重建 forget set”。</p>
+
+<h3>5.3 人话版</h3>
+<p>之前很多 unlearning recovery attack 有一个隐藏前提：攻击者已经知道模型忘的是哪条问题，只是不知道答案，例如知道“某作者生日是什么”但模型拒绝回答。TAS 取消这个前提。攻击者手里只有 retain data，可以从其中提取大量“模板”和“候选实体”，例如 “What is [PERSON]’s occupation?”、223 个可能的人名，然后对 unlearned model 做有限预算黑盒查询。关键 observation 是：偏好式 unlearning 常把 forget prompt 学成拒答，而对 retain prompt 正常回答，因此“哪个 template–entity 组合更容易触发拒答”本身就是忘记目标的侧信道。TAS 用 Beta posterior + Thompson sampling 做 active search，不暴力遍历整个 template×entity 空间，而是优先查询最有信息量的组合，再用确认阶段避免早期偶然拒答误导。实验覆盖 DUSK、TOFU、PISTOL，Llama2-7B/Llama3-8B/Gemma-7B，以及 DPO/NPO/LUNAR。单实体设置下它达到 100% entity identification，TOFU 可从 804,138 个组合空间中仅用约 2,488 次查询完成早停，相当于约 323× query reduction；forget prompt reconstruction 最高可到约95%。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>LLM unlearning 经常通过 DPO/NPO/LUNAR 等方法把 forget data 对应的回答引导到 refusal / abstention 区域。传统评价看 Forget ROUGE、forget probability、Truth Ratio 等；传统攻击则通常已知具体 forget prompt，再尝试 jailbreak、prefix、reasoning、candidate verification 或 activation steering 恢复答案。</p>
+<p>现实攻击者却往往不知道删除请求具体对应哪几条训练样本。例如一个 API 服务声称“已经删除某用户相关数据”，外部观察者可能只知道 retained corpus 的风格和实体集合，却不知道究竟删了哪个用户、哪些问句。旧攻击无法先回答“到底被删了什么”。</p>
+<p>这篇填的 gap 是 <b>target discovery</b>。它把 refusal trace 看成一个可搜索信号：如果某个实体在多个常见 template 上异常触发 refusal，则该实体更可能被 unlearn；找出实体后，再把它填回 retained canonical templates，就能近似重建 forget prompts。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>最关键 insight：<b>unlearning 的 refusal alignment 会留下“目标定位信号”，而不仅是答案抑制。</b> 一个 forget entity 不需要在所有 prompt 上都稳定拒答，只要相对其它实体存在统计差异，active search 就能逐步聚焦。</p>
+<p>第二个 insight 是模板质量和 query allocation 同样重要。TOFU 有 3,606 个 distinct templates，但作者将其 canonicalize 到 74 个 canonical templates，大幅降低 paraphrase 冗余；同时 Thompson sampling 根据 entity posterior 和 template posterior 动态分配查询。</p>
+<p>第三个 insight 是“拒答证据”具有不对称性：一次明显 refusal 对涉及的 entity 是正证据；而一次流畅正常回答则是强负证据。对多实体 slot，作者还按 credit assignment 把 refusal 信号分摊到各 slot，而 compliance 则可同时降低多个候选的 posterior。</p>
+<p>这属于 black-box attack + statistical active search，而非白盒 representation attack。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Retain dataset R + black-box unlearned model M_u
+→ extract raw templates T_raw
+→ canonicalize templates T
+→ extract candidate entity pool E
+→ build candidate assignments Z
+→ initialize Beta posterior:
+   entity-slot posterior θ_(i,e)
+   template posterior φ_t
+→ Phase 1: warm-up coverage
+   query broad templates/entities
+   score refusals
+   update posteriors
+→ Phase 2: adaptive active search
+   Thompson sample informative template t
+   Thompson sample candidate entity/tuple z
+   query M_u(t[z])
+   refusal-score response
+   update θ and φ
+→ optional early stop for single-entity setting
+→ Phase 3: confirmation
+   re-probe top-c candidates
+   avoid incomparable posterior magnitudes
+→ infer forgotten entity/entities
+→ instantiate retained/canonical templates with predicted entity
+→ evaluate reconstructed forget prompts
+→ output entity ranking + reconstructed forget set + query-cost metrics</div>
+
+<p><b>Step 1 Candidate construction：</b>DUSK/TOFU 是单实体 arity=1，PISTOL 是有序 entity pair arity=2。TOFU 的 raw template 空间最极端：4000 prompts、3606 distinct templates、223 candidate entities，暴力空间 804,138 queries。</p>
+<p><b>Step 2 Response scoring：</b>模型输出通过 curated refusal expressions 得到 refusal score；可选 embedding channel 用 all-MiniLM-L6-v2 与 canonical refusal expressions 做 cosine similarity。</p>
+<p><b>Step 3 Posterior state：</b>每个 slot–entity 和 template 都维护 Beta posterior。Entity posterior 表示“这个 entity 是 forget target 的可能性”，template posterior 表示“这个 template 对目标具有区分性的可能性”。</p>
+<p><b>Step 4 Warm-up：</b>先覆盖足够模板/实体，避免 Thompson sampling 一开始被噪声锁死。</p>
+<p><b>Step 5 Adaptive search：</b>Thompson sampling 同时选择 template 和 entity assignment，让 query budget 集中到高价值区域。对于 arity=2 的 PISTOL，还会探测有序 pair。</p>
+<p><b>Step 6 Confirmation：</b>这是一个非常关键但容易忽视的设计。Adaptive search 天生对“当前领先者”分配更多 probes，因此不同 entity posterior 的样本量不平衡，posterior mean 不能直接跨 entity threshold。最后必须给 top candidates 统一确认预算。</p>
+<p><b>Step 7 Prompt reconstruction：</b>实体识别后，将预测实体填入 retained/canonical templates，形成 candidate forgotten prompts，再与真正 forget set 比较。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">Entity-slot posterior:
+θ_(i,e) ~ Beta(α_(i,e), β_(i,e))
+
+Template posterior:
+φ_t ~ Beta(α_t, β_t)
+
+Adaptive query:
+t ~ ThompsonSample({φ_t})
+z ~ ThompsonSample({θ_(i,e)})
+
+Score:
+s = Score(M_u(t[z]))
+
+Update:
+(θ, φ) ← Update(θ, φ, t, z, s)</div>
+<p>Beta posterior 适合表示“某候选是否具有 forget-like refusal behavior”的 Bernoulli-style 不确定性。α 增大代表更多正 refusal evidence，β 增大代表更多正常回答/负证据。Thompson sampling 不是每次只选 posterior mean 最大的 entity，而是从 posterior 抽样，因此自然平衡 exploitation 与 exploration。</p>
+<p><b>Template posterior φ_t：</b>如果某 template 对所有实体都容易引发拒答，它并没有定位价值，所以 template posterior 会被反方向更新，使“普遍诱导拒答”的模板失去权重。</p>
+<p><b>Strongest baseline objective：</b>UCB 也是经典 active search，但它使用显式 confidence bonus；TAS 的 Thompson sampling 在这个离散 noisy refusal setting 中表现更好。真正的差异不只是 sampling rule，还包括 canonical templates、slot-aware credit、confirmation。</p>
+<p><b>最关键超参：</b>总 budget B、warm-up 比例 ρ_w、confirmation 比例 ρ_c、top-c candidates。B 太小会导致真 entity 从未被 probe；confirmation 太少会让 early leader 因 unequal allocation 被误判；太多则浪费 query。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>假设 retain corpus 中出现模板：T1 “Where was [PERSON] born?”、T2 “What is [PERSON] known for?”、T3 “What did [PERSON] study?”；候选实体池有 Alice、Bob、Carol、David。真正被忘的是 Carol。</p>
+<ol>
+<li>Warm-up：每人至少被少量 query。Alice/Bob/David 大多数正常回答，Carol 在 T1/T2 出现多次 “I don’t know / I can’t provide that information”。</li>
+<li>θ_Carol 的 α 上升，posterior 变高；如果 T3 对所有人都容易回答，φ_T3 不会变高。</li>
+<li>Thompson sampling 后续更频繁选择 Carol×T1/T2，而不再均匀遍历 4×3=12 个组合。</li>
+<li>为了防止 T1 本身是高 refusal template，template posterior 会惩罚“对所有实体都拒答”的模板。</li>
+<li>Confirmation 阶段给 Carol 和 runner-up Bob 相同 probe 条件；Carol 仍显著更拒答。</li>
+<li>最终预测 Carol 是 forget entity，并重建 “Where was Carol born?”、“What is Carol known for?” 等 forget prompts。</li>
+</ol>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>怎么做</th><th>为什么合理</th><th>哪里失败</th><th>TAS 改什么</th></tr>
+<tr><td>Brute-force</td><td>遍历所有 template×entity</td><td>理论覆盖最完整</td><td>TOFU 804k queries，不现实</td><td>active allocation</td></tr>
+<tr><td>Random</td><td>预算内均匀随机 probes</td><td>零先验 baseline</td><td>大量 query 浪费在无信息组合</td><td>posterior-guided search</td></tr>
+<tr><td>Greedy</td><td>总选当前最好候选</td><td>利用性强</td><td>容易被早期 noisy refusal 锁死</td><td>Thompson exploration</td></tr>
+<tr><td><b>UCB</b></td><td>mean+uncertainty bonus</td><td>最强 active-search baseline</td><td>TOFU entity recovery 仍低于 TAS</td><td>template/entity 双 posterior + confirmation</td></tr>
+<tr><td>Known-prompt recovery attacks</td><td>已知 forget prompt，再恢复答案</td><td>检验 suppression residual</td><td>假设攻击者已经知道 target</td><td>先发现 prompt，再进入 recovery</td></tr>
+</table></div>
+<p><b>Strongest baseline：UCB。</b>TOFU 上 UCB Accuracy 0.875、MRR 0.882，而 TAS 为1.000/1.000；说明在最大搜索空间里，自适应后验 + canonicalization 的组合更有效。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Datasets：</b>DUSK（827 prompts、18 templates、71 entities）；TOFU（4000 prompts、3606 raw templates、74 canonical templates、223 entities）；PISTOL（400 prompts、34 templates、24 entities，arity=2 ordered pairs）。</p>
+<p><b>Search space / Budget：</b>DUSK Q_space=1,278，B=500；TOFU 804,138，B=5,000；PISTOL 18,216，B=1,000。</p>
+<p><b>Models：</b>Llama2-7B、Llama3-8B、Gemma-7B。</p>
+<p><b>Unlearning methods：</b>DPO、NPO、LUNAR，总共 3×3=9 model–objective combinations / dataset。</p>
+<p><b>Search baselines：</b>Brute-force、Random、Greedy、UCB、TAS。</p>
+<p><b>Metrics：</b>Entity Accuracy、MRR；multi-entity 用 Recall/Precision/MAP；Prompt Recall/Precision；Queries、Cost=Q/Q_space、Hit Rate、First Hit；同时对比 Forget ROUGE-1 和 Forget probability。</p>
+<p><b>Evaluation：</b>主表按每 dataset 的9种 model×unlearning 组合，3 seeds 汇总 mean±std。</p>
+<p><b>Research Question 1：</b>未知 forget target 时能否准确发现 entity？<br>
+<b>RQ2：</b>发现 entity 后能否重建 prompt？<br>
+<b>RQ3：</b>active search 能省多少 query？<br>
+<b>RQ4：</b>canonical templates 是否必要？<br>
+<b>RQ5：</b>多实体 forget 时攻击是否仍成立？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Entity Accuracy↑：</b>单实体 setting 是否准确选中真正 forget entity。</p>
+<p><b>MRR↑：</b>真 entity 排名倒数的均值，哪怕 top-1 错也能看它是否接近前列。</p>
+<p><b>Prompt Recall↑：</b>真实 forget prompts 有多少被重建；高表示覆盖强。</p>
+<p><b>Prompt Precision↑：</b>重建出来的 candidate 有多少是真的 forget prompts；TAS 常出现 recall 高、precision 中等，说明它更像“发现候选 forget surface”，仍需后处理确认。</p>
+<p><b>Hit Rate↑：</b>预算内是否至少 probe 过一次真实 forget entity。如果 Hit Rate 低，后续 ranking 再聪明也没用。</p>
+<p><b>First Hit↓：</b>首次碰到真 entity 的 query index，衡量发现速度。</p>
+<p><b>Cost↓：</b>Q/Q_space，可跨搜索空间大小比较 query efficiency。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>TOFU entity recovery：</b>Random Accuracy0.185、Greedy0.333、UCB0.875、TAS1.000；TAS 相对 UCB +12.5pp，且 MRR1.000。</li>
+<li><b>TOFU prompt reconstruction：</b>TAS Prompt Recall0.873±0.232、Precision0.576±0.232，说明 prompt coverage 强，但 precision 仍不是完美，存在过重建。</li>
+<li><b>TOFU query efficiency：</b>全空间804,138；固定预算5000仅0.60%，early-stop平均2488约0.30%，相对 brute-force 323.21× reduction。</li>
+<li><b>DUSK：</b>暴力空间仅1278，因此 Random 已不弱；但 TAS 仍可在小预算下稳定达到 exact entity identification，说明方法并非只在巨大搜索空间有效。</li>
+<li><b>PISTOL：</b>ordered entity-pair 的搜索空间18,216，TAS early queries≈868，约20.99× reduction，证明方法能扩展到 arity=2。</li>
+<li><b>DPO 下 prompt reconstruction：</b>DUSK recall0.917、PISTOL0.980、TOFU1.000；即便标准 forget metric 很低/看似成功，prompt identity 仍可暴露。</li>
+<li><b>Canonical ablation：</b>TOFU full TAS=1.000 Accuracy；No-canon总体降到0.875。Llama2/3 在 raw templates 上仍可1.000，但 Gemma-7B只有0.500，说明 canonicalization 主要提高 noisy-model robustness。</li>
+<li><b>Multi-entity DUSK pair A：</b>Entity Recall/Precision/MAP均1.000，Prompt Recall0.969、Precision0.810。</li>
+<li><b>Multi-entity TOFU pair A：</b>Entity Recall0.833、Precision0.926、Prompt Recall0.590，明显退化，是本文最重要 failure case：dense paraphrases + unknown cardinality 会导致 under/over-count。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>TOFU 从804k组合空间中用约2488 queries early-stop 仍保持100% entity match，相当于约323× reduction。</div>
+<div class="callout warn"><b>Weakest result：</b>Prompt Precision 远低于 entity accuracy，例如 TOFU 约0.576；找到“谁被忘了”比精确还原“哪些句子被忘了”容易得多。</div>
+<div class="callout bad"><b>Failure case：</b>TOFU multi-entity pair A Prompt Recall仅0.590，说明攻击在未知多目标数量、密集 paraphrase 空间下仍有明显边界。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 1：</b>完整 TAS 五阶段。真正重要的是 warm-up→adaptive→confirmation 的顺序；如果直接 Thompson sampling，会更易被初始噪声锁定。</p>
+<p><b>Table 1：</b>TOFU raw templates 3606、canonical仅74，直观解释 canonicalization 为什么重要。</p>
+<p><b>Table 2：</b>搜索空间差异巨大：DUSK 1,278 vs TOFU 804,138。不能只报“5000 queries”，必须看 normalized cost。</p>
+<p><b>Table 3：</b>TOFU 上 Random/Greedy/UCB/TAS 的 Accuracy 从0.185/0.333/0.875/1.000逐级增加，是主动搜索价值最清楚的证据。</p>
+<p><b>Table 5：</b>early-stop 在 TOFU 由5000降到2488且 match accuracy 仍1.000，说明预算 ceiling 相当保守。</p>
+<p><b>Table 7：</b>多实体 setting 是最值得关注的弱点，尤其 TOFU pair A 的 under-count/over-count。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>Canonical templates：</b>去掉后 TOFU总体 Accuracy 1.000→0.875，Gemma-7B 甚至只有0.500，说明 canonicalization 主要减少 dense paraphrase 对 refusal posterior 的稀释。</p>
+<p><b>Budget curve：</b>DUSK 在 B=100 后 Accuracy/MRR 已1.0；PISTOL/TOFU 也在低于 ceiling 时达到 plateau，说明 active search 真正把信息集中到少量 candidates。</p>
+<p><b>Confirmation：</b>Appendix 明确解释，Thompson sampling 会造成 leader 有30 probes、runner-up只有2 probes，posterior magnitude不可直接比较；统一确认阶段承担“校准不平衡采样”的机制。</p>
+<p>这里的证据是 black-box statistical causality，不证明 forget representation 的内部位置；它证明的是 refusal behavior 足以泄漏目标身份。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>targeted unlearning 会暴露新的 attack surface，攻击者可以在不知道 forget prompts 的情况下发现并重建它们。</div>
+<div class="callout good"><b>Experiments Actually Show：</b>3 datasets×3 models×3 unlearning methods 中，single-entity target discovery 极强，query efficiency 尤其在 TOFU 显著；多实体仍可行但性能下降。</div>
+<div class="callout warn"><b>What Is Not Yet Proven：</b>没有证明开放域无限 entity universe 也能搜索；攻击依赖 retain data 能提供合理 template/entity pool；商业 API 可能有 rate limit/随机性；更自然的 free-form forget prompts 未必可被模板化；拒答策略若完全去除 target-specific trace，攻击可能显著变弱。</div>
+
+<h3>5.16 Contribution</h3>
+<ul>
+<li><b>New Attack：</b>Targeted Active Search，系统研究 unknown-forget-prompt black-box discovery。</li>
+<li><b>New Threat Model：</b>攻击者只需 retain data + black-box model，不知道 forget prompts。</li>
+<li><b>New Mechanism：</b>entity/template 双 posterior + Thompson sampling + confirmation。</li>
+<li><b>New Evaluation Protocol：</b>同时评估 entity discovery、prompt reconstruction、query efficiency。</li>
+<li><b>New Empirical Finding：</b>refusal-based unlearning 会泄漏“删除对象是谁”，不仅泄漏答案 residual。</li>
+</ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors' limitation：</b>搜索空间需要从 retain data 构造；研究集中 entity-structured forget sets；多实体和未知 cardinality 更难；query budget 与 rate limits 仍是现实约束。</p>
+<p><b>Additional limitation：</b>refusal classifier 本身可能受安全模板/模型风格影响；canonicalization 需要高质量 preprocessing；prompt reconstruction evaluation 可能有 LLM-as-judge bias；攻击主要针对 refusal-aligned unlearning，纯 retraining-like erasure可能没有可利用 signal；black-box API 的 temperature、system prompt 和 moderation layer 可能改变拒答分布。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>核心代码模块应包括：1) retain prompt parser；2) entity extractor；3) template canonicalizer；4) black-box query client；5) refusal scorer；6) Beta posterior state；7) warm-up scheduler；8) Thompson sampler；9) confirmation；10) prompt reconstruction evaluator。</p>
+<p>最小复现建议先做 TOFU + Llama3-8B + NPO，单个 forget entity：构造223 entities，先只用74 canonical templates，B=5000；复现 TAS vs UCB vs Random 的 entity Accuracy / First Hit / Cost。若 TAS 能稳定 top-1，再尝试 raw 3606 templates 做 canonical ablation。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline Potential ★★★★★</span>：任何 black-box unlearning attack 都应加入“target unknown”场景。</p>
+<p><span class="score">Migration Potential ★★★★★</span>：可直接迁到 MLLM identity discovery、Agent memory/skill deletion discovery。</p>
+<p><span class="score">Attack Potential ★★★★★</span>：这篇本身就是非常强的新 attack primitive。</p>
+<p><span class="score">Evaluation Potential ★★★★★</span>：把“Target Concealment”从“Answer Suppression”中分离出来。</p>
+<p><span class="score">Benchmark Potential ★★★★★</span>：可构建 Unknown-Target Unlearning Benchmark。</p>
+<p><span class="score">New Paper Potential ★★★★★</span>：与 residual recovery / RULER / context collision 线非常适合组合。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Unknown-Target Multimodal Unlearning Discovery</h4>
+<p><b>Original Problem →</b>TAS 从文本 retain set 发现 forget entity。<br><b>Transferable Mechanism →</b>模板×实体 active search + refusal posterior。<br><b>New Research Question →</b>攻击者不知道被忘的是哪个视觉 identity 时，能否只靠 retain identities 和黑盒 VLM 找出来？<br><b>Method Modification →</b>template 扩展为 image-question families；entity pool 是候选人物/物体；probe 包含 direct image、cropped face、background/context-only、text-only、caption-conditioned 五种 slot。为每个 entity 维护跨模态 posterior，并自适应选择 probe modality。<br><b>Minimum Experiment →</b>50 candidate identities，随机1/2/5个 forget；5 query families；budgets 50/100/250；3 unlearning methods×2 VLM。<br><b>Model →</b>LLaVA-1.5-7B、Qwen2.5-VL-7B。<br><b>Dataset →</b>MLLMU-Bench forget5/10 + synthetic candidate pool。<br><b>Baseline →</b>Random、UCB、direct-only TAS、text-only TAS。<br><b>Metric →</b>Entity Recall/Precision/MAP、Probe Reconstruction Recall、ASR@budget、First Hit、Retain FPR。<br><b>Expected Contribution →</b>把 MLLM unlearning 的攻击假设从 known identity 放宽到 unknown identity。<br><b>Risk →</b>视觉 refusal signal 可能比文本弱。<br><b>Collision Risk →</b>低，当前多数 MLLM recovery 默认 target 已知。</p>
+
+<h4>方向 B — TAS + Residual Difficulty Predictor</h4>
+<p><b>Original Problem →</b>TAS 用拒答 trace 搜索 forget target。<br><b>Transferable Mechanism →</b>posterior growth rate本身代表 target“可被黑盒发现”的难度。<br><b>New RQ →</b>pre-unlearning preference strength / UDS / GPWR 是否预测 TAS First-Hit 和 query complexity？<br><b>Method Modification →</b>每个 target 同时记录 base preference、post-unlearning residual score、TAS posterior entropy、First Hit、queries-to-confidence；建立 target-level hardness model。<br><b>Minimum Experiment →</b>50 targets×8 checkpoints×3 methods；每个 target TAS budget100；白盒计算 UDS 或 residual label。<br><b>Model →</b>Llama3-8B / Qwen3-8B。<br><b>Dataset →</b>TOFU + DUSK。<br><b>Baseline →</b>direct refusal rate、random query difficulty、loss-based predictor。<br><b>Metric →</b>Spearman(hardness, query cost)、AUROC easy-to-discover、ASR@budget、calibration error。<br><b>Expected Contribution →</b>把“难 unlearn”与“易被发现/恢复”统一成 target-level risk predictor。<br><b>Risk →</b>refusal style可能支配所有相关性。<br><b>Collision Risk →</b>中；需与纯 residual predictor 区分，突出 discovery complexity。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>TAS 本身就是强 black-box verification：先问“我能否发现谁被忘了”，再进入 known-target recovery。未来评测不应只报告 Forget Accuracy，而应新增 <b>Target Concealment Risk</b>。可定义 <b>Discovery Query Complexity (DQC)</b>：达到95% posterior confidence识别 forget target 所需 queries。DQC 越低，unlearning 越容易被外部 fingerprint。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>TAS 找的是“哪个 target / surface 仍泄漏足够信号”；MASkills 解决“如何把复杂 team-level feedback 归因到具体 skill，并只更新那个 skill”。把两者组合，可以构造一种 <b>adaptive unlearning controller</b>：TAS式 active verifier 在大候选空间里发现最危险 target，skill/partition-level optimizer 只更新对应模块或 policy artifact，而不是全局重复 unlearning。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol>
+<li>以前多数 recovery attack 默认已知 forget prompt；TAS 取消了这个假设。</li>
+<li>攻击者只需要 retain data 和黑盒模型。</li>
+<li>核心泄漏不是答案，而是 target-specific refusal trace。</li>
+<li>TAS 同时维护 entity posterior 与 template posterior。</li>
+<li>Thompson sampling 把 queries 集中到最有信息量的组合。</li>
+<li>Confirmation 阶段用于修正 adaptive sampling 造成的样本量不平衡。</li>
+<li>TOFU 搜索空间约804k，TAS early-stop约2488 queries仍可100%识别 entity。</li>
+<li>Prompt reconstruction precision明显低于 entity identification，是当前主要弱点。</li>
+<li>多实体 TOFU 会出现 under/over-count，攻击并非无条件稳定。</li>
+<li>最值得迁移的是 Unknown-Target MLLM Unlearning Discovery。</li>
+</ol>
+</section>
+
+<section id="p2" class="paper"><h2>Paper 2 Full Deep Dive — MASkills: Continual Skills Optimization for Multi-Agent LLM Systems</h2>
+
+<h3>5.1 基本信息</h3>
+<div class="kv">
+<div>Title</div><div>MASkills: Continual Skills Optimization for Multi-Agent LLM Systems</div>
+<div>Authors</div><div>Huaiyuan Yao, Xiaoou Liu, Charles Fleming, Tianlong Chen, Hua Wei</div>
+<div>Affiliation</div><div>论文 HTML 本次检索未完整展开作者单位；不做猜测。官方仓库与论文作者对应。</div>
+<div>Date</div><div>2026-09-02（arXiv v1）</div>
+<div>Venue / Status</div><div>Accepted to Findings of ACL: EMNLP 2026</div>
+<div>Paper</div><div><a href="https://arxiv.org/abs/2609.02094">arXiv</a> · <a href="https://arxiv.org/html/2609.02094">HTML</a> · <a href="https://arxiv.org/pdf/2609.02094">PDF</a></div>
+<div>Project / Code</div><div><a href="https://github.com/DaRL-GenAI/MASkills">Official GitHub</a> · MIT License · v1.0.0 released</div>
+</div>
+
+<h3>5.2 一句话定位</h3>
+<p>MASkills 把 multi-agent continual learning 的优化变量从“整个 system prompt / memory”改成离散、可独立寻址的 skill library，并用 per-skill credit、hierarchical aggregation、momentum、validation rollback 和 typed operators 持续演化团队能力。</p>
+
+<h3>5.3 人话版</h3>
+<p>很多 self-improving Agent 的做法是每次失败后把“经验”塞进 memory，或重写整个 system prompt。但 team-level failure 很难归因：这次任务失败，到底是 Retriever 没检索好、Reasoner 误推理，还是某个“cross-check” skill 调用时机错误？MASkills 将每个 Agent 的 procedural knowledge 拆成多个 SKILL.md 文件，每个 skill 独立描述“何时做什么、怎么做、用什么资源”。运行时记录本轮到底调用过哪些 skill，中央 critic 对每个被调用 skill 做 counterfactual-style credit assignment；多条 trajectory 的文字梯度再按 skill→agent→topology 层级聚合，并用 momentum 平滑历史方向。之后系统只对相关 skill 做 refine，遇到缺失能力则 induct 新 skill，重复 skill 被 consolidate，长期低价值 skill 被 prune。任何 candidate library 在提交前都要过 held-out validation gate，否则 rollback。实验在 HotpotQA、LoCoMo、GAIA 上全面提升；HotpotQA F1 达76.3，LoCoMo multi-hop F1 17.22，GAIA Avg23.3。最关键 ablation 是去掉 validation rollback 后 LoCoMo-MH 从17.2掉到6.6、GAIA从23.3掉到13.5，说明长期自我修改中“能退回去”比单纯“能学新东西”更重要。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>单 Agent continual improvement 常见两条路线：memory-based（Reflexion 等）把失败经验追加成记忆；prompt optimization（TextGrad/DSPy 等）对整段 instruction 做语言空间更新。Skill discovery（Voyager、EvoSkill、MemSkill、PolySkill）进一步将过程性知识拆成技能，但大多是 single-agent setting。</p>
+<p>到了 multi-agent system，team reward 是共享的，credit 却分散在 Retriever、Verifier、Planner、Solver、Memory Agent 等多个角色上。如果只给“Agent A 本轮表现不好”的反馈，无法知道是它哪一个 skill 导致问题；如果整段 prompt rewrite，又容易 collateral damage。</p>
+<p>例如 HotpotQA 两跳问题失败：Retriever 成功找到第一条文档，Reasoner 的“verify bridge entity before second search” skill 没触发。全局改 Retriever prompt 可能破坏已经很好的检索能力。MASkills 的 gap 是：<b>team-level outcome → specific skill invocation → stable local edit</b>。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>第一 insight：<b>skill 比 memory 更 actionable，比 monolithic prompt 更可归因。</b> 一个 skill 具备显式 description（路由信号）和 markdown body（执行程序），可以被独立调用、改写、删除、合并。</p>
+<p>第二 insight：multi-agent credit 必须落到“某 trajectory 中实际 invoked 的 skill”，而不是 agent identity。Critic 通过 counterfactual 比较“用了这个 skill vs 不用会怎样”生成自然语言 credit。</p>
+<p>第三 insight：语言空间 edit 很噪，不能把每轮 critique 直接写进 skill。需要 hierarchical aggregation + momentum smoothing；更重要的是 held-out validation + rollback，类似 trust region，防止一次坏编辑永久污染 skill library。</p>
+<p>这是一种 language-space policy-gradient analogy。论文明确强调 gradient、advantage、momentum 都是结构类比，不是对神经参数求导。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Multi-agent Dec-POMDP + initial skill libraries {K_i}
+→ execute trajectories τ under decentralized agents
+→ record skill invocation traces
+
+For each invoked skill k:
+→ centralized critic produces textual credit
+   C_i^text(τ,k)
+→ convert credit to language-space edit direction g_i(τ,k)
+
+Across batch:
+→ aggregate trajectory feedback per skill
+   G_i^(m)(k)
+→ aggregate across skills / agents / topology
+→ momentum-smooth with historical edit directions
+
+Skill-space optimization:
+→ Refine existing skill with localized diff
+→ Induct new skill from persistent hard trajectories
+→ Consolidate overlapping skills into macro-skill
+→ Prune consistently low-utility / obsolete skills
+
+Validation gate:
+→ evaluate candidate K_i' on held-out D_val
+→ accept if reward does not regress beyond δ
+→ otherwise rollback
+
+→ updated persistent skill library
+→ next optimization cycle</div>
+
+<p><b>Step 1 Skill-aware execution：</b>每个 Agent 的 system prompt 中渲染自身 skill library，trajectory 记录每轮实际调用了哪些 skill。这个 trace 是后续 attribution 的关键。</p>
+<p><b>Step 2 Skill-conditioned credit：</b>centralized critic 读取完整 trajectory、agent role 和 skill invocation，输出针对具体 skill 的结构化自然语言评价。</p>
+<p><b>Step 3 Hierarchical aggregation：</b>同一个 skill 在多个 trajectories 中可能收到矛盾反馈，因此 LLM_Agg 总结 recurring behavioral pattern、去冗余、解决冲突，再向 agent/topology 层继续聚合。</p>
+<p><b>Step 4 Momentum：</b>当前 batch 的 edit direction 与历史累积方向结合，避免技能描述在每轮训练中来回震荡。</p>
+<p><b>Step 5 Typed operators：</b>Refine 是局部 diff；Induct 是新建；Consolidate 将功能重叠 skill 合并成 macro skill；Prune 删除持续低 utility 的 skill。这样 skill space 可以增也可以缩，不会无限 append。</p>
+<p><b>Step 6 Validation rollback：</b>候选 skill library 在 held-out validation 上评测。如果下降超过容忍阈值 δ，整个 candidate edit 不提交，直接恢复旧 library。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">Cooperative objective:
+max_{ {K_i}_{i=1}^N }  E_{τ ~ π(. | {K_i})}[ R(τ) ]
+
+Skill credit:
+C_i^text(τ,k) = LLM_Critic(τ, i, k, ξ_i)
+
+Skill-level aggregation:
+G_i^(m)(k) = LLM_Agg({ g_i(τ_b,k) }_{b=1}^B)
+
+Refinement:
+k ← k ⊕ Δk
+Δk = LLM_Refine(k, G_i^(m)(k))
+
+Induction:
+k_new ~ LLM_Propose(H_i, G_i^(m))
+
+Consolidation:
+k_macro = LLM_Merge(k_a, k_b, ...)
+
+Validation:
+J_val(K_i' | K_-i) = E_{τ~D_val}[R(τ)]
+
+Accept iff:
+J_val(K_i' | K_-i) ≥ J_val(K_i | K_-i) - δ</div>
+<p><b>优化变量 K_i：</b>不是模型参数，而是第 i 个 Agent 的技能集合。</p>
+<p><b>R(τ)：</b>team-level reward。MASkills 的困难就是把它归因到多个 skill invocation。</p>
+<p><b>G_i^(m)(k)：</b>language-space “gradient”。它不是向量微分，而是经过 LLM 聚合后的结构化修改方向。</p>
+<p><b>δ：</b>validation rollback 的关键 tolerance。δ=0 要求候选绝不下降，非常保守；δ 大则允许一定噪声/探索，但提高 regression 风险。</p>
+<p><b>Strongest baseline objective：</b>TextGrad / LangMARL 会在语言空间做整体或 agent-level update；MASkills 更细到 skill granularity，并加入 typed lifecycle 与 rollback。区别是机制性的“优化单位”变化，而不只是 prompt engineering。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>一个两 Agent HotpotQA team：Retriever 有 skill A“先找第一实体页面”、skill B“检查 bridge entity”；Reasoner 有 skill C“用两条证据交叉验证”。某轮失败时 trace 显示 A、B、C 都调用了，但 critic 判断：A 提供了正确页面，C 在已有证据下推理正确，真正问题是 B 太早确认 bridge entity。</p>
+<ol>
+<li>C_A 得到正 credit，不改。</li>
+<li>C_B 得到负 credit：“bridge entity 未经过第二来源验证”。</li>
+<li>多个失败 trajectory 都出现同一模式，G(B) 稳定指向“增加 second-source check”。</li>
+<li>Refine 只修改 B 的 markdown body，不重写 Retriever 整个 prompt。</li>
+<li>新 skill B' 在 held-out validation 上若下降超过 δ，则 rollback。</li>
+<li>如果后来发现“数值答案需要独立重算”是现有 skill 都不覆盖的 repeated failure，则 Induct 一个 cross-verify-number skill。</li>
+<li>长期出现两个相似 verification skills 时 Consolidate；某 skill 几十轮几乎没用且 utility 低则 Prune。</li>
+</ol>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>怎么做</th><th>为什么合理</th><th>本文 setting 的问题</th><th>MASkills 差异</th></tr>
+<tr><td>CoT / CoT-SC</td><td>单/多样本推理</td><td>强 prompting baseline</td><td>不从长期 interaction 更新</td><td>持久 skill evolution</td></tr>
+<tr><td>MultiPersona</td><td>多角色讨论</td><td>模拟 multi-agent diversity</td><td>角色/技能固定</td><td>skill library 可演化</td></tr>
+<tr><td>Reflexion / Memory</td><td>把经验存入 memory</td><td>continual improvement</td><td>经验难精确调用/修改/退休</td><td>离散可寻址 skill</td></tr>
+<tr><td>TextGrad</td><td>自然语言“梯度”改 prompt</td><td>无需参数训练</td><td>全局 rewrite 易扰动无关能力</td><td>per-skill local diff</td></tr>
+<tr><td><b>LangMARL</b></td><td>multi-agent language-space credit</td><td>与本文最接近</td><td>credit/update 粒度偏 agent/policy</td><td>skill-conditioned attribution + lifecycle + rollback</td></tr>
+</table></div>
+<p><b>Strongest conceptual baseline：LangMARL。</b>MASkills 继承其 language-space CTDE 思想，但将 credit 与 update 落到 skill artifact，并增加长期 skill-space 管理。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Formal setting：</b>cooperative Dec-POMDP；agents decentralized execution，shared team reward；支持 centralized、hierarchical、decentralized-peer coordination topology。</p>
+<p><b>Optimizer backbone：</b>GPT-5.1，负责 credit assignment、aggregation、refine/induct/consolidate/prune。</p>
+<p><b>Actor backbones：</b>GPT-4o-mini 用于 HotpotQA 与 LoCoMo；Qwen2.5-7B 用于 GAIA。论文/代码还做多个 backbone robustness comparison。</p>
+<p><b>Benchmarks：</b>HotpotQA（multi-hop reasoning）；LoCoMo（long-horizon conversational memory，SH/MH 等）；GAIA（tool-using general assistant）。</p>
+<p><b>Skill format：</b>Anthropic Agent Skills 风格 SKILL.md，description 是路由信号，body 是执行内容；每个 skill 独立编辑。</p>
+<p><b>Metrics：</b>HotpotQA F1；LoCoMo F1/BLEU（单跳/多跳等）；GAIA L1/L2/L3 success 与 Avg。</p>
+<p><b>Code：</b>公开训练/评估 entry points，支持 topology、skill library 初始化、resume、可选 role evolution。</p>
+<p><b>Research Question 1：</b>continual skill optimization 是否改善任务性能？<br>
+<b>RQ2：</b>学到的 skill 是否可复用/跨任务迁移？<br>
+<b>RQ3：</b>是否跨 topology 与 LLM backbone 稳定？<br>
+<b>RQ4：</b>credit、momentum、rollback、consolidation/pruning 哪个真正关键？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>HotpotQA F1↑：</b>答案 token-level F1，适合开放式 multi-hop QA；但不直接测过程正确性。</p>
+<p><b>LoCoMo F1/BLEU↑：</b>F1 更看答案内容覆盖，BLEU 更看表述 n-gram；两者互补，但都可能低估语义等价回答。</p>
+<p><b>GAIA Success↑：</b>任务是否最终成功，直接反映 tool-use assistant 能力；L3 更难，因此零分不一定意味着框架完全失败，也可能是 actor backbone能力上限。</p>
+<p><b>Validation reward：</b>不是最终 benchmark score，而是是否提交本轮 skill edit 的 safety gate。</p>
+<p><b>Skill transfer：</b>把一个任务学到的 library 直接迁到新任务、不做额外优化，若还能提升，才说明 skill 不是单纯 task-specific prompt hack。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>HotpotQA：</b>MASkills F1=76.3；MultiPersona69.2、CoT-SC68.9、ADAS64.5。相对 strongest listed prompting baseline MultiPersona +7.1pp。</li>
+<li><b>LoCoMo single-hop：</b>MASkills F127.61、BLEU21.30；MemGPT F126.65、BLEU17.72。F1小幅+0.96，但 BLEU +3.58。</li>
+<li><b>LoCoMo multi-hop：</b>MASkills F117.22、BLEU12.87；LoCoMo baseline F112.04、BLEU11.16；相对最强 F1 baseline +5.18。</li>
+<li><b>GAIA Avg：</b>MASkills23.3，R1-Searcher20.4，Vanilla ReAct18.4，Base6.8。相对 R1-Searcher +2.9pp。</li>
+<li><b>GAIA L1：</b>35.3 vs R1-Searcher28.2，+7.1pp；L2=22.6 vs19.2，+3.4pp。</li>
+<li><b>GAIA L3：</b>MASkills 0.0，而 R1-Searcher8.3。这个反例很重要：MASkills并非所有难度都胜，复杂 L3 仍受 actor/tool能力限制。</li>
+<li><b>Ablation — no credit：</b>LoCoMo-MH17.2→14.2，GAIA23.3→17.1，说明 per-skill attribution 明显重要。</li>
+<li><b>No momentum：</b>17.2→16.4、23.3→21.9，影响较小但稳定，说明主要作用是降噪而非决定性增益。</li>
+<li><b>No validation rollback：</b>17.2→6.6、23.3→13.5，是最大退化，证明长期自修改最危险的是错误 edit 累积。</li>
+<li><b>No consolidation/pruning：</b>17.2→13.9、23.3→13.0，说明只会不断新增/refine skill 会造成 library fragmentation/冗余。</li>
+<li><b>Topology：</b>HotpotQA/GAIA decentralized peer 最强（HotpotQA76.30、GAIA23.30），但 LoCoMo multi-hop centralized22.27 优于 decentralized17.22，说明最佳 communication topology 强烈 task-dependent。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>Validation rollback ablation：LoCoMo-MH 17.2→6.6，GAIA 23.3→13.5。它清楚证明“可回滚”是 continual self-improvement 的核心稳定器。</div>
+<div class="callout warn"><b>Weakest result：</b>GAIA L3 仍为0，而 R1-Searcher达到8.3，说明 skill optimization 无法弥补所有底层 actor/tool reasoning 能力差距。</div>
+<div class="callout bad"><b>Failure / trade-off：</b>GPT-5.1 作为 optimizer backbone 成本高，且闭源 critic/optimizer会影响完全本地复现；持续 skill evolution 也可能对 validation split 过拟合。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Table 1(a) HotpotQA：</b>MASkills76.3明显高于一系列 prompting / self-refine / multi-persona baseline，说明持续技能优化不仅是 memory benchmark trick。</p>
+<p><b>Table 1(b) LoCoMo：</b>最值得看 multi-hop F1：MemGPT9.15、LoCoMo12.04、MASkills17.22。Skill library 对跨轮 memory reasoning 的帮助比单跳更明显。</p>
+<p><b>Table 1(c) GAIA：</b>L1/L2 改善但 L3=0，是正文“strong overall performance”下的重要反例。</p>
+<p><b>Figure 2 Training curves：</b>展示 validation-based skill update decisions；真正关注的不是曲线单调，而是候选 edit 会被拒绝/rollback，说明优化过程不是无条件 append。</p>
+<p><b>Figure 3 Transferability：</b>prompt-generated skills 只带来小增益，而 evolved skills 跨任务迁移仍有效，支持它们捕获 reusable procedural abstractions。</p>
+<p><b>Table 2 Ablation：</b>rollback 是最大单项贡献，其次 consolidation/pruning 与 credit；momentum最小但仍正贡献。</p>
+<p><b>Table 3 Topology：</b>没有单一最优组织架构；LoCoMo 更偏 centralized，HotpotQA/GAIA 更偏 decentralized exploration。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>去 Skill Credit：</b>team-level feedback 无法精确落到 invoked skill，GAIA掉6.2pp，说明 skill attribution 真正承担局部优化功能。</p>
+<p><b>去 Momentum：</b>影响相对较小，说明 aggregation 已经消除了大量噪声；momentum更多是跨 cycle 稳定器。</p>
+<p><b>去 Rollback：</b>灾难性下降，是最强机制证据：language-space critic 会提出坏 edit，如果没有 held-out gate，continual learning 很快积累 regression。</p>
+<p><b>去 Consolidation/Pruning：</b>GAIA 23.3→13.0，说明 skill space 不能只增长；“遗忘/退休低价值 skill”本身就是持续 Agent 学习必要操作。</p>
+<p>这些是系统级 causal ablation，因为模块被直接移除再重测 performance；但 credit 内容仍由 LLM critic 生成，无法证明其自然语言“因果解释”本身是准确 causal attribution。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>把 multi-agent policy improvement 转为 reusable skill-space optimization，可以实现稳定、可迁移的 continual improvement。</div>
+<div class="callout good"><b>Experiments Actually Show：</b>HotpotQA/LoCoMo/GAIA 三类任务上均有总体提升；skills 跨任务迁移；多 topology/backbone 下保持竞争力；关键组件 removal 都带来退化。</div>
+<div class="callout warn"><b>What Is Not Yet Proven：</b>没有证明 skill credit 是真实因果 attribution；没有长期几十/上百 cycle 的技能库漂移研究；没有安全/adversarial skill poisoning；optimizer 依赖 GPT-5.1；GAIA L3 说明能力上限仍明显。</div>
+
+<h3>5.16 Contribution</h3>
+<ul>
+<li><b>New Mechanism：</b>skill-conditioned multi-agent credit assignment。</li>
+<li><b>New Optimization Space：</b>从 monolithic prompt 转为 discrete skill library。</li>
+<li><b>New Continual Operators：</b>Refine / Induct / Consolidate / Prune。</li>
+<li><b>New Stability Protocol：</b>hierarchical aggregation + momentum + held-out rollback。</li>
+<li><b>New Empirical Finding：</b>skill library 可跨 task/topology/backbone transfer。</li>
+<li><b>Engineering：</b>公开 pip-installable library、Anthropic Agent Skills-compatible SKILL.md。</li>
+</ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors' limitation：</b>LLM-based optimizer/critic 有成本与噪声；技能形式和任务空间仍受 benchmark 约束。</p>
+<p><b>Additional limitation：</b>GPT-5.1 optimizer 使完全开源复现不纯；validation rollback 依赖 held-out set 的代表性，可能 overfit；skill consolidation 可能误合并功能相近但安全边界不同的技能；pruning 可能删除低频但关键 emergency skill；多 agent trace 变长后 credit 成本会快速增长；没有 multi-agent adversarial interaction 或 malicious skill tests。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>官方 repo 已提供 <code>maskills/core</code>、<code>trainer</code>、<code>experiments</code>、配置与 benchmark scripts。关键模块：SkillLibrary、skill trace、SkillCreditCritic、LLM_Agg、四类 operator、validation gate、topology-aware rollout。</p>
+<p>最小复现建议先做 HotpotQA：GPT-4o-mini actors + 2 agents（Retriever/Reasoner）+ 初始小 skill library。运行 Full、w/o credit、w/o rollback 三组，目标先复现 Full≈76.3 F1 与 rollback removal 明显下降。之后再做 LoCoMo multi-hop，检查 consolidation/pruning。</p>
+<p>最容易踩坑：不同 topology 的 rollout engine不能混评；GAIA repo明确区分 library engine 与 env engine；skills_dir 固定库与可演化 SkillLibrary 的语义不同；description 是路由 signal，写太泛会导致 skill 误调用。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline Potential ★★★★★</span>：Agent skill / continual agent work 的强新 baseline。</p>
+<p><span class="score">Migration Potential ★★★★★</span>：可迁到 Agent skill unlearning、memory operation unlearning、multi-agent policy repair。</p>
+<p><span class="score">Attack Potential ★★★★☆</span>：skill poisoning、credit manipulation、rollback bypass 很自然。</p>
+<p><span class="score">Evaluation Potential ★★★★★</span>：per-skill utility / validation gate 为“删 skill 但保团队能力”提供好框架。</p>
+<p><span class="score">Benchmark Potential ★★★★☆</span>：可构造 skill lifecycle / deletion benchmark。</p>
+<p><span class="score">New Paper Potential ★★★★★</span>：与 unlearning 的“selective forgetting + retain”结构天然同构。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Multi-Agent Skill Unlearning with Credit-Aware Deletion</h4>
+<p><b>Original Problem →</b>MASkills 持续优化/新增 skills。<br><b>Transferable Mechanism →</b>per-skill credit + prune + rollback。<br><b>New RQ →</b>删除一个危险/过期 skill 时，怎样判断它与哪些 team behavior entangled，并最小化 collateral damage？<br><b>Method Modification →</b>将 target skill 标为 forget；收集包含该 skill 的 trajectories；critic 估计它对 team reward 的正/负 credit；先 prune，再观察 residual trajectories是否通过其他 skills重构同能力；若 utility掉太多，则 refine neighboring skills补 retain behavior。<br><b>Minimum Experiment →</b>20 skills×3 agent topologies×3 deletion strategies×3 seeds；每个skill至少50 trajectories。<br><b>Model →</b>GPT-4o-mini actors或Qwen3-8B本地 actors；优化器可先用GPT-5.1或强开源模型。<br><b>Dataset →</b>HotpotQA、LoCoMo；人工定义5–10个 forbidden skills。<br><b>Baseline →</b>raw file delete、prompt deny-list、full prompt rewrite、random prune。<br><b>Metric →</b>Target Skill Invocation Rate、Capability Recovery ASR、Team Reward Retention、Neighbor Skill Damage、Rounds-to-Stability。<br><b>Expected Contribution →</b>把 Agent skill deletion 从文件操作提升为 team-level functional unlearning。<br><b>Risk →</b>skill capability 可由其他 skills组合重构。<br><b>Collision Risk →</b>低到中，与现有 skill deletion work相比强调 credit-aware residual capability。</p>
+
+<h4>方向 B — Adversarial Credit Poisoning against Continual Multi-Agent Learning</h4>
+<p><b>Original Problem →</b>MASkills信任 centralized critic 生成 skill credit。<br><b>Transferable Mechanism →</b>credit 决定 refine/induct/prune。<br><b>New RQ →</b>少量恶意/错误 trajectory feedback 能否让系统错误 prune 好 skill、induct 后门 skill，或通过 validation gate？<br><b>Method Modification →</b>在5/10/20% trajectories中注入错误 reward、伪失败原因或跨-agent blame shift；攻击目标是让特定 skill utility长期下降或恶意 skill被induct。<br><b>Minimum Experiment →</b>HotpotQA + GAIA，各100 training trajectories；4 corruption types×3 rates×3 defenses。<br><b>Baseline →</b>no defense、majority critic、multi-critic consensus、cryptographically bound trace。<br><b>Metric →</b>Poisoned Skill Adoption Rate、Benign Skill Prune Rate、Task Performance Drop、Rollback Catch Rate、Attack Persistence Cycles。<br><b>Expected Contribution →</b>系统研究 continual skill optimizer 的 feedback attack surface。<br><b>Risk →</b>需要设计现实 threat model。<br><b>Collision Risk →</b>低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>MASkills 也可以反向用于 unlearning verification：把“被删 target skill”当作一个不应再获得正 credit 的 artifact，持续在新 trajectories 中检查它是否通过其它 skill 组合被功能性重建。可以定义 <b>Functional Skill Residual (FSR)</b>：目标 skill 文件不存在后，原目标 capability 在团队轨迹中仍被成功执行的概率。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>TAS 是“主动找到最可疑 target”的搜索器，MASkills 是“把团队级反馈落到具体可编辑 skill”的执行器。二者合起来形成一个很自然的闭环：<b>active audit → identify risky target → local credit assignment → targeted update/prune → rollback-protected validation</b>。这比固定 forget set + 一次性 unlearning 更接近持续部署环境。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol>
+<li>MASkills 的优化变量不是模型参数，而是每个 Agent 的 skill library。</li>
+<li>Skill 是独立 SKILL.md，可单独调用、修改、合并和删除。</li>
+<li>team reward 通过 critic 归因到本轮实际 invoked skills。</li>
+<li>多 trajectory 的文字梯度先分层聚合，再做 momentum 平滑。</li>
+<li>Refine 是局部改，Induct 是新建，Consolidate 合并，Prune 删除。</li>
+<li>任何 candidate edit 都必须经过 held-out validation gate。</li>
+<li>HotpotQA F1=76.3，LoCoMo-MH F1=17.22，GAIA Avg=23.3。</li>
+<li>去掉 rollback 后性能暴跌，是整篇最强机制证据。</li>
+<li>GAIA L3 仍为0，说明 skill optimization 不能替代底层模型能力。</li>
+<li>最值得迁移的是 credit-aware Agent skill unlearning 和 functional residual verification。</li>
+</ol>
+</section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2>
+<p>今天两篇共同揭示一个非常值得注意的趋势：<b>研究对象正在从“整体模型/整体 Agent”下沉到“可定位的 target 与可编辑的局部 artifact”。</b></p>
+<div class="tablewrap"><table>
+<tr><th>维度</th><th>TAS</th><th>MASkills</th><th>统一启发</th></tr>
+<tr><td>先定位什么</td><td>unknown forget entity/prompt</td><td>具体 invoked skill</td><td>先做 target attribution</td></tr>
+<tr><td>如何分配资源</td><td>active query budget</td><td>credit-driven edit budget</td><td>资源应集中到高风险局部</td></tr>
+<tr><td>如何避免误判</td><td>confirmation</td><td>validation rollback</td><td>自适应系统必须有二次校验</td></tr>
+<tr><td>最终对象</td><td>forget target surface</td><td>persistent skill artifact</td><td>局部可寻址状态</td></tr>
+</table></div>
+<p><b>机制可组合：</b>Thompson active search + per-skill credit assignment；confirmation + rollback；target discovery + local update。</p>
+<p><b>实验范式值得借用：</b>TAS 的 normalized query cost / First Hit，以及 MASkills 的 module-removal ablation / cross-topology generalization。</p>
+<p><b>最可能形成新论文的 gap：</b>Unknown-target Agent/VLM unlearning；以及“active verifier 自动发现 residual → local artifact unlearning”的闭环。</p>
+<p><b>最适合作 baseline：</b>TAS（黑盒 unlearning target discovery）；MASkills（continual multi-agent skill learning）。</p>
+<p><b>最适合产生 attack：</b>TAS。</p>
+<p><b>最适合产生 benchmark/metric：</b>TAS 的 Target Concealment/DQC + MASkills 的 Functional Skill Residual。</p>
+</section>
+
+<section id="opp" class="card"><h2>Combined Research Opportunities</h2>
+<h3>Best Migration Direction — Active Residual Discovery → Credit-Aware Targeted Unlearning</h3>
+<div class="flow">Large candidate space
+→ TAS-style black-box active verifier
+→ rank unknown risky targets by posterior
+→ select top target
+→ map target to module / skill / memory carrier
+→ collect trajectories / probes
+→ assign local credit / residual attribution
+→ targeted refine / prune / unlearn
+→ held-out rollback gate
+→ re-run active verifier
+→ stop when:
+   discovery confidence drops
+   AND recovery ASR < threshold
+   AND retain utility remains above threshold</div>
+<p>这个方向把 black-box residual / difficulty predictor 线与 Agent skill-level selective update 合起来。它比“一次给定 forget set 的 unlearning”更接近现实：系统可能只知道“有某类敏感 target 需要被发现和处理”，而不是提前拿到完美 forget list。</p>
+</section>
+
+<section id="collision" class="card"><h2>Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>TAS 与黑盒 recovery / residual-auditor 主线明显邻近，但它主要占据的是 <b>unknown target discovery through refusal trace</b>，不是 representation residual prediction。新的工作不能只做“用更多模板猜 forget entity”；应转向 multimodal unknown-target、target hardness prediction、或 target discovery→recovery 的两阶段统一攻击。</p>
+<p>MASkills 与 EvoSkill/MemSkill/TextGrad/LangMARL 有较多组件重叠，但 per-skill CTDE credit + typed lifecycle + validation rollback 的组合有清晰系统差异。</p>
+</section>
+
+<section id="priority" class="card"><h2>Reading / Reproduction Priority</h2>
+<p><b>TAS：</b>先读 Figure1；Sec.3.1–3.6；Table1/2理解搜索空间；Table3主结果；Table5 early stopping；Table6 canonical ablation；Table7 multi-entity failure；Appendix A.3 confirmation rationale。最小复现先做 TOFU+Llama3+NPO。</p>
+<p><b>MASkills：</b>先读 Eq.(3) skill-space objective；Eq.(5) skill credit；Eq.(7) aggregation；Eq.(9–11) refine/induct/consolidate；Eq.(13–14) validation rollback；Table1主结果；Table2 ablation；Table3 topology；官方 repo 的 Skill Format 与 trainer entry points。</p>
+</section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2609.03662">TAS — arXiv</a></li>
+<li><a href="https://arxiv.org/html/2609.03662">TAS — Full HTML</a></li>
+<li><a href="https://arxiv.org/pdf/2609.03662">TAS — PDF</a></li>
+<li><a href="https://arxiv.org/abs/2609.02094">MASkills — arXiv</a></li>
+<li><a href="https://arxiv.org/html/2609.02094">MASkills — Full HTML</a></li>
+<li><a href="https://arxiv.org/pdf/2609.02094">MASkills — PDF</a></li>
+<li><a href="https://github.com/DaRL-GenAI/MASkills">MASkills — Official GitHub</a></li>
+</ul>
+<p class="small">重新生成于 2026-09-05 20:05 +08:00。完整精读保持 UTF-8、自包含、内联 CSS、可点击论文/代码链接、横向滚动表格和公式区域。</p>
+</section>
+</main></body></html>

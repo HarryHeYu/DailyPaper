@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-09-05</title><style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.8;background:#f5f7fb;color:#182132;margin:0}
+main{max-width:1220px;margin:auto;padding:28px 24px 80px}h1{font-size:36px}h2{border-bottom:1px solid #ddd;padding-bottom:8px;margin-top:36px}
+.card,details{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:20px 24px;margin:15px 0}details.s{background:#fff7df}details.a{background:#eef5ff}details.b{background:#f2f9f2}
+summary{font-weight:800;font-size:19px;cursor:pointer}a{color:#3157d5;text-decoration:none}nav{columns:2;background:#fff;padding:16px 20px;border-radius:14px}
+nav a{display:block}.flow,.eq{white-space:pre-wrap;font-family:ui-monospace,monospace;padding:12px;border-radius:8px}.flow{background:#111827;color:#fff}.eq{background:#f1f3f6}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #ddd;padding:8px;vertical-align:top}th{background:#f3f5f9}
+.warn{border-left:5px solid #d58a15;background:#fff0df}.idea{border-left:5px solid #3157d5}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.kpi{font-size:28px;font-weight:800}
+</style></head>
+<body><main>
+<header class="card"><h1>Daily AI Research Radar — 2026-09-05</h1>
+<p>Candidate Pool <b>40</b>；Formal Papers <b>10</b>；Tier S/A/B=<b>3/4/3</b>。严格执行近7天 Tier-S cooling。</p></header>
+
+<nav>
+<a href="#exec">Executive Summary</a><a href="#important">Today's Most Important</a><a href="#top3">Top 3</a><a href="#top5">Top 5</a>
+<a href="#s">Tier S</a><a href="#a">Tier A</a><a href="#b">Tier B</a><a href="#ideas">Idea Mining</a>
+<a href="#collision">Collision</a><a href="#priority">Reading Priority</a><a href="#watch">Watchlist</a><a href="#stats">Stats</a><a href="#sources">Sources</a>
+</nav>
+
+<section id="exec" class="card"><h2>Executive Summary</h2>
+<p>今天最强信号是“删除发生在哪一层”：SafeRI 提供 token-level selective intervention；Repo-To-Skill 把 procedural knowledge 外化成 source-provenanced skill graph；Aborted but Not Forgotten 证明逻辑 rollback 不等于 KV runtime state 被删。三者共同指向 parameter/representation、external skill/memory、runtime inference state 三层 deletion closure。</p>
+</section>
+
+<section id="important" class="card"><h2>Today's Most Important Paper</h2>
+<h3>Aborted but Not Forgotten: KV-Cache Retention Breaks Rollback Consistency in Language Agents</h3>
+<p>最值得看 Figure 1、Table 1 same-token/different-cache、LangGraph reproduction、Table 2 defenses、Table 5 causal control。它直接打开 Rollback-Consistent Agent Unlearning。</p></section>
+
+<section id="top3" class="card"><h2>Top 3 必读</h2><ol>
+<li>Aborted but Not Forgotten — same-token/different-state causal audit。</li>
+<li>Repo-To-Skill — source→verified skill graph→router→execution provenance。</li>
+<li>SafeRI — token-level recognizer→gated adapter。</li>
+</ol></section>
+
+<section id="top5" class="card"><h2>Top 5 Most Important Papers</h2><ol>
+<li>Aborted but Not Forgotten</li><li>Repo-To-Skill</li><li>SafeRI</li><li>CoBRA</li><li>Explore Before Committing</li>
+</ol></section>
+
+<section id="s"><h2>Tier S</h2>
+
+<details open class="s"><summary>1. SafeRI</summary>
+<p><b>人话版：</b>SafeRI 让 safety LoRA 只在 token-level recognizer 判断当前 hidden state 即将进入危险区域时才开启，避免 always-on alignment tax。Qwen3.5-9B Safety Avg 86.56→88.88，General Avg 67.85→67.64。</p>
+<h3>Method</h3><div class="flow">prompt→pre-token hidden state→risk classifier
+→ risk&lt;τ: frozen decoding
+→ risk≥τ: LoRA开启K步
+→ safe transition→风险降低后关闭</div>
+<h3>Results</h3><ul><li>τ=0.8、K=8 最均衡。</li><li>K=4 utility明显掉；K=12 safety反而下降。</li><li>middle/last-five layers 比 first-five 更适合纠偏。</li><li>throughput 比 Always-on 高50.8%。</li></ul>
+<h3>Migration</h3><p>把 risk boundary 改成 target-leak boundary，构造 selective inference-time multimodal unlearning；必须加入 Worst-View ASR 与 adaptive recovery，防止被归为 steering。</p>
+</details>
+
+<details open class="s"><summary>2. Repo-To-Skill</summary>
+<p><b>人话版：</b>把 GitHub repo 中 operational knowledge 蒸馏成 verified skill graph。AREX-Skill 有5000+ skills、1000 repos。相同 GPT-5.5 Codex/harness/budget，仅加 skills 后 MLE-bench Any Medal 31.11→72.89。</p>
+<h3>Method</h3><div class="flow">source→evidence→candidate skill graph→verification→accepted graph
+→area/family/repo router→progressive disclosure→execution</div>
+<h3>Results</h3><ul><li>MLE 31.11→72.89。</li><li>PaperBench 29.45→39.59，18/20 tasks 提升。</li><li>FrontierCS 70.63→77.14，但 steps/tool calls/tokens 都明显增加。</li><li>存在2个明确负迁移任务。</li></ul>
+<h3>Migration</h3><p>做 Provenance-Complete Skill Unlearning：Source→Skill→Task-derived-skill lineage，删除后执行 alternate-route retrieval 与 re-distillation attack。</p>
+</details>
+
+<details open class="s"><summary>3. Aborted but Not Forgotten</summary>
+<p><b>人话版：</b>Agent 应用层回滚了 tentative branch，但 serving layer 仍可能保留 branch 的 KV cache。后续 tokens 完全一样时，stale KV 单独即可改变工具动作。63个same-token/different-cache cells中25个翻转；fresh cache后63/63关闭。LangGraph逻辑rollback也复现25/45。</p>
+<h3>Method</h3><div class="flow">committed transcript→tentative branch→logical rollback
+→ stale KV remains
+→ identical next-step tokens
+→ compare stale vs rebuilt-cache behavior</div>
+<h3>Results</h3><ul><li>stale KV 25/63 behavior flips。</li><li>LangGraph rollback 25/45；KV rebind 后0/45。</li><li>prompt guard 仍有14/45。</li><li>transaction-local rebuild 0/63。</li><li>neutral-stale control 25/25→0/25，排除长度/位置混淆。</li></ul>
+<h3>Migration</h3><p>定义 Unlearning State Consistency：transcript、external memory、KV、tool handles、shared state 均应等价于从 clean logical history 冷构建的 reference。</p>
+</details>
+</section>
+
+<section id="a"><h2>Tier A</h2>
+<details class="a"><summary>4. CoBRA</summary><p>用 internal/external paired rollouts 学 tool-use counterfactual margin。OOD jEM 0.4512→0.5416，tool calls 1.034→0.997。可迁 Tool-level Unlearning，测试 revoked-state 仍否被 router 选中。Worth Deep Reading: YES。</p></details>
+<details class="a"><summary>5. RISA</summary><p>先检查初始 response，再选择 enforce refusal 或 guided regeneration；rules + hidden-state probe。HarmBench action-selection accuracy约0.96–0.98，GSM8K 0 interventions。可作 inference-time unlearning baseline，但本质仍接近 refusal calibration。Worth Deep Reading: YES。</p></details>
+<details class="a"><summary>6. Explore Before Committing</summary><p>Deep Research Agent 在多个合理路径时先 branch hypotheses 再 commit。多benchmark有明显提升且 tool-call cost 低于 majority voting。可迁为 adaptive reacquisition attack。Worth Deep Reading: YES。</p></details>
+<details class="a"><summary>7. In-Context Neurofeedback</summary><p>固定 surface output，仅给 numeric feedback，测试模型能否控制 hidden feature。120 settings中45个显著，effect多较小。可迁成 adaptive anti-audit benchmark。Worth Deep Reading: YES。</p></details>
+</section>
+
+<section id="b"><h2>Tier B</h2>
+<details class="b"><summary>8. Hints Help But Do They Teach?</summary><p>区分“hint让当前题做对”和“skill真正迁移到相关新题”。对 Skill Unlearning 可区分一次性恢复与真正 procedural relearning。Potential Use: Evaluation。</p></details>
+<details class="b"><summary>9. A Survey on Self-Improving Test-Time Intelligence</summary><p>整理 prompt/memory/retrieval/tool/activation/test-time update 等自我改进通道，可直接作为 Reacquisition Channel Matrix。Potential Use: Threat Model / Related Work。</p></details>
+<details class="b"><summary>10. ContinualSkillBench</summary><p>顺序执行会提高表现，但 in-context adaptation 平均可与 explicit skill maintenance 相当。对 Skill Unlearning 应区分 artifact skill、context adaptation 与 latent/parametric skill。Potential Use: Benchmark / Evaluation。</p></details>
+</section>
+
+<section id="ideas"><h2>Idea Mining</h2>
+<div class="card idea"><h3>Idea 1 — Rollback-Consistent Agent Unlearning（Best Research Idea）</h3><p>统一审计 transcript、external memory、KV cache、tool handles、shared state。MVE：LangGraph+Qwen，30 targets，user/tool/retrieval 三 vehicles。Metric：State Violation、Residual ASR、Closure Rate、Retain Cost、Latency。Novelty★★★★★ Feasibility★★★★★ Compute★★☆☆☆ Collision低。</p></div>
+<div class="card idea"><h3>Idea 2 — Provenance-Complete Skill Unlearning with Re-Distillation Attack</h3><p>Source→Evidence→Skill→Router→Task-Derived-Skill lineage；删除后做 alternate-route retrieval 与 re-distillation recovery。</p></div>
+<div class="card idea"><h3>Idea 3 — Token-Level Selective Inference-Time Multimodal Unlearning</h3><p>仅在 leakage boundary 开启 forget LoRA；核心指标 Worst-View ASR、Gate P/R、Retain FPR、Recovery ASR。</p></div>
+<div class="card idea"><h3>Idea 4 — Adaptive Reacquisition Search Benchmark</h3><p>允许 Agent 在预算内探索 memory neighbors、tool search、skill library、repo evidence、cross-agent query 等多条恢复路径。</p></div>
+</section>
+
+<section id="collision" class="card warn"><h2>Collision Detection</h2>
+<p>⚠️ Inference-time Unlearning：SafeRI/RISA/REINS/SRT/Reference-Grafting 已让 recognize-then-steer 非常拥挤；必须用 privacy threat model 与 adaptive recovery 证明不是 refusal steering。</p>
+<p>⚠️ Skill Unlearning：安全 gap 应放在 source provenance closure + re-distillation attack，而不是“删一个 SKILL.md”。</p>
+<p>⚠️ Agent Memory/State：当前清晰 gap 是 cross-layer deletion state consistency。</p>
+</section>
+
+<section id="priority" class="card"><h2>Reading Priority</h2>
+<table><tr><th>Priority</th><th>Paper</th><th>重点</th></tr>
+<tr><td>READ NOW</td><td>Aborted but Not Forgotten</td><td>Table1/2/5；LangGraph；local restore</td></tr>
+<tr><td>READ NOW</td><td>Repo-To-Skill</td><td>§3；Figure3；Table1/2/3</td></tr>
+<tr><td>READ NOW</td><td>SafeRI</td><td>Stage1/2 losses；Figure3/4；Table3/4</td></tr>
+<tr><td>READ THIS WEEK</td><td>CoBRA / RISA / HypoSearch / Neurofeedback</td><td>counterfactual routing、selective action、adaptive search、internal control</td></tr>
+<tr><td>SAVE</td><td>Hints / Survey / ContinualSkillBench</td><td>skill transfer、reacquisition taxonomy</td></tr>
+</table></section>
+
+<section id="watch" class="card"><h2>Candidate Watchlist</h2>
+<table><tr><th>#</th><th>Title</th><th>Category</th><th>Status</th></tr><tr><td>1</td><td><a href='https://arxiv.org/html/2609.03544v1'>SafeRI: Recognition and Intervention for Token-Level Safety Intervention in Large Vision Language Models</a></td><td>VLM / Token-level Intervention</td><td>NEW</td></tr><tr><td>2</td><td><a href='https://arxiv.org/html/2609.02749v1'>Repo-To-Skill: Distilling GitHub Repositories Into AI4AI Skills</a></td><td>Agent Skill / Operational Knowledge</td><td>NEW</td></tr><tr><td>3</td><td><a href='https://arxiv.org/html/2609.00967v1'>CoBRA: Learning Tool-Use Boundaries via Counterfactual Margins</a></td><td>Tool Agent / RL / Counterfactual Routing</td><td>NEW</td></tr><tr><td>4</td><td><a href='https://arxiv.org/html/2609.00790v1'>RISA: Response Inspection and Selective Actions for Refusal Calibration in Large Language Models</a></td><td>Inference-time / Hidden-state Probe</td><td>NEW</td></tr><tr><td>5</td><td><a href='https://arxiv.org/abs/2609.01294'>Explore Before Committing: Hypothesis-Guided Search for Deep Research Agents</a></td><td>Deep Research Agent / Search</td><td>NEW</td></tr><tr><td>6</td><td><a href='https://arxiv.org/abs/2609.01106'>Hints Help But Do They Teach? Evaluating Skills Transfer in Code Generation</a></td><td>Skill Transfer / Code</td><td>NEW</td></tr><tr><td>7</td><td><a href='https://arxiv.org/html/2609.01679v1'>A Survey on Self-Improving Test-Time Intelligence</a></td><td>Test-time Learning / Survey</td><td>NEW</td></tr><tr><td>8</td><td><a href='https://arxiv.org/html/2607.11895v2'>AgentSociety 2: An Integrated Research Environment for Executable Social Science</a></td><td>Multi-Agent Environment</td><td>UPDATED</td></tr><tr><td>9</td><td><a href='https://arxiv.org/html/2609.00904v1'>In-Context Neurofeedback: Can LLMs Control Their Internal Representations through Privileged Access?</a></td><td>Representation Control</td><td>NEW</td></tr><tr><td>10</td><td><a href='https://arxiv.org/html/2609.00823v1'>Polished but Unresolved: Identifying Late-Stage Pressure States in Long-Horizon Tool-Use Agents</a></td><td>Agent / Hidden-State Probe</td><td>COOLING</td></tr><tr><td>11</td><td><a href='https://arxiv.org/html/2609.02082v1'>Transfer Safety Awareness for Cross-Modal Safety Drift in Multimodal Large Language Models</a></td><td>MLLM / Representation Transfer</td><td>COOLING</td></tr><tr><td>12</td><td><a href='https://arxiv.org/abs/2609.02285'>Entangled Representations Amplify Collateral Damage in Unlearning</a></td><td>Machine Unlearning / Entanglement</td><td>COOLING</td></tr><tr><td>13</td><td><a href='https://arxiv.org/abs/2609.02018'>Source-Free Class Relearning: Diagnosing Forgetting in Class Unlearning</a></td><td>Unlearning / Recovery Audit</td><td>COOLING</td></tr><tr><td>14</td><td><a href='https://arxiv.org/abs/2609.00551'>EM2Mem: Event-Centric Multimodal Memory for Large Language Models</a></td><td>Multimodal Agent Memory</td><td>COOLING</td></tr><tr><td>15</td><td><a href='https://arxiv.org/abs/2609.01235'>MutMem V2: Cryptographically Authorized Mutation in Persistent Agent Memory</a></td><td>Persistent Memory / Authorization</td><td>COOLING</td></tr><tr><td>16</td><td><a href='https://arxiv.org/abs/2609.01481'>Harness-of-Harness: Multi-Day Autonomous Software Development with Continual Improvement</a></td><td>Continual Agent Improvement</td><td>COOLING</td></tr><tr><td>17</td><td><a href='https://arxiv.org/abs/2609.01352'>CHARM: Character Hallucination for Multicultural Role Play Benchmark</a></td><td>Knowledge Boundary / Compliance</td><td>COOLING</td></tr><tr><td>18</td><td><a href='https://arxiv.org/abs/2609.00621'>Control-Data Flow Separation: Stable Prompt Optimization in Multi-Agent LLMs</a></td><td>Multi-Agent / Control Flow</td><td>COOLING</td></tr><tr><td>19</td><td><a href='https://arxiv.org/abs/2609.00546'>Runtime-Independent Persistent Agents</a></td><td>Persistent Agent / Runtime Migration</td><td>COOLING</td></tr><tr><td>20</td><td><a href='https://arxiv.org/html/2608.15939'>Aborted but Not Forgotten: KV-Cache Retention Breaks Rollback Consistency in Language Agents</a></td><td>Agent State / KV-cache / Rollback</td><td>BACKFILL</td></tr><tr><td>21</td><td><a href='https://arxiv.org/abs/2608.29606'>Agent Zero Memory: Provenance-Aware Long-Term Memory for LLM Agents</a></td><td>Agent Memory / Provenance</td><td>BACKFILL</td></tr><tr><td>22</td><td><a href='https://arxiv.org/abs/2608.29605'>Hindsight Memory-PRM: Supervising Memory Management with Auditable Hindsight Credit</a></td><td>Agent Memory / Causal Credit</td><td>COOLING</td></tr><tr><td>23</td><td><a href='https://arxiv.org/abs/2609.00237'>Learning What to Retain: Gated-Memory Routing for Efficient Collaboration in Multi-Agent LLM Systems</a></td><td>Multi-Agent / Gated Memory</td><td>COOLING</td></tr><tr><td>24</td><td><a href='https://arxiv.org/abs/2609.00643'>REVISE: Validity-Guided Recovery for Online Revisions in Agent Workflows</a></td><td>Agent Workflow / Provenance</td><td>COOLING</td></tr><tr><td>25</td><td><a href='https://arxiv.org/abs/2609.00595'>SoK: When Safe Agents Fail Together</a></td><td>Multi-Agent Security / Path Closure</td><td>COOLING</td></tr><tr><td>26</td><td><a href='https://arxiv.org/abs/2609.00267'>Delegation Without Trust</a></td><td>Multi-Agent / Authorization</td><td>COOLING</td></tr><tr><td>27</td><td><a href='https://arxiv.org/abs/2609.01360'>EDGE: Error Dependency Graph-Guided Multi-Error Attribution in Multi-Agent LLM Systems</a></td><td>Multi-Agent / Causal Attribution</td><td>BACKFILL</td></tr><tr><td>28</td><td><a href='https://arxiv.org/abs/2608.20960'>Can Scientific Claims Be Removed from Large Language Models?</a></td><td>LLM Unlearning / Cross-view</td><td>COOLING</td></tr><tr><td>29</td><td><a href='https://arxiv.org/abs/2608.22527'>Stress Testing Unlearning Algorithms</a></td><td>Unlearning / Robustness</td><td>COOLING</td></tr><tr><td>30</td><td><a href='https://arxiv.org/abs/2608.29458'>Reference-Grafting Matches Fine-Tuning at Eliciting Sandbagged Capabilities</a></td><td>Representation Recovery</td><td>COOLING</td></tr><tr><td>31</td><td><a href='https://arxiv.org/abs/2608.29459'>Toward Latent Language Model Skills Steering and Optimization</a></td><td>Latent Skill / Activation</td><td>COOLING</td></tr><tr><td>32</td><td><a href='https://arxiv.org/abs/2608.26263'>SKILL.state: Scalable Long-Horizon Agent Skills</a></td><td>Agent Skill / State</td><td>COOLING</td></tr><tr><td>33</td><td><a href='https://arxiv.org/abs/2608.03874'>ContinualSkillBench: Can LLM Agents Truly Evolve Their Capabilities?</a></td><td>Continual Agent Skill / Benchmark</td><td>BACKFILL</td></tr><tr><td>34</td><td><a href='https://arxiv.org/abs/2502.12110'>A-MEM: Agentic Memory for LLM Agents</a></td><td>Agent Memory / Dynamic Organization</td><td>BACKFILL</td></tr><tr><td>35</td><td><a href='https://arxiv.org/abs/2601.01885'>Agentic Memory: Learning Unified Long-Term and Short-Term Memory Management for LLM Agents</a></td><td>Agent Memory / RL</td><td>BACKFILL</td></tr><tr><td>36</td><td><a href='https://arxiv.org/html/2607.23955v1'>EviBack: Search-Agent Reinforcement Learning via Evidence-Constrained Teacher Backoff</a></td><td>Agent RL / Credit Assignment</td><td>BACKFILL</td></tr><tr><td>37</td><td><a href='https://arxiv.org/html/2604.00835v1'>Agentic Tool Use in Large Language Models</a></td><td>Tool Agent / Survey</td><td>BACKFILL</td></tr><tr><td>38</td><td><a href='https://arxiv.org/abs/2604.08224'>Externalization in LLM Agents: Memory, Skills, Protocols and Harness Engineering</a></td><td>Agent Externalization / Survey</td><td>BACKFILL</td></tr><tr><td>39</td><td><a href='https://arxiv.org/html/2605.07358v1'>A Comprehensive Survey on Agent Skills: Taxonomy, Techniques, and Applications</a></td><td>Agent Skill / Survey</td><td>BACKFILL</td></tr><tr><td>40</td><td><a href='https://arxiv.org/abs/2608.04548'>A Model Merging Approach for Continual MLLM Unlearning</a></td><td>Continual MLLM Unlearning</td><td>BACKFILL</td></tr></table>
+</section>
+
+<section id="stats"><h2>今日统计</h2>
+<div class="grid">
+<div class="card"><div class="kpi">40</div>Candidate Pool</div>
+<div class="card"><div class="kpi">10</div>Formal Papers</div>
+<div class="card"><div class="kpi">3/4/3</div>Tier S/A/B</div>
+<div class="card"><div class="kpi">11</div>BACKFILL</div>
+<div class="card"><div class="kpi">30</div>Watchlist / Related / Cooling</div>
+<div class="card"><div class="kpi">20</div>Cooling exclusions</div>
+</div></section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/html/2609.03544v1">SafeRI</a></li>
+<li><a href="https://arxiv.org/html/2609.02749v1">Repo-To-Skill</a></li>
+<li><a href="https://arxiv.org/html/2608.15939">Aborted but Not Forgotten</a></li>
+<li><a href="https://arxiv.org/html/2609.00967v1">CoBRA</a></li>
+<li><a href="https://arxiv.org/html/2609.00790v1">RISA</a></li>
+<li><a href="https://arxiv.org/abs/2609.01294">Explore Before Committing</a></li>
+<li><a href="https://arxiv.org/html/2609.00904v1">In-Context Neurofeedback</a></li>
+</ul></section>
+
+</main></body></html>
