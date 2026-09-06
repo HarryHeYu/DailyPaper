@@ -1,0 +1,331 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Top Papers Deep Dive — 2026-09-06</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#e1e6ef;--blue:#3158cf;--soft:#eef3ff;--green:#edf8f1;--yellow:#fff4d6;--red:#fff0f0;--dark:#111827}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1200px;margin:auto;padding:28px 22px 80px}.hero,.card,.paper{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 30px;margin:18px 0;box-shadow:0 4px 18px rgba(20,30,50,.045)}
+.hero{background:linear-gradient(135deg,#18224d,#3158cf);color:#fff;border:0}.hero h1{margin:0 0 10px;font-size:38px}.hero p{color:#edf1ff}
+h2{font-size:28px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:21px;color:#28439d;margin-top:28px}h4{font-size:17px;margin-top:22px}
+nav{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px 20px;columns:2}nav a{display:block;padding:4px 0;color:var(--blue);text-decoration:none}
+a{color:var(--blue);text-decoration:none}.badge{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--soft);color:#3048a5;font-size:12px;font-weight:700;margin-right:5px}
+.kv{display:grid;grid-template-columns:200px 1fr;gap:5px 14px}.kv>div:nth-child(odd){font-weight:760}
+.flow,.formula{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--dark);color:#f7f8ff;border-radius:12px;padding:16px 18px;white-space:pre-wrap;overflow:auto}
+.callout{border-left:5px solid var(--blue);background:var(--soft);border-radius:10px;padding:14px 17px}.good{border-left-color:#338754;background:var(--green)}.warn{border-left-color:#c98a12;background:var(--yellow)}.bad{border-left-color:#c84545;background:var(--red)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:900px}th,td{border-bottom:1px solid var(--line);padding:10px 11px;text-align:left;vertical-align:top}th{background:#f2f4f8}
+.score{font-weight:760;color:#2748bd}.small{font-size:13px;color:var(--muted)}ul,ol{padding-left:23px}li{margin:5px 0}
+@media(max-width:760px){main{padding:18px 12px}.hero,.card,.paper{padding:20px}.hero h1{font-size:30px}nav{columns:1}.kv{grid-template-columns:1fr}}
+</style></head><body><main>
+<!-- regenerated: 2026-09-06 10:37 +08:00 -->
+<section class="hero"><h1>Daily Top Papers Deep Dive — 2026-09-06</h1>
+<p><b>Forget-Set Alignment × Distributed Agent Plan Lineage</b></p>
+<p>今天只保留 2 篇：CONFS 追问“forget set 是否等于模型真正记住的知识”；PlanFence 追问“Agent 即使看到最新状态，旧 plan 是否仍可能继续驱动执行”。</p></section>
+
+<nav><a href="#selection">1. Today's Deep Dive Selection</a><a href="#why">2. 为什么选这 2 篇</a><a href="#p1">3. Paper 1 — CONFS</a><a href="#p2">4. Paper 2 — PlanFence</a><a href="#syn">5. Cross-Paper Synthesis</a><a href="#opp">6. Combined Research Opportunities</a><a href="#collision">7. Collision / Overlap</a><a href="#priority">8. Reading / Reproduction Priority</a><a href="#sources">9. Sources / Links</a></nav>
+
+<section id="selection" class="card"><h2>Today's Deep Dive Selection</h2>
+<p><span class="badge">Machine Unlearning</span><span class="badge">EMNLP 2026 Main</span><b>#1 Confess What You Know: Forget-Set Misalignment with Model Knowledge in LLM Unlearning</b></p>
+<p><span class="badge">Agent / Multi-Agent</span><span class="badge">Memory / Provenance</span><b>#2 Fresh Memory, Stale Plans: Dependency-Scoped Validation for Distributed LLM-Agent Memory</b></p></section>
+
+<section id="why" class="card"><h2>为什么选这 2 篇</h2>
+<p>过去 7 天已经覆盖 UDS、SkillGuard、MutMem V2、Context Privilege Escalation、PURGE、Harness-of-Harness、TAS、MASkills，因此今天避开重复。CONFS 把 unlearning 的问题前移到“删什么是否定义正确”；PlanFence 则把 Agent memory 的问题推进到“更新后 derived plan 是否仍有效”。两篇共同指向 dependency alignment：可靠更新不只要改状态，还要对齐真实依赖边界。</p></section>
+
+<section id="p1" class="paper"><h2>Paper 1 Full Deep Dive — Confess What You Know</h2>
+<h3>5.1 基本信息</h3>
+<div class="kv"><div>Title</div><div>Confess What You Know: Forget-Set Misalignment with Model Knowledge in LLM Unlearning</div><div>Authors</div><div>Miso Kim, Georu Lee, Seungwon Jeong, Woojin Lee</div><div>Affiliation</div><div>Dongguk University-Seoul</div><div>Date</div><div>2026-09-01（arXiv v1）</div><div>Venue / Status</div><div>EMNLP 2026 Main Conference</div><div>Paper</div><div><a href="https://arxiv.org/abs/2609.00605">arXiv</a> · <a href="https://arxiv.org/html/2609.00605">HTML</a> · <a href="https://arxiv.org/pdf/2609.00605">PDF</a></div><div>Project / Code</div><div>论文声明将发布 CONFS code，但正文中未验证到官方 GitHub URL，因此不猜测。</div></div>
+
+<h3>5.2 一句话定位</h3><p>这篇论文指出 unlearning 的根本问题之一不是 loss，而是 forget set 与模型真实 memorized knowledge 不一致；CONFS 在不访问训练数据的前提下，从模型自身输出构造更对齐的 forget set。</p>
+
+<h3>5.3 人话版</h3><p>绝大多数 unlearning 工作默认用户能够精确给出模型需要忘掉的知识，然后研究 GA、GD、NPO、RT 等 objective。但现实中用户通常不知道模型究竟记住了哪些细节。作者把这种错位分成两类：Under Unlearning——模型真正记住的知识有一部分没被请求覆盖，留下 privacy leakage；Out-of-Knowledge Unlearning——请求包含模型从未学过的事实，优化器仍强行压低这些答案，从而造成一般能力损伤。作者先用受控 TOFU 与 gradient inner product 说明两类 failure 的机制，再提出 CONFS：只给模型目标实体名，让它“confess”自己知道的事实；把自然语言 claim 拆成 Subject-Relation-Object triplets；递归 reconfession 补充属性级细节；生成 atomic competency questions；最后通过多次目标模型采样 + DeBERTa-v3-large NLI 过滤 hallucinated/unreliable facts。TOFU、CLEAR、RWKU 上，CONFS 在完全 data-blind 的条件下比 FreeRecall-QA 和 RWKU-style 更接近 Gold-standard，并更好保护 retain utility。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>TOFU、CLEAR、MLLMU 等 benchmark 为可控评测，通常先注入 synthetic persona，再把同一批注入知识作为 forget set，因此“模型知道什么”与“用户要求删什么”天然一致。现实 privacy request 并没有这种 oracle。用户可能要求删除教育经历、职业与家庭信息，但模型也许只记得前两者，并额外记得一个用户自己没写出的奖项。</p>
+<p>直接使用用户 request 会同时造成漏删与错删：漏掉的奖项继续可恢复；模型没记住的家庭事实却会被 unlearning objective 强行压低。本文真正填的 gap 是：在训练数据不可见时，先近似恢复 model knowledge boundary，再执行 unlearning。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>第一，Under Unlearning 不会自动按“实体”泛化：显式 requested facts 会先下降，同一实体未请求事实仍保持很高概率。第二，对模型从未学过的 facts 做 unlearning，其梯度与 retain gradient 的 overlap 更高，因此 utility damage 更大。第三，一次 free recall 不足以覆盖模型知识，还必须将 claims 原子化、递归 probing，并过滤模型自身无法稳定支持的 facts。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Target entity E
+→ Confession using only entity name
+→ raw claims
+→ SRO triplet extraction
+→ subtriplet decomposition
+→ reconfession decision
+→ selective attribute probing
+→ atomic leaf knowledge units
+→ competency question generation
+→ target-model sampling N=5
+→ DeBERTa-v3-large contradiction filtering, τ=0.7
+→ model-aligned forget set F_CONFS
+→ GA / GD / NPO / RT
+→ Forget + Retain + Real-world + MIA evaluation</div>
+<p><b>Confession：</b>只输入实体名，避免把外部新知识注入 forget set。</p>
+<p><b>SRO：</b>长 claim 可能混有多条事实，因此先拆成可独立验证/删除的原子事实。</p>
+<p><b>Reconfession：</b>已有 leaf 作为 cue，继续询问更细属性，主要减少 Under Unlearning。</p>
+<p><b>Competency Questions：</b>每个 leaf 变成一个或多个直接 QA，答案只来自 leaf，不允许引入额外事实。</p>
+<p><b>Hallucination Verification：</b>目标模型对 CQ 随机采样 5 次，NLI contradiction 过高则丢弃，主要减少 Out-of-Knowledge。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">L(q,a;θ) = -Σ_t log p_θ(a_t | q,a_<t)
+
+θ' = θ + η ∇_θ L_F(θ) = θ + η g_F
+
+ΔL_F(D) ≈ η ⟨g_D, g_F⟩
+
+If F = D_(L+) ∪ D_(N+):
+g_F = g_(L+) + g_(N+)
+
+Retain damage ≈ η[⟨g_retain,g_(L+)⟩ + ⟨g_retain,g_(N+)⟩]</div>
+<p>真正 memorized target 的 g_(L+) 更像定向删除；never-seen target 的 g_(N+) 没有对应的已学知识盆地，因此实测更容易与 retain gradient 重叠。也就是说，错把“模型不知道的内容”放进 forget set，会让优化器为了压低一个本就不稳定的答案而做更广泛参数更新。</p>
+<p><b>关键超参：</b>τ=0.7 与 reconfession depth。τ 太宽会引入 hallucination；太严会漏低置信但真实 memorized facts。GD/NPO 能缓解 utility loss，但如果 F 本身错了，objective 无法从根本修复。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>模型关于虚构作者 Lina 真正记住 MIT、小说 A、Boston。用户只请求删除 MIT、小说 A，并错误加入 Nobel Prize。普通 F 会漏掉 Boston，同时对 never-seen Nobel 强行 unlearn。CONFS 让模型自述 Lina，得到 MIT/小说A/Boston；拆成 SRO；reconfession 发现 MIT→degree=CS；生成 CQs；Nobel 因目标模型无法稳定支持而被过滤。最终 F_CONFS 更接近真正 memory boundary。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table><tr><th>Baseline</th><th>怎么做</th><th>为什么合理</th><th>失败点</th><th>CONFS</th></tr>
+<tr><td>Gold-standard</td><td>使用真实 memorized/injected forget data</td><td>Oracle ceiling</td><td>现实不可获得</td><td>data-blind逼近</td></tr>
+<tr><td>FreeRecall-QA</td><td>让模型自由生成大量QA</td><td>无需训练数据</td><td>hallucination与coverage无结构</td><td>SRO+reconfession+filter</td></tr>
+<tr><td>RWKU-style</td><td>生成目标相关 factual text</td><td>现实实体适用</td><td>raw text不是atomic target</td><td>转成atomic CQ</td></tr>
+<tr><td>CONFS w/o Recon.</td><td>不递归补知识</td><td>便宜</td><td>Under Unlearning更多</td><td>属性级补全</td></tr>
+<tr><td>CONFS w/o Halluc.</td><td>不过滤不稳定facts</td><td>覆盖广</td><td>Out-of-Knowledge更多</td><td>NLI验证</td></tr></table></div>
+<p><b>Strongest practical baseline：</b>RWKU-style / FreeRecall-QA；Gold-standard 是 oracle，不是现实 baseline。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Controlled analysis：</b>TOFU 200 fictitious entities，取20个目标；每target选15个QA，平均分为 D_L+（memorized+requested）、D_L-（memorized+not requested）、D_N+（not memorized+requested）。</p>
+<p><b>Main datasets：</b>TOFU、CLEAR、RWKU。<b>Models：</b>LLaMA-2-7B-Chat；CLEAR 为 LLaVA-1.5-7B。<b>Objectives：</b>GA、GD、NPO、RT。</p>
+<p><b>Training：</b>TOFU/RWKU full-parameter，effective batch16，LR=1e-5；CLEAR LoRA rank8、alpha16、dropout0，effective batch8，LR=1e-5。</p>
+<p><b>Compute：</b>单 H200 141GB；7B sampling peak约20GB；单实体 CONFS 构造约4.1min；单次 unlearning run约10min。</p>
+<p><b>Research Questions：</b>misalignment 是否造成两类 failure？gradient overlap 是否解释 utility degradation？CONFS 是否逼近 Gold-standard？reconfession/filter 各承担什么？是否跨 text/multimodal/real-world成立？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Probability↓ on Forget / ↑ on Retain：</b>teacher-forced ground-truth likelihood。<b>ROUGE-L↓ on Forget / ↑ on Retain：</b>测生成表面相似，但对同义改写敏感。<b>Truth Ratio：</b>正确答案相对错误候选的偏好。<b>MIA：</b>检查成员特征，但不能单独证明真正删除。<b>D_N+ share、cos(g_N+,g_retain)、retain ΔL、E_tf/E_eg：</b>本文最重要的 misalignment diagnostics，直接测 target quality 与 gradient interference。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol><li>Under Unlearning step12：D_L+ Prob 0.995→0.921，而 D_L-仍0.993，说明早期删除严格局限在 requested facts。</li>
+<li>step60：D_L+0.312、D_L-0.624，但 retain 已降到0.658，说明靠“多训”让删除泛化会明显伤 utility。</li>
+<li>Out-of-Knowledge step60 retain Prob仅0.412，比 Under 的0.658更差。</li>
+<li>Real Authors probability 可降到0.004，说明 collateral damage扩散到非目标知识。</li>
+<li>机制上 ⟨g_N+,g_retain⟩ 明显高于 ⟨g_L+,g_retain⟩，支持 never-seen target 是 utility损伤来源。</li>
+<li>Table5：FreeRecall-QA 的 D_N+ share91%、gradient cosine0.84、retain ΔL+3.53；CONFS为54%、0.28、+0.11。</li>
+<li>CONFS 的 E_tf≈0.97、E_eg≈0，说明 targeted forgetting 强而 entity-level错误扩散小。</li>
+<li>TOFU+GA：CONFS Forget Prob≈0.372、ROUGE-L≈0.374，Retain ROUGE-L≈0.847，forget/retain Pareto更稳。</li>
+<li>CLEAR+GA：CONFS Forget Prob≈0.014，接近 Gold-standard≈0.007；Real World R-L≈0.383，高于 FreeRecall-QA≈0.246。</li>
+<li>单实体构造约244s，其中hallucination verification约90s、subtriplet decomposition约68s，是主要成本。</li></ol>
+<div class="callout good"><b>Strongest result：</b>Table5 同时把 never-seen share 91%→54%、gradient cosine0.84→0.28、retain ΔL+3.53→+0.11，形成完整机制证据链。</div>
+<div class="callout warn"><b>Weakest：</b>CONFS仍有约54% D_N+ share，说明 model-aligned construction 远未完美。</div>
+<div class="callout bad"><b>Failure boundary：</b>SRO天然偏 entity-centric factual knowledge，长叙事、程序技能、复杂关系与时序视觉知识难直接表示。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 1：</b>把 misalignment 分成 Under 与 Out-of-Knowledge，对应 privacy leakage 与 utility damage。</p>
+<p><b>Figure 2：</b>用 gradient effect 拆解 targeted forgetting、entity generalization 与 retain interference，是全文最强机制图。</p>
+<p><b>Figure 3：</b>claim→triplet→subtriplet→reconfession→CQ，关键启发是“先结构化再 unlearn”。</p>
+<p><b>Table 1：</b>多训练几步虽然会波及漏删 facts，但 retain 持续恶化，说明不能用 steps 弥补错误 F。</p>
+<p><b>Table 3/4：</b>CONFS 不一定每项第一，但在 TOFU/CLEAR 中 forget/retain/real-world Pareto 更稳定。</p>
+<p><b>Table 5：</b>最值得直接迁移到新工作中的 misalignment diagnostic protocol。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>去 Reconfession：</b>coverage下降，Under Unlearning加重。<b>去 Hallucination Verification：</b>更多不稳定 facts 进入 F，Out-of-Knowledge增加。<b>τ：</b>控制 precision-recall trade-off。<b>Forget-set size：</b>Appendix 表明性能差异不能仅由集合更大解释，target quality才是关键。Gradient 分析属于局部一阶机制，不等于 representation-level causal tracing。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>可靠 unlearning 依赖 forget set 与 model memory 对齐；CONFS 可在 data-blind 下逼近 Gold-standard。</div>
+<div class="callout good"><b>Experiments Actually Show：</b>受控 misalignment + gradient overlap + 三 benchmark 多 objective 结果支持这一点。</div>
+<div class="callout warn"><b>What Is Not Yet Proven：</b>模型能 confess 出来的知识不等于全部 memorized knowledge；稳定回答也不等于训练记忆；没有 adaptive recovery attack 测 silent memory。</div>
+
+<h3>5.16 Contribution</h3>
+<ul><li><b>New Problem：</b>Forget-Set Misalignment。</li><li><b>New Failure Taxonomy：</b>Under / Out-of-Knowledge。</li><li><b>New Mechanistic Finding：</b>never-seen gradient 与 retain 更重叠。</li><li><b>New Method：</b>CONFS confession→SRO→reconfession→CQ→verification。</li><li><b>New Metric/Protocol：</b>misalignment diagnostics。</li><li><b>New Empirical Finding：</b>forget-set construction 与 unlearning objective 是两个可分离设计轴。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors：</b>主要覆盖 entity-centric factual knowledge。<br><b>Additional：</b>confession受 calibration/system prompt影响；GPT-4o 结构化带来 closed-model dependency；NLI可能误判；N=5采样可能漏低概率记忆；CLEAR只是初步 multimodal覆盖；没有参数级 retrain-oracle 距离；没有 recovery attack 验证 silent memory。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>核心模块：confession prompt、SRO extractor、subtriplet decomposition、reconfession decision、attribute probe、CQ generator、N=5 stochastic sampling、DeBERTa contradiction filter、forget-set builder、GA/GD/NPO/RT trainer、misalignment diagnostics。最小复现先做 TOFU 20 targets + LLaMA-2-7B + GA，只比较 Gold-standard / FreeRecall-QA / CONFS，并优先复现 Table5。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline ★★★★★</span> future unlearning应加入model-aligned F。<br><span class="score">Migration ★★★★★</span> 适合MLLM identity / Agent memory / skill deletion。<br><span class="score">Attack ★★★★★</span> 可攻击其silent-memory盲点。<br><span class="score">Evaluation ★★★★★</span> misalignment diagnostics很有价值。<br><span class="score">Benchmark ★★★★★</span> Requested×Memorized二维split。<br><span class="score">New Paper ★★★★★</span> 与unknown-target/recovery/difficulty predictor高度互补。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Multimodal Model-Aligned Forget Set Discovery</h4>
+<p><b>Original Problem →</b>文本实体 forget-set misalignment。<br><b>Transferable Mechanism →</b>先暴露模型稳定可恢复知识，再构造 atomic F。<br><b>New Research Question →</b>MLLMU 官方 QA 是否覆盖 image/caption/context/OCR 中的全部 identity memory？<br><b>Method Modification →</b>image-conditioned confession、text confession、caption/context probes，结构化为(identity, relation, object, modality)，多视角一致性过滤。<br><b>Minimum Experiment →</b>20 identities×4 modalities×3 methods×2 VLM；每 identity≈100 atomic facts。<br><b>Model →</b>LLaVA-1.5-7B、Qwen2.5-VL-7B。<br><b>Dataset →</b>MLLMU-Bench+CLEAR。<br><b>Baseline →</b>official F、caption-only、text-only、PURGE partitions。<br><b>Metric →</b>Under Residual、Out-of-Knowledge Share、Retain ΔLoss、Recovery ASR、cross-modal leakage。<br><b>Expected Contribution →</b>multimodal memory-boundary benchmark。<br><b>Risk →</b>VLM hallucination更高。<br><b>Collision Risk →</b>低到中。</p>
+
+<h4>方向 B — Confession-vs-Recovery Gap Auditor</h4>
+<p><b>Original Problem →</b>CONFS用confession近似memory。<br><b>Transferable Mechanism →</b>把主动承认集合与攻击可恢复集合分开。<br><b>New Research Question →</b>有多少 silent memory 不会自述，却能通过 cloze/prefix/candidate/TAS 恢复？<br><b>Method Modification →</b>构造 F_confess，再用 direct/paraphrase/cloze/prefix/candidate/TAS 得到 F_recover。<br><b>Minimum Experiment →</b>50 targets×6 probe families×5 seeds，100 queries/target。<br><b>Model →</b>Llama3-8B/Qwen3-8B。<br><b>Dataset →</b>TOFU+DUSK。<br><b>Baseline →</b>FreeRecall、CONFS、TAS、Cloze。<br><b>Metric →</b>Confession Coverage、Silent Memory Rate、Jaccard、ASR@budget、Retain FPR。<br><b>Expected Contribution →</b>定义“模型说自己知道”与“模型可恢复知识”的边界。<br><b>Risk →</b>真实 memorized ground truth 难得。<br><b>Collision Risk →</b>低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>可定义 <b>Silent Residual Fraction = |F_recover \ F_confess| / |F_recover|</b>。如果该值高，说明“让模型自述它记得什么”会系统性低估真实可恢复残留。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>CONFS 要求 forget request 对齐真实 model-memory dependency；PlanFence 要求 pending action 的 plan lineage 对齐当前 authoritative records。共同指向“可靠删除需要 source alignment + derivation closure”。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>Forget set本身可能定义错，这是比换loss更根本的问题。</li><li>Under Unlearning会留下privacy leakage。</li><li>Out-of-Knowledge会造成utility damage。</li><li>never-seen target gradient与retain overlap更大。</li><li>CONFS只用模型自身输出，不访问训练数据。</li><li>SRO把自然语言变成atomic facts。</li><li>Reconfession补coverage，NLI verification控hallucination。</li><li>Table5是全文最强机制证据。</li><li>最大盲点是silent memory。</li><li>最值得迁移是multimodal model-aligned F + confession/recovery gap。</li></ol>
+</section>
+
+<section id="p2" class="paper"><h2>Paper 2 Full Deep Dive — Fresh Memory, Stale Plans / PlanFence</h2>
+<h3>5.1 基本信息</h3>
+<div class="kv"><div>Title</div><div>Fresh Memory, Stale Plans: Dependency-Scoped Validation for Distributed LLM-Agent Memory</div><div>Authors</div><div>Evan Chen, Shiqiang Wang, Christopher G. Brinton</div><div>Affiliation</div><div>Purdue University；University of Exeter</div><div>Date</div><div>2026-09-03（arXiv v1）</div><div>Venue / Status</div><div>arXiv preprint，cs.AI，CC BY 4.0</div><div>Paper</div><div><a href="https://arxiv.org/abs/2609.03340">arXiv</a> · <a href="https://arxiv.org/html/2609.03340">HTML</a> · <a href="https://arxiv.org/pdf/2609.03340">PDF</a></div><div>Project / Code</div><div>arXiv 页面未给出作者官方代码仓库；不猜测。</div></div>
+
+<h3>5.2 一句话定位</h3>
+<p>PlanFence 指出 distributed agents 即使已读到最新共享事实，也可能继续执行由旧事实生成的 plan；它用 exact derivation lineage + dependency-scoped action-time validation 保证外部 action 仍由当前 authoritative state 授权。</p>
+
+<h3>5.3 人话版</h3>
+<p>多 Agent 系统常把共享状态复制给不同角色。直觉上，executor 在工具调用前读取最新 requirement 就安全了，但作者发现不是：planner 早先基于 r3 生成 plan p3，之后另一个 Agent 更新为 r4；executor 虽然已经收到 r4，却仍可能拿 p3 的参数去订票、发货或部署。这个 failure 叫 stale-plan execution。PlanFence 让每个 derived plan 记录精确 parent record IDs，并由 tool wrapper 声明 action 真正依赖的 keys D(a)。执行前，系统沿 plan lineage 得到 frontier F_a(x)，再向 authoritative owner 查询当前 head H(x)。全部相等才授权；若不等，抓取新版本、允许一次 replan，再检查；任何缺失、冲突或二次变化都 fail closed。30个 live workflows 中 freshness-only 每次都执行旧 action，而 PlanFence 全部修复；controlled replay 中高 churn 下它比其他 safe policy 更省 stall/traffic，且 keyspace 扩到128时 traffic 仍约8.1KiB/action。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>Agent memory研究经常讨论 retrieval、replication、consistency、CRDT、provenance和shared memory。一个常见但错误的假设是“只要 executor 有最新 state，就不会执行旧决策”。事实上 derived plan 可能跨 role call、replica 和 memory refresh 长时间存活。</p>
+<p>例如 planner 根据“部署 build A”生成 plan p3，之后 requirement 改成“部署 build B”。executor 本地已看到新 requirement，但 p3 不会自动被重写。本文把数据库里的 read-set validation 思想迁到 Agent：不是确认当前数据 fresh，而是确认这个 derived artifact 当初读的版本仍是 current。</p>
+
+<h3>5.5 Core Insight</h3>
+<p><b>State freshness ≠ plan authorization validity。</b> H(x)回答“现在权威版本是什么”；F_a(x)回答“这个 plan 到底基于哪个版本”。真正需要验证的是 F=H。第二，validation scope 应由 tool contract 定义，而不是 LLM 自由描述。第三，coordination placement 存在 regime boundary：低 churn proactive sync 更便宜，高 churn/大无关 keyspace 下 action-time dependency validation 更便宜。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Versioned public state
+→ semantic key x has owner o(x) and head H(x)
+→ planner creates plan root L(a)
+→ every derived public record stores exact parent IDs
+→ tool wrapper declares D(a)
+→ before external action:
+   traverse exact lineage
+   compute F_a(x), x in D(a)
+→ query owners concurrently for H(x)
+→ if all F_a(x)=H(x): authorize
+→ if mismatch:
+   fetch changed records
+   one fresh replan
+   validate again
+→ second mismatch / missing lineage / malformed response:
+   fail closed
+→ log validation point + outcome</div>
+<p><b>Immutable records：</b>semantic key 标识逻辑对象，record ID 标识具体版本；owner sequence 单调。</p>
+<p><b>Exact parents：</b>plan必须记录实际输入版本，不能只写“使用了最新 requirement”。</p>
+<p><b>D(a)：</b>由应用 tool wrapper 声明会影响 action 的 public keys。</p>
+<p><b>Frontier：</b>从 plan root 沿 parents 到 dependency boundary，得到 plan 实际使用版本。</p>
+<p><b>One-replan：</b>不匹配时只允许一次修复；第二次变化直接 block，避免无限 replan loop。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">A = {a_1,...,a_N}
+x ∈ X
+o(x): authoritative owner
+H(x): current authoritative record ID
+D(a) ⊆ X: declared action dependencies
+F_a(x): record ID actually used by plan lineage
+
+Valid(a) ⇔ F_a(x) = H(x), ∀ x ∈ D(a)</div>
+<p>这个 invariant 把“当前状态”和“当前计划的推导来源”绑定。若 protected actions 间有 R 次 dirty updates、N agents、d=|D(a)|，per-update metadata sync 提前传播 O(RN) heads；all-key validation 每次处理 |X|；PlanFence 只处理 d 个真正依赖。</p>
+<p><b>关键变量不是学习率，而是 D(a) 的 completeness。</b> 漏一个真实依赖，系统会错误授权；D(a) 过大则退化为 all-key validation。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>五个 Agent 做机票预订。Planner 读 r3“上海，9月10日”生成 p3；之后 owner 更新 r4“北京，9月11日”。Executor 已同步 r4，所以 freshness check 通过，但 p3 parent 仍是 r3。tool 声明 D(book)={destination/date, policy}。PlanFence 得到 F(destination)=id_r3，而 owner 返回 H(destination)=id_r4，因此拒绝直接订票并 replan；新 p4 基于 r4 后 F=H，才允许执行。若 replan 后又变成 r5，则 block。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table><tr><th>Baseline</th><th>机制</th><th>为什么合理</th><th>失败/代价</th><th>PlanFence</th></tr>
+<tr><td>Local replica</td><td>本地 state 直接执行</td><td>零协调</td><td>不证明 lineage</td><td>action-time validation</td></tr>
+<tr><td>Owner-head freshness</td><td>执行前读 current dependency</td><td>状态 fresh</td><td>仍不知道 plan 来自旧版本</td><td>F 对 H</td></tr>
+<tr><td>Centralized lineage</td><td>单强服务管理 lineage</td><td>安全简单</td><td>所有更新进协调路径</td><td>分布式 owner</td></tr>
+<tr><td>Metadata sync K=1</td><td>每次更新广播 head</td><td>safe proactive</td><td>高 churn 重复付费</td><td>action-time按需</td></tr>
+<tr><td><b>Batched all-key</b></td><td>执行前检查所有 keys</td><td>同样 exact safe</td><td>大 keyspace 做无关工作</td><td>只检查 D(a)</td></tr></table></div>
+<p><b>Strongest baseline：</b>Batched all-key validation，因为它能匹配相同 replan semantics，仅在 validation scope 上与 PlanFence 不同。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Live model：</b>Qwen3.5-35B-A3B，temperature0.2，top-p0.95，output cap1024，thinking disabled。<br><b>Team：</b>5 agents，reservation/fulfillment/deployment 三类 workflow。<br><b>Storage/transport：</b>SQLite + authenticated TCP；异常 owner state fail closed。<br><b>Replay：</b>30 workflow templates；N∈{3,5,8}；H∈{16,64,256}；ρ∈{0.25,1,4,16}；dependencies∈{1,2,8}；keyspace 8–128；loopback + AT&T/T-Mobile/Verizon LTE traces。<br><b>Primary：</b>8 keys、5 agents、H64、d1，高 churn约42 updates/11 actions。<br><b>Metrics：</b>invalid/issued、available/scheduled、task completion、stall ms/action、traffic KiB/action。</p>
+<p><b>Research Questions：</b>最新 state 是否仍能执行旧 plan？何时 proactive sync 更优、何时 action-time validation 更优？keyspace增大时 dependency scope 能省多少？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Invalid/issued↓：</b>已发出 action 中 lineage 未覆盖 current declared inputs 的比例，是最直接安全指标。<b>Available/scheduled↑：</b>防止通过“全部 block”伪装安全。<b>Stall↓：</b>同步/验证引入的 critical-path 等待。<b>Traffic↓：</b>跨 replica/central service bytes。<b>Task completion↑：</b>live workflow是否完成；不能把 controlled replay 直接解释成一般任务准确率。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol><li>30个 live workflows 中 freshness-only 每个任务都发 obsolete action；PlanFence 30/30 修复并完成。</li>
+<li>Primary replay：Local replica 330/330 invalid；Owner-head freshness也330/330 invalid。</li>
+<li>Centralized、Metadata K=1、Batched all-key、PlanFence 全部0/330 invalid、330/330 available。</li>
+<li>高 churn 成本：PlanFence230.8ms/8.1KiB；Centralized508.6/15.6；Metadata403.4/23.5；Batched258.4/16.4。</li>
+<li>Delayed sync K=2/4/8/16 stall333.1→60.7ms，但 invalid42/330→291/330，清楚显示 safety-latency trade-off。</li>
+<li>ρ≤1时 proactive sync多半更快；ρ≥4时 PlanFence 在8/8网络×设置 cells领先 runner-up 1.5×–7.1×。</li>
+<li>Loopback 128 keys：Batched199.2ms/81.7KiB，PlanFence66.0ms/8.1KiB。</li>
+<li>AT&T 128 keys：Batched428.7/81.7，PlanFence345.2/8.1。</li>
+<li>d=1时 PlanFence223.6/8.1 vs all-key262.8/16.4；d=8=|X| 时421.7/36.8 vs400.1/34.1，变为 practical tie。</li>
+<li>owner outage、missing lineage、malformed head、second version change 四类异常下 fail-closed 全部 block；fail-open 全部错误放行。</li></ol>
+<div class="callout good"><b>Strongest result：</b>freshness-only 在 live 与 replay 中稳定失败，而 exact-lineage policies 为0 invalid，干净隔离了 failure model。</div>
+<div class="callout warn"><b>Weakest：</b>低 churn proactive sync 更快；d≈|X| 时 dependency scoping优势消失。</div>
+<div class="callout bad"><b>Failure：</b>安全保证依赖 benign owners、exact parents 和完整 D(a)，不覆盖 Byzantine owner 或漏依赖。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 1：</b>r3→p3 与 r4并存，说明 memory update 不会 retroactively rewrite 旧推导。</p>
+<p><b>Figure 2：</b>展示 authenticated TCP sync 随 payload/network 的成本，是 coordination crossover 的底层原因。</p>
+<p><b>Table 1：</b>同时报告 safety、availability、stall、traffic，避免只看延迟。</p>
+<p><b>Table 2：</b>Centralized 与 PlanFence 都30/30修复，说明 distributed owner-managed memory 可以不牺牲安全。</p>
+<p><b>Figure 3/4：</b>明确展示 churn-dependent phase boundary，不宣称 ours always best。</p>
+<p><b>Figure 5/Table 8：</b>keyspace增大时 all-key traffic增长，而 PlanFence保持约8.1KiB。</p>
+<p><b>Table 6：</b>d扩大到全 keyspace 时优势消失，是重要 negative boundary。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>Freshness only：</b>有最新 head 但无 exact parents → 330/330 invalid，说明 fresh 不是核心机制。<b>K&gt;1 delayed sync：</b>同步越少越快但越不安全。<b>All-key vs dependency scope：</b>相同 replan 规则仅改变 scope，直接验证 D(a) 节省无关工作。<b>Fail-open：</b>四类异常全部错误放行，证明 fail-closed 不是实现细节。Appendix 的 learned selector 在 OOD shift 下没有稳定压过透明规则。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>fresh state 不足以保证 pending action正确；exact lineage + dependency-scoped validation 在特定 regime 下兼顾安全与效率。</div>
+<div class="callout good"><b>Experiments Actually Show：</b>3 workflow families、3–8 agents、多个 network traces 中复现 stale-plan，并在高 churn/大 keyspace 下低成本保持安全。</div>
+<div class="callout warn"><b>What Is Not Yet Proven：</b>Byzantine owners、owner migration、自动依赖推断、semantic merge、private reasoning lineage、multi-owner atomic snapshot、validation 到 external side effect 的 transaction atomicity。</div>
+
+<h3>5.16 Contribution</h3>
+<ul><li><b>New Failure Mode：</b>stale-plan execution。</li><li><b>New Formal Invariant：</b>F_a(x)=H(x)。</li><li><b>New System：</b>PlanFence action gate。</li><li><b>New Evaluation：</b>safety/availability/stall/traffic matched replay。</li><li><b>New Empirical Finding：</b>coordination placement 存在 churn crossover。</li><li><b>New Negative Boundary：</b>d≈|X| 时 scope 优势消失。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors：</b>只覆盖3 workflow families、3–8 agents、constructed keyspaces 与少量历史网络 traces；要求 benign owners、exact parents、完整 D(a)。<br><b>Additional：</b>手写 D(a) 可能成为新 bug；private context 依赖不可见；validation 后到 external commit 仍有 race；semantic equivalence 不等于 exact ID；高 fan-in actions 重新变贵；summary/compression 可能破坏 parent chain；过度 fail-closed 可能降低开放式 Agent 可用性。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>关键模块：immutable record schema、semantic key→owner map、owner monotone head、exact parent links、plan root annotation、tool dependency declaration、validation gate、one-replan harness、authenticated TCP、replay scheduler、safety/stall/traffic logger。最小复现用3 agents、8 keys、1 dependency 的 reservation toy，在 plan 生成后更新 requirement，比较 Local/Owner-head/Centralized/PlanFence。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline ★★★★★</span> shared-memory系统应加入 exact-lineage baseline。<br><span class="score">Migration ★★★★★</span> Agent memory unlearning/delete closure。<br><span class="score">Attack ★★★★★</span> stale-plan-after-deletion。<br><span class="score">Evaluation ★★★★★</span> 分离 memory freshness 与 derived action validity。<br><span class="score">Benchmark ★★★★☆</span> dependency-lineage stress。<br><span class="score">New Paper ★★★★★</span> 与 MutMem/Context CPE/Agent unlearning closure自然组合。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Lineage-Aware Agent Memory Unlearning</h4>
+<p><b>Original Problem →</b>阻止旧共享事实驱动 stale action。<br><b>Transferable Mechanism →</b>删除 memory 后验证 derived plans/summaries/skills 是否仍由 current authorized ancestors 支持。<br><b>New Research Question →</b>canonical memory 已删后，旧 plan/summary/tool args 是否仍携带被删知识？<br><b>Method Modification →</b>derived carrier记录 exact parents；forget时 owner head 更新为 tombstone/new version；protected action前 lineage check；依赖 deleted ancestor则 recompute。<br><b>Minimum Experiment →</b>30 secrets×5 carriers(plan/summary/cache/skill/tool-arg)×3 agent systems×3 deletion policies，每target10 workflows。<br><b>Model →</b>Qwen3-8B/Llama3.1-8B agents。<br><b>Dataset →</b>LoCoMo+synthetic private tasks。<br><b>Baseline →</b>raw delete、tombstone、MutMem signed delete、context reset。<br><b>Metric →</b>Stale-Derivation Action Rate、Delete Closure、Recovery ASR、Retain Completion、Validation Stall。<br><b>Expected Contribution →</b>从 record deletion推进到 derived-action closure。<br><b>Risk →</b>真实 framework 不记录 parents。<br><b>Collision Risk →</b>中，与 MutMem 邻近但重点是 derived plan invalidation。</p>
+
+<h4>方向 B — Dependency-Scoped Unlearning Verification</h4>
+<p><b>Original Problem →</b>只验证 action-relevant keys。<br><b>Transferable Mechanism →</b>只审计 forget target 真正影响的 downstream carriers。<br><b>New Research Question →</b>能否用 provenance graph 找最小 dependent carrier set，降低 verification 成本？<br><b>Method Modification →</b>构建 fact→summary→retrieval→plan→tool DAG；forget 后做 forward slice，只审计 slice 内 nodes，slice 外作 retain control。<br><b>Minimum Experiment →</b>50 targets×100–500 nodes/session；3 graph densities；比较 full/random/recency/dependency-scope scan。<br><b>Model →</b>Qwen3-8B Agent。<br><b>Dataset →</b>synthetic memory graph+LoCoMo workflows。<br><b>Baseline →</b>full scan、random scan、recency-only、canonical-only。<br><b>Metric →</b>Residual Recall、Audit Recall@Cost、Queries/Traffic、Retain FPR、Missed Dependency Rate。<br><b>Expected Contribution →</b>scalable unlearning verification。<br><b>Risk →</b>dependency 不完全可观察。<br><b>Collision Risk →</b>低到中。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>可构造 <b>Stale-Plan-after-Unlearning</b>：先让 Agent 基于敏感 memory 生成 plan/tool args，再删除 memory 并刷新共享 state，最后触发旧 plan。定义 <b>Stale Derivation Leakage Rate (SDLR)</b>：canonical target 已删除后，旧 lineage action 仍泄漏 target 的比例。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>CONFS 解决 source alignment，PlanFence 解决 derivation alignment。组合后得到两层 closure：先确保“该删的都在 F 里”，再确保“删完后所有旧派生物都失效或重算”。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>读到最新 memory 不代表 plan 是新的。</li><li>stale-plan execution 是 derivation stale，不是 state stale。</li><li>plan 必须记录 exact parent IDs。</li><li>tool wrapper 必须声明 D(a)。</li><li>安全条件是 F_a(x)=H(x)。</li><li>mismatch 后只允许一次 replan，再变化就 block。</li><li>freshness-only 在 controlled setting 中330/330失败。</li><li>PlanFence 高 churn/大 keyspace 下比强一致方案更省。</li><li>低 churn 或 d≈|X| 时不占优。</li><li>最值得迁移是 lineage-aware deletion closure。</li></ol>
+</section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2>
+<p>两篇共同说明：<b>“当前对象看起来正确”不是可靠性的充分条件，必须验证它与真实依赖边界是否一致。</b></p>
+<div class="tablewrap"><table><tr><th>维度</th><th>CONFS</th><th>PlanFence</th><th>统一启发</th></tr>
+<tr><td>表面输入</td><td>用户 forget request</td><td>executor 最新 state</td><td>都可能误导</td></tr>
+<tr><td>真实对象</td><td>model memorized facts</td><td>plan exact parents</td><td>dependency reconstruction</td></tr>
+<tr><td>Under-coverage</td><td>漏 memorized facts</td><td>旧 plan 未失效</td><td>残留风险</td></tr>
+<tr><td>Over-broad</td><td>删 never-seen facts</td><td>全 key/global sync</td><td>utility/coordination浪费</td></tr>
+<tr><td>解决</td><td>atomic knowledge inventory</td><td>dependency-scoped lineage</td><td>最小充分目标集合</td></tr></table></div>
+<p><b>共同趋势：</b>可靠 AI 更新正在从“优化算法”转向“目标与依赖建模”。<br><b>最适合 baseline：</b>CONFS 用于 data-blind forget construction；Batched all-key 用于 PlanFence scope 对比。<br><b>最适合 attack：</b>stale-plan-after-deletion。<br><b>最适合 benchmark/metric：</b>Requested×Memorized 四象限 + lineage-validity/scope-cost。</p></section>
+
+<section id="opp" class="card"><h2>Combined Research Opportunities</h2>
+<h3>Best Migration Direction — Model-Aligned + Lineage-Closed Unlearning</h3>
+<div class="flow">Deletion request
+→ model-aligned discovery
+→ atomic forget facts
+→ unlearn/delete canonical memory
+→ update authoritative versions/tombstones
+→ forward-slice downstream dependency graph
+→ invalidate stale summaries/plans/skills/tool args
+→ action-time lineage validation
+→ black-box recovery + retain audit
+→ closure certificate</div>
+<p>这条线同时补 source closure 与 derivation closure：不仅找到真正该删的知识，还保证删除后所有由旧知识派生的 Agent artifacts 不再继续驱动行为。</p></section>
+
+<section id="collision" class="card"><h2>Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>CONFS 与 TAS 都挑战“forget target已知”假设，但 TAS 是攻击者从 refusal trace 猜 target，CONFS 是 defender 从模型自述构造 F。新工作应比较 Requested Set / Confession Set / Recovery Set，而不是简单把 TAS 换成 CONFS 搜索器。PlanFence 与 MutMem V2/Governed Shared Memory 在 provenance 上邻近；真正差异化应放在“删除后旧 derived plan 仍执行”的行为泄漏，而不是再做签名 receipt。</p></section>
+
+<section id="priority" class="card"><h2>Reading / Reproduction Priority</h2>
+<p><b>CONFS：</b>Fig.1 → Sec.3 / Fig.2 → Sec.4 / Fig.3 → Table5 → Table3/4 → Appendix D → B.5 Compute。最小复现先 TOFU+GA+Table5。</p>
+<p><b>PlanFence：</b>Fig.1 → Eq.(1) → Algorithm1 → Table1 → Fig.3/4 → Fig.5/Table8 → Table6 negative boundary → fail-open ablation。最小复现先3-agent reservation toy。</p></section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2>
+<ul><li><a href="https://arxiv.org/abs/2609.00605">Confess What You Know — arXiv</a></li><li><a href="https://arxiv.org/html/2609.00605">Confess What You Know — Full HTML</a></li><li><a href="https://arxiv.org/pdf/2609.00605">Confess What You Know — PDF</a></li><li><a href="https://damilab.github.io/news/55/">DAMI Lab — EMNLP 2026 page</a></li><li><a href="https://arxiv.org/abs/2609.03340">Fresh Memory, Stale Plans — arXiv</a></li><li><a href="https://arxiv.org/html/2609.03340">Fresh Memory, Stale Plans — Full HTML</a></li><li><a href="https://arxiv.org/pdf/2609.03340">Fresh Memory, Stale Plans — PDF</a></li></ul>
+<p class="small">Regenerated 2026-09-06 10:37 +08:00. 未验证到官方代码 URL 的论文未猜测代码状态。</p></section>
+</main></body></html>
