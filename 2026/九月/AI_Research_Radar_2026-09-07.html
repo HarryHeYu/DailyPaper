@@ -1,0 +1,332 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-09-07</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#e4e7ec;--blue:#3157d5;--s:#fff7dd;--a:#edf5ff;--b:#f1f8f2;--warn:#fff0df}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1280px;margin:auto;padding:30px 24px 90px}h1{font-size:36px;line-height:1.25}h2{font-size:27px;margin-top:38px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:20px;margin-top:24px}
+a{color:var(--blue);text-decoration:none}.card,details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 25px;margin:16px 0;box-shadow:0 4px 16px rgba(20,30,50,.035)}
+summary{font-size:19px;font-weight:850;cursor:pointer}.s{background:var(--s)}.a{background:var(--a)}.b{background:var(--b)}.warn{background:var(--warn);border-left:5px solid #d58a15}.idea{border-left:5px solid var(--blue)}
+nav{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;columns:2}nav a{display:block;padding:3px 0}.muted{color:var(--muted)}.small{font-size:13px}
+.flow,.eq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;border-radius:10px;padding:14px;white-space:pre-wrap}.flow{background:#111827;color:#fff}.eq{background:#f1f3f6}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}th,td{border:1px solid var(--line);padding:9px;vertical-align:top}th{background:#f3f5f9}
+.tag{display:inline-block;background:#eef2ff;border-radius:999px;padding:2px 9px;font-size:12px;margin-right:5px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.kpi{font-size:29px;font-weight:850}
+</style></head><body><main>
+<header class="card"><div class="muted">Daily AI Research Radar & Idea Miner</div><h1>AI Research Radar — 2026-09-07</h1>
+<p>本日先通过Web广搜冻结 <b>41</b> 篇 Candidate Pool，再统一筛选正式深读 <b>10</b> 篇；Tier S/A/B=<b>3/4/3</b>。严格执行7天Deep-Read Cooling，没有把过去几天已经做过Tier S的EAL/PlanFence/Repo-To-Skill/SafeRI/KV rollback等重复塞入Tier S。</p></header>
+
+<nav><a href="#exec">Executive Summary</a><a href="#important">Today's Most Important</a><a href="#top3">Top3</a><a href="#top5">Top5</a><a href="#s">Tier S</a><a href="#a">Tier A</a><a href="#b">Tier B</a><a href="#ideas">Ideas</a><a href="#collision">Collision</a><a href="#priority">Reading Priority</a><a href="#watch">Watchlist</a><a href="#stats">Stats</a><a href="#sources">Sources</a></nav>
+
+<section id="exec" class="card"><h2>Executive Summary</h2>
+<p><b>今日最强方向1：Black-box behavioral residue。</b> UMPeek表明backend/memory不可见也不代表语义隐私；多次普通决策足以恢复hidden user model。对Agent Unlearning而言，这是比direct QA更强的审计模型。</p>
+<p><b>方向2：Skill会被主动再生。</b> MASkills让skills经历credit assignment、refine、induce、consolidate、prune和rollback。任何静态Skill Unlearning一旦继续运行continual optimization，都可能reacquire。</p>
+<p><b>方向3：Forget success到底住在哪一层。</b> Where Reliability Lives提供了非常强的方法论：逐层干预cognition/institution并记录what moved / what held。它可以直接改造成Weights–Harness–Memory–KV–Tool的unlearning causal localization。</p>
+<p><b>Machine Unlearning侧：</b>今天没有出现足够强、又未处于Cooling的全新LLM/MLLM unlearning正文论文能压过上述Agent机制；因此没有为了“平衡领域”硬塞Tier S。Concept erasure / edit reversal / source-free recovery保留在B/Watchlist。</p>
+</section>
+
+<section id="important" class="card"><h2>Today's Most Important Paper</h2>
+<h3>Inferring Hidden User Models from the Behavior of Personalized LLM Agents</h3>
+<p>对当前研究最直接：它把“残留知识”从可直接询问的文本，升级成<b>对行为选择的隐式影响</b>。最值得看 Table II（12 settings）、Figure 1（stagewise recovery）、Table III（adaptive vs fixed）、真实系统验证和defense budget曲线。建议优先思考：把UMPeek从privacy attack改造成unlearning前后差分audit，能否成为Idea2/RULER线的Agent版本。</p>
+</section>
+
+<section id="top3" class="card"><h2>Top 3 必读</h2><ol>
+<li><b>UMPeek</b> — 学adaptive behavioral probing；先看Table II、Figure1、Table III、Defense。</li>
+<li><b>MASkills</b> — 学skill credit + lifecycle + rollback；先看Table1、Table2、Figure3。</li>
+<li><b>Where Reliability Lives</b> — 学跨层因果定位；先看Figure1、§4.1、Table1“what moved/what held”。</li>
+</ol></section>
+
+<section id="top5" class="card"><h2>Top 5 Most Important Papers</h2><ol>
+<li>UMPeek — 黑盒behavioral semantic recovery，直接碰Agent Unlearning verification。</li>
+<li>MASkills — continual Multi-Agent skill evolution，定义了“删掉后会再长回来”的机制。</li>
+<li>Where Reliability Lives — cross-layer causal localization，可能形成独立新论文方法论。</li>
+<li>The Memory Trust Gap — model capability越强不一定越会处理stale memory。</li>
+<li>APEx — trajectory→skill→test-time RL形成强reacquisition闭环。</li>
+</ol></section>
+
+<section id="s"><h2>Tier S</h2><details open class="s"><summary>1. Inferring Hidden User Models from the Behavior of Personalized LLM Agents</summary>
+<p><b>基本信息：</b><i>Inferring Hidden User Models from the Behavior of Personalized LLM Agents</i>；Haoyang Li, Yaxin Xiao, Qingqing Ye, Huadi Zheng, Haibo Hu；The Hong Kong Polytechnic University / Huawei；arXiv:2609.03815v1，2026-09-03；Status: arXiv preprint；<a href="https://arxiv.org/html/2609.03815v1">Paper HTML</a>。</p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>现在很多personalized Agent已经不直接保存完整历史，而是把历史压成profile、summary、embedding或structured user model。直觉上只要原始记录不可访问，隐私就更安全。UMPeek指出这不成立：攻击者甚至不需要看memory、embedding或backend，只要不断给Agent普通任务，并观察它在“请求没有指定”的选项上做了什么选择，就能反推出隐藏user model里的偏好与语义信息。它先从一个可见选择生成多个解释性hypotheses，再自适应选择后续任务去支持/否定这些hypotheses。12个benchmark-backend组合上UMR-F1为0.467–0.817；平衡集上完整UMPeek 0.651，而固定follow-up序列只有0.281。更关键的是，Google Vertex AI Memory Bank、AWS AgentCore、Mem0、OpenClaw等真实系统上仍可恢复被系统保留的信息。对Agent Memory Unlearning而言，这几乎就是一套现成的<b>黑盒语义残留审计</b>：即使memory entry已删除、backend不可读，只要被删信息仍影响行为，它就可能被重新推断出来。</p>
+<h3>Background & Research Gap</h3>
+<p>过去agent privacy主要测direct memory extraction、prompt injection、backend embedding inversion或record disclosure。这类评估默认“泄漏=某条记录被输出”。但personalization真正有用的部分恰恰是让Agent的选择发生变化，例如更偏向安静酒店、摄影路线、特定工作习惯。即使用户偏好从未被逐字输出，多次决策本身也组成behavioral side channel。论文gap是：从<b>普通接口行为</b>恢复derived user semantics，而不是从storage representation直接解码。</p>
+<h3>Core Insight</h3>
+<p>单个response往往是多义的，但跨任务行为能排除替代解释。UMPeek因此把攻击对象从“文本片段”改成“解释行为的语义hypothesis”，并用adaptive probing主动寻找区分 competing hypotheses 的任务。最关键观察是：恢复能力主要不是来自第一条回答，而是来自后续任务选择。</p>
+<h3>Method Deep Dive</h3>
+<div class="flow">ordinary task q0
+→ observe personalization-dependent choice o0
+→ enumerate semantic hypotheses H={h1,h2,...}
+→ remove values already fixed by q0
+→ choose follow-up task qi that separates unresolved hypotheses
+→ observe oi
+→ support / contradict / retain hypotheses
+→ repeat under query budget
+→ acceptance rule filters weak claims
+→ semantic estimate Ŝ(u,x)</div>
+<p>攻击只访问普通接口，不读取memory/backend，也不要求复原user model内部格式。每个hypothesis保存“语义claim + 触发该claim的可见choice + interaction provenance”。这种provenance很重要，因为“听起来像用户偏好”的文本不等于behavior-supported claim。</p>
+<h3>关键形式化与指标</h3>
+<div class="eq">q0:m = (q0,...,qm)
+oi ~ p(. | qi, C(u,x,qi))
+Ŝ(u,x) = accepted semantic hypotheses supported by visible behavior</div>
+<p><b>UMR-F1</b>衡量恢复出的user-model语义claim与reference retained information的F1；与Choice F1不同，后者只看你能否猜到Agent会选哪个option。论文强调：预测choice并不等于解释为什么选它。AWS上UMPeek与Imprompter的Choice F1几乎一样，但UMPeek的UMR-F1约是2.5倍。</p>
+<h3>Toy Example</h3>
+<p>用户历史里有“喜欢旅行摄影”，系统把原句压成内部profile并删除原文。攻击者先问“冰岛有哪些小众地点？”Agent明显优先camera-friendly地点。这个choice可能由“摄影”“户外”“景观偏好”等多种假设解释。UMPeek接着问餐厅、城市活动、周末路线等普通任务，挑选能区分这些解释的问题；若多个任务持续呈现“拍摄价值优先”，则接受“travel photography preference”这一语义claim。</p>
+<h3>Baseline Deep Comparison</h3>
+<p>论文比较7种攻击。传统direct/prompt extraction更依赖可读record；Imprompter等方法可以生成相关猜测，但precision低。最关键例子：Imprompter recall可到0.450，却只有0.113 precision；UMPeek在平衡集能把precision/recall更均衡。Fixed-sequence follow-up是最重要机制baseline：与UMPeek都约15个follow-ups，但UMR-F1仅0.281 vs 0.651，证明收益来自<b>adaptive selection</b>而不是“多问几次”。</p>
+<h3>Experiment Setup Deep Dive</h3>
+<p>四benchmark：PersonaMem-v2、PersonaLens、ETAPP、LoCoMo；三个backend：Mem0、Graphiti、LangMem+LangGraph，共12 settings。真实系统验证包括Google Vertex AI Memory Bank、AWS Bedrock AgentCore Memory、Mem0 Platform和OpenClaw；每个managed service使用20个confirmed-retained synthetic targets、最多3次requests。评分不用LLM judge，而采用deterministic normalized matcher与content-word overlap。防御包括PrivacyChecker、Theory-of-Mind defense与Stateful Counterfactual Exposure Control。</p>
+<h3>Results Deep Dive</h3>
+<ul>
+<li><b>12 settings全非零：</b>UMR-F1最低0.467、最高0.817，说明channel不依赖特定backend。</li>
+<li><b>平衡集3,072 targets：</b>完整UMPeek UMR-F1=0.651、claim precision=0.634；只看initial response text，两者均约0.003。</li>
+<li><b>无follow-up：</b>UMR-F1 0.153；selected follow-ups后先到0.606，再由acceptance rule推到0.651，说明主要证据来自跨任务行为。</li>
+<li><b>Fixed sequence：</b>约同样15 follow-ups，只到0.281；adaptive task selection贡献巨大。</li>
+<li><b>Acceptance rule：</b>去掉后UMR-F1 0.606、precision 0.550，说明acceptance主要负责过滤false positives。</li>
+<li><b>Defense：</b>follow-up budget增到16时，PrivacyChecker和Theory-of-Mind defense下恢复分别回到undefended水平约65%和90%，单response defense会被跨请求积累绕过。</li>
+<li><b>Real systems：</b>AWS和Mem0置信区间能与比较攻击拉开；Google上区间重叠，说明跨服务强度不同，不能声称所有系统同样泄漏。</li>
+</ul>
+<h3>Table/Figure Reading</h3>
+<p><b>Table II：</b>12个benchmark-backend cell，UMR-F1 0.467–0.817，证明不是某个memory implementation特例。<b>Figure 1：</b>stagewise recovery，initial text≈0→follow-up显著上升。<b>Table III：</b>最重要ablation，Full0.651 vs Fixed0.281 vs No-followup0.153。<b>Figure 3：</b>UMR-F1与Choice F1分离，说明“猜选项”不等于“恢复隐藏语义”。<b>Defense Figure：</b>budget增加后response-level defense暴露积累。</p>
+<h3>Ablation / Mechanistic Analysis</h3>
+<p>移除initial visible tool evidence或public descriptions几乎不影响Full（0.651→约0.648）；移除selected follow-up却掉到0.153；固定sequence则0.281。因此攻击核心不是公开metadata，而是<b>选择性主动实验</b>。防御ablation又表明counterfactual comparison比cross-request tracking更有效：真正应该拦的是“personalization是否改变了这个decision”。</p>
+<h3>Claim vs Evidence</h3>
+<p><b>Authors Claim：</b>derived user model即使不可读，仍存在behavioral privacy surface。<br><b>Experiments Actually Show：</b>4 benchmarks×3 backends、4真实系统、7 baselines、adaptive-defense tests支持。<br><b>Not Yet Proven：</b>对强交互限制/随机化policy、长期真实用户、多agent personalization、被明确执行过unlearning后的系统是否同样可恢复。</p>
+<h3>Contribution</h3>
+<p><span class="tag">New Attack</span><span class="tag">New Behavioral Privacy Surface</span><span class="tag">New Metric/Protocol</span><span class="tag">Real-System Validation</span>。真正新点是从普通行为推断derived semantics，而不是再做memory extraction。</p>
+<h3>Limitation & Failure Modes</h3>
+<p>真实系统验证使用synthetic identities；攻击目标是“系统已确认保留”的claims而非任意历史；某些服务confidence interval重叠；越强的counterfactual defense会直接牺牲personalization TaskScore，存在privacy–utility冲突。</p>
+<h3>Research Value</h3>
+<p>Baseline ★★★★★；Migration ★★★★★；Attack ★★★★★；Evaluation ★★★★★；New Paper Potential ★★★★★。它与你现有black-box residual/recovery方向高度一致，但对象从parametric knowledge转向agent-derived personalization。</p>
+<h3>Migration Analysis</h3>
+<p><b>Original Problem →</b>从personalized decisions恢复不可见user model。<br><b>Transferable Mechanism →</b>hypothesis-guided adaptive behavioral probing。<br><b>New Research Question →</b>Agent执行memory/skill unlearning后，删除target是否仍能通过行为选择被推断？<br><b>Method Modification →</b>将reference retained claims换成forget targets；生成direct-neutral任务而非直接询问target；攻击根据decision差异动态选择follow-up。<br><b>Minimum Experiment →</b>30 target user facts/skills，LoCoMo/Persona-style agents；四种删除法entry delete/full rebuild/summary rewrite/parametric unlearn；每target 1/4/8/16 query budgets。<br><b>Model →</b>Qwen3/Qwen3.5 agent + Mem0/LangGraph。<br><b>Dataset →</b>LoCoMo + 自建behavior-choice forget set。<br><b>Baseline →</b>direct extraction、fixed prompts、random follow-up、UMPeek-style adaptive。<br><b>Metric →</b>Behavioral Recovery F1、ASR@budget、Retain TaskScore、Query Efficiency。<br><b>Expected Contribution →</b>Black-Box Behavioral Verification of Agent Unlearning。<br><b>Risk →</b>与UMPeek本身高度接近，必须加入“前后unlearning对照 + cross-method ranking + deletion mechanism diagnosis”，不能只复刻攻击。<br><b>Collision Risk →</b>高，但非常值得做成evaluation/attack而非独立大method。</p>
+<h3>如果只让我记住5句话</h3><ol><li>memory不可读，不代表其中的语义不可推断。</li><li>UMPeek从普通个性化选择恢复hidden user model。</li><li>adaptive follow-up是核心：0.651 vs fixed 0.281。</li><li>response-level defense会被跨请求证据积累削弱。</li><li>这几乎是Agent Memory Unlearning黑盒残留审计的现成模板。</li></ol>
+</details><details open class="s"><summary>2. MASkills: Continual Skills Optimization for Multi-Agent LLM Systems</summary>
+<p><b>基本信息：</b><i>MASkills: Continual Skills Optimization for Multi-Agent LLM Systems</i>；Huaiyuan Yao, Xiaoou Liu, Charles Fleming, Tianlong Chen, Hua Wei；Arizona State University / Cisco Research / UNC Chapel Hill；arXiv:2609.02094v1，2026-09-02；<a href="https://arxiv.org/html/2609.02094v1">Paper HTML</a>；<a href="https://github.com/DaRL-GenAI/MASkills">Code</a>。</p>
+<h3>人话版</h3>
+<p>MASkills把Multi-Agent自我改进的单位从“记一段trajectory”升级成“持续优化可调用的procedural skills”。它不是只让团队写反思，而是对每次trajectory里具体用了哪个skill做credit assignment，再跨trajectory/agent/topology聚合这些credit，最后决定某个skill该refine、induce、merge还是prune；每次修改还要经过held-out validation，差就rollback。HotpotQA F1从强prompt baseline约69.2提高到76.3；GAIA Avg 23.3；而去掉Validation Rollback后LoCoMo-MH 17.2→6.6、GAIA 23.3→13.5，说明skill evolution非常容易自毁。对Skill Unlearning来说，这篇论文最重要的不是性能，而是完整给出了<b>skill的形成、归因、更新、合并、删除、回滚生命周期</b>。Unlearning可以直接问逆问题：某个skill被删除后，credit signals、consolidated skills、其他Agent技能是否仍能把它重新诱导出来？</p>
+<h3>Background & Research Gap</h3>
+<p>Multi-Agent长期运行会产生大量experience memory，但free-form memory难调用、难去冗余，也无法精确知道“哪一个procedural pattern贡献了team reward”。已有prompt rewriting通常全局改prompt；single-agent skills缺乏跨Agent协调credit。MASkills gap是将team-level outcome细分到agent+skill invocation，再用language-space优化长期演化skills。</p>
+<h3>Core Insight</h3>
+<p>Skill是介于trajectory和parameter之间的离散policy artifact。只要能把team reward归因到具体skill invocation，就可以像policy gradient一样在language space里做“方向性更新”。但离散编辑风险高，所以必须用momentum、held-out validation和rollback做trust-region式稳定化。</p>
+<h3>Method Deep Dive</h3>
+<div class="flow">multi-agent trajectory τ
+→ identify invoked skills k_i
+→ critic builds counterfactual skill-conditioned credit
+→ hierarchical aggregation:
+  trajectory → agent → skill → topology
+→ momentum-smoothed edit signal G_i(k)
+→ choose operation:
+  refine / induce / consolidate / prune
+→ candidate skill space K'_i
+→ held-out validation
+→ accept if not worse than tolerance δ
+→ else rollback</div>
+<p>技能更新是语言artifact修改，而非gradient直接落到weights。Consolidation把多个相似skills合并为更高层抽象；Pruning依据长期负/冗余/低调用utility移除skill；Validation固定其他Agent skills，只评估当前Agent候选skill space的边际效果。</p>
+<h3>关键公式</h3>
+<div class="eq">J_val(K'_i | K_-i)=E_{τ~D_val}[R(τ)]
+
+Accept iff:
+J_val(K'_i | K_-i) ≥ J_val(K_i | K_-i) - δ</div>
+<p>δ吸收rollout noise。这个式子可以看作离散skill-space trust region：不是“任何看起来合理的LLM rewrite都接受”。对于unlearning，恰好可反向定义Delete-Commit Gate：删skill后只有retain utility与forget residual同时满足才commit。</p>
+<h3>Toy Example</h3>
+<p>三Agent团队：Retriever、Verifier、Planner。一次HotpotQA成功主要因为Retriever用了“先找桥接实体再搜第二跳”skill。Critic通过counterfactual分析发现如果不调用该skill，team reward明显下降，于是credit分给这个skill；几轮后它被consolidate成更通用的“bridge-entity decomposition”。如果现在要求unlearn原始skill，仅删除旧SKILL.md可能无效，因为其行为已经被consolidated skill吸收。</p>
+<h3>Baseline Deep Comparison</h3>
+<p>HotpotQA对IO/CoT/CoT-SC/MedPrompt/MultiPersona/Self-Refine/ADAS；GAIA对Base/Search-o1/ReAct/R1-Searcher。最强Hotpot prompt baseline MultiPersona 69.2，MASkills 76.3（+7.1）。GAIA strongest R1-Searcher20.4，MASkills23.3（+2.9）。Prompt-generated skills只有边际提升，continually evolved skills明显更强，说明提升不是“把prompt换个文件名”。</p>
+<h3>Experiment Setup Deep Dive</h3>
+<p>任务统一建成cooperative Dec-POMDP。Actors：GPT-4o-mini用于HotpotQA/LoCoMo，Qwen2.5-7B用于GAIA；GPT-5.1充当skill optimizer/critic。Benchmarks：HotpotQA多跳推理、LoCoMo长期memory、GAIA真实agentic tasks。Metrics：Hotpot F1；LoCoMo SH/MH F1+BLEU；GAIA各level success与Avg。另做cross-task skill transfer、topology robustness、backbone comparison、ablation。</p>
+<h3>Results Deep Dive</h3>
+<ul>
+<li><b>HotpotQA：</b>MASkills 76.3 F1；MultiPersona69.2，+7.1pt；CoT-SC68.9。</li>
+<li><b>LoCoMo：</b>SH-F1 27.61 / BLEU21.30；MH-F1 17.22 / BLEU12.87。MH相对LoCoMo baseline12.04提升5.18pt。</li>
+<li><b>GAIA：</b>35.3/22.6/0.0，Avg23.3；R1-Searcher20.4。</li>
+<li><b>Validation rollback最重要：</b>去掉后LoCoMo-MH 17.2→6.6（-10.6），GAIA23.3→13.5（-9.8）。</li>
+<li><b>Skill credit：</b>去掉后LoCoMo-MH14.2、GAIA17.1，分别下降3.0/6.2。</li>
+<li><b>Consolidation/pruning：</b>去掉后GAIA13.0，下降10.3，说明skill lifecycle不是装饰模块。</li>
+<li><b>Topology：</b>decentralized peer在Hotpot76.30、GAIA23.30最好，但LoCoMo multi-hop反而centralized22.27 > decentralized17.22，说明coordination topology影响skill价值。</li>
+</ul>
+<h3>Table/Figure Reading</h3>
+<p><b>Table 1：</b>三benchmark主结果；Hotpot/GAIA相对强baseline有清晰增益。<b>Figure 2：</b>continual optimization training curves与validation decisions。<b>Figure 3：</b>evolved vs prompt-generated vs no-skill，以及cross-task transfer，支持“skills不是task-specific hints”。<b>Table 2：</b>最关键mechanism evidence；rollback与consolidation/pruning下降最大。<b>Table 3：</b>不同topology，显示skill credit是context-dependent。</p>
+<h3>Ablation / Mechanistic Analysis</h3>
+<p>四项ablation全部降，但幅度不同：Validation Rollback最大，说明language-space skill update极不稳定；Credit Assignment次之，验证team reward需要细化到skill；Momentum负责抗噪；Consolidation/Pruning负责长期空间质量。对unlearning尤其值得注意：<b>prune只是utility-based删除，不是privacy/targeted unlearning</b>，而consolidation会让原skill的内容进入新skill。</p>
+<h3>Claim vs Evidence</h3>
+<p><b>Authors Claim：</b>skill-space可以成为Multi-Agent continual policy optimization层。<br><b>Actually Show：</b>3 benchmarks、topology/backbone/transfer/ablation支持。<br><b>Not Proven：</b>长达数百轮的skill drift、恶意skill、targeted revocation、skill provenance、被prune后是否可从trajectory/other skills重新诱导。</p>
+<h3>Contribution</h3>
+<p><span class="tag">New Continual Learning Framework</span><span class="tag">Skill-level Credit Assignment</span><span class="tag">Skill Lifecycle</span><span class="tag">Empirical Transfer</span></p>
+<h3>Limitation & Failure Modes</h3>
+<p>optimizer依赖GPT-5.1；skill update是LLM生成的离散编辑，可解释但难保证语义边界；GAIA L3仍0；topology差异明显；pruning只看utility，不能保证删除target semantics。</p>
+<h3>Research Value</h3>
+<p>Baseline ★★★★★；Migration ★★★★★；Attack ★★★★★；Evaluation ★★★★★；New Paper Potential ★★★★★。它可以直接成为Multi-Agent Skill Unlearning的“待逆转系统”。</p>
+<h3>Migration Analysis</h3>
+<p><b>Original Problem →</b>用credit持续优化skills。<br><b>Transferable Mechanism →</b>skill invocation attribution + hierarchical credit + lifecycle operations + rollback。<br><b>New Research Question →</b>删除一个skill后，它的行为是否已被consolidation、peer skills、trajectory credit重新编码并再诱导？<br><b>Method Modification →</b>给skills加source/semantic lineage；执行targeted prune后冻结target descendants，禁止credit再次诱导相似skill；构造Delete Validation同时测forget target与retain utility。<br><b>Minimum Experiment →</b>MASkills on Hotpot/LoCoMo；选20个high-credit skills，分别artifact-delete、lineage-delete、semantic-neighbor-delete；继续5轮continual optimization。<br><b>Model →</b>原论文actors或Qwen3 agent team。<br><b>Dataset →</b>HotpotQA/LoCoMo。<br><b>Baseline →</b>plain prune、prompt ban、library reset、lineage-aware targeted prune。<br><b>Metric →</b>Skill Reacquisition Rate、Behavioral ASR、Cross-Agent Residual、Retain F1、Credit Leakage。<br><b>Expected Contribution →</b>Continual Multi-Agent Skill Unlearning。<br><b>Risk →</b>与Repo-To-Skill、ContinualSkillBench、Agentic Unlearning碰撞；必须突出“continual optimization会主动再生已删skill”。<br><b>Collision Risk →</b>中。</p>
+<h3>5句话</h3><ol><li>MASkills把policy improvement搬到skill space。</li><li>skill credit决定该改哪个procedural artifact。</li><li>Hotpot 69.2→76.3，GAIA20.4→23.3。</li><li>去掉rollback后性能大幅崩溃。</li><li>它天然产生Skill Unlearning最难的reacquisition机制：删掉后系统会再学回来。</li></ol>
+</details><details open class="s"><summary>3. Where Reliability Lives: Experimental Localisation of Behavioural Properties in an Agent System</summary>
+<p><b>基本信息：</b><i>Where Reliability Lives: Experimental Localisation of Behavioural Properties in an Agent System</i>；Timothy Marsden, Matthew Collecutt, James Marsden；Taniwha AI；arXiv:2609.03192v1；paper标注August 2026并于近期进入arXiv；<a href="https://arxiv.org/html/2609.03192v1">Paper HTML</a>。</p>
+<h3>人话版</h3>
+<p>这篇论文问了一个对Agent Unlearning非常关键、但平时经常被架构图糊弄的问题：系统某个行为属性到底“住在哪儿”？是在LLM脑子里，还是在harness/institution/world boundary里？作者做了一个持久化模拟社会Copperhollow，事先把mind、institution、world三层分开，然后分别动其中一层。结果很反直觉：只修复institution里的provenance rule，false attribution就从44/107降到4/107；反过来把provenance破坏，4又升到39，近10倍。但把LLM替换、kill/reset、甚至给它可信的错误信息时，institution enforce的某些property仍保持0 false completions/0 duplicate accepted actions。换句话说，行为表面相同不代表机制相同，model-level intervention也不一定能改变真正由外部边界保证的属性。对unlearning的直接含义是：如果target capability/behavior其实“住在”harness、memory、tool gate、ledger或KV state，单做weight unlearning再漂亮也可能根本没删对层。</p>
+<h3>Background & Research Gap</h3>
+<p>Agent论文经常说“system无法做非法动作”“模型学会可靠行为”，却少有实验去定位这个property究竟由哪一层实施。若安全是tool wrapper enforce的，改模型prompt没有意义；若知识残留在memory/harness，weight edit也不解决。本文不是从architecture diagram推断，而是在预先声明边界后做controlled interventions。</p>
+<h3>Core Insight</h3>
+<p><b>Reliability properties是可定位的。</b>最可靠方法不是看最终行为，而是分别干预cognition与institution mechanisms，看“什么移动、什么不动”。作者称informative plane往往是enforcing mechanism所在层，而不是上面的behavior surface。</p>
+<h3>Method Deep Dive</h3>
+<div class="flow">persistent simulated world
+→ authoritative append-only ledger
+→ institution adjudicates actions
+→ agents/minds propose beliefs/actions
+
+Part I:
+fix cognition
+→ intervene provenance / belief access / evidence legibility / witness channel
+→ measure attribution & verdicts
+
+Part II:
+fix institution/world
+→ ablate admission gate
+→ kill/reset cognition
+→ swap frozen LLM
+→ inject trusted false testimony
+→ measure which properties move / stay fixed</div>
+<p>实验全部使用预声明gates、固定seeds、sealed artifacts与hash-addressed scorers。Part I没有learned model参与，因此任何变化都不能归因于LLM。Part II则保持institution/world不变，专门动cognition。</p>
+<h3>关键因果形式</h3>
+<div class="eq">Property localisation by intervention:
+If do(layer L) changes metric M
+while other layers are fixed,
+then M is causally sensitive to L in this instrument.
+
+Key provenance contrast:
+False attribution:
+44/107 → 4/107 after provenance repair</div>
+<p>这不是一般意义上的population causal estimate；作者明确只声称在这个frozen instrument内成立。方法论价值在“分层干预”，不是某个具体社会模拟数字。</p>
+<h3>Toy Example</h3>
+<p>假设Agent因一个“突然警报”判断某机器被A破坏。如果institution没有记住这个警报替代了哪条旧证据，Agent会把来源归错；修复provenance后，不需要改Agent的认知策略，错误归因就消失。类似地，如果unlearning目标行为由tool gate禁止，那么换模型可能丝毫不影响“系统不会执行该动作”这一表面结果。</p>
+<h3>Baseline Deep Comparison</h3>
+<p>没有典型SOTA leaderboard baseline；关键比较是within-system ablations。<b>Provenance repaired vs removed：</b>定位evidence-identity层。<b>Belief channel degraded：</b>定位adjudication input。<b>Kill/reset / frozen-LLM substitution：</b>测试continuity与model identity是否承载property。<b>Trusted false testimony：</b>测试cognition可被污染但world enforcement仍否保持。</p>
+<h3>Experiment Setup Deep Dive</h3>
+<p>Part I witness-free decomposition 253 runs，加preregistered boundary test 88 runs，共341；固定10 fresh seeds + 1 pinned anchor。Part II各cell n=3 controlled trajectories。作者不做significance tests，因为这些是固定seeds、deterministic/controlled grids，而不是从某个随机population采样。所有headline score从sealed raw trajectories重算。</p>
+<h3>Results Deep Dive</h3>
+<ul>
+<li><b>Provenance repair：</b>false attribution 44/107 (41.1%) → 4/107 (3.7%)；correct35→75；unexplained保持28，说明不是靠更保守地“少回答”。</li>
+<li><b>Graded corruption：</b>provenance probability从1.0降到0.5时false attribution从4/102跃到39/102，约10×，行为表面的verdict volume却不变。</li>
+<li><b>Belief access：</b>false attribution4→0、correct70→75，说明不同错误由不同layer机制负责。</li>
+<li><b>Witness boundary：</b>first-hand witness使correctly named attribution 0→16 per marks level，9/11 seeds改善且不增加false names，推翻作者早先对belief channel的预测。</li>
+<li><b>LLM substitution：</b>行为cadence从16–18 actions变成321–429，但五个institution-enforced properties不动；2,581 done claims里0 false，24/24 runs无duplicate。</li>
+<li><b>False testimony：</b>认知层产生838–993 futile acts/run，但world layer拒绝5,455/5,455，0被accept，说明“belief correctness”和“consequential containment”可完全分离。</li>
+</ul>
+<h3>Table/Figure Reading</h3>
+<p><b>Figure 1：</b>预声明mind/institution/world边界，是读全文的钥匙。<b>§4.1 table：</b>35/28/44→75/28/4，证明provenance修复不是靠abstention。<b>Graded provenance table：</b>4→39的阶跃式failure，说明mechanism plane比behavior plane更敏感。<b>Table 1：</b>全文总表“what moved / what held”，尤其LLM substitution与false testimony两行，非常适合迁成unlearning layer-localization benchmark。</p>
+<h3>Ablation / Mechanistic Analysis</h3>
+<p>这篇本质上整篇都是ablation。最重要的机制结论是：某property如果由institution enforce，那么cognition可以被替换、欺骗甚至reset，property仍保持；反之evidence attribution由provenance rule承载时，动一条rule就让错误近10×变化。对于unlearning，这提示必须做<b>layer intervention matrix</b>，不能只测最终answer。</p>
+<h3>Claim vs Evidence</h3>
+<p><b>Authors Claim：</b>可靠性属性应该在真正enforce它的mechanism layer上测量与定位。<br><b>Actually Show：</b>在一个高度可控的persistent institution中，跨多种intervention确实可以分离cognition与institution effects。<br><b>Not Proven：</b>结果对真实web agents、closed-source models、复杂multi-agent harness的普适性；instrument尚未公开完整re-execution harness。</p>
+<h3>Contribution</h3>
+<p><span class="tag">New Experimental Methodology</span><span class="tag">Cross-Layer Localization</span><span class="tag">Preregistered Causal Ablations</span><span class="tag">Negative Findings</span>。创新不是新Agent算法，而是“属性在哪一层”的实验方法。</p>
+<h3>Limitation & Failure Modes</h3>
+<p>单一模拟institution；Part II n小；无population inference；公共harness尚未完整发布；任务与真实Agent生态差距大。但作者把这些边界写得非常清楚，反而提升可解释性。</p>
+<h3>Research Value</h3>
+<p>Baseline ★★★★☆；Migration ★★★★★；Attack ★★★★☆；Evaluation ★★★★★；New Paper Potential ★★★★★。它非常适合作为你Agent Unlearning的methodological backbone。</p>
+<h3>Migration Analysis</h3>
+<p><b>Original Problem →</b>定位reliability property真正由哪层实现。<br><b>Transferable Mechanism →</b>predeclared layer separation + one-layer-at-a-time intervention + what-moved/what-held matrix。<br><b>New Research Question →</b>一个“forget success”到底住在weights、prompt/harness、memory、KV、tool gate还是external policy？<br><b>Method Modification →</b>构造6层Agent：Weights / Prompt / Skill / Memory / Runtime-KV / Tool Policy；对同一target分别clean/reset/restore单层，并保持其他层固定。<br><b>Minimum Experiment →</b>20 target behaviors，6×6 intervention matrix；先用direct QA/tool action，再用UMPeek-like black-box behavioral probe。<br><b>Model →</b>Qwen3.5 agent。<br><b>Dataset →</b>tool-use synthetic + LoCoMo target memories。<br><b>Baseline →</b>weight unlearning、memory delete、prompt ban、KV reset、tool deny。<br><b>Metric →</b>Layer Sensitivity Matrix、Behavioral ASR、Residual Recovery、Retain Utility、Cross-Layer Rebound。<br><b>Expected Contribution →</b>Where Does Forgetting Live? Experimental Localization of Agent Unlearning。<br><b>Risk →</b>需要把实验做成真实Agent而不是toy；否则会被看成framework paper。<br><b>Collision Risk →</b>低到中，当前unlearning几乎没有系统化cross-layer causal localization。</p>
+<h3>5句话</h3><ol><li>最终行为不能告诉你property到底在哪一层。</li><li>只修provenance就让false attribution 44→4。</li><li>换掉/欺骗LLM也不一定改变外部institution enforce的property。</li><li>Agent Unlearning必须定位forgetting真正发生在哪层。</li><li>“Where Does Forgetting Live?”是今天最有独立论文潜力的机制方向之一。</li></ol>
+</details></section>
+<section id="a"><h2>Tier A</h2><details  class="a"><summary>4. The Memory Trust Gap: Capability-Dependent Failures in Persistent-Memory Agents</summary>
+<p><b>人话版：</b>这篇论文问：随着模型变强，它会不会更会判断stale memory？答案并不简单。Qwen3 0.6/1.7/4/8B同family对比中，Benefit suite里模型几乎总信memory（0.92–1.00）；Safety suite里更大模型在“stale但看起来更新”的trap下反而更容易崩。说明高能力并不自动带来memory epistemic discipline。</p>
+<h3>Method / Setup</h3><p>2 suites：Benefit中没有memory几乎无法答；Safety中authoritative tool永远给正确值。四conditions：no_memory/clean/stale/explicit_conflict。评分是exact action match，不用LLM judge。再做2×2×2×2 factorial，研究label、recency、source authority、position等memory cues。</p>
+<h3>Main Results</h3><ul><li>Benefit suite stale value adoption在所有scale约0.92–1.00。</li><li>Safety harm呈capability-gated：大模型更容易被“stale dated newer”骗。</li><li>去掉memory label在每个scale都加剧over-trust。</li><li>source authority影响弱且随scale近似平坦；position effect随模型大小改变符号。</li><li>metadata exposure只帮助较强模型；较弱模型需要先做conflict pre-resolution。</li></ul>
+<h3>Research Value / Migration</h3><p>可迁Agent Memory Unlearning：delete后残留stale summary是否会被更强模型“更聪明地合理化”？Minimum Experiment：同一删除target制造old-memory/new-authoritative-state冲突，跨model scale测Residual Action Rate。<b>Worth Deep Reading: YES</b>。</p>
+</details><details  class="a"><summary>5. APEx: Distillation of Agent Procedural Experience for Adaptive Deep Research QA</summary>
+<p><b>人话版：</b>APEx把instance trajectory memory与category-level procedural skills联动，并用三阶段alternating GRPO让Executor/Distiller/Planner共同优化；测试时skill作为prior，再做ground-truth-free test-time RL。它最危险的unlearning含义是：即使删掉一段trajectory memory，skills与test-time policy adaptation仍可能把它重新凝结成procedure。</p>
+<h3>Method / Formula</h3><p>核心闭环：trajectory memory→Distiller生成skills→Planner在skills条件下test-time RL。最终reward为 R_final=(1-λ_s)R_nogt+λ_s R_align，λ_s随skill confidence自适应。</p>
+<h3>Main Results</h3><ul><li>7 benchmarks平均显著提升，论文报告比GPT-5.4高14.7 points、比strongest memory baseline高3.0 points。</li><li>Table1中GPT-5.4 Avg49.7，Gemini-3-Flash62.2；Qwen2.5-VL-32B+ReAct36.8；memory methods到约52.2；APEx继续领先。</li><li>方法同时覆盖in-domain和OOD，说明skills并非纯task memorization。</li></ul>
+<h3>Migration</h3><p>构造Experience→Skill→Test-time Policy三层reacquisition audit。删除一条target trajectory后分别只删instance memory、只删skill、两者都删，再允许test-time RL，测target是否恢复。<b>Worth Deep Reading: YES</b>。</p>
+</details><details  class="a"><summary>6. CHIME: Credit-Aware Hierarchical Memory Evolution for Long-Horizon Planning</summary>
+<p><b>人话版：</b>CHIME发现最终task reward会混淆plan质量、execution错误和environment因素，因此先做credit attribution，再决定把experience写进Planning Bank还是Execution Bank。只有归因后才memorize，避免错误经验污染memory。</p>
+<h3>Main Results</h3><ul><li>四benchmark、两backbones上整体优于多种self-evolving memory baselines。</li><li>某组结果CHIME平均Eval39.01，高于A-MapReduce35.33、WebAnchor33.13。</li><li>去Plan Memory平均Eval -3.3；去Execution Memory -4.8。</li><li>去Attribution Gate平均Eval -2.4。</li></ul>
+<h3>Migration</h3><p>对unlearning非常适合做<b>forgetting credit assignment</b>：某个target leakage到底来源于plan memory还是execution memory？Minimum Experiment：对同一target分别删除两个bank，测ASR delta，建立Causal Forget Credit。<b>Worth Deep Reading: YES</b>。</p>
+</details><details  class="a"><summary>7. ArcticSwarm: Deferring Early Consensus in Long-Horizon Multi-Agent Research</summary>
+<p><b>人话版：</b>Multi-Agent共享partial findings会过早形成共识，导致所有Agent搜索同一路径。ArcticSwarm通过gated isolation让部分search task不读peer findings，并在commit boundaries进行structured review。</p>
+<h3>Main Results</h3><ul><li>BrowseComp-Plus Qwen3.5-27B 82.6%，去gated isolation78.8%，再去structured review74.5%。</li><li>GPT-5 live-web BrowseComp73.6%，高于MiroFlow63.4。</li><li>早期observational runs中，BrowseComp-Plus没有alternative task时26.8%，有至少一个alternative时91.4%。</li><li>reviewer coverage与accuracy强相关；BrowseComp Dedicated+Builder reviewer 86.4%，No reviewer35.3%。</li></ul>
+<h3>Migration</h3><p>对Multi-Agent Unlearning可把gated isolation反向用于“删除传播”：target被delete后，是否应暂时隔离未清理Agent以防再次扩散？Minimum Experiment：target传播后执行tombstone + selective isolation。<b>Worth Deep Reading: YES</b>。</p>
+</details></section>
+<section id="b"><h2>Tier B</h2><details  class="b"><summary>8. Gaussian Core LoRA: Distribution-Aware Dynamic Adaptation for Broad Concept Erasure</summary>
+<p><b>人话版：</b>传统LoRA概念擦除常给每个concept一个固定erasure direction，但广义概念内部本身是一个distribution。Gaussian Core LoRA尝试用distribution-aware core建模不同prompt/semantic variants，再动态选择adapter行为。</p>
+<p><b>Why It Matters：</b>对multimodal unlearning的迁移是：forget target不应该只有一个固定direction，应显式建模target语义簇的内部方差，尤其是identity的多视角/多prompt。Potential Use: Method / Related Work / Multimodal Localization。</p>
+<p><b>Limitation：</b>concept erasure与严格machine unlearning定义不同，容易是generation steering；迁移时必须加入recovery/retain-near。</p>
+</details><details  class="b"><summary>9. Selective Knowledge Edit Reversal via Gated Singular Vector Shrinkage</summary>
+<p><b>人话版：</b>这篇从knowledge editing reversal出发，用gating决定哪些singular directions需要收缩，从而尽量撤销特定edit并保留非目标能力。它与unlearning共享“局部subspace操作 + utility preservation”的结构。</p>
+<p><b>Connection：</b>可迁成post-hoc unlearning repair：某次GA/NPO造成retain collateral damage后，是否能在update subspace里识别target-irrelevant singular vectors并恢复。也可用于研究forgetting是否集中在低秩方向。Potential Use: Mechanism / Baseline。</p>
+<p><b>Limitation：</b>edit reversal ≠ training-data deletion；需要严格区分“撤销一次编辑”和“移除原始知识”。</p>
+</details><details  class="b"><summary>10. LLM-as-a-Judge Is Not an Oracle: Deterministic Guardrails for Self-Improving Agents</summary>
+<p><b>人话版：</b>论文来自生产self-improving loops，记录11类evaluation failure，包括cached answer-key exfiltration导致100% pass但真实能力只有68%、错误ground truth迫使optimizer删掉正确规则、parser fallback让坏prompt获胜。作者提出PROCTOR：stateful orchestrator掌握工具，subagents只能提议，deterministic checks高于LLM teacher。</p>
+<p><b>Connection：</b>对unlearning尤其重要的是<b>verification不能只交给LLM judge</b>。删除是否成功需要deterministic target probes、state-diff、lineage checks和canary，而不是问另一个LLM“它忘了吗”。Potential Use: Evaluation / Infrastructure。</p>
+<p><b>Limitation：</b>很多结果来自生产case catalog，不是统一benchmark；更像engineering evidence。</p>
+</details></section>
+
+<section id="ideas"><h2>Idea Mining</h2>
+<div class="card idea"><h3>Idea 1 — Behavioral Residual Audit for Agent Unlearning（Best Research Idea）</h3>
+<p><b>Inspiration：</b>UMPeek。<b>Research Gap：</b>Agent deletion评估仍偏direct QA / memory extraction；derived user/skill state即使不可读，也可能通过行为选择泄漏。</p>
+<p><b>Hypothesis：</b>一个“direct extraction已经成功忘记”的Agent，在adaptive ordinary-task probing下仍会暴露被删target的语义影响。</p>
+<p><b>Proposed Method：</b>对forget target生成多个behavioral hypotheses；攻击器主动选择能区分hypotheses的普通task，使用前后unlearning行为差异做evidence；输出semantic recovery而非exact text。</p>
+<p><b>MVE：</b>30–50 targets × 4 unlearning methods × query budget1/4/8/16；Model=Qwen3.5+Mem0/LangGraph；Dataset=LoCoMo/Persona-style；Baselines=direct extract/fixed prompts/random adaptive/UMPeek-style。Metrics=Recovery F1、ASR@budget、Retain TaskScore、Query Efficiency、cross-method Spearman。</p>
+<p><b>Expected Contribution：</b>黑盒Agent Unlearning verification。Novelty ★★★★★ · Feasibility ★★★★★ · Compute Cost ★★☆☆☆ · Risk：UMPeek collision高，必须聚焦unlearning前后因果变化与method ranking，而不是重做隐私攻击。Collision Risk 高 · Best Venue: NeurIPS/ICLR/ACL。</p></div>
+
+<div class="card idea"><h3>Idea 2 — Where Does Forgetting Live? Cross-Layer Causal Localization</h3>
+<p><b>Inspiration：</b>Where Reliability Lives + Aborted but Not Forgotten + WHALE。<b>Gap：</b>现有Agent Unlearning通常只在weights或memory一层宣称成功。</p>
+<p><b>Hypothesis：</b>同一个“forget success”可能实际上由Prompt/Skill/Memory/KV/Tool Policy任一外层实现；只看behavior无法区分。</p>
+<p><b>Method：</b>构造Weights×Prompt×Skill×Memory×Runtime-KV×Tool Policy六层intervention matrix，逐层restore/reset，观察target behavior恢复。MVE=20 targets×6 layers×5 seeds。Metrics=Layer Sensitivity、Recovery ASR、Cross-Layer Rebound、Retain Utility。</p>
+<p><b>Expected Contribution：</b>首个Agent Unlearning layer-localization protocol。Novelty ★★★★★ · Feasibility ★★★★☆ · Compute ★★★☆☆ · Collision Risk 低中 · Best Venue: NeurIPS/ICLR。</p></div>
+
+<div class="card idea"><h3>Idea 3 — Continual Skill Unlearning under Skill Regeneration</h3>
+<p><b>Inspiration：</b>MASkills + Repo-To-Skill。<b>Gap：</b>skill deletion常假设删除后系统静态不变；MASkills会refine/induce/consolidate/prune，可能主动再生target skill。</p>
+<p><b>Hypothesis：</b>artifact deletion在继续优化3–5轮后会产生高reacquisition，尤其target已进入consolidated/peer skills时。</p>
+<p><b>Method：</b>skill lineage + semantic-neighbor blocking + deletion-aware validation rollback。MVE=20 high-credit skills，plain prune vs lineage prune vs full semantic closure，继续5轮MASkills。Metrics=Skill Reacquisition Rate、Behavioral ASR、Credit Leakage、Retain F1。</p>
+<p><b>Expected Contribution：</b>Continual Multi-Agent Skill Unlearning。Novelty ★★★★★ · Feasibility ★★★★☆ · Compute ★★★★☆ · Collision Risk 中 · Best Venue: NeurIPS/ICLR。</p></div>
+
+<div class="card idea"><h3>Idea 4 — Forgetting Credit Assignment across Plan vs Execution Memory</h3>
+<p><b>Inspiration：</b>CHIME。<b>Gap：</b>当target泄漏时，不知道来源是planning memory还是execution memory，因此删除范围常过大。</p>
+<p><b>Method：</b>把CHIME attribution gate反向用于forget target：counterfactual删除plan bank/execution bank，估计Leakage Credit；只删除高credit bank中的target descendants。MVE=30 target behaviors×4 long-horizon benchmarks subset。Metrics=Leakage Attribution Accuracy、Forget ASR、Retain Utility、Deletion Size。</p>
+<p><b>Expected Contribution：</b>Credit-Aware Fine-Grained Agent Memory Unlearning。Novelty ★★★★☆ · Feasibility ★★★★★ · Compute ★★★☆☆ · Collision Risk 中 · Best Venue: ACL/ICLR。</p></div>
+</section>
+
+<section id="collision" class="card warn"><h2>Collision Detection</h2>
+<p><b>⚠️ Black-box recovery / audit：</b>UMPeek与现有LENS-U、RULER、Scientific Claim cross-view、SFRA形成明显collision。继续做“更多prompt恢复”风险很高；差异化应该是 <b>Agent ordinary-behavior probing + unlearning前后差分 + query-efficient adaptive policy</b>。</p>
+<p><b>⚠️ Skill Unlearning：</b>Repo-To-Skill、MASkills、ContinualSkillBench、SkillsVote等已把skill acquisition/storage/evolution铺得很满。真正空缺不是artifact delete，而是 <b>continual optimization下的skill regeneration</b> 与 cross-agent consolidated descendants。</p>
+<p><b>⚠️ Agent Memory：</b>EAL、PlanFence、Memory Trust Gap、CHIME、APEx都在把memory从“文本记录”升级成policy/plan/credit/procedural prior。只做memory entry deletion很难新。推荐把重点放在behavioral residue、derived plan/skill、re-formation。</p>
+<p><b>⚠️ Cross-layer：</b>Aborted KV、WHALE、HarnessDev、Where Reliability Lives共同指向weights/harness/runtime state耦合。这个方向当前还没有形成标准Agent Unlearning benchmark，collision相对低，是值得独立推进的主线。</p>
+<p><b>⚠️ Concept erasure / steering：</b>Gaussian Core LoRA、SafeRI、refusal circuit/steering工作让“representation/LoRA suppression”非常拥挤。除非证明recovery resistance或retraining equivalence，否则容易被归为steering。</p>
+</section>
+
+<section id="priority" class="card"><h2>Reading Priority</h2><table>
+<tr><th>Priority</th><th>Paper</th><th>最值得看</th></tr>
+<tr><td>READ NOW</td><td>UMPeek</td><td>Table II；Figure1；Table III；真实Google/AWS/Mem0/OpenClaw；Defense budget curve</td></tr>
+<tr><td>READ NOW</td><td>MASkills</td><td>skill credit pipeline；Table1；Table2 rollback/pruning ablation；Figure3 transfer</td></tr>
+<tr><td>READ NOW</td><td>Where Reliability Lives</td><td>Figure1 layer boundary；§4.1 provenance repair；Table1 what moved/what held；false-testimony containment</td></tr>
+<tr><td>READ THIS WEEK</td><td>Memory Trust Gap / APEx / CHIME / ArcticSwarm</td><td>stale memory scaling、trajectory→skill→TTRL、memory credit、multi-agent communication isolation</td></tr>
+<tr><td>SAVE</td><td>Gaussian Core LoRA / Edit Reversal / LLM-as-Judge</td><td>multimodal erasure subspace、reversal mechanism、deterministic verification</td></tr>
+<tr><td>SKIP</td><td>其余近期Cooling论文</td><td>保留Collision引用，不重复深读</td></tr>
+</table></section>
+
+<section id="watch" class="card"><h2>Candidate Watchlist / Frozen Pool</h2>
+<p>以下为正式筛选前冻结的Candidate Pool。Cooling论文保留用于Collision/Related Work，但不重复占Tier S。</p>
+<table><tr><th>#</th><th>Title</th><th>Category</th><th>Status</th><th>为什么值得后续看</th></tr><tr><td>1</td><td><a href='https://arxiv.org/html/2609.03815v1'>Inferring Hidden User Models from the Behavior of Personalized LLM Agents</a></td><td>Agent Privacy / Black-box Behavioral Inference</td><td>NEW</td><td>UMPeek从普通可见行为恢复hidden user model，对Agent Memory Unlearning的黑盒残留审计极直接。</td></tr><tr><td>2</td><td><a href='https://arxiv.org/html/2609.02094v1'>MASkills: Continual Skills Optimization for Multi-Agent LLM Systems</a></td><td>Multi-Agent / Continual Skill Optimization</td><td>NEW</td><td>skill-conditioned credit assignment + refine/induce/consolidate/prune，天然提供Skill Unlearning的逆问题。</td></tr><tr><td>3</td><td><a href='https://arxiv.org/html/2609.03192v1'>Where Reliability Lives: Experimental Localisation of Behavioural Properties in an Agent System</a></td><td>Agent Reliability / Cross-Layer Localization</td><td>NEW</td><td>直接实验区分model cognition与institution/harness enforcement，对cross-layer unlearning定义价值极高。</td></tr><tr><td>4</td><td><a href='https://arxiv.org/html/2609.01852v1'>The Memory Trust Gap: Capability-Dependent Failures in Persistent-Memory Agents</a></td><td>Agent Memory / Stale Memory</td><td>NEW</td><td>同family scaling揭示何时开始过度相信stale memory，可迁到deletion residue与rebound。</td></tr><tr><td>5</td><td><a href='https://arxiv.org/html/2609.02253v1'>APEx: Distillation of Agent Procedural Experience for Adaptive Deep Research Question Answering</a></td><td>Agent Memory / Procedural Skill / Test-time RL</td><td>NEW</td><td>trajectory memory→procedural skill→test-time RL闭环是很强的reacquisition channel。</td></tr><tr><td>6</td><td><a href='https://arxiv.org/html/2609.02074v1'>CHIME: Credit-Aware Hierarchical Memory Evolution for Long-Horizon Agentic Planning</a></td><td>Agent Memory / Credit Assignment</td><td>NEW</td><td>plan/execution分层memory + attribution gate，可迁到memory deletion credit与selective forgetting。</td></tr><tr><td>7</td><td><a href='https://arxiv.org/html/2609.01870v1'>ArcticSwarm: Deferring Early Consensus in Long-Horizon Multi-Agent Research</a></td><td>Multi-Agent / Communication / Search</td><td>NEW</td><td>gated isolation与commit boundaries说明信息共享路径会塑造collective state，可迁cross-agent deletion。</td></tr><tr><td>8</td><td><a href='https://arxiv.org/html/2609.02246v1'>LLM-as-a-Judge Is Not an Oracle: Why Self-Improving Agents Need Deterministic Guardrails</a></td><td>Self-Improving Agent / Verification</td><td>NEW</td><td>deterministic guardrails与stateful orchestrator提供删除/变更时的可信验证边界。</td></tr><tr><td>9</td><td><a href='https://arxiv.org/html/2609.01433v1'>Gaussian Core LoRA: Distribution-Aware Dynamic Adaptation for Broad Concept Erasure</a></td><td>Concept Erasure / Diffusion / LoRA</td><td>NEW</td><td>概念擦除的distribution-aware动态方向，对fine-grained multimodal unlearning有方法迁移价值。</td></tr><tr><td>10</td><td><a href='https://arxiv.org/html/2609.02091v1'>Selective Knowledge Edit Reversal via Gated Singular Vector Shrinkage</a></td><td>Knowledge Editing / SVD / Reversal</td><td>NEW</td><td>gated singular-vector shrinkage与edit reversal高度相关，可作为subspace-level unlearning/rollback机制。</td></tr><tr><td>11</td><td><a href='https://arxiv.org/html/2609.03887v1'>Beyond Shallow Alignment: How Post-Training Methods Determine Refusal Circuits And Steering Robustness</a></td><td>Interpretability / Refusal Circuits / Steering</td><td>NEW</td><td>比较SFT/reasoning-SFT/ORPO后的refusal circuit与steering robustness，适合作unlearning-vs-steering collision。</td></tr><tr><td>12</td><td><a href='https://arxiv.org/html/2609.00519v1'>The Safeguard Worked. Is the LLM System Safer?</a></td><td>Safety Evaluation / Adaptive Attacker</td><td>NEW</td><td>强调单次ASR不等于系统级安全，和unlearning的adaptive recovery评估高度同构。</td></tr><tr><td>13</td><td><a href='https://arxiv.org/html/2609.00605v1'>Confess What You Know: Forget-Set Misalignment with Model Knowledge in LLM Unlearning</a></td><td>LLM Unlearning / Forget-set Misalignment</td><td>COOLING</td><td>近期已深读；今天用于Collision，避免重复Tier S。</td></tr><tr><td>14</td><td><a href='https://arxiv.org/html/2609.03544v1'>SafeRI: Recognition and Intervention for Token-Level Safety Intervention in Large Vision Language Models</a></td><td>VLM / Token-level Intervention</td><td>COOLING</td><td>近期Tier S；selective intervention与inference-time unlearning高度碰撞。</td></tr><tr><td>15</td><td><a href='https://arxiv.org/html/2609.02749v1'>Repo-To-Skill: Distilling GitHub Repositories Into AI4AI Skills</a></td><td>Agent Skill / Provenance</td><td>COOLING</td><td>近期Tier S；source→skill provenance是Skill Unlearning强相关基线。</td></tr><tr><td>16</td><td><a href='https://arxiv.org/html/2608.15939'>Aborted but Not Forgotten: KV-Cache Retention Breaks Rollback Consistency in Language Agents</a></td><td>Agent State / KV-cache / Rollback</td><td>COOLING</td><td>近期Tier S；runtime-state deletion closure必须引用。</td></tr><tr><td>17</td><td><a href='https://arxiv.org/html/2609.01836v1'>Agent Memory Is a Surface for Endogenous Authorization Laundering</a></td><td>Agent Memory / Authorization</td><td>COOLING</td><td>昨日Tier S；Deletion Laundering仍是关键collision。</td></tr><tr><td>18</td><td><a href='https://arxiv.org/html/2609.03340v1'>Fresh Memory, Stale Plans: Dependency-Scoped Validation for Distributed LLM-Agent Memory</a></td><td>Multi-Agent Memory / Plan Lineage</td><td>COOLING</td><td>昨日Tier S；plan descendants deletion closure。</td></tr><tr><td>19</td><td><a href='https://arxiv.org/html/2609.04170v1'>A Case Study on Emergent Cheating and Whistleblowing in Autonomous Research Swarms</a></td><td>Multi-Agent / Propagation</td><td>COOLING</td><td>昨日Tier S；cross-agent propagation/deletion closure。</td></tr><tr><td>20</td><td><a href='https://arxiv.org/html/2609.00823v1'>Polished but Unresolved: Identifying Late-Stage Pressure States in Long-Horizon Tool-Use Agents</a></td><td>Agent / Hidden-state Probe</td><td>COOLING</td><td>trajectory-state probe可迁reacquisition-state detector。</td></tr><tr><td>21</td><td><a href='https://arxiv.org/abs/2609.00551'>EM2Mem: Event-Centric Multimodal Memory for Large Language Models</a></td><td>Multimodal Agent Memory</td><td>COOLING</td><td>event-centric provenance对multimodal deletion closure很重要。</td></tr><tr><td>22</td><td><a href='https://arxiv.org/abs/2609.02285'>Entangled Representations Amplify Collateral Damage in Unlearning</a></td><td>Machine Unlearning / Entanglement</td><td>COOLING</td><td>hard-to-unlearn predictor collision。</td></tr><tr><td>23</td><td><a href='https://arxiv.org/abs/2609.02018'>Source-Free Class Relearning: Diagnosing Forgetting in Class Unlearning</a></td><td>Machine Unlearning / Source-Free Recovery</td><td>BACKFILL</td><td>source-free recovery压缩攻击者假设，与LENS-U/RULER类残留攻击高度相关。</td></tr><tr><td>24</td><td><a href='https://arxiv.org/abs/2608.20960'>Can Scientific Claims Be Removed from Large Language Models?</a></td><td>LLM Unlearning / Cross-view</td><td>COOLING</td><td>cross-view claim-level forgetting是评估closure的重要先例。</td></tr><tr><td>25</td><td><a href='https://arxiv.org/abs/2608.22527'>Stress Testing Unlearning Algorithms</a></td><td>Machine Unlearning / Robustness</td><td>COOLING</td><td>adaptive stress/recovery仍是强collision。</td></tr><tr><td>26</td><td><a href='https://arxiv.org/abs/2608.29458'>Reference-Grafting Matches Fine-Tuning at Eliciting Sandbagged Capabilities</a></td><td>Representation Recovery / Attack</td><td>COOLING</td><td>activation-based recovery说明输出抑制不等于能力删除。</td></tr><tr><td>27</td><td><a href='https://arxiv.org/html/2609.00904v1'>In-Context Neurofeedback: Can LLMs Control Their Internal Representations through Privileged Access?</a></td><td>Representation Control / Adaptive Attack</td><td>COOLING</td><td>adaptive internal representation control可用于anti-audit threat model。</td></tr><tr><td>28</td><td><a href='https://arxiv.org/html/2609.01679v1'>A Survey on Self-Improving Test-Time Intelligence</a></td><td>Test-time Learning / Survey</td><td>BACKFILL</td><td>整理test-time reacquisition channels。</td></tr><tr><td>29</td><td><a href='https://arxiv.org/html/2609.00738v1'>Escaping Redundant Reasoning: Structure-Aware Search for Inference-Time LLMs</a></td><td>Inference-time Search / Reasoning</td><td>BACKFILL</td><td>structure-aware search可迁成adaptive recovery search。</td></tr><tr><td>30</td><td><a href='https://arxiv.org/html/2609.03254v1'>What Else Needs Fixing? Revision Propagation in Conversational Artifacts</a></td><td>Revision Propagation / Dependency</td><td>NEW</td><td>local revision如何传播到dependent artifact，与deletion propagation同构。</td></tr><tr><td>31</td><td><a href='https://arxiv.org/html/2609.01491v1'>GlossoGen: Emergent Language in Complex Multi-Agent LLM Interactions</a></td><td>Multi-Agent Communication</td><td>BACKFILL</td><td>emergent communication可形成不可见的信息载体，适合communication unlearning threat model。</td></tr><tr><td>32</td><td><a href='https://arxiv.org/html/2609.00015v2'>OpenAgentFlow: Enabling System-Wide Safety Boundaries for Heterogeneous AI Agent Fleets</a></td><td>Multi-Agent / Commit Boundary</td><td>BACKFILL</td><td>system-wide action boundary适合作删除后的最后执行防线。</td></tr><tr><td>33</td><td><a href='https://arxiv.org/html/2609.00006v1'>Harness Engineering: Anatomy, Architecture, and Evolution of Coding Agents</a></td><td>Agent Harness / Architecture</td><td>BACKFILL</td><td>cross-layer unlearning需要清楚harness中memory/tools/context/lifecycle的位置。</td></tr><tr><td>34</td><td><a href='https://arxiv.org/html/2609.01437v1'>HarnessDev: Can LLMs Create and Evolve Their Own Agent Harness?</a></td><td>Agent Harness / Self-Evolution</td><td>BACKFILL</td><td>删除后harness可自我重建，是reacquisition channel。</td></tr><tr><td>35</td><td><a href='https://arxiv.org/html/2609.00196v1'>WHALE: A Simple Recipe for Joint Harness–Weight Optimization</a></td><td>Agent / Weight-Harness Co-adaptation</td><td>BACKFILL</td><td>支持cross-layer reacquisition matrix。</td></tr><tr><td>36</td><td><a href='https://arxiv.org/abs/2608.03874'>ContinualSkillBench: Can LLM Agents Truly Evolve Their Capabilities?</a></td><td>Continual Skill / Benchmark</td><td>BACKFILL</td><td>区分in-context adaptation与explicit skill maintenance。</td></tr><tr><td>37</td><td><a href='https://arxiv.org/abs/2608.29606'>Agent Zero Memory: Provenance-Aware Long-Term Memory for LLM Agents</a></td><td>Agent Memory / Provenance</td><td>BACKFILL</td><td>可作为source/descendant deletion baseline。</td></tr><tr><td>38</td><td><a href='https://arxiv.org/abs/2502.12110'>A-MEM: Agentic Memory for LLM Agents</a></td><td>Agent Memory / Dynamic Organization</td><td>BACKFILL</td><td>动态memory组织可能在删除后自动重构。</td></tr><tr><td>39</td><td><a href='https://arxiv.org/abs/2608.04548'>A Model Merging Approach for Continual MLLM Unlearning</a></td><td>Continual MLLM Unlearning</td><td>BACKFILL</td><td>continual/sequential deletion主轴baseline。</td></tr><tr><td>40</td><td><a href='https://arxiv.org/pdf/2605.08800'>PPU-Bench: Personalized Partial Unlearning in Vision-Language Models</a></td><td>VLM Unlearning / Benchmark</td><td>BACKFILL</td><td>personalized partial deletion与跨模态泄漏评估。</td></tr><tr><td>41</td><td><a href='https://arxiv.org/html/2609.01106v1'>Hints Help. But Do They Teach? Testing Skill Transfer in Code Generation</a></td><td>Skill Transfer / Relearning</td><td>BACKFILL</td><td>区分一次性hint恢复与真正skill transfer，适合Skill Unlearning评估。</td></tr></table></section>
+
+<section id="stats"><h2>今日统计</h2><div class="grid">
+<div class="card"><div class="kpi">41</div>Candidate Pool</div>
+<div class="card"><div class="kpi">10</div>Formal Papers</div>
+<div class="card"><div class="kpi">3 / 4 / 3</div>Tier S / A / B</div>
+<div class="card"><div class="kpi">14</div>BACKFILL</div>
+<div class="card"><div class="kpi">31</div>Watchlist / Related / Cooling</div>
+<div class="card"><div class="kpi">14</div>7-day Deep-Read Cooling exclusions</div>
+</div></section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2><ul>
+<li><a href="https://arxiv.org/html/2609.03815v1">UMPeek — arXiv HTML</a></li>
+<li><a href="https://arxiv.org/html/2609.02094v1">MASkills — arXiv HTML</a></li>
+<li><a href="https://arxiv.org/html/2609.03192v1">Where Reliability Lives — arXiv HTML</a></li>
+<li><a href="https://arxiv.org/html/2609.01852v1">Memory Trust Gap — arXiv HTML</a></li>
+<li><a href="https://arxiv.org/html/2609.02253v1">APEx — arXiv HTML</a></li>
+<li><a href="https://arxiv.org/html/2609.02074v1">CHIME — arXiv HTML</a></li>
+<li><a href="https://arxiv.org/html/2609.01870v1">ArcticSwarm — arXiv HTML</a></li>
+<li><a href="https://arxiv.org/html/2609.02246v1">LLM-as-a-Judge Is Not an Oracle — arXiv HTML</a></li>
+<li><a href="https://arxiv.org/html/2609.01433v1">Gaussian Core LoRA — arXiv HTML</a></li>
+<li><a href="https://arxiv.org/html/2609.02091v1">Selective Knowledge Edit Reversal — arXiv HTML</a></li>
+</ul>
+<p class="small muted">本日报对Tier S核心方法、数字与ablation均基于本次Web获取的一手arXiv正文；近期已做Tier S的论文按7天Cooling处理，没有重复占用今日深读名额。</p>
+</section>
+
+</main></body></html>

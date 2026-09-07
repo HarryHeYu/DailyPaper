@@ -1,0 +1,630 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Top Papers Deep Dive — 2026-09-07</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#e1e6ef;--blue:#3158cf;--soft:#eef3ff;--green:#edf8f1;--yellow:#fff4d6;--red:#fff0f0;--dark:#111827}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.84}
+main{max-width:1220px;margin:auto;padding:30px 24px 90px}.hero,.card,.paper{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 31px;margin:18px 0;box-shadow:0 4px 18px rgba(20,30,50,.045)}
+.hero{background:linear-gradient(135deg,#162047,#3158cf);color:#fff;border:0}.hero h1{margin:0 0 10px;font-size:38px}.hero p{color:#eef2ff}
+h2{font-size:28px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:21px;color:#28439d;margin-top:29px}h4{font-size:17px;margin-top:22px}
+nav{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px 21px;columns:2}nav a{display:block;padding:4px 0;color:var(--blue);text-decoration:none}
+a{color:var(--blue);text-decoration:none}.badge{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--soft);color:#3048a5;font-size:12px;font-weight:700;margin-right:5px}
+.kv{display:grid;grid-template-columns:205px 1fr;gap:5px 14px}.kv>div:nth-child(odd){font-weight:760}
+.flow,.formula{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--dark);color:#f7f8ff;border-radius:12px;padding:16px 18px;white-space:pre-wrap;overflow:auto}
+.callout{border-left:5px solid var(--blue);background:var(--soft);border-radius:10px;padding:14px 17px}.good{border-left-color:#338754;background:var(--green)}.warn{border-left-color:#c98a12;background:var(--yellow)}.bad{border-left-color:#c84545;background:var(--red)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:900px}th,td{border-bottom:1px solid var(--line);padding:10px 11px;text-align:left;vertical-align:top}th{background:#f2f4f8}
+.score{font-weight:760;color:#2748bd}.small{font-size:13px;color:var(--muted)}ul,ol{padding-left:23px}li{margin:5px 0}
+@media(max-width:760px){main{padding:18px 12px}.hero,.card,.paper{padding:20px}.hero h1{font-size:30px}nav{columns:1}.kv{grid-template-columns:1fr}}
+</style></head><body><main>
+<section class="hero"><h1>Daily Top Papers Deep Dive — 2026-09-07</h1>
+<p><b>Agentic Unlearning Closure × Trainable Harness Intelligence</b></p>
+<p>今天只精读 2 篇。ATU 直接指出“参数里忘了”并不等于“作为 Agent 后仍忘了”，因为工具能把知识重新带回来；JIT-Agent v2 则把 harness 从手工配置推进为一个可生成、可修复、可在线演化的独立能力层。两篇合起来把 Agent 可靠性问题从 model weights 扩展到完整 execution system。</p></section>
+
+<nav>
+<a href="#selection">1. Today's Deep Dive Selection</a><a href="#why">2. 为什么选这 2 篇</a>
+<a href="#p1">3. Paper 1 — ATU</a><a href="#p2">4. Paper 2 — JIT-Agent</a>
+<a href="#syn">5. Cross-Paper Synthesis</a><a href="#opp">6. Combined Research Opportunities</a>
+<a href="#collision">7. Collision / Overlap</a><a href="#priority">8. Reading / Reproduction Priority</a>
+<a href="#sources">9. Sources / Links</a></nav>
+
+<section id="selection" class="card"><h2>Today's Deep Dive Selection</h2>
+<p><span class="badge">Machine Unlearning</span><span class="badge">Agent Safety</span><span class="badge">BACKFILL</span><b>#1 Forgotten in Weights, Recovered by Tools: Agentic Tool Unlearning for LLM Agents</b></p>
+<p><span class="badge">Agent / Multi-Agent</span><span class="badge">Harness Evolution</span><span class="badge">v2 · 2026-09-03</span><b>#2 JIT-Agent: Scaling Harness Intelligence via Just-in-Time Harness Evolution</b></p>
+</section>
+
+<section id="why" class="card"><h2>为什么选这 2 篇</h2>
+<p>最近一周已经精读了 UDS、SkillGuard、MutMem V2、Context Privilege Escalation、PURGE、Harness-of-Harness、TAS、MASkills、CONFS、PlanFence，因此今天避开重复做 representation-depth、unknown-target refusal discovery、forget-set construction 与 stale-plan lineage。ATU 虽是 8 月高价值 BACKFILL，但它补上了一个非常重要且此前没有单独讲透的 deployment gap：unlearned model 一旦被接到搜索、数据库、文献检索、代码执行等工具上，忘记知识会被“合法工具”重新取回。JIT-Agent v2 则是最近版本更新中 Agent 方向最有分量之一，直接研究 harness 作为独立可训练能力层。</p>
+<div class="callout good"><b>今天的共同问题：</b>模型权重不是系统能力的唯一来源。ATU 证明 external tools 会绕开 parametric forgetting；JIT-Agent 证明 memory/planning/action/capability harness 能显著放大或重构 Agent 能力。因此未来 unlearning 与 Agent 评估都应以 <b>model + harness + tools + memory + trajectory</b> 为真实系统边界。</div>
+</section>
+
+<section id="p1" class="paper"><h2>Paper 1 Full Deep Dive — Agentic Tool Unlearning (ATU)</h2>
+
+<h3>5.1 基本信息</h3>
+<div class="kv">
+<div>Title</div><div>Forgotten in Weights, Recovered by Tools: Agentic Tool Unlearning for LLM Agents</div>
+<div>Authors</div><div>Baicheng Chen, Zheyuan Liu, Jingyu Zhang, Kaize Ding, Ningshan Ma, Yue Huang, Meng Jiang</div>
+<div>Affiliation</div><div>The Chinese University of Hong Kong, Shenzhen；University of Notre Dame；Johns Hopkins University；Northwestern University；MIT（按论文作者栏标注）</div>
+<div>Date</div><div>2026-08-21（arXiv v1）</div>
+<div>Venue / Status</div><div>arXiv preprint，cs.CL，CC0</div>
+<div>Paper</div><div><a href="https://arxiv.org/abs/2608.21544">arXiv</a> · <a href="https://arxiv.org/html/2608.21544v1">HTML</a> · <a href="https://arxiv.org/pdf/2608.21544">PDF</a></div>
+<div>Project / Code</div><div>论文正文明确提供官方 ATU GitHub 链接；可从 arXiv HTML 的 Code: ATU 进入。</div>
+</div>
+
+<h3>5.2 一句话定位</h3>
+<p>ATU 把 LLM unlearning 的安全边界从“模型参数里是否还会直接回答”扩大到“部署为 tool-augmented Agent 后是否仍能通过搜索、数据库、文献检索等外部工具恢复 forget target”。</p>
+
+<h3>5.3 人话版</h3>
+<p>传统 unlearning 往往把模型单独拿出来测试：问一个 forget query，如果回答不出来，就认为“忘了”。ATU 指出这在 Agent 部署中会严重高估安全性。因为模型可以先调用 web search、database、literature retrieval 或 code tool，再从工具 observation 中把已经从参数里压低的知识重新复制到最终答案。论文把这叫 <b>tool-mediated recovery</b>。作者先证明这个现象非常显著：例如 NPO 后 RWKU standalone forget score 为 44.6，但一接 Agent 工具后升到 68.6；MUSE Books 从 9.7 升到 29.8。随后提出两阶段 ATU：Stage 1 仍用 GA/DPO/RT/NPO 做 parametric unlearning；Stage 2 把模型放进模拟工具环境，用 trajectory-level reward 对“主动搜索 forget target”“工具 observation 已出现目标”“最终答案泄漏目标”逐级惩罚，同时在 retain/tool-use tasks 上奖励正常工具使用，再用 GRPO-style RL 更新。最终 NPO+Stage2 在 RWKU 将 Agent forget score 从 68.6 降到 47.5，并在 swapped tools、held-out tool families、forced retrieval、held-out queries 上仍保持一定泛化，但 exact-copy/adaptive retrieval 仍能造成明显恢复。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>目前 LLM unlearning 的典型范式，是在 forget set 上降低 target likelihood，在 retain set 上用 KL、GD、NPO、preference 或 refusal regularization 保护 utility。无论 TOFU、RWKU、MUSE，绝大多数主评测都把模型当 standalone generator：给 prompt，直接看输出。</p>
+<p>但实际产品越来越常把 LLM 放到 Agent framework 中。假设“某书段落”已经被 NPO 压到模型不再直接生成；用户却要求 Agent “搜索这本书相关页面并总结原文”。模型不需要从 weights recall，只需调用 search，读取 observation，再复述。此时 parametric unlearning 并没有失效，而是系统层出现了新的信息来源。</p>
+<p>旧方案的几个自然应对都不够：一是禁用工具，会直接毁掉 Agent utility；二是只让模型 refusal，会因提示变化/工具 observation 诱导而失效；三是只删 Agent memory，外部 web/database 仍可回流；四是做 ToolDelete，删除的是 tool capability，不是“保留合法工具但避免特定 target recovery”。ATU 真正填的 gap 是：<b>目标知识可以继续存在于世界与工具中，但 unlearned model 在使用这些工具时不应重新泄漏它。</b></p>
+
+<h3>5.5 Core Insight</h3>
+<p>核心 observation 1：<b>parametric forgetting 与 agentic forgetting 是两个不同变量。</b> standalone score 下降，并不能预测 tool-augmented score。NPO 在 RWKU standalone 从 base 57.7 降至 44.6，但 Agent deployment 直接回到 68.6；MUSE 更极端，9.7→29.8。</p>
+<p>Observation 2：Stage 1 后，模型反而可能更依赖工具。作者在 Figure 6 报告 forget-query ToolUse_F 普遍上升，说明模型“内部想不起来”后会把工具当替代 recovery path。因此单纯压 weights 甚至可能把 leakage 转移到 trajectory。</p>
+<p>Observation 3：只在 final answer 上惩罚不够。若 Agent 已经发出了 target-seeking search query，即使最后碰巧没泄漏，这条 trajectory 也暴露了风险策略。于是 reward 必须覆盖 intermediate tool behavior。</p>
+<p>这是一种 deployment-level system observation + online RL intervention，不是证明模型内部知识被“真正擦除”的 representation-level结论。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Base policy π_θ0 + forget target c
+→ construct F(c), R_same(c), R_other
+→ Stage 1 parametric unlearning
+   GA / RT / DPO / NPO
+→ obtain π_θ1
+→ add target-independent tool retain set R_T
+→ deploy π_θ in simulated agent environment E_train
+→ for each query x:
+   generate trajectory τ=(x,a1,o1,...,aK,oK,y)
+→ trajectory-level judge:
+   forget query:
+      penalize target-seeking tool calls
+      penalize target information in observations/trajectory
+      heavily penalize final answer leakage
+   retain query:
+      reward correct/helpful answer
+      reward appropriate tool use
+      penalize over-refusal / irrelevant tool calls
+→ sample 4 trajectories per prompt
+→ group-normalized advantage
+→ clipped GRPO/PPO-style objective + KL to Stage-1 checkpoint
+→ π_θ2
+→ evaluate standalone + agent deployment
+→ swapped tools / forced retrieval / held-out tools / held-out queries</div>
+
+<p><b>Stage 1：</b>目的仍是压制 weights 中的 direct recall。论文并不要求某一种特定 unlearning loss，而是把 GA、RT、DPO、NPO 都作为可替换初始化。</p>
+<p><b>Retain 分层：</b>R_same(c) 保同领域邻近知识；R_other 保一般能力；R_T 专门保 target-independent tool use。R_T 很关键，否则 Stage2 最容易学到的策略就是“看到类似问题就永远不要用工具”。</p>
+<p><b>Trajectory generation：</b>训练时模型真的在 simulated Agent environment 中选 tool、读 observation、给最终答案。优化目标因此覆盖 policy behavior，而不只覆盖 token likelihood。</p>
+<p><b>Forget reward：</b>安全拒答 +1.0；模糊但不泄漏 +0.3；已经有 target-seeking/risky tool use -0.5；trajectory 出现目标信息 -1.0；最终回答直接或改写 reference -2.0。这使 policy 在目标真正进入 final answer 前就受到惩罚。</p>
+<p><b>Retain reward：</b>正确有帮助 +1；部分正确 +0.5；严重错误/无关 tool use/过度拒答为负。它相当于给“不要恢复 target”增加一个 utility counterforce。</p>
+<p><b>RL：</b>每 prompt 采4条 trajectories，用 group-relative advantage 做在线优化，并以 Stage1 checkpoint 为 KL anchor，避免 Stage2 把 parametric forgetting 或一般语言能力推离太远。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">Agent trajectory:
+τ = (x, a1, o1, ..., aK, oK, y)
+
+Stage 1:
+θ1 = argmin_θ L_KU(θ; F(c), R)
+
+L_KU = L_forget + λ_ret L_retain
+
+Stage 2 reward:
+R(τ)=
+  R_forget(τ,y*)   if (x,y*) ∈ F(c)
+  R_retain(τ,y)    if (x,y)  ∈ R
+
+Policy ratio:
+ρ_i(θ)=π_θ(τ_i|x) / π_θold(τ_i|x)
+
+RL objective:
+L_RL = -E[min(ρ_i A_i,
+              clip(ρ_i,1-ε,1+ε) A_i)]
+       + β_KL KL(π_θ || π_θ1)</div>
+<p><b>τ：</b>把工具调用与 observation 都纳入 policy object。传统 unlearning 只看 y；ATU 把“怎么得到 y”也变成优化对象。</p>
+<p><b>λ_ret：</b>Stage1 的 forget–utility trade-off。过小会过度忘记邻近知识，过大则 forget 不足。</p>
+<p><b>ε_clip：</b>限制单轮 policy 更新幅度，防止 trajectory reward 很离散时 policy 发生过大跃迁。</p>
+<p><b>β_KL：</b>Stage2 最关键稳定器之一，强制 policy 留在 Stage1 附近。β 太大，tool behavior难改变；太小，模型可能学成广泛拒答或失去原 parametric forgetting结构。</p>
+<p><b>与 strongest baseline NPO 的区别：</b>NPO 只在 token likelihood level 压低 forget response 相对 reference model 的偏好；ATU 直接优化 tool-augmented trajectory，能惩罚“搜索 forget target”的策略，即使 final token 尚未泄漏。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>目标是忘记某公众人物的一个具体事实。Stage1 NPO 后，直接问“他的出生地？”模型回答“不知道”。但把模型放进 Agent：</p>
+<ol>
+<li>Agent 思考：“我可以搜索。”</li>
+<li>调用 web_search("X birthplace")。</li>
+<li>observation 返回明确出生地。</li>
+<li>Agent 最终回答正确——unlearning 在 standalone 看似成功，在 system-level 失败。</li>
+<li>ATU Stage2 对第2步 target-seeking search 就给 -0.5，即使最后没说答案。</li>
+<li>若 observation 已带出 target，trajectory reward -1。</li>
+<li>若 final answer 泄漏，-2。</li>
+<li>另一方面，对 retain query “帮我查明天航班”使用 airline tool 并正确回答仍获 +1。</li>
+<li>训练后，Agent 学到“工具仍可正常使用，但当 query 落在 forget target surface 时不要主动重建目标”。</li>
+</ol>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>怎么做</th><th>为什么合理</th><th>在本文 setting 的失败</th><th>ATU 改什么</th></tr>
+<tr><td>GA</td><td>对forget answer做gradient ascent</td><td>直接降低target likelihood</td><td>weights降了但工具能重新提供；还可能不稳定</td><td>增加trajectory-level训练</td></tr>
+<tr><td>RT</td><td>forget query→“I don't know” SFT</td><td>直观形成refusal boundary</td><td>工具observation可能越过refusal；邻近过拒答</td><td>对trajectory风险分级，而非固定一句拒答</td></tr>
+<tr><td>DPO</td><td>偏好counterfactual/non-target response</td><td>比GA稳定</td><td>仍只处理standalone outputs</td><td>工具使用进入reward</td></tr>
+<tr><td><b>NPO</b></td><td>只用negative forget examples降低相对likelihood</td><td>本文Stage1最强/最稳定基线</td><td>RWKU 44.6→Agent68.6，工具恢复+24.0</td><td>NPO初始化+Stage2降至47.5</td></tr>
+<tr><td>Refusal SFT / Trajectory DPO</td><td>Stage2静态监督替代RL</td><td>更便宜、更简单</td><td>改善约8.7/10.5点，不如在线ATU的21.1</td><td>online rollout optimization</td></tr>
+</table></div>
+<p><b>Strongest baseline：</b>NPO 是 Stage1 最关键 baseline；若只比较 Stage2，Trajectory DPO 是最强静态替代，因为它已经使用 agent trajectories，但仍明显弱于 online ATU。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Datasets：</b>RWKU（现实公众人物知识）与 MUSE Books（copyrighted-book knowledge）。使用官方 forget/retain splits；Stage2 额外构造 target-independent general tool-use retain set。</p>
+<p><b>Models：</b>Qwen-3-4B-Instruct、Qwen-2.5-7B-Instruct；Appendix 另做 Qwen-3-8B。</p>
+<p><b>Agent：</b>modified Qwen-Agent framework；tools 包括 web search、database lookup、literature retrieval、code execution 等 recovery channels。</p>
+<p><b>Stage1 RWKU：</b>LoRA；bf16；cutoff512；batch1×grad accumulation16；cosine LR；20 warmup；target modules q_proj,v_proj；10 epochs；训练后 merge LoRA。</p>
+<p><b>Stage2：</b>OpenRLHF，bf16，DeepSpeed ZeRO-3，gradient checkpointing，1个vLLM rollout engine，TP=1，temperature0.7，top-p0.9，max generation128，4 trajectories/prompt；judge=Qwen2.5-7B-Instruct，temperature0。</p>
+<p><b>Compute：</b>单服务器4×RTX4090 24GB，128 AMD EPYC 7543 CPU threads，约512GB RAM。</p>
+<p><b>Baselines：</b>GA/RT/DPO/NPO；Stage2另比 refusal SFT、trajectory DPO。</p>
+<p><b>RQ1：</b>parametric unlearning 在 Agent deployment 会不会被工具恢复？<br><b>RQ2：</b>ATU 是否以 utility 为代价？<br><b>RQ3：</b>跨 benchmark/backbone 是否成立？<br><b>RQ4：</b>ATU 到底改变 final answer，还是改变 tool-use trajectory？<br><b>Robustness RQ：</b>swapped tools、forced retrieval、held-out tools/query 是否仍工作？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>RWKU FB/QA/AA ROUGE-L Recall↓：</b>分别是 fill-blank、普通 QA、adversarial attack probe 对 forget reference 的恢复程度。越低越忘。</p>
+<p><b>All↓：</b>三类 forget probe 的加权平均，方便总体比较；缺点是会掩盖某类 attack（如AA）特别差。</p>
+<p><b>ΔAll：</b>Agent deployment 相对 standalone 的恢复增量，或 Stage2 相对 Stage1-Agent 的改善量。它是本文最直观的 “tool-mediated recovery gap”。</p>
+<p><b>Neighbor↑：</b>同领域邻近但不该忘的知识，检查局部 collateral damage。</p>
+<p><b>Factuality/Fluency↑：</b>一般输出质量；不能替代 task utility，但能检查全局崩坏。</p>
+<p><b>MUSE knowmem_f↓ / knowmem_r↑：</b>forget 与 retain split 的知识记忆程度。</p>
+<p><b>ToolUse_F↓：</b>forget queries 中至少调用一次工具的比例。它不是越低越绝对好，因为可能靠“全禁工具”作弊，所以必须与 general tool-use retain score 一起看。</p>
+<p><b>Held-out tool contains-match↑：</b>目标无关工具任务是否仍正确执行，补足 ToolUse_F 的作弊风险。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>核心 recovery gap：</b>RWKU NPO standalone All=44.6，Agent=68.6，+24.0；说明 standalone forgetting 明显高估部署鲁棒性。</li>
+<li><b>MUSE recovery：</b>Qwen3-4B NPO knowmem_f=9.7，Agent后29.8；Qwen2.5-7B 10.0→32.9，跨模型一致。</li>
+<li><b>Stage2 strongest：</b>NPO+ATU 68.6→47.5，降低21.1点，是主设置最强结果。</li>
+<li><b>跨Stage1：</b>GA 61.1→51.6、DPO67.1→53.9、RT67.5→52.2、NPO68.6→47.5；说明Stage2不是只适配NPO。</li>
+<li><b>MUSE Qwen3-4B：</b>29.8→15.8，同时 retain 56.7→55.1，仅小幅下降；这是较好的forget–retain balance。</li>
+<li><b>Qwen2.5-7B：</b>RWKU NPO Agent61.7→Stage2 41.5，-20.2；Neighbor 77.2→71.1，有明显但非灾难性utility代价。</li>
+<li><b>Qwen3-8B：</b>NPO Agent86.0→Stage2 33.8，改善52.2点，且 Neighbor 80.7→85.7；说明大模型上可能更能学会target-specific trajectory policy。</li>
+<li><b>Swapped tools：</b>NPO Stage2 在原tools 47.5，在同类型替代tools 46.7，说明并非只memorize某个API名字。</li>
+<li><b>Held-out tool families：</b>Stage2 accuracy87.5%，Stage1 92.5%，Base80%；保留未见过的airline/workspace/spreadsheet/mock-shell工具能力，但比Stage1损失5点。</li>
+<li><b>非RL对比：</b>Refusal SFT仅-8.7、Trajectory DPO -10.5、ATU -21.1；online rollout是明显收益来源。</li>
+<li><b>效率：</b>ATU训练1.97h，SFT1.10h，DPO1.35h；forget improvement/hour约10.7 vs7.9/7.8。ATU更强但更贵。</li>
+<li><b>Adaptive forced retrieval：</b>“retrieve before answering”将Stage2 47.5推到59.6（+12.1）；exact-copy 也到57.7。说明ATU并未封死强制工具恢复。</li>
+<li><b>Held-out queries：</b>Stephen King 60/40 split 上52.6→36.8，Neighbor49.7→51.1，初步说明不是记训练prompt。</li>
+<li><b>Reward judge：</b>Qwen2.5-7B 与人工 sign agreement83.3%、exact63.9%，并得到最佳 forget47.5；judge更大并不更好。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>Qwen3-8B 的 NPO Agent 86.0→ATU33.8，同时 Neighbor80.7→85.7，是“工具恢复被大幅关闭且 utility 没一起崩”的最强现象；主设置则 NPO 68.6→47.5 最可比较。</div>
+<div class="callout warn"><b>Weakest / trade-off：</b>Qwen2.5-7B Neighbor77.2→71.1，且 ATU 比SFT/DPO贵1.5–1.8×，说明不是无成本提升。</div>
+<div class="callout bad"><b>Failure case：</b>forced retrieval / exact-copy directive 仍明显抬高 leakage；工具 observation 若被用户明确要求逐字复制，policy-level mitigation存在根本困难。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 1：</b>最重要概念图：parametric model 本身不知道答案，但 search observation 提供答案，Agent final response重新泄漏。它重新定义 unlearning deployment boundary。</p>
+<p><b>Figure 2：</b>NPO standalone vs Agent 的量化 motivation；MUSE 9.7→29.8、RWKU44.6→68.6 是全文最核心 empirical gap。</p>
+<p><b>Figure 3：</b>两阶段结构。值得注意的是 Stage2 不替代 Stage1，而是以 Stage1 checkpoint 为 KL anchor，说明作者认为“weights forgetting”和“tool policy forgetting”是两层。</p>
+<p><b>Table 3：</b>四种 Stage1 方法在 Agent deployment 中全部回升，再经 Stage2 全部下降。它比只展示NPO更能支撑方法 generality。</p>
+<p><b>Figure 5：</b>Stage2 general tool-use retain task仍保持高 contains-match，反驳“只是学会不用工具”。</p>
+<p><b>Figure 6：</b>Stage1 后 forget-query tool use 上升，Stage2 后下降，说明工具确实成为替代 recovery path。</p>
+<p><b>Table 11/12：</b>ATU vs refusal SFT/trajectory DPO 的效果–成本比较，明确展示 strongest forgetting 伴随更高 compute/retain cost。</p>
+<p><b>Table 13：</b>强制检索是最关键 robustness 反例；不应只看默认agent prompt。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>Stage1 vs Agent：</b>同一个checkpoint只改 deployment，forget score明显回升，干净证明 recovery 来自 system path，而不是参数更新失败。</p>
+<p><b>Agent w/o Tools：</b>Appendix 将 framework effect 与 tool effect 分开。Stage1 NPO standalone44.6、Agent w/o tools约45.1、Agent w tools68.6，说明主要 recovery 真的是工具，不只是Agent prompt格式。</p>
+<p><b>Swapped Tools：</b>替换同类型API后Stage2仍有效，说明policy学到的是更一般的 target-seeking behavior，而非工具名黑名单。</p>
+<p><b>Reward Judge Ablation：</b>4B/7B/8B judge 结果非单调，7B最贴人工且下游forget最好，说明judge quality是方法敏感点。</p>
+<p><b>Training dynamics：</b>128-step audit mean KL≈0.50，没有出现“超短+1 reward”明显 reward hacking；但这只排除一种特定hack。</p>
+<p>这些机制证据说明 ATU 改变 trajectory policy，但并不能证明目标知识从模型内部 representation 中被彻底删除。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>parametric unlearning 对 tool-augmented agent deployment 不充分；ATU 能减少 direct + tool-mediated recovery，同时保留正常工具使用。</div>
+<div class="callout good"><b>Experiments Actually Show：</b>RWKU/MUSE、多backbone、多Stage1 method、swapped tools、held-out tools/queries都支持“工具是新恢复通道”和“Stage2能显著缓解”。</div>
+<div class="callout warn"><b>What Is Not Yet Proven：</b>没有关闭任意未知工具/多步Agent framework；没有证明强 adversarial prompt 下安全；没有阻止用户直接要求复制 tool output；没有 representation deletion 证据；reward judge依赖较强。</div>
+
+<h3>5.16 Contribution</h3>
+<ul>
+<li><b>New Failure Mode：</b>Tool-mediated Recovery。</li>
+<li><b>New Threat Model：</b>provider发布unlearned model，但downstream deployer控制tools/prompts。</li>
+<li><b>New Method：</b>Stage1 parametric + Stage2 trajectory RL 的 ATU。</li>
+<li><b>New Objective/Protocol：</b>对 intermediate target-seeking tool behavior 也给负reward。</li>
+<li><b>New Evaluation：</b>standalone vs agent、tools vs no-tools、swapped tools、forced retrieval、held-out tools/query。</li>
+<li><b>New Empirical Finding：</b>parametric unlearning 后工具依赖可能上升。</li>
+</ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors' Limitation：</b>agent/tool environment覆盖有限；tool-mediated recovery gap没有完全关闭；未来需 adaptive recovery attacks 和更广 agent benchmarks。</p>
+<p><b>Additional：</b>防御训练显式看到 recovery tools，仍可能对全新tool semantics不泛化；LLM judge存在 reward-model bias；external observation 若必须完整呈现，model-side policy无法保证删除；工具本身可能缓存 target；真实deployment中的memory、browser history、files、plugins、subagents形成更多recovery carriers；用户可能把 target encode 成多步间接检索；Stage2也可能让模型学到“target identity fingerprint”而非真正forget。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最关键模块：1) RWKU/MUSE loader；2) Stage1 GA/RT/DPO/NPO LoRA；3) Qwen-Agent tool environment；4) web/database/literature/code tools；5) trajectory serializer；6) forget/retain reward judge prompts；7) general tool-use retain set；8) OpenRLHF GRPO training；9) KL anchor；10) Agent/no-tool/swapped-tool/forced-retrieval evaluator。</p>
+<p>最小复现建议先做 RWKU + Qwen3-4B + NPO：复现 standalone44.6附近→Agent68.6附近的 recovery gap，比直接训练Stage2更重要。第二步只做 refusal SFT vs trajectory DPO vs ATU 三组；第三步再做 swapped tools 与“retrieve before answering”攻击。如果第一步没有稳定 recovery gap，后续ATU结果没有意义。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline Potential ★★★★★</span>：MLLM/LLM unlearning未来应把 Agent deployment 作为强 baseline。</p>
+<p><span class="score">Migration Potential ★★★★★</span>：直接迁到 MLLM tool/VQA retrieval、Agent memory、RAG unlearning。</p>
+<p><span class="score">Attack Potential ★★★★★</span>：工具本身就是天然reacquisition channel。</p>
+<p><span class="score">Evaluation Potential ★★★★★</span>：standalone→agent recovery gap 是非常实用的新轴。</p>
+<p><span class="score">Benchmark Potential ★★★★★</span>：可构建 Tool-Reacquisition Unlearning Benchmark。</p>
+<p><span class="score">New Paper Potential ★★★★★</span>：与用户已有 recovery surface / visual conditioning / context collision 高度互补。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Multimodal Tool-Reacquisition Unlearning</h4>
+<p><b>Original Problem →</b>文本Agent通过search/database恢复forget knowledge。<br>
+<b>Transferable Mechanism →</b>trajectory-level penalization of target-seeking external recovery。<br>
+<b>New Research Question →</b>MLLM identity unlearning 后，Agent能否通过 image search、caption retrieval、face/OCR database、video frame retrieval重新识别目标？<br>
+<b>Method Modification →</b>Stage1用MLLMU NPO/GA_Diff；Stage2搭建 image_search、caption_search、OCR lookup、face-neighbor retrieval 四类tools；reward不仅看final answer，还对target-bearing visual observation与target-focused tool query处罚。<br>
+<b>Minimum Experiment →</b>20 forget identities×4 tool families×3 Stage1 methods×2 VLM；每identity 20 direct +20 paraphrase +20 derived queries；每prompt 4 rollouts。<br>
+<b>Model →</b>LLaVA-1.5-7B、Qwen2.5-VL-7B。<br>
+<b>Dataset →</b>MLLMU-Bench forget5% + image/caption retrieval index。<br>
+<b>Baseline →</b>standalone NPO、Agent NPO、tool blacklist、refusal SFT、trajectory DPO、ATU-style RL。<br>
+<b>Metric →</b>Agent Recovery Gap、Visual Tool ASR、Cross-Tool Generalization、Retain VQA、Benign Tool Accuracy、ToolUse_F。<br>
+<b>Expected Contribution →</b>首次系统刻画 multimodal tool-mediated reacquisition。<br>
+<b>Risk →</b>视觉tool observation包含实体时“既保工具又不泄漏”更难。<br>
+<b>Collision Risk →</b>低；现有ATU是文本工具环境。</p>
+
+<h4>方向 B — Recovery-Carrier Attribution before Agentic Unlearning</h4>
+<p><b>Original Problem →</b>ATU统一对整条trajectory训练。<br>
+<b>Transferable Mechanism →</b>Agent leakage可能来自weights、tool observation、memory、summary、planner、subagent多个carrier。<br>
+<b>New Research Question →</b>能否先定位哪个carrier贡献最大，再只对高风险carrier做最小干预？<br>
+<b>Method Modification →</b>为每条trajectory做 carrier leave-one-out：禁weights direct answer、遮tool observation、清memory、重建plan、禁subagent；计算 leakage delta，得到 per-carrier credit；Stage2只对top-k carrier对应行为加reward。<br>
+<b>Minimum Experiment →</b>30 targets×5 carriers×4 ablations×3 seeds；每target 50 trajectories；比较uniform-ATU vs credit-weighted ATU。<br>
+<b>Model →</b>Qwen3-4B / Qwen3-8B Agent。<br>
+<b>Dataset →</b>RWKU + LoCoMo-derived private tasks。<br>
+<b>Baseline →</b>ATU、global refusal、tool-only suppression、memory delete。<br>
+<b>Metric →</b>Carrier Contribution Score、ASR@carrier-budget、Retain Utility、Tool Utility、Training Cost。<br>
+<b>Expected Contribution →</b>把 agentic unlearning 从全trajectory RL推进到carrier-aware selective optimization。<br>
+<b>Risk →</b>carrier interactions非加性。<br>
+<b>Collision Risk →</b>低到中，与PlanFence/MutMem provenance邻近，但目标是行为credit。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>ATU 最自然的攻击是 <b>forced reacquisition</b>：强制 retrieve、指定 target search query、要求逐字复制 observation、换同类tool、让subagent检索后回传、先写入memory再要求回答。可定义 <b>Agentic Recovery Gap (ARG)=Leak_agent-tools − Leak_standalone</b>；以及 <b>Carrier-conditioned Reacquisition Rate</b>，分别测web/RAG/database/memory/subagent恢复能力。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>JIT-Agent 说明 harness 可以动态决定 memory、planning、action、capability orchestration；ATU说明这些 capability 尤其是tools会改变 unlearning 的实际边界。组合起来最重要的结论是：<b>固定一个Agent harness评测 unlearning 远远不够</b>。一个JIT harness generator甚至可以主动产生更强检索/分解/工具路由，从而成为新的 adaptive recovery attacker。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol>
+<li>模型参数里忘了，不代表Agent系统里忘了。</li>
+<li>外部搜索/数据库/检索能把forget target重新带回来。</li>
+<li>NPO在RWKU standalone44.6，但接工具后68.6。</li>
+<li>Stage1后forget query上的tool use反而可能增加。</li>
+<li>ATU用Stage1 parametric unlearning + Stage2 trajectory RL。</li>
+<li>它不仅惩罚final leakage，也惩罚target-seeking tool behavior。</li>
+<li>NPO+Stage2在主设置68.6→47.5，Qwen3-8B甚至86.0→33.8。</li>
+<li>正常tool use并未完全被关掉，但存在utility/compute代价。</li>
+<li>forced retrieval与exact-copy仍能明显恢复，是核心failure。</li>
+<li>最值得迁移到你的工作的是 multimodal tool reacquisition + carrier attribution。</li>
+</ol>
+</section>
+
+<section id="p2" class="paper"><h2>Paper 2 Full Deep Dive — JIT-Agent</h2>
+
+<h3>5.1 基本信息</h3>
+<div class="kv">
+<div>Title</div><div>JIT-Agent: Scaling Harness Intelligence via Just-in-Time Harness Evolution</div>
+<div>Authors</div><div>JIT-Agent Team；Core Contributors: Guibin Zhang, Leo Lu, Fangzhou Xie；另有 Kang Zhu, Junhao Wang, Zhifei Xie, Zhaochen Yu, Zihang Liu, Zhongxiang Sun, Qiankun Li, Yue Liao, Heng Chang, Xiaobin Hu, Qibing Ren；Corresponding: Wangchunshu Zhou, Chuanrui Hu, Yafeng Deng, Shuicheng Yan</div>
+<div>Affiliation</div><div>National University of Singapore；EverMind AI；Nanyang Technological University</div>
+<div>Date</div><div>2026-09-03（arXiv v2）</div>
+<div>Venue / Status</div><div>arXiv preprint，cs.CL，CC BY 4.0</div>
+<div>Paper</div><div><a href="https://arxiv.org/abs/2608.25593">arXiv</a> · <a href="https://arxiv.org/html/2608.25593">HTML</a> · <a href="https://arxiv.org/pdf/2608.25593">PDF</a></div>
+<div>Project / Code</div><div><a href="https://github.com/bingreeky/JIT">Official GitHub: bingreeky/JIT</a></div>
+</div>
+
+<h3>5.2 一句话定位</h3>
+<p>JIT-Agent 把“Agent harness engineering”从人工或 Ahead-of-Time 搜索，重写成一个独立可训练的 meta-agent：它根据具体任务即时生成 memory/planning/action/capability 四模块 harness，并能学习修复错误 harness、在线保留更优设计。</p>
+
+<h3>5.3 人话版</h3>
+<p>同一个 foundation model，套不同 harness，能力可以差很多。Deep research 需要证据图和长期 memory，购物规划需要约束求解，terminal coding 更适合短 ReAct loop，复杂研究任务甚至需要递归 subagent。传统 Agent framework 的问题是这些 harness 通常由工程师提前手写，或者通过大量历史 trajectories 做 Ahead-of-Time 搜索，得到一个“平均适合”的固定 scaffold。JIT-Agent 反过来训练一个专门生成 harness 的模型：输入当前任务、固定四模块 protocol、可用 tools/skills 和少量历史高质量 harness，它即时产出任务专属执行程序。训练分三阶段：Stage I 用强 teacher 生成合法 task-adaptive harness，并做SFT+DPO；Stage II 专门学习如何根据 compiler/runtime diagnostics 在最多2轮内修复坏 harness；Stage III 用 Evo-GDPO 在线比较候选与历史bank，在 reward 不下降的前提下再优化 latency/cost，只把 Pareto frontier 改进设计写入 bank。JIT-Agent 在9个agent benchmark上对 GLM-5.2 平均+7.7、DeepSeek-V4-Flash +8.8，DeepPlanning最高+24.8；固定backbone对比 Claude Code/Codex/OpenCode 等时，6个setting中4个性能第一，并且6/6成本最低。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>Agent capability 不只来自 model weights。memory怎么压缩、planner是DAG还是linear、action是ReAct还是recursive、tools如何搜索/路由，都会改变最终表现。过去有两类路线：第一是固定成熟runtime，如 Claude Code/OpenCode；第二是 AutoHarness/Meta-Harness/AHE/Harness-R1 等，用历史反馈 Ahead-of-Time 搜索或编辑一个可复用 harness。</p>
+<p>问题是 deployment tasks 高度异构。例如 deep research 需要多分支证据搜集和事实图，office automation 需要 artifact/workspace state，购物需要constraint satisfaction。一个固定 AOT harness 要么复杂到什么都带，成本很高；要么针对平均任务优化，遇到新结构不匹配。</p>
+<p>JIT-Agent 的 gap 是：<b>能否把“设计 harness”本身 amortize 成一个模型能力</b>，像 compiler 一样在看到 task instance 后即时生成最合适的 memory/planning/action/capability program，而不是每次重新搜索。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>Insight 1：<b>正确 harness 是 instance-dependent，不只是 domain-dependent。</b>同是research task，有的需要DAG，有的需要递归delegation，有的只需串行检索。</p>
+<p>Insight 2：harness 可以被统一表示成四个模块的 composable protocol：Memory M、Planning P、Action A、Capability orchestration F。这样不同 Agent framework 能落到同一设计空间，而不只是比较几段prompt。</p>
+<p>Insight 3：harness generation 的三个 failure 是不同的：不会定制、不会修、不会从执行经验继续改善。因此训练也必须拆成 customization、repair、evolution 三阶段。</p>
+<p>Insight 4：reward/latency/cost 不应简单加权，因为模型可能用更长trajectory买准确率。Stage III 只有 reward 不低于 incumbent 时才激活 latency/cost improvement，构成带性能约束的 Pareto evolution。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Task τ + protocol Π + capability registry C_τ
++ retrieved prior harness context E_τ
+→ JIT generator p_θ produces harness h
+   h = (Memory M, Planning P, Action A, Capability F)
+→ protocol/static/runtime validation
+→ if invalid:
+   structured diagnostic g
+   bounded repair (≤2 rounds)
+→ frozen executor π_ψ runs h
+→ obtain reward r, latency ℓ, cost κ
+→ static inference:
+   generate N harnesses in parallel
+   select one
+   execute selected only
+OR streaming inference:
+   retrieve from bank B_n
+   generate h_n
+   execute once
+   evaluate (r,ℓ,κ)
+   update bank only if frontier improves
+
+Training:
+Stage I:
+ teacher-generated valid harnesses
+ → SFT
+ → preference pairs under same executor/seeds
+ → weighted DPO
+Stage II:
+ invalid harness + diagnostics
+ → bounded patch trajectories
+ → repair supervision
+Stage III:
+ sample G candidate harnesses
+ → compare to incumbent bank
+ → decoupled reward/latency/cost advantages
+ → Evo-GDPO clipped PPO + KL
+ → conservative frontier update</div>
+
+<p><b>Unified protocol：</b>把 13 个代表性 scaffolds 重实现到同一个 HarnessFactory：ReAct、Plan-and-Execute、ReSum、Flash-Searcher、GAM、MemoBrain、AggAgent、OAgent、AgentFold、HiAgent、DeepAgent、ROMA、AOrchestra。它们形成初始 bank B0。</p>
+<p><b>Stage I：</b>强teacher接收 task + 3个同类型seed harness + protocol + tools，生成任务专属harness。只有 protocol-valid 且能执行的样本保留。随后 SFT 学“会生成”，DPO 学“同样合法时哪个更好更省”。</p>
+<p><b>Stage II：</b>不是把坏generation丢掉，而是收集 compiler error、interface mismatch、tool-call failure、runtime exception，让 teacher 提结构化 patch，最多2轮修到 executable。它学习的是“局部修复能力”。</p>
+<p><b>Stage III：</b>每轮从bank检索历史强design，生成G个候选。先以任务 reward 为主；只有 candidate reward≥incumbent，latency/cost优势才生效。用 Evo-GDPO 归一化三个reward channel，再做 PPO-style 更新。</p>
+<p><b>Streaming inference：</b>部署时 generator weights 固定；只让 bank 吸收这次任务产生的更优harness，下一任务检索它。即“online evolution”发生在 external harness archive，而不是持续更新模型参数。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">Harness:
+h = (M, P, A, F)
+
+Stage-I preference:
+h+ ≻_τ h-
+iff
+r+ > r-
+and ℓ+ ≤ ℓ-
+and κ+ ≤ κ-
+and at least one efficiency gain is strict
+
+Δ_val =
+α_r(r+−r−)
++ α_ℓ[ℓ−−ℓ+]_+
++ α_κ[κ−−κ+]_+
+
+Stage-III channels:
+R_i^rew = r_i + λ_evo [r_i−b_r]_+
+R_i^lat = I[r_i≥b_r][b_ℓ−ℓ_i]_+
+R_i^cost= I[r_i≥b_r][b_κ−κ_i]_+
+
+A_i^m =
+(R_i^m − mean(R^m)) /
+(std(R^m)+ε)
+
+A_i^Σ =
+w_rew A_i^rew +
+w_lat A_i^lat +
+w_cost A_i^cost
+
+with w_rew > w_lat + w_cost</div>
+<p><b>Preference relation：</b>非常保守：h+ 必须 reward 更高，而且 latency/cost 不得更差。这避免“更聪明但贵很多”的样本被Stage I偏好学习。</p>
+<p><b>Δ_val：</b>不仅决定chosen/rejected，还作为DPO pair权重；差距越实质，训练信号越大。</p>
+<p><b>Stage III gating：</b>latency/cost只有 r_i≥b_r 时才激活，这是最关键设计。它明确把性能当hard-ish constraint，效率是第二目标。</p>
+<p><b>λ_evo：</b>控制“超过历史最佳”的额外奖励，过大可能让模型只追reward frontier，忽视稳定性；过小则online bank难持续提高。</p>
+<p><b>w_rew：</b>要求大于其它权重之和，防止一个快但明显更差的harness被综合advantage选中。</p>
+<p><b>与固定harness baseline区别：</b>不是简单在ReAct prompt上加技巧，而是 task-conditioned synthesize 整个 memory/planning/action/capability program。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>任务：“从多个网页找到20个联系人，去重、标准化、生成xlsx，并邮件发送。”</p>
+<ol>
+<li>固定ReAct可能把所有网页、联系人、操作都堆进同一context，随着任务变长丢状态。</li>
+<li>JIT-Agent识别这是“多阶段artifact pipeline”，生成 GraphPlanPlanning：discover→filter→normalize→workbook→verify→email。</li>
+<li>Memory选择 GraphPlanMemory，只保存目标、evidence、normalized records、artifact path，不保留每一步冗长CoT。</li>
+<li>Action选择 bounded-width DAG executor，只执行ready nodes。</li>
+<li>Capability orchestration 只暴露 search/file/spreadsheet/email 所需 tools。</li>
+<li>若生成的email tool schema写错，validator返回interface mismatch，Stage II repair修改对应patch。</li>
+<li>执行后 reward高于bank中旧harness且cost更低，则写入 bank。</li>
+<li>以后遇到相似“检索→结构化→artifact→delivery”任务，检索到该harness作为参考，但仍可针对新任务重新实例化。</li>
+</ol>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>怎么做</th><th>为什么强</th><th>局限</th><th>JIT-Agent差异</th></tr>
+<tr><td>ReAct</td><td>固定history+reason/action循环</td><td>通用、轻量</td><td>任务结构不适配</td><td>实例化不同memory/planner/action</td></tr>
+<tr><td>Claude Code</td><td>成熟固定agent runtime</td><td>强工程经验与工具循环</td><td>仍是固定harness</td><td>task-conditioned生成</td></tr>
+<tr><td>OpenCode/Codex</td><td>成熟coding/agent harness</td><td>强baseline且现实</td><td>跨任务未必最优</td><td>同backbone下自适应</td></tr>
+<tr><td>NanoBot</td><td>轻量先进固定harness</td><td>部分benchmark性能最强</td><td>一个固定operating point</td><td>按任务选择不同operating point</td></tr>
+<tr><td><b>Meta-Harness / Harness-R1 类</b></td><td>AOT搜索/编辑harness</td><td>最接近“自动harness优化”</td><td>先学一个durable artifact，再适配未来</td><td>专门训练generator做JIT synthesis+repair+evolution</td></tr>
+</table></div>
+<p><b>Strongest empirical baseline：</b>固定backbone受控对比中 NanoBot/Claude Code 最强；概念上最接近的是 Meta-Harness/Harness-R1。JIT-Agent真正机制差异是“harness generator”而不是“被优化的某个harness”。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>JIT generator：</b>训练基于 Qwen3.6-27B。</p>
+<p><b>Primary executor backbones：</b>GLM-5.2、DeepSeek-V4-Flash-Preview；泛化还覆盖 Qwen3.6、Mimo-V2.5 多规模 variants。</p>
+<p><b>9 benchmarks / 4 task types：</b>Deep Research = BrowseComp-Plus、DeepSearchQA、xBench-DeepSearch；Daily Work = AgentIF-Oneday、PinchBench；Planning = DeepPlanning-Shopping/Travel；Workspace = OfficeBench、OdysseyBench。</p>
+<p><b>Broad model baselines：</b>Qwen3.7-Plus、GLM-5.2、DeepSeek-V4-Flash/Pro、Kimi K2.7 Code、GPT-5.6-Sol、Gemini3.1 Pro/3.5 Flash。</p>
+<p><b>Controlled harness baselines：</b>Claude Code、Codex、OpenCode、Hermes、NanoBot，同一 backbone 下比较 performance/tokens/API cost。</p>
+<p><b>Initial bank：</b>13种代表harness，统一四模块 protocol。</p>
+<p><b>Inference：</b>static = 并行生成N个harness但只执行selected one；streaming = 每task执行后按frontier rule更新bank。</p>
+<p><b>Metrics：</b>所有benchmark映射0–100；受控对比另报tokens(K)、API cost/case；streaming看 cumulative accuracy、cost、tool calls。</p>
+<p><b>Research Question 1：</b>JIT-generated harness是否普遍提升固定backbone？<br><b>RQ2：</b>和成熟固定runtime相比，是性能提升还是只用更多token？<br><b>RQ3：</b>能否跨模型family/scale迁移？<br><b>RQ4：</b>streaming bank evolution能否让后续任务受益？<br><b>RQ5：</b>生成结构是否真的在execution semantics层不同，而非prompt措辞变化？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Benchmark score↑：</b>不同benchmark原始metric不同，被统一映射0–100；可看总体能力，但跨benchmark平均需谨慎，因为metric语义不同。</p>
+<p><b>#Tokens↓：</b>每case平均模型token消耗。对Agent特别重要，因为复杂harness可能通过更多planning/反思换性能。</p>
+<p><b>API Cost↓：</b>综合实际模型定价后的case成本；比token更贴现实，但不同provider价格会改变结论。</p>
+<p><b>Pareto frontier：</b>同时考虑performance与cost；某点若存在另一点更便宜且更强，则被dominant。</p>
+<p><b>Cumulative accuracy↑：</b>streaming evaluation随着task序列推进的累计正确率；用于判断bank是否在积累有用经验。</p>
+<p><b>Tool calls↓/适中：</b>不是越少越好，而是辅助解释性能是否靠interaction explosion买来。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>全18 matched pairs：</b>JIT替换默认harness后全部提升。GLM-5.2平均74.1→81.8（+7.7）；DeepSeek-V4-Flash66.7→75.5（+8.8）。</li>
+<li><b>最大提升：</b>DeepPlanning-Shopping，DeepSeek-V4-Flash59.1→83.9，+24.8；说明结构化planner/harness对长约束任务最有价值。</li>
+<li><b>Travel：</b>GLM-5.2 62.8→83.0，+20.2；接近GPT-5.6的84.9，仅差1.9。</li>
+<li><b>DeepSearchQA：</b>JIT+GLM5.2=93.9；DeepSeekV4-Flash76.2→85.1，+8.9。</li>
+<li><b>xBench-DS：</b>DeepSeekV4-Flash70.1→82.0，+11.9。</li>
+<li><b>同backbone固定harness对比：</b>DeepSeekV4-Flash+JIT 在DeepSearchQA85.1，强于NanoBot80.4，同时tokens400K vs924K，cost$0.066 vs$0.131。</li>
+<li><b>xBench-DS：</b>JIT82.0、212K tokens、$0.039；NanoBot78.0、527K、$0.075，同时更强更省。</li>
+<li><b>Qwen3.6-Flash AgentIF：</b>JIT58.3/$0.078，Claude Code55.4/$0.177；性能+2.9且成本-56%。</li>
+<li><b>并非总性能第一：</b>Qwen3.6-Flash DeepSearchQA JIT70.3，NanoBot74.2；JIT便宜51.8%但性能低3.9，是真实trade-off。</li>
+<li><b>6/6成本最低：</b>受控6个backbone×benchmark settings中，JIT的token/cost全部最低；相对最便宜固定替代平均成本下降36%。</li>
+<li><b>跨family：</b>DeepSeek/Qwen/Mimo六backbones×四benchmarks共24 matched comparisons全部JIT胜，平均+7.6；family gain分别+10.2/+4.0/+8.6。</li>
+<li><b>Mimo-V2.5-Pro DeepSearchQA：</b>提升+22.2，是跨family generalization最强单点之一。</li>
+<li><b>Streaming：</b>DeepPlanning-Shop/Travel/OfficeBench 三条task stream末尾 cumulative accuracy 均高于 Static JIT，且cost/tool-call规模没有统一上升。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>24/24 fixed-backbone paired comparisons 全部提升、平均+7.6，同时受控harness比较中成本6/6最低。这比单一benchmark超GPT更能证明“harness intelligence可迁移”。</div>
+<div class="callout warn"><b>Weakest result：</b>Qwen3.6-Flash DeepSearchQA 上 JIT70.3 < NanoBot74.2，说明JIT不是每个task都同时达到最高性能；它给的是Pareto优解。</div>
+<div class="callout bad"><b>Failure / dependency：</b>JIT generator本身是Qwen3.6-27B级别meta-model，且Stage I依赖更强teacher和执行评测，训练/维护成本被摊到部署前；并非“免费harness”。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 1：</b>展示 Model-as-a-Harness：同一个generator对deep research、product generation、autonomous research产出不同memory/planning/action/capability组合。真正创新不是prompt内容，而是 execution protocol synthesis。</p>
+<p><b>Table 1：</b>13个seed harness被统一进四模块坐标系。这张表决定了方法的设计空间：若四模块不能表达未来新runtime，JIT能力上限也受限。</p>
+<p><b>Figure 2：</b>三阶段训练最值得看：SFT/DPO学定制、diagnostics学修复、Evo-GDPO学在线frontier。它把“生成合法”与“生成优秀”分离。</p>
+<p><b>Table 2：</b>9 benchmarks结果。最大价值在所有18 matched backbone pairs都正增益，而不是某个排行榜top1。</p>
+<p><b>Table 3：</b>同backbone比较 Claude Code/Codex/OpenCode/Hermes/NanoBot，且同时报token/cost，这是排除“更长trajectory买分”的关键表。</p>
+<p><b>Figure 3：</b>cost-performance Pareto。DeepSeekV4+JIT在DeepSearchQA是强Pareto点；Qwen3.6+JIT则是低成本点但性能低于NanoBot，展示真实边界。</p>
+<p><b>Figure 4：</b>24 matched comparisons全胜，是generalization核心证据。</p>
+<p><b>Figure 6：</b>Streaming vs Static 累积accuracy逐渐拉开，支持harness bank的经验积累，但没有给出“多久后必然持续提升”的理论保证。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>论文没有传统“去掉一个模块”的大表式 ablation，因此机制分析主要来自结构化对照：</p>
+<p><b>Fixed backbone, change harness：</b>同模型只换harness后显著提升，最直接隔离 harness contribution。</p>
+<p><b>Fixed harness baselines vs JIT：</b>同backbone、相近工具环境下比较多runtime，排除model weights差异。</p>
+<p><b>Cost control：</b>JIT token更少而性能更高的setting，排除“更多test-time compute”解释。</p>
+<p><b>Static vs Streaming：</b>只有bank是否积累经验不同，streaming后期更高，支持online archive evolution。</p>
+<p><b>Generated harness visualization：</b>Palimpsest/Trapdoor等显示不同task确实生成DAG、递归delegation、folded context、gated tools等不同execution semantics。</p>
+<p>不足是：没有系统量化 Stage I/II/III 分别去掉后的性能；因此“repair supervision”和“Evo-GDPO各贡献多少”仍缺标准ablation。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>harness intelligence 是独立于 model scaling 的可训练、可迁移、可积累能力；JIT generation 比固定AOT harness更适配异构任务。</div>
+<div class="callout good"><b>Experiments Actually Show：</b>固定backbone下大量paired gains、固定runtime对比、cost frontier、跨family 24/24提升、streaming优于static，都支持 harness作为一阶能力来源。</div>
+<div class="callout warn"><b>What Is Not Yet Proven：</b>没有完整Stage ablation；没有安全/攻击评估；没有证明生成harness不会放大prompt injection/数据泄漏；streaming bank长期是否会污染/遗忘未知；对闭源强runtime的接口公平性仍可能存在实现差异。</div>
+
+<h3>5.16 Contribution</h3>
+<ul>
+<li><b>New System/Engineering：</b>JIT harness generator / HarnessFactory。</li>
+<li><b>New Representation：</b>Memory–Planning–Action–Capability 四模块统一harness protocol。</li>
+<li><b>New Training Pipeline：</b>Customization SFT+DPO → bounded repair → Evo-GDPO。</li>
+<li><b>New Objective：</b>reward-first、efficiency-gated multi-channel evolution objective。</li>
+<li><b>New Inference Protocol：</b>Static JIT 与 Streaming JIT bank evolution。</li>
+<li><b>New Empirical Finding：</b>固定backbone下task-conditioned harness可带来大幅跨任务提升并降低成本。</li>
+</ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors' limitation / implied：</b>统一四模块 protocol 是人为设计边界；training需要teacher与大量执行评测；streaming经验是否在长期OOD任务上持续有益仍需验证。</p>
+<p><b>Additional：</b>生成harness可能成为新的攻击面：自动决定memory retention、tool exposure、recursive subagents，很可能改变权限边界；bank可能被poisoned trajectory污染；低成本优化可能诱导跳过安全检查；repair模块可能把“安全失败”修成“可执行但危险”；跨provider harness semantics可能不等价；benchmark tool registry相对干净，真实plugin生态更复杂。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最关键模块：1) 四模块 protocol schema；2) common execution kernel；3) 13 seed HarnessFactory；4) task-type retriever；5) teacher harness synthesis；6) protocol/runtime validator；7) StageI SFT+DPO；8) structured diagnostic/patch engine；9) StageIII candidate evaluator与Evo-GDPO；10) harness bank + Pareto frontier；11) static/streaming inference；12) benchmark adapters。</p>
+<p>最小复现不建议一上来训27B generator。先实现统一protocol+5个seed harness，在2个benchmark上做“oracle selector”：根据task type人工选择harness，验证 harness差异是否显著。第二步用小模型SFT生成合法harness，测Valid rate。第三步再加入repair。只有最后才做Evo-GDPO。这样可以把“生成能力”与“RL evolution”拆开验证。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline Potential ★★★★★</span>：做 Agent research 时，固定ReAct不再是足够baseline；需要考虑强task-adaptive harness。</p>
+<p><span class="score">Migration Potential ★★★★★</span>：可用于自动生成 unlearning verifier/recovery harness。</p>
+<p><span class="score">Attack Potential ★★★★★</span>：JIT harness可以成为自动 adaptive recovery attacker。</p>
+<p><span class="score">Evaluation Potential ★★★★★</span>：可测试模型能力是否对 harness 敏感。</p>
+<p><span class="score">Benchmark Potential ★★★★☆</span>：可做 Harness Robustness / Harness Shift benchmark。</p>
+<p><span class="score">New Paper Potential ★★★★★</span>：与 unlearning closure、Agent security、adaptive verification结合空间巨大。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — JIT-Adaptive Unlearning Recovery Harness</h4>
+<p><b>Original Problem →</b>JIT-Agent根据任务生成最合适的harness。<br>
+<b>Transferable Mechanism →</b>task-conditioned memory/planning/action/tool orchestration。<br>
+<b>New Research Question →</b>固定direct/paraphrase/cloze attack是否低估了unlearned model在“最适攻击harness”下的recoverability？<br>
+<b>Method Modification →</b>把目标改为“恢复forget knowledge”；generator可在候选actions中选择direct query、prefix、candidate verification、search、RAG、memory accumulation、subagent debate；reward=forget recovery − retain false-positive − query/tool cost。<br>
+<b>Minimum Experiment →</b>30 forget targets×4 unlearning methods×2 LLM；每target最多50 queries、10 tool calls；生成4个candidate harness并只执行1个。<br>
+<b>Model →</b>Qwen3-8B / Llama3.1-8B unlearned；小型Qwen3-4B/8B做harness generator起步。<br>
+<b>Dataset →</b>TOFU、DUSK、RWKU。<br>
+<b>Baseline →</b>fixed direct、Cloze、TAS、ATU forced-retrieval、manual mixed attack harness。<br>
+<b>Metric →</b>Best-Harness ASR、ASR@query budget、Harness Diversity、Retain FPR、Cost-to-Recovery。<br>
+<b>Expected Contribution →</b>从“攻击prompt优化”推进到“攻击系统结构优化”。<br>
+<b>Risk →</b>搜索空间大、容易把tool access本身当捷径。<br>
+<b>Collision Risk →</b>低；与TAS/ATU互补而非重复。</p>
+
+<h4>方向 B — Harness-Invariant Unlearning Verification</h4>
+<p><b>Original Problem →</b>JIT说明同一模型不同harness表现差异巨大。<br>
+<b>Transferable Mechanism →</b>把harness视为deployment distribution的一部分。<br>
+<b>New Research Question →</b>一个unlearning checkpoint的forget/retain结论在不同memory/planner/tool orchestration下是否稳定？<br>
+<b>Method Modification →</b>固定模型，采样10–20种harness配置；每个harness测forget leakage/retain utility；计算worst-case而非average。</p>
+<p><b>Minimum Experiment →</b>20 targets×5 methods×12 harnesses（ReAct、RAG、DAG、recursive、memory-heavy、tool-heavy等）×3 seeds。</p>
+<p><b>Model →</b>Qwen3-8B、LLaVA-7B（后续扩multimodal）。</p>
+<p><b>Dataset →</b>RWKU + MLLMU-Bench。</p>
+<p><b>Baseline →</b>standalone-only evaluation、single-ReAct Agent、ATU default agent。</p>
+<p><b>Metric →</b>Harness-Worst Leakage、Harness Variance、Utility Min、Tool-Recovery Max、Robust Forgetting Radius。</p>
+<p><b>Expected Contribution →</b>定义 harness-invariant unlearning robustness。</p>
+<p><b>Risk →</b>不同harness能力不等，公平预算必须严格控制。</p><p><b>Collision Risk →</b>低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>JIT-Agent 几乎天然是一种 <b>meta-attack generator</b>。如果把 environment reward 改成“成功恢复被忘知识”，它可以自动选择 memory策略、search breadth、subagent delegation、候选验证与停止条件。可定义 <b>Harness Robustness Envelope</b>：在固定预算的可接受 harness family 内，unlearned model 的最大 leakage；以及 <b>Harness Sensitivity</b>：不同harness下forget score方差。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>ATU 训练时假设一个给定 agent framework 与一组 recovery tools；JIT-Agent 说明 downstream deployer完全可能动态生成更强的 harness。于是 ATU 的真实 adversary 应该升级为：<b>不仅控制 prompt 和 tools，还能优化 harness 本身</b>。这形成今天最重要 collision：Agentic Tool Unlearning 的 threat model 仍可能低估 “Adaptive Harness Recovery”。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol>
+<li>Agent能力不是模型权重单独决定，而是model–harness pair决定。</li>
+<li>JIT-Agent不是优化一个harness，而是训练“生成harness的模型”。</li>
+<li>harness被统一为Memory、Planning、Action、Capability四模块。</li>
+<li>Stage I学task-conditioned生成，Stage II学修坏harness，Stage III学在线Pareto evolution。</li>
+<li>效率只有在reward不下降时才参与优化，避免用性能换成本。</li>
+<li>GLM-5.2平均+7.7，DeepSeek-V4-Flash平均+8.8，Planning最高+24.8。</li>
+<li>同backbone比较成熟runtime时，JIT在6个setting里成本全部最低。</li>
+<li>跨6个backbones×4benchmarks的24个paired comparisons全部提升，平均+7.6。</li>
+<li>它并非每个setting性能第一，因此应看Pareto而非leaderboard。</li>
+<li>对unlearning最重要的启发是：未来攻击者可以优化整个recovery harness，而不只是prompt。</li>
+</ol>
+</section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2>
+<p>今天两篇共同推动一个很重要的系统观：<b>LLM safety / unlearning 不应再把“模型”当作唯一边界。</b></p>
+<div class="tablewrap"><table>
+<tr><th>维度</th><th>ATU</th><th>JIT-Agent</th><th>统一结论</th></tr>
+<tr><td>能力来源</td><td>weights + external tools</td><td>weights + harness</td><td>system capability ≠ model capability</td></tr>
+<tr><td>失败点</td><td>tools重新取回forget knowledge</td><td>固定harness与task不匹配</td><td>deployment结构改变行为边界</td></tr>
+<tr><td>优化对象</td><td>agent trajectory policy</td><td>memory/planning/action/capability program</td><td>需要优化系统级artifact</td></tr>
+<tr><td>长期状态</td><td>Stage1 checkpoint+tool policy</td><td>evolving harness bank</td><td>外部状态也需要治理</td></tr>
+<tr><td>安全含义</td><td>固定工具attack已不够</td><td>harness可自动增强Agent</td><td>应评估worst-case harness/tool组合</td></tr>
+</table></div>
+<p><b>共同趋势：</b>从 parameter-centric AI 走向 execution-system-centric AI。</p>
+<p><b>可组合 mechanism：</b>ATU 的 trajectory reward + JIT 的 harness synthesis。前者可做 defender，后者可做 adaptive attacker/verifier。</p>
+<p><b>值得借用的实验范式：</b>ATU 的 standalone→agent→no-tool→swapped-tool 分解；JIT 的 fixed-backbone controlled harness comparison + cost Pareto。</p>
+<p><b>最可能形成新论文的 gap：</b>Harness-Adaptive Unlearning Recovery / Harness-Invariant Unlearning Robustness。</p>
+<p><b>最适合作 baseline：</b>ATU 作为 agentic unlearning baseline。</p>
+<p><b>最适合产生 attack：</b>JIT-Agent。</p>
+<p><b>最适合产生 benchmark/metric：</b>二者组合出的 Harness Robustness Envelope + Agentic Recovery Gap。</p>
+</section>
+
+<section id="opp" class="card"><h2>Combined Research Opportunities</h2>
+<h3>Best Migration Direction — Adaptive Harness Recovery for Unlearning</h3>
+<div class="flow">Unlearned checkpoint
+→ candidate attack goal / target
+→ JIT recovery-harness generator
+   choose memory strategy
+   choose planner
+   choose tools
+   choose subagent/verification pattern
+→ execute under fixed total query/tool/token budget
+→ observe recovery reward
+→ evolve attack harness bank
+→ find worst-case leakage harness
+→ defender trains ATU-style trajectory policy
+→ re-run adaptive harness search
+→ iterate until:
+   worst-case leakage < threshold
+   AND retain/tool utility > threshold</div>
+<p>相比你当前 direct/paraphrase/cloze/candidate/context collision，这个方向把 attack surface 从“query formulation”提升到“整个 agentic recovery system”。它能自然统一 TAS、Cloze-Lens、RULER、ATU 与 Agent harness evolution。</p>
+</section>
+
+<section id="collision" class="card"><h2>Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>ATU 已经占据“参数遗忘在 tool-augmented deployment 中被恢复”这个方向，因此如果做相关新工作，不能只换更多tool或把文本换成多模态就结束。更有区分度的是：<b>adaptive harness search、carrier attribution、worst-case harness robustness、cross-modal tool reacquisition</b>。</p>
+<p>JIT-Agent 与 Meta-Harness、AHE、Harness-R1、Harness-of-Harness、MASkills 在自动Agent改进上有明显重叠，但核心差异是“训练一个 task-conditioned harness generator + learned bounded repair + bank evolution”，而不是编辑单个durable harness或skill library。</p>
+</section>
+
+<section id="priority" class="card"><h2>Reading / Reproduction Priority</h2>
+<p><b>ATU：</b>先看 Figure1/2 明确 recovery gap → Sec.4 Threat Model → Sec.5 Stage2 reward与RL → Table3主结果 → Table4跨model/MUSE → Figure6 tool behavior → Appendix D.4 no-tools → Table11/12非RL效率 → Table13 forced retrieval → Table15 judge sensitivity。复现优先做 NPO standalone vs Agent recovery gap。</p>
+<p><b>JIT-Agent：</b>先看 Figure1 + 四模块protocol → Table1 13 seed harnesses → Figure2三阶段训练 → Eq.(4) preference → Eq.(6)(7) Evo-GDPO → Table2 9 benchmarks → Table3 fixed-backbone cost comparison → Figure4 24 paired generalization → Figure6 streaming evolution。复现优先做统一HarnessFactory与固定backbone harness差异，而不是直接训27B。</p>
+</section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2608.21544">ATU — arXiv</a></li>
+<li><a href="https://arxiv.org/html/2608.21544v1">ATU — Full HTML</a></li>
+<li><a href="https://arxiv.org/pdf/2608.21544">ATU — PDF</a></li>
+<li><a href="https://arxiv.org/abs/2608.25593">JIT-Agent — arXiv</a></li>
+<li><a href="https://arxiv.org/html/2608.25593">JIT-Agent — Full HTML</a></li>
+<li><a href="https://arxiv.org/pdf/2608.25593">JIT-Agent — PDF</a></li>
+<li><a href="https://github.com/bingreeky/JIT">JIT-Agent — Official GitHub</a></li>
+</ul>
+<p class="small">本报告在 2026-09-07 独立检索生成，不依赖 08:00 Radar。优先使用 arXiv 正文与官方 GitHub；实验数字均来自论文正文/附录。</p></section>
+</main></body></html>
