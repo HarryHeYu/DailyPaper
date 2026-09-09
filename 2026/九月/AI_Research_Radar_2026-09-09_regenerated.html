@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-09-09</title>
+<style>
+body{margin:0;background:#f5f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1260px;margin:auto;padding:28px 24px 80px}h1{font-size:36px}h2{border-bottom:1px solid #e4e7ec;padding-bottom:8px;margin-top:38px}
+.card,details{background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:21px 24px;margin:15px 0}details.s{background:#fff7dd}details.a{background:#eef5ff}details.b{background:#f2f8f2}
+summary{font-size:19px;font-weight:800;cursor:pointer}a{color:#3157d5;text-decoration:none}nav{columns:2;background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:16px 20px}nav a{display:block}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{border:1px solid #e4e7ec;padding:8px;vertical-align:top}th{background:#f3f5f9}
+.warn{background:#fff0df;border-left:5px solid #d58a15}.idea{border-left:5px solid #3157d5}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.kpi{font-size:28px;font-weight:800}
+</style>
+</head>
+<body><main>
+
+<header class="card">
+<h1>Daily AI Research Radar — 2026-09-09</h1>
+<p>Candidate Pool <b>42</b>；Formal Papers <b>10</b>；Tier S/A/B=<b>3/4/3</b>。</p>
+</header>
+
+<nav>
+<a href="#exec">Executive Summary</a><a href="#important">Today's Most Important</a><a href="#top3">Top 3</a><a href="#top5">Top 5</a>
+<a href="#s">Tier S</a><a href="#a">Tier A</a><a href="#b">Tier B</a><a href="#ideas">Idea Mining</a>
+<a href="#collision">Collision</a><a href="#priority">Reading Priority</a><a href="#watch">Watchlist</a><a href="#stats">Stats</a><a href="#sources">Sources</a>
+</nav>
+
+<section id="exec" class="card">
+<h2>Executive Summary</h2>
+<p><b>主轴1：</b>CONTINUITY 将安全语义从“单组件正确”提升到“跨组件连续”。对Agent Unlearning，delete/revoke状态必须在memory→planner→adapter→tool boundary中保持provenance、freshness与revocation连续。</p>
+<p><b>主轴2：</b>Persistent Skills与CoSkill表明skill是持续版本化、跨task复用、可由正常feedback重新生成的procedural memory；静态删文件并不等于Skill Unlearning。</p>
+<p><b>主轴3：</b>Memory Portability揭示“可修复性 vs 真正删除”的冲突：保留raw source有利于模型升级后的repair，但unlearning往往要求raw source本身不能继续保留。</p>
+<p><b>评估：</b>Multi-Harness RL与adaptive test-time search说明，unlearning结论应至少报告Worst-Harness Leakage与Recovery@Budget。</p>
+</section>
+
+<section id="important" class="card">
+<h2>Today's Most Important Paper</h2>
+<h3>CONTINUITY: Security-Context Contracts for Composable LLM Agent Controls</h3>
+<p>最值得看：Table 1 fault taxonomy、Table 2主结果、Table 3 ablation，以及assume–guarantee contract、field provenance、typed release、transform witness、finality recheck。与Execution-State Unlearning结合后，可形成“状态重建 × 删除语义连续性”的二维框架。</p>
+</section>
+
+<section id="top3" class="card">
+<h2>Top 3 必读</h2>
+<ol>
+<li>CONTINUITY — 跨组件security-context contract。</li>
+<li>Does Your Agent’s Memory Survive a Model Upgrade? — memory construction/retrieval/reader三段诊断。</li>
+<li>From Interaction Traces to Persistent Skills — versioned skill evolution与provenance。</li>
+</ol>
+</section>
+
+<section id="top5" class="card">
+<h2>Top 5 Most Important Papers</h2>
+<ol>
+<li>CONTINUITY</li>
+<li>Memory Portability</li>
+<li>Persistent Skills</li>
+<li>What Does Multi-Harness RL Learn?</li>
+<li>Rethinking Indirect Prompt Injection as a Test-Time Search Problem</li>
+</ol>
+</section>
+
+<section id="s">
+<h2>Tier S</h2>
+<details open class="s">
+<summary>1. CONTINUITY</summary>
+<p><b>人话版：</b>单个provenance tracker、policy gateway、finality sink各自正确，不代表组合起来安全。一个字段可能在adapter中丢掉source binding、被重新绑定、放宽权限或复用旧permit，最终坏动作仍被执行。CONTINUITY要求所有组件显式传递security context，并用assume–guarantee contract验证transition relation。</p>
+<p><b>关键结果：</b>32类fault×4 domains，共2,560 attacks。完整系统Effect ASR=0%；700/700 benign自动完成，200/200 ambiguous升级。最强不完整配置Gateway+Finality仍有65.6% harmful-effect ASR。</p>
+<p><b>对Unlearning：</b>delete状态也应有Deletion Root/Tombstone、field-level provenance、deletion epoch、sanitized transform witness和effect-bound current-deletion permit，防止删除语义在跨组件转换时被drop/rebind/stale/replay。</p>
+</details>
+
+<details open class="s">
+<summary>2. From Interaction Traces to Persistent Skills</summary>
+<p><b>人话版：</b>把GUI interaction traces和evaluator feedback转成版本化skill library，并在下一轮才暴露新revision。OSWorld四域中post-warm-up相对empty library提升GIMP +5.7pp、VLC +18.6pp、Writer +11.8pp、Thunderbird +12.4pp。</p>
+<p><b>关键观察：</b>43.3%的skill retrieval跨原始task origin，说明skill成为shared procedural memory；但某个skill family反复修改后35轮只成功2次，说明skill evolution并不保证真正修复。</p>
+<p><b>对Unlearning：</b>最自然的实验是删除skill后继续正常interaction，观察skill是否被重新诱导出来，形成Natural Skill Reacquisition。</p>
+</details>
+
+<details open class="s">
+<summary>3. Does Your Agent’s Memory Survive a Model Upgrade?</summary>
+<p><b>人话版：</b>同一memory换一个reader模型后不一定还能用。KG-fixed几乎不受writer swap影响，而free-form NOTES方向性很强；RAG则主要受embedding migration影响。</p>
+<p><b>关键结果：</b>NOTES可出现+9.91pp或−13.28pp方向差异；KG-fixed约−0.11/+0.02pp；50/50 mixed embedding只恢复4.96pp，full re-embedding恢复11.90pp；NOTES 80%损失来自construction，RAG 81%来自retrieval；store-only NOTES repair 48/48都达不到90% recovery。</p>
+<p><b>对Unlearning：</b>为了repair保留raw source与删除合规天然冲突，应研究Deletion-Compatible Memory Migration。</p>
+</details>
+</section>
+
+<section id="a">
+<h2>Tier A</h2>
+<details class="a"><summary>4. CoSkill</summary><p>Reasoning Agent与Meta-Skill Agent联合RL，skill creator和consumer共同受team reward驱动。对Skill Unlearning的关键问题：删掉一个高reward skill后，Meta-Skill Agent会不会再次学回来。</p></details>
+<details class="a"><summary>5. What Does Multi-Harness RL Learn?</summary><p>evaluation harness对最终能力影响可远大于training recipe。unlearning也可能被harness masking，应做Harness-Robust Unlearning矩阵与Worst-Harness Leakage。</p></details>
+<details class="a"><summary>6. Rethinking Indirect Prompt Injection as a Test-Time Search Problem</summary><p>攻击者维护strategy state并根据victim反馈持续搜索；success应是budget-dependent curve。可直接迁为adaptive recovery attack，报告Recovery@Budget。</p></details>
+<details class="a"><summary>7. Testing Interchangeability in LLM Agent Teams</summary><p>Agent swap后task score变化小但communication/progress成本可增加16–63%，说明team conventions和private memory形成关系性状态。可迁Cross-Agent Reacquisition。</p></details>
+</section>
+
+<section id="b">
+<h2>Tier B</h2>
+<details class="b"><summary>8. Harbor Adapters and Harbor-Index</summary><p>统一80+ agentic benchmarks的adapter层，适合未来做跨harness Agent Unlearning evaluation infrastructure。</p></details>
+<details class="b"><summary>9. A Removal Based Approach to Improve LLM Faithfulness at Test-Time</summary><p>通过删除未被解释credit覆盖的input concepts再重问模型，强制因果影响和解释一致。可迁为unlearning的counterfactual input-removal probe。</p></details>
+<details class="b"><summary>10. Why Better Models Can Create Riskier Systems</summary><p>更强Agent可能产生更相关的行为，从而在共同错误下放大systemic risk。对Multi-Agent Unlearning提示应测correlated recovery，而非把各Agent leakage当独立事件。</p></details>
+</section>
+
+<section id="ideas">
+<h2>Idea Mining</h2>
+<div class="card idea"><h3>Idea 1 — Deletion-Context Continuity across Agent Components（Best Research Idea）</h3><p>Deletion Root/Tombstone + field provenance + deletion epoch + sanitized transform witness + effect-bound permit。MVE：4-stage tool agent、30 targets、8 deletion discontinuity fault families。Metric=Effect Leakage ASR、Deletion Context Coverage、Retain Utility、Latency。</p></div>
+<div class="card idea"><h3>Idea 2 — Deletion-Compatible Memory Migration</h3><p>delete→model swap→repair；比较raw-retained repair、redacted-source repair、store-only repair、provenance-aware sanitized rebuild。Metric=Forget Leakage、Retain RPAS、Deletion-Compatible CTR、Reacquisition Rate。</p></div>
+<div class="card idea"><h3>Idea 3 — Natural Skill Reacquisition after Deletion</h3><p>在OSWorld/ALFWorld中第t轮删target skill，继续正常interaction，检测semantic equivalent skill何时再次出现。</p></div>
+<div class="card idea"><h3>Idea 4 — Harness-Robust Unlearning Evaluation</h3><p>固定unlearned checkpoint，在多个harness上统一direct/recovery probes，量化Harness Variance与Worst-Harness Leakage。</p></div>
+</section>
+
+<section id="collision" class="card warn">
+<h2>Collision Detection</h2>
+<p>⚠️ Agent Deletion Closure HIGH：Execution-State Unlearning已解决单Agent runtime descendant replay；CONTINUITY又覆盖跨组件provenance/revocation/replay continuity。基础“把summary/plan/KV都删”已经不够。</p>
+<p>⚠️ Skill Unlearning HIGH：Repo-To-Skill、MASkills、CoSkill、Persistent Skills、MUSE等已经非常拥挤。更值得做的是删除后的自然再生和semantic descendants。</p>
+<p>⚠️ Black-box / Adaptive Recovery HIGH：UMPeek、SFRA、Stress Testing、Reference-Grafting、adaptive IPI search均要求把攻击预算显式纳入评估。</p>
+<p>⚠️ Memory Migration LOW-MEDIUM：现有portability工作没有把“source不得保留”作为硬约束，Deletion-Compatible Migration仍有空间。</p>
+</section>
+
+<section id="priority" class="card">
+<h2>Reading Priority</h2>
+<table>
+<tr><th>Priority</th><th>Paper</th><th>最值得看</th></tr>
+<tr><td>READ NOW</td><td>CONTINUITY</td><td>Table1/2/3；assume–guarantee；transform witness/finality</td></tr>
+<tr><td>READ NOW</td><td>Memory Portability</td><td>Figure2；Table3方向差异；Table6 loss decomposition；repair section</td></tr>
+<tr><td>READ NOW</td><td>Persistent Skills</td><td>Figure1/2；Table2；43.3% cross-origin retrieval；2/35 churn case</td></tr>
+<tr><td>READ THIS WEEK</td><td>CoSkill / Multi-Harness RL / Adaptive IPI / Interchangeability</td><td>skill regeneration、harness portability、adaptive attack、team conventions</td></tr>
+<tr><td>SAVE</td><td>Harbor / Removal Faithfulness / Correlated Risk</td><td>evaluation infrastructure、causal probe、system-level recovery</td></tr>
+</table>
+</section>
+
+<section id="watch" class="card">
+<h2>Candidate Watchlist / Frozen Pool</h2>
+<p>完整Candidate Pool共42篇，正式收录10篇；其余包括：RSM-full、MemMA、MABPD、A²E、Semantic Overlays、τ^τ-bench，以及近期Cooling的Execution-State Unlearning、TROVE、DCFA、UMPeek、MASkills、Where Reliability Lives、EAL、Fresh Memory/Stale Plans、Cheating Swarm、Aborted but Not Forgotten、Repo-To-Skill、SafeRI、Confess What You Know、Entangled Representations、Scientific Claim Unlearning、Stress Testing、Reference-Grafting、Neurofeedback等。</p>
+</section>
+
+<section id="stats">
+<h2>今日统计</h2>
+<div class="grid">
+<div class="card"><div class="kpi">42</div>Candidate Pool</div>
+<div class="card"><div class="kpi">10</div>Formal Papers</div>
+<div class="card"><div class="kpi">3 / 4 / 3</div>Tier S / A / B</div>
+<div class="card"><div class="kpi">9</div>BACKFILL</div>
+<div class="card"><div class="kpi">32</div>Watchlist / Related / Cooling</div>
+<div class="card"><div class="kpi">18</div>7-day Cooling exclusions</div>
+</div>
+</section>
+
+<section id="sources" class="card">
+<h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/html/2609.05269v1">CONTINUITY</a></li>
+<li><a href="https://arxiv.org/html/2609.04869v1">From Interaction Traces to Persistent Skills</a></li>
+<li><a href="https://arxiv.org/html/2609.05339v1">Memory Portability</a></li>
+<li><a href="https://arxiv.org/html/2609.04865v1">CoSkill</a></li>
+<li><a href="https://arxiv.org/html/2609.04518v1">Multi-Harness RL</a></li>
+<li><a href="https://arxiv.org/html/2609.04495v1">Indirect Prompt Injection as Test-Time Search</a></li>
+<li><a href="https://arxiv.org/html/2609.05279v1">Testing Interchangeability in LLM Agent Teams</a></li>
+</ul>
+</section>
+
+</main></body></html>

@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-09-08</title>
+<style>
+body{margin:0;background:#f5f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1260px;margin:auto;padding:28px 24px 80px}h1{font-size:36px}h2{border-bottom:1px solid #e4e7ec;padding-bottom:8px;margin-top:38px}
+.card,details{background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:21px 24px;margin:15px 0}details.s{background:#fff7dd}details.a{background:#eef5ff}details.b{background:#f2f8f2}
+summary{font-size:19px;font-weight:800;cursor:pointer}a{color:#3157d5;text-decoration:none}nav{columns:2;background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:16px 20px}nav a{display:block}
+.flow,.eq{white-space:pre-wrap;font-family:ui-monospace,monospace;padding:12px;border-radius:9px}.flow{background:#111827;color:#fff}.eq{background:#f1f3f6}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{border:1px solid #e4e7ec;padding:8px;vertical-align:top}th{background:#f3f5f9}
+.warn{background:#fff0df;border-left:5px solid #d58a15}.idea{border-left:5px solid #3157d5}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.kpi{font-size:28px;font-weight:800}.tag{display:inline-block;background:#eef2ff;border-radius:99px;padding:2px 8px;margin-right:4px;font-size:12px}
+</style>
+</head>
+<body>
+<main>
+
+<header class="card">
+<h1>Daily AI Research Radar — 2026-09-08</h1>
+<p>Candidate Pool <b>42</b>；Formal Papers <b>10</b>；Tier S/A/B=<b>3/4/3</b>。今日出现直接定义 Execution-State Unlearning 的新论文。</p>
+</header>
+
+<nav>
+<a href="#exec">Executive</a><a href="#important">Most Important</a><a href="#top3">Top3</a><a href="#top5">Top5</a>
+<a href="#s">Tier S</a><a href="#a">Tier A</a><a href="#b">Tier B</a><a href="#ideas">Ideas</a>
+<a href="#collision">Collision</a><a href="#priority">Priority</a><a href="#watch">Watchlist</a><a href="#stats">Stats</a><a href="#sources">Sources</a>
+</nav>
+
+<section id="exec" class="card">
+<h2>Executive Summary</h2>
+<p><b>今日最大变化：</b>Agent Unlearning 从“删 memory”进入 execution-state counterfactual equivalence。新论文已覆盖 summary / plan / KV / descendants，因此你的 Deletion Closure 需要立即升级到 Multi-Agent distributed frontier、causal minimal closure 或 continual re-formation。</p>
+<p>TROVE 提供“runtime 只修复失效 suffix”，DCFA 提供“dependency graph 里找决定性节点”，ClaimReceipt 提供“结果可重算 + 实验覆盖完整”的 verification contract。这三条机制可分别迁移到 Trajectory Unlearning、Causal Deletion Credit、Unlearning Receipt。</p>
+</section>
+
+<section id="important" class="card">
+<h2>Today's Most Important Paper</h2>
+<h3>Forgetting Without Restarting: Execution-State Unlearning for Stateful LLM Agents</h3>
+<p>优先读 Figure 1/2、Algorithm 1、Table 1/2/4。它已经证明 Memory-Delete 与 No-Forget 逐格相同，Selective Replay 与 Full Reset 等价却约 9.3× 减少重算。与你的 Agent Deletion Closure 高度直接碰撞。</p>
+</section>
+
+<section id="top3" class="card">
+<h2>Top 3 必读</h2>
+<ol>
+<li>Forgetting Without Restarting — execution-state exact unlearning。</li>
+<li>DCFA — causal-inspired decisive-node attribution。</li>
+<li>TROVE — minimal stale-suffix route editing。</li>
+</ol>
+</section>
+
+<section id="top5" class="card">
+<h2>Top 5</h2>
+<ol>
+<li>Execution-State Unlearning</li>
+<li>DCFA</li>
+<li>TROVE</li>
+<li>ClaimReceipt</li>
+<li>Defense-as-Skill</li>
+</ol>
+</section>
+
+<section id="s">
+<h2>Tier S</h2>
+
+<details open class="s">
+<summary>1. Forgetting Without Restarting</summary>
+<p><b>基本信息：</b>Chao Yao, Yangbo Wei, Zhen Huang, Junhong Qian, Chenle Chen, Shaoqiang Lu, Chen Wu, Lei He；Arizona State University / Eastern Institute of Technology, Ningbo；arXiv:2609.04875v1，2026-09-04；<a href="https://arxiv.org/html/2609.04875v1">Paper</a>。</p>
+<h3>人话版</h3>
+<p>这篇直接定义 <b>Execution-State Unlearning</b>：长期 Agent 不仅有 plaintext memory，还有 summary、过去回答、pending tool plan 和 KV cache；只删 memory record 并不会把这些 derived artifacts 一起删掉。作者把 runtime 写成 deterministic transition system，定义“从未见过 target”的 counterfactual agent 作为 exact reference。target 在第 τ 步进入后，τ 之前 prefix 可复用；没有更细 token attribution 时，τ 之后 suffix 都可能被污染，因此 exact forgetting 至少要重算 T−τ+1 个 transition。Provenance-Guided Selective Replay 通过 provenance graph 找 taint closure、crop KV 到 target 前 checkpoint、sanitized replay 后缀，达到这个下界。三套 Agent 任务里 Memory-Delete 与 No-Forget 泄漏完全一样；Selective Replay 与 Full Reset 等价，却只重算 133 vs 1235 tokens，约 9.3× 更省。</p>
+<h3>Method Deep Dive</h3>
+<div class="flow">R_T + forget target z
+→ LocateSource(z)
+→ FirstEntry τ
+→ TaintClosure I(z)
+→ latest checkpoint c* before τ
+→ crop KV / restore env snapshot
+→ sanitize recorded observations
+→ shadow-execute & deduplicate tools
+→ regenerate answers / summaries / plans / KV
+→ R'_T = target-free counterfactual state</div>
+<div class="eq">R_t = F(R_{t-1}, o_t; θ)
+Minimum exact recomputation = Ω(T-τ+1)
+Selective Replay recomputation = T-τ+1</div>
+<h3>Results</h3>
+<ul>
+<li>Memory-Delete LME/TS/AD = 0.86/1.00/0.97，与 No-Forget 完全相同。</li>
+<li>Source-Redaction 仍 0.84/0.94/0.39。</li>
+<li>Forget-Instruction 在 adversarial elicitation 三 suite Leak@probes 均 1.00。</li>
+<li>Selective Replay 三个 suite Any-leak 全 0、CAD=0，与 Full Reset agreement=1.0。</li>
+<li>重算 token：B7 133、Full Reset 1235、PrefixCache 202。</li>
+</ul>
+<h3>Migration</h3>
+<p>向 Multi-Agent 扩展：Agent×Artifact provenance DAG + 每个 Agent clean checkpoint + distributed replay frontier。关键指标 Cross-Agent Leak@k、Team CAD、Replay Tokens、Closure Rate。</p>
+</details>
+
+<details open class="s">
+<summary>2. TROVE</summary>
+<p><b>基本信息：</b>Tianxing Wang, Mingming Zhao, Shuai Huang, Huiyang Xu, Chaoyue Niu, Shengzhong Liu, Fan Wu；arXiv:2609.05019v1，2026-09-04；<a href="https://arxiv.org/html/2609.05019v1">Paper</a>。</p>
+<h3>人话版</h3>
+<p>TROVE 解决“计划后缀变 stale”：离线从 workflow search traces 蒸馏 atomic/composite skills 和 outcome-conditioned transition graph；在线 planner 可提出多步 route，但只 commit 第一个 skill。每次得到 runtime outcome 后，剩余 route 要么 Retain、要么 Insert 局部修复、要么 Replace 失效 suffix。18 个 backbone×benchmark blocks 里 15 个 best/tied-best score、16 个最短 online time。Qwen3-8B HumanEval 完整 TROVE 92.37%；去 offline structure 降 77.86，去 Insert 降 82.44。</p>
+<h3>Method</h3>
+<div class="flow">Offline traces→atomic/composite skills→transition graph
+Online query→provisional route
+→ execute only head
+→ observe outcome
+→ RETAIN / INSERT / REPLACE invalid suffix
+→ repeat</div>
+<h3>Results</h3>
+<ul>
+<li>18 blocks 中 15 个 best/tied-best score，16 个 shortest time。</li>
+<li>对 AFlow 16 settings 提升 score，最多 +31.37pt；时间最多 -86.7%。</li>
+<li>DeepSeek MATH 74.07→80.86，time 68.88→26.08min。</li>
+<li>Qwen MATH 8.44→36.42，time 273.35→36.41。</li>
+</ul>
+<h3>Migration</h3>
+<p>Forget event 后只 invalidate 依赖 target 的 future skills。与 Execution-State Unlearning 的差异点应放在 semantic/skill route 级别最小修复、以及不可完整 replay 的环境。</p>
+</details>
+
+<details open class="s">
+<summary>3. DCFA</summary>
+<p><b>基本信息：</b>Zehao Wang, Lanjun Wang, Shilong Jin, Junjie Chen, Yanghua Xiao；Tianjin University / Fudan University；arXiv:2609.04749v1，2026-09-04；<a href="https://arxiv.org/pdf/2609.04749">PDF</a>；<a href="https://github.com/wzhSteve/DCFA">Code</a>。</p>
+<h3>人话版</h3>
+<p>Multi-Agent trace 里“最早看起来不对”不一定是真正决定最终失败的原因。DCFA 先用 Global Causal-inspired Attribution 构建 dependency graph，再用 Local Counterfactual-inspired Enhancement 在局部估计“纠正某 interaction 后最终 outcome 改善多少”。Who&When 上，平均 step-level accuracy 从 32.28→44.79 和 16.67→20.69。</p>
+<div class="eq">S(τ_i)=Cos(Enc(Y^(i)),Enc(Y*))
+ΔS(τ_i)=S(τ_i)-S(τ_{i-1})</div>
+<h3>Results</h3>
+<ul>
+<li>Algorithm 平均 32.28→44.79。</li>
+<li>Hand-crafted 16.67→20.69。</li>
+<li>GPT-5 Algorithm 31.75→47.62，Hand 15.52→24.14。</li>
+<li>LCE 对长 trace 更有价值，但总成本约 300s/trajectory。</li>
+</ul>
+<h3>Migration</h3>
+<p>把“纠正错误”改成“删除 target descendant”，用 ΔLeak 与 ΔUtility 定义 Deletion Credit，从 provenance closure 进一步走向“因果最小删除集”。</p>
+</details>
+</section>
+
+<section id="a">
+<h2>Tier A</h2>
+<details class="a"><summary>4. Defense-as-Skill</summary><p>把 runtime guard 做成可进化 skill。GLM-5 ID ASR 0.482→0.104，OOD 0.606→0.115；adaptive attacker 后总体 ASR 45.1→22.9。可迁 Skill Unlearning：删除后继续 MCTS/evolution，测 target semantics 是否重新进入 skill。Worth Deep Reading: YES。</p></details>
+<details class="a"><summary>5. What’s in Your Agent’s Context?</summary><p>CoRA 分析 12 个真实 harness，发现 role/scope context escalation。1761 candidate paths 中约 58% 被行为验证。对 Agent Unlearning，应跟踪 target 在 tool/user/memory/skill/system-like context 之间的 cross-scope persistence。Worth Deep Reading: YES。</p></details>
+<details class="a"><summary>6. ClaimReceipt</summary><p>把 evidence sufficiency 与 coverage 分开；1,392 历史 records 可 exact replay，11/11 semantic faults 正确检测。可迁为 Unlearning Receipt：预签 forget/retain/recovery manifest，缺 probe 只能 Inconclusive。Worth Deep Reading: YES。</p></details>
+<details class="a"><summary>7. Efficient Test-Time Adaptation through Human-AI Interaction</summary><p>约 20 次普通人类交互就能产生明显 context/weight adaptation。对 Continual Unlearning，应测 normal-interaction reacquisition，而不是只测刚删除后的静态状态。Worth Deep Reading: YES。</p></details>
+</section>
+
+<section id="b">
+<h2>Tier B</h2>
+<details class="b"><summary>8. The Safeguard Worked. Is the LLM System Safer?</summary><p>核心启示：单次低 ASR 不代表系统面对 adaptive attacker 就安全。Unlearning 评估也应从 Leak@1 升级为 Leak@budget、best-of-k、adaptive multi-view recovery。Potential Use: Threat Model / Robust Evaluation。</p></details>
+<details class="b"><summary>9. Selective Knowledge Edit Reversal via Gated Singular Vector Shrinkage</summary><p>对 edit update 做 SVD，并选择性收缩 target-related singular directions。可用于分析 GA/NPO/LoRA update 中 forget 与 retain collateral 是否位于不同低秩方向。Potential Use: Subspace Audit / Repair。</p></details>
+<details class="b"><summary>10. Gaussian Core LoRA</summary><p>Broad concept 是一个 distribution，不是单一 direction。对 MLLM identity unlearning 可把 real/paraphrase/cloze/cross-modal 建模成 target distribution。Potential Use: Multimodal Localization / Concept Erasure Baseline。</p></details>
+</section>
+
+<section id="ideas">
+<h2>Idea Mining</h2>
+<div class="card idea"><h3>Idea 1 — Distributed Counterfactual Execution-State Unlearning（Best）</h3><p>Multi-Agent 有多个异步 first-entry 与跨 Agent descendants。构造 Agent×Artifact provenance DAG，求 minimal distributed replay frontier。MVE：5 agents×20 targets×1–3 hops；Metrics=Cross-Agent Leak@k、Team CAD、Replay Tokens、Closure Rate。Novelty★★★★★ Feasibility★★★★☆ Collision 高。</p></div>
+<div class="card idea"><h3>Idea 2 — Causal Minimal-Deletion Credit</h3><p>Global graph 找候选，local counterfactual deletion 估 ΔLeak/ΔUtility，寻找更小的 delete set。Novelty★★★★★ Feasibility★★★★☆ Collision 中。</p></div>
+<div class="card idea"><h3>Idea 3 — Unlearning Receipts</h3><p>预签 Forget/Retain/Recovery manifest；每个 probe/seed/checkpoint 产生 typed receipt；缺任何 committed attack 只能 Inconclusive。Novelty★★★★☆ Feasibility★★★★★。</p></div>
+<div class="card idea"><h3>Idea 4 — Normal-Interaction Reacquisition after Unlearning</h3><p>删除后通过普通 human feedback 自然 relearn。MVE：1/5/10/20 弱相关 sessions，测 Time-to-Reacquire、Behavioral F1、Direct Leak、Retain Personalization。</p></div>
+</section>
+
+<section id="collision" class="card warn">
+<h2>Collision Detection</h2>
+<p>⚠️ <b>Deletion Closure HIGH：</b>Execution-State Unlearning 已覆盖 memory/summary/plan/KV descendant closure；剩余空间主要在 Multi-Agent distributed frontier、不可重放环境、parametric+runtime joint deletion、continual re-formation。</p>
+<p>⚠️ <b>Multi-Agent causal deletion MEDIUM：</b>DCFA/EDGE/Hindsight 已让 dependency attribution 变拥挤；应证明因果最小删除集显著减少 over-deletion。</p>
+<p>⚠️ <b>Skill/Trajectory MEDIUM-HIGH：</b>Repo-To-Skill/MASkills/TROVE/Defense-as-Skill 已覆盖构造、进化、routing、runtime editing。重点应是 targeted revocation + regeneration。</p>
+<p>⚠️ <b>Black-box Recovery HIGH：</b>UMPeek/SFRA/Reference-Grafting/LENS-U 等已很拥挤，新攻击必须 adaptive/source-free 或服务 verification。</p>
+</section>
+
+<section id="priority" class="card">
+<h2>Reading Priority</h2>
+<table>
+<tr><th>Priority</th><th>Paper</th><th>看什么</th></tr>
+<tr><td>READ NOW</td><td>Execution-State Unlearning</td><td>Figure1/2；Algorithm1；Table1/2/4</td></tr>
+<tr><td>READ NOW</td><td>DCFA</td><td>Figure2；ΔS；Table1/2；case study；cost</td></tr>
+<tr><td>READ NOW</td><td>TROVE</td><td>Figure1/2；Table1/2；Retain/Insert/Replace</td></tr>
+<tr><td>READ THIS WEEK</td><td>ClaimReceipt / Defense-as-Skill / CPE / TAHI</td><td>coverage verification、skill evolution、cross-scope persistence、natural reacquisition</td></tr>
+<tr><td>SAVE</td><td>Safeguard / Edit Reversal / Gaussian Core LoRA</td><td>adaptive evaluation、subspace repair、多视角 erasure</td></tr>
+</table>
+</section>
+
+<section id="watch" class="card">
+<h2>Candidate Watchlist / Frozen Pool</h2>
+<table>
+<tr><th>#</th><th>Title</th><th>Category</th><th>Status</th></tr>
+<tr><td>1</td><td><a href="https://arxiv.org/html/2609.04875v1">Forgetting Without Restarting</a></td><td>Agent Unlearning / Execution State</td><td>NEW</td></tr>
+<tr><td>2</td><td><a href="https://arxiv.org/html/2609.05019v1">TROVE</a></td><td>Agent Skill / Route Editing</td><td>NEW</td></tr>
+<tr><td>3</td><td><a href="https://arxiv.org/pdf/2609.04749">DCFA</a></td><td>Multi-Agent / Causal Attribution</td><td>NEW</td></tr>
+<tr><td>4</td><td><a href="https://arxiv.org/html/2609.01487v1">Defense-as-Skill</a></td><td>Agent Skill / Runtime Security</td><td>NEW</td></tr>
+<tr><td>5</td><td><a href="https://arxiv.org/html/2609.01222v2">Context Privilege Escalation</a></td><td>Agent Harness / Context Security</td><td>UPDATED</td></tr>
+<tr><td>6</td><td><a href="https://arxiv.org/html/2609.01992v1">ClaimReceipt</a></td><td>Agent Evaluation / Provenance</td><td>NEW</td></tr>
+<tr><td>7</td><td><a href="https://arxiv.org/html/2609.04141v1">TAHI</a></td><td>Test-time Adaptation</td><td>NEW</td></tr>
+<tr><td>8</td><td><a href="https://arxiv.org/html/2609.00519v1">The Safeguard Worked?</a></td><td>Adaptive Evaluation</td><td>BACKFILL</td></tr>
+<tr><td>9</td><td><a href="https://arxiv.org/html/2609.02091v1">Selective Knowledge Edit Reversal</a></td><td>Knowledge Editing / SVD</td><td>BACKFILL</td></tr>
+<tr><td>10</td><td><a href="https://arxiv.org/html/2609.01433v1">Gaussian Core LoRA</a></td><td>Diffusion Concept Erasure</td><td>BACKFILL</td></tr>
+<tr><td colspan="4">其余候选包含：Agent Systems Survey、FUSION、Environment Evolution、Continuous Cognitive Coverage、UMPeek、MASkills、Where Reliability Lives、EAL、Fresh Memory/Stale Plans、Cheating Swarm、Aborted but Not Forgotten、Repo-To-Skill、SafeRI、Confess What You Know、Entangled Representations、SFRA、Scientific Claim Unlearning、Stress Testing、Reference-Grafting、Neurofeedback、HarnessDev、WHALE、OpenAgentFlow、Agent Zero Memory、ContinualSkillBench、Continual MLLM Unlearning、PPU-Bench、Test-Time Intelligence Survey、Harness Engineering、LLM-as-Judge、Revision Propagation。</td></tr>
+</table>
+</section>
+
+<section id="stats">
+<h2>今日统计</h2>
+<div class="grid">
+<div class="card"><div class="kpi">42</div>Candidate Pool</div>
+<div class="card"><div class="kpi">10</div>Formal Papers</div>
+<div class="card"><div class="kpi">3/4/3</div>Tier S/A/B</div>
+<div class="card"><div class="kpi">14</div>BACKFILL</div>
+<div class="card"><div class="kpi">32</div>Watchlist / Related / Cooling</div>
+<div class="card"><div class="kpi">16</div>Cooling exclusions</div>
+</div>
+</section>
+
+<section id="sources" class="card">
+<h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/html/2609.04875v1">Execution-State Unlearning</a></li>
+<li><a href="https://arxiv.org/html/2609.05019v1">TROVE</a></li>
+<li><a href="https://arxiv.org/pdf/2609.04749">DCFA</a></li>
+<li><a href="https://arxiv.org/html/2609.01487v1">Defense-as-Skill</a></li>
+<li><a href="https://arxiv.org/html/2609.01222v2">Context Privilege Escalation</a></li>
+<li><a href="https://arxiv.org/html/2609.01992v1">ClaimReceipt</a></li>
+<li><a href="https://arxiv.org/html/2609.04141v1">TAHI</a></li>
+</ul>
+</section>
+
+</main>
+</body>
+</html>

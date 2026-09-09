@@ -1,0 +1,548 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Top Papers Deep Dive — 2026-09-08</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#e1e6ef;--blue:#3158cf;--soft:#eef3ff;--green:#edf8f1;--yellow:#fff4d6;--red:#fff0f0;--dark:#111827}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.84}
+main{max-width:1220px;margin:auto;padding:30px 24px 92px}.hero,.card,.paper{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 32px;margin:18px 0;box-shadow:0 4px 18px rgba(20,30,50,.045)}
+.hero{background:linear-gradient(135deg,#142041,#3158cf);color:#fff;border:0}.hero h1{margin:0 0 10px;font-size:38px;line-height:1.25}.hero p{color:#eef2ff}
+h2{font-size:28px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:21px;color:#28439d;margin-top:29px}h4{font-size:17px;margin-top:22px}
+nav{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px 21px;columns:2}nav a{display:block;padding:4px 0;color:var(--blue);text-decoration:none}
+a{color:var(--blue);text-decoration:none}.badge{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--soft);color:#3048a5;font-size:12px;font-weight:700;margin-right:5px}
+.kv{display:grid;grid-template-columns:210px 1fr;gap:5px 14px}.kv>div:nth-child(odd){font-weight:760}
+.flow,.formula{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--dark);color:#f7f8ff;border-radius:12px;padding:16px 18px;white-space:pre-wrap;overflow:auto}
+.callout{border-left:5px solid var(--blue);background:var(--soft);border-radius:10px;padding:14px 17px}.good{border-left-color:#338754;background:var(--green)}.warn{border-left-color:#c98a12;background:var(--yellow)}.bad{border-left-color:#c84545;background:var(--red)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:920px}th,td{border-bottom:1px solid var(--line);padding:10px 11px;text-align:left;vertical-align:top}th{background:#f2f4f8}
+.score{font-weight:760;color:#2748bd}.small{font-size:13px;color:var(--muted)}ul,ol{padding-left:23px}li{margin:5px 0}
+@media(max-width:760px){main{padding:18px 12px}.hero,.card,.paper{padding:20px}.hero h1{font-size:30px}nav{columns:1}.kv{grid-template-columns:1fr}}
+</style></head><body><main>
+<!-- regenerated: 2026-09-08 10:10 +08:00 -->
+<section class="hero"><h1>Daily Top Papers Deep Dive — 2026-09-08</h1>
+<p><b>Execution-State Unlearning × Causal Failure Attribution in Multi-Agent Systems</b></p>
+<p>今天只精读 2 篇。第一篇把“删除 Agent memory”推进到“让整个运行态回到仿佛从未见过目标”的 counterfactual equivalence；第二篇把多 Agent 失败归因从“找到一个表面错误”推进到“沿依赖链寻找纠正后最能改变最终结果的决定性错误”。</p></section>
+
+<nav>
+<a href="#selection">1. Today's Deep Dive Selection</a><a href="#why">2. 为什么选这 2 篇</a>
+<a href="#p1">3. Paper 1 — Execution-State Unlearning</a><a href="#p2">4. Paper 2 — DCFA</a>
+<a href="#syn">5. Cross-Paper Synthesis</a><a href="#opp">6. Combined Research Opportunities</a>
+<a href="#collision">7. Collision / Overlap</a><a href="#priority">8. Reading / Reproduction Priority</a>
+<a href="#sources">9. Sources / Links</a></nav>
+
+<section id="selection" class="card"><h2>Today's Deep Dive Selection</h2>
+<p><span class="badge">Machine Unlearning</span><span class="badge">Agent Memory</span><span class="badge">Execution State</span><b>#1 Forgetting Without Restarting: Execution-State Unlearning for Stateful LLM Agents</b></p>
+<p><span class="badge">Multi-Agent</span><span class="badge">Causal Attribution</span><span class="badge">Training-Free</span><b>#2 DCFA: Dual-view Causal-inspired Attribution for Failure Reasoning in LLM-based Multi-agent Systems</b></p>
+</section>
+
+<section id="why" class="card"><h2>为什么选这 2 篇</h2>
+<p>今天的两篇都直接落在“因果后代 / 派生状态”这一条主线上。第一篇提出 execution-state unlearning：删除一个源 memory 远远不够，summary、plan、tool arguments、KV cache 等所有 downstream state 都可能继续保留其影响；第二篇则从 multi-agent failure trace 中显式构造 causal-inspired dependency graph，寻找真正决定最终失败的早期步骤，而不是停留在表面症状。它们共同提供了一个比“相关性传播”更强的研究框架：先发现依赖，再做 intervention / replay 验证。</p>
+<div class="callout good"><b>共同主题：</b>不要只删除或修正表面节点，而要沿 dependency graph 处理真正的后代状态，并用 counterfactual / replay 检查这些后代是否真的受 source 影响。</div>
+</section>
+
+<section id="p1" class="paper"><h2>Paper 1 Full Deep Dive — Forgetting Without Restarting</h2>
+
+<h3>5.1 基本信息</h3>
+<div class="kv">
+<div>Title</div><div>Forgetting Without Restarting: Execution-State Unlearning for Stateful LLM Agents</div>
+<div>Authors</div><div>Chao Yao, Yangbo Wei, Zhen Huang, Junhong Qian, Chenle Chen, Shaoqiang Lu, Chen Wu, Lei He</div>
+<div>Affiliation</div><div>论文 HTML 本次正文未完整展开机构字段，因此不猜测具体单位。</div>
+<div>Date</div><div>2026-09-04（arXiv v1）</div>
+<div>Venue / Status</div><div>arXiv preprint，cs.CR</div>
+<div>Paper</div><div><a href="https://arxiv.org/abs/2609.04875">arXiv</a> · <a href="https://arxiv.org/html/2609.04875v1">HTML</a> · <a href="https://arxiv.org/pdf/2609.04875">PDF</a></div>
+<div>Project / Code</div><div>正文未验证到作者官方 GitHub URL；不猜测代码状态。</div>
+</div>
+
+<h3>5.2 一句话定位</h3>
+<p>它把 Agent unlearning 的目标从“删掉一个 memory record”升级为：让整个可重构 execution state 与“这个 Agent 从未见过目标 z”时的 counterfactual runtime 一致。</p>
+
+<h3>5.3 人话版</h3>
+<p>Stateful Agent 的知识不只存在于显式 memory。一个目标事实 z 一旦进入 session，后续 summary、pending plan、tool routing argument、generated reply、KV cache 都可能成为它的派生状态。因此，只删 memory row 可能完全不改变真实行为。论文提出更严格的执行态遗忘目标：forget 后得到的 runtime，应该等价于同一个 Agent 从未见过 z 时运行到当前位置的 counterfactual runtime。作者用 Provenance-Guided Selective Replay 实现这一点：记录 artifact-level provenance，找到 z 第一次进入 runtime 的时间 τ，求其 descendant taint closure，恢复 τ 之前的安全 checkpoint，再在去掉 z 的条件下只重放后缀，重新生成所有 summary、plan、tool state 和 KV。理论上任何 exact 方法都至少要重算 T−τ+1 个 transition，Selective Replay刚好达到下界。实验中 Memory-Delete 基本等于 No-Forget；Forget-Instruction 在攻击提示下仍可100%恢复；Selective Replay 与 Full Reset 在泄漏与行为审计上对齐，却显著减少重算成本。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>传统 machine unlearning 主要研究参数 θ 的更新，希望删掉训练样本后模型行为接近 retrain oracle。Agent 系统多了一层持续演化的 non-parametric execution state：memory、summary、plan、tool state、cache。即便模型参数完全不变，这些状态也会继续保存旧信息。</p>
+<p>例如用户在第4轮告诉 Agent“以后不要购买 Brand-X”。第5轮 summary 可能改写成“用户避免某大厂”，第6轮 planner 过滤 Brand-X，第7轮 tool router 不再搜索相关商品。到了第10轮用户撤销这条偏好。如果系统只删 memory 里的 Brand-X，后续 summary/plan/cache 仍会影响行为，甚至完全不再出现 Brand-X 字符串。</p>
+<p>Memory delete 不传播；source redaction 不重算后代；IFC/taint gate 只能控制未来 flow；full reset 虽正确却昂贵。因此本文真正解决的是：<b>怎样在不完全重启 Agent 的前提下，把源事实的整个派生影响精确撤销。</b></p>
+
+<h3>5.5 Core Insight</h3>
+<p>第一，<b>删除 source 不等于删除 influence</b>。z 会通过 summary、plan、tool arguments、cache 等多个载体向后传播。</p>
+<p>第二，执行态比参数更容易给 exact guarantee，因为 execution 可以被建模为可重放 transition system。</p>
+<p>第三，forget 成本由 target 首次进入点 τ 决定，而不是由总 session 长度本身决定。τ 越靠后，需要重演的 suffix 越短。</p>
+<p>第四，string-level clean 不等于 behavioral clean。模型可以完全不说出目标，却继续按照被撤销偏好行动。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Stateful runtime R_T + forget target z
++ provenance graph G + checkpoints C + observations {o_t}
+→ LocateSource(z)
+→ find first influence boundary τ
+→ compute descendant taint closure
+→ choose safe checkpoint c* < τ
+→ crop KV / restore env snapshot
+→ sanitize z from affected observation
+→ replay suffix:
+   deterministic/read-only tools replayed
+   consequential tools shadow-executed
+   model transition F rerun
+   summaries/plans/tool args/cache regenerated
+→ obtain R'_T
+→ compare to counterfactual R_T^{-z}
+→ leakage + behavior + cost audits</div>
+<p><b>Provenance：</b>RuntimeBlock 存 id、type、parents、source_ids、token span、turn 等字段，让系统知道每个 derived artifact 是由哪些 source 产生。</p>
+<p><b>FirstEntry τ：</b>不是简单找字符串第一次出现，而是找 z 第一次开始影响 runtime 的 transition boundary。</p>
+<p><b>Taint closure：</b>把所有直接或间接依赖 z 的 summary、plan、reply、tool args 标为失效。</p>
+<p><b>Restore：</b>恢复 τ 之前的安全 prefix，包括 KV crop 和环境 snapshot。</p>
+<p><b>Replay：</b>保留不受 z 影响的 observation，只从 suffix 重新执行 transition function F。</p>
+<p><b>Tool safety：</b>read-only/deterministic tool 可直接重放；有真实 side effect 的工具必须 shadow execution，避免二次付款、二次发邮件等。</p>
+<p><b>Regeneration：</b>所有 model-authored downstream artifacts 都重新生成，从而得到真正“无 z 世界”下的状态。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">Real runtime:
+R_t = F(R_{t-1}, o_t; θ)
+
+Counterfactual without z:
+R_t^{-z} = F(R_{t-1}^{-z}, o_t^{-z}; θ)
+
+Prefix-sharing:
+R_t = R_t^{-z},  for t < τ
+
+Exact execution-state unlearning:
+U(R_T, z) = R_T^{-z}
+
+Lower bound:
+Any exact method needs at least
+T - τ + 1 transitions in worst case.
+
+Selective Replay:
+Cost_SR = T - τ + 1</div>
+<p><b>R_T^{-z}</b> 是核心 reference：不是“把当前 transcript 里的 z 删除”，而是“如果一开始就没见过 z，当前 runtime 本应是什么”。</p>
+<p><b>Prefix-sharing</b> 表示 τ 之前两条世界线完全相同，因此可以复用。</p>
+<p><b>Lower bound</b> 说明如果 z 可能影响 τ 之后的每一步，而没有预先存 counterfactual suffix，那么这些 transition 必须重算。</p>
+<p><b>Strongest baseline：</b>Full Reset。从头重新执行整个无 z session，正确但成本 O(T)。Selective Replay 达到相同 counterfactual target，但只重放 suffix。</p>
+
+<h3>5.8 Toy Example</h3>
+<ol>
+<li>第5轮写入 z：“avoid Brand-X”。</li>
+<li>第6轮 summary 改写成“避免某大厂”。</li>
+<li>第7轮 planner 排除 Brand-X。</li>
+<li>第8轮 tool router 不搜索 Brand-X。</li>
+<li>第10轮用户撤销该偏好。</li>
+<li>普通 delete 只删 memory row，summary/plan/tool/KV 继续存在。</li>
+<li>Selective Replay 定位 τ=5，恢复第4轮 checkpoint。</li>
+<li>第5–12轮重新执行，但去掉 z。</li>
+<li>新 summary 不再含该偏好，新 planner 重新把 Brand-X 纳入候选。</li>
+<li>最终行为与“从未收到 z”的 counterfactual twin 对齐。</li>
+</ol>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>怎么做</th><th>合理性</th><th>失败</th><th>本文区别</th></tr>
+<tr><td>Memory-Delete</td><td>删持久memory记录</td><td>现实系统常见</td><td>不处理summary/plan/KV/tool args</td><td>处理descendant closure</td></tr>
+<tr><td>Forget-Instruction</td><td>追加“忘记z”</td><td>成本极低</td><td>只是输出抑制，elicitation可恢复</td><td>重构state本身</td></tr>
+<tr><td>Source-Redaction</td><td>删source文本</td><td>比memory delete更彻底</td><td>derived artifacts仍旧</td><td>invalidate+replay</td></tr>
+<tr><td>Sanitized-Rebuild</td><td>字符串清洗全文再构建</td><td>能清显式target</td><td>同义/行为影响仍可能残留</td><td>provenance-based，不依赖所有字符串变体</td></tr>
+<tr><td><b>Full Reset</b></td><td>从头重演无z世界</td><td>exact oracle</td><td>成本高</td><td>Selective Replay只重演suffix</td></tr>
+</table></div>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Runtime：</b>HuggingFace Transformers + explicit KV management；KVEngine 支持 prefill、generate、crop。</p>
+<p><b>Models：</b>Llama-3.1-8B、Qwen2.5-7B、Mistral-7B。</p>
+<p><b>Suites：</b>AgentDojo-like stateful tasks、Long-Memory Elicitation、ToolSandbox。</p>
+<p><b>Methods：</b>No-Forget、Memory-Delete、Forget-Instruction、Source-Redaction、Sanitize-no-Replay、Full Reset、Full Reset+PrefixCache、Sanitized-Rebuild、Selective-Replay、IFC、IFC+Replay。</p>
+<p><b>Audits：</b>direct leakage、Leak@probes、Leak@5、behavioral extraction、Counterfactual Action Divergence、recomputed tokens。</p>
+<p><b>Research Questions：</b>memory delete是否是行为no-op？输出抑制能否经受攻击？derived artifacts/KV是否必须一起处理？Selective Replay能否达到Full Reset？是否达到T−τ+1下界？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Any-leak↓：</b>任何artifact或answer出现目标就失败。</p>
+<p><b>Leak@probes↓：</b>用多个攻击提示测试同一post-unlearning state，检查direct/introspection/cued completion等恢复路径。</p>
+<p><b>Leak@5↓：</b>temperature0.7 连采5次，只要一次泄漏就算失败。</p>
+<p><b>CAD↓：</b>Counterfactual Action Divergence，比较方法的action与Full Reset reference的差异；0最理想。</p>
+<p><b>Behavioral Residue↓：</b>不要求模型说出目标，只看选择/行动是否仍受撤销事实影响。</p>
+<p><b>Recompute↓：</b>重算token或transition成本。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li>Memory-Delete 在 headline 结果上接近 No-Forget，说明仅删memory row几乎不改变行为。</li>
+<li>Forget-Instruction 在主query可看似不泄漏，但六类攻击 probe 可达100%恢复。</li>
+<li>Source-Redaction 随 derivation depth 增加，derived artifact leakage 明显上升。</li>
+<li>ToolSandbox 中，泄漏大量通过 routing arguments 传播，说明 target 不必出现在 final answer 也能影响真实 action。</li>
+<li>Sanitize-no-Replay 可以把字符串泄漏降到0，但 CAD仍明显非0，说明“安全”是通过破坏状态而不是得到正确counterfactual。</li>
+<li>Selective-Replay 与 Full Reset 在 headline、Leak@probes、Leak@5、behavioral audit、CAD 上对齐。</li>
+<li>Full Reset平均重算约1235 tokens，Selective-Replay约133，约9.3×更省。</li>
+<li>Behavior-only测试中，一些字符串完全clean的方法仍100%保留旧偏好；Selective-Replay与Full Reset floor一致。</li>
+<li>只删target span会留下大量泄漏，甚至让 CAD 比 No-Forget更差。</li>
+<li>span+descendants可把leak降到0，但只有+replay后CAD才归0，证明“closure”和“reconstruction”缺一不可。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>Selective-Replay 在多种泄漏、stochastic、behavioral、CAD审计上与 Full Reset 对齐，同时重算成本显著下降。</div>
+<div class="callout warn"><b>Weakest / boundary：</b>只覆盖 reconstructible runtime，不处理 model parameters、真实世界已提交副作用或 target 的相关概念。</div>
+<div class="callout bad"><b>Failure case：</b>若 post-τ 人类输入/外部世界本应因 z 的缺失而变化，那么固定 recorded observations 的 replay 并不是真实 counterfactual 世界。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 2：</b>系统核心图：定位τ与closure→恢复安全prefix→删除z→重放suffix→得到R_T^{-z}。</p>
+<p><b>Table 1：</b>最重要对比是 Memory-Delete、Source-Redaction、Sanitize-no-Replay、Full Reset、Selective-Replay，清楚拆出source deletion、closure、reconstruction三个层次。</p>
+<p><b>Table 2：</b>说明 direct query 远远不够，Forget-Instruction 在多probe下完全失效。</p>
+<p><b>Table 3：</b>字符串可全部clean但行为偏好仍在，是全文最重要的“silent residual”证据。</p>
+<p><b>Table 4：</b>只删target、删target+descendants、再加replay的渐进ablation，最直接证明每个组件承担什么。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>Source-only：</b>无法清理KV与derived state。</p>
+<p><b>Descendant closure：</b>负责安全，能阻止旧derived artifacts继续泄漏。</p>
+<p><b>Replay：</b>负责正确性，让本应存在的良性后续状态重新生成，因此CAD回到0。</p>
+<p><b>IFC only：</b>未来流控无法修 resident state；IFC+Replay才彻底。</p>
+<p><b>Behavioral audit：</b>排除了“只是不输出字符串”的伪遗忘。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>stateful Agent unlearning应以counterfactual execution-state equivalence定义，Selective Replay可exact实现。</div>
+<div class="callout good"><b>Actually Show：</b>在可记录provenance、可重放的runtime中，多模型/多suite结果与Full Reset reference一致且成本接近理论下界。</div>
+<div class="callout warn"><b>Not Proven：</b>开放Agent框架未必有完整provenance；外部世界和人类后续输入可能不可重放；参数残留和语义相关target未处理。</div>
+
+<h3>5.16 Contribution</h3>
+<ul>
+<li><b>New Problem：</b>Execution-State Unlearning。</li>
+<li><b>New Formal Target：</b>R'_T = R_T^{-z}。</li>
+<li><b>New Theory：</b>prefix-sharing 与 T−τ+1 lower bound。</li>
+<li><b>New System：</b>Provenance-Guided Selective Replay。</li>
+<li><b>New Evaluation：</b>Leak@probes、Leak@5、behavioral extraction、CAD。</li>
+<li><b>New Finding：</b>普通memory delete可行为等于no-op；string clean不等于behavior clean。</li>
+</ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors' Limitation：</b>只覆盖 reconstructible runtime；不覆盖参数、已提交side effects、related facts；固定后续observations是较强假设。</p>
+<p><b>Additional：</b>真实 serving stack未必支持KV crop；provenance漏边会直接破坏保证；多target连续删除可能频繁重放；跨subagent进程的state closure更复杂；RAG/vector-store embedding影响未被完全定义。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>关键模块：RuntimeBlock、ArtifactGraph、source_ids传播、KVEngine crop、checkpoint registry、LocateSource、TaintClosure、Sanitize、shadow tool executor、Full Reset reference、Leak probes、behavioral audit、CAD。</p>
+<p>最小复现建议：Qwen2.5-7B，12-turn memory agent，turn4注入“avoid X”，turn6写summary，turn8生成plan，turn10撤销；实现 Memory-Delete、Forget-Instruction、Full Reset、Selective-Replay，先复现“字符串clean但行为仍受X影响”。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline Potential ★★★★★</span> Agent memory unlearning 强baseline。</p>
+<p><span class="score">Migration Potential ★★★★★</span> 可迁到memory/summary/plan/subagent/RAG/video-agent state。</p>
+<p><span class="score">Attack Potential ★★★★★</span> 可专门攻击source delete但descendants仍存的系统。</p>
+<p><span class="score">Evaluation Potential ★★★★★</span> Behavioral Residue + CAD 很适合真正closure。</p>
+<p><span class="score">Benchmark Potential ★★★★★</span> 可构建 derivation-depth / insertion-time / carrier-type benchmark。</p>
+<p><span class="score">New Paper Potential ★★★★★</span> 与“因果后代是否也要unlearn”的问题直接重合。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Causal Descendant Unlearning for Video / MLLM Agents</h4>
+<p><b>Original Problem →</b>撤销Agent memory后重建derived runtime artifacts。<br>
+<b>Transferable Mechanism →</b>沿dependency graph处理descendant closure。<br>
+<b>New Research Question →</b>视频里A做事件T影响B后，删A/T时哪些B-side state是真正因果后代？<br>
+<b>Method Modification →</b>构造 person-event→frame caption→temporal summary→QA answer→agent plan 的 DAG，对高置信后代做counterfactual replay/re-caption。<br>
+<b>Minimum Experiment →</b>50视频×2–4人物×3因果事件链；每视频16/32帧；比较source-only、all-descendant-delete、counterfactual-replay。<br>
+<b>Model →</b>Qwen2.5-VL-7B + temporal summarizer。<br>
+<b>Dataset →</b>synthetic causal video + NExT-QA/STAR-style temporal subset。<br>
+<b>Baseline →</b>frame deletion、caption redaction、full re-encode、PURGE-style partition。<br>
+<b>Metric →</b>Target Leakage、Descendant Residual、Unrelated Branch Utility、CAD、Recompute Cost。<br>
+<b>Expected Contribution →</b>把“B要不要一起删”转成因果后代判定。<br>
+<b>Risk →</b>真实causal edge难自动获得。<br>
+<b>Collision Risk →</b>低。</p>
+
+<h4>方向 B — Black-Box Behavioral Audit for Agent Memory Deletion</h4>
+<p><b>Original Problem →</b>字符串不泄漏但行为仍受revoked preference影响。<br>
+<b>Transferable Mechanism →</b>用counterfactual paired-choice检测silent influence。<br>
+<b>New Research Question →</b>没有white-box provenance时能否从action preference判断残留？<br>
+<b>Method Modification →</b>为每个forget target自动构造paired actions，一组只在旧偏好存在时会被排除；做多prompt、多tool对照。<br>
+<b>Minimum Experiment →</b>40 targets×20 paired actions×4 deletion methods×3 agents。<br>
+<b>Model →</b>Qwen3-8B、Llama3.1-8B。<br>
+<b>Dataset →</b>LoCoMo + synthetic preference/private-policy tasks。<br>
+<b>Baseline →</b>direct disclosure、TAS-style refusal、memory inspection、Full Reset。<br>
+<b>Metric →</b>Behavioral Residue Score、AUC vs Full Reset、Retain FPR、ASR@budget。<br>
+<b>Expected Contribution →</b>完全黑盒检测“删了但还在影响决策”。<br>
+<b>Risk →</b>near-equivalent choices构造困难。<br>
+<b>Collision Risk →</b>低到中。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>最直接攻击是 <b>Derived-Artifact Recovery</b>：不直接问原事实，而问summary、plan理由、tool routing、candidate preference、unfinished task state。还可定义 <b>Execution-State Closure Score</b>：source、summary、plan、tool args、behavior 五类carrier中达到Full Reset floor的比例；以及 <b>Derivation Depth Leakage Curve</b>。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>Execution-State Unlearning告诉你“源删除后要处理哪些后代”；DCFA告诉你“如何从trace里估计哪些上游步骤真的造成后续影响”。当真实系统没有完整provenance时，可以用DCFA式graph做 dependency discovery，再用Selective Replay做 intervention verification。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol>
+<li>删memory row不等于Agent真的忘记。</li>
+<li>summary、plan、tool args、KV cache都可能继续携带目标影响。</li>
+<li>正确目标是和“从未见过z”的counterfactual runtime一致。</li>
+<li>z之前的prefix可直接复用。</li>
+<li>任何exact方法最坏至少重放T−τ+1步。</li>
+<li>Selective Replay达到这一成本下界。</li>
+<li>Forget-Instruction经多probe仍可被恢复。</li>
+<li>字符串完全clean时，行为仍可能100%保留旧偏好。</li>
+<li>Selective Replay与Full Reset对齐，但重算显著更省。</li>
+<li>真正关键不是把后代全部删掉，而是对真正受影响的后代做重构。</li>
+</ol>
+</section>
+
+<section id="p2" class="paper"><h2>Paper 2 Full Deep Dive — DCFA</h2>
+
+<h3>5.1 基本信息</h3>
+<div class="kv">
+<div>Title</div><div>DCFA: Dual-view Causal-inspired Attribution for Failure Reasoning in LLM-based Multi-agent Systems</div>
+<div>Authors</div><div>Zehao Wang, Lanjun Wang, Shilong Jin, Junjie Chen, Yanghua Xiao</div>
+<div>Affiliation</div><div>Tianjin University；Fudan University；Shanghai Key Laboratory of Data Science</div>
+<div>Date</div><div>2026-09-04（arXiv v1）</div>
+<div>Venue / Status</div><div>arXiv preprint，cs.AI，CC BY 4.0</div>
+<div>Paper</div><div><a href="https://arxiv.org/abs/2609.04749">arXiv</a> · <a href="https://arxiv.org/html/2609.04749">HTML</a> · <a href="https://arxiv.org/pdf/2609.04749">PDF</a></div>
+<div>Code</div><div><a href="https://github.com/wzhSteve/DCFA">Official GitHub: wzhSteve/DCFA</a></div>
+</div>
+
+<h3>5.2 一句话定位</h3>
+<p>DCFA 研究 multi-agent system 失败后“到底哪一步才是决定性错误”，用全局 causal-inspired dependency graph + 局部 counterfactual-inspired search，从表面异常追溯到纠正后最能改变最终结果的步骤。</p>
+
+<h3>5.3 人话版</h3>
+<p>多 Agent 系统出错时，最显眼的往往不是根因。某次检索遗漏、某个orchestrator错误转述、某个assistant晚期答错都可能出现，但真正决定系统失败的通常是更早、影响范围更大的步骤。DCFA把完整trace拆成两个阶段。GCA先找minor deviations，然后对前后步骤判断temporality、necessity、sufficiency，建立causal-inspired dependency graph，并提出一个初始 decisive-error hypothesis。LCE再从这个候选出发，只在局部图里向前/向后搜索，假设修正某个interaction，估计最终outcome alignment能改善多少。Who&When 184条multi-agent failure traces上，DCFA在六个LLM backend上整体超过All-at-Once、Step-by-Step、Binary Search、A2P和ECHO：Algorithm-generated平均44.79% vs ECHO32.28%，Hand-crafted20.69% vs16.67%。不过完整LCE很昂贵：full DCFA约300s/32k tokens，而GCA-only约32s/13k，因此真正最有性价比的部分其实是显式dependency graph本身。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>失败归因不能简单等价于“找到第一个错误”或“找到最明显错误”。一个早期检索遗漏可能让后续所有Agent建立在错误前提上；一个晚期答案错误可能只是前面错误的症状。</p>
+<p>All-at-Once依赖长上下文整体判断；Step-by-Step只能局部看；Binary Search假设错误位置有一定局部性；A2P加入causal prompt但仍是隐式reasoning；ECHO用hierarchical context和多视角共识，但仍不显式建因果传播结构。</p>
+<p>本文真正填的gap是：<b>把自然语言trace转成dependency graph，再用“纠正某一步后最终结果会改善多少”的counterfactual-inspired信号判断根因。</b></p>
+
+<h3>5.5 Core Insight</h3>
+<p>第一，<b>minor deviation ≠ decisive error</b>。</p>
+<p>第二，长trace中的因果归因会受context degradation，Hand-crafted traces平均约51.6步，比Algorithm-generated约8.7步难得多。</p>
+<p>第三，只向后找cause不够，也要向前看effect propagation，因此LCE采用双向局部搜索。</p>
+<p>第四，作者明确使用“causal-inspired”而非formal causal inference，因为Nec/Suff与do()都由LLM判断，没有真实系统intervention。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Failed trace T={τ1,...,τn}, final output Y_hat, ground truth Y
+→ GCA:
+   MDI: find minor deviations
+   CGC: evaluate Temp / Necessity / Sufficiency
+   build dependency graph
+   HG: produce initial decisive-error hypothesis
+→ LCE:
+   construct corrected candidate interactions
+   estimate ΔS on outcome alignment
+   forward greedy search on effects
+   backward greedy search on causes
+   merge local chain
+   DED final decision
+→ output decisive step τ*</div>
+<p><b>MDI：</b>高召回收集retrieval omission、invalid premise、coordination deviation等。</p>
+<p><b>CGC：</b>对p<q判断“去掉p后q是否还会发生”“有p是否足以支持q”，从而降低纯共现边。</p>
+<p><b>HG：</b>结合全trace、errors、reasons和graph产生初始root-cause hypothesis。</p>
+<p><b>Corrected trace：</b>构造候选“修正版本”，但这是LLM模拟的counterfactual，不是真实重跑。</p>
+<p><b>ΔS：</b>估计修正候选后最终答案更接近ground truth的程度。</p>
+<p><b>Bidirectional search：</b>向前找传播后果，向后找更早根因，最后只在小局部范围做最终决策。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">Trace:
+T = {τ1,...,τn}
+
+Temporality:
+Temp(τp→τq)=I[p<q]
+
+Necessity:
+Nec(τp→τq)=I[J(do(not τp))=No]
+
+Sufficiency:
+Suff(τp→τq)=I[J(do(τp))=Yes]
+
+Edge exists iff:
+Temp · Nec · Suff = 1
+
+Forward:
+τ_j = argmax_successor ΔS(τ_j)
+
+Backward:
+τ_k = argmax_predecessor ΔS(τ_k)</div>
+<p><b>Necessity：</b>若没有p，q是否还会发生？</p>
+<p><b>Sufficiency：</b>若有p，q是否足以被解释为其后果？</p>
+<p><b>ΔS：</b>是LLM模拟“修正candidate后最终outcome会改善多少”，不是实际do-intervention effect。</p>
+<p><b>Strongest baseline：</b>ECHO。它是现有最好且适合长trace的归因baseline。GCA-only与ECHO成本近似，但准确率更高，说明显式graph而不是更多compute承担主要增益。</p>
+
+<h3>5.8 Toy Example</h3>
+<ol>
+<li>τ8 WebSurfer检索到不完整定义。</li>
+<li>τ9 Orchestrator未经验证直接传播。</li>
+<li>τ12 Assistant基于错误前提推导错。</li>
+<li>τ15最终回答错误。</li>
+<li>All-at-Once可能选τ12，因为它最显眼。</li>
+<li>GCA建立τ8→τ9→τ12→τ15依赖链。</li>
+<li>LCE从τ9向后检查τ8，发现修正τ8会让后续多个节点一起恢复。</li>
+<li>于是把更早、影响更广的τ8定位为决定性错误。</li>
+</ol>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table>
+<tr><th>Baseline</th><th>方法</th><th>优点</th><th>失败点</th><th>DCFA差异</th></tr>
+<tr><td>All-at-Once</td><td>完整trace一次判断</td><td>全局信息</td><td>长上下文退化</td><td>显式graph</td></tr>
+<tr><td>Step-by-Step</td><td>逐步检查</td><td>局部简单</td><td>难看跨步传播</td><td>全局依赖+局部refine</td></tr>
+<tr><td>Binary Search</td><td>缩小错误区间</td><td>便宜</td><td>因果链可跨远距离</td><td>图而非线性区间</td></tr>
+<tr><td>A2P</td><td>causal prompt</td><td>引入causal思路</td><td>仍是隐式reasoning</td><td>Nec/Suff显式建图</td></tr>
+<tr><td><b>ECHO</b></td><td>hierarchical context + consensus</td><td>强且适合长trace</td><td>容易停在observable symptom</td><td>强调decisive propagation</td></tr>
+</table></div>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Dataset：</b>Who&When，共184条failure traces；126条Algorithm-generated，58条Hand-crafted。</p>
+<p><b>Trace length：</b>Algorithm-generated平均约8.7步；Hand-crafted约51.6步。</p>
+<p><b>Models：</b>Qwen3-Coder-30B、DeepSeek-R1-32B、Qwen3-235B、DeepSeek-R1-671B、GPT-5、Gemini-2.5-pro。</p>
+<p><b>LCE backend：</b>本地Qwen-Coder-30B，2×A800。</p>
+<p><b>Baselines：</b>All-at-Once、Step-by-Step、Binary Search、A2P、ECHO。</p>
+<p><b>Metric：</b>Step-level Accuracy；另分析 attribution offset、runtime、tokens、graph density。</p>
+<p><b>Research Questions：</b>显式dependency graph是否优于prompt-only？LCE是否主要帮助长trace？性能是否只是靠更多compute？graph质量是否受model capacity影响？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Step-level Accuracy↑：</b>预测的具体interaction index必须和ground-truth decisive error一致。</p>
+<p><b>Attribution Offset↓：</b>|pred−gt|，用于区分“错在附近”和“完全偏离”。</p>
+<p><b>Runtime↓：</b>wall-clock成本，LCE最大代价在此。</p>
+<p><b>Tokens↓：</b>总token消耗，用于检查是否只是靠更多推理。</p>
+<p><b>Graph Density：</b>不是越高越好，过密可能代表LLM把一切都当有因果。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li>Algorithm-generated平均：DCFA44.79%，ECHO32.28%，+12.51pp。</li>
+<li>Hand-crafted平均：20.69% vs16.67%，+4.02pp；绝对值仍低。</li>
+<li>Qwen3-Coder-30B：23.02→37.30，+14.28pp。</li>
+<li>DeepSeek-R1-671B：40.48→53.17，+12.69pp。</li>
+<li>GPT-5：Algorithm-generated31.75→47.62，+15.87pp。</li>
+<li>LCE对Hand-crafted平均+3.45pp，对Algorithm-generated+1.93pp，说明长trace更受益。</li>
+<li>DeepSeek-R1-671B短trace上GCA-only与full相同，LCE无额外增益。</li>
+<li>DeepSeek-R1-32B某些length level下DCFA略低于ECHO，弱模型执行复杂graph reasoning会引入噪声。</li>
+<li>ECHO约31s/12k，GCA-only约32s/13k，却Accuracy 24.48→30.05；这是最有性价比的主结果。</li>
+<li>full DCFA约300s/32k，只把30.05进一步推到32.74，边际收益较低。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>GCA-only在几乎相同成本下明显超过ECHO，最能排除“只是花更多compute”。</div>
+<div class="callout warn"><b>Weakest：</b>full DCFA接近10×runtime，只换来约2.69pp额外提升。</div>
+<div class="callout bad"><b>Failure case：</b>Hand-crafted长trace绝对准确率仍只有20%左右，尚不足以用于自动问责。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 2：</b>global→local双视角。先压缩完整trace为dependency structure，再在critical neighborhood做counterfactual reasoning，是一个非常通用的长上下文降维范式。</p>
+<p><b>Table 1：</b>六模型主结果，显示全局一致提升，但长trace绝对值仍低。</p>
+<p><b>Table 2：</b>LCE ablation，清楚显示其主要帮助长trace。</p>
+<p><b>Figure 3：</b>trace-length stratification，说明方法并非在所有length level都稳赢。</p>
+<p><b>Table 3：</b>cost trade-off，GCA-only是明显sweet spot。</p>
+<p><b>Figure 4 / case study：</b>展示retrieval omission→orchestrator propagation→wrong answer的依赖链。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>去LCE：</b>长trace损失更明显，说明LCE主要修context degradation。</p>
+<p><b>GCA vs ECHO等成本：</b>显式dependency graph本身承担核心增益。</p>
+<p><b>Graph density：</b>较弱模型会生成过密/过稀graph，说明graph只是LLM推断的latent hypothesis，不是ground truth。</p>
+<p><b>Counterfactual-inspired correction：</b>因为没有实际重跑系统，所以只能算“模型认为修正会有用”，而不是actual causal effect。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>显式dependency structure + 局部counterfactual refinement能更准确定位decisive error。</div>
+<div class="callout good"><b>Actually Show：</b>Who&When、六个LLM、短/长trace上均总体改善，且GCA-only有良好性价比。</div>
+<div class="callout warn"><b>Not Proven：</b>没有真实do-intervention验证edge；benchmark单一；长trace绝对准确率仍低；不能用于正式责任判断。</div>
+
+<h3>5.16 Contribution</h3>
+<ul>
+<li><b>New Mechanism：</b>Global causal-inspired dependency graph。</li>
+<li><b>New Mechanism：</b>Local bidirectional counterfactual-inspired refinement。</li>
+<li><b>New Protocol：</b>以decisive error而非surface deviation为目标。</li>
+<li><b>New Analysis：</b>trace-length、graph density、offset、cost。</li>
+<li><b>Engineering：</b>training-free，可接多种LLM。</li>
+</ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors：</b>依赖底层LLM推理能力；极长/高分支trace仍难；intrinsic hallucination难归因。</p>
+<p><b>Additional：</b>ground-truth outcome已知是较强假设；Nec/Suff由LLM判断可能漏真实弱因果；LCE昂贵；Who&When仅184条；没有验证“纠正预测step后真实系统是否真的恢复”。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>关键模块：Who&When parser、MDI prompt、Temp/Nec/Suff judge、dependency graph builder、global hypothesis、Correct() rewriting、ΔS evaluator、forward/backward search、DED、Step-level Accuracy、cost logger、graph visualization。</p>
+<p>最小复现建议先做 ECHO vs GCA-only，不要一开始跑full LCE。只要等成本条件下GCA明显更准，核心idea已经成立；然后在Hand-crafted 58条上加LCE检查长trace增益。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline Potential ★★★★★</span> multi-agent causal/debugging强baseline。</p>
+<p><span class="score">Migration Potential ★★★★★</span> 可迁到unlearning descendant attribution、agent memory blame、video causal chain。</p>
+<p><span class="score">Attack Potential ★★★★☆</span> 可找最小恢复/破坏干预点。</p>
+<p><span class="score">Evaluation Potential ★★★★★</span> step-level decisive-error比agent-level blame更精细。</p>
+<p><span class="score">Benchmark Potential ★★★★☆</span> 可扩展成multi-error intervention benchmark。</p>
+<p><span class="score">New Paper Potential ★★★★★</span> 与因果unlearning高度匹配。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向 A — Causal Descendant Attribution for Unlearning</h4>
+<p><b>Original Problem →</b>multi-agent failure后找决定性错误。<br>
+<b>Transferable Mechanism →</b>dependency graph + local counterfactual ranking。<br>
+<b>New Research Question →</b>忘记A/T时，哪些B-side state是真正由A/T造成？<br>
+<b>Method Modification →</b>把trace节点换成person-event、B reaction、caption、summary、QA、representation probe；Nec/Suff判断改为“移除A后B-state是否仍成立”。<br>
+<b>Minimum Experiment →</b>100 synthetic causal chains，50真因果、50仅共现；每链5–15节点。<br>
+<b>Model →</b>Qwen2.5-VL-7B + Qwen3-8B reasoner。<br>
+<b>Dataset →</b>synthetic event stories + STAR/NExT-QA causal subset。<br>
+<b>Baseline →</b>temporal adjacency、semantic similarity、Granger-style influence、all-descendant delete。<br>
+<b>Metric →</b>Descendant Precision/Recall、Counterfactual Recovery、Retain Branch FPR、Unlearning Utility。<br>
+<b>Expected Contribution →</b>把“B是否一起unlearn”变成可测因果后代分类。<br>
+<b>Risk →</b>LLM可能把相关性当因果。<br>
+<b>Collision Risk →</b>低。</p>
+
+<h4>方向 B — Intervention-Verified DCFA</h4>
+<p><b>Original Problem →</b>DCFA的counterfactual只是LLM模拟。<br>
+<b>Transferable Mechanism →</b>先用graph缩小候选，再做真实replay。</p>
+<p><b>New Research Question →</b>能否把causal-inspired升级为actual intervention-verified attribution？</p>
+<p><b>Method Modification →</b>GCA先给top-k=3；对候选从checkpoint真实重放trajectory，并替换corrected interaction，直接测task success delta。</p>
+<p><b>Minimum Experiment →</b>至少100条可重放Who&When traces，比较LLM-counterfactual、actual replay、random replay。</p>
+<p><b>Model →</b>Qwen3-Coder-30B / DeepSeek-R1-32B。</p>
+<p><b>Dataset →</b>Who&When可执行子集。</p>
+<p><b>Baseline →</b>DCFA、ECHO、A2P、brute-force intervention。</p>
+<p><b>Metric →</b>True Intervention Success、Top-k Decisive Recall、Intervention Cost、Calibration。</p>
+<p><b>Expected Contribution →</b>真正因果验证multi-agent root cause。</p>
+<p><b>Risk →</b>重放昂贵且world state难固定。</p>
+<p><b>Collision Risk →</b>低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>可形成 <b>Minimal Recovery Intervention Attack</b>：找出最小步骤/载体，纠正或注入它后能最大恢复目标输出。也可定义 <b>Residual Causal Influence (RCI)</b>：对某个已忘target的descendant进行ablation/correction后，final leakage变化量。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>DCFA最大的弱点是“counterfactual-inspired而非真实intervention”；Execution-State Unlearning最大的强项正是可从checkpoint真实重放。因此最自然的组合是：DCFA负责找top-k候选，Selective Replay负责真正do-intervention并测最终结果。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol>
+<li>多Agent失败里最明显的错误不一定是决定性错误。</li>
+<li>decisive error应看“纠正后能否改变最终结果”。</li>
+<li>GCA先找minor deviations，再显式构造dependency graph。</li>
+<li>边需要temporality、necessity、sufficiency。</li>
+<li>LCE在局部图上做双向搜索。</li>
+<li>向前看后果，向后找更早根因。</li>
+<li>Algorithm-generated平均44.79%，明显高于ECHO32.28%。</li>
+<li>Hand-crafted长trace仍只有20%左右，问题远未解决。</li>
+<li>GCA-only性价比最好，full LCE成本很高。</li>
+<li>对unlearning最重要的迁移是“先发现因果后代，再用真实replay验证”。</li>
+</ol>
+</section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2>
+<p>两篇共同说明：<b>Agent 的长期可靠性，本质越来越像“依赖图上的状态修复”</b>。第一篇知道 source 后沿 provenance closure 重建 downstream state；第二篇从失败结果反推 dependency graph，寻找真正 decisive source。</p>
+<div class="tablewrap"><table>
+<tr><th>维度</th><th>Execution-State Unlearning</th><th>DCFA</th><th>统一启发</th></tr>
+<tr><td>起点</td><td>forget target z</td><td>failed outcome</td><td>找到关键source</td></tr>
+<tr><td>结构</td><td>artifact provenance graph</td><td>causal-inspired dependency graph</td><td>显式追踪影响传播</td></tr>
+<tr><td>局部处理</td><td>suffix replay</td><td>local bidirectional search</td><td>避免全局重做</td></tr>
+<tr><td>counterfactual</td><td>真实runtime replay</td><td>LLM模拟</td><td>可组合为真实因果验证</td></tr>
+</table></div>
+<p><b>最适合作 baseline：</b>Execution-State Selective Replay。</p>
+<p><b>最适合产生 attack：</b>DCFA式 Minimal Recovery Intervention。</p>
+<p><b>最适合产生 benchmark/metric：</b>Descendant Closure + Residual Causal Influence。</p>
+</section>
+
+<section id="opp" class="card"><h2>Combined Research Opportunities</h2>
+<h3>Best Migration Direction — Intervention-Verified Causal Descendant Unlearning</h3>
+<div class="flow">Forget target z
+→ collect agent/video/multimodal trace
+→ DCFA-style dependency discovery
+→ top-k plausible descendants
+→ replay / intervention verification
+→ measure actual leakage & utility delta
+→ classify true causal descendants
+→ reconstruct only verified descendants
+→ black-box behavioral audit
+→ closure certificate</div>
+<p>这个方向直接回答“如果 A 做事件 T 对 B 产生影响，unlearn A/T 后要不要处理 B？”：<b>不是所有B-side信息都删除，而是只对经干预验证、确实由A/T造成的因果后代做重构；与A/T只是共现但不依赖的B知识应保留。</b></p>
+</section>
+
+<section id="collision" class="card"><h2>Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>Execution-State Unlearning 与 PlanFence、MutMem V2 都涉及 provenance / derived state，但它最独特的是“真正重演 counterfactual suffix，并给出 T−τ+1 最优性”。因此新的工作不应再只做签名、tombstone 或 lineage check，而应向 semantic/causal descendants + replay reconstruction 走。</p>
+<p>DCFA 与 A2P、ECHO、LLM causal graph discovery 有重叠。若要真正强调 causal，下一步必须加入真实 intervention/replay，而不能继续只靠 LLM 回答 do() 问题。</p>
+</section>
+
+<section id="priority" class="card"><h2>Reading / Reproduction Priority</h2>
+<p><b>Execution-State Unlearning：</b>Figure 2 → prefix-sharing/splicing理论 → Algorithm 1 → Table 1 → Table 2 → behavioral extraction → invalidation ablation。复现先做 12-turn preference toy。</p>
+<p><b>DCFA：</b>Figure 1 → Temp/Nec/Suff → Figure 2 → LCE ΔS → Table 1 → Table 2 → Table 3 cost → trace-length分析。复现先做 ECHO vs GCA-only 等成本比较。</p>
+</section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2609.04875">Forgetting Without Restarting — arXiv</a></li>
+<li><a href="https://arxiv.org/html/2609.04875v1">Forgetting Without Restarting — Full HTML</a></li>
+<li><a href="https://arxiv.org/pdf/2609.04875">Forgetting Without Restarting — PDF</a></li>
+<li><a href="https://arxiv.org/abs/2609.04749">DCFA — arXiv</a></li>
+<li><a href="https://arxiv.org/html/2609.04749">DCFA — Full HTML</a></li>
+<li><a href="https://arxiv.org/pdf/2609.04749">DCFA — PDF</a></li>
+<li><a href="https://github.com/wzhSteve/DCFA">DCFA — Official GitHub</a></li>
+</ul>
+<p class="small">Regenerated on 2026-09-08 10:10 +08:00. Self-contained UTF-8 HTML.</p>
+</section>
+</main></body></html>

@@ -1,0 +1,219 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Top Papers Deep Dive — 2026-09-09</title><style>
+body{margin:0;background:#f5f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1200px;margin:auto;padding:28px 22px 80px}.hero,.card,.paper{background:#fff;border:1px solid #e1e6ef;border-radius:18px;padding:27px 31px;margin:18px 0;box-shadow:0 4px 18px rgba(20,30,50,.045)}
+.hero{background:linear-gradient(135deg,#142041,#3158cf);color:#fff;border:0}.hero p{color:#eef2ff}
+h2{font-size:28px;border-bottom:1px solid #e1e6ef;padding-bottom:8px}h3{font-size:21px;color:#28439d;margin-top:28px}h4{font-size:17px}
+nav{background:#fff;border:1px solid #e1e6ef;border-radius:15px;padding:18px 20px;columns:2}nav a{display:block;padding:4px 0;color:#3158cf;text-decoration:none}
+a{color:#3158cf;text-decoration:none}.badge{display:inline-block;padding:4px 10px;border-radius:999px;background:#eef3ff;color:#3048a5;font-size:12px;font-weight:700;margin-right:5px}
+.kv{display:grid;grid-template-columns:205px 1fr;gap:5px 14px}.kv>div:nth-child(odd){font-weight:760}
+.flow,.formula{font-family:ui-monospace,Menlo,Consolas,monospace;background:#111827;color:#f7f8ff;border-radius:12px;padding:16px 18px;white-space:pre-wrap;overflow:auto}
+.callout{border-left:5px solid #3158cf;background:#eef3ff;border-radius:10px;padding:14px 17px}.good{border-left-color:#338754;background:#edf8f1}.warn{border-left-color:#c98a12;background:#fff4d6}.bad{border-left-color:#c84545;background:#fff0f0}
+.tablewrap{overflow-x:auto;border:1px solid #e1e6ef;border-radius:12px}table{border-collapse:collapse;width:100%;min-width:900px}th,td{border-bottom:1px solid #e1e6ef;padding:10px 11px;text-align:left;vertical-align:top}th{background:#f2f4f8}
+.score{font-weight:760;color:#2748bd}.small{font-size:13px;color:#667085}@media(max-width:760px){nav{columns:1}.kv{grid-template-columns:1fr}}
+</style></head><body>
+<!-- regenerated: 2026-09-09 10:43 +08:00 -->
+<main>
+<section class="hero"><h1>Daily Top Papers Deep Dive — 2026-09-09</h1>
+<p><b>Team-Specific Memory × Provenance-Aware Long-Term Memory</b></p>
+<p>今天只保留2篇：一篇是新近 multi-agent swap-test 工作，另一篇是近1个月中未精读、且对 memory provenance / unlearning 迁移价值很高的 BACKFILL。</p></section>
+
+<nav>
+<a href="#selection">1. Today's Deep Dive Selection</a><a href="#why">2. 为什么选这 2 篇</a>
+<a href="#p1">3. Paper 1 — Interchangeability</a><a href="#p2">4. Paper 2 — Agent Zero Memory</a>
+<a href="#syn">5. Cross-Paper Synthesis</a><a href="#opp">6. Combined Research Opportunities</a>
+<a href="#collision">7. Collision / Overlap</a><a href="#priority">8. Reading / Reproduction Priority</a>
+<a href="#sources">9. Sources / Links</a></nav>
+
+<section id="selection" class="card"><h2>Today's Deep Dive Selection</h2>
+<p><span class="badge">Multi-Agent</span><span class="badge">Swap Test</span><b>#1 Testing Interchangeability in LLM Agent Teams</b></p>
+<p><span class="badge">Agent Memory</span><span class="badge">BACKFILL</span><b>#2 Agent Zero Memory: Provenance-Aware Long-Term Memory for LLM Agents</b></p></section>
+
+<section id="why" class="card"><h2>为什么选这 2 篇</h2>
+<p>最近24–72小时没有出现一篇足够强、且未在过去7天精读过的新 unlearning 论文，因此今天不重复昨日的 Execution-State Unlearning。新作 Interchangeability 真正提出了一个此前很少被直接测量的问题：长期合作后，Agent 是否仍是可替换 slot。Agent Zero Memory 则提供与之互补的结构基础：如果长期 memory 具有 source/partner provenance，成员退出、memory deletion 和团队重组才可能做精确治理。</p></section>
+
+<section id="p1" class="paper"><h2>Paper 1 Full Deep Dive — Testing Interchangeability in LLM Agent Teams</h2>
+<h3>5.1 基本信息</h3><div class="kv"><div>Title</div><div>Testing Interchangeability in LLM Agent Teams</div><div>Authors</div><div>Jianxin Gao, Tianyi Yu, Linna Deng, Runze Li, Zining Wang</div><div>Affiliation</div><div>China Agricultural University；Tianjin University of Finance and Economics；Jilin University；Tianjin University of Science and Technology</div><div>Date</div><div>2026-09-04（arXiv v1）</div><div>Venue / Status</div><div>arXiv preprint，cs.AI，CC BY-NC-ND 4.0</div><div>Paper</div><div><a href="https://arxiv.org/abs/2609.05279">arXiv</a> · <a href="https://arxiv.org/html/2609.05279">HTML</a> · <a href="https://arxiv.org/pdf/2609.05279">PDF</a></div><div>Project / Code</div><div>正文未验证到官方 GitHub URL；不猜测。</div></div>
+
+<h3>5.2 一句话定位</h3><p>它用 controlled swap test 证明：长期合作后的 LLM Agents 在最终任务得分上仍大体可替换，但在协调效率上并不可替换，因为 private notebook 中形成了 partner-specific conventions / transactive memory。</p>
+
+<h3>5.3 人话版</h3><p>生产系统往往把 Agent 当可替换进程：某个角色挂掉，就换一个同模型、同role实例，默认只要能力相同就能无缝接手。作者把这一假设做成严格实验。每个setting先建立8个独立团队，所有Agent都来自同一个 frozen base model、相同role prompt，只允许在10个formation episodes后重写一个≤200 token的私有notebook。notebook分 task notes κ 和 partner notes π。随后把两个团队中同role的Agent对调，并在相同held-out tasks上测task score和coordination cost；同时设置placebo——走一遍“成员变更”流程但实际把原Agent放回去，从而控制纯粹的roster disruption。结论是swap对最终score影响较小，却让每单位进展的通信成本上升16%–63%。Hanabi里，换入“有经验但来自另一队”的Agent甚至比没经验新手更费沟通，说明旧团队形成的约定会发生interference。formation从5→10→20轮时partner-specific ratio ρ从0.17→0.27→0.41，表明团队越磨合，成员越不是fungible slot。</p>
+
+<h3>5.4 Background & Research Gap</h3><p>Multi-agent框架一方面强调role modularity，另一方面又强调long-term memory和team learning。两者存在张力：如果长期经验只是generic task knowledge，换人应该免费；如果经验包含“这个具体队友习惯怎么做”，换人就会有隐性成本。</p><p>例如Team A长期约定“R2”表示立即执行第二阶段；Team B同样的模型却把“R2”理解为先汇报状态。交换一个Agent后，双方能力没变，但会先按各自旧convention行动，失败后才通过额外message修复。过去cross-play研究常混入model/policy差异，而本文固定model、role、prompt和经验量，只改变partner identity，真正隔离team-specific residue。</p>
+
+<h3>5.5 Core Insight</h3><p>第一，长期memory可拆成generic task knowledge κ 与partner-specific knowledge π。第二，partner mismatch最先表现为coordination cost，而非最终score，因为多数失败还能靠额外沟通修回来。第三，任务coupling越高，partner-specific residue越大：ρ约0.18、0.26、0.44。第四，team age会加剧不可替换性：E=5/10/20时ρ=0.17/0.27/0.41，真正增长的是swap penalty Π而不是generic experience V。</p>
+
+<h3>5.6 Method Deep Dive</h3><div class="flow">Frozen base model
+→ K independent teams
+→ fixed role slots/prompts
+→ private notebook μ=(κ,π)
+→ E formation episodes
+→ held-out evaluation
+→ conditions:
+   Intact
+   Placebo
+   Swap
+   Swap-cleared
+   Amnesia
+   Naive
+→ measure task score + coordination cost
+→ derive V, Π, ρ
+→ extract protocol signatures
+→ Jensen-Shannon divergence d
+→ ablate model / temperature / formation length
+→ recovery after swap</div><p><b>Formation：</b>没有weight update，适应全部存在notebook文本里。κ记录环境事实/recipes/failure modes；π记录队友会主动做什么、哪些handoff措辞有效、什么必须说清楚。</p><p><b>Placebo：</b>最关键control。它复制“发生了一次人员变更”的通知和流程，但不换人，因此Swap−Placebo才更接近partner identity effect。</p><p><b>Swap-cleared：</b>换入Agent后清partner notes，测试π是否携带主要旧团队residue。</p><p><b>Protocol signature：</b>自动抽取handoff模板、字段顺序、alias、Hanabi hint→action映射，避免人工主观编码。</p>
+
+<h3>5.7 核心公式与数学直觉</h3><div class="formula">μ=(κ,π)
+
+Generic experience value:
+V = benefit(formed team vs naive)
+
+Swap penalty:
+Π = cost/performance gap(Swap vs Placebo)
+
+Partner-specific ratio:
+ρ = Π / V
+
+Protocol divergence:
+d = JSD(S_i,S_j)</div><p>ρ回答“长期经验收益中有多少绑定具体partner”；越大越不fungible。d用Jensen-Shannon divergence量化不同团队形成的protocol差异。这里最关键结构变量不是learning rate，而是coupling、formation length和decoding temperature，它们决定独立团队有多少机会形成任意约定。</p>
+
+<h3>5.8 Toy Example</h3><ol><li>Team1与Team2都用同一个模型和相同role。</li><li>Team1形成“R2=直接执行”的约定，Team2形成“R2=先确认”的约定。</li><li>交换Team2的Initiator到Team1。</li><li>能力没变，任务仍能完成。</li><li>但新Initiator发R2后，旧Responder按Team1约定直接行动。</li><li>双方发现不一致，再发clarification和correction。</li><li>task score只小降，messages/progress明显增加。</li><li>清掉partner notes后部分成本下降，说明旧π是载体之一。</li></ol>
+
+<h3>5.9 Baseline Deep Comparison</h3><div class="tablewrap"><table><tr><th>Condition</th><th>作用</th><th>为何重要</th></tr><tr><td>Intact</td><td>原团队</td><td>self-play ceiling</td></tr><tr><td><b>Placebo</b></td><td>假换人</td><td>strongest control，排除roster disruption</td></tr><tr><td>Swap</td><td>换同能力陌生partner</td><td>测partner-specific residue</td></tr><tr><td>Swap-cleared</td><td>换人并清π</td><td>定位partner notes贡献</td></tr><tr><td>Naive</td><td>没formation的新手</td><td>估计generic experience value</td></tr></table></div><p><b>Strongest baseline/control：Placebo。</b>没有它，任何swap penalty都可能只是系统重启或变更通知导致。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3><p><b>主模型：</b>GPT-5.6 Luna low-cost tier；不训练、无GPU。<br><b>Benchmarks：</b>Collab-Overcooked low-coupling Level2、high-coupling Level6、Hanabi。<br><b>K：</b>8 teams。<br><b>Formation：</b>E=10 episodes，held-out tasks在各condition复用。<br><b>每cell：</b>R=10 episodes。<br><b>Scale：</b>main study 2,240 episodes；含ablations总计4,190。<br><b>Research Questions：</b>同模型同role是否可互换？partner-specific residue在哪里？是否随coupling、temperature、team age变化？</p>
+
+<h3>5.11 Metrics 教学式解释</h3><p><b>Task Score↑：</b>Overcooked progress completeness或Hanabi 0–25分，测最终完成质量。<br><b>Coordination Cost↓：</b>每completed sub-task messages或每point hints，捕捉“同样完成结果多付多少沟通”。<br><b>ρ↓：</b>经验中partner-specific份额。<br><b>d↓：</b>团队协议漂移程度，不直接等价于performance，但解释swap难度。</p>
+
+<h3>5.12 Results Deep Dive</h3><ol><li>Low coupling：Placebo score91.6→Swap90.0，只降1.6；coordination cost3.33→3.85，约+16%。</li><li>High coupling：score63.2→58.0，-5.2；cost4.33→6.53，约+51%。</li><li>Hanabi：score15.8→13.7，-2.1；cost0.64→1.04，约+63%。</li><li>Naive Hanabi score11.2、cost1.00；Swap score更高13.7，但cost反而1.04，说明旧经验有用却同时产生interference。</li><li>Swap-cleared high-coupling cost6.53→5.53，partner notes承担相当部分residue。</li><li>高coupling额外messages中38%是failed hand-off后的correction，说明代价主要来自“先错再修”。</li><li>ρ随coupling约0.18/0.26/0.44。</li><li>E=5/10/20时ρ=0.17/0.27/0.41；V约0.184/0.195/0.202，Π约0.030/0.053/0.083。</li></ol><div class="callout good"><b>Strongest result：</b>score小幅变化、coordination cost却上升16%–63%，说明只看最终任务得分会漏掉替换代价。</div><div class="callout warn"><b>Weakest：</b>ρ–d相关样本很小，不能当统一机制。</div><div class="callout bad"><b>Failure：</b>只覆盖同质模型、短期formation，不等于现实大型异构组织。</div>
+
+<h3>5.13 Table / Figure Reading</h3><p><b>Figure1：</b>swap test设计把partner identity和能力差异分开。<br><b>Table1：</b>score与coordination cost并列，是全文核心证据。<br><b>Table3：</b>高coupling下大量额外消息用于failed hand-off correction。<br><b>Table4：</b>partner-note语义显示signal convention随coupling增大。<br><b>Table6：</b>model、temperature、formation length ablations共同展示team drift与swap penalty变化。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3><p><b>Swap-cleared：</b>清π后cost回落但不归零，说明partner-specific信息也可能混在κ或其它上下文。<br><b>Greedy decoding：</b>同时降低team divergence和swap penalty，说明sampling entropy会促进任意convention分叉。<br><b>Formation length：</b>后期generic经验几乎不再增长，但partner-specific penalty继续增大，团队学习越来越像“磨合”。</p>
+
+<h3>5.15 Claim vs Evidence</h3><div class="callout"><b>Authors Claim：</b>LLM agents在outcome上较fungible，但coordination efficiency上不是。</div><div class="callout good"><b>Actually Show：</b>两个benchmark、placebo、swap-cleared、formation-length ablation一致支持。</div><div class="callout warn"><b>Not Proven：</b>异构模型、工具Agent、数百轮history、真实生产替换均未验证。</div>
+
+<h3>5.16 Contribution</h3><ul><li><b>New Protocol：</b>LLM team swap test + placebo。</li><li><b>New Metric：</b>partner-specific ratio ρ。</li><li><b>New Finding：</b>task score与coordination cost解耦。</li><li><b>New Finding：</b>team age提高partner specificity。</li><li><b>New Analysis：</b>task notes / partner notes / protocol signatures。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3><p><b>Authors/visible：</b>swap独立pair数量少；κ/π split是人为heading；coupling与task complexity未完全分开。<br><b>Additional：</b>200-token notebook远简化现实memory；未研究恶意partner memory；未研究member deletion；coordination cost不直接等于美元/API latency。</p>
+
+<h3>5.18 Reproduction View</h3><p>关键模块：team factory、role prompts、κ/π notebook writer、formation scheduler、swap/placebo controller、held-out replay、coordination logger、protocol-signature extractor、JSD、pair-bootstrap。最小复现优先Collab-Overcooked high coupling：6–8 teams、E=10，跑Placebo/Swap/Swap-cleared/Naive，先确认score小降但messages/progress明显升。</p>
+
+<h3>5.19 Research Value</h3><p><span class="score">Baseline ★★★★★</span> 长期multi-agent memory强evaluation protocol。<br><span class="score">Migration ★★★★★</span> Agent member-exit / partner-unlearning。<br><span class="score">Attack ★★★★☆</span> convention poisoning。<br><span class="score">Evaluation ★★★★★</span> coordination efficiency补足task score。<br><span class="score">Benchmark ★★★★★</span> Team Memory / Replacement benchmark。<br><span class="score">New Paper ★★★★★</span> 与组织级unlearning直接相连。</p>
+
+<h3>5.20 Migration Analysis</h3><h4>方向A — Partner-Unlearning in Multi-Agent Teams</h4><p><b>Original Problem →</b>换队友后旧convention造成coordination penalty。<br><b>Transferable Mechanism →</b>κ/π分解+swap test。<br><b>New RQ →</b>Agent B被删除后，A是否需要unlearn关于B形成的partner memory？<br><b>Method Modification →</b>比较raw π delete、summary rewrite、selective replay、full reset。<br><b>Minimum Experiment →</b>8 teams×E={5,10,20}×4 deletion strategies×2 tasks，每condition10 episodes。<br><b>Model →</b>Qwen3-8B或同质GPT-5.6 Luna。<br><b>Dataset →</b>Collab-Overcooked+Hanabi。<br><b>Baseline →</b>no delete、amnesia、full reset。<br><b>Metric →</b>Task Score、Coordination Cost、ρ、Protocol Divergence、Recovery Episodes。<br><b>Expected Contribution →</b>定义team-level unlearning。<br><b>Risk →</b>partner信息混入κ。<br><b>Collision Risk →</b>低。</p>
+<h4>方向B — Convention Poisoning & Recovery</h4><p><b>Original Problem →</b>team-specific signal convention可长期固化。<br><b>New RQ →</b>恶意Agent能否植入trigger convention，并在被替换后继续影响旧队友？<br><b>Minimum Experiment →</b>20 triggers×8 teams×3 formation lengths×3 cleanup。<br><b>Metric →</b>Trigger ASR、Post-removal Persistence、Benign Utility、Coordination Cost。<br><b>Expected Contribution →</b>relationship-memory poisoning persistence。<br><b>Risk →</b>需区分普通miscoordination与真正后门。<br><b>Collision Risk →</b>低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3><p>定义 <b>Team Memory Residual (TMR)</b>：成员删除/替换后，剩余Agent的protocol signature与旧团队convention的相似度，以及旧convention trigger成功率。真正的member unlearning应同时检查被删Agent自己的状态和其它成员“关于它”的memory。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3><p>Agent Zero Memory强调每条长期memory都应有provenance；本篇显示partner-specific memory若无明确provenance/作用域，会在swap时成为隐藏耦合。组合后可把partner notes标注“关于谁、何时形成、由哪些episodes支持”，成员退出时才能selective forgetting。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3><ol><li>同模型同角色同经验量的Agent也不完全可互换。</li><li>swap对task score影响小，对coordination cost影响大。</li><li>高coupling里communication可增加约51%。</li><li>Hanabi里可增加约63%。</li><li>有经验陌生人可能比新手更“费沟通”。</li><li>partner notes携带部分team-specific residue。</li><li>代价主要来自failed hand-off后的修复。</li><li>team history越长，partner specificity越强。</li><li>只看task score会低估长期team memory耦合。</li><li>unlearning启发：删Agent可能需要删其它成员对它形成的memory。</li></ol></section>
+
+<section id="p2" class="paper"><h2>Paper 2 Full Deep Dive — Agent Zero Memory</h2>
+<h3>5.1 基本信息</h3><div class="kv"><div>Title</div><div>Agent Zero Memory: Provenance-Aware Long-Term Memory for LLM Agents</div><div>Authors</div><div>Ming Wu, Pengyuan Zhu</div><div>Date</div><div>2026-08-30</div><div>Venue / Status</div><div>arXiv preprint</div><div>Paper</div><div><a href="https://arxiv.org/abs/2608.29606">arXiv</a> · <a href="https://arxiv.org/html/2608.29606">HTML</a> · <a href="https://arxiv.org/pdf/2608.29606">PDF</a></div><div>Project / Code</div><div>本次正文未验证到独立官方GitHub URL；不猜测。</div></div>
+
+<h3>5.2 一句话定位</h3><p>Agent Zero Memory把长期Agent memory从单一vector store升级成“事件时间线 + 实体事件图 + citation-locked documentary memory”的三视图、全provenance底座，并证明高质量memory结构可显著降低对超强backbone的依赖。</p>
+
+<h3>5.3 人话版</h3><p>长期Agent memory常在三个目标之间取舍：时间更新、跨实体关联、稳定事实整理。单一vector index擅长语义召回但不擅长“什么时候变了”；knowledge graph擅长关系却未必保留完整原始证据；summary/profile可读但容易丢source。Agent Zero Memory并行维护三套memory：Memory Events记录每次发生什么、何时更新；entity-event graph连接跨session人物与项目；Hierarchical Documentary Memory保存durable facts。每个item都有origin、timestamp、evidence pointer。查询时先做intent gate和source router，再让三个agentic readers并发搜索各自store；每个reader内部同时使用dense与lexical retrieval，并受citation lock约束——只能引用自己实际打开过的evidence，证据不足就abstain。LongMemEval达到95.60%，LoCoMo93.60%。更重要的是，固定memory/retrieval逻辑只换backbone时LongMemEval accuracy仅差3.4分，但单query成本约差30倍，说明长期memory质量很大程度由substrate而不是最大模型驱动。</p>
+
+<h3>5.4 Background & Research Gap</h3><p>单一memory表示总有blind spot。例如用户去年住北京、今年搬上海：profile overwrite得到当前值但丢历史；vector store可能同时检索两个冲突事实；graph能表示关系却不一定让final answer可审计。</p><p>另一个关键是provenance。经过reflection/summary后的memory若失去source pointer，系统很难回答“这条事实是谁说的、什么时候说的”，也难在用户请求纠错/删除时知道该撤销哪些derived facts。本文把provenance从answer附属品提升为memory schema与reading protocol的一等约束。</p>
+
+<h3>5.5 Core Insight</h3><p>第一，没有单一memory structure能同时最好支持temporal update、multi-hop relation和durable profile，因此使用多视图并行存储。第二，provenance要在memory build时绑定，而不是生成答案后补citation。第三，retrieval/representation比backbone能力更决定长期memory QA，controlled sweep只差3.4pp。第四，dense和lexical互补：embedding负责paraphrase，lexical负责rare identifier/exact term。</p>
+
+<h3>5.6 Method Deep Dive</h3><div class="flow">Conversations + files + connected sources
+→ Memory Build
+   Memory Events timeline
+   Entity–Event Graph
+   Hierarchical Documentary Memory
+   every item = content + provenance + timestamp + evidence pointer
+→ Query
+→ intent gate
+→ source router
+→ 3 concurrent agentic readers
+→ each reader:
+   dense retrieval
+   BM25/fuzzy lexical retrieval
+   reciprocal rank fusion k=60
+   agent-controlled filters
+   open raw evidence on demand
+→ citation lock
+→ integrate grounded answers
+→ final answer + confidence + citations</div><p><b>Events：</b>专门保留什么时候发生、何时更新、什么值被supersede。<br><b>Graph：</b>连接people/projects/events，支撑跨session multi-hop。<br><b>HDM：</b>保存整理后的durable facts/profile。<br><b>Hybrid search：</b>pgvector 3072维cosine + BM25/fuzzy，RRF k=60融合。<br><b>Citation lock：</b>reader没有open的evidence不能被引用，防止模型用参数知识伪装成memory evidence。</p>
+
+<h3>5.7 核心公式与数学直觉</h3><div class="formula">Provenanced item:
+m=(content, origin, timestamp, evidence_pointer)
+
+RRF(d)=Σ_c 1/(k+rank_c(d)),  k=60
+
+Citation lock:
+cite(d) ⇒ d ∈ OpenedEvidence(reader)
+
+Final:
+A=Integrate(A_event,A_graph,A_doc)</div><p>RRF的好处是不同retriever分数不必同尺度。k=60使rank差异平滑。Citation lock本质是information-flow constraint：没有被reader实际读取的source不能进入grounding链。与strongest baselines相比，核心区别不是“多一个vector index”，而是三种structured memory + provenance discipline。</p>
+
+<h3>5.8 Toy Example</h3><ol><li>1月用户说“我住北京”，写入Event。</li><li>3月文件提到“Aurora负责人Alice”，Graph连接Alice和项目。</li><li>6月用户说“我搬到上海”，新增事件并标记当前值，不破坏旧历史。</li><li>HDM当前profile更新为Shanghai，但保留两个source。</li><li>问“以前住哪？”timeline回答北京。</li><li>问“Aurora负责人？”graph/HDM回答Alice。</li><li>问“现在住哪？”HDM回答上海。</li><li>final answer只能引用reader实际打开的conversation/file。</li></ol>
+
+<h3>5.9 Baseline Deep Comparison</h3><div class="tablewrap"><table><tr><th>Baseline</th><th>结构</th><th>优点</th><th>Agent Zero差异</th></tr><tr><td>Zep</td><td>bi-temporal entity graph</td><td>temporal graph</td><td>再加timeline/HDM和三reader</td></tr><tr><td>Mem0</td><td>production memory/RAG</td><td>LoCoMo强</td><td>provenance/citation lock</td></tr><tr><td><b>Mastra</b></td><td>observational memory</td><td>LongMemEval strongest reported 94.87</td><td>95.60 layered substrate</td></tr><tr><td>Hindsight</td><td>typed networks</td><td>多类型memory</td><td>三种专用store+parallel readers</td></tr><tr><td>ByteRover</td><td>curated context tree</td><td>审计性强</td><td>timeline+graph+documentary并行</td></tr></table></div>
+
+<h3>5.10 Experiment Setup Deep Dive</h3><p><b>LongMemEval：</b>500 questions，6类+abstention。<br><b>LoCoMo：</b>1,540 questions，single-hop、multi-hop、temporal、open-domain。<br><b>Storage：</b>PostgreSQL，pgvector 3072-d embeddings，BM25+fuzzy。<br><b>Backbones：</b>gpt-5.5、gpt-5.6-sol/terra、gpt-5.4-mini、opus4.8、sonnet5、glm5.2/fast、deepseek-v4-pro等。<br><b>Metrics：</b>LLM-judged accuracy、median latency、USD/query、token counts。<br><b>Research Questions：</b>是否SOTA？质量主要由memory还是backbone驱动？hybrid retrieval是否必要？accuracy-cost-latency如何trade off？</p>
+
+<h3>5.11 Metrics 教学式解释</h3><p><b>Judged Accuracy↑：</b>自然语言答案正确率，适合开放回答但有judge bias。<br><b>Median Latency↓：</b>避免少数slow tail影响，但不体现p95。<br><b>Cost/query↓：</b>依provider list price，会随时间漂移，所以论文同时报tokens。<br><b>Cached ratio↑：</b>解释retrieval-heavy prompt为何token很多却未必贵。</p>
+
+<h3>5.12 Results Deep Dive</h3><ol><li>LongMemEval95.60 vs Mastra94.87，+0.73pp。</li><li>LoCoMo93.60 vs Mem092.50，+1.10pp。</li><li>controlled LongMemEval backbone spread92.20–95.60，仅3.4pp。</li><li>gpt-5.5 95.60，$0.034788/query。</li><li>deepseek-v4-pro 92.20，$0.001768/query，低3.4pp但约20×更便宜。</li><li>glm5.2fast 93.00，median latency6.158s，只比最高低2.6pp。</li><li>cost efficiency从约18 accuracy-points/cent到521，差近29×。</li><li>Hybrid95.20；embedding-only94.00，-1.2。</li><li>grep-only93.60，-1.6；lexical-only93.40，-1.8。</li></ol><div class="callout good"><b>Strongest result：</b>固定memory substrate只换backbone，accuracy仅差3.4pp、成本却约30×，最能支持memory-driven thesis。</div><div class="callout warn"><b>Weakest：</b>SOTA表格用各系统best public numbers，不是完全同harness重跑，0.73/1.10pp不能过度解读。</div><div class="callout bad"><b>Failure：</b>缺少remove timeline / graph / HDM组件级ablation。</div>
+
+<h3>5.13 Table / Figure Reading</h3><p><b>Table3：</b>LongMemEval reported SOTA，margin很小，应看机制而非leaderboard。<br><b>Table4：</b>LoCoMo同理。<br><b>Table5：</b>全文最重要controlled table，固定memory只变backbone。<br><b>Figure2/3：</b>cost/latency Pareto，没有模型全维度dominant。<br><b>Table7：</b>hybrid retrieval ablation说明dense与lexical互补。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3><p><b>Embedding-only：</b>-1.2pp，rare identifiers受损。<br><b>Lexical-only：</b>-1.8pp，paraphrase/semantic recall受损。<br><b>Grep-only：</b>-1.6pp，ranking/fuzzy有独立价值。<br><b>Backbone sweep：</b>固定所有memory组件只换model，质量稳定，是强机制证据。<br><b>缺失：</b>没有逐个移除三memory或intent gate/citation lock。</p>
+
+<h3>5.15 Claim vs Evidence</h3><div class="callout"><b>Authors Claim：</b>provenance-aware layered memory是durable substrate，质量主要由memory而非backbone驱动。</div><div class="callout good"><b>Actually Show：</b>两个reported SOTA、controlled backbone sweep、retrieval ablation支持总体方向。</div><div class="callout warn"><b>Not Proven：</b>三memory各自边际贡献、citation lock独立收益、真正forget/delete、conflict arbitration尚未完整实验。</div>
+
+<h3>5.16 Contribution</h3><ul><li><b>New System：</b>three-view long-term memory。</li><li><b>New Protocol：</b>citation-lock / provenance-first reading。</li><li><b>New Finding：</b>memory-driven quality across backbones。</li><li><b>Engineering：</b>PostgreSQL+pgvector+BM25/fuzzy+RRF。</li><li><b>Deployment Analysis：</b>accuracy-cost-latency frontier。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3><p><b>Authors：</b>LLM judge；组件ablation不足；价格会漂移；external baselines并非严格head-to-head。<br><b>Additional：</b>provenance不等于truth；错误source也可被忠实引用；conflict source需要仲裁；tombstone与真正forget存在张力；memory poisoning可能长期传播。</p>
+
+<h3>5.18 Reproduction View</h3><p>关键模块：Events schema、entity-event graph、HDM builder、provenance pointer、intent gate、source router、three readers、dense/BM25/fuzzy、RRF k=60、citation lock、integrator、cost logger。最小复现优先LongMemEval 100题，先验证hybrid vs single-channel约1pp差距，再扩三memory。</p>
+
+<h3>5.19 Research Value</h3><p><span class="score">Baseline ★★★★★</span> Agent memory强系统baseline。<br><span class="score">Migration ★★★★★</span> provenance适合memory unlearning/delete closure。<br><span class="score">Attack ★★★★☆</span> provenance poisoning/conflict。<br><span class="score">Evaluation ★★★★★</span> source-grounded deletion。<br><span class="score">Benchmark ★★★★★</span> 可扩LongMemEval为delete/update/audit。<br><span class="score">New Paper ★★★★★</span> 与team member-exit结合自然。</p>
+
+<h3>5.20 Migration Analysis</h3><h4>方向A — Provenance-Guided Agent Memory Unlearning</h4><p><b>Original Problem →</b>每个memory item有origin/evidence。<br><b>Transferable Mechanism →</b>用support set定义删除范围。<br><b>New RQ →</b>删一个source后，哪些events/edges/HDM facts应删除，哪些因多source支持应保留？<br><b>Method Modification →</b>给每个m维护S(m)；删s时若S(m)={s}则删除/重建，否则只重算confidence。<br><b>Minimum Experiment →</b>LongMemEval 100 users；single-source/multi-source facts各200；delete ratio5/10/20%。<br><b>Baseline →</b>raw source delete、vector delete、all-descendant delete、full rebuild。<br><b>Metric →</b>Forget Leakage、Retain Recall、Support Precision、Rebuild Cost、Citation Closure。<br><b>Expected Contribution →</b>support-aware memory unlearning。<br><b>Risk →</b>隐式semantic dependency漏边。<br><b>Collision Risk →</b>中。</p>
+<h4>方向B — Team-Memory Provenance & Member Exit</h4><p><b>Original Problem →</b>Interchangeability发现partner-specific memory。<br><b>Transferable Mechanism →</b>把partner identity作为provenance维度。<br><b>New RQ →</b>B退出后，哪些关于B的notes删除，哪些已成为generic knowledge保留？<br><b>Method Modification →</b>κ/π note记录source episodes、partner IDs、support count。<br><b>Minimum Experiment →</b>8 teams×20 episodes×3 exits×4 cleanup strategies。<br><b>Dataset →</b>Collab-Overcooked+Hanabi。<br><b>Metric →</b>Post-exit Cost、Task Score、TMR、Knowledge Retention、Cleanup Cost。<br><b>Expected Contribution →</b>organizational forgetting。<br><b>Risk →</b>task/partner knowledge纠缠。<br><b>Collision Risk →</b>低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3><p>可做 <b>Provenance Poisoning</b>：恶意source重复注入错误事实，让support count看似很强；或把partner-specific convention写入κ逃避member-exit cleanup。可定义 <b>Citation-Closed Forgetting</b>：删除source后，任何final answer的citation chain都不能到达该source，同时behavior也不再依赖它。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3><p>Interchangeability告诉我们“关于特定partner的经验会形成关系性耦合”，Agent Zero告诉我们“memory必须有source/时间/evidence provenance”。组合后自然得到organizational unlearning：成员退出时清理其它Agent对它形成的π，但保护被其它来源独立支持的task knowledge。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3><ol><li>长期Agent memory不应只是vector store。</li><li>三种视图分别负责时间、关系和durable facts。</li><li>每条memory都带origin/timestamp/evidence。</li><li>三个agentic readers并发搜索。</li><li>citation lock禁止引用没实际打开的证据。</li><li>LongMemEval95.60、LoCoMo93.60。</li><li>固定memory只换backbone时accuracy仅差3.4分。</li><li>但成本可相差约30倍。</li><li>hybrid retrieval比任一单通道高1.2–1.8分。</li><li>对unlearning最重要的是provenance能定义哪些memory后代应被撤销。</li></ol></section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2>
+<p>两篇共同说明：长期Agent系统积累的不只是task knowledge，而是带有<b>来源、时间与关系身份</b>的组织知识。Interchangeability证明关于具体partner的经验会形成coordination residue；Agent Zero Memory说明如果memory没有结构化provenance，后续审计、更新、删除就很难知道该动哪里。</p>
+<p><b>共同趋势：</b>Agent memory从检索准确率问题走向组织状态治理问题。<br><b>可组合：</b>partner-specific notebook + provenance support set。<br><b>值得借用：</b>swap/placebo controlled test + fixed-substrate backbone sweep。<br><b>新论文gap：</b>Member Exit / Organizational Unlearning。<br><b>最佳baseline：</b>Agent Zero Memory + swap-test protocol。<br><b>最佳attack：</b>partner-convention poisoning。<br><b>最佳metric：</b>Team Memory Residual + Citation-Closed Forgetting。</p></section>
+
+<section id="opp" class="card"><h2>Combined Research Opportunities</h2>
+<h3>Best Migration Direction — Provenance-Guided Organizational Unlearning</h3>
+<div class="flow">Member/source deletion request
+→ identify memories with target provenance
+→ split:
+   target-only support
+   multi-source support
+   partner-specific convention
+   generic task knowledge
+→ selective delete/rewrite
+→ preserve/revalidate shared knowledge
+→ swap replacement agent
+→ placebo-controlled swap test
+→ task score + coordination cost
+   + old-partner residual
+   + citation closure
+→ organizational closure</div></section>
+
+<section id="collision" class="card"><h2>Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>与最近 Execution-State Unlearning、PlanFence、MutMem V2 都靠近 provenance / derived-state。新工作若只是“给memory加source ID然后删后代”不够；真正差异化应落在 <b>relationship-specific memory、member exit、team reconfiguration、coordination residual</b>。</p></section>
+
+<section id="priority" class="card"><h2>Reading / Reproduction Priority</h2>
+<p><b>Interchangeability：</b>Figure1 → κ/π → Table1 → Table3 → Table4 → Table6。<br><b>Agent Zero：</b>三memory architecture → retrieval protocol → Table3/4 → Table5 → Figure2/3 → Table7 → limitations。</p></section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2>
+<ul><li><a href="https://arxiv.org/abs/2609.05279">Testing Interchangeability — arXiv</a></li><li><a href="https://arxiv.org/html/2609.05279">Testing Interchangeability — Full HTML</a></li><li><a href="https://arxiv.org/abs/2608.29606">Agent Zero Memory — arXiv</a></li><li><a href="https://arxiv.org/html/2608.29606">Agent Zero Memory — Full HTML</a></li></ul>
+<p class="small">Regenerated on 2026-09-09 10:43 +08:00.</p></section>
+</main></body></html>
