@@ -1,0 +1,261 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Top Papers Deep Dive — 2026-09-10</title><style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#e1e6ef;--blue:#3158cf;--soft:#eef3ff;--green:#edf8f1;--yellow:#fff4d6;--red:#fff0f0;--dark:#111827}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.84}
+main{max-width:1220px;margin:auto;padding:30px 24px 92px}.hero,.card,.paper{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 32px;margin:18px 0;box-shadow:0 4px 18px rgba(20,30,50,.045)}
+.hero{background:linear-gradient(135deg,#142041,#3158cf);color:#fff;border:0}.hero h1{margin:0 0 10px;font-size:38px}.hero p{color:#eef2ff}
+h2{font-size:28px;border-bottom:1px solid var(--line);padding-bottom:8px}h3{font-size:21px;color:#28439d;margin-top:29px}
+nav{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px 21px;columns:2}nav a{display:block;padding:4px 0;color:var(--blue);text-decoration:none}
+a{color:var(--blue);text-decoration:none}.badge{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--soft);color:#3048a5;font-size:12px;font-weight:700;margin-right:5px}
+.kv{display:grid;grid-template-columns:215px 1fr;gap:5px 14px}.kv>div:nth-child(odd){font-weight:760}
+.flow,.formula{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--dark);color:#f7f8ff;border-radius:12px;padding:16px 18px;white-space:pre-wrap;overflow:auto}
+.callout{border-left:5px solid var(--blue);background:var(--soft);border-radius:10px;padding:14px 17px}.good{border-left-color:#338754;background:var(--green)}.warn{border-left-color:#c98a12;background:var(--yellow)}.bad{border-left-color:#c84545;background:var(--red)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:900px}th,td{border-bottom:1px solid var(--line);padding:10px 11px;text-align:left;vertical-align:top}th{background:#f2f4f8}
+.score{font-weight:760;color:#2748bd}.small{font-size:13px;color:var(--muted)}ul,ol{padding-left:23px}li{margin:5px 0}
+@media(max-width:760px){main{padding:18px 12px}.hero,.card,.paper{padding:20px}nav{columns:1}.kv{grid-template-columns:1fr}}
+</style></head><body><main>
+<!-- regenerated: 2026-09-10 09:42 +08:00 -->
+<section class="hero"><h1>Daily Top Papers Deep Dive — 2026-09-10</h1>
+<p><b>Cooperative Memory Attribution × Self-Evolving Procedural Memory</b></p>
+<p>今天精读 2 篇：MeClear 研究多条长期记忆如何以 coalition 形式共同造成错误；Procedural Graphs 研究 Agent 的程序性知识如何从隐式轨迹变成显式、可局部检索、可验证自演化的执行图。</p></section>
+
+<nav>
+<a href="#selection">1. Today's Deep Dive Selection</a><a href="#why">2. 为什么选这 2 篇</a>
+<a href="#p1">3. Paper 1 — MeClear</a><a href="#p2">4. Paper 2 — Procedural Graphs</a>
+<a href="#syn">5. Cross-Paper Synthesis</a><a href="#opp">6. Combined Research Opportunities</a>
+<a href="#collision">7. Collision / Overlap</a><a href="#priority">8. Reading / Reproduction Priority</a>
+<a href="#sources">9. Sources / Links</a></nav>
+
+<section id="selection" class="card"><h2>Today's Deep Dive Selection</h2>
+<p><span class="badge">Agent Memory</span><span class="badge">Game-Theoretic Attribution</span><b>#1 MeClear: Cooperative Game-Theoretic Attribution and Risk-Aware Memory Clearance for Long-Horizon LLM Agents</b></p>
+<p><span class="badge">Agent</span><span class="badge">Procedural Memory</span><span class="badge">Self-Evolution</span><b>#2 Procedural Graphs: Self-Evolving Execution Structures for LLM Agents</b></p>
+</section>
+
+<section id="why" class="card"><h2>为什么选这 2 篇</h2>
+<p>今天保留的两个机制都直接对应长期 Agent 的结构化残留。MeClear 证明单条删除/LOO 会被冗余有害记忆掩盖，真正需要 coalition-level attribution；Procedural Graphs 把“怎么做”显式存成 procedure transition graph，并用 execution feedback 验证和修正 topology。它们都比单纯扩大检索、增加 prompt 或一次性过滤更接近 residual / recovery / unlearning verification。</p>
+<div class="callout good"><b>统一启发：</b>长期行为通常来自多组件交互。验证“真的忘了”或“真的修好了”，不能只看单条 memory 或单个 probe，而要看组合影响和可达路径。</div></section>
+
+<section id="p1" class="paper"><h2>Paper 1 Full Deep Dive — MeClear</h2>
+<h3>5.1 基本信息</h3>
+<div class="kv"><div>Title</div><div>MeClear: Cooperative Game-Theoretic Attribution and Risk-Aware Memory Clearance for Long-Horizon LLM Agents</div><div>Authors</div><div>Boyu Yang, Jiazheng Sun, Zilong Lu, Zhi Qiu, Xin Peng, Jun Zheng</div><div>Affiliation</div><div>Fudan University；Beijing Institute of Technology</div><div>Date</div><div>2026-09-08（arXiv v1）</div><div>Venue / Status</div><div>arXiv preprint，cs.AI</div><div>Paper</div><div><a href="https://arxiv.org/abs/2609.09115">arXiv</a> · <a href="https://arxiv.org/html/2609.09115">HTML</a> · <a href="https://arxiv.org/pdf/2609.09115">PDF</a></div><div>Code</div><div><a href="https://github.com/FudanSELab/MeClear">Official GitHub — FudanSELab/MeClear</a></div></div>
+
+<h3>5.2 一句话定位</h3><p>MeClear 把有害长期记忆识别从单条 Leave-One-Out 删除升级为 cooperative Shapley attribution，从而找出被冗余冲突掩盖的负效用 memory coalition，并对当前 query 做最小、可验证的 context clearance。</p>
+
+<h3>5.3 人话版</h3><p>长期 Agent 的 memory bank 会不断积累旧事实、矛盾记录和重复表述。单看相似度无法判断这些记录是帮忙还是添乱；更糟的是，如果两条错误记忆互相替代，删任意一条都不会让答案恢复，传统 LOO 就会把它们误判成“没影响”。MeClear 将 active context 中 K 条 memory 当作合作博弈中的 players，用 sampled Shapley value 估计每条 memory 在不同 coalition 中对任务正确性的平均边际贡献。对负贡献记忆排序后，它建立一系列 nested clearance sets，并真正重新运行 Agent 验证“删除到这里是否恢复”，最后选择收益最大的最小清除集合。作者在 LoCoMo 上构造 745 个 causally verified cases、1,115 条 fault memories；MeClear 达到约85.9% target recall、47.0% exact harmful-set match、82.3% task recovery，Recovery 比 LOO 高25.5pp。它并不永久删除 persistent bank，因此更准确地说是 memory influence control，而不是合规意义的 machine unlearning。</p>
+
+<h3>5.4 Background & Research Gap</h3><p>主流 memory system 通常假设 relevance≈utility：与 query 相似的记忆应该被检索。但相关并不意味着帮助正确决策。过时事实、重复错误、版本冲突都可能高相关却有害。</p><p>例如 F1=“John 2023年1月在Italy”、F2=“John年初去过Italy”，正确答案其实是12月。只要F1或F2任意存在，模型都可能答January。删F1仍有F2，删F2仍有F1，所以单条LOO effect都接近0，但二者都在共同维持错误。</p><p>MeClear真正填的gap是：<b>在固定已检索context内，如何对interacting memories做coalition-aware negative-utility attribution，并通过真实task recovery验证最小干预。</b></p>
+
+<h3>5.5 Core Insight</h3><p><b>LOO零效应不代表无害：</b>冗余坏证据可互相遮蔽。<br><b>Harmfulness是query-conditioned：</b>历史事实对“当前状态”可能有害，对“去年状态”却有用。<br><b>Attribution与intervention分开：</b>识别负贡献只是第一步，必须实际重跑。<br><b>最小化collateral damage：</b>先最大化recovery，再选最少删除。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Persistent memory bank B_t + query q_t
+→ retriever freezes active context M_t={m1,...,mK}, K=5
+→ baseline value v(M_t)
+→ LOO screening
+→ sample L=16 permutations
+→ estimate Shapley ψ_i
+→ harmful candidates ψ_i < -τ
+→ sort by most-negative ψ
+→ build nested clearance C_0...C_h
+→ rerun agent on M_t \ C_j
+→ require positive gain + recovery predicate
+→ choose best minimal j
+→ query-scoped cleared context
+→ persistent bank unchanged</div>
+<p><b>Freeze retrieval：</b>避免每次ablation后重新检索带来的混淆。<br><b>LOO：</b>只做direct harm screening，接近0视为inconclusive。<br><b>Shapley：</b>通过不同coalition解除冗余遮蔽。<br><b>Nested filtration：</b>将2^h子集缩成h+1候选。<br><b>Verification：</b>最终仍看真实任务恢复，不接受纯语言判断。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">M_t = ρ(q_t, B_t; K)
+
+v_t(S) = E_y[r_t(y)]
+
+d_i = v_t(M_t) - v_t(M_t \ {m_i})
+
+ψ_i = Σ_{S⊆M_t\{m_i}}
+ |S|!(K-|S|-1)! / K! *
+ [v_t(S∪{m_i}) - v_t(S)]
+
+Redundant harm:
+d_i = d_j = 0
+but ψ_i = ψ_j = -Δ/2
+
+ψ̂_i = (1/L) Σ_l marginal_i(π_l)
+
+Ĥ = {m_i | ψ̂_i < -τ}</div>
+<p><b>v(S)</b>测downstream task correctness，不是semantic relevance。<b>d_i</b>只看full-context附近单点干预，所以会被redundancy mask。<b>ψ_i</b>平均不同coalition下的边际贡献，因此能发现“单删看不出来”的harm。</p><p>主实验L=16、τ=0.05。τ太小会把evaluator noise当harm，太大则漏弱负贡献。与LOO差异是机制性的，而不是简单多跑几次。</p>
+
+<h3>5.8 Toy Example</h3><ol><li>K=5，其中F1/F2是两条语义冗余错误。</li><li>完整context答错。</li><li>删F1仍有F2，LOO≈0。</li><li>删F2仍有F1，LOO≈0。</li><li>随机permutation中，谁先出现谁第一次引入错误penalty。</li><li>多轮平均后F1/F2都得到负Shapley。</li><li>MeClear按负贡献排序逐步清除并实际验证。</li><li>两条都清除后答案恢复。</li><li>persistent bank仍不变。</li></ol>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table><tr><th>Baseline</th><th>方法</th><th>失败点</th><th>MeClear差异</th></tr><tr><td><b>LOO</b></td><td>逐条删除</td><td>冗余坏memory互相遮蔽</td><td>coalition-averaged Shapley</td></tr><tr><td>ContextCite</td><td>context attribution</td><td>高相关不等于负效用</td><td>task recovery作value</td></tr><tr><td>ProxySPEX</td><td>proxy subset explanation</td><td>exact harmful set仍有误差</td><td>sampled Shapley+verification</td></tr><tr><td>Direct LLM Filter</td><td>让LLM判断删什么</td><td>过删/幻觉删除</td><td>行为干预</td></tr></table></div>
+<p><b>Strongest numerical baseline：</b>ProxySPEX；<b>最关键mechanism baseline：</b>LOO。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3><p><b>Memory：</b>Mem0 2.0.12 + Qdrant，共11,302 records。<br><b>Benchmark：</b>LoCoMo，最终745 paired cases、1,115 fault memories。<br><b>Task agent：</b>Kimi-k2.6。<br><b>Judge：</b>Qwen3.6-Flash。<br><b>Fault generation：</b>Qwen3.7-Plus。<br><b>Retrieval：</b>hybrid K=5。<br><b>MeClear：</b>L=16，κ=τ=0.05；另做L=4/8/16 sensitivity。<br><b>Research Question：</b>是否能找全fault set？是否尤其解决redundant/joint faults？清除后是否真正恢复？是否会多删background？</p>
+
+<h3>5.11 Metrics 教学式解释</h3><p><b>Target Recall@|M|↑：</b>在固定预测数量下找回多少fault。<br><b>Complete Set Recall↑：</b>整个fault coalition是否找全。<br><b>Exact Set Match↑：</b>既不漏fault也不多删benign memory。<br><b>Task Recovery↑：</b>清除后Agent是否真的恢复正确。<br><b>Extra-background selection↓：</b>衡量多删的context。</p>
+
+<h3>5.12 Results Deep Dive</h3><ol><li>总体recall 85.9% vs LOO 38.3%，+47.6pp。</li><li>总体recovery 82.3% vs56.8%，+25.5pp。</li><li>Exact Set Match只有47.0%，说明行为修复不等于精确归因。</li><li>Direct conflicts上LOO已较强，MeClear优势较小。</li><li>Redundant conflicts里LOO recovery约6.3%，MeClear约68.4%，+62.1pp。</li><li>Joint interactions里LOO exact match接近0，MeClear仍有高recovery。</li><li>对ProxySPEX，Recovery仍有约5pp提升。</li><li>Direct LLM filter明显更差。</li><li>仍有约14.8% query无法恢复。</li></ol>
+<div class="callout good"><b>Strongest result：</b>Redundant setting的巨大优势，直接验证理论blind spot。</div>
+<div class="callout warn"><b>Weakest result：</b>Exact Set Match仅47.0%。</div>
+<div class="callout bad"><b>Failure：</b>K=5较小，大K下coalition成本是明显问题。</div>
+
+<h3>5.13 Table / Figure Reading</h3><p><b>Figure 2：</b>明确MeClear是post-retrieval layer。<br><b>Figure 4：</b>recall/exact/recovery差距说明“修好”与“精确找因”不同。<br><b>Figure 5：</b>LOO只在redundant严重崩溃，是核心机制图。<br><b>Table 1：</b>case study展示LOO≈0但Shapley&lt;0。<br><b>Figure 9：</b>L budget sensitivity决定复现成本。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3><p><b>LOO vs Shapley：</b>最核心ablation。<br><b>L budget：</b>更大更稳但成本线性增大。<br><b>Nested clearance：</b>降低搜索成本，但不保证全局subset最优。<br><b>Verification gate：</b>防止纯attribution误删，但仍依赖固定judge。<br><b>Pairwise interaction：</b>主要用于解释，不是最终decision rule。</p>
+
+<h3>5.15 Claim vs Evidence</h3><div class="callout"><b>Authors Claim：</b>coalition-aware attribution能解决interacting harmful memories。</div><div class="callout good"><b>Actually Show：</b>在LoCoMo fault-injection、K=5、745 cases上，尤其redundant setting成立。</div><div class="callout warn"><b>Not Proven：</b>没有永久memory unlearning、没有大K、多模态、多模型或adaptive attacker验证。</div>
+
+<h3>5.16 Contribution</h3><ul><li><b>New Mechanism：</b>Shapley用于harmful-memory clearance。</li><li><b>New Theory：</b>Redundant-Harm Blind Spot。</li><li><b>New Protocol：</b>nested minimal clearance + recovery verification。</li><li><b>New Finding：</b>LOO在redundant faults下结构性失效。</li><li><b>Evaluation Engineering：</b>745 causally verified cases。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3><p><b>Authors'：</b>仅在nested candidate family和固定evaluator上有保证。<br><b>Additional：</b>K小、judge单一、fault注入为主、没有multimodal memory、没有adaptive recovery、persistent bank不变，因此不满足正式unlearning。</p>
+
+<h3>5.18 Reproduction View</h3><p>关键模块：LoCoMo→Mem0、fault injector、causal verifier、固定top-K retriever、task-value evaluator、coalition cache、LOO、permutation sampler、sampled Shapley、nested selector、recovery predicate。最小复现先做两条redundant fault的toy，K=5，比较LOO、exact Shapley、sampled L=4/8/16。</p>
+
+<h3>5.19 Research Value</h3><p><span class="score">Baseline ★★★★★</span> harmful-memory attribution强baseline。<br><span class="score">Migration ★★★★★</span> 可迁到unlearning probe/carrier attribution。<br><span class="score">Attack ★★★★★</span> 可设计redundant recovery masking。<br><span class="score">Evaluation ★★★★★</span> 从single-probe提升到coalition recovery。<br><span class="score">Benchmark ★★★★★</span> 可做Redundant Residual benchmark。<br><span class="score">New Paper ★★★★★</span> 与black-box residual高度匹配。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向A — Cooperative Residual Attribution for Machine Unlearning</h4><p><b>Original Problem →</b>多条memory冗余导致LOO看不见harm。<br><b>Transferable Mechanism →</b>把多个recovery probes/carriers视为players。<br><b>New RQ →</b>direct/paraphrase/cloze/prefix/candidate/visual cue是否存在“单个都弱、组合后恢复”的residual？<br><b>Method Modification →</b>定义v(S)=使用probe coalition S时target recovery probability。<br><b>Minimum Experiment →</b>30 identities×6 probe families×4 unlearning methods×5 seeds；6 players先算exact Shapley。<br><b>Model →</b>LLaVA-1.5-7B或Qwen3-8B。<br><b>Dataset →</b>MLLMU-Bench / TOFU / DUSK。<br><b>Baseline →</b>single-probe ASR、LOO、TAS、sampled Shapley。<br><b>Metric →</b>Minimum Recovery Coalition Size、Shapley Residual Mass、Retain FPR。<br><b>Expected Contribution →</b>interaction-level residual。<br><b>Risk →</b>采样成本高。<br><b>Collision Risk →</b>低。</p>
+<h4>方向B — Persistent Deletion after Query-Scoped Attribution</h4><p><b>Original Problem →</b>MeClear只临时hide。<br><b>Transferable Mechanism →</b>跨query聚合cooperative harm evidence。<br><b>New RQ →</b>如何区分“当前query有害”和“长期应删除”？<br><b>Method Modification →</b>为memory维护跨query harm posterior，再决定persistent delete。<br><b>Minimum Experiment →</b>10 LoCoMo conversations；每fault关联10 current/historical queries。<br><b>Baseline →</b>MeClear、raw delete、full rebuild。<br><b>Metric →</b>Persistent Forget Rate、Historical Utility、Future Recovery ASR、Delete Precision。<br><b>Expected Contribution →</b>从clearance推进到longitudinal unlearning。<br><b>Risk →</b>harm与合规删除不等价。<br><b>Collision Risk →</b>中。</p>
+
+<h3>5.21 Attack / Verification Lens</h3><p>可定义 <b>Redundant Residual Masking</b> attack：把被忘知识拆到多个弱carrier里，使任何单carrier ablation都看不到风险。新metric：<b>Coalitional Recovery Gap</b> 与 <b>Minimum Recovery Coalition Size</b>。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3><p>Procedural Graphs的nodes/edges也能当coalition players。MeClear式Shapley可以定位“哪些procedure edges单删无效、组合删才破坏恢复路径”；PG的局部图又能降低Shapley的大K搜索成本。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3><ol><li>MeClear不是永久删除，而是query-scoped clearance。</li><li>relevance和utility不是一回事。</li><li>LOO在冗余坏memory下有结构性blind spot。</li><li>可替代坏memory可以LOO=0但Shapley都为负。</li><li>它用sampled Shapley估计cooperative contribution。</li><li>之后只搜索nested clearance prefixes。</li><li>所有候选都必须真实重跑验证。</li><li>总体约85.9% recall、82.3% recovery。</li><li>最强证据是redundant setting。</li><li>最值得迁移的是coalitional residual。</li></ol>
+</section>
+
+<section id="p2" class="paper"><h2>Paper 2 Full Deep Dive — Procedural Graphs</h2>
+<h3>5.1 基本信息</h3>
+<div class="kv"><div>Title</div><div>Procedural Graphs: Self-Evolving Execution Structures for LLM Agents</div><div>Authors</div><div>Yuxing Lu, Yicheng Chen, Shanchan Wu, Sercan Ö. Arık</div><div>Affiliation</div><div>Google；Georgia Institute of Technology；Peking University</div><div>Date</div><div>2026-09-08（arXiv v1）</div><div>Venue / Status</div><div>arXiv preprint，cs.AI / cs.CL / cs.MA</div><div>Paper</div><div><a href="https://arxiv.org/abs/2609.09153">arXiv</a> · <a href="https://arxiv.org/html/2609.09153">HTML</a> · <a href="https://arxiv.org/pdf/2609.09153">PDF</a></div><div>Code</div><div>未验证到官方code URL；不猜测。</div></div>
+
+<h3>5.2 一句话定位</h3><p>Procedural Graphs把Agent的“怎么做”从自由文本经验或固定workflow升级成可定位当前节点、局部检索相邻transition、动态生成指导，并通过成功/失败轨迹自演化topology的显式procedural memory。</p>
+
+<h3>5.3 人话版</h3><p>很多Agent在长任务里每一步都要从越来越长的trajectory重新判断“我现在做到哪里、下一步该调用哪个工具、哪些前置条件不能跳”。Procedural Graph（PG）把procedure显式结构化：节点是tool action、skill、reasoning step或task state；边表示admissible transition，并带condition、guidance、pitfall。在线执行时先匹配active node，只取2-hop局部子图，再让LLM把结构转成situational guidance，solver仍自由决定下一步。离线则用成功/失败trajectory让refiner提出graph edit；候选只有在held-out validation不下降时才commit，坏edit rollback并进入rejection memory。六个主benchmark×四模型共24 settings中，PG对各setting strongest baseline为19胜2平3负。最强机制证据是坏expert graph会把MultiChallenge从87.5打到58.93，但iterative validation-gated evolution可恢复到92.86；说明真正关键不是“有graph”，而是graph能被执行反馈修正。</p>
+
+<h3>5.4 Background & Research Gap</h3><p>MemoryBank/ExpeL把经验压成自由文本，procedure dependency隐式；AutoGuide检索局部guideline，但guideline彼此不连接；AWM等workflow更结构化，却可能线性或固定。PG补的是：<b>explicit transition structure + progress-conditioned local retrieval + soft generative guidance + feedback-driven editable topology。</b></p>
+
+<h3>5.5 Core Insight</h3><p><b>Procedure需要连接关系：</b>独立tips无法稳定表达先后依赖。<br><b>局部结构胜过全图：</b>全图会造成context overload。<br><b>Expert prior可能错：</b>人工graph也能伤性能。<br><b>长程成功依赖时机：</b>关键不是更多tool calls，而是什么时候做什么。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Initial Procedural Graph G0
+→ nodes: tools / skills / reasoning / task states
+→ edges: admissible transitions
+→ attributes: condition / guidance / pitfalls
+
+ONLINE:
+query + trajectory
+→ Match(last action, V)
+→ active node
+→ retrieve h=2 local neighborhood
+→ guidance model Ψ(local graph, q, recent w=3 steps)
+→ situational guidance
+→ ReAct solver chooses next action
+
+OFFLINE:
+retained graph
+→ rollout training trajectories
+→ refiner proposes add/delete/revise graph edits
+→ structural checks
+→ held-out validation
+→ accept if non-degrading
+→ else rollback + rejection memory
+→ next round</div>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">G=(V,R,E,Φ), E⊆V×R×V
+
+u_t = Match(a_{t-1},V)
+
+G_t = N_h(u_t), h=2
+
+g_t = Ψ(G_t,q,T_{t-w:t}), w=3
+
+a_t ~ P_solver(. | q,T_t,g_t)
+
+accept G_candidate iff
+S_val(G_candidate) >= S_val(G_k)</div>
+<p>h=2控制procedural lookahead；太大会退化成full graph overload。w=3压缩guidance输入。PG是soft guidance而不是硬FSM。Validation gate是self-evolution的稳定核心：没有可微loss，而是直接用held-out task score决定graph edit是否保留。</p>
+
+<h3>5.8 Toy Example</h3><ol><li>财务Agent graph含audit_cash、forecast_runway、request_funding等节点。</li><li>forecast→funding edge带“runway不足才触发”的condition。</li><li>最近动作定位到audit_cash。</li><li>只提取2-hop子图。</li><li>guidance生成“先forecast，再决定是否融资”。</li><li>solver执行。</li><li>若失败轨迹显示重复融资，refiner修改pitfall/condition。</li><li>validation下降则rollback。</li><li>不下降则commit。</li></ol>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table><tr><th>Baseline</th><th>方法</th><th>局限</th><th>PG差异</th></tr><tr><td>MemoryBank</td><td>总结+检索经验</td><td>procedure关系隐式</td><td>显式topology</td></tr><tr><td>ExpeL</td><td>蒸馏成功/失败insights</td><td>unordered text</td><td>node/edge结构</td></tr><tr><td>AutoGuide</td><td>state-conditioned guideline</td><td>guidelines不连接</td><td>connected local graph</td></tr><tr><td>AWM</td><td>linear workflows</td><td>branching弱</td><td>directed graph+conditions</td></tr><tr><td><b>KnowAgent</b></td><td>静态action transition knowledge</td><td>缺localization与self-evolution</td><td>active-node+editable topology</td></tr></table></div>
+<p>不同setting strongest baseline不同，论文最可靠总体结论是19胜2平3负，而不是固定一个弱baseline。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3><p><b>Models：</b>Claude Sonnet 4.6、Gemini 3.1 Pro、Gemini 3.5 Flash、Grok 4.1 Fast；temperature=0。<br><b>Benchmarks：</b>HotpotQA、MultiChallenge、GDPval、ALFWorld、τ-bench、BFCL v3、EnterpriseArena。<br><b>Online：</b>h=2、w=3。<br><b>Baselines：</b>Vanilla ReAct、MemoryBank、RAP、ExpeL、AutoGuide、AWM、KnowAgent。<br><b>Research Question：</b>localization是否必要？expert graph可靠吗？self-evolution能否从坏prior修回来？long-horizon survival是否提升？</p>
+
+<h3>5.11 Metrics 教学式解释</h3><p><b>HotpotQA Accuracy/EM/F1↑：</b>多跳检索答题。<br><b>MultiChallenge Success↑：</b>含instruction retention/editing/self-coherence。<br><b>GDPval Rubric Score↑：</b>开放式职业输出评分。<br><b>τ-bench Pass@1↑：</b>最终环境state是否正确。<br><b>BFCL Accuracy↑：</b>多轮function calling准确率。<br><b>Enterprise Full-Horizon Survival↑：</b>132个月是否存活，是最强long-horizon指标。</p>
+
+<h3>5.12 Results Deep Dive</h3><ol><li>24 settings中PG first/joint-first 21/24；对strongest baseline为19胜2平3负。</li><li>BFCL+Gemini3.5 Flash约67.0 vs58.0，+9pp。</li><li>GDPval+Gemini3.1 Pro约78.78 vs71.37，+7.41。</li><li>τ-bench+Gemini3.1 Pro约80.0 vs73.04，+6.96。</li><li>HotpotQA margin接近0，是明显弱项。</li><li>Enterprise Gemini3.1 Pro full survival约6→34，+28pp。</li><li>Claude约44→58，+14pp。</li><li>Gemini3.5 Flash主Enterprise设置full survival仍0%。</li><li>坏expert graph：87.50→58.93；static update更差；iterative evolution→92.86。</li><li>ALFWorld full-graph generative约54.48，localized generative约81.53。</li><li>self-evolution中多个bad edit被rollback。</li></ol>
+<div class="callout good"><b>Strongest result：</b>坏expert graph经validation-gated iterative evolution从58.93修到92.86。</div>
+<div class="callout warn"><b>Weakest：</b>HotpotQA几乎无增益。</div>
+<div class="callout bad"><b>Failure：</b>Gemini3.5 Flash在主EnterpriseArena仍0% full-horizon survival。</div>
+
+<h3>5.13 Table / Figure Reading</h3><p><b>Figure1：</b>定义what-is KG vs what-to-do PG。<br><b>Figure2：</b>online+offline完整闭环。<br><b>Table1：</b>24 settings主结果，应看19/2/3 against strongest baseline。<br><b>Table2：</b>坏expert prior与iterative recovery是最强机制证据。<br><b>Table3：</b>local vs full graph ablation证明localization必要。<br><b>Figure3：</b>Enterprise survival显示长程收益与solver ceiling。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3><p><b>Full vs local graph：</b>localization是性能机制，不只是省token。<br><b>Raw vs generative：</b>guidance本身不是总有利，结构过多会放大confusion。<br><b>Expert vs scratch：</b>expert prior不是必需。<br><b>Static vs iterative：</b>一次更新可能更差，closed-loop validation才稳定。<br><b>Rejection memory：</b>合理但缺独立remove ablation。</p>
+
+<h3>5.15 Claim vs Evidence</h3><div class="callout"><b>Authors Claim：</b>显式、局部、可自演化procedural graph能稳定复用过程知识。</div><div class="callout good"><b>Actually Show：</b>七benchmark、四LLM、localization和validation-gated evolution都有较强支持。</div><div class="callout warn"><b>Not Proven：</b>graph edge并非formal causal transition；闭源model依赖强；没有graph poisoning/adversarial procedure attack。</div>
+
+<h3>5.16 Contribution</h3><ul><li><b>New Representation：</b>attributed Procedural Graph。</li><li><b>New Mechanism：</b>active-node localization + local subgraph。</li><li><b>New Mechanism：</b>generative situational guidance。</li><li><b>New System：</b>validation-gated self-evolution + rejection memory。</li><li><b>New Finding：</b>expert graph可伤性能，自演化可纠正。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3><p><b>Authors'：</b>不同task需不同schema；matching依赖procedure标准化；full graph会overload；self-evolution要额外rollouts。<br><b>Additional：</b>每步额外guidance call；闭源模型依赖；没有multimodal agent；validation可能过拟合；graph本身成为persistent attack surface；2-hop没有formal充分性保证。</p>
+
+<h3>5.18 Reproduction View</h3><p>关键模块：graph schema、action canonicalizer、Match、h-hop extractor、guidance prompt、ReAct solver、trajectory recorder、refiner edit schema、graph edit operator、structural checker、validation evaluator、checkpoint/rejection memory。最小复现先做MultiChallenge，先复现bad expert graph伤性能，再做5轮validation-gated refinement。</p>
+
+<h3>5.19 Research Value</h3><p><span class="score">Baseline ★★★★★</span> procedural memory强baseline。<br><span class="score">Migration ★★★★★</span> 可迁到unlearning recovery workflow。<br><span class="score">Attack ★★★★★</span> procedure edge可形成长期backdoor。<br><span class="score">Evaluation ★★★★★</span> 可测procedure residual reachability。<br><span class="score">Benchmark ★★★★☆</span> 可做Graph Poisoning/Procedure Deletion。<br><span class="score">New Paper ★★★★★</span> 与MeClear组合潜力强。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>方向A — Procedural Unlearning</h4><p><b>Original Problem →</b>PG显式保存“怎么做”。<br><b>Transferable Mechanism →</b>把能力分解为nodes/edges/conditions。<br><b>New RQ →</b>删一个procedure后，是否仍能沿替代edges完成同一能力？<br><b>Method Modification →</b>定义target subgraph，删除后做adaptive traversal和coalition attribution。<br><b>Minimum Experiment →</b>20 procedures×3 graph densities×4 deletion strategies，每procedure 50 variants。<br><b>Model →</b>Qwen3-8B。<br><b>Dataset →</b>BFCL/τ-bench可组合tool workflows。<br><b>Baseline →</b>edge delete、node delete、prompt refusal、full reset。<br><b>Metric →</b>Procedure ASR、Alternative Path Recovery、Retain Success、Minimum Recovery Path Size。<br><b>Expected Contribution →</b>把unlearning扩展到过程能力残留。<br><b>Risk →</b>graph与weights中的skill纠缠。<br><b>Collision Risk →</b>低。</p>
+<h4>方向B — Self-Evolving Recovery Attack Graph</h4><p><b>Original Problem →</b>PG从失败反馈自动改procedure。<br><b>Transferable Mechanism →</b>让攻击器学习恢复顺序。<br><b>New RQ →</b>固定direct/paraphrase/cloze是否低估自演化recovery agent？<br><b>Method Modification →</b>把direct→paraphrase→cloze→prefix→candidate→tool/RAG做成可编辑attack graph。<br><b>Minimum Experiment →</b>30 identities×5 unlearning methods；train20/val5/test5；10 evolution rounds。<br><b>Model →</b>LLaVA-1.5-7B + Qwen3-8B controller。<br><b>Dataset →</b>MLLMU-Bench / TOFU / DUSK。<br><b>Baseline →</b>TAS、Cloze-Lens、random/manual graph。<br><b>Metric →</b>Held-out Recovery ASR、Queries-to-First-Hit、Graph Complexity、Retain FPR。<br><b>Expected Contribution →</b>自动发现新的recovery protocol。<br><b>Risk →</b>refiner可能overfit validation。<br><b>Collision Risk →</b>中。</p>
+
+<h3>5.21 Attack / Verification Lens</h3><p>PG天然可作为attack policy representation：每个probe是node，条件决定下一步。可定义 <b>Procedural Residual Reachability</b>：预算B内从Start到成功恢复target的可达概率；再配 <b>Minimum Residual Path Length</b>。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3><p>MeClear解决“哪些memory共同影响行为”，PG解决“哪些procedure transitions组织行为”。组合后可以对PG局部edges做coalition attribution，找出单删无效、组合删除才能破坏恢复路径的冗余edges，再用validation gate保护retain utility。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3><ol><li>PG把Agent的“怎么做”显式化为procedure graph。</li><li>edge带condition、guidance、pitfalls。</li><li>运行时只取active node的2-hop局部图。</li><li>guidance是soft prior，不是硬FSM。</li><li>self-evolution基于成功/失败trajectory编辑graph。</li><li>validation gate负责rollback坏edit。</li><li>总体对strongest baseline为19胜2平3负。</li><li>full graph并不总好，localization是核心机制。</li><li>坏expert graph可伤性能，但自演化能修回来。</li><li>最值得迁移的是自演化recovery attack graph。</li></ol>
+</section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2>
+<p>两篇共同说明：长期 Agent 的关键问题已经从“单条 memory 是否相关”升级成“多个 memory / procedure component 怎样共同构成行为”。MeClear关注 coalition interaction；Procedural Graphs关注 topology与path。</p>
+<p><b>共同趋势：</b>从free-form memory / single probe走向 intervention-aware structured memory。<br>
+<b>可组合mechanism：</b>Shapley coalition attribution + local procedural graph。<br>
+<b>最可能新论文：</b>Coalition-Aware Procedural Unlearning / Self-Evolving Recovery Graph。<br>
+<b>最适合baseline：</b>MeClear用于harmful-memory attribution；PG用于procedural memory。<br>
+<b>最适合attack：</b>PG。<br>
+<b>最适合benchmark/metric：</b>MeClear，可导出coalitional residual metrics。</p></section>
+
+<section id="opp" class="card"><h2>Combined Research Opportunities</h2>
+<h3>Best Migration Direction — Coalition-Aware Procedural Unlearning</h3>
+<div class="flow">Target knowledge/capability
+→ enumerate recovery probes/actions
+→ represent as Procedural Graph
+→ execute on unlearned model
+→ collect success/failure trajectories
+→ cooperative attribution over nodes/edges/carriers
+→ identify redundant recovery structures
+→ minimally prune/retrain risky coalition
+→ validate forget + retain + held-out identities
+→ evolve attacker graph again
+→ repeat until no low-cost residual path remains</div>
+<p>核心思想：即使单个probe都不强，只要多个probe按正确procedure组合起来还能恢复，遗忘就没有闭环。MeClear负责识别冗余masking，PG负责表示和演化恢复路径。</p></section>
+
+<section id="collision" class="card"><h2>Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>Procedural Graphs 与 JIT-Agent、Harness-of-Harness、MASkills 都属于优化Agent外部结构。低碰撞区域不是再做一个graph optimizer，而是用procedural topology定义unlearning residual reachability，再用coalition attribution处理多路径冗余。</p></section>
+
+<section id="priority" class="card"><h2>Reading / Reproduction Priority</h2>
+<p><b>MeClear：</b>LOO定义 → Redundant-Harm Blind Spot → Shapley → nested clearance → redundant/joint结果 → case study → L sensitivity。</p>
+<p><b>Procedural Graphs：</b>Figure2 → online localization → self-evolution loop → Table1 → bad expert recovery → local-vs-full ablation → Enterprise survival。</p></section>
+
+<section id="sources" class="card"><h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2609.09115">MeClear — arXiv</a></li>
+<li><a href="https://arxiv.org/html/2609.09115">MeClear — Full HTML</a></li>
+<li><a href="https://arxiv.org/pdf/2609.09115">MeClear — PDF</a></li>
+<li><a href="https://github.com/FudanSELab/MeClear">MeClear — Official GitHub</a></li>
+<li><a href="https://arxiv.org/abs/2609.09153">Procedural Graphs — arXiv</a></li>
+<li><a href="https://arxiv.org/html/2609.09153">Procedural Graphs — Full HTML</a></li>
+<li><a href="https://arxiv.org/pdf/2609.09153">Procedural Graphs — PDF</a></li>
+</ul>
+<p class="small">Regenerated on 2026-09-10 09:42 +08:00. Self-contained UTF-8 HTML.</p></section>
+</main></body></html>

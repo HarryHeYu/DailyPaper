@@ -1,0 +1,86 @@
+# macOS / 编辑器临时文件
+.DS_Store
+._*
+*.swp
+*.swo
+*~
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.example.json
+
+# Python 缓存、环境与测试产物
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Jupyter 临时状态
+.ipynb_checkpoints/
+
+# 本地配置与密钥
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# 日志与临时文件
+*.log
+*.tmp
+*.temp
+*.bak
+tmp/
+temp/
+
+# 实验输出与跟踪工具状态
+outputs/
+results/
+runs/
+wandb/
+mlruns/
+lightning_logs/
+tensorboard/
+
+# 本地数据、缓存和模型权重
+data/
+datasets/
+cache/
+.cache/
+checkpoints/
+model_weights/
+pretrained_models/
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+
+# 下载中的不完整文件与压缩包
+*.part
+*.download
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+
+# LaTeX 构建产物（保留源文件和正式 PDF）
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
+# 注意：papers/ 下的调研 PDF 是仓库资产，不忽略 *.pdf。
