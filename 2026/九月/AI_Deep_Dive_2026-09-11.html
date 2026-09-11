@@ -1,0 +1,290 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Top Papers Deep Dive — 2026-09-11</title><style>
+body{margin:0;background:#f5f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1180px;margin:auto;padding:26px}.hero,.card,.paper{background:#fff;border:1px solid #e2e7ef;border-radius:18px;padding:28px 31px;margin:18px 0;box-shadow:0 4px 18px rgba(20,30,50,.04)}
+.hero{background:linear-gradient(135deg,#162143,#3158cf);color:#fff;border:0}.hero p{color:#eef2ff}
+h2{border-bottom:1px solid #e2e7ef;padding-bottom:8px}h3{color:#29449d;margin-top:28px}
+nav{background:#fff;border:1px solid #e2e7ef;border-radius:14px;padding:18px;columns:2}nav a{display:block;padding:4px 0;color:#3158cf;text-decoration:none}
+a{color:#3158cf;text-decoration:none}.badge{display:inline-block;padding:3px 9px;border-radius:99px;background:#eef3ff;color:#3048a5;font-size:12px;font-weight:700;margin-right:5px}
+.kv{display:grid;grid-template-columns:210px 1fr;gap:6px 12px}.kv>div:nth-child(odd){font-weight:700}
+.flow,.formula{font-family:ui-monospace,Menlo,Consolas,monospace;background:#111827;color:#f7f8ff;border-radius:10px;padding:15px 17px;white-space:pre-wrap;overflow:auto}
+.callout{border-left:5px solid #3158cf;background:#eef3ff;border-radius:9px;padding:13px 16px}.good{border-left-color:#338754;background:#edf8f1}.warn{border-left-color:#c98a12;background:#fff4d6}.bad{border-left-color:#c84545;background:#fff0f0}
+.tablewrap{overflow-x:auto;border:1px solid #e2e7ef;border-radius:10px}table{border-collapse:collapse;width:100%;min-width:880px}th,td{padding:9px 10px;border-bottom:1px solid #e2e7ef;text-align:left;vertical-align:top}th{background:#f3f5f8}
+.score{font-weight:700;color:#2748bd}.small{font-size:13px;color:#687386}@media(max-width:760px){nav{columns:1}.kv{grid-template-columns:1fr}}
+</style></head><body><main>
+<!-- regenerated: 2026-09-11 09:54 +08:00 -->
+<section class="hero"><h1>Daily Top Papers Deep Dive — 2026-09-11</h1>
+<p><b>Query-Conditioned Forgetting × Lifecycle-Aware Persistent Memory</b></p>
+<p>今日精读两篇：RD-Forget 将“存储”和“当前是否允许使用”分离；Fortunate Recall 将 retraction、supersession、event-time 与 category-specific decay 组织成长期 memory lifecycle。</p></section>
+
+<nav>
+<a href="#sel">1. Today's Deep Dive Selection</a><a href="#why">2. 为什么选这 2 篇</a>
+<a href="#p1">3. Paper 1 — RD-Forget</a><a href="#p2">4. Paper 2 — Fortunate Recall</a>
+<a href="#syn">5. Cross-Paper Synthesis</a><a href="#opp">6. Combined Research Opportunities</a>
+<a href="#col">7. Collision / Overlap</a><a href="#pri">8. Reading / Reproduction Priority</a>
+<a href="#src">9. Sources / Links</a></nav>
+
+<section id="sel" class="card"><h2>Today's Deep Dive Selection</h2>
+<p><span class="badge">Agent Memory</span><span class="badge">Selective Forgetting</span><b>#1 What Should an Agent Forget? Separating What Is Stored from What Is Used</b></p>
+<p><span class="badge">Memory Lifecycle</span><span class="badge">Retraction</span><b>#2 Fortunate Recall: Ontology-Driven Memory Lifecycle Management for Persistent Coherence in LLMs</b></p></section>
+
+<section id="why" class="card"><h2>为什么选这 2 篇</h2>
+<p>两篇都直接讨论“forgetting”到底应当是什么，但目标不同：RD-Forget强调 query-time visibility，Fortunate Recall强调 persistent lifecycle semantics。把它们并读，可以严格区分 delete、retract、supersede、suppress 四种动作，避免把“当前回答看不到”误认为真正 machine unlearning。</p></section>
+
+<section id="p1" class="paper"><h2>Paper 1 Full Deep Dive — RD-Forget</h2>
+<h3>5.1 基本信息</h3>
+<div class="kv"><div>Title</div><div>What Should an Agent Forget? Separating What Is Stored from What Is Used</div><div>Authors</div><div>Yuhang Li, Yuchen Li</div><div>Affiliation</div><div>Beihang University, Hangzhou；East China Normal University, Shanghai</div><div>Date</div><div>2026-09-09</div><div>Venue / Status</div><div>arXiv preprint</div><div>Paper</div><div><a href="https://arxiv.org/abs/2609.10263">arXiv</a> · <a href="https://arxiv.org/html/2609.10263">HTML</a> · <a href="https://arxiv.org/pdf/2609.10263">PDF</a></div><div>Code</div><div>未验证到官方代码地址。</div></div>
+
+<h3>5.2 一句话定位</h3>
+<p>RD-Forget把Agent forgetting从“删掉旧事实”改写成“保留完整历史，但针对当前query动态构造只允许合适证据进入的memory view”。</p>
+
+<h3>5.3 人话版</h3>
+<p>用户去年在Acme工作，今年去了Beryl。问“现在在哪里工作？”时，Acme应该被抑制；问“之前在哪里工作？”时，Acme又必须重新可见。若系统直接删除旧值，历史问题失效；若所有旧值一直active，当前问题会被过时信息污染。RD-Forget的核心是将storage与use分离：原始history H持续保留；每次query到来，用curator抽取与问题有关的事实，为同一subject-relation-scope划分slot，新值将旧值标记为SUPERSEDED而非物理删除；historical intent下旧值通过rescue重新eligible；多跳问题则保留完整relation chain。最终只在2048-token预算下构造answer-time Z(q)。实验中四个模型、三个主benchmark的12个组合全部第一；最关键ablation是去掉forgetting后，Luna在LME-KU从93.59降到60.26，说明让旧版本一直active是最大性能杀手。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>传统memory系统常把“存在于存储”与“有资格被检索”绑在一起，但版本化事实天然需要更细的语义。例如Mira先在Acme工作，后去Beryl；Beryl位于Lyon。当前问题需要Mira→Beryl→Lyon，同时必须压制旧Acme；历史问题又要重新访问Acme。单纯recency会误删旧但必要的中间relation，直接delete则永久破坏历史。</p>
+<p>RD-Forget填的gap是：在历史不变的情况下，根据query intent与slot-level replacement关系构造一次性的used-evidence view。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>Stored history与used evidence是两个不同对象；replacement必须发生在relation slot内；SUPERSEDED不等于deleted；historical query需要rescue；forgetting与multi-hop closure必须同时考虑。这些观察既是系统设计，也是对“旧事实应该消失还是暂时不参与”的概念澄清。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Stored history H + query q
+→ query-conditioned curator
+→ extract active evidence
+→ identify older replaced evidence
+→ assign semantic slots
+→ preserve multi-hop chain
+→ materialize ACTIVE / SUPERSEDED entries
+→ historical-intent eligibility
+→ rank candidates
+→ LLM selector
+→ greedy pack under 2048-token budget
+→ answer model
+→ source history remains intact</div>
+<p>Curator不看gold answer，只根据query抽最小完整证据。Slot定义subject|relation|scope，同slot的新值才能替代旧值。旧值进入SUPERSEDED状态并保存superseded_by指针。Eligibility决定当前query是否允许读取旧值。Closure要求保留多跳中间事实。最终只压缩Z(q)，不改变source archive。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">H=(e1,...,eT)
+
+Z(q) ⊆ C(q)
+
+Z*(q) ∈ argmin_Z D_q(Z)
+subject to Σ c(m) ≤ B
+
+D_q(Z)=E[d(Y,gθ(q,Z)) | q,H]
+
+c(m)=Tok(m.text)+8
+B=2048
+
+E(q)=ACTIVE
+ ∪ DEPRECATED(if rescue)
+ ∪ SUPERSEDED(if rescue and historical-intent)</div>
+<p>Rate–distortion直觉是：在固定memory-view预算下，尽量不损失answer utility。旧事实对current query可能是distortion source，对historical query却可能是必要证据，因此最优Z*(q)必须query-dependent。核心超参B决定证据容量，但增大B不能替代forgetting，因为更多context也可能把旧值重新带回来。</p>
+
+<h3>5.8 Toy Example</h3>
+<ol><li>H中有Mira→Acme。</li><li>后来新增Mira→Beryl。</li><li>另有Beryl→Lyon。</li><li>问“当前雇主位于哪里？”</li><li>Acme与Beryl同employer slot，因此Acme标SUPERSEDED。</li><li>Beryl→Lyon是不同relation，仍ACTIVE。</li><li>current intent下Acme不eligible。</li><li>Z(q)只包含Mira→Beryl与Beryl→Lyon。</li><li>模型答Lyon。</li><li>若问历史工作，Acme被rescue回来。</li></ol>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table><tr><th>Baseline</th><th>怎么做</th><th>失败点</th><th>RD-Forget改变</th></tr><tr><td><b>ACE</b></td><td>持续grow/refine经验playbook</td><td>不围绕当前query构造版本化evidence view</td><td>storage/use分离</td></tr><tr><td>ReasoningBank</td><td>从成功/失败提炼策略</td><td>不显式处理same-slot supersession</td><td>slot+historical eligibility</td></tr><tr><td>No-Forget</td><td>旧版本继续ACTIVE</td><td>污染current answer</td><td>保留但默认不使用</td></tr><tr><td>No-QC</td><td>curator不看query</td><td>难保留当前真正需要的relation chain</td><td>每query重建view</td></tr></table></div>
+<p><b>Strongest baseline：</b>主实验通常是ACE；机制上最关键的是No-Forget，因为它直接隔离“旧版本是否active”。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Models：</b>Qwen3.5-flash、GPT-5.6-Luna、MiniMax-M2.5、Kimi-K2.5。<br><b>Main suites：</b>AMB-Text 86题、LME-KU 78题、MAB-FC 100题。<br><b>Extensions：</b>BEAM 150题、PersonaMem 579题。<br><b>Budget：</b>2048 tokens。<br><b>Ablations：</b>−FORGET、−RESCUE、−SLOT、−CLOSURE、−QC。<br><b>Research Question：</b>storage/use分离、query conditioning、slot、rescue、closure分别承担什么？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p>主任务使用semantic accuracy或rule accuracy；BEAM用rubric score；PersonaMem是单选accuracy。Semantic judge适合自然语言但可能有bias；rule accuracy更客观却对表达敏感；多种metric互补用于避免某一种评分机制决定结论。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol><li>四模型×三主benchmark共12个组合全部第一。</li><li>Qwen mean 66.59% vs ACE 48.86%，+17.73pp。</li><li>Luna mean 86.71% vs67.26%，+19.45pp。</li><li>MiniMax mean 77.13% vs57.77%，+19.36pp。</li><li>Kimi mean 72.83% vs64.30%，+8.53pp，是相对优势最小backbone。</li><li>Luna MAB-FC 77 vs ACE 51，+26pp。</li><li>−FORGET让LME-KU 93.59→60.26，−33.33pp。</li><li>−QC下降约11–18pp，是第二严重ablation。</li><li>−SLOT与−RESCUE在版本链任务明显掉分。</li><li>−CLOSURE下降较小但稳定。</li></ol>
+<div class="callout good"><b>Strongest result：</b>−FORGET导致LME-KU下降33.33pp。</div>
+<div class="callout warn"><b>Weakest：</b>Kimi部分setting只小幅领先。</div>
+<div class="callout bad"><b>Failure boundary：</b>历史可以被重新取回，所以它不是privacy erasure。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p>Figure 1展示archive和materialized view分离；Figure 2展示scope-aware preference curation；Table 1是12/12主结果；Table 2/Figure 3是matched ablation，明确−FORGET最大、−QC第二；Table 3的BEAM/PersonaMem证明历史/偏好intent可以重新利用旧事实。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>去FORGET会让旧revision持续污染；去QC会让upstream curator提前丢失query相关证据；去SLOT导致replacement scope错误；去RESCUE导致合法历史无法恢复；去CLOSURE会丢multi-hop中间关系。机制上FORGET和QC承担主体增益。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>forgetting应分离存储和使用。</div><div class="callout good"><b>Actually Show：</b>四model、五suite上query-conditioned curation与selective forgetting有效。</div><div class="callout warn"><b>Not Proven：</b>永久删除、privacy recovery resistance和adversarial intent bypass没有验证。</div>
+
+<h3>5.16 Contribution</h3>
+<ul><li><b>New Concept：</b>Stored History vs Used Evidence。</li><li><b>New Mechanism：</b>query-conditioned curator + semantic slot supersession。</li><li><b>New Mechanism：</b>historical rescue。</li><li><b>New Objective Framing：</b>rate–distortion view construction。</li><li><b>New Finding：</b>No-Forget是最大性能损失源。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p>依赖curator正确抽slot和replacement；archive始终保留旧事实；curator/selector/answer可能同family耦合；2048预算sensitivity有限；historical-intent gate可被攻击；无tool trajectory、多模态、真实删除场景。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>关键代码：history loader、curator JSON schema、slot normalizer、ACTIVE/SUPERSEDED materializer、intent detector、eligibility、selector、packer、five ablations、dataset adapters。最小复现先跑LME-KU，比较Full、−FORGET、−QC、−SLOT。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline ★★★★★</span> Agent memory visibility强baseline。<br><span class="score">Migration ★★★★★</span> 适合区分suppression与deletion。<br><span class="score">Attack ★★★★★</span> 可做historical-rescue bypass。<br><span class="score">Evaluation ★★★★★</span> 可同时测current suppression和historical recovery。<br><span class="score">Benchmark ★★★★★</span> 可建Forget-vs-Historical-Recall。<br><span class="score">New Paper ★★★★★</span> 与真正machine unlearning边界清晰。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<p><b>方向A — Suppression vs Deletion Audit。</b>Original Problem → query-time suppression；Transferable Mechanism → intent-dependent eligibility；New RQ → 现有Agent forgetting究竟是delete还是suppress；Method → current/historical/meta/adversarial四类query；Minimum Experiment → 50 facts×4 intents×5 methods×3 seeds；Model → Qwen3-8B/Llama3.1-8B；Dataset → LongMemEval-KU+LoCoMo；Baseline → raw delete、RD-Forget、replay、tombstone；Metric → Current Suppression、Historical Recovery、Adversarial Rescue ASR、Retain Utility；Expected Contribution → 定义visibility≠unlearning；Risk → 需明确任务语义；Collision Risk → 低。</p>
+<p><b>方向B — Multimodal Revision-Chain Forgetting。</b>Original Problem → slot replacement；Mechanism → subject|relation|time|modality版本链；New RQ → 如何抑制过时视觉事实并保留合法历史视觉证据；Minimum Experiment →100 identities×3 states×2 modalities；Model →Qwen2.5-VL-7B；Dataset →CLEAR/MLLMU风格temporal subset；Baseline →recency retrieval、vector delete、text-only slotting；Metric →Current/Historical Accuracy、Cross-modal Leakage、Version Confusion；Expected Contribution → multimodal revision control；Risk →视觉slot噪声；Collision Risk →低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p><b>Historical Rescue Bypass：</b>把current query包装成“回顾历史/版本比较”，诱使旧SUPERSEDED evidence重新eligible。可定义Suppression–Deletion Gap：普通query不可恢复、但historical/meta/adaptive query可恢复的比例。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>Fortunate Recall与RD-Forget都拒绝“旧事实只能active或delete”的二元思路；RD偏query-local view，FR偏persistent lifecycle state。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>RD-Forget核心不是删memory，而是分离存储与使用。</li><li>旧事实可留在archive但不进入当前view。</li><li>replacement按semantic slot做。</li><li>SUPERSEDED不等于deleted。</li><li>historical query可rescue旧事实。</li><li>multi-hop closure要和forgetting一起做。</li><li>rate–distortion是view construction框架。</li><li>−FORGET是最大ablation。</li><li>四模型×三主benchmark全部第一。</li><li>query suppression不能自动叫真正machine unlearning。</li></ol>
+</section>
+
+<section id="p2" class="paper"><h2>Paper 2 Full Deep Dive — Fortunate Recall</h2>
+<h3>5.1 基本信息</h3>
+<div class="kv"><div>Title</div><div>Fortunate Recall: Ontology-Driven Memory Lifecycle Management for Persistent Coherence in LLMs</div><div>Authors</div><div>Ansuman Mullick, Eray Tüzün</div><div>Affiliation</div><div>Bilkent University</div><div>Date</div><div>2026-09-09</div><div>Venue / Status</div><div>arXiv preprint</div><div>Paper</div><div><a href="https://arxiv.org/abs/2609.10413">arXiv</a> · <a href="https://arxiv.org/html/2609.10413">HTML</a> · <a href="https://arxiv.org/pdf/2609.10413">PDF</a></div><div>Code / Data</div><div><a href="https://doi.org/10.5281/zenodo.20067778">Zenodo release</a></div></div>
+
+<h3>5.2 一句话定位</h3>
+<p>Fortunate Recall把Agent memory管理建模成事实生命周期：不同fact type使用不同decay、slot supersession、event-time validity、retraction mask和category-aware routing。</p>
+
+<h3>5.3 人话版</h3>
+<p>身份、航班、偏好、慢性病、deadline并不应该用同一套时间衰减与更新策略。职业身份可能持续几年，航班信息一旦过期应立刻失活，deadline临近时反而更重要，撤回计划应在current query不可见但在change-history query可被追溯。Fortunate Recall提出10+1 behavioral ontology，并为每个事实维护category c、slot key κ、lifecycle state ξ、event-time anchor h，再用deterministic policy做category-specific decay、supersession、expiry、retraction和routing。FR-Bank在516题LifecycleBench上76.9%，高于MemoryOS 70.5；它还显著降低staleness与confabulation。更有价值的是负结果：去掉10+1 ontology，仅保留generic lifecycle metadata后，retrieval correctness只小降约1–2pp，说明真正承载正确率的是slot/state/event-time等通用lifecycle primitives，ontology本身更像calibration与policy-parameter layer。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>统一memory policy无法同时正确处理相反的时间规律。Identity应慢衰减；Logistics应快速过期；Obligation临近时权重上升；Preference需要same-slot supersession；Retracted计划既不能继续当current truth，也不应完全消失。FR填补的是“事实如何随时间存活、替换、过期、撤回、重新检索”的显式生命周期语义。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>分类单位应是fact edge而非整个utterance/entity；age-only decay表达不了event-time；binary present/absent表达不了retraction；单一global衰减参数无法服务所有类别；高retrieval recall可能反而让stale facts进入context并提高confabulation。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Conversation/source
+→ LLM extraction:
+   fact edge
+   category c
+   slot κ
+   event-time h
+   confidence/retraction cue
+→ persistent memory
+→ deterministic lifecycle update:
+   duplicate
+   supersession
+   state ξ
+   event validity
+   decay λ_c
+→ query category/intention
+→ cosine + BM25 + category-forced retrieval
+→ merge/deduplicate
+→ top-20 distillation
+→ lifecycle filtering:
+   retraction mask
+   expiry
+   backward-looking bypass
+   supersession handling
+→ blended score
+→ top-10 memory
+→ answer</div>
+<p>Ontology定义事实的时间行为族；slot决定同属性版本竞争；event-time处理deadline/logistics；state表示active/retracted/superseded；routing弥补abstract query与具体fact之间的词汇gap。LLM主要用于抽取和一次distillation，真正生命周期逻辑是deterministic。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">a(e)=exp(-λ_c · Δt)
+
+Lifecycle basis:
+(c, κ, ξ, h)
+
+Retraction target:
+current query → relevance(z)=0
+change query  → relevance(z)=1
+
+Binary system can only represent:
+(0,0) delete
+or
+(1,1) retain
+
+Uniform two-intent Bayes error = 1/2</div>
+<p>λ_c是category-specific decay。核心理论是retraction的表示下界：若只有present/absent，就无法表达“当前不可见、历史可见”的(0,1)模式，因此二元memory语义先天不足。与MemoryOS相比，FR不是只做层次summary，而是显式建lifecycle state machine。</p>
+
+<h3>5.8 Toy Example</h3>
+<ol><li>用户说“下周五飞上海”。</li><li>系统记录Logistical Context和event-time。</li><li>后来用户说“航班取消了”。</li><li>同slot计划进入retracted/expired。</li><li>问“下周五去哪？”旧上海行程被mask。</li><li>问“取消了哪趟行程？”change-aware query重新允许该事实出现。</li><li>“我喜欢跑步”属于Hobby，采用更慢decay。</li><li>不同事实使用不同state transition和时间规则。</li></ol>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table><tr><th>Baseline</th><th>方法</th><th>失败点</th><th>FR改变</th></tr><tr><td><b>MemoryOS</b></td><td>hierarchical memory</td><td>缺显式event/retraction语义</td><td>lifecycle state</td></tr><tr><td>Memory-R1</td><td>ADD/UPDATE/DELETE</td><td>动作空间太粗</td><td>expiry/retraction/supersession</td></tr><tr><td>A-MEM</td><td>linked evolving notes</td><td>高Hit@5同时高staleness</td><td>先lifecycle过滤</td></tr><tr><td>Mem0</td><td>生产级memory</td><td>retraction/event-time较弱</td><td>deterministic policy layer</td></tr><tr><td>Untyped lifecycle</td><td>保留slot/state/event，去ontology</td><td>correctness几乎不降</td><td>揭示ontology更偏calibration</td></tr></table></div>
+<p><b>Strongest external baseline：</b>MemoryOS。<b>Strongest mechanism baseline：</b>Untyped lifecycle。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>LifecycleBench：</b>516 questions、40 personas、9类lifecycle failure vectors。<br><b>Systems：</b>FR-Bank、FR-Graphiti、MemoryOS、Memory-R1、A-MEM、Mem0。<br><b>E2E：</b>各系统top-10 facts作为唯一memory context。<br><b>LongMemEval-S：</b>500题并重复10次测试judge nondeterminism。<br><b>Ablations：</b>−routing、−behavioral decay、untyped lifecycle、retraction filter、top-k、category perturbation。<br><b>Research Question：</b>lifecycle policy是否降低staleness并提升E2E correctness？generic metadata和ontology各自贡献什么？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p>LCB Pass测retrieval是否满足生命周期要求；Stale测是否暴露不该active的旧事实；E2E Correct测最终答案；Confabulation测基于memory产生错误虚构；Safe Response=Correct+Abstain；Hit@k/MRR是传统retrieval指标，但本文最重要结论之一就是它们可能与E2E质量反向。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol><li>FR-Bank 76.9% vs MemoryOS70.5%，+6.4pp。</li><li>vs Mem0 default61%，+15.9pp。</li><li>Staleness 15.5% vs Mem0 default27%。</li><li>E2E correct 31.2% vs18.6%，+12.6pp。</li><li>Answered-query confab 22.4% vs A-MEM47.0%。</li><li>Safe response 73.3% vs Mem047.3%，+26pp。</li><li>A-MEM Hit@5高达87.6%却staleness30.4%、confab47%。</li><li>AV7 retraction中FR retrieval pass仅5%，E2E correct却37.5%；MemoryOS retrieval pass57%，E2E仅7.5%。</li><li>去routing约−6pp；去behavioral decay约−7pp。</li><li>Untyped lifecycle与typed ontology correctness只差约1–2pp且不显著。</li><li>LongMemEval-S约75.2±0.70。</li><li>matched knowledge-update subset反而低约6.4pp，揭示benchmark criterion问题。</li></ol>
+<div class="callout good"><b>Strongest result：</b>AV7出现retrieval-pass/E2E correctness反转，直接证明“检索更多”可能是错误目标。</div>
+<div class="callout warn"><b>Weakest：</b>10+1 ontology本身对correctness增益小。</div>
+<div class="callout bad"><b>Failure：</b>部分LongMemEval knowledge-update设定反而落后。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p>Table 1是10+1 ontology设计；Table 2区分core机制和engineering；Table 3是主结果，应同时看Pass/Stale/Correct/Confab/Safe；Table 15展示10-run judge variance；Table 52总结routing、decay、retraction等组件作用。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>去routing约−6pp；去behavioral decay约−7pp；Typed→Untyped后correctness变化很小但calibration/confab更差；去retraction filter会显著提高stale exposure；轻度category label perturbation下top-k仍较稳。说明真正关键机制是generic lifecycle metadata与policy，而不是ontology标签本身。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="callout"><b>Authors Claim：</b>memory需要behavior-aware lifecycle，而非uniform store/retrieve。</div><div class="callout good"><b>Actually Show：</b>slot/event/retraction/routing/decay改善staleness和E2E，并暴露binary representation gap。</div><div class="callout warn"><b>Not Proven：</b>10+1 ontology并非主要accuracy来源，LifecycleBench与方法存在co-design风险，synthetic personas不能代表全部真实用户。</div>
+
+<h3>5.16 Contribution</h3>
+<ul><li><b>New Representation：</b>behavioral lifecycle ontology。</li><li><b>New Mechanism：</b>category-specific decay、slot supersession、event-time、retraction mask、routing。</li><li><b>New Theory：</b>binary-flat retraction表示下界。</li><li><b>New Benchmark：</b>LifecycleBench。</li><li><b>New Metrics：</b>staleness、confabulation、safe response。</li><li><b>New Finding：</b>ontology本身主要贡献calibration。</li></ul>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p>方法与LifecycleBench共设计；类别与参数是hand-set/constraint-derived；事实抽取依赖LLM；不是privacy deletion；retraction仍保留原事实；未测多模态与action memory；category/slot/event-time metadata本身可成为攻击面。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>关键模块：fact extractor、category classifier、slot-key、supersession detector、state machine、event-time parser、λ_c decay、hybrid/category routing、distillation、deterministic filter、blended scoring。最小复现先实现slot/state/event-time/query mask四个generic字段，在100–150个retraction/expiry/supersession cases上比较binary CRUD。</p>
+
+<h3>5.19 Research Value</h3>
+<p><span class="score">Baseline ★★★★★</span> 生命周期memory强baseline。<br><span class="score">Migration ★★★★★</span> 可将unlearning扩展为stateful semantics。<br><span class="score">Attack ★★★★★</span> 可攻击category/slot/state/event-time。<br><span class="score">Evaluation ★★★★★</span> staleness/confab比Hit@k更有意义。<br><span class="score">Benchmark ★★★★★</span> attack-vector设计易迁移。<br><span class="score">New Paper ★★★★★</span> 与RD-Forget形成view-level vs state-level轴。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<p><b>方向A — Lifecycle-State Unlearning Benchmark。</b>Original Problem → 多种lifecycle states；Mechanism → 将forget从binary升级成ERASE/RETRACT/SUPERSEDE/EXPIRE；Minimum Experiment → 4 states×100 facts×4 intents×5 systems；Model → Qwen3-8B；Dataset → LongMemEval/BEAM/LoCoMo extension；Baseline → Mem0、RD、FR、raw delete、full rebuild；Metric → State Compliance Matrix、Current Leakage、Historical Availability、Erase Recovery ASR、Stale Exposure；Expected Contribution → 定义多语义forgetting；Risk → 应用规范不同；Collision Risk → 低。</p>
+<p><b>方向B — Metadata Attack on Selective Forgetting。</b>Original Problem → 可见性依赖category/slot/state/event-time；Mechanism → 操纵metadata重新激活inactive memory；Minimum Experiment →40 personas×25 targets×4 attacks×3 paraphrase levels；Model → FR-Bank + extractor；Dataset → LifecycleBench adversarial variants；Baseline → random paraphrase、direct jailbreak、RD rescue attack；Metric → Lifecycle Bypass ASR、Top-k Reactivation、Confabulation Gain、Retain FPR；Expected Contribution → memory-policy metadata attack；Risk → 区分真实更新与攻击；Collision Risk → 低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>可定义Lifecycle Confusion Matrix：desired state × 实际检索/回答行为；以及Retraction Reactivation ASR：本应inactive的fact通过metadata manipulation重新进入top-k/final answer的比例。</p>
+
+<h3>5.22 与另外 Top Paper 的关系</h3>
+<p>RD-Forget偏ephemeral query view，Fortunate Recall偏persistent lifecycle state。前者轻量，后者制度化；二者结合可形成“先定义desired lifecycle state，再决定query eligibility”的统一forgetting语义。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>Fortunate Recall认为memory管理核心是生命周期状态。</li><li>分类轴是事实随时间如何变化。</li><li>基础字段是category、slot、state、event-time。</li><li>不同事实不能共享同一decay/update策略。</li><li>binary present/absent表达不了retraction。</li><li>高Hit@k不等于高memory quality。</li><li>AV7里FR retrieval pass低但E2E正确率高。</li><li>FR-Bank在LifecycleBench比MemoryOS高6.4pp。</li><li>ontology本身对correctness贡献不大。</li><li>unlearning前应先区分ERASE、RETRACT、SUPERSEDE、EXPIRE。</li></ol>
+</section>
+
+<section id="syn" class="card"><h2>Cross-Paper Synthesis</h2>
+<p>两篇共同说明：Agent forgetting 正从 binary deletion 走向 query- and state-conditioned memory governance。RD-Forget把旧事实留在source archive，只控制当前Z(q)；Fortunate Recall则给事实持久化lifecycle state。</p>
+<div class="tablewrap"><table><tr><th>维度</th><th>RD-Forget</th><th>Fortunate Recall</th><th>统一结论</th></tr><tr><td>Storage</td><td>完整history</td><td>多状态memory</td><td>存在≠当前可用</td></tr><tr><td>Forget机制</td><td>query-time suppression</td><td>persistent state + mask</td><td>forgetting应有语义类型</td></tr><tr><td>Replacement</td><td>semantic slot</td><td>slot-key</td><td>scope应关系级</td></tr><tr><td>History</td><td>historical rescue</td><td>change-aware mask</td><td>retraction≠erase</td></tr></table></div>
+<p><b>趋势：</b>从“删memory”转向明确desired lifecycle semantics。<br><b>可组合：</b>RD query-conditioned curation + FR lifecycle state。<br><b>最可能新论文：</b>Lifecycle-State Unlearning Benchmark / Suppression-vs-Deletion Audit。<br><b>最适合attack：</b>historical rescue bypass + metadata reactivation。</p>
+</section>
+
+<section id="opp" class="card"><h2>Combined Research Opportunities</h2>
+<h3>Best Migration Direction — Lifecycle-Aware Unlearning Semantics</h3>
+<div class="flow">Forget request
+→ classify target semantic state:
+   ERASE / RETRACT / SUPERSEDE / EXPIRE
+→ identify fact + slot + provenance + event-time
+→ update persistent lifecycle state
+→ apply query-time eligibility policy
+→ generate current/history/meta/adversarial queries
+→ evaluate state compliance
+→ ERASE: zero recovery under all intents
+→ RETRACT/SUPERSEDE: current suppression + historical accessibility
+→ retain utility + stale exposure
+→ lifecycle-aware closure certificate</div>
+</section>
+
+<section id="col" class="card"><h2>Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>与Execution-State Unlearning、Agent Zero Memory、MeClear都属于“memory不应简单CRUD”。低碰撞区是正式区分privacy erase与historical suppression，并建立统一lifecycle-state evaluation。</p>
+</section>
+
+<section id="pri" class="card"><h2>Reading / Reproduction Priority</h2>
+<p><b>RD-Forget：</b>Figure1 → rate-distortion → Algorithm1 → Table1 → ablations → BEAM/PersonaMem。<br><b>Fortunate Recall：</b>ontology → lifecycle mechanisms → retraction theorem → Table3 → AV7 inversion → untyped ablation → LongMemEval variance。</p>
+</section>
+
+<section id="src" class="card"><h2>Sources / Links</h2>
+<ul><li><a href="https://arxiv.org/abs/2609.10263">RD-Forget — arXiv</a></li><li><a href="https://arxiv.org/html/2609.10263">RD-Forget — HTML</a></li><li><a href="https://arxiv.org/pdf/2609.10263">RD-Forget — PDF</a></li><li><a href="https://arxiv.org/abs/2609.10413">Fortunate Recall — arXiv</a></li><li><a href="https://arxiv.org/html/2609.10413">Fortunate Recall — HTML</a></li><li><a href="https://arxiv.org/pdf/2609.10413">Fortunate Recall — PDF</a></li><li><a href="https://doi.org/10.5281/zenodo.20067778">Fortunate Recall — Code/Data</a></li></ul>
+<p class="small">Regenerated on 2026-09-11 09:54 +08:00.</p>
+</section>
+</main></body></html>
