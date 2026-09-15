@@ -1,0 +1,232 @@
+<!doctype html><html lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>AI Deep Dive 2026-09-15</title><style>body{margin:0;background:#f6f7fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.8}main{max-width:1120px;margin:auto;padding:28px 22px 70px}.hero{background:#1d315d;color:#fff;padding:34px;border-radius:20px}h1{margin:0;font-size:34px}h2{margin-top:42px;border-bottom:2px solid #dde2eb;padding-bottom:8px}h3{margin-top:28px}.card{background:#fff;border:1px solid #dde2eb;border-radius:14px;padding:20px 24px;margin:18px 0}.toc{columns:2}.pipe,.formula{background:#111827;color:#f4f6ff;padding:16px;border-radius:10px;overflow:auto;font-family:Consolas,monospace}.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:760px}th,td{border:1px solid #dfe3ea;padding:9px;vertical-align:top}th{background:#eef2f8}a{color:#3457d5}.hero a{color:#dbe5ff}.note{background:#eef2ff;border-left:4px solid #3457d5;padding:13px}.warn{background:#fff5e8;border-left:4px solid #d58b00;padding:13px}.bad{background:#fff0f0;border-left:4px solid #c44;padding:13px}.tag{display:inline-block;background:#eef2ff;color:#3457d5;border-radius:999px;padding:2px 8px;font-size:12px;margin-right:5px}</style></head><body><main>
+<div class=hero><h1>Daily Top Papers Deep Dive — 2026-09-15</h1><p>Machine Unlearning Verification × Multi-Agent Memory Privacy</p><p>独立检索；只精读 2 篇，单篇深度优先。</p></div>
+<div class=card><h2 style="margin-top:0">目录</h2><ol class=toc><li><a href=#selection>Today's Selection</a></li><li><a href=#why>为什么选这 2 篇</a></li><li><a href=#p1>Paper 1</a></li><li><a href=#p2>Paper 2</a></li><li><a href=#cross>Cross-Paper Synthesis</a></li><li><a href=#opp>Combined Opportunities</a></li><li><a href=#collision>Collision</a></li><li><a href=#priority>Priority</a></li><li><a href=#sources>Sources</a></li></ol></div>
+<h2 id=selection>2. Today's Deep Dive Selection</h2><div class=card><b>#1 Published Unlearning Numbers Move Per Checkpoint, and Not Because the Removed Data Survives: An Audit of 263 Released Batch-Normalized Checkpoints</b><p>高价值 unlearning backfill：直接改变“审计对象”的定义，对 MLLM verification/recovery 迁移价值极高。</p></div><div class=card><b>#2 AIM: A Privacy-Aware Interoperable Memory Framework for Multi-Agent Multi-User LLM Systems</b><p>近期 Agent paper：把 multi-user privacy、CRUD lifecycle、shared memory 放进同一 benchmark，与 Agent memory unlearning/provenance 高度相连。</p></div>
+<h2 id=why>3. 为什么选这 2 篇</h2><p>不凑第三篇。二者形成同一主线：<b>完整系统状态才是 deletion/privacy verification 的对象</b>。一篇从 non-weight deployed state 出发，一篇从 external agent memory lifecycle 出发，组合后能直接产生新的研究问题。</p>
+<article id=p1><h2>4. Paper 1 Full Deep Dive</h2><h2 style="border:0">Published Unlearning Numbers Move Per Checkpoint, and Not Because the Removed Data Survives: An Audit of 263 Released Batch-Normalized Checkpoints</h2>
+<div class=card><span class=tag>Machine Unlearning</span><span class=tag>Verification</span><span class=tag>BACKFILL</span>
+<p><b>基本信息：</b>Junlong Shen, Xingyu Li；University of Alberta；arXiv:2609.11490v1；2026-09-10；arXiv preprint。全文 38 页、4 figures、26 tables。<br>
+<b>Paper：</b><a href="https://arxiv.org/abs/2609.11490">Abstract</a> · <a href="https://arxiv.org/html/2609.11490">HTML</a> · <a href="https://arxiv.org/pdf/2609.11490">PDF</a>。论文称 supplementary code archive 含预注册文件；本次未确认独立公开 GitHub，因此不虚构 Code URL。</p></div>
+
+<h3>5.2 一句话定位</h3><p>它审计的不是一种新 unlearning algorithm，而是一个更基础的假设：<b>unlearning verdict 是否会被“权重之外、但推理时真实存在”的 deployed state 改写。</b></p>
+
+<h3>5.3 人话版</h3><p>带 BatchNorm 的视觉模型不只有训练权重 θ，还保存 running mean/variance φ。作者把 θ 保持 bit-identical，仅用 retained data 重建 φ，再重算论文原本发布的 forget/retain/test 指标。221 个可重复审计 checkpoint 中，47 个 forget accuracy、39 个 retain accuracy、40 个 test accuracy 的移动超过预先规定的 ±1.2 percentage-point 容忍带；12 个 published pass/fail verdict 会跨阈值，其中 4 个超过测得的 recalibration budget，2 个在所有 replicate 上都成立。但把 removed records 换进固定 fitting pool 时 pooled shift 只有 +0.015 pp，几乎没有证据表明是“被删数据藏在 BN state”。更符合数据的是 shipped normalization state stale。论文因此把 unlearning verification 从“看权重/输出”推进到“定义完整 deployed state + fitting convention”。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>Approximate unlearning 通常以 omission retraining 为理想参照：删除 forget set 后从头训练，再看 unlearned checkpoint 是否足够接近 reference。旧评估重点讨论 forget accuracy、retain utility、membership inference、seed variance、recovery attack，却往往把模型写成 f_θ。对 ResNet 这并不完整，因为 BatchNorm inference 使用 running statistics φ。它们不是普通 gradient-updated weights，却能改变激活与最终 accuracy。</p>
+<p>论文给出的直观案例是 MU-Bench 的 2% removal bad-teaching checkpoint：as-shipped 时 |d_f-d_t|=0.0414，小于 0.05 criterion，判为通过；保持 θ 不变、retain-only refit φ 后变成 0.0573，同一个权重对象跨到不通过。Gap 因而不是“有没有更强 unlearning loss”，而是<b>审计对象定义错了一层</b>。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>Observation 1：method/family 平均稳定不代表每个 artifact 稳定；同一 family 内存在明显 checkpoint heterogeneity。Observation 2：removed-data provenance 对 φ 的直接影响不足以解释大幅 metric movement；20 个对象的 removed-vs-retain fitting contrast pooled 仅 +0.015 pp，0 个超过 0.5 pp。Observation 3：shipped state 到 retain-only refit 的距离却显著超过 omission-reference null。故最受支持的解释是 <b>state staleness</b>，不是“BN 重新记住 forget set”。这是有 controls 的经验/机制性发现，但不是对所有架构的理论定理。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class=pipe>Released checkpoint (θ,φ) → anchor published cells → freeze θ byte-identically → sample retained fitting pool → exact rebuild φ̂ → recompute m(θ,φ̂) → Δ=m(θ,φ̂)-m(θ,φ) → repeated refits / TOST / sign tests → verdict crossing → provenance & alternative-state controls</div>
+<ol>
+<li><b>Anchoring：</b>先复现 release 自己的数字；263 artifacts 成功 anchor。不能复现的对象不进入主结论，避免 loading/eval mismatch 冒充科学结果。</li>
+<li><b>Freeze θ：</b>任何 trainable tensor 不变，把干预变量限制为 normalization state。</li>
+<li><b>Rebuild φ̂：</b>用 retained subset + producer 的 training transform 前向一次，计算 exact statistics，不使用 EMA；这样 φ̂ 由 index set 与 θ 决定。</li>
+<li><b>Re-evaluate：</b>完全沿用 release metric，计算 displacement Δ。</li>
+<li><b>Per-checkpoint repeats：</b>221 checkpoints 各做 10 次 re-keyed refit；只有 10/10 都越过 margin 才算 displaced。边界 null 下 exact sign-test 最小 p=(1/2)^10≈0.00098，再做 BY multiple-testing control。</li>
+<li><b>Identification：</b>固定 fitting pool，仅把等量 retained records 换成 removed records，测试 provenance 是否驱动 shift。</li>
+<li><b>Boundary control：</b>再检查 static 8-bit activation quantization scales 与 LayerNorm/Swin；该第二 fitted-state channel 返回 0 displaced，限制过度泛化。</li>
+</ol>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class=formula>真实审计对象：m(θ, φ)
+重建：φ̂ = Refit(R; θ)
+位移：Δ = m(θ, φ̂) − m(θ, φ)
+Equivalence question: CI(Δ) 是否完整落在 [−ε,+ε]？</div>
+<p>θ 是 trainable tensors，φ 是 inference-time BN statistics，R 是 retained fitting set，m 是 release 自己的 forget/retain/test readout。这里没有新训练 objective，核心是 counterfactual state intervention。Strongest baseline 是 as-shipped evaluation，因为它正是 field 默认的 checkpoint 读法。ε=±1.2 pp 与 detection floor 很关键：margin 太宽会把实质 state sensitivity 判稳定，太窄则把 nuisance noise 当问题。作者使用预先设定 margin，而不是看完结果再挑阈值。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>假设 unlearned ResNet 权重 hash 完全固定，原 φ 下 forget=4%、test=74%，criterion 通过。用 retained images 重建 φ̂ 后 forget=7.5%、test=76.2%。这不能自动解释成“知识恢复”，因为 θ 未变；它只证明 readout 对 state convention 敏感。再把 calibration pool 中少量 retained images 换成 forget images，如果结果仍约 7.5%，就进一步排除“forget samples 直接藏在 φ”这一解释。最后若 LayerNorm 模型上同样操作无效，则 claim 应限定为具有相应 fitted state 的架构。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class=tw><table><tr><th>Baseline</th><th>怎么做</th><th>为何合理</th><th>哪里失败</th><th>性质</th></tr>
+<tr><td>As-shipped audit（strongest）</td><td>直接评 release checkpoint</td><td>最贴近 published claim</td><td>φ convention 未受控</td><td>evaluation confound</td></tr>
+<tr><td>Omission retrain</td><td>删 forget 后从头训练</td><td>gold reference</td><td>在线积累 BN 与固定 θ exact refit 并非同 estimator</td><td>reference-state mismatch</td></tr>
+<tr><td>Seed averaging</td><td>多 seed 均值方差</td><td>处理 stochasticity</td><td>系统性 state mismatch 不会靠平均自动消失</td><td>机制性</td></tr>
+<tr><td>Recovery attacks</td><td>quantize/finetune 后测恢复</td><td>测 durability</td><td>本文大量 movement 是 utility/readout，不等同 forget-content recovery</td><td>互补问题</td></tr></table></div>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p>主 population：MU-Bench CIFAR-100 ResNet-50 release，180 checkpoints 中 72 满足其自身 admission criterion，覆盖 Bad Teaching、NegGrad、Random Label 等 families、3 procedure variants、5 removal ratios、5 seeds。第二 population：Unlearning Comparator 的 CIFAR-10 ResNet-18 class-deletion checkpoints，包含 omission reference、SSD 等 arms。总计 263 anchored，221 进入 replicate census。</p>
+<p><b>RQ1：</b>θ 不变时 retain-only rebuild 能否移动 published metric？ <b>RQ2：</b>movement 是 family-level 还是 artifact-level？ <b>RQ3：</b>removed records 是否直接驱动？ <b>RQ4：</b>是否改变 pass/fail？ <b>RQ5：</b>另一 fitted deployed state 是否也有同现象？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Refit displacement：</b>同 checkpoint 重建 state 前后 metric 差，越大表示 state sensitivity 越强，不等价于 privacy leakage。<b>TOST equivalence：</b>不是“没显著差异”，而是置信区间完整落在 ±ε 才能支持足够接近零；跨界应叫 unresolved。<b>Detection floor：</b>在真实 cluster structure 上植入 true-zero，估计实验设计能分辨的最小幅度，防止把 low-power null 当稳定。<b>Verdict crossing：</b>最直观，但依赖 criterion geometry，所以必须结合 recalibration budget。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>47/221 forget displaced：</b>约五分之一，不是极少数 outlier。</li>
+<li><b>39 retain、40 test displaced：</b>说明 channel 影响 utility/readout，而非只针对 forgetting。</li>
+<li><b>12 verdict crossings：</b>把“数字移动”提升到“published decision 改变”；但只有 4 超 measured budget、2 在所有 replicate 成立，作者没有夸大。</li>
+<li><b>removed-pool +0.015 pp：</b>0 个超过 0.5 pp，是最强 mechanistic negative control。</li>
+<li><b>20/20 state drift：</b>shipped φ 距 retain-only refit 超过 reference null band，支持 stale-state account。</li>
+<li><b>matched weight movement residual +33.80 pp [21.28,46.32]：</b>不能简单归因“权重动得越多，BN 越 stale”。</li>
+<li><b>0/118 quantization-state displaced：</b>第二 fitted-state channel 不复现，是最重要 generalization boundary。</li>
+<li><b>near-threshold population：</b>45 中 20 displaced，却 0 verdict cross，最近差 0.204 pp；crossing 同时依赖 sensitivity 与 threshold geometry。</li>
+</ol>
+<p class=note><b>Strongest result：</b>bit-identical θ + large artifact displacement + provenance-null control 的组合。<br><b>Weakest/failure：</b>quantization 0/118、near-threshold 0 crossing，说明不能泛化成“所有 non-weight state 都会破坏 unlearning”。</p>
+
+<h3>5.13 Table / Figure Reading</h3>
+<ul>
+<li><b>Table 1：</b>47/221、12→4→2 crossings、+0.015 pp provenance、0/118 quantization，把 claim 的边界一次展示清楚。</li>
+<li><b>Figure 2：</b>family TOST intervals 对 ±1.2 pp margin 与 detection floor；关键不是谁均值最大，而是 family aggregate 会掩盖 artifact heterogeneity。</li>
+<li><b>Table 9：</b>ResNet-50 与 Swin-base 的 activation-scale control 都 0 displaced，是防止过度解读的关键反例。</li>
+<li><b>Table 15：</b>两 family equivalent、第三 unresolved；告诉我们“没有证据不同”与“证据支持等价”必须分开。</li>
+</ul>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>这篇的“ablation”是 identification controls：freeze θ 去掉 weight-change explanation；removed↔retain swap 去掉 provenance explanation；normalization-free/LayerNorm 检查 channel 依赖；quantization-scale 检查跨 state generalization；order/batch-size/transform controls 检查实现。它支持“stale fitted state can alter audit readout”，但没有证明具体 unlearning 方法为何产生 staleness，也没有证明 state movement 与真实 privacy leakage 因果一致。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class=tw><table><tr><th>Authors Claim</th><th>Actually Show</th><th>Not Proven</th></tr>
+<tr><td>BN deployed state 可改变 published unlearning numbers</td><td>多个公开 checkpoint 在 θ 不变时明显移动</td><td>所有 architecture / LLM 都如此</td></tr>
+<tr><td>主要不是 removed data surviving in φ</td><td>removed-vs-retain fitting effect near zero</td><td>不存在任何更细粒度 leakage</td></tr>
+<tr><td>release 应声明 fitting convention</td><td>部分 verdict 会跨 criterion</td><td>统一最佳 convention 是什么</td></tr></table></div>
+
+<h3>5.16 Contribution</h3><p><b>C1 New Metric/Protocol：</b>weight-preserving deployed-state rebuild audit。<b>C2 New Empirical Finding：</b>artifact instability 与 family average 解耦。<b>C3 New Mechanistic Finding：</b>staleness 比 removed provenance 更符合数据。<b>C4 Engineering/Scientific Practice：</b>anchoring、pre-registration、detection floor、negative controls；单个统计组件不是新发明，但组合进 unlearning audit 很有价值。</p>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p>Authors' limitation：主要针对 batch-normalized vision models；不是所有 release 都能 anchor；crossing 依赖 criterion；第二 deployed-state channel 为 null。Additional：尚未验证 LLM/MLLM LoRA；LayerNorm 没有同类 running state；accuracy movement 不等于 privacy recovery；没有 adaptive attacker 搜索最危险 state；production 还可能有 quantization calibration、adapter routing、cache、summary 等状态。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最小复现：一个带 BN 的 unlearned ResNet + retain/forget/test split。<code>anchor.py</code> 先复现 published cells；<code>rebuild_bn.py</code> freeze weights、按 retained training transform 前向、重建 running stats；<code>audit.py</code> 计算 Δ 与 repeated sign test。最易踩坑：误用 eval transform、scored item 混入 fitting pool、不同 batch size/kernel、把 EMA 与 exact refit 混淆。第一优先复现论文 2% bad-teaching crossing，而不是一开始重跑 263 个。</p>
+
+<h3>5.19 Research Value</h3>
+<p><b>Baseline Potential：高</b>——可作为 unlearning verification hygiene。<b>Migration：极高</b>——可迁到 MLLM/Agent state。<b>Attack：高</b>——state-only recovery。<b>Evaluation：极高</b>——artifact-level + equivalence/detection floor。<b>Benchmark：高</b>——State-Sensitivity Suite。<b>New Paper：高</b>——尤其适合“输出抑制≠表示删除”与 recovery robustness。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<div class=card><b>Migration A — MLLM State-Sensitivity Audit</b><p><b>Original：</b>BN state 改 verdict。<b>Mechanism：</b>冻结主要权重、重建非主状态。<b>RQ：</b>LLaVA unlearning 是否依赖 adapter/projector/quantization/generation state？<b>Modification：</b>固定 base+LoRA，分别重建 calibration/adapter scaling 等 state。<b>Minimum Experiment：</b>LLaVA-1.5-7B，MLLMU forget5%，GA/GA_Difference/NPO/retain-only oracle，各 3 seeds；rebuild 前后测 Forget-Exact/Transform/Semantic/Derived、Retain-Near/General、MIA，并做 paired Δ+TOST。<b>Baseline：</b>as-shipped、oracle、No-op。<b>Metric：</b>F_U/A_U、KS/TOST、recovery ASR、utility Δ。<b>Contribution：</b>MLLM deployed-state verification。<b>Risk：</b>可操纵 state 太少导致全 null。<b>Collision：</b>中，需区别于单纯 quantization recovery attack。</p></div>
+<div class=card><b>Migration B — Artifact-Level Recovery Stability</b><p><b>Original：</b>family average 掩盖脆弱 checkpoint。<b>Mechanism：</b>per-artifact repeated perturbation + detection floor。<b>RQ：</b>哪些 seed/ratio 表面通过但最易恢复？<b>Modification：</b>对 retain FT steps、quantization bit、visual-noise strength 建 State Recovery Curve。<b>Minimum Experiment：</b>4 methods×3 ratios×3 seeds=36 checkpoints，每个 5 budgets。<b>Model/Dataset：</b>LLaVA-1.5-7B + MLLMU。<b>Baseline：</b>mean recovery ASR。<b>Metric：</b>Minimum Recovery Budget、RSC、TOST。<b>Contribution：</b>新 verification protocol。<b>Risk：</b>budget 公平归一化。<b>Collision：</b>低-中。</p></div>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>可形成 state-only attack，但不能把 utility movement 误称 knowledge recovery。Black-box 时可比较不同 deployment wrapper/calibration 下输出敏感度。Verification 应同时报告 weights hash 与 deployed-state convention。可定义 <b>Minimum Verdict-Crossing Budget</b> 与 <b>Deployed-State Sensitivity</b>。</p>
+
+<h3>5.23 如果只记住这篇</h3>
+<ol><li>unlearning checkpoint 不等于只有 weights。</li><li>BatchNorm running statistics 是真实 deployed state。</li><li>作者在 θ bit-identical 下重建 φ。</li><li>221 个 checkpoint 中 47 个 forget metric 明显移动。</li><li>family 平均稳定不保证 artifact 稳定。</li><li>部分 published verdict 会跨阈值。</li><li>removed records 本身几乎解释不了 shift。</li><li>更强解释是 shipped state stale。</li><li>quantization null 限制了泛化。</li><li>最值得迁移的是 artifact-level verification protocol，而不是 BN 本身。</li></ol>
+<h3>5.22 与 Paper 2 的关系</h3><p>Paper 1 提供“怎么审计 state convention”，Paper 2 提供“Agent 系统里 state 的 schema/lifecycle”。前者缺 Agent state taxonomy，后者缺 deletion robustness verification，二者高度互补。</p></article>
+<article id=p2><h2>5. Paper 2 Full Deep Dive</h2><h2 style="border:0">AIM: A Privacy-Aware Interoperable Memory Framework for Multi-Agent Multi-User LLM Systems</h2>
+<div class=card><span class=tag>Agent / Multi-Agent</span><span class=tag>Memory</span><span class=tag>Privacy</span>
+<p><b>基本信息：</b>Zachary Johnson 等 11 位作者；Microsoft；arXiv:2609.12320v1；2026-09-11；arXiv preprint。<br><b>Paper：</b><a href="https://arxiv.org/abs/2609.12320">Abstract</a> · <a href="https://arxiv.org/html/2609.12320">HTML</a> · <a href="https://arxiv.org/pdf/2609.12320">PDF</a>。本次正文未确认独立 Project/Code 链接。</p></div>
+
+<h3>5.2 一句话定位</h3><p>AIM 把 agent memory 从单用户向量库升级成<b>多用户、多 Agent、带 CRUD 生命周期与结构化权限边界的共享 memory service</b>。</p>
+
+<h3>5.3 人话版</h3>
+<p>Agent memory 真正难的不只是“记住什么”，而是“谁拥有、谁能读、谁能改、什么时候删、哪些知识能跨用户共享”。AIM 给每条 memory 加 owner、agent、visibility、tags、timestamp、metadata；先做 multi-label operation detection，再抽取事实、判断 private/public、去重，最后在 index 层用确定性 visibility predicate 阻止越权检索。作者还构建 MUMBench：672 条 chronological interactions、93 users、四领域，覆盖 CREATE/READ/UPDATE/DELETE/NOOP 与 adversarial cross-user queries。最佳 visibility accuracy 96.0%，但 strict operation accuracy 58.8%、state-aware 70.5%、retrieval relevance 最好仅 45.0%。所以它的价值不是“memory 已 solved”，而是把 privacy、deletion、state evolution、sharing 变成一个可系统评估的问题。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>MemGPT、Mem0、A-MEM 等主要优化单用户 memory 的抽取、检索、压缩与更新。多 Agent/企业环境里，共享与隐私冲突：例如“东北暴雪造成物流延迟”适合 public；用户地址、订单号则必须 private。另一个 gap 是操作并非互斥：“我搬到旧金山了，给我推荐晚餐”同时要求 CREATE 新事实与 READ 旧偏好。第三个 gap 是 benchmark：传统 LOCOMO 主要测单用户长期 retrieval，不覆盖 cross-user authorization 与完整 CRUD state evolution。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>核心 insight：<b>语义判断可以 probabilistic，但 authorization 必须 deterministic；memory operation 应是 multi-label 而非单分类。</b>LLM 判断 intent、抽取、visibility；一旦 visibility 被赋值，private memory 在 retrieval candidate 阶段就对非 owner 不可见，而不是先塞进 context 再让 LLM“自觉不泄漏”。这是系统工程机制。它仍有入口风险：visibility classifier 96% 并非 100%，false-public 会成为高危单点。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class=pipe>Message x + user u + agent a → multi-label C/R/U/D detection → visibility-constrained READ if needed → structured extraction → private/public classification → scope-restricted dedup → ownership-checked CREATE/UPDATE/DELETE → shared index → dense retrieval → tag rescoring → LLM reranking + temporal fusion → R</div>
+<ol>
+<li><b>Operation Detection：</b>f_op(x) 输出 C/R/U/D 子集，允许一条消息多操作。</li>
+<li><b>Structured Extraction：</b>抽 content、tags、temporal/domain metadata。</li>
+<li><b>Visibility：</b>LLM + explicit rules 判断 private/public。</li>
+<li><b>Hard Enforcement：</b>所有 read/write 先过 visibility predicate；private 对非 owner 在候选阶段不可见。</li>
+<li><b>Dedup：</b>只在合法 scope 内比较，避免跨用户 dedup 泄漏 memory existence。</li>
+<li><b>Cascaded Retrieval：</b>visibility-constrained dense search → tag semantic rescoring → LLM rerank + recency/temporal fusion。固定 pre-filter count=5 后来成为明显 bottleneck。</li>
+<li><b>Delete：</b>只删除 user 有权限且 ownership 合法的目标。注意这只是 external-store deletion，不是 model-weight unlearning。</li>
+</ol>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class=formula>V(u,m_i) = (v_i = public) OR (v_i = private AND owner(m_i)=u)
+strict(i) = 1[ C(ŷ_i) = C(y_i) ]</div>
+<p>第一式是安全核心：public 全局可读；private 只有 owner 可读。相比 prompt-only privacy，它在 LLM reranker 前就过滤 candidate。第二式中 C 是 canonical normalization 后的 operation multiset；strict 要求整个集合精确匹配，因此任何漏 CREATE/UPDATE 都使 turn=0，会放大 cascade。state-aware accuracy 根据系统实际 store state 调整期望，更适合 sequential memory system。二者差距本身就是 error propagation 的量化。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>用户 A：“我下月去巴黎，我花生过敏；卢浮宫周五晚开放吗？”系统输出 CREATE+READ。旅行计划和过敏信息标 private；“卢浮宫开放时间”查询可访问 public memory。用户 B 的酒店订单即使语义相似，也在 index filter 阶段不可见。一个月后 A 说“不去巴黎了，删旅行计划”，DELETE 只能触碰 A 拥有的对应 memory，不能删除公共博物馆知识。若之前从 A 的计划生成了 summary 或跨 Agent derived memory，AIM 当前的简单 DELETE 是否能闭包删除它们，正是最值得继续研究的 gap。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class=tw><table><tr><th>Baseline</th><th>怎么做</th><th>合理</th><th>AIM setting failure</th><th>性质</th></tr>
+<tr><td>Mem0（strongest practical comparator）</td><td>ADD/UPDATE/DELETE/NOOP pipeline</td><td>production-oriented</td><td>主要单用户；LOCOMO retrieval 反而显著强于 AIM</td><td>AIM 是权限/多用户机制扩展，检索 engineering 更弱</td></tr>
+<tr><td>LOCOMO-style</td><td>长对话 retrieval</td><td>成熟长期记忆评估</td><td>不测 cross-user privacy/ownership</td><td>benchmark scope</td></tr>
+<tr><td>Prompt-only privacy</td><td>system prompt 禁止泄漏</td><td>简单</td><td>private item 可能已进入 context</td><td>index filtering 是机制性安全改动</td></tr>
+<tr><td>Per-user stores</td><td>物理隔离</td><td>隐私简单</td><td>公共知识难共享</td><td>AIM 用共享 index + predicate</td></tr></table></div>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>MUMBench：</b>672 interactions、205 unique memories、93 users；Coding 150、Customer Support 218、Education 160、Travel 144；private/public memories 150/56；adversarial queries 60。操作：CREATE 205、READ 152、UPDATE 117、DELETE 77、NOOP 131。由 GPT-4o synthetic generation 后人工验证。</p>
+<p><b>Models：</b>GPT-5.4、GPT-5.4-mini、DeepSeek-V3.2、Mistral-Large-3、Llama-3.3-70B-Instruct；每个模型承担整个 pipeline；embedding=text-embedding-3-large，d=3072；每个 domain 前清空 store；每 model×interaction 3 trials。</p>
+<p><b>RQ：</b>完整 lifecycle 是否正确？privacy classification 是否可靠？content extraction 是否高质量？模型规模/家族影响多大？在传统 LOCOMO retrieval 上是否仍有竞争力？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Strict operation accuracy：</b>整个 canonical operation multiset 完全一致才算 1，高更好；严格但会放大 cascade。<b>State-aware：</b>基于实际 store state 判断当前动作，避免早期错误让后续“本来不可能完成”的动作永久扣分。<b>Judge-decision：</b>LLM judge 判断语义合理性，容错更大但有 judge bias。<b>Visibility accuracy：</b>private/public 正确率；对安全来说还应补 false-public rate，因为 4% 错误可能风险不对称。<b>Content Quality：</b>抽取 memory 的质量，不等于最终回答质量。<b>Retrieval Relevance：</b>候选 memory 与 query 的相关性，AIM 最好 45%，明显偏低。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>96.0% visibility：</b>最佳 privacy classification 强，但 4% error 对安全部署仍不可忽略。</li>
+<li><b>58.8% strict：</b>最佳 GPT-5.4-mini 仍只有约六成 turn 完整正确，lifecycle orchestration 远未 solved。</li>
+<li><b>70.5% state-aware：</b>比 strict +11.7 pp，显示 cascade/annotation-state mismatch 很大。</li>
+<li><b>89.5% judge-decision：</b>语义合理动作远多于 exact gold match，benchmark gold 存在灰区。</li>
+<li><b>91.6% Content Quality：</b>一旦决定 CREATE，抽取通常不错；瓶颈更像“何时做什么、如何找回来”。</li>
+<li><b>45.0% Retrieval Relevance：</b>weakest result，固定 top-5 prefilter 很可能是 engineering bottleneck。</li>
+<li><b>Coding state-aware 79.8%（DeepSeek-V3.2） vs Travel 最好 62.7%（GPT-5.4-mini）：</b>长 update chain 更难。</li>
+<li><b>LOCOMO：</b>Mem0 Single-Hop F1 0.387 vs AIM 0.175；Open Domain F1 0.477 vs 0.219；judge 0.729 vs 0.338。AIM 在传统 retrieval 明显落后。</li>
+</ol>
+<p class=bad><b>Strongest result：</b>privacy visibility + index-level enforcement + stateful benchmark 的组合。<br><b>Weakest/failure：</b>45% retrieval relevance 与 LOCOMO 大幅落后 Mem0；因此优势是 problem formulation/privacy architecture，不是 retrieval SOTA。</p>
+
+<h3>5.13 Table / Figure Reading</h3>
+<ul>
+<li><b>Figure 1：</b>read/write 两路径共享同一 visibility constraint；最值得迁移的是“语义模块在外，authorization predicate 在内”。</li>
+<li><b>Table 1：</b>五模型的 strict/state-aware/content/visibility；GPT-5.4-mini 多项最好，说明更大模型不是主要瓶颈。</li>
+<li><b>Table 3：</b>672 interactions、93 users、60 adversarial queries；private 明显多于 public，privacy coverage 好，但 public-sharing 统计仍有限。</li>
+<li><b>Table 4：</b>DELETE 77，远少于 CREATE 205；若做 deletion/unlearning，应扩充连续删除、derived-memory、conflict update。</li>
+<li><b>Table 5：</b>LOCOMO 上 Mem0 大幅领先，是最关键反例：AIM 解决新维度，但没有替代成熟 retrieval stack。</li>
+</ul>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>最清晰的“机制分解”来自 metrics：visibility 高、retrieval relevance 低，说明 privacy classifier/access-control 与 retrieval bottleneck 可分离；strict→state-aware→judge 的阶梯揭示 cascade。论文没有强 causal ablation 证明 tag rescoring 或 temporal fusion 各自贡献，因此机制证据主要是系统归因，而不是 representation-level causal proof。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class=tw><table><tr><th>Claim</th><th>Actually Show</th><th>Not Proven</th></tr>
+<tr><td>privacy-aware interoperable memory</td><td>四领域 synthetic benchmark 上可运行且 visibility 高</td><td>真实企业并发/恶意环境仍安全</td></tr>
+<tr><td>index isolation protects private memory</td><td>candidate retrieval 前 hard predicate</td><td>misclassification、side-channel、poisoning 不泄漏</td></tr>
+<tr><td>shared public knowledge 有益</td><td>支持 public retrieval</td><td>最终 downstream utility 的净提升尚未充分隔离</td></tr></table></div>
+
+<h3>5.16 Contribution</h3>
+<p><b>C1 New System：</b>multi-user shared registry + deterministic visibility。<b>C2 New Mechanism：</b>multi-label memory operation detection。<b>C3 New Benchmark：</b>MUMBench，覆盖 CRUD/NOOP/privacy/adversarial query。<b>C4 New Protocol：</b>strict/state-aware/judge 分层 evaluation。Dense retrieval、LLM classification、reranking 单独看并不新，真正创新是把它们围绕 multi-user lifecycle 组织成新的 evaluation object。</p>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p>Authors：tag overlap 最好仅 35.5%；retrieval relevance 45%；LOCOMO AIM 单 pass 而 Mem0 报多 run；用户可写错误 public memory；public scope 过粗；conflict resolution/user audit 尚待验证。Additional：synthetic GPT-4o data 可能低估真实 privacy ambiguity；false-public 是高危入口；public poisoning 可跨用户扩散；DELETE 不保证 summary/backup/log/cache/parametric trace 消失；并发 update/race condition 覆盖不足；LLM judge 可能有偏。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最小模块：<code>op_detector</code>、<code>extractor</code>、<code>visibility</code>、<code>store</code>、<code>retriever</code>、<code>evaluator</code>。可用一个中型 instruction model + FAISS/SQLite metadata filter。关键坑：必须在 dense search 前 owner/visibility filter；update/delete 再查 creator ownership；benchmark 必须 sequential replay，不能把 672 条独立 batch 化。第一实验优先复现 60 adversarial queries 的 unauthorized retrieval，而不是先追 Content Quality。</p>
+
+<h3>5.19 Research Value</h3>
+<p><b>Baseline：高</b>——agent memory deletion/privacy。<b>Migration：极高</b>——跨 Agent handoff/session index。<b>Attack：极高</b>——public poisoning、visibility flip、cross-user inference。<b>Evaluation：极高</b>——CRUD sequential replay。<b>Benchmark：极高</b>——可扩成 revocation/unlearning benchmark。<b>New Paper：高</b>——“memory deletion ≠ model/system unlearning”存在明显空白。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<div class=card><b>Migration A — Agent Memory Unlearning / Revocation Benchmark</b><p><b>Original：</b>AIM 只保证 store-level DELETE。<b>Mechanism：</b>stateful CRUD + owner/visibility + adversarial query。<b>RQ：</b>DELETE 后能否从 summary、derived memory、cross-agent public memory、context 中恢复？<b>Modification：</b>为 memory 建 provenance DAG，DELETE 级联 revoke；攻击用 paraphrase/multi-hop/other-agent/reacquisition。<b>Minimum Experiment：</b>MUMBench 选 50 private memories，每条生成≥2 derived memories；比较 vanilla AIM、Mem0、provenance-aware cascade delete；5 attack families×5 prompts。<b>Model：</b>一个 closed mini + 一个 Qwen open model。<b>Dataset：</b>MUMBench+derived annotations。<b>Baseline：</b>AIM DELETE、Mem0 DELETE、store-reset oracle。<b>Metric：</b>Deletion Success、Derived Leakage、Reacquisition ASR、Retain Utility、Unauthorized Recall。<b>Contribution：</b>把 agent memory deletion 与 unlearning verification 接起来。<b>Risk：</b>external vs parametric memory 边界。<b>Collision：</b>中。</p></div>
+<div class=card><b>Migration B — Cross-Agent Memory Poisoning + Trust Retrieval</b><p><b>Original：</b>任一用户可创建错误 public memory。<b>Mechanism：</b>shared public index。<b>RQ：</b>攻击者能否从 Agent A 写入，在 Agent B/其他用户触发错误？<b>Modification：</b>加入 provenance、writer reputation、verification status、conflict set；score=relevance×trust×freshness。<b>Minimum Experiment：</b>四领域各注入 10% conflicting public memories，攻击者控制 1/5/10 users；比较 AIM、source-trust、cross-source consensus。<b>Model：</b>DeepSeek-V3.2/Llama-3.3-70B。<b>Metric：</b>Poison Success、Benign Recall、False Suppression、Attack Cost。<b>Contribution：</b>multi-user memory supply-chain security。<b>Risk：</b>synthetic poison 太简单。<b>Collision：</b>中高，需与 RAG poisoning 区分。</p></div>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>Attack 可做 visibility misclassification、public poisoning、cross-user inference、delete-then-recover。Black-box probe 可用“只有另一个用户 memory 才能回答”的 canary query。Unlearning verification 应在 DELETE 后做 derived/paraphrase/multi-agent reacquisition。可定义 <b>Revocation Closure</b>、<b>Cross-User Leakage@K</b>、<b>Poison Propagation Radius</b>。</p>
+
+<h3>5.23 如果只记住这篇</h3>
+<ol><li>AIM 研究多用户、多 Agent persistent memory。</li><li>private/public visibility 是结构字段。</li><li>真正安全点是 index-level hard filtering。</li><li>一个 turn 可以同时 CREATE+READ。</li><li>MUMBench 有 672 interactions、93 users。</li><li>visibility 最佳 96%，strict 只有 58.8%。</li><li>retrieval relevance 45% 是瓶颈。</li><li>LOCOMO 上 Mem0 显著更强。</li><li>public poisoning 与 delete 后 derived leakage 是巨大空白。</li><li>最值得迁移的是 provenance-aware revocation/unlearning benchmark。</li></ol>
+<h3>5.22 与 Paper 1 的关系</h3><p>AIM 的 DELETE 是 store-level operation；Paper 1 提醒我们，改掉一个显式 state 不等于整个 artifact 的 deletion verdict 稳健。最自然组合就是 deleted memory 的 state-channel reconstruction/recovery audit。</p></article>
+
+<h2 id=cross>7. Cross-Paper Synthesis</h2>
+<p>两篇共同说明一个趋势：<b>删除不能只看主权重或一条表面 readout，而必须先定义完整系统状态及其生命周期。</b>Paper 1 证明 θ 之外的 deployed state 能改变 unlearning audit；Paper 2 把 external memory 显式建模成 owner/visibility/timestamp/CRUD state。组合起来，自然得到一个更强研究对象：删除 root memory 后，derived summary、shared replica、cross-agent cache、retrieval index、parametric trace 是否形成可恢复的 state closure？</p>
+<p>最可组合的机制是：AIM 的 lifecycle/provenance/visibility + Paper 1 的 counterfactual state rebuild、per-artifact repeats、TOST、detection floor。前者告诉我们“有哪些状态、谁能访问”，后者告诉我们“如何证明 deletion verdict 对 state convention 稳健”。</p>
+
+<h2 id=opp>8. Combined Research Opportunities</h2>
+<div class=card><b>Top Opportunity — Provenance-Closed Agent Unlearning Verification</b><p>为 CREATE/UPDATE/summary/share 建 provenance DAG；DELETE 不只删 vector，而是定义 revocation closure。验证阶段冻结主 LLM，逐个恢复 vector store、summary、shared memory、cache 等 channel，测哪条 channel 让 deleted fact 重新可见；统计上用 per-artifact repeated attacks + equivalence margin，而非平均 leakage。这个方向同时吸收两篇核心机制，并与 retrain-equivalence 的 unlearning 思想兼容。</p></div>
+<div class=card><b>Opportunity 2 — MLLM State Recovery Surface</b><p>把 deployed state 扩到 vision tower/projector/LLM LoRA、quantization calibration、generation cache、system memory。对每个 channel 做 frozen-weight perturbation，形成 State Recovery Surface；重点测 image-conditioned residual knowledge 是否比 text-only 更容易在 state perturbation 后恢复。</p></div>
+
+<h2 id=collision>9. Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>两篇都否定“单一表面 accuracy 足以描述 deletion correctness”。Paper 1 中同一 θ 因 φ 改变而 crossing；Paper 2 中 strict/state-aware/judge scores 差距巨大。与 recovery attack 文献存在邻接，因此新论文不能只做“换 state 后恢复”，而应强调 <b>systematic state taxonomy + provenance closure + artifact-level statistical verification</b>。</p>
+
+<h2 id=priority>10. Reading / Reproduction Priority</h2>
+<ol><li>Paper 1 优先读 §3–4 + Appendix B/C/M：anchoring、refit、equivalence、detection floor。</li><li>Paper 2 优先读 §3 + §5 + Appendix A.2/A.7：visibility predicate、lifecycle、MUMBench、LOCOMO failure。</li><li>实验优先做 AIM-style delete→derived recovery toy benchmark，再扩到 MLLM state surface。</li></ol>
+
+<h2 id=sources>11. Sources / Links</h2>
+<ul><li><a href="https://arxiv.org/abs/2609.11490">arXiv 2609.11490</a> · <a href="https://arxiv.org/html/2609.11490">HTML</a> · <a href="https://arxiv.org/pdf/2609.11490">PDF</a></li>
+<li><a href="https://arxiv.org/abs/2609.12320">arXiv 2609.12320</a> · <a href="https://arxiv.org/html/2609.12320">HTML</a> · <a href="https://arxiv.org/pdf/2609.12320">PDF</a></li></ul>
+
+<div class=card><b>Deep Dive Depth Audit</b><p>两篇均覆盖：可访问正文、Method pipeline、核心公式/机制、完整 setup、metrics、≥5 results、≥3 Table/Figure readings、strongest baseline/result、weakest/failure、mechanistic analysis、Claim vs Evidence、Contribution、Limitation、Reproduction、Research Value、≥2 Migration、Attack/Verification Lens。</p></div>
+</main></body></html>
