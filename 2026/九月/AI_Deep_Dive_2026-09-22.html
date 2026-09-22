@@ -1,0 +1,186 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Deep Dive 2026-09-22</title><style>
+:root{--ink:#172033;--muted:#667085;--line:#dfe5ef;--paper:#fff;--bg:#f4f6fa;--accent:#3157d5;--soft:#f1f4ff;--warn:#fff7e8}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.82 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+main{max-width:1120px;margin:auto;background:var(--paper);padding:48px 64px 100px;box-shadow:0 0 30px #0000000a}
+h1{font-size:36px;line-height:1.25;margin:.25em 0}h2{margin-top:52px;padding-bottom:8px;border-bottom:2px solid var(--line);font-size:27px}
+h3{margin-top:31px;font-size:21px}h4{font-size:17px;margin-bottom:6px}.muted{color:var(--muted)}
+.box,.eq,.flow,.audit{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:16px 0;background:#fafbfe}
+.box{background:var(--soft)}.warn{background:var(--warn)}.eq,.flow{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}.toc a{margin-right:12px}.tag{display:inline-block;background:#e9edff;padding:1px 8px;border-radius:999px;font-size:12px;margin-right:4px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:820px}th,td{border:1px solid var(--line);padding:9px;vertical-align:top}th{background:#f2f4f8}
+li{margin:.35em 0}.key{font-weight:700}.small{font-size:13px}.paper{scroll-margin-top:20px}
+@media(max-width:760px){main{padding:26px 16px}h1{font-size:29px}}
+</style></head><body><main>
+<div class="muted">DAILY TOP PAPERS DEEP DIVE · 2026-09-22</div>
+<h1>从“删得干净”到“删得有边界”：Localized Unlearning × Provenance-Aware Agent Memory</h1>
+<p class="muted">独立检索最近 24–72 小时；在未发现满足正文可访问、实验足够完整且优先级更高的新稿后，按规范启用最近 1–3 个月 BACKFILL。为保证深度，仅选 2 篇。</p>
+<div class="box toc"><b>目录：</b>
+<a href="#selection">Selection</a><a href="#why">Why</a><a href="#p1">Paper 1</a><a href="#p2">Paper 2</a>
+<a href="#synthesis">Synthesis</a><a href="#opps">Opportunities</a><a href="#collision">Collision</a><a href="#priority">Priority</a><a href="#sources">Sources</a></div>
+
+<h2 id="selection">2. Today's Deep Dive Selection</h2>
+<p><b>#1 LU-500: A Logo Benchmark for Concept Unlearning</b> — Machine Unlearning / multimodal / benchmark / localized leakage。</p>
+<p><b>#2 Agent Zero Memory: Provenance-Aware Long-Term Memory for LLM Agents</b> — Agent memory / provenance / continual learning / multi-agent shared memory。</p>
+
+<h2 id="why">3. 为什么选这 2 篇</h2>
+<p>今天的独立检索没有找到比这两篇更符合“Machine Unlearning 与 Agent/Multi-Agent 同级第一优先、正文可完整访问、且足够支撑公式/实验/图表/失败分析”的 24–72 小时新稿，因此不为了“新”牺牲深度。LU-500 对你的 multimodal unlearning 价值非常直接：它把 target removal 与 same-image utility 分离，并引入 implicit contextual leakage；Agent Zero Memory 则提供 provenance、non-destructive update、citation lock 和多表示 memory substrate，可与 unlearning 的 deletion verification 形成强碰撞。</p>
+
+<h2 id="p1" class="paper">4. Paper 1 Full Deep Dive — LU-500</h2><h3>5.1 基本信息</h3>
+<div class="box"><b>LU-500: A Logo Benchmark for Concept Unlearning</b><br>
+Authors: Keyu Li, Jin Gao, Jialing Zhang, Dequan Wang；Affiliation: Shanghai Jiao Tong University。arXiv v1: 2026-07-27；v2: 2026-07-29；cs.CV / cs.AI；当前为 arXiv preprint。<br>
+<a href="https://arxiv.org/abs/2607.24101">Paper</a> ·
+<a href="https://arxiv.org/html/2607.24101v2">Full HTML</a> ·
+<a href="https://github.com/weizhihao1/LU-500">Official GitHub</a> ·
+<a href="https://huggingface.co/datasets/weizhihao1/LU-500">Dataset entry</a>
+</div><h3>5.2 一句话定位</h3><p>LU-500 把 concept unlearning 从“整幅图里的大概念消失了吗”推进到一个更苛刻的局部问题：<b>只删除占图像很小、但语义高度可识别的 logo，同时尽可能不动周围合法内容</b>。</p><h3>5.3 人话版</h3><p>过去扩散模型 unlearning 常删 style、celebrity、object 等全局概念，评测也常只问目标还在不在。Logo 不一样：Apple 标记可能只占 MacBook 图像几个百分点，但哪怕残留一点轮廓仍能泄露品牌；同时如果为了删 logo 把电脑、桌面、广告牌一起改掉，也不能算高质量 unlearning。LU-500 用 Fortune Global 500 构造 9,584 个经过验证的 explicit / implicit prompt，后者甚至不直接说“logo”，而是通过产品、店铺、包装等上下文诱发品牌。作者用 local CLIP/SSIM + global CLIP/SSIM 同时测“删干净”和“别误伤”，发现 NP、SLD、SEGA、ESD、Forget-Me-Not 都存在明显 local–global trade-off。ProLU 多 Agent prompt rewriting 能删得更狠，但本质是改输入语义，不等于模型真的忘了。这篇最值得借用的不是某个新 unlearning algorithm，而是<b>局部泄漏 + 全局效用的双区域评测范式</b>。</p><h3>5.4 Background & Research Gap</h3><p>旧范式通常把 unlearning 看成全局分布移动：让生成结果不再像 Van Gogh、某位 celebrity 或某个 object。于是一个全图 CLIP score、分类器命中率或 unsafe rate 就能大致工作。但 logo 是 localized concept：目标区域可能很小，且与产品语义纠缠。比如“a silver MacBook on a wooden desk”没有出现 Apple logo 字样，却可能自然生成苹果标志。若安全 guidance 把整台 laptop 的材质、位置、背景都改了，target detector 也许不再命中，但 utility 已被牺牲。LU-500 填的 gap 正是：现有 benchmark 缺少一个同时要求 implicit triggering、localized erasure 与 non-target preservation 的大规模测试床。</p><h3>5.5 Core Insight</h3><p>核心观察有两层。第一，<b>concept 是否被忘记与 image 是否被保留是两个不同轴</b>，不能压成一个成功率。第二，logo leakage 既有 prompt-semantic 成分，也有 model-representation 成分：ProLU 通过删除 prompt 中品牌诱因可显著降低 local score，却会改变场景，这说明“把触发词绕开”不等于“权重层面 disentangle”。作者进一步做视觉属性相关分析，发现多数属性与 semantic leakage 相关较弱，但 LogoSSIM 对区域大小/结构属性出现更明显关系，支持 spatially controlled unlearning 的方向。它主要是经验发现与 benchmark diagnosis，而不是理论定理。</p><h3>5.6 Method Deep Dive</h3>
+<div class="flow">Fortune Global 500 → explicit/implicit prompt synthesis → human validation → SD3 baseline generation → verify logo exists → apply unlearning/intervention → OWLv2 localize residual logo → local metrics + global metrics → failure correlation / ablation</div>
+<p><b>Step 1 — Prompt construction：</b>每家公司生成 LUex（直接点名 logo）和 LUim（产品/商店/网站/广告/包装等隐式语境）。初始约 10k prompts，经人工筛选后 9,584 条：4,748 explicit、4,836 implicit。</p>
+<p><b>Step 2 — Pre-unlearning validity：</b>用 Stable Diffusion 3 Medium 生成，并剔除无法稳定生成可验证 logo 的 prompt。这个步骤很关键：若 base model 本来就不会生成目标，所谓“unlearning 成功”是伪成功。</p>
+<p><b>Step 3 — Intervention：</b>主实验跑 inference-time NP、SLD、SEGA，并把 SLD/SEGA 设成多档强度；另在 legacy compatible backbone 上测 ESD、Forget-Me-Not。固定 paired generation seed，降低随机采样噪声。</p>
+<p><b>Step 4 — Localize：</b>OWLv2 用“company name + logo”查询候选区域；作者人工核验自动框，报告 98% detection accuracy。</p>
+<p><b>Step 5 — Two-region evaluation：</b>logo crop 上测 CLIPScore / LogoScore / LogoSSIM；全图测 ImageScore / ImageSSIM。局部指标希望低，全局指标希望高。</p>
+<p><b>Step 6 — ProLU diagnostic：</b>Remover 删除品牌诱因 → Reflector 检查过删/漏删并迭代 → Checker 做最终文本 guard → P2 prompt 再生成。它故意作为“prompt-space upper diagnostic”，而非声称模型已 weight-level unlearn。</p>
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="eq">CLIPScore_logo = cos(E_img(crop_after), E_text(company))
+LogoScore = cos(E_img(crop_before), E_img(crop_after))
+LogoSSIM = SSIM(crop_before, crop_after)
+ImageScore = cos(E_img(I_before), E_img(I_after))
+ImageSSIM = SSIM(I_before, I_after)
+
+Ideal direction:
+CLIPScore_logo ↓, LogoScore ↓, LogoSSIM ↓
+while ImageScore ↑, ImageSSIM ↑</div>
+<p>这不是单一 objective，而是一个隐含的 Pareto 问题：局部要“不同”，全局要“相同”。SLD/SEGA strongest settings 通过增大 safety/editing guidance 让 target region 变化更多，但同一 guidance 也扩散到全局 latent，导致 ImageSSIM 下滑。最关键超参数因此不是某个固定数，而是 intervention strength；它越大，通常 local erasure 越强、global preservation 越差。与只优化 target suppression 的 baseline 相比，LU-500 的评价明确惩罚“把整幅图毁掉来实现遗忘”。</p>
+<h3>5.8 Toy Example</h3><p>假设 prompt 是“a courier holding a FedEx package in front of a warehouse”。Before 图中盒子角落有清晰 FedEx 标。方法 A 把 logo 模糊掉，但盒子、人物、仓库完全保持：CLIPScore/LogoSSIM 大幅下降，ImageSSIM 仍高，这是理想局部 unlearning。方法 B 把整个包裹换成空白袋、仓库颜色也变：logo 的确没了，但 ImageSSIM/Score 暴跌，这是 utility sacrifice。方法 C 仅把 prompt 改成“generic package”再生成：局部最干净，却改变了用户本来的“FedEx package”语义——这正是 ProLU 展示的“input filtering ≠ model unlearning”。</p><h3>5.9 Baseline Deep Comparison</h3>
+<div class="tw"><table><tr><th>Baseline</th><th>怎么做 / 为什么合理</th><th>在 LU-500 哪里失败</th><th>差异性质</th></tr>
+<tr><td>NP</td><td>inference-time negative prompting，便宜、无需更新权重</td><td>局部仍残留，global preservation 也不理想</td><td>机制性：global semantic steering 缺乏 spatial selectivity</td></tr>
+<tr><td>SLD</td><td>safety guidance 抑制概念；强度可调</td><td>强 guidance 虽改善 logo，但 ImageSSIM 从高保真区快速下降</td><td>机制性 trade-off</td></tr>
+<tr><td>SEGA</td><td>semantic guidance/editing，弱档 global fidelity 极高</td><td>弱档几乎没删；加强后才删但开始损伤全图</td><td>机制性</td></tr>
+<tr><td>ESD / Forget-Me-Not</td><td>weight-level concept erasure，更接近真正模型修改</td><td>legacy backbone 上仍无法同时做到强 local erasure + global preservation</td><td>机制 + compatibility</td></tr>
+<tr><td><b>ProLU</b></td><td>三 Agent 改写 prompt，local erasure strongest</td><td>通过改变输入语义“绕开”目标，不能证明模型忘记</td><td>engineering mitigation，不是 weight-level unlearning</td></tr></table></div>
+<p><b>Strongest baseline：</b>若按 local erasure，ProLU strongest；若按 preservation，SEGA_v1 strongest。正因为没有单一 winner，这篇论文的价值就是把 Pareto trade-off 暴露出来。</p>
+<h3>5.10 Experiment Setup Deep Dive</h3><p><b>Model：</b>主 backbone Stable Diffusion 3 Medium；fine-tuning compatibility 实验用 SD-v1-4（ESD）与 SD-v2-1-base（Forget-Me-Not）。<b>Dataset：</b>9,584 prompts，500 companies，explicit 4,748 / implicit 4,836。<b>Generation：</b>主设置 28 inference steps、guidance scale 7.0、1024×1024，paired seed 固定。<b>Evaluation：</b>OWLv2 local detection + 5 metrics。<b>RQ1：</b>inference-time methods 能否同时 erase+preserve？<b>RQ2：</b>weight-level legacy methods 是否摆脱 trade-off？<b>RQ3：</b>logo intrinsic attributes 能否解释失败？<b>RQ4：</b>ProLU 三个 agent 各承担什么？</p><h3>5.11 Metrics 教学式解释</h3><p><b>CLIPScore↓：</b>crop 与 company text 的语义相似度，低表示品牌语义弱；缺点是 detector miss 时被置 0，可能把 detection failure 当 unlearning success。<b>LogoScore↓：</b>before/after crop 的 CLIP image similarity，测语义层变化。<b>LogoSSIM↓：</b>像素结构相似，特别敏感于局部几何/纹理。<b>ImageScore↑：</b>全图 CLIP similarity，测大语义是否保留。<b>ImageSSIM↑：</b>全图结构/像素保真。两组指标互补：只看 local 会奖励毁图，只看 global 会奖励什么都不删。</p><h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>ProLU explicit CLIPScore 0.26</b>，优于 NP 0.30、SLD_v3 0.28；说明 semantic rewriting 能强力压低品牌语义，但不能据此宣称 weight-level forgetting。</li>
+<li>ProLU implicit LogoSSIM <b>0.05</b>，是表中最强 local structural disruption；同时 ImageScore 只有 0.77、ImageSSIM 0.53，说明代价是场景变化。</li>
+<li><b>SEGA_v1 global preservation strongest：</b>explicit/implicit ImageScore 都 0.98，ImageSSIM 都 0.97；但 CLIPScore 0.32/0.31，几乎仍是原始 logo semantic strength。</li>
+<li>SLD 从 v1→v3，explicit LogoSSIM 0.29→0.08，但 ImageSSIM 0.86→0.50：局部删除增强伴随全局结构保真大幅下降。</li>
+<li>SEGA v1→v3，explicit LogoSSIM 0.42→0.19，同时 ImageSSIM 0.97→0.83；trade-off 同方向复现。</li>
+<li>fine-tuning：ESD CLIPScore 0.24、ImageSSIM 0.38；ProLU 同 backbone 0.23、0.45。这里不能得出“prompt rewriting 普遍优于 ESD”，因为比较局限于 legacy checkpoint。</li>
+<li>Forget-Me-Not ImageScore 0.80 高于同 backbone ProLU 0.75，但 CLIPScore 0.28 弱于 0.25；再次出现 preservation vs erasure 交换。</li>
+<li><b>ProLU ablation：</b>完整 reduction 16.76%；去 Remover 只剩 3.07%，即 Remover 承担约 83.2% 的增益；去 Reflector reduction 15.15%，Reflector 贡献约 16.8%；去 Checker aggregate delta 为 0。</li>
+<li><b>Weakest evidence：</b>Checker 被称为“architecturally essential”，但 aggregate CLIPScore 完全不变，因此目前更多是设计直觉/guard rationale，而不是实证性能贡献。</li>
+<li>视觉属性相关性多数较弱；LogoSSIM 上较明显的结构相关只支持“spatial control 值得探索”，并不构成 causal mechanism。</li>
+</ol>
+<p><b>Strongest result：</b>Table 1 中 intervention strength 的 local–global Pareto trade-off 极稳定。<b>Failure case：</b>文字型 logo 会变成乱码伪文字，多实例场景可能只删最显著一个。<b>Utility trade-off：</b>明确存在，而且是论文核心，不应把更低 target score 单独视为更好 unlearning。</p>
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 3：</b>SD1.5→SD3/SD3.5/FLUX 对 FedEx 的生成能力明显增强。作者要证明“旧模型不会画 logo”导致旧 benchmark 低估问题；实际支持的是 backbone capability 已让 logo leakage 更现实。</p>
+<p><b>Table 1：</b>横向同时看 10 个数字而不是找 bold winner。SEGA_v1 在 global preservation 接近完美，却几乎没降低 CLIPScore；SLD_v3/ProLU 则反过来。最重要信息是不存在自然的 upper-right operating point。</p>
+<p><b>Figure 5：</b>几何 logo、文字 logo、复合 logo 的 failure morphology 不同：blur/deform、pseudo-text artifact、只处理最 salient instance。这提示未来方法需要 region/multi-instance aware mask，而不是只调全局 guidance。</p>
+<p><b>Table 3：</b>fine-tuning baseline 也未消除 trade-off，但 backbone 不同，不能把数值跨模型直接排总榜。</p>
+<p><b>Table 4：</b>ProLU 的大部分效果来自 Remover；Reflector 是 refinement，Checker 在 aggregate metric 无增益。若做 multi-agent 方法论文，必须防止“多 Agent 只是包装单个核心 Agent”。</p>
+<p><b>Figure 6：</b>多数 correlation 弱，反而是有价值的 negative result：logo 难度并不能被简单面积/纹理单变量解释。</p>
+<h3>5.14 Ablation / Mechanistic Analysis</h3><p>ProLU ablation 是最直接机制证据：去 Remover，CLIPScore reduction 从 16.76% 掉到 3.07%，证明核心机制就是 semantic cue ablation；去 Reflector 仍有 15.15%，说明它只是边际 stabilizer；Checker 对 aggregate score 0 贡献。Correlation analysis 不是因果分析：它只能说明某些 visual attributes 与 LogoSSIM 共变，不能证明“区域更大导致 unlearning 失败”。真正需要的下一步是 mask-controlled intervention 或 matched-pair causal test。</p><h3>5.15 Claim vs Evidence</h3><p><b>Authors Claim：</b>logo 是 localized + semantically entangled 的 unlearning target，现有代表方法难以兼顾 erase/preserve。<b>Experiments Actually Show：</b>在 SD3 inference-time baselines 与两个 legacy fine-tuning implementations 上，这个 trade-off 很明显，explicit/implicit 都出现。<b>What Is Not Yet Proven：</b>没有覆盖所有现代 weight-editing method；没有 adaptive prompt attack；没有 long-tail/multilingual brands；也没有证明 ProLU 的失败意味着所有 prompt-space mitigation 都无法做到语义保持。</p><h3>5.16 Contribution</h3><p><span class=tag>New Benchmark/Dataset</span> LU-500；<span class=tag>New Metric/Protocol</span> local/global × pixel/latent multi-grained evaluation；<span class=tag>New Empirical Finding</span> local–global trade-off；<span class=tag>New System/Engineering</span> ProLU diagnostic；<span class=tag>Mechanistic Analysis</span> visual correlation。真正新意主要在 benchmark framing 与 evaluation protocol，ProLU 是已有 prompt rewriting + multi-agent 组件的组合。</p><h3>5.17 Limitation & Failure Modes</h3><p>作者承认覆盖范围限于 Fortune Global 500、当前兼容 methods/backbones，缺 long-tail、multilingual、adaptive attack 与更广 variance。额外限制包括：OWLv2 miss 会让 local metric 人为归零；paired seed 不能完全解决 diffusion stochasticity；全图 SSIM 对局部小变化天然不敏感；品牌 prompt 可能包含合法语义，删除它会改变用户 intent；没有 recovery/relearning；没有测试 quantization、model merge、LoRA reload 后 logo 是否恢复；也没有把 logo detector 本身作为 adaptive attack target。</p><h3>5.18 Reproduction View</h3><p>最小复现不必跑 500 brands：先取 Apple/Tesla/Coca-Cola/FedEx/Disney 各 10 explicit+10 implicit，SD3 Medium 固定 seed，跑 before、SLD 三档、SEGA 三档、ProLU；OWLv2 检框后计算 5 metrics。仓库已给 generate_prompts.py、generate_prolu_prompts.py、run_baselines.py、detect_logos.py、calculate_metrics.py，以及 SD3 pipeline patch。第一张必须复现的图是 intervention strength vs LogoSSIM/ImageSSIM Pareto curve；若曲线不存在，论文核心 claim 就被削弱。最容易踩坑的是 diffusers patch 版本、OWLv2 crop 对齐、无检测时 local=0 的处理、paired seed 与 prompt rewrite 后构图差异。</p><h3>5.19 Research Value</h3><p><b>Baseline Potential：高</b>，特别适合 localized multimodal unlearning。<b>Migration Potential：极高</b>，可直接迁到 MLLM image-question-answer 中的局部视觉证据删除。<b>Attack Potential：高</b>，implicit contextual trigger 就是天然 attack seed。<b>Evaluation Potential：极高</b>，local/global 双区 metric 能补足只看 answer leakage 的不足。<b>Benchmark Potential：高</b>，可扩展 logo→face→OCR text→watermark。<b>New Paper Potential：高</b>，空间 mask + representation-level unlearning + recovery robustness 是清晰组合。</p><h3>5.20 Migration Analysis</h3>
+<p><b>Migration A — Localized MLLM Unlearning：</b>Original Problem=diffusion logo removal → Transferable Mechanism=target region 与 non-target region 分开评估 → New RQ=MLLM 删除某实体视觉证据时，是否只破坏与该实体相关的 visual tokens，而保持其他对象问答能力 → Method Modification=用 detector/segmentation 产生 target mask，对 vision tower/projector 的 attribution 或 representation 加 masked projection/orthogonality constraint → Minimum Experiment=LLaVA-1.5-7B，100 个带目标实体图像，每图构造 target-QA、same-image non-target-QA、image-rephrase；LoRA 只训 vision/projector/all 三组；Baselines=GA/NPO/MMUnlearner/MANU；Metrics=target AP/TR/ROUGE-L、same-image non-target accuracy、GQA/VQAv2、mask-region feature similarity、relearning/quantization recovery → Expected Contribution=把 forget/retain 从 dataset-level 推到 same-image spatial disentanglement → Risk=mask quality → Collision Risk=中。</p>
+<p><b>Migration B — Implicit Visual Trigger Attack：</b>Original Problem=LUim 不说 logo 也触发品牌 → Transferable Mechanism=context-induced target recovery → New RQ=MLLM unlearning 是否能被不点名实体的 image/context cue 恢复 → Modification=构造 explicit name、product context、OCR fragment、logo crop、style/color cue 五级 attack → Minimum Experiment=每 forget entity 20 prompts×5 cue types，固定 image/text seeds，before/after unlearning/relearning/quantization 全测 → Model=LLaVA/Qwen2.5-VL → Dataset=MLLMU forget entities + 自建 contextual cue set → Baseline=direct query/image rephrase/jailbreak → Metric=Attack Success、AP/TR、Min-K、cross-modal leakage AUC → Expected Contribution=multimodal implicit reacquisition benchmark → Risk=cue 本身泄露 label → Collision Risk=低。</p>
+<h3>5.21 Attack / Verification Lens</h3><p>LUim 本身就是一种非 adaptive black-box probe：不说 target 名称，只给关联产品/场景，看模型是否重新生成或识别目标。对 unlearning verification，可定义 Local Leakage / Same-Image Utility 双指标；对 recovery，可在 unlearning 后重新注入少量 logo crop 或 contextual prompts，看 target representation 是否快速回来；对 black-box，可只依赖生成图 + detector，不需模型内部权重。新 metric 可用 Local–Global Harmonic Score，但应同时保留原始两个轴，避免再次隐藏 trade-off。</p><h3>5.22 与 Paper 2 的关系</h3><p>LU-500 强调“删除时不能误伤周围合法内容”；Agent Zero Memory 强调“记忆时不能丢掉来源、时间和被替代历史”。二者共同指向一个更一般的原则：<b>forget 与 remember 都不是二值操作，而是需要 provenance / scope / locality 的结构化状态变更</b>。</p><h3>5.23 如果只让我记住这篇论文</h3><ol><li>Logo 是小区域、高语义密度的特殊 unlearning target。</li><li>LU-500 有 9,584 个 validated prompts，explicit 与 implicit 各约一半。</li><li>base model 必须先能生成 logo，否则 unlearning 评测无意义。</li><li>局部 erasure 与全局 preservation 必须分开测。</li><li>SEGA 弱档保图最好，但删得不够。</li><li>强 guidance 删得更狠，却明显毁全图。</li><li>ProLU local 最强，但本质是改 prompt，不是模型忘记。</li><li>Remover 承担 ProLU 约 83% 的效果，multi-agent 包装不能替代核心机制。</li><li>现有结果支持 spatially controlled unlearning，但 correlation 不是因果。</li><li>对 MLLM unlearning，最值得迁的是 same-image target-region forgetting vs non-target utility。</li></ol>
+
+<h2 id="p2" class="paper">5. Paper 2 Full Deep Dive — Agent Zero Memory</h2><h3>5.1 基本信息</h3>
+<div class="box"><b>Agent Zero Memory: Provenance-Aware Long-Term Memory for LLM Agents</b><br>
+Authors: Pengyuan Zhu, Ming Wu；Affiliation: Zero Labs。Submitted 2026-08-30；arXiv:2608.29606v1 [cs.CL]；10 pages, 3 figures；当前为 arXiv preprint。<br>
+<a href="https://arxiv.org/abs/2608.29606">Paper</a> ·
+<a href="https://arxiv.org/html/2608.29606v1">Full HTML</a>
+</div><h3>5.2 一句话定位</h3><p>Agent Zero Memory 不把长期记忆当成一个 vector DB，而是把“什么时候发生”“实体之间如何关联”“哪些事实必须可审计”拆成 timeline + entity graph + citation-locked documentary memory 三套并行表示，再由 agentic retrieval 按 query 动态读取。</p><h3>5.3 人话版</h3><p>很多 Agent memory 的问题不是完全搜不到，而是“搜到了错误版本、无法解释来源、或把后来修正与旧事实混在一起”。Agent Zero Memory 的解法是承认没有一种 memory representation 能同时做好 temporal、multi-hop、stable facts：事件时间线保存事实如何变化，entity-event graph 负责跨 session 关系跳转，HDM 保存用户明确写下且必须可追溯的稳定事实。查询时先 intent gate 判断是否需要 memory，再 route source，随后三个 reader 并发做 dense+lexical agentic search，只能引用自己真正打开过的 evidence；证据不够就 abstain。LongMemEval 95.60%、LoCoMo 93.60%，分别比最强公开结果高 0.73、1.10 点。更有意思的是 8 个 backbone 的 LongMemEval accuracy 只差 3.4 点、成本却约差 30×，说明系统质量更多来自 memory substrate，而不是一味换更强模型。</p><h3>5.4 Background & Research Gap</h3><p>单一 vector memory 擅长语义近邻，却可能错过 rare identifier；知识图谱擅长 relation traversal，但 extraction/link 错误会固化；context log 保留原文，却随着历史增长越来越贵。更麻烦的是 update semantics：用户先说“deadline Oct 1”，后说“改成 Oct 15”。如果 memory 直接 overwrite，就无法回答“什么时候改的”；如果简单 append，又可能返回旧日期。Agent Zero 的 gap 是把 memory 当成一个需要 provenance、版本历史、query-dependent read cost 的知识系统，而不只是 retrieval cache。</p><h3>5.5 Core Insight</h3><p>作者的核心 insight 是<b>representation specialization + provenance discipline</b>。时间问题应读 timeline，多跳问题应走 graph，稳定 profile/preferences 应读 curated HDM；raw source 与 inferred memory 必须分层，不能让推断污染 ground truth。Citation lock 则把“请不要幻觉”从 prompt policy 变成接口约束：answer 只能引用 reader 实际 open 的 item，无法组出 supporting citation set 就 abstain。这属于系统机制设计与形式化约束，不是新神经 objective。</p><h3>5.6 Method Deep Dive</h3>
+<div class="flow">Chats / files / connectors → preprocess & classify → dense+lexical index → LLM extract events + HDM → agentic connect entity-event graph → query intent gate → source router → 3 concurrent agentic searches → open evidence → citation-locked partial answers → integrate answer + citations + confidence</div>
+<p><b>Build-1：</b>把 chat/file/agent trace 标类型，保留 raw artifacts。</p>
+<p><b>Build-2：</b>所有 item 同时建 embedding 与 lexical index，避免“语义召回”与“精确词召回”互相替代。</p>
+<p><b>Build-3：</b>抽取 Memory Events 与 HDM。Events 是时间主轴；HDM 用 L0/L1/L2 三层文档表示，让 reader 先看便宜摘要再决定是否打开全文。</p>
+<p><b>Build-4：</b>Connect stage 建 entity–event graph，把 people/projects 与 events 连起来，支持跨 session multi-hop。</p>
+<p><b>Read-1：</b>IntentGate 先判断当前 turn 是否需要 memory；不需要就零额外 memory latency。</p>
+<p><b>Read-2：</b>Router 限定 connector / agent histories / HDM 等 source bucket。</p>
+<p><b>Read-3：</b>Events、Graph、HDM 三个 agentic search 并发，各自用 embedding+lexical，agent 自己控制 time/source/speaker filters，并按需 open raw chunks。</p>
+<p><b>Read-4：</b>每个 reader 产出 (answer, citations, confidence)，最后 integrate。时间查询会跳过普通 relevance rerank，避免把“最新”排序打乱。</p>
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="eq">Memory substrate: M = (T, G_E, D)
+
+Provenance:
+π(x) = < origin(x), timestamp(x), evidence_pointer(x) >
+
+Query:
+q → (a, C, κ), κ ∈ [0,1]
+
+Citation lock:
+C ⊆ O
+and every atomic claim in a is supported by some c ∈ C
+otherwise a = ⊥
+
+Hybrid retrieval:
+RRF(d) = Σ_r 1 / (k + rank_r(d)),  k = 60</div>
+<p>T/G_E/D 分别是 timeline、entity-event graph、documentary memory。O 是本次 reader 真正打开过的 items；C 必须是 O 的子集，因此不能引用“系统里存在但本轮没看”的证据。RRF 把 dense 与 lexical ranking 合并：rare names/IDs 靠 lexical，paraphrase 靠 embedding。与 Mem0 类“extract→overwrite”最大的机制差异不是 retriever，而是 non-destructive update + provenance。关键超参数包括 top-K、RRF k、open cap、intent/router threshold；过小会 recall loss，过大会增加 cost/context noise。</p>
+<h3>5.8 Toy Example</h3><p>科研 Agent 记住“forget10 对应 retain90”。一周后你修正某实验其实用了 retain_shared90 与 retain_celebrity90 两套 split。Timeline 保留旧说法与修正时间；Graph 把 MLLMU、forget10、两套 retain split、对应 run 连起来；HDM 只把经过你明确确认的长期 protocol 写成 curated rule。下次问“什么时候从单 retain 改成双 retain？”时，reader 应走 timeline；问“哪些实验受这次 split 变更影响？”走 graph；问“当前标准 protocol 是什么？”走 HDM，并给原始证据引用。</p><h3>5.9 Baseline Deep Comparison</h3>
+<div class="tw"><table><tr><th>Baseline</th><th>合理性</th><th>主要 failure</th><th>Agent Zero 改什么</th></tr>
+<tr><td>Mem0</td><td>抽取原子事实、生产友好</td><td>update/delete destructive；遗漏的事实难恢复</td><td>raw source 保留 + timeline non-destructive</td></tr>
+<tr><td>Mastra Observational Memory</td><td>日期明确、temporal 强</td><td>整段 observation log 每轮常驻；reflection destructive</td><td>query-gated top-k + provenance</td></tr>
+<tr><td>Zep</td><td>bi-temporal graph，最接近 provenance</td><td>write amplification；graph distillation lossy</td><td>background build + 三种专用 representation</td></tr>
+<tr><td>Hindsight</td><td>多 store、多 retriever</td><td>belief revision heuristic、newest-wins</td><td>显式 timestamp/evidence/version history</td></tr>
+<tr><td><b>Mastra / Mem0</b></td><td>分别是 LongMemEval / LoCoMo strongest reported baseline</td><td>94.87 / 92.50 已接近饱和</td><td>95.60 / 93.60</td></tr></table></div>
+<p>注意：作者直接使用各系统“best publicly reported figures”，不是同一 harness 重跑，因此 strongest baseline 的差距不能当严格 controlled head-to-head。</p>
+<h3>5.10 Experiment Setup Deep Dive</h3><p><b>LongMemEval：</b>500 questions，六类：single-session-user/assistant/preference、multi-session、temporal reasoning、knowledge update，并含 abstention。<b>LoCoMo：</b>1,540 questions，single-hop/multi-hop/temporal/open-domain。<b>Metrics：</b>official LLM-judged answer accuracy；另外报告 median latency、平均 USD/query、prompt/cached/completion tokens。<b>Backbones：</b>论文列出 gpt-5.5、gpt-5.6-sol、gpt-5.6-terra、gpt-5.4-mini、opus4.8、sonnet5、glm5.2、glm5.2fast、deepseek-v4-pro 等配置；LongMemEval 表中 8 个 operating points。<b>Infrastructure：</b>PostgreSQL + pgvector 3072-d embeddings + BM25/fuzzy lexical + RRF k=60。<b>RQ1：</b>能否 SOTA？<b>RQ2：</b>质量来自 substrate 还是 backbone？<b>RQ3：</b>accuracy-cost-latency frontier？<b>RQ4：</b>hybrid retrieval 两通道是否互补？</p><h3>5.11 Metrics 教学式解释</h3><p><b>Judged Accuracy↑：</b>最终回答是否正确，直接但依赖 LLM judge，尤其 near-saturated benchmark 0.x 点差可能受 judge/harness 影响。<b>Median Latency↓：</b>对少数 slow tail 更稳健，但不反映 p95。<b>USD/query↓：</b>结合 provider list price 与真实 token counts；cached token discount 会改变“token 多=贵”的直觉。<b>Accuracy per cent↑：</b>经济效率指标，但把 90→91 与 94→95 当同等价值，部署时需谨慎。<b>Ablation ΔAcc：</b>衡量 retriever channel 的边际贡献。</p><h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>LongMemEval 95.60%</b>，Mastra 94.87%，+0.73 pp。强，但 benchmark 已接近饱和，差距需结合 harness caveat。</li>
+<li><b>LoCoMo 93.60%</b>，Mem0 92.50%，+1.10 pp；ByteRover 2.0 为 92.20%。</li>
+<li>LongMemEval backbone spread 92.20–95.60，仅 <b>3.4 pp</b>，支持“memory substrate 比 model 更决定质量”的 claim。</li>
+<li>gpt-5.5 95.60%，$0.034788/query；deepseek-v4-pro 92.20%，$0.001768/query，约 20× cheaper，只损失 3.4 pp。</li>
+<li>glm5.2fast 93.00%，median 6.158s；gpt-5.5 16.311s。低延迟 operating point 很有部署价值。</li>
+<li>opus4.8 成本 $0.052221/query，却只有 93.80%，说明更贵 backbone 不自动带来更高 memory QA accuracy。</li>
+<li><b>Hybrid retrieval ablation：</b>gpt-5.6-sol full 95.20；embedding-only 94.00（-1.20），grep-only 93.60（-1.60），lexical-only 93.40（-1.80）。两个通道确实互补。</li>
+<li>即便 restricted retrieval 93.40–94.00，也仍高于很多外部 baseline，说明结构/provenance 贡献可能大于 hybrid 的最后 1–2 点。</li>
+<li><b>Weakest result：</b>论文没有逐一 ablate timeline、graph、HDM、citation lock，因此“每个 store 各自承担多少 SOTA 增益”仍未被定量拆开。</li>
+<li><b>Failure/validity：</b>competitor numbers 来自不同公开 harness，不是统一复跑；这削弱 0.73/1.10 pp SOTA margin 的因果解释。</li>
+</ol>
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 1：</b>最重要的是 build/read 分离和三 store 并行，不是“画了三个数据库”。它把 write-time structure 与 query-time agentic search 解耦。</p>
+<p><b>Table 1：</b>系统比较真正值得看的是 update semantics、provenance、read cost vs history。Agent Zero 的卖点不是某个 retriever，而是同时选 non-destructive、citation-locked、gated top-k。</p>
+<p><b>Table 3/4：</b>SOTA margin 小，但两 benchmark 同方向。由于 baseline 非统一 harness，应该把它理解为“位于最强公开水平之上”，而不是严格显著优胜。</p>
+<p><b>Table 5 + Figure 2：</b>accuracy 3.4pp spread 对应约 30× cost spread；这是全文最有工程意义的结果。模型选择变成 operating-point policy，而不是默认最贵模型。</p>
+<p><b>Figure 3：</b>accuracy-latency frontier 与 cost frontier 不重合；glm5.2fast 最快但不是最便宜，说明部署要三维 Pareto。</p>
+<p><b>Table 7：</b>hybrid 95.20，单通道掉 1.2–1.8pp；embedding 与 lexical 是互补，而不是“向量检索已经足够”。</p>
+<h3>5.14 Ablation / Mechanistic Analysis</h3><p>论文真正的 quantitative ablation 只有 retrieval channel：full→embedding/grep/lexical 单通道，证明 hybrid 的最后 1–2pp。它没有分别移除 timeline、graph、HDM、citation lock、intent gate，因此 representation specialization 的机制证据更多来自设计对应 benchmark question types 与整体结果，而非 factorial causal ablation。这个缺口反而是最值得后续验证的：按 question category 做 store knock-out，才能证明 temporal gain 真由 timeline、multi-hop gain 真由 graph 贡献。</p><h3>5.15 Claim vs Evidence</h3><p><b>Authors Claim：</b>provenance-aware multi-store memory 可结构性减少 fabrication，并达到 SOTA；质量主要 memory-driven。<b>Actually Show：</b>两个 benchmark headline 很强；backbone accuracy 相对稳定；hybrid retrieval 有小而稳定的增益。<b>Not Yet Proven：</b>“fabrication structurally excluded”只对 citation channel 成立，不代表 cited source 本身正确或 answer interpretation 无错；三 store 的独立贡献没完整 ablate；跨系统不是统一 harness；真实组织级 years-long memory、privacy deletion、poisoning、conflicting sources 尚未系统评估。</p><h3>5.16 Contribution</h3><p><span class=tag>New System</span> timeline+graph+HDM；<span class=tag>New Mechanism</span> citation lock / non-destructive provenance；<span class=tag>New Retrieval</span> intent-gated routed concurrent agentic search；<span class=tag>New Empirical Finding</span> backbone quality spread 小、cost spread 大；<span class=tag>Engineering</span> PostgreSQL/pgvector/BM25/RRF implementation。创新主要是系统组合与 epistemic discipline，不是新的 embedding model 或训练 objective。</p><h3>5.17 Limitation & Failure Modes</h3><p>作者明确承认跨系统公开数字 harness 不统一。额外风险：memory poisoning 会被 provenance 忠实地保存，却不代表内容可信；citation lock 防“无来源引用”，不防 source-level misinformation；entity linking 错误会污染 graph；HDM curated notes 可能过时；组织共享 memory 带权限/隐私边界；没有 deletion/unlearning semantics——这对 GDPR/用户忘记请求尤其关键；没有 memory deletion 后 derived event/graph/summary 是否同步消失的验证；没有 adaptive retrieval attack、prompt injection、malicious connector、conflicting-source calibration；成本研究主要是 read side，background build cost 没同等细拆。</p><h3>5.18 Reproduction View</h3><p>最小复现建议先只做 LongMemEval：Postgres 建 raw artifacts、events、entity edges、HDM tables；pgvector + BM25/fuzzy；实现 intent gate、router、三个并发 reader 与 citation-open whitelist。先复现 Table 7，因为最容易 controlled：固定 gpt-5.6-sol，full/embedding/grep/lexical 四组。第二步做 category-wise store knockout：timeline-off 看 temporal/update，graph-off 看 multi-hop，HDM-off 看 preference/profile。若 category specificity 不出现，三 store 的机制解释就需要重估。</p><h3>5.19 Research Value</h3><p><b>Baseline Potential：高</b>，尤其 agent memory/provenance。<b>Migration Potential：极高</b>，与你的 Voyager 这类跨 Agent session continuity 很接近。<b>Attack Potential：高</b>，poisoned memory、stale correction、permission leak 都可攻。<b>Evaluation Potential：极高</b>，可把 provenance completeness、stale-memory rate、citation-open discipline 变成 protocol。<b>Benchmark Potential：高</b>，现有 LongMemEval 缺 deletion request。<b>New Paper Potential：极高</b>：memory provenance 与 machine unlearning 的冲突几乎是现成新问题。</p><h3>5.20 Migration Analysis</h3>
+<p><b>Migration A — Provenance-Aware Agent Memory Unlearning：</b>Original Problem=long-term memory faithful recall → Transferable Mechanism=每个 derived item 带 evidence pointer → New RQ=用户删除一个 source 后，能否证明所有 timeline/graph/HDM derivative 都被撤销，而 unrelated memory 不受损 → Method Modification=构建 provenance DAG，deletion 从 raw artifact 向所有 descendants 传播 invalidation；保留 tombstone audit 但禁止内容可恢复 → Minimum Experiment=LongMemEval/LoCoMo 各注入 100 deletion requests，删除后测 target recall、derived multi-hop leakage、unrelated QA、re-add/reacquisition → Baseline=naive vector delete、Mem0 delete、full rebuild → Metric=Deletion Completeness、Residual Derived Leakage、Utility、Deletion Latency、Reacquisition → Expected Contribution=Agent Memory Unlearning benchmark/protocol → Risk=“审计 tombstone”本身泄露被删内容 → Collision Risk=低。</p>
+<p><b>Migration B — Voyager Provenance Memory Layer：</b>Original Problem=单用户聊天 memory → Transferable Mechanism=timeline+entity graph+documentary summary + citation lock → New RQ=跨 Claude/Codex/Grok 的 session continuity 如何避免 stale handoff 与错误 merge → Modification=thread lease/continuity bundle 作为 raw provenance；events 保存 switch/continue；graph 连 repo/branch/thread/agent；HDM 只放稳定 project decisions → Minimum Experiment=20 repos×30 handoff trajectories，制造 5 类冲突：stale bundle、branch divergence、duplicate thread、failed attach、later correction；比较 flat summary、vector memory、tri-store provenance → Metric=resume accuracy、stale-state error、wrong-thread attach、citation coverage、latency → Expected Contribution=provenance-aware multi-agent continuity → Risk=工程量较大 → Collision Risk=中。</p>
+<h3>5.21 Attack / Verification Lens</h3><p>可反向形成四类攻击：poison raw source、制造同名 entity 误链接、用时间措辞诱导 router/rerank 返回旧事实、让恶意 connector 内容成为高置信 evidence。Black-box verification 可设计“先陈述 A→后纠正 B→删除 A→问历史/当前/来源”四联测试。对 unlearning verification，provenance DAG 天然能检查 derived memory 是否仍指向已删除 source。新 metric：Provenance Closure（删除后所有 descendants 是否失效）、Stale Recall Rate、Unsupported Citation Rate、Deletion Reacquisition Curve。</p><h3>5.22 与 Paper 1 的关系</h3><p>LU-500 的“局部删除不能毁掉全局”可以直接迁成 memory deletion 的“删一条 source 不能毁掉 unrelated memories”；Agent Zero 的 provenance pointer 又能解决 LU-500/MLLM unlearning 很难回答的“target information 到底从哪里流入 derived state”。二者组合成一个非常自然的新方向：<b>provenance-aware localized unlearning</b>。</p><h3>5.23 如果只让我记住这篇论文</h3><ol><li>长期 memory 不该只有一个 vector store。</li><li>timeline、graph、HDM 分别服务 temporal、multi-hop、durable facts。</li><li>更新不应 destructive overwrite，旧事实与修正都要有 provenance。</li><li>Citation lock 要求只能引用本轮真正打开过的 evidence。</li><li>LongMemEval 95.60%、LoCoMo 93.60%，但跨系统 harness 不统一。</li><li>8 个 backbone accuracy 只差 3.4pp，成本却约差 30×。</li><li>因此 memory substrate 可能比盲目升级 backbone 更值得投资。</li><li>Dense+lexical hybrid 比任一单通道高 1.2–1.8pp。</li><li>论文最大缺口是没有把 timeline/graph/HDM/citation lock 分别 ablate。</li><li>对 unlearning 最关键的迁移是：用 provenance DAG 做可验证的 agent-memory deletion。</li></ol>
+
+<h2 id="synthesis">7. Cross-Paper Synthesis</h2>
+<p>今天两篇共同说明一个趋势：<b>AI 系统里的“删除/记忆”正在从二值状态转向有 scope、有 provenance、有局部性的结构化状态管理</b>。LU-500 告诉我们“目标没了”远远不够，还要问周围合法内容是否被破坏；Agent Zero 告诉我们“记住了”也不够，还要问这个 belief 来自哪里、什么时候成立、后来是否被替代。</p>
+<p>可以组合的 mechanism 是：用 Agent Zero 式 evidence pointer / provenance DAG 描述 target information 的来源与 derived states，再用 LU-500 式 local-vs-global evaluation 判断删除传播是否过度。值得借用的实验范式包括 paired before/after、implicit trigger、non-target preservation、store/module ablation、reacquisition test 与 provenance closure。</p>
+<p>最可能形成新论文的 gap：<b>Agent Memory Unlearning</b>——用户删除一条聊天、文件或 connector source 后，不仅 raw chunk 要消失，event summary、entity edge、documentary note、cross-agent learned experience 等 derived memory 也必须可验证地失效，同时 unrelated memory 保持。</p>
+
+<h2 id="opps">8. Combined Research Opportunities</h2>
+<div class="box"><b>Best Migration Direction — Provenance-Aware Multimodal / Agent Unlearning Verification</b>
+<p>把“forget set”扩成 provenance graph：raw image/text/source → visual/text representation → derived answer/memory/skill。删除请求沿 graph 传播 invalidation；评测同时包含 target leakage、same-context non-target utility、derived-memory leakage、relearning/reacquisition 与 robustness。这样 LU-500 的 locality 和 Agent Zero 的 provenance 可以统一成一套 verification protocol。</p></div>
+<p><b>Opportunity 2：</b>Same-image utility：MLLM 删除某个 logo/person/object 后，仍应回答同一图中其它对象、OCR、关系问题。</p>
+<p><b>Opportunity 3：</b>Memory deletion robustness：删除 source 后做 paraphrase、multi-hop、cross-agent handoff、re-add partial evidence，测试 derived knowledge 是否恢复。</p>
+<p><b>Opportunity 4：</b>Spatial provenance：把 detector mask / attribution region 当作视觉 evidence pointer，研究视觉信息从 image tokens → projector → LLM layers 的传播与删除。</p>
+
+<h2 id="collision">9. Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>Agent Zero Memory 的目标是“尽量不丢信息、保留历史与 provenance”，而 Machine Unlearning 的目标是“在删除请求后让特定信息不可恢复”。如果系统为了审计保留 superseded facts、events、graph edges、HDM summaries，那么它可能恰好制造了 unlearning 的 derived-data leakage。真正的问题不是 vector DB 里删没删，而是<b>provenance graph 上所有 descendants 是否都被安全撤销</b>。</p>
+
+<h2 id="priority">10. Reading / Reproduction Priority</h2>
+<ol>
+<li><b>先读 LU-500 Table 1 + Figure 5：</b>建立 local erasure / global utility 的直觉。</li>
+<li><b>再读 Agent Zero Definition 1–2 + Algorithm 1：</b>理解 provenance item 与 citation lock。</li>
+<li><b>最先复现实验：</b>LU-500 小规模 Pareto curve；Agent Zero hybrid retrieval ablation。</li>
+<li><b>最先做的新实验：</b>Agent Memory deletion provenance closure，或 MLLM same-image target/non-target unlearning。</li>
+</ol>
+
+<h2>Deep Dive Depth Audit</h2>
+<div class="audit">两篇均已覆盖：正文可访问；Method 多步骤展开；核心数学对象/公式；完整实验设置；metrics 教学；≥5 个具体结果；≥3 个 Table/Figure 解读；strongest baseline；strongest result；weakest/failure；ablation/mechanism；Claim vs Evidence；Contribution；Limitation；Reproduction View；Research Value；≥2 个 Migration；Attack/Verification Lens。</div>
+
+<h2 id="sources">11. Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2607.24101">LU-500 arXiv</a> · <a href="https://arxiv.org/html/2607.24101v2">Full HTML</a> · <a href="https://github.com/weizhihao1/LU-500">Official GitHub</a></li>
+<li><a href="https://arxiv.org/abs/2608.29606">Agent Zero Memory arXiv</a> · <a href="https://arxiv.org/html/2608.29606v1">Full HTML</a></li>
+</ul>
+<p class="small muted">检索与事实核验优先使用 arXiv 正文与作者官方 GitHub。LU-500 当前版本为 v2 (2026-07-29)；Agent Zero Memory 为 v1 (2026-08-30)。</p>
+</main></body></html>
