@@ -1,0 +1,278 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Deep Dive 2026-09-26</title><style>
+:root{--bg:#f7f8fb;--paper:#fff;--ink:#1d2433;--muted:#667085;--line:#d8dee9;--accent:#3157d5;--soft:#eef2ff;--warn:#fff7ed}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.82}
+main{max-width:1180px;margin:auto;background:var(--paper);padding:42px 54px 80px;min-height:100vh} h1{font-size:2.35rem;line-height:1.2;margin:.2em 0}
+h2{margin-top:2.5em;padding-bottom:.35em;border-bottom:2px solid var(--line)} h3{margin-top:1.8em} h4{margin-top:1.35em}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}.muted{color:var(--muted)} .tag{display:inline-block;padding:2px 9px;border-radius:999px;background:var(--soft);margin:2px;font-size:.86rem}
+.card{border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0;background:#fff}.callout{border-left:4px solid var(--accent);background:#f7f9ff;padding:14px 18px;margin:16px 0}
+.warn{border-left:4px solid #e67e22;background:var(--warn);padding:14px 18px;margin:16px 0}.flow,.formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#f3f5f8;border-radius:10px;padding:14px;overflow:auto;white-space:pre-wrap}
+.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:760px;margin:12px 0}th,td{border:1px solid var(--line);padding:9px 10px;vertical-align:top}th{background:#f3f5f8;text-align:left}
+li{margin:.35em 0}.toc a{margin-right:12px}.audit{font-size:.92rem;color:#475467;background:#f8fafc;border:1px dashed #98a2b3;padding:12px;border-radius:10px}
+@media(max-width:760px){main{padding:24px 18px}h1{font-size:1.8rem}}
+</style></head><body><main>
+<header><div class="muted">Daily Top Papers Deep Dive · 2026-09-26</div><h1>Agent 自愈 × 时序隐私泄漏：今天只精读两篇</h1>
+<p>独立检索最近 24–72 小时；深度优先。今天未发现足够强且正文完整的新 Machine Unlearning 论文，因此不硬凑 unlearning；选择一篇 Multi-Agent self-healing 与一篇 RL/privacy attack，并把两者系统迁移到 unlearning verification。</p></header>
+<div class="card toc"><b>目录：</b><a href="#selection">Selection</a><a href="#p1">Paper 1 MeshHeal</a><a href="#p2">Paper 2 TRACE</a><a href="#cross">Cross-Paper Synthesis</a><a href="#opp">Combined Opportunities</a><a href="#collision">Collision</a><a href="#priority">Priority</a><a href="#sources">Sources</a></div>
+
+<section id="selection"><h2>2–3. Today's Deep Dive Selection & 为什么选</h2>
+<p><span class="tag">Multi-Agent</span><span class="tag">Robustness</span><b>#1 MeshHeal</b> 是今天最贴合优先级的论文：它不仅做 MAS robustness，还提出 Model-Backed MAS Evaluation，直接指出 prompt-only ability assignment 会让 routing benchmark 失真。</p>
+<p><span class="tag">Privacy</span><span class="tag">RL</span><span class="tag">Attack</span><b>#2 TRACE</b> 的迁移价值更高：它把“序列中的多个弱泄漏联合后变强”做成理论+攻击，这几乎可以原样迁移到 unlearning recovery / MIA / GradNorm 的 trajectory-level verification。</p></section>
+
+<section id="p1"><h2>4. Paper 1 Full Deep Dive — MeshHeal</h2>
+<h3>5.1 基本信息</h3>
+<p><b>Title：</b>MeshHeal: Self-Healing Decentralized LLM Agent Networks under Gray Failures。<b>Authors：</b>Keru Chen, Sen Lin, Yingbin Liang, Nathaniel D. Bastian, Shaofeng Zou。<b>Affiliation：</b>Arizona State University、University of Houston、The Ohio State University、Johns Hopkins University。<b>Date：</b>2026-09-24，arXiv:2609.29015v1。<b>Status：</b>arXiv preprint，31 pages；论文未声明正式 venue。<b>Paper：</b><a href="https://arxiv.org/abs/2609.29015">Abstract</a> / <a href="https://arxiv.org/html/2609.29015">Full HTML</a>。<b>Code：</b>正文未给出公开代码仓库，因此本报告不把“有代码”当事实。</p>
+
+<h3>5.2 一句话定位</h3><p>它把 LLM 多智能体系统中的“Agent 没宕机、但能力悄悄变差”定义为 gray failure，并用<b>快时间尺度的逐输出纠错 + 慢时间尺度的相对能力检测/隔离/恢复</b>做成一个真正可闭环的去中心化 self-healing protocol。</p>
+
+<h3>5.3 人话版</h3>
+<p>传统 MAS 故障检测往往盯着“Agent 是否在线”，但现实里更危险的是：API 仍返回、消息仍发送、路由仍正常，可底层模型因为降级、量化、服务切换、上下文污染或能力漂移而持续给出更差答案。MeshHeal 的核心不是立即判某个 Agent “坏了”，而是把保护任务和诊断 Agent 分成两个速度：每次输出先由能力匹配的 peer reviewer 检查，低分/不确定就升级 committee，必要时 Takeover 替换答案；与此同时，把长期 review score 与同任务类型、同能力邻居做相对比较，累计证据后从 normal→watched→isolated，再通过 recovery probe 回到 normal。更值得注意的是作者发现“system prompt 声明你不会某能力”并不能真实制造能力边界，于是提出 Model-Backed MAS Evaluation，用强/弱模型 backend 真正实现能力分工和可控灰故障。这一点本身就是很有价值的 evaluation critique。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>多 Agent routing 的常见假设是“节点能力稳定且角色描述可信”。例如一个数学 Agent 被写成擅长 symbolic manipulation，一个 language Agent 被写成不擅长数学，routing controller 就据此分派任务。但作者实测五种模型后发现，prompt-only 的“unassigned ability unreliable”只把 assigned/unassigned accuracy gap 拉开 0.015–0.058，而且四个模型连 assigned ability 也一起掉。这意味着很多 MAS benchmark 的“能力异质性”其实只是文本角色扮演：底层同一个强模型照样会做未分配任务，路由错了也未必反映在最终 accuracy 上。</p>
+<p>真正的 gray failure 更像：A3 昨天是强数学节点，今天服务端悄悄从 120B 换成 1B，但 heartbeat、JSON schema、latency 都正常。传统 availability detector 看不见；单次低分阈值又容易把难题造成的正常波动误判为故障；长期 reputation 又来不及保护当前 task。MeshHeal 填的 gap 正是“即时质量保护”和“持续故障归因”不能用同一个时间尺度解决。</p>
+
+<h3>5.5 Core Insight</h3>
+<p><b>Insight 1：correct now ≠ diagnose now。</b>一次坏输出足以伤害当前任务，却不足以证明 Agent 持续退化，所以当前输出应快速 review/correct，Agent 身份状态则慢慢积累证据。<b>Insight 2：绝对分数不稳，相对同类 peer 更稳。</b>不同 task/ability 天生难度不同，把某 Agent 与“同 task type + 同 ability 的正常邻居”比较，可以减掉题目难度和 rubric scale 的大量漂移。<b>Insight 3：恢复也必须是 evidence-based。</b>隔离后不能永久 ban；定期 probe 让已恢复 backend 重新积累低 shortfall 证据。<b>Insight 4：评估 routing 必须让能力差异是真的。</b>这是工程发现 + evaluation methodology，不是纯 prompt trick。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Task(Q,T) → infer required abilities R → route to ability-matched agent
+→ Generate contribution/final answer
+→ Fast review: 3 samples from one reviewer → median q0 + uncertainty
+→ if low/uncertain/watched/probe: 2-reviewer committee → q
+→ if q≤0.40: Takeover synthesis replaces bad output
+→ record original producer's score as evidence
+→ Slow detector: peer-relative shortfall → z-score
+→ normal ↔ watched ↔ isolated
+→ isolated nodes removed from ordinary routing
+→ periodic recovery probe → evidence → reintegration</div>
+<p><b>Step 1 Routing：</b>task state 包含 query、task type、required abilities、已覆盖能力、accepted context 和 route。每个 Agent 只对自己与 remaining abilities 的交集贡献；若能力不匹配就 handoff。</p>
+<p><b>Step 2 Fast review：</b>一个能力匹配 reviewer 独立采样三次评分，取 median，并计算 sample s.d.。低分、方差大、watched Agent 或 recovery probe 才升级 committee，避免所有样本都用昂贵多评审。</p>
+<p><b>Step 3 Committee + Takeover：</b>两个 reviewer 先独立判断，再交换解释、重新判断；最终平均分 ≤0.40 时，不让坏输出进入共享 task state，而由 committee 生成 correction candidates 并综合替换。注意 detector 仍把低分归给原 producer，避免“纠错成功后把故障证据洗掉”。</p>
+<p><b>Step 4 Slow detector：</b>按 task type T 与 ability s 建局部 evidence stream。只比较匹配任务/能力，避免数学难题与语言简单题混在一个 reputation scalar 里。</p>
+<p><b>Step 5 State machine：</b>至少3个 matched observations 后，z≥1.2 进入 watched；z≥2.0 连续两次进入 isolated。isolated 不参与普通执行，但每10 tasks 后可被 matching work 触发 recovery probe；证据恢复后逆向 isolated→watched→normal。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">peer reference:
+q̄_{-i,T,s}(t) = mean_j μ_{j,T,s}(t)
+
+shortfall:
+x_{i,t,s} = q̄_{-i,T,s}(t) - q_{i,t}
+
+robust relative statistic:
+z_{i,T,s} =
+( x̄_{i,T,s} - median(normal-neighbor shortfalls) )
+/ max( median - 25th_percentile, 0.10 )</div>
+<p>如果 Agent i 和同类 peer 一样好，shortfall 接近正常群体；持续变差时 x̄ 变大，z 上升。分母不是标准差，而是 median 到 25th percentile 的 robust scale，并设 0.10 floor，避免正常群体过于集中时一个很小的数把 z 放大。strongest baseline Symphony 主要靠 parallel plans + voting 提高结果质量，但它没有“谁持续退化、何时隔离、何时恢复”的状态机。MeshHeal 的机制差异因此不是多加一次 vote，而是把 output correction 与 fault-state inference 分开。</p>
+<p>最敏感超参数包括 evidence window=8、watch=1.2、isolation=2.0×连续2次、probe interval=10、Takeover threshold=0.40。阈值更低会更快隔离但 false isolation 上升；probe 更频繁会更快 reintegrate，但增加成本并让坏节点有更多进入 review path 的机会。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>假设 6 个研究 Agent 共同回答一个需要“视觉推理 + 数学推导”的 MLLM 问题。A3 原来负责数学，但部署方把它的 backend 从强模型切成小模型，接口完全正常。A3 给出错误面积 42。第一 reviewer 三次打分 {0.2,0.3,0.2}，median=0.2≤0.4，于是进入 committee；两位 reviewer 重算后确认错误并 Takeover，当前答案被改成 24，因此任务没被 A3 直接污染。与此同时 A3 获得低 q，和同类数学 peer 的均值 0.9 相比形成大 shortfall。连续若干 matching tasks 后 z 两次≥2，A3 被 isolated，routing 绕开它。运维修复 backend 后，第10个 task 触发 probe；新输出恢复到0.9附近，z 下落，先 watched，再 normal。这个例子说明“当前任务正确”与“识别故障节点”是两条并行链。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="scroll"><table><tr><th>Baseline</th><th>怎么做/为何合理</th><th>在 gray failure 下的问题</th><th>MeshHeal 改什么</th></tr>
+<tr><td><b>Symphony（strongest）</b></td><td>parallel plans + voting；高冗余带来强 accuracy</td><td>不显式隔离/恢复故障节点；token cost高</td><td>局部 review + fault state + rerouting；机制性差异</td></tr>
+<tr><td>SAC</td><td>多 team、过滤/refinement、majority aggregation</td><td>同样靠大量冗余吸收错误，成本更高</td><td>只在风险升高时升级 committee</td></tr>
+<tr><td>RAPS</td><td>reputation-based routing</td><td>全局/绝对 reputation 难区分 task difficulty 与真实退化</td><td>task/ability-conditioned peer-relative shortfall</td></tr>
+<tr><td>AgentNet</td><td>去中心化 routing</td><td>路由本身不等于 failure diagnosis</td><td>review evidence 驱动 routing state</td></tr>
+<tr><td>AutoGen manager</td><td>中心 manager 协调</td><td>manager 若退化形成单点灾难；实验中 A3 manager 退化后跌得最狠</td><td>完全局部化，避免 mandatory central node</td></tr></table></div>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Models：</b>默认 healthy assigned ability 用 openai/gpt-oss-120b；undeclared ability 与 degraded agent 用 meta-llama/llama-3.2-1b-instruct。另做 GPT-OSS-120B/Gemma-3-4B 与 Llama-3.3-70B/Llama-3.2-1B model-pair sensitivity。<b>Benchmarks：</b>BBH、MATH、MMLU-Pro，各取7个 task groups；每题映射到两种互补 abilities，且分配给 disjoint agent sets，保证至少两个 Agent 才能完成。<b>Network：</b>主实验6 agents；扩展到96/288/576。<b>Failure：</b>A3/A5 的所有 LLM calls（含 review）切到 weak backend，controller/通信/availability 不变。</p>
+<p><b>RQ1：</b>persistent degradation 下 accuracy/cost 是否优于强 MAS baselines？252 healthy + 252 disjoint degraded tasks。<b>RQ2：</b>能否真正满足 detection/closure/reintegration？MATH 上五个126-task phase，依次 healthy→A5 degraded→A3+A5 degraded→A5 restored/A3 degraded→all restored。<b>RQ3：</b>只靠 local information 能否扩展？96–576 nodes、1/3 degraded、complete vs sparse graph。<b>RQ4：</b>快/慢模块分别有何作用？single reviewer、no Takeover、absolute threshold、CUSUM、relative detector ablation。</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>Accuracy↑：</b>最终 task 是否答对，最直观，但会掩盖“坏 Agent 被别人兜底”的成本。<b>Tokens/task↓：</b>所有 input+output model tokens，衡量冗余协作成本。<b>Detection delay↓：</b>从 backend 真正退化到首次被 ordinary routing 排除经历多少 tasks；越小越快，但不能脱离 false isolation 看。<b>Closure：</b>一旦检测到，直到真实恢复前是否始终隔离；这是 fault-tolerance 的稳定性条件。<b>Reintegration delay↓：</b>backend 恢复到重新进入 normal routing 的 tasks 数；太大意味着安全但僵硬。<b>Miss/False：</b>漏掉 degraded / 错杀 healthy。它们共同刻画 detector，不应只报 accuracy。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>0.839 vs 0.807：</b>persistent degradation pooled accuracy，MeshHeal 比 strongest Symphony +3.2pp，同时 51k vs 115k tokens，约少56%。这是 strongest result，因为同时改善 quality 与 cost。</li>
+<li><b>AutoGen 0.424：</b>当 mandatory manager A3 退化时 centralized manager 形成单点故障；MeshHeal 0.839，差41.5pp，支持 decentralized failure containment。</li>
+<li><b>恢复流：</b>post-degradation pooled MeshHeal 0.812 vs Symphony 0.806，但49k vs105k tokens。优势主要在成本，accuracy 只+0.6pp。</li>
+<li><b>Weakest result：</b>A5-only degraded phase Symphony 0.786 > MeshHeal 0.778；all-restored Symphony 0.873 > MeshHeal 0.857。说明 MeshHeal 并非任何 phase 都最强，review/routing guard 有 healthy-state opportunity cost。</li>
+<li><b>Detection：</b>A5 8.0±5.2 tasks、A3 12.4±6.2；不是即时检测，体现“慢时间尺度”的真实代价。</li>
+<li><b>Reintegration：</b>约45–46 tasks，明显比 detection 更慢。安全闭环成立，但恢复保守，这是部署上最值得优化的 weakness。</li>
+<li><b>Scale：</b>576 agents、1/3 degraded 时 sparse graph 仅完整图0.88% edges，却0.814 accuracy、192/192 全隔离；local protocol 有很强 scaling evidence。</li>
+<li><b>Takeover：</b>纠正32个 wrong 中15个，仅把32个 correct 中1个改坏；说明 correction 不是无代价，但净收益明显。</li>
+<li><b>Detector：</b>absolute threshold 在 Pair A 错杀4/4 healthy；CUSUM 错杀2/4且 Pair B 漏1/2 degraded；relative peer comparison 两组均0 miss/0 false。这是核心 detector claim 的直接证据。</li>
+</ol>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Table 1：</b>不是主性能表，而是 evaluation validity 表。它显示 prompt-only ability assignment 根本没有形成干净能力边界，因此“routing benchmark”可能在测同一个强模型的重复调用，而不是异质 Agent 协作。</p>
+<p><b>Table 2(a)：</b>H/D accuracy 与 token cost 要一起看。MeshHeal degraded 甚至略高于 healthy（.839 vs .831），并非故障让它变强，而是 review/Takeover 在 degraded phase 被更多触发，补偿了坏节点；这是典型“系统纠错强于原始节点质量”的现象。</p>
+<p><b>Table 2(b)：</b>96→576 nodes，edge fraction 5%→0.88%，accuracy 没单调崩溃；说明核心信息只需局部同能力 peer，而非全局 reputation graph。</p>
+<p><b>Table 3：</b>最重要的异常是 all-restored MeshHeal .857 < Symphony .873，以及 reintegration≈45 tasks。它证明 self-healing policy 的保守性确实换来了恢复速度损失。</p>
+<p><b>Table 4：</b>single reviewer healthy .909 比 full .899 还高，但 degraded .865 < .900；committee 的价值主要在异常期，而不是常态。relative detector 的0/0 miss/false则支持“同类相对比较”机制。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>去 committee：</b>degraded accuracy -0.035，说明多 reviewer 主要用于消除单 reviewer 噪声。<b>去 Takeover：</b>degraded -0.056、healthy -0.020，说明它不仅是 failure containment，也承担普通 error correction。<b>absolute threshold→relative：</b>错杀从4/4降到0/4；<b>CUSUM→relative：</b>同时解决 model-pair calibration shift 和漏检。这里的证据是机制相关，但仍不是严格因果：failure 是 backend swap 的受控模拟，尚未覆盖 context poisoning、tool degradation、slow drift 等真实 failure distribution。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="warn"><b>Authors Claim：</b>MeshHeal 能在 decentralized MAS 中自愈 gray failures，并可扩展到大网络。<br><b>Experiments Actually Show：</b>在3个 reasoning benchmark、指定 strong→weak backend swap、固定 rubric/threshold、最多576 agents 下，能检测、隔离、恢复，且 accuracy/token Pareto 很强。<br><b>Not Yet Proven：</b>对 adaptive/malicious Agent、相关 reviewer failures、工具/API故障、连续能力漂移、真实长时部署仍有效；也未证明 LLM judge score 不会被被测 Agent gaming。</div>
+
+<h3>5.16 Contribution</h3>
+<p>① <b>New Mechanism：</b>two-timescale self-healing，把 correction 与 diagnosis 解耦——核心创新。② <b>New Metric/Protocol：</b>detection/closure/reintegration 的 MAS gray-failure evaluation——很有价值。③ <b>New Evaluation Method：</b>Model-Backed MAS Evaluation，指出 prompt ability assignment 不可信——真创新点。④ <b>New System/Engineering：</b>local peer summaries、routing state、probe reintegration。⑤ 组件本身如 committee review、median、relative scoring 并非新算法，创新在组合成 fault-tolerance state machine。</p>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors/observable limitations：</b>恢复慢；需要同能力 healthy neighbors；review 本身消耗 tokens。<b>Additional：</b>reviewer correlated failure 会破坏 peer reference；若1/3以上同类节点同步退化，median reference 可能漂移；LLM-as-judge 可被 style/verbosity 操纵；强/弱 backend swap 比真实渐进退化干净；能力 taxonomy 人工映射；任务都是文本 reasoning，没有 tool-use/vision/shared-memory contamination；isolation 可能造成稀缺能力不可达；没有 Byzantine/malicious agent。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最小复现不必先跑576 agents。先做6 agents + BBH：strong=gpt-oss-120b、weak=Llama-3.2-1B；复现 Table 4 detector comparison。代码模块可拆成 router.py、review.py、relative_detector.py、state_machine.py、failure_schedule.py、metrics.py。最容易踩坑的是：每次 review 必须按 task type+ability 匹配；Takeover 后 detector 仍记原 producer score；不同方法必须共享 task order/seeds；token accounting 要包含 review/correction。最值得先验证的是 absolute/CUSUM/relative 三 detector 的 miss/false，因为这是最便宜又最机制性的 claim。</p>
+
+<h3>5.19 Research Value</h3>
+<p><b>Baseline Potential：高。</b>任何 multi-agent robustness/self-healing 都应纳入。<b>Migration Potential：极高。</b>normal→watched→isolated→probe 与 unlearning robustness 的“忘记→疑似恢复→隔离→验证”天然同构。<b>Attack Potential：高。</b>可以设计 peer poisoning 让 reference distribution 漂移。<b>Evaluation Potential：极高。</b>它提醒不要用 prompt 假装能力差异。<b>Benchmark Potential：高。</b>可以把 failure schedule 从 backend swap 扩成 memory contamination、tool outage、unlearning reacquisition。<b>New Paper Potential：高。</b>尤其适合做 continual unlearning / multi-agent reacquisition verification。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<div class="card"><b>Migration A — Self-Healing Unlearning Agent Network</b><br>
+Original Problem → gray failure；Transferable Mechanism → peer-relative detector + watched/isolated/probe；New Research Question → 一个已 unlearn 的 Agent 若开始从 shared memory/tool output 恢复 forget knowledge，能否在污染扩散前被检测并隔离？；Method Modification → review score 改为 forget-leakage score + retain utility score，peer reference 来自仍满足 forgetting 的 agents；Minimum Experiment → 6个 LLaVA/Qwen-VL agents，2个在第252 task 后注入 forget-evidence retrieval，252 clean +252 attack tasks，5 seeds；Model → LLaVA-1.5-7B/Qwen2.5-VL；Dataset → MLLMU forget/retain；Baseline → no guard、absolute leakage threshold、CUSUM、MeshHeal-style relative；Metric → detection delay、closure、reacquisition rate、retain utility、contagion size、tokens；Expected Contribution → 首个 self-healing multi-agent unlearning protocol；Risk → peer 均被污染时 reference collapse；Collision Risk → 低-中。</div>
+<div class="card"><b>Migration B — Adaptive Peer-Poisoning Attack</b><br>
+Original Problem → detector 假设 normal peers 是可靠 reference；Transferable Mechanism → robust relative statistic；New Research Question → 攻击者最少控制多少 reviewer/neighbor 才能让 degraded agent 隐身或错杀 healthy？；Method Modification → attacker 同步抬高/压低 peer scores，或只在 matched ability 上投毒；Minimum Experiment → 96-agent sparse graph，控制0/5/10/20/33% same-ability peers，固定真实 degraded nodes，扫描 window/threshold；Model → GPT-OSS + Llama weak pair；Dataset → BBH/MATH；Baseline → absolute/CUSUM/trimmed mean/median-of-means；Metric → miss/false、time-to-isolate、attack budget、accuracy；Expected Contribution → Byzantine-robust MAS health monitoring；Risk → LLM judge noise掩盖攻击；Collision Risk → 中。</div>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>它可以直接反过来做 attack：污染同能力 peer 的 score summary 就是在攻击 detector 的“正常参照系”。也可做 black-box probe：不给参数，只观察一个 Agent 在 matched tasks 上相对 peer 的持续 shortfall。对 unlearning verification，最有价值的是把“是否重新学会 forget knowledge”从单次测试变成 streaming health state；recovery probe 正好可改造成 reacquisition probe。新 metric 可以定义 <b>Leakage Detection Delay、Forget Closure、Safe Reintegration Delay</b>。</p>
+
+<h3>5.22 与 Paper 2 的关系</h3>
+<p>MeshHeal 假设“持续输出差”是可由 peer review 观察到的功能故障；TRACE 则说明更隐蔽的一类问题可能完全不降低 task accuracy——模型照常工作，但梯度侧信道持续泄露私人轨迹。两篇合起来提示：Agent health 不能只看 correctness，还应同时监测 privacy/security side channels。MeshHeal 的双时间尺度 detector 可以迁移成 TRACE 风格 leakage detector，而 TRACE 又提供一种比“答案错了”更难发现的 failure signal。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>Gray failure 是“在线但持续变差”，比 crash 更难发现。</li><li>当前任务纠错和长期节点诊断必须分两个时间尺度。</li><li>Fast path 用能力匹配 review、committee、Takeover 防止坏输出进入共享状态。</li><li>Slow path 用同 task/ability peer-relative shortfall 判断持续退化。</li><li>normal→watched→isolated→probe→normal 构成真正 self-healing state machine。</li><li>prompt-only ability assignment 不足以验证 routing，必须让 backend 能力差异真实存在。</li><li>MeshHeal degraded accuracy .839，高于 Symphony .807，tokens 51k vs115k。</li><li>它并非所有 phase 都赢，恢复约45 tasks 是明显弱点。</li><li>576-agent sparse graph 仅0.88%完整边仍隔离全部192个 degraded nodes。</li><li>对你的 unlearning 方向，最值得迁移的是“streaming reacquisition detection + closure + reintegration”。</li></ol>
+</section>
+<section id="p2"><h2>5. Paper 2 Full Deep Dive — TRACE</h2>
+<h3>5.1 基本信息</h3>
+<p><b>Title：</b>Temporal Gradient Inversion for Private Trajectory Reconstruction in Embodied Reinforcement Learning。<b>Authors：</b>Sudip Bhujel, Shanghao Shi, Ruiquan Huang, Ning Zhang, Yang Xiao。<b>Affiliation：</b>University of Kentucky / Washington University in St. Louis。<b>Date：</b>2026-09-24，arXiv:2609.30258v1。<b>Status：</b>arXiv preprint；本次检索未从一手来源确认正式 venue，因此不采信第三方“已接收 NeurIPS”说法。<b>Paper：</b><a href="https://arxiv.org/abs/2609.30258">Abstract</a> / <a href="https://arxiv.org/html/2609.30258">Full HTML</a>。<b>Code：</b>正文说配置随 source code 提供，但 HTML 未给可核验的官方仓库链接；故标记为“正文声称有 source code，公开 URL 未核验”。</p>
+
+<h3>5.2 一句话定位</h3><p>TRACE 把“单帧 gradient inversion”升级成<b>轨迹级时序侧信道攻击</b>：过去的梯度帮助重建当前画面，而 policy-head gradient 甚至能近乎直接暴露离散 action。</p>
+
+<h3>5.3 人话版</h3>
+<p>分布式 embodied RL 常说“摄像头原图不上传，只上传梯度，所以隐私更好”。TRACE 直接挑战这个假设：机器人连续走动时，梯度不是独立样本，而是同一个物理场景的时间序列。作者训练一个约2.27B 参数的攻击模型，把百万维梯度编码成 latent，再用 causal transformer 把前面步骤的梯度/重建图像作为上下文，逐帧恢复 84×84 RGB 和动作。理论上，额外历史梯度提供的条件互信息永远非负；对离散 actor-critic policy，policy-head gradient 结构还能给出 action recoverability。实验中 PPO victim 上 TRACE 达18.77 dB PSNR、LPIPS 0.362、action 100%，而 strongest learned baseline LtI 为16.79 dB/0.671；T=1 时 TRACE 反而只有12.85 dB，证明优势确实来自 temporal conditioning。更危险的是攻击推理仅3–4.5ms/帧，已经接近实时。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>DLG/IG 一类 gradient inversion 把每个输入当独立静态样本，通过反复优化 dummy image 让其梯度匹配观测梯度；Learning-to-Invert 则训练 feed-forward inverter，把攻击成本摊到离线训练。但 embodied RL 与分类不同：连续帧由 MDP transition 连接，房间布局、物体、光照、视角只缓慢变化；梯度还混合 policy、value、entropy 和 advantage/return 信息。旧攻击忽略“g₁…gₜ₋₁ 对 sₜ 的额外约束”。例如机器人从厨房门口向前0.25m，当前梯度本身可能对应多种纹理，但前几帧已经告诉攻击者“冰箱在左、桌子在右”，当前图像的不确定性会明显下降。</p>
+
+<h3>5.5 Core Insight</h3>
+<p><b>Observation A：</b>policy gradient 必须穿过视觉 backbone，因此梯度保留输入结构。<b>Observation B：</b>连续 embodied observations 有强 temporal coherence，因此历史梯度携带当前 state 的额外信息。<b>Observation C：</b>离散 policy head 的列梯度符号/结构与 chosen action 有直接关系。作者分别用 conditional mutual information 与 action-recovery theorem 给出理论支撑，再用 T sweep、component ablation 验证。这里“temporal context cannot hurt Bayes-optimal MSE”是理论结果；实际 Transformer 能否吃到这部分信息则是经验问题。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="flow">Victim trajectory (s_t,a_t) → PPO/A2C per-step gradients g_t
+→ attacker observes ordered G_1:T
+→ gradient encoder φ_enc(g_t)=z_t
+→ previous GT/reconstructed image encoder gives e_{t-1}
+→ interleave [z1,e0,z2,e1,...]
+→ causal temporal Transformer
+→ contextual latent z~_t
+→ residual image decoder + action head
+→ ŝ_t, â_t
+→ autoregressive feedback of reconstructed image into next step</div>
+<p><b>Step 1 Gradient encoder：</b>高维 raw gradient d 先投影到 d_enc=2048，再压到 D=1024。默认模型2.27B参数，1.9B权重集中在输入 projection，说明这是“高维梯度接口”的昂贵攻击。</p>
+<p><b>Step 2 Teacher forcing warmup：</b>训练早期用真实上一帧的 image embedding e_{t-1}，形成 [z_t,e_{t-1}] 交错序列，降低 autoregressive cold-start。</p>
+<p><b>Step 3 Causal Transformer：</b>6层、8 heads，只允许看过去，避免未来帧泄漏；这使攻击与在线监听更一致。</p>
+<p><b>Step 4 Decoder：</b>从 contextualized latent 同时恢复 RGB 与 discrete action。图像 loss 混合 MSE、L1、LPIPS，action 用 CE，并有 rollout loss 约束自回归误差积累。</p>
+<p><b>Step 5 Scheduled sampling：</b>逐渐把真实上一帧替换为自己重建的上一帧，缩小 train/test exposure bias。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">Victim objective:
+L_t^ac = L_t^policy + c_v(V(s_t)-R̂_t)^2 - c_e H(π(.|s_t))
+
+Observed leakage:
+g_t = ∇_θ L_t^ac |_(θ=θ0)
+
+Temporal gain:
+ΔI_t = I(s_t ; g_1:t-1 | g_t)
+     = H(s_t|g_t) - H(s_t|g_1:t) ≥ 0
+
+Therefore:
+MSE*(g_1:t) ≤ MSE*(g_t)</div>
+<p>ΔI_t 的直觉非常干净：已经知道当前梯度 g_t 后，过去梯度还能消掉多少对当前图像的剩余不确定性。只要它大于0，时序攻击就有理论空间。定理的 exact identity 需要 Markov victim policy + one-step unnormalized estimator 等条件；现实 PPO 的 GAE λ&gt;0 和 rollout normalization 会引入跨时间耦合，因此作者明确把这部分从“精确理论”降为经验验证，这一点是严谨的。</p>
+<p>与 strongest baseline LtI 的目标差异不在单帧 loss，而在 conditioning set：LtI 近似 f(g_t)；TRACE 学 f(g_1:t, ŝ_1:t-1)。最关键超参数 T：T=1→8 带来约+5.9dB PSNR；再到64继续升到20.29dB但边际收益下降且训练更贵。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>家庭机器人在客厅执行 MoveAhead→RotateLeft→MoveAhead。服务器看不到摄像头，只收到三步 PPO gradients。单帧攻击看到 g₃，只能猜“某室内画面”；TRACE 先从 g₁ 恢复沙发/窗户粗轮廓，从 g₂ 的 action signal 恢复 RotateLeft，并把上一帧 embedding 与 g₃ 一起送入 causal transformer。由于已知相机左转15°且场景连续，第三帧中沙发应右移、窗户相对位置变化有限，候选图像空间被压缩。最终同时输出 ŝ₃ 与 MoveAhead。这个机制与视频建模类似，但“token”不是图像帧本身，而是私有帧在梯度空间留下的痕迹。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="scroll"><table><tr><th>Baseline</th><th>机制</th><th>合理性</th><th>失败点 / TRACE差异</th></tr>
+<tr><td>DLG</td><td>L-BFGS 300 iter 联合优化 dummy image/action</td><td>经典梯度匹配</td><td>RL gradient复杂，PPO PSNR仅5.47dB；慢31s/帧</td></tr>
+<tr><td>IG</td><td>先解析 action，再 Adam 4800 iter 匹配 gradient cosine+TV</td><td>强优化式 baseline</td><td>8.73dB、39.3s；不利用时间结构</td></tr>
+<tr><td><b>LtI（strongest）</b></td><td>MLP 学 gradient→image/action</td><td>同为 amortized，速度毫秒级，最公平</td><td>PPO 16.79dB/LPIPS .671；TRACE 18.77/.362，差异来自 temporal conditioning</td></tr>
+<tr><td>TRACE T=1</td><td>自己的单帧 ablation</td><td>最关键机制对照</td><td>仅12.85dB，甚至弱于LtI，反证“只是模型更大”</td></tr></table></div>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Environment：</b>AI2-THOR point-goal navigation；120 indoor scenes，108 train /12 held-out。<b>Observation：</b>RGB 84×84。<b>Action：</b>5 discrete：MoveAhead 0.25m、RotateLeft/Right 15°、LookDown/Up 15°。<b>Victim：</b>shared-CNN actor-critic + policy/value heads，PPO 或 A2C，GAE。<b>Attacker：</b>2.27B default，T=8、D=1024、6 transformer layers、8 heads、50 epochs、lr 1e-4；训练6×H200，PPO约10.57h、A2C约12.92h。</p>
+<p><b>RQ1：</b>TRACE 是否优于 DLG/IG/LtI？100 held-out trajectories。<b>RQ2：</b>跨 scene 是否能 zero-shot/few-shot transfer？target 0–50%。<b>RQ3：</b>常见 defenses 是否挡得住？quantization/pruning/noise/DP-SGD。<b>RQ4：</b>收益到底来自 temporal context、哪些 gradient layers、哪些 loss？T/component/loss ablations。附录还覆盖 recurrent/residual/compact transformer victim、多模态 input、larger discrete action space 与 temporal gradient aggregation。</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>MSE↓：</b>逐像素平方误差，低好，但模糊图可能拿到不错MSE。<b>PSNR↑：</b>由MSE对数变换的重建信噪比，dB越高越接近原图；对感知质量不总可靠。<b>SSIM↑：</b>比较亮度/对比度/结构，较适合场景几何。<b>LPIPS↓：</b>用深层视觉特征衡量 perceptual distance，比MSE更接近“看起来像不像”，但依赖预训练特征。<b>Action Accuracy↑：</b>动作是否恢复正确；5动作随机约20%，所以19–20%基本随机。<b>Inference time↓：</b>攻击在线可用性关键。四个图像指标必须联合看：PSNR提升但LPIPS恶化可能只是像素平均更好。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>TRACE vs LtI（PPO）：</b>18.771 vs16.790 dB，+1.98dB；LPIPS .362 vs .671，下降46%；MSE .014 vs .023。支持 temporal conditioning。</li>
+<li><b>A2C：</b>18.873 vs17.652 dB，+1.22dB；LPIPS .358 vs .639，下降44%。跨两种 actor-critic 算法趋势一致。</li>
+<li><b>速度：</b>TRACE 4.5ms(PPO)/3.0ms(A2C)，IG约39s，差约四个数量级；但 LtI 更快1.2/0.2ms，所以“最快”不是 TRACE claim。</li>
+<li><b>Strongest mechanism result：</b>T=1 12.85dB → T=8 18.74dB，+5.89dB；T=64 20.29dB。单帧自身很弱，时间上下文才是主要增益。</li>
+<li><b>Few-shot：</b>PPO zero-shot18.8dB；只用10% target trajectories→20.9dB；50%→23.8dB/LPIPS .161。攻击迁移后很容易适配。</li>
+<li><b>Pruning failure：</b>只保留10% gradients，PPO仍18.8dB、action99.9%；简单 sparsification 几乎没防住。</li>
+<li><b>Quantization：</b>4-bit把PPO降到12.4dB/action37.9%，2-bit到11.3dB/19.4%；有效但很可能有训练 utility cost，论文没测。</li>
+<li><b>DP-SGD：</b>ε=1/5/10 都把PPO action压到约18–21%、PSNR≈12dB，是 strongest defense；但作者明确没测 navigation utility，所以 privacy-utility trade-off 未闭环。</li>
+<li><b>Gradient component：</b>heads-only PSNR14.12，但action99.6%；说明视觉细节主要在早层，而行为标签在网络多处可恢复。</li>
+</ol>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 1：</b>作者真正的研究假设图：single-frame error高，随着 t 增长 temporal context 增益上升后饱和。它不是结果图，但把“轨迹泄漏”与“单帧泄漏”区分清楚。</p>
+<p><b>Figure 2：</b>架构关键是 gradient token 与 previous-image context token 交错，而不是简单把8个 gradient concat；causal mask 保证在线可行。</p>
+<p><b>Table 1：</b>最重要的对比。LtI 已经100% action accuracy，TRACE 的主要新价值是视觉 fidelity，而不是 action recovery；如果只看 action metric，新方法没有提升。</p>
+<p><b>Table 2：</b>zero-shot 已18.8dB，说明攻击不是记住特定房间；但 target data 越多持续提升，也说明 domain-specific auxiliary data 仍重要。</p>
+<p><b>Table 3：</b>pruning/8-bit几乎无效，DP-SGD有效；但缺 downstream utility 是被正文主动承认的证据缺口。</p>
+<p><b>Table 4：</b>T sweep 是最有说服力的 mechanistic ablation；T=1弱于LtI排除了“更大网络天然更强”的简单解释。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>T=1→8：</b>PSNR +5.9dB、LPIPS约减半，直接验证 temporal prior。<b>只用 policy/value heads：</b>视觉PSNR降到14.12，但 action仍99.6%，支持“动作与视觉泄漏分布在不同结构”。<b>去 action loss：</b>action从100%崩到19%，视觉几乎不改善，说明 joint objective 并没有靠牺牲视觉换动作。<b>去L1：</b>PSNR 17.90、LPIPS .409，双双变差；<b>去LPIPS：</b>PSNR反而18.94但LPIPS变差到.401，典型 pixel/perceptual trade-off。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="warn"><b>Authors Claim：</b>ordered embodied RL gradients 可被近实时重建为 observation-action trajectory，temporal structure amplifies leakage。<br><b>Actually Show：</b>AI2-THOR、per-step gradients、白盒 honest-but-curious server、PPO/A2C 与若干 victim variants 下，TRACE 显著优于单帧 learned/optimization attacks；T ablation 与互信息分析一致。<br><b>Not Yet Proven：</b>真实 federated robot fleet 常见的 multi-step local update/secure aggregation/continuous action/off-policy RL 下同样有效；DP defense 后 task utility 是否可接受；理论 exact identity 在 GAE/normalization 下不成立。</div>
+
+<h3>5.16 Contribution</h3>
+<p>① <b>New Attack：</b>trajectory-level amortized gradient inversion。② <b>New Mechanism：</b>causal temporal conditioning + autoregressive image feedback。③ <b>New Theoretical Result：</b>discrete-action recovery 与 temporal conditional-information gain。④ <b>New Empirical Finding：</b>时间长度显著放大隐私泄漏，pruning/8-bit弱防御。⑤ <b>New Evaluation：</b>跨 victim architecture/multimodal/action-space/defense。不是新 RL algorithm。</p>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors' Limitation：</b>核心接口是假设服务器能看到 ordered per-step gradients；multi-step client updates 会混合路径并削弱结构；多模态只重建RGB/action而非goal；continuous Gaussian action 不满足离散 action theorem。<b>Additional：</b>攻击训练本身很重（6×H200、约11–13h）；2.27B inverter 对很多真实 attacker 不便宜；auxiliary trajectories 来自同 task family；AI2-THOR 与真实机器人视觉 domain gap 大；没有 secure aggregation；defense 没有 privacy-utility curve；PSNR≈19dB 是否足以泄露身份/文字等语义隐私需要任务级评估。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最小复现先不要上2.27B：用AI2-THOR 10 train scenes +2 held-out、PPO victim、T∈{1,8}，把 gradient projection 降到256/512维，验证“时间上下文是否仍带来显著 PSNR/LPIPS 增益”。数据必须保存严格时间顺序，并用冻结 victim 以完全一致 actor-critic objective 重算 augmented images 的 gradients。最敏感点是 per-step gradient definition、GAE/normalization、gradient flatten order、teacher forcing/scheduled sampling。首个 smoke test 应复现 T=1 vs T=8，而不是先追18.8dB绝对值。</p>
+
+<h3>5.19 Research Value</h3>
+<p><b>Baseline Potential：中高。</b>对 privacy/gradient attack 必须纳入。<b>Migration Potential：极高。</b>“单点信号弱、序列联合后泄漏强”与 unlearning robustness 完全同构。<b>Attack Potential：极高。</b>本身就是强 attack。<b>Evaluation Potential：高。</b>提示 unlearning 不能只做独立 query，应做 trajectory-conditioned probe。<b>Benchmark Potential：高。</b>可建立 Temporal Unlearning Leakage。<b>New Paper Potential：极高。</b>特别适合把你已有的 GradNorm/MIA/Probe 从 checkpoint-level 升级为 temporal recovery sequence。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<div class="card"><b>Migration A — Temporal Unlearning Inversion / Recovery Probe</b><br>
+Original Problem → 从连续 gradients 重建私有 trajectory；Transferable Mechanism → causal temporal conditioning；New Research Question → 单次 MIA/GradNorm 看不出的 forget knowledge，能否通过连续 relearning/probing 梯度序列被恢复？；Method Modification → 输入不再是 RGB policy gradients，而是同一 forget entity 的 step-wise fine-tuning gradients / layer GradNorm / loss vectors，causal transformer 输出 entity answer probability 或 hidden representation；Minimum Experiment → 对20个 unlearned checkpoints，每个 forget entity 做8-step micro-relearning，每步只用1–4 examples，记录q/k/v/o LoRA gradients；T={1,2,4,8}；Model → LLaVA-1.5-7B；Dataset → MLLMU forget exact/semantic + retain；Baseline → single-step GradNorm、Loss MIA、Min-K、linear probe；Metric → recovery AUC、answer probability、time-to-reacquire、retain utility；Expected Contribution → trajectory-level unlearning verification；Risk → gradient access是white-box；Collision Risk → 低。</div>
+<div class="card"><b>Migration B — Sequence-Aware Defense for Unlearning Robustness</b><br>
+Original Problem → per-step pruning/noise挡不住跨时间泄漏；Transferable Mechanism → defense 必须破坏 temporal correlation；New Research Question → unlearned model 的恢复是否来自跨step一致方向，而非单step强信号？；Method Modification → 在relearning过程中对forget-sensitive gradient subspace做step-wise orthogonalization/rotation或temporal DP；Minimum Experiment → 10 methods×forget5/10/15，relearning 20 steps，对照普通 clipping/noise/quantization vs temporal decorrelation；Model → LLaVA；Dataset → MLLMU；Baseline →现有 Quantization/Relearning robustness；Metric → post-relearn forgetting、retain utility、gradient autocorrelation、recovery AUC；Expected Contribution → robustness mechanism而非仅新metric；Risk → utility损失；Collision Risk → 中。</div>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>TRACE 几乎可以直接翻译成 unlearning verification philosophy：不要问“一个 query 能不能把忘记内容问出来”，而要问“连续观测到的多个弱泄漏是否联合足够恢复”。black-box 版本可把 g_t 换成 logits/loss/answer probability trajectory；white-box 可用 GradNorm/layer gradients。新的 metric 可定义 <b>Temporal Recovery Gain ΔR(T)=AttackScore(T)-AttackScore(1)</b>，以及达到某恢复阈值所需最小序列长度 T*。</p>
+
+<h3>5.22 与 Paper 1 的关系</h3>
+<p>MeshHeal 的 detector 也是把单次 noisy score 变成窗口证据；TRACE 则从信息论角度解释为什么序列条件能降低不确定性。二者可以组合：用 TRACE 式 temporal encoder 代替 MeshHeal 手工 window statistic，学习更复杂的 gray-failure/reacquisition dynamics；反过来用 MeshHeal 的 relative peer calibration 解决 TRACE/temporal unlearning probe 的 domain shift。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>梯度不是“安全的中间量”，连续 RL 梯度更不是。</li><li>TRACE 把 gradient inversion 从单帧变成 trajectory inversion。</li><li>核心增益来自过去梯度对当前 state 的条件互信息。</li><li>PPO/A2C 下 policy-head gradient 还能泄漏 discrete action。</li><li>TRACE PPO 18.77dB/LPIPS .362，而 strongest LtI 16.79/.671。</li><li>T=1 TRACE 只有12.85dB，T=8到18.74dB，是最关键机制证据。</li><li>pruning到只留10%仍几乎挡不住，DP-SGD最有效但没测task utility。</li><li>攻击在线只需3–4.5ms/帧，但离线训练昂贵。</li><li>最大现实限制是 per-step ordered gradient + white-box + discrete action 假设。</li><li>对 unlearning 最值得迁移的是“Temporal Recovery Gain”：多个弱泄漏联合是否能恢复已忘知识。</li></ol>
+</section>
+
+<section id="cross"><h2>7. Cross-Paper Synthesis</h2>
+<p>两篇共同说明一个很重要的趋势：<b>静态单点评估正在失效</b>。MeshHeal 里一次 review score 不足以判断 Agent 是否持续退化；TRACE 里一次 gradient 不足以揭示完整画面，但时间序列联合后泄漏显著增强。换句话说，系统状态的真正风险存在于 trajectory，而不是 snapshot。</p>
+<p>可组合机制是：TRACE 的 causal temporal encoder 学习复杂 evidence dynamics；MeshHeal 的 peer-relative calibration 抵抗不同 task/model 的 score scale shift；再加 watched→isolated→probe 的可执行治理状态机。这个组合非常适合 unlearning：把“是否忘记”从一次 forget QA，升级成连续 probe/relearning/tool-use 下的 health monitoring。</p>
+<p>最值得借用的实验范式有三个：① T=(1, 2, 4, 8) 明确验证 temporal gain；② controlled backend/failure injection 建立真实 ground truth；③ detection delay/closure/reintegration 不只报最终 accuracy。</p></section>
+
+<section id="opp"><h2>8. Combined Research Opportunities</h2>
+<div class="callout"><b>Best Migration Direction：Temporal Self-Healing Unlearning Verification。</b><br>
+把每个 unlearned checkpoint/Agent 看成一个可能“重新获得 forget knowledge”的节点；连续记录 Answer Probability、Loss/GradNorm、probe hidden state、micro-relearning gradients；用 causal temporal model 得到 reacquisition risk，再用 peer-relative calibration 与 normal→watched→isolated→probe state machine 做在线验证。最小版本直接复用你现有 MLLMU + Relearning + GradNorm 数据，不需要先造新 benchmark。</div>
+<p>第二机会是 <b>Byzantine Recovery Verification</b>：攻击者不直接让 unlearned model 恢复，而是污染其他 Agent/shared memory，使 peer reference 本身逐渐漂移。它把 Machine Unlearning、Multi-Agent contagion 与 robust distributed detection 三条线真正交叉起来。</p></section>
+
+<section id="collision"><h2>9. Collision / Overlap</h2>
+<p><b>Strongest Collision：</b>“单次评估通过”与“动态系统安全”之间的冲突。MeshHeal 证明 prompt/单次 routing success 不等于节点健康；TRACE 证明单帧隐私评估不等于 trajectory privacy。对应到 unlearning：一次 forget benchmark 低分并不等于在 relearning、tool access、shared memory 或连续 probe 下仍然忘记。</p></section>
+
+<section id="priority"><h2>10. Reading / Reproduction Priority</h2>
+<ol><li><b>先读 TRACE Table 4 + Theorem 4.5：</b>这是最能直接生成 unlearning 新实验的部分。</li><li><b>再读 MeshHeal Table 1 + Table 4：</b>理解 evaluation validity 与 relative detector。</li><li><b>最小实验：</b>用已有 MLLMU checkpoint，对同一 forget entity 做8-step micro-relearning，记录每步 GradNorm/Loss/AP，比较 T=1 与 causal T=8 recovery AUC。</li><li><b>第二阶段：</b>把 MeshHeal state machine 加上，定义 Leakage Detection Delay / Forget Closure / Safe Reintegration Delay。</li></ol></section>
+
+<section id="sources"><h2>11. Sources / Links</h2>
+<p><b>Primary sources：</b><a href="https://arxiv.org/abs/2609.29015">MeshHeal arXiv</a> · <a href="https://arxiv.org/html/2609.29015">MeshHeal full HTML</a> · <a href="https://arxiv.org/abs/2609.30258">TRACE arXiv</a> · <a href="https://arxiv.org/html/2609.30258">TRACE full HTML</a>.</p>
+<p class="audit"><b>Depth Audit：</b>两篇均已核对正文 Method、公式/理论、Experiments、Appendix/ablation；每篇包含完整 pipeline、strongest baseline、≥5定量结果/关键现象、≥3 Table/Figure reading、mechanistic analysis、claim-vs-evidence、contribution、limitations、reproduction、research value、2个 migration 与 attack/verification lens。未从一手来源确认的 venue/code 状态均明确标注，未猜测。</p></section>
+</main></body></html>
