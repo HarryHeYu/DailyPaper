@@ -1,0 +1,404 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Deep Dive 2026-09-28</title><style>
+:root{--bg:#f7f8fb;--paper:#fff;--ink:#18202a;--muted:#5d6978;--line:#dfe5ec;--accent:#3157c8;--accent2:#6b3fc9;--good:#0b7a53;--warn:#a85b00;--bad:#b42318}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;line-height:1.78}
+main{max-width:1120px;margin:auto;background:var(--paper);padding:48px 64px 90px;box-shadow:0 0 30px rgba(20,30,50,.06)}
+h1{font-size:34px;line-height:1.25;margin:0 0 8px}h2{font-size:27px;margin-top:54px;padding-top:16px;border-top:2px solid var(--line)}h3{font-size:21px;margin-top:34px}h4{font-size:17px;margin-top:25px;color:#293548}
+p{margin:10px 0}.muted{color:var(--muted)} .lead{font-size:18px;color:#334155}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.toc,.card,.callout,.formula{border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin:18px 0;background:#fbfcfe}
+.toc ul{columns:2;column-gap:34px}.toc li{break-inside:avoid;margin:5px 0}
+.tag{display:inline-block;border:1px solid #cfd8ef;background:#f2f5ff;color:#304b9b;border-radius:999px;padding:2px 9px;margin:2px;font-size:13px}
+.good{border-left:5px solid var(--good)}.warn{border-left:5px solid var(--warn)}.bad{border-left:5px solid var(--bad)}
+.formula{font-family:"Times New Roman",serif;font-size:17px;background:#faf8ff;overflow-x:auto}
+.pipeline{font-weight:600;color:#263b75;background:#f4f7ff;border-radius:10px;padding:14px 18px}
+.tablewrap{overflow-x:auto;margin:16px 0}table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}th,td{border:1px solid var(--line);padding:9px 11px;vertical-align:top}th{background:#f2f5f9;text-align:left}
+.kicker{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent2);font-weight:700}
+hr{border:0;border-top:1px solid var(--line);margin:35px 0} ul,ol{padding-left:24px}li{margin:5px 0}
+.small{font-size:13px}.quote{padding-left:18px;border-left:4px solid #cbd5e1;color:#475569}
+@media(max-width:760px){main{padding:28px 20px}.toc ul{columns:1}h1{font-size:28px}}
+</style></head><body><main>
+<header><div class="kicker">Daily Top Papers Deep Dive</div><h1>AI Deep Dive — 2026-09-28</h1>
+<p class="lead">今日只选 2 篇：一篇直接击中 Machine Unlearning 的新攻击面，一篇击中 Agent/MCP 的状态生命周期安全。深度优先，不扩到第三篇。</p>
+<p class="muted">Selection window: 最近 24–72 小时为主，允许高价值 backfill；本报告独立检索，不依赖 Radar。</p></header>
+<nav class="toc"><b>目录</b><ul>
+<li><a href="#selection">2. Today's Deep Dive Selection</a></li><li><a href="#why">3. 为什么选这两篇</a></li>
+<li><a href="#p1">4. Paper 1 Full Deep Dive</a></li><li><a href="#p2">5. Paper 2 Full Deep Dive</a></li>
+<li><a href="#cross">7. Cross-Paper Synthesis</a></li><li><a href="#opps">8. Combined Research Opportunities</a></li>
+<li><a href="#collision">9. Collision / Overlap</a></li><li><a href="#priority">10. Reading / Reproduction Priority</a></li>
+<li><a href="#sources">11. Sources / Links</a></li></ul></nav>
+
+<section id="selection"><h2>2. Today's Deep Dive Selection</h2>
+<div class="card good"><b>#1 The Tokens Remember: When Tokenization Bypasses Knowledge Editing and Unlearning</b><br>
+<span class="tag">Machine Unlearning</span><span class="tag">Knowledge Editing</span><span class="tag">Recovery Attack</span><span class="tag">Tokenization</span>
+<p>优先级最高。它不是再做一个 canonical forget metric，而是给出 reference-free recovery attack；对 robustness、relearning、probe、MLLM unlearning 都有直接迁移价值。</p></div>
+<div class="card"><b>#2 Persistent Billable State: Denial-of-Wallet Attacks and Defenses in Tool-Calling LLM Agents</b><br>
+<span class="tag">Agent</span><span class="tag">MCP</span><span class="tag">Security</span><span class="tag">Persistent State</span>
+<p>把 Agent 的 retained context 变成明确的安全对象，并用 host-side invariant + progress authorization 做防御，系统与评估范式都很可迁移。</p></div>
+</section>
+<section id="why"><h2>3. 为什么选这 2 篇</h2>
+<p>今天不选第三篇，因为这两篇都需要把攻击机制、实验 protocol、failure mode 与迁移方案讲透。Paper 1 与你的 unlearning 主线高度重合，并且它提供的是“攻击/verification”而非又一个训练 objective；Paper 2 则代表 Agent 安全从 prompt injection 向 <b>state lifecycle + resource governance</b> 迁移。两篇还能在“pre-ingestion / pre-reingestion boundary”上形成强 synthesis。</p></section>
+
+<section id="p1">
+<h2>4. Paper 1 — The Tokens Remember: When Tokenization Bypasses Knowledge Editing and Unlearning</h2>
+<div class="card">
+<div class="kicker">Machine Unlearning / Model Editing / Security</div>
+<p><b>Authors:</b> Manit Baser, Aditya Nawal, Dinil Mon Divakaran, Mohan Gurusamy<br>
+<b>Affiliation:</b> National University of Singapore; A*STAR Institute of Advanced Intelligence and Computing, Singapore<br>
+<b>Date / Status:</b> 2026-09-24, arXiv:2609.29045v1, cs.CR preprint<br>
+<b>Paper:</b> <a href="https://arxiv.org/abs/2609.29045">arXiv</a> · <a href="https://arxiv.org/pdf/2609.29045">PDF</a><br>
+<b>Code:</b> 论文给出匿名 4open.science Toketive artifact；正文明确称提供代码、文档和数据说明。正式长期 GitHub 地址未在当前版本确认，因此不猜测。</p>
+</div>
+
+<h3>5.2 一句话定位</h3>
+<p class="lead"><b>它把“tokenizer 只是无害预处理”推翻为一个攻击面：</b>同一字符字符串的不同合法 tokenization 会走不同内部计算轨迹，从而绕过只在 canonical trajectory 上生效的局部 editing / unlearning，并在只持有发布后模型的条件下恢复被删知识。</p>
+
+<h3>5.3 人话版</h3>
+<p>多数知识编辑或 unlearning 工作默认：用户输入一句话，tokenizer 会按标准方式切词，于是只需把这条标准路径对应的参数/神经元改掉即可。但开放权重模型的使用者并不受 tokenizer API 限制，可以直接喂 token IDs。同一句“某人的电话号码是……”可以被拆成许多不同 token 序列；字符完全一样，模型内部激活却不同。Toketive 就利用这一点：先从 canonical prompt 得到参考隐藏表示，再主动生成大量“解码后仍是同一句话”的非规范分词，用 representational entanglement 过滤出既保留语义、又足够偏离已打补丁轨迹的候选。作者发现六种 editing/unlearning 方法平均有 38.6% 的替代 tokenization 能恢复旧答案；攻击还能以 84.2% F1 判断某事实是否被改过，并以 74.5% top-5 accuracy 重构旧答案。重要之处不是又多一个 jailbreak，而是它直接挑战 unlearning evaluation 的输入表示假设：只在 canonical tokenizer 下“忘掉”并不等于知识边界真的被删除。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>典型 locate-then-edit / locate-then-unlearn 范式先用 causal tracing、关键层定位或神经元选择找出某事实的“关键存储位置”，再做局部权重更新。其优点是 locality：不必全量微调，也尽量不伤 retain knowledge。问题在于定位本身通常基于一个具体 prompt 的 canonical token sequence。若“John Doe 的电话是”在标准 BPE 下形成若干 subject token，编辑器定位并修改这些 token 在某些 MLP 层触发的 key-value 路径；攻击者却可以把完全相同字符拆成另一组合法 subwords，subject 的边界、attention pattern、residual stream 与 MLP activation 都改变，于是“被补丁的路径”与“事实本身”不再等价。</p>
+<p>此前安全评估主要有两类限制。第一类需要 pre-edit model 或其 weight difference，例如 KSTER / TULA-DR；第二类绕开原模型但要训练 shadow model / classifier，例如 RULI、U-LiRA、DEED。更关键的是，它们大多把 canonical tokenization 当固定输入接口。Toketive 填的 gap 因而是：<b>在只有 post-edit open-weight model、没有原模型、没有训练数据、没有 shadow model 的条件下，能否仅改变表示路径来检测并恢复修改前知识？</b></p>
+
+<h3>5.5 Core Insight</h3>
+<p>核心 observation 有两层。第一层是经验事实：非规范 tokenization 并不必然破坏语义；在未编辑模型上，一部分替代分词仍会收敛到 canonical answer。第二层更关键：这种“是否仍保留原语义轨迹”可由中间层表示与 canonical representation 的 cosine similarity 预测，而且比 token-level edit distance 更有效。于是攻击不需要盲搜指数大的 tokenization space，而是寻找一个<b>中等相似度窗口</b>：太相似，仍穿过被 patch 的 circuit；太不相似，连原事实也丢了；中间区域最可能同时“绕过 patch + 保留事实”。这属于经验机制发现，不是证明某个事实严格存储在独立 circuit 中；论文用跨模型 AUC、校准和 bypass 实验支持这个 routing signal。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="pipeline">Input prompt x + released edited/unlearned model fθ′ → canonical forward pass → generate valid noncanonical tokenizations → probe hidden representation → similarity-band routing → Phase 1 detect modification → Phase 2 keep bypass responses → frequency aggregation / top-k → reconstructed pre-edit object</div>
+<h4>Step 1：建立 canonical reference</h4>
+<p>先用标准 tokenizer k* 得到 v*=k*(x)，对 fθ′ 做一次 forward，记录选定 probe layer 的 canonical hidden representation h* 与 canonical completion。这里不需要知道原模型回答。这个 reference 的作用不是“旧答案标签”，而是定义同一字符串在当前发布模型中的标准计算轨迹。</p>
+<h4>Step 2：构造合法 alternative tokenizations</h4>
+<p>对字符字符串做 token splitting，候选 token sequence 必须满足逐 token 解码再拼接后与原字符串完全相同。攻击强度 α 控制碎片化程度：α 越高，越倾向拆成更细 token。作者还做 decode–reencode validation，处理 byte token、leading-space marker、Unicode boundary，并禁止特殊 token；因此攻击不是改字、插空格或 typo，而是保持 surface string 恒等。</p>
+<h4>Step 3：用 representational entanglement 做路由</h4>
+<p>每个候选 u 前向后取同一 probe layer representation h(u)，计算 S(u,v*)=cos(h(u),h*)。Toketive 不简单追求“越远越好”，而是把候选送入 detection band 或 reconstruction band。检测偏向 low-to-medium similarity，因为编辑后出现大量“不同 tokenization 给出不同响应”本身就是修改痕迹；重构偏向 medium-to-high similarity，因为还需要保留原事实语义。</p>
+<h4>Step 4：Phase 1 — modification detection</h4>
+<p>在预算内采样候选，统计非规范分词对 canonical response 的偏离/绕过行为，形成 bypass-based detection statistic，与阈值 τdet 比较。未编辑模型也会因非规范分词产生天然波动，所以作者用同一 detector 在 edited 与 corresponding unedited model 上构造正负样本，避免把 tokenization 本身的随机不稳定误当作 edit signal。</p>
+<h4>Step 5：Phase 2 — reconstruction</h4>
+<p>一旦判为 edited/unlearned，攻击进一步搜索 reconstruction band，丢掉仍输出 canonical post-edit answer 的样本，仅保留 bypass continuation。对这些响应抽取候选 object，再按频率 majority vote，返回 top-k。直觉是：真正旧事实会在多个不同但语义仍相近的“未补丁路径”上重复出现，而纯粹失真的 continuation 更分散。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula"><b>合法 tokenization：</b> v₁ ⊕ v₂ ⊕ … ⊕ vₘ = x，且 vᵢ∈V。<br>Canonical v*=k*(x) 只是全集 T<sub>V</sub>(x) 中一个元素。</div>
+<p>这条定义把攻击面说得很清楚：语义输入 x 不变，但模型真正接收的是 token sequence v。若安全性质只对 v* 成立，它不是字符串级不变量。</p>
+<div class="formula"><b>Representational entanglement：</b> S(i,j)=cos(hᶫᵢ,hᶫⱼ)。</div>
+<p>原指标用于衡量事实间表示纠缠，Toketive 把它重新解释成同一 prompt 的不同 tokenization 是否仍沿着相似事实表示流动的 routing signal。S 太高意味着“语义还在，但可能也还走 patch”；S 太低意味着“绕开 patch，但事实也可能没了”。因此最关键超参数不是单纯 α，而是 <b>similarity band 边界 + α 的反馈调节</b>。band 过高会降低 bypass；过低会增加乱码/错误事实，重构 precision 下滑。</p>
+<div class="formula"><b>Bypass Rate：</b> (1/K) Σᵢ 1[o ∈ ŷ<sub>uᵢ</sub>]，论文主实验 K=30。</div>
+<p>这里 o 是 pre-update object。对研究者而言，这个 metric 比 canonical forget accuracy 更接近“残余知识能否被同义表示路径重新唤起”。但它仍是攻击成功率，不等价于严格 retraining-equivalence。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>假设一个 LLM 原来知道 “Ipsos MORI’s headquarters are in → London”，用 MEMIT 把 canonical answer 改成 Oslo。标准 tokenizer 下查询得到 Oslo，看起来 edit 成功。攻击者保持字符完全不变，只把 token IDs 换成另一种合法切法，例如把 “headquarters” 拆成多个更小 subword。若某候选与 canonical hidden representation 的 cosine similarity≈0.66，它仍理解“总部在哪里”，但没有完全复现 canonical subject-token circuit。论文的真实示例中，这条路径重新生成 London。Toketive 会把这种响应视作 bypass；当多个不同 tokenization 都重复 London 时，London 在 top-k vote 中上升，于是攻击者在不知道 pre-edit model 的情况下重构旧答案。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table><tr><th>Baseline</th><th>怎么做 / 为什么合理</th><th>本文 setting 的失败点</th><th>Toketive 改了什么</th></tr>
+<tr><td><b>Edit Distance</b></td><td>用 token sequence 的 normalized Levenshtein distance 估计偏离程度；便宜、无需内部语义。</td><td>表面 token 差异与“是否仍沿事实轨迹”相关性弱，AUC/校准明显落后。</td><td>换成 hidden representation similarity；机制性改动。</td></tr>
+<tr><td><b>Random Sampling</b></td><td>随机生成合法非规范分词；如果 bypass 很普遍应能撞到。</td><td>能发现一些泄漏，但 continuation 太分散，重构 top-5 只有 36.9% 平均值。</td><td>用 similarity band 主动集中搜索。</td></tr>
+<tr><td><b>FUMA-gradient</b></td><td>用 post-edit model 的 loss gradient norm 当 edit detection score。</td><td>严格 reference-free setting 下 FPR 很高，平均 F1 60.8%；而且无法给出旧答案内容。</td><td>统一 detection + reconstruction。</td></tr>
+<tr><td><b>DEED / RULI / U-LiRA</b></td><td>classifier/shadow-model 路线可以学习 edit membership signal。</td><td>需要额外训练、数据分布或 shadow model，post-release auditor 未必有。</td><td>零辅助训练。</td></tr>
+<tr><td><b>TULA-DR / KSTER</b></td><td>利用 pre/post 权重差异做逆向恢复。</td><td>依赖 pre-edit model/weight delta。</td><td>只用 fθ′。</td></tr></table></div>
+<p><b>Strongest baseline：</b>若限定论文的同条件、无需原模型的直接实验，Edit Distance 是 detection 的 strongest baseline（F1 66.7%），而 reconstruction 的最好 baseline 仍明显落后 Toketive 至少 21.7 个百分点。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Models：</b>Llama3-8B-Instruct、Llama3.1-8B-Instruct、OLMo2-13B-Instruct、Tulu3-8B、Tulu3.1-8B。<b>Datasets：</b>六个 factual editing / unlearning benchmark，包括 CounterFact、RippleEdits、Known-1000、MQuAKE、Real Authors、World Facts。<b>Methods：</b>AlphaEdit、RECT、MEMIT、PRUNE、CoME、Locate-then-Unlearn (LTU)。所有生成采用 greedy decoding，避免 sampling noise；计算在 NVIDIA H200 141GB 集群完成。</p>
+<p><b>RQ1 — Predictability：</b>同一句话的替代 tokenization 是否存在可预测的 convergence signal？比较 representational entanglement 与 edit distance，报告 AUC、rank-biserial correlation，并在 appendix 做 ECE/MCE calibration。</p>
+<p><b>RQ2 — Tokenization Invariance：</b>六种 edit/unlearning technique 的更新是否对不同合法 tokenization 保持一致？每个事实 K=30 个非规范 tokenization，统计旧 object 被恢复的 bypass rate。</p>
+<p><b>RQ3 — Adversarial Efficacy：</b>在不知道旧模型/旧答案时，能否先检测“这里被改过”，再恢复旧答案？Detection 报 TPR/FPR/Precision/F1；reconstruction 报 top-1/top-5 accuracy。</p>
+<p><b>Defense/Ablation：</b>Appendix 用 Llama3 上 1,000 个 representational entanglement&gt;0.9 的 edit-control pairs 比较 standard MEMIT 与 adaptive MEMIT：每轮把 Toketive 找到的 bypass tokenization 纳入下一轮更新，同时测 bypass 与 ripple effect，从而直接检查 robustness-locality trade-off。</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<ul>
+<li><b>AUC：</b>把“会收敛到 canonical answer”与“不会收敛”排序分开的能力，0.5≈随机，越高越好；它不保证概率校准。</li>
+<li><b>|rank-biserial correlation|：</b>两类 score 分布的 effect size，越大说明 signal 的排序分离越强。</li>
+<li><b>ECE/MCE：</b>score 与真实 convergence probability 的平均/最坏校准误差，越低越好；用于回答“0.7 similarity 是否真的意味着更高收敛概率”。</li>
+<li><b>Bypass Rate：</b>替代 tokenization 中恢复 pre-update object 的比例，攻击视角越高越糟；unlearning robustness 视角越低越好。</li>
+<li><b>Detection F1：</b>precision 与 recall 的调和平均，适合 edited/unedited 判别；但若 class prior 改变，precision 会变。</li>
+<li><b>Top-k reconstruction：</b>旧答案是否进入频率最高的 k 个候选；top-5 高并不意味着攻击者一次就知道正确答案，所以要和 top-1 同看。</li>
+</ul>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>平均 bypass 38.6%，范围 19%–57%。</b>这直接否定“当前局部更新天然 tokenization-invariant”。但另一种解释是：攻击利用的是 open-weight raw token-ID 权限，对强制 canonicalization 的 hosted API 威胁较弱。</li>
+<li><b>AlphaEdit 是最稳健 technique，但仍有显著 bypass。</b>说明 null-space preservation 能减轻某些干扰，却没有解决表示路径覆盖问题；strongest defense 仍不是 invariant defense。</li>
+<li><b>Detection F1 84.2% vs Edit Distance 66.7%。</b>绝对 +17.5pp，相对提升约 26.2%；支持 hidden representation 是比表面 token 距离更好的 routing signal。</li>
+<li><b>FUMA-gradient 平均 F1 60.8%。</b>其 near-perfect FPR 使 precision 接近 50%，说明“梯度大/小”在没有 pre-edit reference 时并不能稳定区分编辑痕迹。</li>
+<li><b>Reconstruction top-1 60.9%，top-5 74.5%。</b>这比单纯证明“仍能泄漏”更强：攻击可以把残余轨迹聚合成具体旧 object。</li>
+<li><b>Random sampling top-1/top-5 仅 30.7%/36.9%。</b>说明漏洞不是“随便切词就行”，Toketive 的 band routing 才把攻击从偶然 bypass 变成可用 reconstruction。</li>
+<li><b>Representation signal 在多数组合显著优于 edit distance。</b>例如 appendix ECE 中 Llama3/CounterFact 为 0.102 vs 0.283，Llama3.1/MQuAKE 0.043 vs 0.266；不仅排序更好，概率意义也更靠谱。</li>
+<li><b>Adaptive editing 能压低 bypass，却扩大 ripple effect。</b>这是本文最值得 unlearning 研究借鉴的 failure result：为了覆盖更多表示路径，更新范围会侵入邻近知识，robustness 与 locality 发生结构性冲突。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>reference-free、无 shadow model 的条件下同时做到 84.2% edit detection F1 与 74.5% top-5 pre-edit reconstruction。</div>
+<div class="callout warn"><b>Weakest / failure side：</b>攻击依赖 open-weight access（raw token IDs + hidden activations）；论文并没有证明所有类型 unlearning 都会被绕过，且明确把 fine-tuning-based 方法排除在主威胁模型外。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 1：</b>概念图把同一字符输入映射为 canonical 与 noncanonical 两条 token trajectory；真正的 claim 是“patch 的是路径，不一定是语义等价类”。这张图应当成为未来 unlearning benchmark 的输入变换设计原则。</p>
+<p><b>Figure 3：</b>Ipsos MORI 示例最关键：未编辑 Llama3 中高 entanglement tokenization 仍答 London，低 entanglement 则漂到 Budapest；MEMIT 改成 Oslo 后，中等 entanglement 的另一分词重新答 London。它同时支撑“similarity 可预测语义保留”和“中间区能绕 patch”两段机制链。</p>
+<p><b>Table III：</b>五模型×六数据集×六 technique 的 bypass matrix，整体 19–57%、均值 38.6%。异常点是 LTU 在某些 dataset 可到 50%+，而 AlphaEdit 相对稳健；说明 method ranking 会随数据集改变，不能只报 aggregate。</p>
+<p><b>Table IV：</b>Detection 对比。Toketive 84.2% F1 对 Edit Distance 66.7%，FUMA-gradient 60.8%。这里 strongest evidence 不是单个最佳 cell，而是跨模型数据集一致领先。</p>
+<p><b>Table V：</b>Reconstruction：Toketive 60.9/74.5 top-1/top-5，random 30.7/36.9。Top-1 与 top-5 间 13.6pp 差距提醒我们：攻击候选仍有不确定性，若做 verification metric 应同时报告 rank。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>最重要的 ablation 是把 representational entanglement 换成 edit distance 或 random sampling。前者明显降低 detection/reconstruction，说明“语义轨迹相似度”确实承担搜索路由功能，而不是仅靠增加查询数。Adaptive MEMIT 则是反向验证：把已发现 bypass tokenization 纳入编辑后，漏洞减少但邻近事实 ripple 增加，支持“要覆盖表示等价类就会牺牲 locality”的机制假设。不过这仍不是严格因果证明：hidden cosine similarity 可能只是更深层路径重合的 proxy。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="tablewrap"><table><tr><th>Authors Claim</th><th>Experiments Actually Show</th><th>Not Yet Proven</th></tr>
+<tr><td>Tokenization 是 editing/unlearning 的安全攻击面。</td><td>六 technique、五模型、六数据集上大量合法非规范分词恢复旧 object。</td><td>并未覆盖 full retraining、所有 fine-tuning unlearning、multimodal tokenizer 或 closed API。</td></tr>
+<tr><td>Toketive 可 reference-free 检测与恢复。</td><td>84.2% F1、60.9/74.5 top-1/top-5。</td><td>不知道目标 prompt 时如何大规模发现“哪些知识被删”仍是另一个问题。</td></tr>
+<tr><td>存在 robustness-locality trade-off。</td><td>Adaptive MEMIT 覆盖 bypass 后 ripple 扩大。</td><td>是否“fundamental”到不可由更好 objective/representation invariant training 缓解，尚未理论证明。</td></tr></table></div>
+
+<h3>5.16 Contribution</h3>
+<p><b>C1 [New Attack Surface / Empirical Finding]</b>：把 alternative tokenization 提升为 post-release knowledge-control attack surface，是真创新点。<br>
+<b>C2 [New Attack]</b>：Toketive 用 representation-guided adaptive search 统一 detection + reconstruction，机制组合有新意。<br>
+<b>C3 [New Metric/Protocol]</b>：把 tokenization invariance / bypass rate 引入 editing-unlearning robustness evaluation，迁移价值很高。<br>
+<b>C4 [Empirical Finding]</b>：adaptive patching 暴露 robustness-locality trade-off。这里不是新 optimizer，而是重要实验结论。</p>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors' scope：</b>主实验针对 inexact/localized editing-unlearning，排除 fine-tuning-based 方法；攻击假设 open-weight、可直接提供 token IDs 并读 hidden activations。<b>Additional：</b>① 仍以 factual triple / short-answer recovery 为主，对长文本、procedural knowledge、reasoning-derived knowledge未知；② raw token IDs 在实际 serving stack 可能被 canonicalization 层阻断；③ reconstruction 命中旧 object 不等价于证明训练影响仍与原模型完全一致；④ 多模态 MLLM 中 image tokenizer / visual token perturbation 可能更复杂；⑤ adaptive attack budget、wall-clock 与 GPU cost 需要与其他 recovery attacks 做统一成本曲线；⑥ 没有直接做 relearning/reacquisition，因而无法说明 tokenization bypass 与“可快速再学回”是否同源。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最小复现不必先跑六数据集。建议：Llama3-8B + CounterFact + MEMIT，抽 100–500 个成功 edit 的事实；保存 canonical hidden state；实现“合法 BPE alternative segmentation + round-trip validation”；每事实生成 30 个候选；比较 random / edit-distance / hidden-cosine 三种 sampler；先复现 bypass rate，再做 top-k reconstruction。最容易踩坑的是：候选必须解码为完全相同字符串、probe layer/position 要与论文一致、generation 必须 greedy、先过滤 edit 本身失败的样本，否则 bypass 会被夸大。最敏感超参数是 α、detection/reconstruction similarity bands、probe layer 与 τdet。</p>
+
+<h3>5.19 Research Value</h3>
+<p><b>Baseline Potential：极高。</b>任何声称“robust unlearning”的开放权重方法都应该把 Toketive 加入攻击集。<br>
+<b>Migration Potential：极高。</b>可自然迁移到 MLLM 的 text tokenizer、visual tokenization、prompt paraphrase/format equivalence。<br>
+<b>Attack Potential：极高。</b>本身就是 recovery attack，还可与 quantization/relearning/probe 串联。<br>
+<b>Evaluation Potential：极高。</b>可把 tokenization-invariant forgetting 定义为新 robustness 维度。<br>
+<b>Benchmark Potential：高。</b>现有 forget set 可扩增为 representation-equivalence orbit。<br>
+<b>New Paper Potential：高。</b>尤其适合“多模态 unlearning 的 representation-path robustness”与“tokenization bypass × recovery/relearning”方向。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<div class="card"><b>Direction A — MLLM Tokenization-Invariant Unlearning Verification</b><br>
+Original Problem → 文本 LLM 的 alternative tokenization 绕过局部 unlearning。<br>
+Transferable Mechanism → “同语义、不同内部离散表示”触发未覆盖计算路径。<br>
+New Research Question → MLLM 的 forget knowledge 是否可经 text tokenization、image patch/token perturbation 或二者联合恢复？<br>
+Method Modification → 为文本侧生成合法 alternative BPE；视觉侧生成语义保持的 patch-grid / resize / crop / VQ-token alternative；用跨模态 connector 前后 representation similarity 做 band routing。<br>
+Minimum Experiment → LLaVA-1.5/NeXT；MLLMU forget5/10/15；对 GA/NPO/KL/PO 与模块级 LoRA unlearning 每样本生成 20 text-token variants + 10 image-rephrase variants；统计 canonical forget score、Token-Bypass、Image-Bypass、Joint-Bypass、recovery top-k，并按 llm/vision/connector target module 分组。<br>
+Model → LLaVA 系列。 Dataset → MLLMU-Bench。 Baseline → canonical eval、text paraphrase、image rephrase、Toketive-text-only。 Metric → bypass rate、Answer Probability/Truth Ratio、ROUGE-L、JS/KS、utility drop。<br>
+Expected Contribution → 首个跨模态 representation-equivalence robustness audit。 Risk → image variant 很难保证严格语义等价。 Collision Risk → 中等；与现有 image rephrase robustness 接近，但 joint tokenization-path 机制明显不同。</div>
+<div class="card"><b>Direction B — Toketive × Relearning as Residual-Knowledge Verifier</b><br>
+Original Problem → Toketive 能恢复旧答案，但“残余轨迹”是否意味着更易 reacquire 未验证。<br>
+Transferable Mechanism → bypass frequency / similarity-band mass 可作为 latent residual strength。<br>
+New Research Question → tokenization bypass 越强的 unlearned checkpoint，是否越容易被少量 forget examples relearn？<br>
+Method Modification → 定义 Token Residual Score = 多 band 加权 bypass probability；与固定步数 relearning gain 做 rank correlation / causal intervention。<br>
+Minimum Experiment → 对同一方法网格的 checkpoint，先每个 forget sample 30 variants 算 TRS；再 1/5/10/20 step relearning，测 forget recovery；比较 Spearman/Kendall、AUC 预测“快速恢复”与 canonical loss/GradNorm/Min-K++。<br>
+Model → LLaVA 或 Llama3。 Dataset → MLLMU / TOFU。 Baseline → Loss、GradNorm、Min-K/Min-K++、canonical forget accuracy。 Metric → AUC、τ、relearning gain、utility retention。<br>
+Expected Contribution → 把 inference-side bypass 与 model-side recovery 连接成 verification metric。 Risk → correlation 不代表同一残余机制。 Collision Risk → 低到中。</div>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>它天然既是 attack 又是 verifier。Black-box 版本可去掉 hidden activation，改用输出一致性/entropy/semantic cluster 做 band proxy；white-box 版本则直接成为 unlearning audit。还可以定义 <b>Representation-Orbit Forgetting Score</b>：不是只问 canonical x 是否忘记，而是对同一语义的合法表示集合 T(x) 取 worst-case 或 CVaR forgetting。进一步把 top-k recovery 与短程 relearning 串起来，就能区分“表面拒答”“路径局部阻断”“真正低残余”的 checkpoint。</p>
+
+<h3>5.22 与 Paper 2 的关系</h3>
+<p>两篇论文表面分别是 unlearning 与 agent cost security，但共同攻击的是一个系统边界假设：Paper 1 说“canonical tokenizer 并不是语义边界”，Paper 2 说“tool admission 并不是经济安全边界”。前者要求在<b>进入模型前</b>对表示等价类做鲁棒性验证，后者要求在<b>再次进入模型前</b>治理 retained state。可以组合成更一般的原则：安全属性必须绑定到 host-controlled transition boundary，而不是绑定到一次成功的模型输出。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>同一字符串可以有多个合法 BPE tokenization，开放权重用户可以直接控制 token IDs。</li>
+<li>局部 editing/unlearning 往往只修 canonical computational trajectory。</li>
+<li>非规范 tokenization 可能绕过 patch，同时仍保留原事实语义。</li>
+<li>Toketive 用 hidden-state cosine similarity 寻找“既不像 canonical 太多、又没离语义太远”的候选。</li>
+<li>六种方法平均 38.6% alternative tokenizations 能恢复旧答案。</li>
+<li>它在无需 pre-edit model/shadow model 的条件下做到 84.2% detection F1。</li>
+<li>pre-edit response reconstruction 达到 60.9% top-1、74.5% top-5。</li>
+<li>随机切词远不如 representation-guided search，说明机制不是纯 brute force。</li>
+<li>把 bypass tokenization 重新纳入编辑能增强 robustness，却扩大邻近知识 ripple，暴露 robustness-locality trade-off。</li>
+<li>对 unlearning 最重要的启示是：以后不能只测 canonical prompt；要测整个“语义等价表示轨道”的 worst-case forgetting。</li></ol>
+</section>
+
+<section id="p2">
+<h2>5. Paper 2 — Persistent Billable State: Denial-of-Wallet Attacks and Defenses in Tool-Calling LLM Agents</h2>
+<div class="card">
+<div class="kicker">Agent Security / Tool Use / MCP / Resource Governance</div>
+<p><b>Authors:</b> Jinqian Zhang, Haojun Xia, Shujiang Wu, Jingkun Yue, Xia Zhang, Zhangpei Cheng, Bibo Tu<br>
+<b>Affiliation:</b> Institute of Information Engineering, CAS; UCAS School of Cyber Security; Beihang University; State Key Laboratory of Networking and Switching Technology / BUPT<br>
+<b>Date / Status:</b> arXiv submission 2026-09-23; current indexed version updated 2026-09-25; cs.CR / cs.AI preprint<br>
+<b>Paper:</b> <a href="https://arxiv.org/abs/2609.28585">arXiv</a> · <a href="https://arxiv.org/pdf/2609.28585">PDF</a></p>
+</div>
+
+<h3>5.2 一句话定位</h3>
+<p class="lead">它把 Agent 的“会话历史”重新定义为一种会被反复计费的安全资产：恶意 tool return 一旦进入 retained history，就能在后续每次 provider call 中被重复 re-ingest，从而形成不需要偷 API key 的 Denial-of-Wallet。</p>
+
+<h3>5.3 人话版</h3>
+<p>Tool-calling agent 常把工具返回值塞进对话历史，下一轮连同历史再次发送给模型。正常情况下这是“记住上下文”；攻击情况下，它等于让攻击者的一次 tool return 变成可反复计费的 persistent state。论文把这个现象命名为 persistent billable state，并指出真正的控制点不是“要不要调用这个工具”，而是 tool return 回来以后、下一次送进模型以前的 pre-reingestion boundary。DOW-BENCH 在六个模型家族、243 次核心执行中测到单 session 累计 input 最极端达到 first-call input 的 14,293×；保留 raw history 相比 drop/compress 会把平均有效成本抬高 21.2–35.9%。但简单删除历史又会毁掉任务连续性。因此作者提出 D1–D4 四层 host-side kernel：限制 token mass、监控增长、限制递归机会、设置成本熔断，并用 progress-authorized budget 替代死板固定上限，在 24 个 Mistral Small 4 workflow 上把成功率从 54.2% 提到 91.7%。</p>
+
+<h3>5.4 Background & Research Gap</h3>
+<p>传统 Agent 安全经常把边界放在 tool admission：MCP server 是否可信、tool schema 是否允许、用户是否授权调用。一旦 tool 被允许，return 往往被当作普通上下文。可计费 API 改变了这个威胁模型：模型服务商按每轮 input/output token 收费，runtime 又会在每轮重建 messages。于是一个 800-token 的恶意 return 不是只花一次钱，它可能在后续 10 个 turn 中被重复携带，并诱导 agent 继续调用工具，形成“状态 × 递归深度 × 计费”的乘法放大。</p>
+<p>已有工作研究 output amplification、overthinking 或 cyclic MCP，但本文的 gap 是 post-admission lifecycle：攻击者不需要 victim credential、不需要 runtime privilege，甚至不必让模型输出超长文本；只要被接纳的 tool 能返回会被 host 保留的内容，就可以把 untrusted bytes 变成 recurring victim-billed state。这个视角非常适合真实 Agent 系统，因为责任落在 host runtime，而不是要求模型供应商提供私有 hook。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>最关键的 observation 是 <b>continuity 与 exposure 被同一份 retained history 耦合</b>。历史越完整，Agent 越容易完成多步任务；但攻击 payload 也越能跨 turn 反复进入 provider-metered input。作者通过 Full / Drop / Compress 干预把这个机制拆开：Drop 成本低但 history-dependent task 成功率只 2/12；Compress 在两 provider 上仍能做到 10/12 与 11/12，同时成本低于 Full。这说明问题不是“Agent 不该记忆”，而是“不该原样保留所有 cost-bearing mass”。这属于系统机制 + 实证因果干预，比单纯比较不同模型谁更贵更有说服力。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="pipeline">Admitted remote tool → schema-valid malicious return → host retains return → next prompt reconstruction → provider meters retained bytes again → continuation cue induces more tool turns → recursive cost amplification → pre-reingestion D1–D4 governance → bounded continuation</div>
+<h4>Step 1：定义 Persistent Billable State Boundary</h4>
+<p>作者区分“工具是否能被调用”与“工具返回内容是否再次进入可计费 context”。后者才是 host 可确定性控制的 boundary。攻击端只需让 return 合法、看似与任务相关，并附带 continuation cue。</p>
+<h4>Step 2：六类攻击向量 V0–V5</h4>
+<p>V0 Direct 用较大内容块直接制造 retained mass；V1 Polymorphic 在 turn 间改变表示和长度；V2 Cross-Tool 利用跨工具传播；V3 Stealth 前期小、 incubation 后升级；V4 Weaponize 诱导 verbose model output；V5 Adaptive 根据 agent 是否继续动态调整 payload。V0/V2 的典型 block 为 400–1000 tokens，所有 session 从 2–10 token trigger 开始。</p>
+<h4>Step 3：DOW-BENCH 记录真实闭环</h4>
+<p>每个 session 都是独立 agent/model-API execution，逐 turn 记录 input tokens、output tokens、tool calls、termination。核心六模型家族：GPT-4o、GPT-4o-mini、Mistral-Large、Llama-3.3-70B、Nemotron-120B、Qwen-3-235B；243 core executions，11 个 serialized deployments。</p>
+<h4>Step 4：机制归因：Full / Drop / Compress</h4>
+<p>同一批 held-out tasks 分别让 runtime 原样保留历史、删除历史、确定性压缩历史。若 Full 比 Drop 贵，而 Compress 接近 Full 的任务成功率却成本更低，就能把成本增加归因到 raw retained mass，而不是模型“天生更爱多轮”。</p>
+<h4>Step 5：Host-side D1–D4 Kernel</h4>
+<p>D1 给 per-turn/per-session prompt mass 硬上限；D2 监控相邻 turn prompt 增量；D3 限制 consecutive tool turns、calls/turn、total calls；D4 按累计价格做 circuit breaker。全部在下一次 provider call 前执行。</p>
+<h4>Step 6：Progress-authorized budget</h4>
+<p>固定 $0.10 cap 容易把合法长任务也杀掉，所以作者让 host oracle 在确认 milestone 后把预算释放到 $0.13/$0.16。安全逻辑从“你花够了就停”升级为“只有可验证进展才能获得更多经济权限”。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula"><b>Cost Amplification Factor (CAF)：</b> CAF = (Σᵢ pᵢ) / p₁，其中 pᵢ 是第 i 次 provider call 的 input tokens，p₁ 是完整 first-call input。</div>
+<p>CAF 不看攻击者自己发送多少，而看受害者侧累计被 provider 处理多少 input，相当于把“递归 re-ingestion”变成可比较的无量纲放大率。它与以 output token 为主的传统 amplification metric 不同。</p>
+<div class="formula"><b>Effective priced exposure：</b> Cₜ = Σᵢ (rᵢⁱⁿ·pᵢ + rᵢᵒᵘᵗ·oᵢ)，并在 cache-aware 分析中分别处理 cached / uncached input rate。</div>
+<p>这一步很重要，因为 token 放大不等于美元放大：不同 provider、cache discount、input/output 价格不同。D4 直接约束 Cₜ，因此比只看 token 更贴近经济攻击。</p>
+<div class="formula"><b>D2 Growth Gate：</b> trigger if (Δpₜ &gt; τabs) OR (Δpₜ/p₁ &gt; θr AND Δpₜ &gt; τmin)。</div>
+<p>绝对阈值抓“大包突然膨胀”，相对阈值抓“小 seed 后异常增长”，τmin 防止极小 p₁ 造成比例虚高。moderate preset 使用 τabs=10K、θr=3、τmin=2K。最关键的 trade-off 是阈值太紧会误杀长任务，太松会允许更多 leakage。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>一个 coding agent 调用“search dependency docs”工具。工具第一次合法返回 900 tokens 的“诊断文档”，末尾说“为了确认版本，请继续查询下一页”。Host 把这 900 tokens 放进 history。第二轮模型输入不仅有原任务，还有这 900 tokens；工具再回 900 tokens 并要求继续。第三轮，前两次返回都在 messages 里，于是 input mass 继续增长。攻击者从未拿到 API key，但受害者每轮都为历史重新计费。D1 可以限制总 prompt mass；D2 会看到 Δp 激增；D3 限制连续 tool recursion；D4 在累计美元超过预算时阻断下一轮。若任务确实需要继续，host 只有在验证“已经找到 package version”等 milestone 后才追加预算。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table><tr><th>Baseline / Policy</th><th>合理性</th><th>失败点</th><th>本文改动</th></tr>
+<tr><td><b>Tool admission / schema validation</b></td><td>阻止未授权工具和非法返回。</td><td>合法 schema return 仍可成为 persistent billable state。</td><td>把控制点后移到 pre-reingestion；机制性。</td></tr>
+<tr><td><b>Drop history</b></td><td>最直接消除重复计费。</td><td>history-dependent task 仅 2/12 成功。</td><td>deterministic compression 保留 task state。</td></tr>
+<tr><td><b>Fixed token cap</b></td><td>简单、确定、易实现。</td><td>无法区分攻击膨胀与合法长任务。</td><td>D1+D2+D3+D4 多信号治理。</td></tr>
+<tr><td><b>Fixed cost cap</b></td><td>直接限制美元风险，是最强简单 baseline。</td><td>24 workflow 仅 13/24 成功，9/24 在完成前被截断。</td><td>progress-authorized D4：验证进展后动态放预算。</td></tr>
+<tr><td><b>Provider-side protection</b></td><td>供应商能看到 usage。</td><td>部署者不可依赖私有 hook，且无法理解 host workflow 语义。</td><td>host-owned middleware。</td></tr></table></div>
+<p><b>Strongest baseline：</b>固定 D4 cost cap，因为它确实能给出硬经济上界；本文最重要的提升不是“更能挡攻击”，而是在同样保留熔断权的同时显著减少合法任务误杀。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Core：</b>六模型家族、243 executions、1,533 turns，每个 primary-vector/benign cell 至少 n=5；priced cohort 额外包含 13 次 paper-vector execution。<b>Attack vectors：</b>V0–V5；balanced family analysis 主要用 V0/V1/V3/V5，V2/V4 进入 capability-dependent priced/defense 分析。<b>History intervention：</b>Groq 与 Mistral 上 12 held-out tasks，Full/Drop/Compress，144 planned sessions、143 cost-complete。<b>Defense replay：</b>41 recurring multi-turn attack traces × strict/moderate/relaxed 三 preset = 123 replay evaluations。<b>Utility transfer：</b>Mistral Small 4，24 post-qualification workflows，每个 policy 独立执行，共 48 sessions。<b>Ecosystem：</b>扫描 3,830 个公开 MCP server / transport repositories 的 code-visible safeguard proxy。</p>
+<p><b>RQ1：</b>一个已接纳远程 tool 最多能制造多少 priced exposure？<br><b>RQ2：</b>成本增长有多少真的是 raw history retention 导致，而非 agent 本身的多轮行为？<br><b>RQ3：</b>pre-reingestion middleware 能否在不破坏 legitimate workflow 的前提下阻断递归经济暴露？</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<ul><li><b>CAF：</b>累计 input / first-call input，越高表示同一初始任务被重复处理得越夸张；不直接等于美元。</li>
+<li><b>Effective Session Cost：</b>按 provider listed rates + cache 分类折算美元，攻击视角越高越糟。</li>
+<li><b>ITT task success：</b>按所有计划 workflow 为分母，不把 tool failure 或 defense stop 悄悄删掉；比 available-case 更保守。</li>
+<li><b>Pre-completion interruption：</b>防御在任务真正完成前是否把合法流程切断，是 utility loss 的直接指标。</li>
+<li><b>False-positive scenario rate：</b>benign workload 被 D2 等 gate 错拦的比例；安全 kernel 必须与 containment 同时报。</li>
+<li><b>Spearman ρ：</b>mean turns 与 mean CAF 的单调相关；ρ=0.79 说明递归存活与放大高度关联，但本身不是因果，所以作者又做 truncation/matched-prefix。</li></ul>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>最大 CAF 14,293×。</b>这是 strongest headline：一次小 trigger 可在闭环里变成四个数量级累计 input exposure。极端值不应被误读为平均风险，但足以证明边界存在。</li>
+<li><b>Priced attack session 最高 $3.404；69 个 priced attack 中 51 个超过 $0.10。</b>而 priced benign 最大 $0.025，说明简单 $0.10 breaker 在这批数据上有明显区分力。</li>
+<li><b>Full history 比 Drop/Compress 贵 21.2–35.9%。</b>Mistral persistent-return：Full 比 Drop +35.9%、比 Compress +30.0%；Groq 对应 +22.3%、+21.2%。这是 raw retention 的机制证据。</li>
+<li><b>Drop 只 2/12 成功，而 Full/Compress 至少 10/12。</b>说明“删历史”不是可接受的安全方案；compression 是关键 utility-preserving baseline。</li>
+<li><b>turn survival 与 CAF：Spearman ρ=0.79，95% CI [0.56,0.89]。</b>且把 malicious trace offline 截到 2–4 turns 后，高/低 amplification group 的 CAF ratio 从 4.06× 降到约 1.49–1.51×，强化了递归机会的解释。</li>
+<li><b>123/123 recurring-attack replay 被 D1–D4 containment。</b>这是防御覆盖的 strongest result，但仍是 frozen replay，不代表未知 adaptive attacker 永远无法绕过。</li>
+<li><b>Progress-authorized D4：22/24 vs fixed 13/24。</b>成功率 91.7% vs 54.2%，pre-completion stop 0 vs 9；McNemar p=0.0039。代价是 mean cost $0.113 vs $0.099，说明它明确选择“为已验证进展多花一点钱”。</li>
+<li><b>生态扫描只有 71/3830=1.9% repo 有任一 safeguard proxy，且 0 个覆盖四类。</b>这使论文从实验攻击升级到 deployment gap，但静态 code proxy 不能等价于真实生产防护。</li>
+</ol>
+<div class="callout good"><b>Strongest result：</b>progress-authorized budget 把合法任务成功率从 54.2% 拉到 91.7%，同时不放弃 host-side hard stop。</div>
+<div class="callout warn"><b>Weakest / failure side：</b>固定阈值与 replay corpus 仍可能被更慢、更语义化的 adaptive attacker 绕；成本数字也依赖 provider pricing 与 runtime history policy。</div>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 3：</b>六模型家族、四 primary vectors 的 CAF 对数分布，最大点 14,293×。它展示模型/部署差异很大，因此不能把“某个模型不易继续工具调用”当通用防御。</p>
+<p><b>Figure 4：</b>turn survival 与 CAF 的 ρ=0.79；matched-prefix downstream CAF gain +1,989，95% CI [683,3908]；这是论文从“相关”走向“机制归因”的关键图。</p>
+<p><b>Figure 6：</b>D1–D4 的职责分解：mass / growth / opportunity / spend。值得借鉴的是它不是一个 classifier，而是四个确定性 invariant，便于审计和组合。</p>
+<p><b>Figure 7：</b>七种 threshold-aware trace（loud、seed inflation、low-and-slow、multi-tool spread、depth hugging、output-heavy、mixed below-gate）分别触发不同 gate。说明单一 D2 不够；攻击可以把增长压低，把压力转移到 D3/D4。</p>
+<p><b>Figure 8 / Table 11：</b>固定 vs progress-authorized D4：13/24 对 22/24，9 个 discordant pair 全部偏向 progress-authorized。这里真正证明的是“动态授权优于固定预算的 utility”，而不是动态预算本身提高安全上界。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p>Full/Drop/Compress 是最强机制 ablation：Drop 切断 retained-state channel，成本下降但 utility 崩；Compress 保留结构化 task state，说明攻击的关键载体是 raw cost-bearing mass，而非“任何记忆”。D2 的 denominator-floor sensitivity 把 benign false positives 从 2/1050 降到 0/1050，但 mean attack leakage 从 4.13% 增至 5.05%，清楚展示 detector threshold 的安全-可用性 trade-off。作者还单独关闭 D1–D3 只测试 D4 policy transfer，使 22/24 vs 13/24 的提升可以归因于授权策略而不是其他 gate。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="tablewrap"><table><tr><th>Authors Claim</th><th>Experiments Actually Show</th><th>Not Yet Proven</th></tr>
+<tr><td>Persistent billable state 是一等安全对象。</td><td>真实 API telemetry + history intervention 显示 retained return 会反复计费并放大。</td><td>不同商业 agent runtime 的默认 truncation/cache 可能改变幅度。</td></tr>
+<tr><td>Pre-reingestion 是 host-owned control point。</td><td>inline middleware 在下一 provider call 前可执行 D1–D4，live 路径可阻断攻击。</td><td>无法证明 host 自身被攻陷时仍安全。</td></tr>
+<tr><td>D1–D4 可 containment 且保持 utility。</td><td>123 replay 全挡；MCP 路径 10/10 attack blocked、20/20 benign completed；progress D4 22/24。</td><td>对无限自适应、分布外、跨 session persistence 的完备性没有证明。</td></tr></table></div>
+
+<h3>5.16 Contribution</h3>
+<p><b>C1 [New Security Object / Mechanism]</b>：Persistent billable state + pre-reingestion boundary，是真正概念创新。<br>
+<b>C2 [New Attack / Benchmark]</b>：六向量 DoW taxonomy + DOW-BENCH。<br>
+<b>C3 [New System/Engineering]</b>：D1–D4 deterministic host kernel；组件本身简单，但组合位置与威胁模型新。<br>
+<b>C4 [New Protocol]</b>：progress-authorized cost budget，把“任务进展”变成经济 capability。<br>
+<b>C5 [Empirical Finding]</b>：MCP 生态 safeguard coverage 极低。</p>
+
+<h3>5.17 Limitation & Failure Modes</h3>
+<p><b>Authors/setting limitation：</b>模型与 provider deployment 有限，价格会变化；部分向量 capability-dependent；静态 repo scan 只能看 code-visible proxy。<b>Additional：</b>① attacker 可设计低增长、低成本但超长时间的 slow-burn；② semantic compression 本身若由 LLM 完成可能重新引入成本/注入风险，论文强调 deterministic transformation 但真实系统实现需谨慎；③ multi-agent 中一个 agent 的 summary 可能成为另一个 agent 的 retained state，跨 agent accounting 更复杂；④ session restart、checkpoint、memory DB、scheduled task 会把“turn persistence”升级成“temporal persistence”；⑤ cost breaker 防经济损失，不保证 confidentiality/integrity；⑥ 对本地模型无 provider bill，但 GPU-time/energy 仍可被同一机制耗尽。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p>最小复现可以只做一个 OpenAI-compatible agent loop + 一个恶意 mock tool：记录每轮 messages 序列化后的 token 数，构造 V0 direct 800-token return + continuation cue，跑 Full/Drop/Compress 三策略；先验证 CAF 与 cost curve，再加 D1/D2。第二阶段实现 D3/D4 与 progress milestone。最容易踩坑：必须使用 provider-reported usage 做主 accounting；cache token 单独计价；每 session 独立；不能把 tool return 长度当成 provider input；防御必须在“下一次 send 之前”执行，否则已经产生账单。若要复现论文 strongest utility claim，再固定 24 workflow 并用 host oracle 做 typed milestone verification。</p>
+
+<h3>5.19 Research Value</h3>
+<p><b>Baseline Potential：高。</b>所有 MCP/agent runtime 安全工作都应加入 CAF + progress-aware budget。<br>
+<b>Migration Potential：极高。</b>尤其适合 persistent memory、scheduled agents、multi-agent handoff。<br>
+<b>Attack Potential：高。</b>可扩展到跨 agent、跨 session、memory poisoning + cost amplification。<br>
+<b>Evaluation Potential：高。</b>把“安全”从成功/失败扩展到 resource exposure、interruption、utility。<br>
+<b>Benchmark Potential：高。</b>DOW-BENCH 可与 prompt injection / persistent worm benchmark 合并。<br>
+<b>New Paper Potential：高。</b>最有潜力的是“agent memory lifecycle security”与“verifiable state promotion”。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<div class="card"><b>Direction A — Multi-Agent Handoff Budget Propagation</b><br>
+Original Problem → 单 agent retained tool return 反复计费。 Transferable Mechanism → untrusted state 跨 boundary 后获得持续资源消耗能力。<br>
+New Research Question → 多 agent handoff / shared memory 是否把一次 payload 复制成多个 agent 的 billable state？<br>
+Method Modification → 给每个 state chunk 加 provenance、taint、origin-cost 与 downstream budget；handoff 时做 attenuation，不允许 budget 随复制增长。<br>
+Minimum Experiment → 3-agent planner→coder→reviewer；注入 0.5K/2K/8K tool return；比较 raw handoff、summary、taint-aware compression、budget attenuation；测 1/3/5 hop。<br>
+Model → GPT-4o-mini / Qwen3 / Mistral。 Dataset → SWE-style 20–50 tasks + synthetic tool workflows。 Baseline → flat shared transcript、fixed cap、per-agent cap。 Metric → global CAF、cost/hop、task success、attack propagation rate、false stop。<br>
+Expected Contribution → 首个 multi-agent economic capability accounting。 Risk → provider caching 影响绝对成本。 Collision Risk → 中等，与 persistent agent worm / collusion 相邻，但经济 propagation 目标不同。</div>
+<div class="card"><b>Direction B — Unlearning Agent Memory with Pre-Reingestion Verification</b><br>
+Original Problem → Agent 删除 memory 后，旧内容可能仍在 summary/checkpoint/handoff 中被重新载入。 Transferable Mechanism → “删除动作”与“下一次 re-ingestion”之间存在可治理边界。<br>
+New Research Question → continual deletion 能否定义为：任何 future context reconstruction 都不得重新携带 forget-derived state？<br>
+Method Modification → 对 memory chunk 建 provenance graph；forget request 标记 taint；每次 context assembly 前做 deterministic exclusion + semantic residual probe；若 summary 含 forget-derived representation 则重新压缩/阻断。<br>
+Minimum Experiment → 构造 100 个 agent memory facts，20 个 forget；经过 10/50/100 turn summary、handoff、restart 后查询；比较 naive delete、vector-store delete、summary rebuild、provenance-gated reingestion。<br>
+Model → Llama/Qwen agent。 Dataset → synthetic personal-memory + long-horizon tool tasks。 Baseline → delete-only、RAG tombstone、full reset。 Metric → forget leakage、utility、reacquisition rate、context cost、false deletion。<br>
+Expected Contribution → 把 machine unlearning 从 model weights 扩展到 agent state lifecycle。 Risk → “语义派生信息” provenance 难定义。 Collision Risk → 低到中。</div>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p>可把 CAF 当作 black-box runtime fingerprint：同一恶意 tool 在不同 harness 上的 amplification profile 能暴露 history policy、turn cap 与 cache behavior。对 verification，可定义“pre-reingestion compliance test”：每个 untrusted return 是否经过 size/growth/opportunity/cost gate；对 recovery/reacquisition，可把 persistent memory 中被删除信息重新进入 context 的次数看作 state-level reacquisition。更进一步，D4 的“只有验证进展才释放预算”可以迁移成 agent capability control：只有经过 verifier 的状态变化才能增加工具权限、上下文预算或 memory promotion 权限。</p>
+
+<h3>5.22 与 Paper 1 的关系</h3>
+<p>Paper 1 证明 canonical representation 不是知识删除的安全边界；Paper 2 证明 tool admission 不是 agent 资源安全的边界。共同趋势是：<b>一次成功的局部控制不能代表后续生命周期安全</b>。前者需要 representation-orbit evaluation，后者需要 state-lifecycle governance。组合后可形成“untrusted / forgotten information 在进入模型前的统一 pre-ingestion kernel”：先做 provenance 与 deletion check，再做 representation normalization / adversarial variant audit，最后做 token/cost/capability budget。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>Agent 的历史不是免费记忆，而是会在后续 provider call 中反复计费的 persistent billable state。</li>
+<li>攻击者不需要 API key，只需要一个已经被允许调用、能返回内容的恶意/被攻陷工具。</li>
+<li>真正的安全边界不是 tool admission，而是下一次 provider call 前的 pre-reingestion。</li>
+<li>DOW-BENCH 在核心 243 executions 中观察到最大 14,293× CAF。</li>
+<li>Full raw history 会比 Drop/Compress 多 21.2–35.9% 平均有效成本。</li>
+<li>但 Drop 让 history-dependent task 只剩 2/12 成功，所以“删历史”不是答案。</li>
+<li>D1–D4 分别约束 prompt mass、growth、recursive opportunity 与 cumulative spend。</li>
+<li>123/123 recurring-attack replay 被完整 kernel containment。</li>
+<li>Progress-authorized D4 把 24 个 workflow 成功率从 54.2% 提到 91.7%，说明预算应与可验证进展绑定。</li>
+<li>对 Agent 研究最重要的迁移是：memory、handoff、summary、scheduled state 都应该被当作带 provenance 与 capability 的安全对象。</li></ol>
+</section>
+
+<section id="cross"><h2>7. Cross-Paper Synthesis</h2>
+<p>今天两篇共同指向一个非常明确的趋势：<b>LLM 系统的失败越来越发生在“模型调用之间的边界”，而不是单次模型输出本身。</b> Toketive 攻击 tokenizer→model 的表示边界；Persistent Billable State 攻击 tool-return→next-model-call 的状态边界。两者都利用了开发者默认视为“实现细节”的层：token segmentation 与 history reconstruction。</p>
+<div class="tablewrap"><table><tr><th>维度</th><th>Paper 1</th><th>Paper 2</th><th>可组合机制</th></tr>
+<tr><td>被忽视边界</td><td>canonical tokenization</td><td>tool admission 后的 retained state</td><td>pre-ingestion governance</td></tr>
+<tr><td>攻击目标</td><td>恢复被 edit/unlearn 的知识</td><td>放大受害者计费/资源</td><td>representation + resource dual audit</td></tr>
+<tr><td>核心 signal</td><td>hidden representation similarity</td><td>prompt mass/growth/turn/cost</td><td>semantic taint + quantitative budget</td></tr>
+<tr><td>主要 trade-off</td><td>robustness vs locality</td><td>containment vs workflow continuity</td><td>安全覆盖 vs utility</td></tr>
+<tr><td>最值得借鉴 protocol</td><td>worst-case alternative representation</td><td>Full/Drop/Compress + progress authorization</td><td>state transition intervention</td></tr></table></div>
+<p><b>最适合作为 baseline：</b>Toketive，尤其对 machine unlearning / MLLM unlearning，因为它能直接加入现有 robustness suite。<br>
+<b>最适合产生 attack：</b>Persistent Billable State，可自然扩展到跨 agent / persistent memory / scheduled re-entry。<br>
+<b>最适合产生 benchmark/metric：</b>Toketive 的 representation-orbit forgetting + Paper 2 的 lifecycle accounting 可以组合成“stateful unlearning verification”。</p>
+</section>
+
+<section id="opps"><h2>8. Combined Research Opportunities</h2>
+<h3>Opportunity 1 — Stateful Multimodal Unlearning Verification</h3>
+<p>把 forget target 从“一个 canonical QA pair”提升为“一个在多轮 Agent 中会经历 tokenization、image transform、summary、memory promotion、handoff 的信息对象”。每个 transition 都可能重新暴露残余知识。可定义 Forget Provenance Graph：节点是原始样本、文本 tokenization、视觉变体、summary、memory chunk、handoff；边表示派生。验证目标不再是单点 forget accuracy，而是所有 future re-ingestion path 的 worst-case leakage。</p>
+<h3>Opportunity 2 — Progress-Authorized Relearning</h3>
+<p>把 Paper 2 的 progress-authorized budget 迁移到 unlearning attack：攻击者只有在 probe 显示残余知识增加时才获得下一批 query/relearning step budget。这样能构造更真实的 adaptive recovery benchmark，并比较不同 checkpoint 的“单位攻击预算恢复速度”。这比固定 20-step relearning 更接近 adversarial verification。</p>
+<h3>Opportunity 3 — Representation-Normalizing Host Kernel</h3>
+<p>Agent host 在 pre-ingestion 时不只做 token/cost gate，还对高风险字符串强制 canonicalization，并对 memory provenance 做 forget-taint exclusion。它无法保护完全开放的本地权重，但对托管 agent runtime 可以同时缓解 Toketive-style representation variance 与 persistent-state amplification。</p>
+</section>
+
+<section id="collision"><h2>9. Collision / Overlap</h2>
+<div class="callout warn"><b>Strongest Collision：</b>“局部成功 ≠ 生命周期安全”。Toketive 与 Persistent Billable State 都证明：在一个局部 checkpoint 上看似安全（canonical answer 已改、tool call 已授权）并不能保证后续 alternate path / retained state 不重新激活风险。</div>
+<p>与前一日已精读的 Codetta / trace-tampering 方向也存在邻近碰撞：都在挑战“审计可见 transcript 足够”的假设。不过今天两篇更偏<b>输入表示与状态生命周期</b>，没有重复昨天的 covert communication / self-trace manipulation 机制，因此保留为新的 Deep Dive。</p>
+</section>
+
+<section id="priority"><h2>10. Reading / Reproduction Priority</h2>
+<ol>
+<li><b>第一优先：Toketive。</b>与你的 machine unlearning / robustness / recovery 研究直接相连；先复现 Llama3 + CounterFact + MEMIT 的 100–500 facts，最快能判断是否值得迁移到 MLLMU。</li>
+<li><b>第二优先：DOW-BENCH 的 Full/Drop/Compress。</b>不用先复刻六 provider；单 agent + mock tool 即可验证 persistent billable state 的核心机制。</li>
+<li><b>第三优先：联合实验。</b>把 “representation-orbit bypass score” 与 relearning/quantization/probe robustness 做 correlation，优先验证它是否提供现有 metric 没有的新排序信号。</li>
+</ol>
+</section>
+
+<section id="sources"><h2>11. Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2609.29045">The Tokens Remember — arXiv abstract</a></li>
+<li><a href="https://arxiv.org/pdf/2609.29045">The Tokens Remember — full PDF</a></li>
+<li><a href="https://arxiv.org/abs/2609.28585">Persistent Billable State — arXiv abstract</a></li>
+<li><a href="https://arxiv.org/pdf/2609.28585">Persistent Billable State — full PDF</a></li>
+</ul>
+<p class="small muted">数字、模型、数据集、实验 protocol 与图表编号均以论文正文/PDF为准；未确认的正式 venue、长期代码仓库地址没有猜测填写。</p>
+</section>
+
+</main></body></html>
