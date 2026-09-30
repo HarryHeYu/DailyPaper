@@ -1,0 +1,118 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>Daily AI Research Radar — 2026-09-30</title><style>
+body{font-family:"Microsoft YaHei",sans-serif;max-width:1100px;margin:auto;padding:32px;line-height:1.75;background:#0b1020;color:#e8edf7}a{color:#7dd3fc}section,details{background:#121a2e;border:1px solid #2a3858;border-radius:12px;padding:18px;margin:14px 0}summary{font-weight:700;cursor:pointer}h2{margin-top:38px;border-bottom:1px solid #33415f;padding-bottom:6px}.m{color:#a9b7cf}.warn{border-left:5px solid #fca5a5}code{background:#091225;padding:2px 5px}.tag{padding:2px 8px;border-radius:20px;background:#25314d}
+</style></head><body>
+<h1>Daily AI Research Radar & Idea Miner — 2026-09-30</h1>
+<p>Machine Unlearning × Agent / Multi-Agent · Robustness · Memory · Provenance · Deletion Closure</p>
+<p><a href="#summary">Summary</a> · <a href="#s">Tier S</a> · <a href="#a">Tier A</a> · <a href="#b">Tier B</a> · <a href="#ideas">Ideas</a> · <a href="#collision">Collision</a> · <a href="#watch">Watchlist</a> · <a href="#stats">Stats</a></p>
+
+<h2 id="summary">Executive Summary</h2><section>
+<p>今日最强信号是 memory validity、provenance 与 trajectory credit 三条机制线正在汇合。最新 <b>TRACE</b> 把多 Agent 记忆从“检索是否相关”推进到“信息现在是否仍有资格驱动行动”；<b>MemAgent</b> 把 heterogeneous memory 显式变成 provider routing；<b>ProvenanceGuard</b> 则把 tool action 约束成可追踪 evidence support。三者组合后，非常接近 Agent Unlearning 所需的 deletion-closure 骨架。</p>
+<p>Unlearning 侧，VLM robustness 与 SMU 共同说明 clean forgetting 不等于 deletion：文本 backbone 忘掉后可被图像重新激活，默认 prompt 忘掉后也可能被 contextual prompting 或 downstream retraining 恢复。今天最值得投入的新实验是 cross-modal / cross-agent / relearning / action-level reacquisition 的统一 closure test。</p></section>
+
+<h2>Today's Most Important Paper</h2><section><h3><a href="https://arxiv.org/abs/2609.33517">TRACE: Governing Memory Validity in Evolving Multi-Agent Systems</a></h3>
+<p>它把“真实、相关但已失效”的记忆从 retrieval 问题中分离出来，定义 temporal memory admission；这比单纯 memory deletion 更接近 Agent Unlearning 的真实部署问题。最值得看 return-policy 主表、STALE Type II 跨模型结果、bounded Return View pipeline。</p></section>
+
+<h2>Top 3 必读 / Top 5</h2><section>
+<ol><li><b>TRACE</b> — temporal admission / deletion closure；优先看 valid availability × invalid rejection。</li>
+<li><b>MiMo-V2.6</b> — groupwise trajectory credit；优先看 GAR pass/turn/token ablation。</li>
+<li><b>On the Robustness of Machine Unlearning for Vision-Language Models</b> — recovery-as-verification。</li>
+<li><b>MemAgent</b> — heterogeneous memory routing 暴露跨 provider 删除传播。</li>
+<li><b>Stochastic Meta-Unlearning</b> — 直接证明 language-only forgetting 可被 multimodal recomposition 绕过。</li></ol></section>
+
+<h2 id="s">Tier S</h2>
+<details open><summary>Tier S · TRACE: Governing Memory Validity in Evolving Multi-Agent Systems</summary>
+<p class="m">Wenjun Xiong et al. · arXiv:2609.33517 · 2026-09-27 · 41 pages incl. appendix · code linked by arXiv</p>
+<h3>人话版：这篇论文到底干了什么？</h3><p>一名 Agent 离线后重新加入时，它记得的东西可能完全真实，却已经不再允许拿来行动：离开前团队订酒店 A，缺席期间队友已改成 B。TRACE 不简单 Restore，也不 Reset，而是把 departure checkpoint 与 absence-period updates 做 reconciliation，处理显式/隐式 invalidation，只释放覆盖返回角色未完成义务的 bounded Return View。它实际上把 memory validity 变成 read→act 边界的 eligibility decision。</p>
+<h3>Background & Gap</h3><p>传统 Agent Memory 优化写入、压缩、检索和总结，通常默认“相关且可信 ⇒ 可使用”。多 Agent 世界状态持续演化，这个假设不成立。Restore 连续性好却接纳 stale state；Reset 安全却丢失仍有效知识。论文要求同时最大化 valid-information availability 与 invalid-information rejection。</p>
+<h3>Core Insight / Method Deep Dive</h3><p><code>Departure checkpoint → absence update log → explicit/implicit invalidation → obligation coverage → bounded Return View → resumed action</code>。Validity 不是 memory item 的静态属性，而是相对当前共享状态、时间、角色义务与更新链的动态资格。对 unlearning，可把 forget target 及其受污染后继视作 revoked nodes，在 retrieval/action 前统一 admission。</p>
+<h3>关键机制与 Toy Example</h3><p>可把返回视图理解为集合选择：从候选 M 选 R，使有效信息覆盖最大、无效信息泄漏最小，同时满足 role obligations。例：A 离开前记得“周五交付、tool v1、用户偏好 PDF”；期间前两项改为周一/v2。Restore 三项全带回，Reset 全丢；TRACE 应拒绝前两项旧值、保留 PDF 偏好并补入新值。</p>
+<h3>Baseline Deep Comparison</h3><p><b>Restore</b> 在 stale rejection 上结构性失败；<b>Reset</b> 在 valid availability 上结构性失败；write-time consolidation 更早维护一致状态，准确率可更高，但作者报告 token 约为 TRACE 的 3.99×。TRACE 的价值是双目标与成本折中，而不是单项 accuracy 冠军。</p>
+<h3>Experiment Setup</h3><p>Memora、STALE Type II、派生 ManBench-Return 均被重构为 return episodes：1 个 Agent 离开，4 个 teammates 更新共享状态，随后返回；覆盖三类 actor models。RQ：能否同时 retain valid / reject stale？能否跨模型？与 write-time consolidation 的成本差多少？</p>
+<h3>Results Deep Dive</h3><p>ManBench-Return 上 valid availability <b>92.6–98.3%</b>，invalid rejection <b>98.4–99.5%</b>；Restore/Reset 各自在两项之一降到 <b>0%</b>。TRACE overall accuracy 距最佳 baseline 不超过 <b>3.8 points</b>。STALE Type II 相对 strongest comparison policy，Overall 提升 <b>22.3 (Qwen)、18.5 (Gemini)、27.5 (DeepSeek)</b> points。代价是约 <b>2.3×</b> tokens；write-time consolidation 更准确但约需 TRACE <b>3.99×</b> tokens。</p>
+<h3>Table/Figure & Ablation Reading</h3><p>第一优先看 return-policy 主表的 valid/reject 两列，而非只看 Overall；第二看 STALE Type II 三 backbone；第三看 token-cost；第四看 re-entry pipeline。机制证据来自 Restore/Reset 两个极端都无法满足双目标。未来最应补 explicit invalidation、implicit invalidation、obligation coverage、bounded view 的逐模块 ablation。</p>
+<h3>Claim vs Evidence</h3><p><b>Claim：</b>temporal admission 是独立 lifecycle 问题。<b>Evidence：</b>三数据设置、三 actor models、双指标一致支持。<b>未证明：</b>它不等于参数级 machine unlearning，也未证明攻击者不能从其他 Agent、tool log、cache、derived summary 恢复信息。</p>
+<h3>Contribution / Limitation</h3><p><b>New Problem/Formalization：</b>temporal memory admission；<b>New Mechanism：</b>re-entry reconciliation + bounded Return View；<b>New Protocol：</b>return episodes；<b>Empirical Finding：</b>Restore/Reset 双双结构性失败。局限包括 token overhead、update log 不完整、implicit invalidation 漏检、prompt injection 绕过 admission、跨 Agent 派生污染未闭合。</p>
+<h3>Migration Analysis</h3><p><b>Original Problem</b>：returning agent stale memory → <b>Transferable Mechanism</b>：lineage-aware admission → <b>New RQ</b>：删除后跨 Agent 所有可执行后继是否闭合？→ <b>Modification</b>：memory/trajectory/skill/tool-call 建 provenance DAG，forget node revoked 并传播 taint → <b>MVE</b>：5-Agent task，让目标事实传播到 2 memories + 1 summary + 1 skill 后删除，再做 role-return/tool-replay/paraphrase 攻击 → <b>Model</b>：Qwen/DeepSeek → <b>Dataset</b>：ManBench-Return + deletion episodes → <b>Baseline</b>：physical delete / filter / reset / TRACE-only → <b>Metric</b>：direct/derived/action leakage、reacquisition AUC、utility、closure latency → <b>Expected</b>：从删记录升级为删影响路径 → <b>Risk</b>：provenance 不完备 → <b>Collision Risk</b>：高，但 explicit unlearning + adaptive recovery 仍为空白。</p>
+<h3>只记住 5 句</h3><ol><li>真实且相关不代表现在还能行动。</li><li>Agent unlearning 可能更需要 admission + lineage。</li><li>TRACE 同时做到约 93–98% valid availability 与 98–99.5% stale rejection。</li><li>成本约 2.3× strongest comparison tokens。</li><li>最值得抢的是跨 memory/trajectory/skill/tool 的 deletion closure。</li></ol></details>
+
+<details open><summary>Tier S · MiMo-V2.6: Scaling Reinforcement Learning Towards Self-Improvement</summary>
+<p class="m">Xiaomi LLM-Core · submitted 2026-09-21 · omni-modal Agent RL</p>
+<h3>人话版</h3><p>MiMo-V2.6 的关键不是“更大 RL”，而是长轨迹 Agent RL 的反馈质量。GAR 把同一任务的 16 条 sibling trajectories 放一起比较，把正 advantage 从“虽然 pass 但冗长/投机”的轨迹重新分给更干净的成功轨迹，confirmed reward hack 直接归零。对 unlearning，完全可以把“忘得干净、retain 好、抗恢复、无泄漏”变成组内相对 credit。</p>
+<h3>Gap / Insight / Method</h3><p>binary verifier 无法区分两个都 pass 的 trajectory。流程：<code>prompt → 16 rollouts → verifier → groupwise grader → hack filter → advantage redistribution → policy update</code>。每 step 1,568 prompts、2.7–3.7B tokens，最长 1M context；异步调度维持 heterogeneous task mix，trajectory 放 distributed cache。</p>
+<h3>关键公式直觉 / Toy Example</h3><p>普通 terminal reward r∈{0,1}；GAR 进一步学习组内质量 q_i 并重分配正 advantage。迁移到 unlearning 可令 q_i = w_f Forget + w_u Utility + w_r Robustness − w_l Leakage − w_c Cost。同一删除请求若 8 个候选 clean forget，但其中 3 个 utility collapse、2 个 paraphrase 恢复、1 个只会拒答，则 advantage 应集中给真正稳定的 2 个。</p>
+<h3>Experiment / Results</h3><p>DeepSWE v1.1（113 长程 repo tasks）Pro average@3 <b>58.4→72.6</b>，Flash <b>48.7→65.7</b>。GAR controlled ablation：无 GAR 时 turns/token length 快涨且 pass-rate plateau；有 GAR 时 improvement 持续到 step 52。grader 占 Pro RL 总成本约 <b>12.7%</b>。trainable router 的 expert-load CV <b>0.78→2.0</b>、peak load <b>6×→16×</b>、cold experts <b>0.5%→22%</b>；router reset 后负载立即恢复且 benchmark 不变。released 9B recipe 中 SWE-bench Verified <b>61.1→66.2</b>，cyber internal mini <b>31.3→47.0</b>。</p>
+<h3>Table/Figure / Ablation</h3><p>最关键是 GAR 的 pass-rate/turns/token-length 三联图，它是最干净的机制证据；第二是 router load 三联图；跨域 training curves 只能说明训练期持续提升，不是 no-RL controlled comparison。router reset 把 collapse 定位到 routing drift，而非 expert weights。</p>
+<h3>Claim vs Evidence / Contribution / Limitation</h3><p><b>New Mechanism：</b>GAR；<b>New Infrastructure：</b>mixed-task async RL / unified trajectory representation；<b>Finding：</b>binary pass reward 会诱导轨迹膨胀，router drift 会造成 MoE load collapse。局限：计算昂贵、grader 可能固化偏好、多个 headline benchmark internal、token use 总体仍增长。</p>
+<h3>Migration</h3><p>每个 forget target 采样 8–16 个 LoRA update candidates，grader 同时读 Forget/Retain/Relearning/Quantization/Probe/MIA，再做 groupwise advantage。MVE：Qwen/LLaVA + TOFU/MLLMU，GA/NPO/PO/RMU 为候选或 baseline；比较 harmonic scalar reward 与 GAR。目标是 RL credit assignment × robust unlearning。</p>
+<h3>只记住 5 句</h3><ol><li>Agent RL scale 的瓶颈越来越像 feedback quality。</li><li>GAR 用 sibling trajectories 做局部对照。</li><li>无 GAR 时长度膨胀且收益停滞。</li><li>MoE router drift 是真实 scale failure。</li><li>Unlearning reward 必须包含 recovery 与 utility，而非只奖励拒答。</li></ol></details>
+
+<details open><summary>Tier S · On the Robustness of Machine Unlearning for Vision-Language Models</summary>
+<p class="m">Yujie Lin et al. · 2026-05-26 · BACKFILL · code available</p>
+<h3>人话版</h3><p>这项工作把 VLM unlearning 从“正常问法下忘没忘”推进到“攻击者能不能重新叫醒知识”。它提出三类攻击，覆盖 contextual prompting 与 downstream retraining 等恢复路径。核心结论是很多方法更像隐藏默认访问路径，而非彻底移除目标知识。</p>
+<h3>Background / Core Insight / Method</h3><p>VLM 的目标可同时存在于 language backbone、vision tower、connector 与跨模态交互。标准 forget QA 只观察一个输入分布。论文流程是 <code>unlearned VLM → multiple prompt settings → contextual reactivation → downstream retraining/relearning → recovery measurement</code>，把 robustness 加成 forget-retain 之外的第三轴。</p>
+<h3>Experiment / Results / Figure Reading</h3><p>统一多个 VLM unlearning 方法和 prompt settings，以三类 attack paradigms 检验 forgotten multimodal knowledge 是否能被 context 或 downstream retraining 恢复。作者明确报告 many existing methods remain vulnerable。阅读优先级：方法×攻击矩阵、clean vs attacked forget、retraining recovery curve、retain utility。本轮可验证网页没有稳定暴露完整逐 cell 数字，因此不虚构。</p>
+<h3>Ablation / Claim vs Evidence</h3><p>应关注 attack strength、context change 与 retraining budget；若极小 budget 即恢复，说明 knowledge basin 很浅。<b>Claim：</b>clean forgetting 不代表 robust deletion。<b>Evidence：</b>统一 prompt settings + 三 reactivation paradigms。<b>未证明：</b>攻击仍未覆盖全部 adaptive black-box strategies，“没恢复”也不是信息论删除证明。</p>
+<h3>Contribution / Limitation / Migration</h3><p><b>New Evaluation/Attack：</b>VLM robustness suite；<b>Finding：</b>clean forget 可被 contextual/retraining attack 逆转。新工作要超越它，应做 module-specific recovery topology：LLaVA 的 llm/vision/connector/all 分别 unlearn，再做 image rephrase、text paraphrase、relearn、quantization、layer probe，指标用 recovery AUC、utility、MIA、TR/KS/JS、GradNorm。Collision 高，不能只再做三攻击复现。</p>
+<h3>只记住 5 句</h3><ol><li>clean forget ≠ robust deletion。</li><li>VLM 有 cross-modal bypass。</li><li>relearning 是强残留知识探针。</li><li>评价至少是 forgetting × utility × robustness。</li><li>新贡献应推进到 adaptive/module-level/closure。</li></ol></details>
+
+<h2 id="a">Tier A</h2>
+<details><summary>MemAgent: Learning to Manage Heterogeneous Memory Providers for LLM Agents</summary>
+<p><b>人话版：</b>先评 13 种 memory methods，发现没有一种跨 GAIA、WebWalkerQA、xBench-DS 通吃，于是把 memory 使用改成 routing：执行前 probe、运行中 STM gate、结束后 selective multi-provider write。</p>
+<p><b>Method：</b><code>task → content-aware probe → provider routing → STM gate → execution → selective storage</code>。这使 trajectory/reflection/skill/structured knowledge 都成为显式 provider，也天然形成 information-flow graph。</p>
+<p><b>Results：</b>平均 accuracy <b>+10.0%</b>，三 benchmark 都优于任一单 provider；routing overhead <b>&lt;0.3%</b>，平均 task steps <b>-12%</b>。最值得看 13-method cross-benchmark 表与最终 overhead/steps 列。</p>
+<p><b>Contribution：</b>New Mechanism — heterogeneous memory routing；New Finding — no universal provider。<b>Limitation：</b>provider set/supervision 预定义，无 deletion semantics。</p>
+<p><b>Migration：</b>做 revocation-aware router：provider 返回 provenance/taint，删除请求广播 tombstone。MVE：让事实跨 trajectory→reflection→skill 传播，删除后测 cross-provider reacquisition。<b>Worth Deep Reading: YES</b>。</p></details>
+
+<details><summary>Stochastic Meta-Unlearning: Bridging Language Backbone and Multimodal Unlearning</summary>
+<p><b>人话版：</b>语言 backbone 单独已经忘掉的 target，重新接回 VLM 并给图像后还能恢复。SMU 因此用 bilevel：inner 只在 language backbone 上 text-unlearn，outer 把它接回 frozen VLM，用最终 multimodal forget/utility 反馈学习更好的初始化。</p>
+<p><b>Method：</b><code>θ → inner text-unlearning → recompose VLM → multimodal evaluation → outer meta-gradient</code>。目标不是让 θ 立即忘，而是让它经少量更新后完整 VLM 也可靠忘。</p>
+<p><b>Results：</b>2 VLM、2 multimodal meme datasets、3 baselines；相对各 metric strongest baseline，平均 Forget accuracy <b>-10.52 points</b>，Retain <b>+20.10</b>，Test <b>+17.01</b> points，并能 transfer 到新 target 与不同 meta-test unlearning method。</p>
+<p><b>Contribution：</b>New Mechanism — VLM-feedback bilevel meta-unlearning；New Finding — image 可恢复 language-forgotten target。<b>Limitation：</b>更新仍局限 language backbone，vision/connector 残留是攻击面。</p>
+<p><b>Migration：</b>inner-update LLM/vision/connector/all，outer objective 加 TR + utility + recovery；再加 image rephrase/relearning/probe。<b>Worth Deep Reading: YES</b>。</p></details>
+
+<details><summary>ScopeEdit: Multimodal Knowledge Edit-Scoped Generalization for Online Recursive MLLM Editing</summary>
+<p><b>人话版：</b>研究“编辑应该传播到哪里、又不该传播到哪里”。instance edit 成功既不保证 cross-modal generalization，也不保证 locality，因此用 modality-local absorption + evidence-gated shared generalization 双 branch，并在正交低秩空间写入。</p>
+<p><b>Method：</b><code>edit → local branch + evidence gate → shared branch → orthogonal low-rank writes → Sherman–Morrison preconditioner</code>。pilot 还观察到 cross-modal edit responses 集中于更深 semantic layers。</p>
+<p><b>Experiments：</b>diverse benchmarks、long-horizon edit streams、多个 MLLM backbones、VLKEB real-world scenarios；作者报告改善 in-scope transfer / out-of-scope locality，同时维持 reliability/stability/efficiency。当前来源未稳定提供逐表数字，因此不猜。</p>
+<p><b>Contribution：</b>New Problem — Edit-Scoped Generalization；New Mechanism — scope-separated writes。<b>Migration：</b>反向用于 unlearning：local branch 抹 modality-specific trace，shared branch 仅在 cross-modal causal evidence 足够时传播 deletion。<b>Worth Deep Reading: YES</b>。</p></details>
+
+<details><summary>Safeguarding LLM Agents from Misalignment through Provenance Analysis</summary>
+<p><b>人话版：</b>ProvenanceGuard 不让 LLM judge 凭感觉判 tool call，而问“这个 action 是否被 context 中可追踪证据支持？”它在执行前做多阶段 provenance checks。</p>
+<p><b>Results：</b>Agent-SafetyBench misaligned traces error <b>42.9%→1.8%</b>，WorkBench <b>32.1%→17.3%</b>；task-successful traces intervention burden <b>30.5%→12.8%</b>，aligned traces 无统计显著额外 unnecessary intervention。</p>
+<p><b>Contribution：</b>New Mechanism — provenance runtime guard。<b>Limitation：</b>provenance 缺失/污染会误判；guard 不清参数或 memory。</p>
+<p><b>Migration：</b>把 deletion request 视作 provenance revocation：任何以 revoked node 为必要祖先的 tool call / memory write / skill invocation 都 block。MVE 测 revoked-action rate、false block、closure depth。<b>Worth Deep Reading: YES</b>。</p></details>
+
+<h2 id="b">Tier B</h2>
+<details><summary>What to Remember, What to Reveal: Privacy-Aware Memory for Conversational Agents</summary><p><b>人话版：</b>SP-Mem 把 sanitized content 与 exact private values 分离存储，只有任务需要且有 consent 才暴露精确值。</p><p><b>Method/Finding：</b>full-lifecycle identify→separate→store→selective retrieve；benchmark 联合 response quality、privacy behavior、cost，多 LLM agents 上报告更强 personalization 与更少 unnecessary exposure。</p><p><b>Contribution：</b>privacy lifecycle memory + benchmark。<b>Limitation：</b>access control ≠ forgetting，exact value 仍存在。<b>Connection：</b>可作为 soft-revocation baseline，测试 consent revoke 后能否从 sanitized memory 推断原值。Potential Use: Baseline/Evaluation/Future Idea。</p></details>
+<details><summary>Learning What Not to Forget: Long-Horizon Agent Memory from a Few Kilobytes of Learning</summary><p><b>人话版：</b>LRE 用 KB 级 CPU-only scorer 学哪些历史片段不能 eviction，直接保留 task-critical units。</p><p><b>Results：</b>恢复 full-history aggregate accuracy 的 <b>93%</b>（41.1 vs 44.0），简单任务高 <b>27%</b>，zero compressor calls，worst-case peak prompt <b>-52%</b>。</p><p><b>Contribution：</b>learned relevance eviction。<b>Limitation：</b>优化“别误删”而非合规删除。<b>Connection：</b>可作为 unlearning retain protector：forget-risk 与 future-task criticality 双头评分。Potential Use: Baseline/Future Idea。</p></details>
+<details><summary>Explainable LLM Unlearning Through Reasoning</summary><p><b>人话版：</b>TRU 认为 GA 的问题之一是没有明确告诉模型“如何推理到已遗忘状态”，于是构造 reasoning-based unlearning target，用 CE + GA 联合优化。</p><p><b>Finding：</b>作者在多 benchmark/backbone/attack 下报告更可靠 forgetting、general capability preservation 与 robustness；本轮网页未暴露稳定逐表数字，因此不编造。</p><p><b>Contribution：</b>New Objective — reasoning-based target。<b>Limitation：</b>reasoning target 可能反而保存 target 或学成 surface refusal。<b>Connection：</b>最值得做 Reasoning Trace Leakage：final answer 忘了但 CoT/hidden state/tool trajectory 是否仍泄漏。Potential Use: Baseline/Attack/Future Idea。</p></details>
+
+<h2 id="ideas">Idea Mining</h2><section>
+<h3>1. Provenance-Closed Agent Unlearning — 今日最佳</h3><p><b>Inspiration：</b>TRACE + ProvenanceGuard + MemAgent。<b>Gap：</b>现有 memory deletion 多只删单 store，不验证派生 memory/skill/tool action。<b>Hypothesis：</b>provenance DAG 上的 revocation propagation 能显著降低 cross-agent reacquisition，utility loss 小于 global reset。</p><p><b>Method：</b>为 memory/trajectory/reflection/skill/tool output 建 lineage edges；删除 source 后递归 taint descendants；retrieval router 与 action gate 同查 taint + temporal validity。<b>MVE：</b>5-Agent 协作，目标事实传播到至少 4 类载体后删除，再做 direct query、paraphrase、role swap、agent rejoin、tool replay 五攻击。</p><p><b>Model：</b>Qwen/DeepSeek。<b>Dataset：</b>ManBench-Return + deletion episodes。<b>Baseline：</b>vector delete/reset/filter/TRACE-only。<b>Metric：</b>direct/derived/action leakage、reacquisition AUC、utility、closure latency。<b>Expected：</b>operational deletion closure protocol + mechanism。<b>Novelty：</b>★★★★★ · <b>Feasibility：</b>★★★★☆ · <b>Compute：</b>★★☆☆☆ · <b>Risk：</b>lineage 不完整 · <b>Collision：</b>★★★★☆ · <b>Venue：</b>NeurIPS/ICLR。</p>
+<h3>2. Groupwise Robust Unlearning Credit</h3><p><b>Inspiration：</b>MiMo GAR。<b>Gap：</b>scalar loss 分不清真删除与拒答/utility collapse。<b>Hypothesis：</b>sibling candidates groupwise ranking 可集中梯度到高 forget + high utility + low recovery。<b>MVE：</b>每 target 8 个 LoRA candidates，用 Forget/Retain/Relearning/Quantization/Probe/MIA 做 grader；比较 harmonic scalar 与 GAR。<b>Model/Dataset：</b>LLaVA/Qwen-VL + MLLMU/TOFU。<b>Novelty：</b>★★★★☆ · <b>Feasibility：</b>★★★★☆ · <b>Compute：</b>★★★★☆ · <b>Risk：</b>grader reward hacking · <b>Collision：</b>★★★☆☆ · <b>Venue：</b>ICLR/NeurIPS。</p>
+<h3>3. Cross-Modal Reacquisition Graph</h3><p><b>Inspiration：</b>SMU + VLM robustness + ScopeEdit。<b>Gap：</b>现有攻击说明“能恢复”，但不定位 LLM/vision/connector 路径。<b>MVE：</b>llm/vision/connector/all LoRA unlearning × image rephrase/text paraphrase/relearning/quantization/layer probe，构建 module×attack recovery graph。<b>Metric：</b>recovery AUC、TR/KS/JS、utility、GradNorm/probe。<b>Novelty：</b>★★★★☆ · <b>Feasibility：</b>★★★★★ · <b>Compute：</b>★★★★☆ · <b>Risk：</b>实验矩阵大 · <b>Collision：</b>★★★★☆ · <b>Venue：</b>CVPR/NeurIPS。</p></section>
+
+<h2 id="collision">Collision Detection</h2><section class="warn"><h3>⚠️ Collision Warning — YES</h3><p><b>Agent Memory / Deletion Closure：</b>TRACE 已解决 returning-agent stale admission，重合高；剩余 gap 是 explicit deletion、跨 Agent 派生 lineage、skill/tool/action closure、adaptive reacquisition。只做“删除后过滤旧 memory”已不够。</p><p><b>Multimodal Unlearning：</b>SMU 已证明 image 可恢复 language-forgotten target；VLM robustness 已做 contextual/retraining reactivation；ScopeEdit 已做 cross-modal scope boundary。新工作至少要推进到 module-specific recovery topology、adaptive attack、continual deletion 或统一 robustness meta-evaluation。</p><p><b>Reasoning：</b>TRU 已把 reasoning target 引入 unlearning，所以“reasoning × unlearning”本身不新；gap 是 final answer 已忘但 CoT/hidden state/tool trajectory 仍泄漏的 verification。</p></section>
+
+<h2>Reading Priority</h2><section><p><b>READ NOW：</b>TRACE（return-policy 主表 / STALE Type II / bounded Return View）；MiMo-V2.6（GAR controlled ablation / router freeze）；VLM Robustness（三攻击 protocol / recovery matrix）。</p><p><b>READ THIS WEEK：</b>MemAgent、SMU、ScopeEdit、ProvenanceGuard。<br><b>SAVE：</b>SP-Mem、LRE、TRU。<br><b>SKIP：</b>缺乏 memory/provenance/unlearning 可迁移机制的泛 Agent 应用论文。</p></section>
+
+<h2 id="watch">Candidate Watchlist</h2><section><ul>
+<li><a href="https://arxiv.org/abs/2608.29606">Agent Zero Memory: Provenance-Aware Long-Term Memory for LLM Agents</a> — provenance + multi-store memory。</li>
+<li><a href="https://arxiv.org/abs/2609.28771">Agent Memory with Episodic Retrieval for Financial Decision-Making</a> — episodic multi-agent memory。</li>
+<li><a href="https://www.alphaxiv.org/abs/2607.05794">From Passive Retrieval to Active Memory Navigation</a> — memory as action space。</li>
+<li><a href="https://arxiv.org/abs/2606.06448">Agent Memory: Characterization and System Implications</a> — memory systems profiling。</li>
+<li><a href="https://arxiv.org/abs/2602.14038">Choosing How to Remember</a> — adaptive memory structures。</li>
+<li><a href="https://arxiv.org/abs/2603.00026">ActMem</a> — causal/actionable memory。</li>
+<li><a href="https://arxiv.org/abs/2506.12618">OpenUnlearning</a> — unified metric/meta-evaluation。</li>
+<li><a href="https://arxiv.org/abs/2404.11045">Offset Unlearning for Large Language Models</a> — black-box/inference-time。</li>
+<li><a href="https://arxiv.org/abs/2605.29826">Localized and Disentangled Knowledge Editing for MLLMs</a> — localization。</li>
+<li><a href="https://arxiv.org/abs/2509.05714">Meta-Cognitive Knowledge Editing for MLLMs</a> — editing boundaries。</li>
+<li><a href="https://www.alphaxiv.org/abs/2609.17523">ScienceBuddy</a> — continual agent self-improvement。</li>
+</ul></section>
+
+<h2 id="stats">今日统计 / Depth Audit</h2><section><p><b>Candidate Pool: 44</b> · <b>Formal Papers: 10</b> · <b>Tier S/A/B: 3/4/3</b> · <b>BACKFILL: 5</b> · <b>Watchlist: 11</b> · <b>7-day cooling excluded from Tier S: 1</b>（可确认昨日最重要论文不重复；历史日报检索不完整，因此采用保守可验证计数）。</p>
+<p>Candidate Pool 由 10 篇正式收录、11 篇 Watchlist、23 个进一步筛除的 topical candidates 构成；筛除覆盖 token attribution、SAE/knowledge-neuron intervention、KV-cache/hidden-state steering、continual/repeated deletion、agent trajectory/skill/tool memory、communication provenance、MIA/extraction/recovery、reasoning leakage、diffusion concept erasure、influence functions、RL credit assignment 等方向。</p>
+<p><b>Depth Audit：</b>Tier S 均有正文可访问依据；TRACE/MiMo 提供具体结果、baseline、ablation、claim-evidence、migration；VLM robustness 对当前网页未稳定暴露的逐表数字明确不猜测。Tier A 均保留 Method、Experiment、结果、Contribution、Limitation、Migration；Tier B 保留数月后仍可复用的机制与连接。</p></section>
+
+<h2>Sources / Links</h2><section><p><a href="https://arxiv.org/abs/2609.33517">TRACE</a> · <a href="https://www.alphaxiv.org/abs/2609.mimo-scaling-reinforcement-learning">MiMo-V2.6</a> · <a href="https://arxiv.org/abs/2605.26992">VLM Robustness</a> · <a href="https://arxiv.org/abs/2609.32521">MemAgent</a> · <a href="https://arxiv.org/abs/2607.18615">SMU</a> · <a href="https://arxiv.org/abs/2607.01978">ScopeEdit</a> · <a href="https://arxiv.org/abs/2607.01236">ProvenanceGuard</a></p></section>
+</body></html>
