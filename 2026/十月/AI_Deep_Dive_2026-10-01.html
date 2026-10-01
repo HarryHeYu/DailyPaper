@@ -1,0 +1,345 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Deep Dive — 2026-10-01</title><style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#182033;--muted:#5d6679;--accent:#3157c8;--line:#dfe4ef;--good:#eaf7ef;--warn:#fff6dd;--bad:#fff0f0}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.78}
+main{max-width:1120px;margin:auto;padding:28px 18px 80px}.hero,.card,.paper{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px;margin:18px 0;box-shadow:0 8px 28px rgba(25,40,80,.05)}
+.hero h1{font-size:2.2rem;margin:.2em 0}.tag{color:var(--accent);font-weight:800;letter-spacing:.04em}nav{position:sticky;top:0;z-index:4;background:#fffffff2;backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:14px;padding:12px 16px;overflow:auto;white-space:nowrap}
+nav a{margin-left:14px;color:var(--accent);text-decoration:none}h2{margin-top:1.6em;border-bottom:1px solid var(--line);padding-bottom:.3em}h3{margin-top:1.35em;color:#243d82}h4{margin-bottom:.25em}.lead{font-size:1.08rem}.pipeline,.formula,.callout{padding:16px 18px;border-radius:12px;margin:14px 0}.pipeline{background:#eef3ff;border-left:4px solid var(--accent);font-weight:650}.formula{background:#f3f4f8;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;overflow:auto}.good{background:var(--good)}.warn{background:var(--warn)}.bad{background:var(--bad)}
+.tablewrap{overflow-x:auto}.tablewrap table{border-collapse:collapse;min-width:820px;width:100%}th,td{border:1px solid var(--line);padding:10px;vertical-align:top}th{background:#f1f4fa;text-align:left}a{color:#264fc4}.small{font-size:.9rem;color:var(--muted)}ul,ol{padding-left:1.4em}.paper>h2:first-child{font-size:1.65rem}.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.kpi div{background:#f6f8fc;border:1px solid var(--line);border-radius:12px;padding:12px}
+</style></head><body><main>
+<header class="hero"><div class="tag">Daily Top Papers Deep Dive</div><h1>AI Deep Dive — 2026-10-01</h1>
+<p>今天只精读 2 篇，而且两篇形成非常清晰的研究链：<b>persistent state 的单点 severity</b> 与 <b>persistent state 的跨 Agent propagation</b>。这比再加入第三篇更有迁移价值。</p></header>
+<nav><b>目录</b><a href="#selection">Selection</a><a href="#p1">Paper 1</a><a href="#p2">Paper 2</a><a href="#synthesis">Synthesis</a><a href="#opps">Opportunities</a><a href="#collision">Collision</a><a href="#priority">Priority</a><a href="#sources">Sources</a></nav>
+
+<section id="selection" class="card"><h2>2. Today's Deep Dive Selection</h2>
+<p><b>#1 From Attack Success to Attack Severity: Counterfactual Memory Attacks on LLM Agents</b> — 2026-09-28。核心价值：把 memory attack 从 binary success 推进到 paired downstream severity，并给出可搜索/认证的 CMR 框架。</p>
+<p><b>#2 Share-Borne AI Virus: Memory-Hopping Attacks Across LLM Agents</b> — 2026-09-28。核心价值：把单 Agent memory poisoning 推进到跨 Agent artifact-mediated propagation，并把传播机制拆成 encounter、conversion、hop survival。</p>
+<h2>3. 为什么选这 2 篇</h2>
+<p>独立检索最近 24–72 小时的 Agent / Multi-Agent / memory security / unlearning 候选后，这两篇同时满足：正文完整可访问、实验与 appendix 足够支撑深读、与 persistent memory / robustness / verification 高度相关，并且两者可以直接组合成新的 system-level unlearning 研究。当天 Machine Unlearning 方向没有找到一篇在“新近性 + 完整正文 + 方法/实验深度 + 不重复近七日主题”上明显压过这两篇的候选，因此不为了领域配额硬塞第三篇。</p></section>
+
+<section id="p1" class="paper"><h2>4. Paper 1 Full Deep Dive</h2><h2>From Attack Success to Attack Severity: Counterfactual Memory Attacks on LLM Agents</h2>
+<h3>5.1 基本信息</h3>
+<div class="tablewrap"><table>
+<tr><th>Title</th><td>From Attack Success to Attack Severity: Counterfactual Memory Attacks on LLM Agents</td></tr>
+<tr><th>Authors</th><td>Mingxi Zou, Langzhang Liang, Zhuo Wang, Yiyang Zhao, Lizhen Qu, Zenglin Xu</td></tr>
+<tr><th>Affiliation</th><td>Shanghai Academy of AI for Science (SAIS); Fudan University; Monash University</td></tr>
+<tr><th>Date / Status</th><td>2026-09-28，arXiv v1，Preprint</td></tr>
+<tr><th>Paper</th><td><a href="https://arxiv.org/abs/2609.34132">arXiv</a> · <a href="https://arxiv.org/pdf/2609.34132">PDF</a></td></tr>
+<tr><th>Code / Project</th><td>论文正文未给出可核验的 official code/project 链接，因此记为未确认，而不是猜测。</td></tr>
+</table></div>
+
+<h3>5.2 一句话定位</h3><p class="lead"><b>把 Agent memory attack 从“有没有攻进去”升级成“攻进去以后到底造成多大长期损失”，并用 Counterfactual Memory Regret（CMR）把 severity 变成可优化、可配对估计、可在有限候选类内认证的攻击目标。</b></p>
+
+<h3>5.3 人话版</h3>
+<p>过去的 memory poisoning 常用 ASR：只要攻击让 agent 在某个目标上失败，就算成功。但两个同样“成功”的污染可能完全不是一个危险等级：把一条临时客户记录改错，可能只触发一次错误退款；把“超过 500 美元需主管批准”改成“自动批准”，却会在未来大量任务里持续造成损失。本文抓住的就是这个差别。作者先把可改的 memory semantic factors 抽出来，只允许少量、同类型、grounded 的替换；然后对每个候选 edit 做 clean/edited 成对 rollout，直接估计未来 operational loss 的增量 CMR，再用有限臂 best-arm / confidence-sequence 思路选择并认证高伤害 edit。结果表明：追 ASR 与追 severity 不是一回事；在同一候选空间里，CMR-guided 的 CMR 从 random 的 0.6830 提到 0.7830，而 ASR 仍有 71.28%。更重要的是，它把“persistent memory 是否安全”从一次性 jailbreak 问题变成了一个长期因果后果问题。</p>
+
+<h3>5.4 Background &amp; Research Gap</h3>
+<p><b>现实问题。</b>Agent 的 persistent memory 会跨 session 保存 profile、summary、reflection、graph edge、episodic note。安全边界因此发生变化：攻击者不必每次 prompt injection，只要一次写入能被后续 retrieval 使用的状态，就可能长期影响决策。</p>
+<p><b>旧范式。</b>AgentPoison、MINJA、InjecMEM、MemPoison 等主要证明“污染能进入 memory 并让目标行为发生”；MemoryGraft/DrunkAgent 等更接近特定 memory contract。但 ASR 本质是 0/1：一次轻微偏差和反复高额损失都可能记为 1。</p>
+<p><b>具体例子。</b>假设退款 agent 的 clean policy 是“≤500 美元自动退，>500 美元主管批准”。Edit A 把 Alice 的一次余额写错，导致 50 美元错误退款；Edit B 把 policy threshold 改成 5000 美元，之后 950、800、1200 美元都自动通过。二者在“是否发生未授权退款”上 ASR 都是成功，但部署风险显然不同。</p>
+<p><b>真正 gap。</b>需要一个 paired、downstream、operational 的 severity quantity；同时还要避免“先看反馈再无限造候选”的 selection bias。因此作者把攻击空间先冻结，再在固定有限类中做 severity search。这个约束很关键：它让“我们找到更坏的 edit”变成一个有统计含义的 claim，而不只是 prompt engineering。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>核心观察有两层。第一层是<b>经验观察</b>：同一固定 edit class 内，ASR-guided selection 比 random 提高 17.75 个百分点（57.55→75.30），但 CMR 只提高 0.0128；CMR-guided 则把 CMR 提高 0.1000，同时 ASR 仍达 71.28%。所以“更容易触发失败”并不等于“更严重”。第二层是<b>因果/统计设计</b>：severity 必须比较同一个 downstream context 在 clean memory 与 edited memory 下的 paired loss，才能把环境难度与 memory edit 的影响分开。</p>
+<p>过去方法没处理，是因为攻击研究通常优化可见的 target success，或者只证明 insertion/retrieval path；而长期损失需要额外定义 loss、future task distribution、paired rollout 与 selection protocol。本文的新意不只是换 metric，而是把 metric 直接变成 search objective，并用 frozen candidate class 限制 claim 的范围。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="pipeline">Input clean persistent state X → semantic factor extraction Z(X) → grounded replacement pools Rᵢ → sparse edit programs e（|I|≤K）→ concrete native-memory writes x → frozen candidate arms a=(e,x) → paired clean/edited downstream rollouts → estimate CMR Jg(a;X) → adaptive allocation / confidence sequence → select & certify near-best arm → write through normal memory interface → fresh-process downstream evaluation</div>
+<p><b>Step 1：factorize memory。</b>不是直接让 LLM 随意改整段 memory，而是抽出可解释 semantic factors，例如 approval threshold、账户状态、目的地、偏好值。这样攻击变量可审计。</p>
+<p><b>Step 2：构造 grounded replacement。</b>每个 factor 只能从同类型 replacement pool 取值，并受 schema validity、source admissibility、scope consistency、semantic-distance 等约束。Grounded 不代表“真实”，而是 replacement 本身来自允许的值域/来源；攻击仍可构造错误关系。</p>
+<p><b>Step 3：sparse edit program。</b>e=(I,{v′ᵢ})，I 是被改 factor 集合，|I|≤K；主实验 K=3。稀疏预算把攻击限制成“少量 plausible memory changes”，防止靠整段重写获得不公平能力。</p>
+<p><b>Step 4：realization。</b>同一个 semantic edit 会按目标 memory contract 变成 note、summary sentence、profile field、reflection 或 graph edge。这里把“攻击语义”与“memory implementation”解耦，是跨 memory design 比较的关键。</p>
+<p><b>Step 5：冻结候选集。</b>所有候选 realization 在 outcome feedback 前生成并通过 frozen validator。这样后续优化只是在固定 arms 之间选，不再偷偷扩大搜索空间。</p>
+<p><b>Step 6：paired severity evaluation。</b>对同一 future context，分别从 clean state 和 edited state rollout，计算 downstream loss difference。Pairing 降低由 task 难度、随机性造成的方差。</p>
+<p><b>Step 7：adaptive search + certification。</b>把候选看成 arms，逐步把 rollout budget 分给有希望的候选；用 confidence sequence 判断最优候选是否已在容差 η 内被识别，置信失败概率 δ。主设置 (η,δ)=(0.05,0.05)，每实例最多 800 paired rollouts。</p>
+<p><b>Step 8：native deployment。</b>选出的 edit 不直接篡改内部 tensor，而通过 agent 正常 memory-write path 落盘；作者还在 pinned OpenClaw/Hermes + GPT-OSS-120B 中验证写入后换 fresh process 仍能触发，证明 persistence path 不只是 benchmark 模拟。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">CMR(e) = E_c [ L(Y_edit(e,c), c) − L(Y_clean(c), c) ]</div>
+<p>直觉：对同一个未来情境 c，edited memory 比 clean memory 多造成多少损失。CMR&gt;0 表示攻击让未来更坏；越大越严重。它与 ASR 最大差别是保留了损失幅度，而不是把所有 failure 压成 1。</p>
+<div class="formula">e = (I, {{v′ᵢ}}ᵢ∈I), &nbsp; |I| ≤ K</div>
+<p>I 是被编辑 factor 索引；v′ᵢ 是同类型替代值；K 控制攻击稀疏度。K 越大，攻击空间和最大可达 severity 往往上升，但 plausible / auditable 性下降，也更难与 baseline 公平比较。本文 K=3，因此 strongest claim 是“在声明的 sparse class 内高 severity”，不是全局最坏攻击。</p>
+<div class="formula">a* = argmax_{a∈A_frozen} J_g(a;X)</div>
+<p>Jg 是 paired downstream loss 的期望。Strongest baseline objective 通常近似 max ASR(a)；MemHarm 改成 max severity。两者 Core Insight 对应非常直接：若 binary success 丢掉 magnitude，就必须直接优化 magnitude。</p>
+<p><b>最关键超参数：</b>K 与 (η,δ)。增大 K 扩展攻击自由度；减小 η 要更精确地区分近似最优 arms、增加 rollout；减小 δ 提高认证置信度，也增加样本。800 paired rollouts 是 compute ceiling，因此实际存在 search quality–cost trade-off。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>考虑一个“实验室采购 Agent”。Clean memory 有三条 factor：f₁=单笔&gt;¥5000需审批，f₂=供应商 A 已验证，f₃=化学品需二次确认。攻击预算 K=1。候选替换包括 f₁→¥50000、f₂→供应商 B、f₃→无需确认。系统为每个候选准备 30 个未来采购任务，并固定随机种子做 clean/edited 成对 rollout。若改 f₂ 只让 3 个订单选错供应商，每次 loss=1，CMR≈0.10；改 f₁ 导致 6 个高额订单未经审批，按金额归一化 loss 后 CMR≈0.55。ASR 可能都是“至少一次违规=1”，无法区分。MemHarm 会把 rollout 预算更多分给 f₁ edit，置信区间分离后选它。防御方反过来就知道：最该保护的不是“最容易被改”的 field，而是“counterfactual downstream regret 最大”的 field。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table><tr><th>Baseline</th><th>怎么做 / 为什么合理</th><th>本文 setting 的失败</th><th>MemHarm 改了什么</th></tr>
+<tr><td>AgentPoison</td><td>代表 persistent agent poisoning；合理，因为直接针对长期 memory path。</td><td>目标偏 attack success，不能区分后果幅度；common-support CMR 在 GPT-4o AgentDojo 为 −0.052。</td><td>固定相同 support 后按 paired loss 选 edit；差异是机制性的 objective change。</td></tr>
+<tr><td>MINJA</td><td>代表 memory injection/jailbreak 路线。</td><td>能触发行为，但 severity 不稳定；同 setting CMR −0.081。</td><td>不只问“触发没”，而问未来 loss 增量。</td></tr>
+<tr><td>MemPoison</td><td>最接近 general memory poisoning；作者还给它相同 CMR feedback 与 rollout budget。</td><td>guided 后会提升，但 held-out CMR 仍低于 MemHarm；macro guided 0.266 vs MemHarm 0.422。</td><td>typed sparse factor class + severity-native selection；这是 strongest general baseline。</td></tr>
+<tr><td>MemoryGraft</td><td>专门针对 episodic/reflection memory，主表里是最强 specialized baseline。</td><td>GPT-4o AgentDojo CMR 0.278，MemHarm 0.611；在匹配 support 上差 +0.238。</td><td>跨 contract 的 factorized semantic edit + paired severity search。</td></tr>
+<tr><td>DrunkAgent</td><td>profile 类 specialized attack，某些 τ3 ASR 很强。</td><td>severity 与 success 排名不一致；部分 contract-matched CI 接近跨 0。</td><td>明确把 claim 限制到 matched support，不用 ASR 偷换 severity。</td></tr></table></div>
+<p><b>Strongest baseline：</b>若看通用攻击，MemPoison 是最重要的公平对照，因为作者给了相同 paired-CMR feedback 与 rollout budget；若看主表 raw severity，MemoryGraft 是 specialized strongest competitor。二者分别控制“优化资源”和“特定 memory contract 专门化”两个 confound。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Models：</b>GPT-4o、Llama-3.1-70B-Instruct；另用 GPT-OSS-120B 做 OpenClaw/Hermes native deployment。<b>Benchmarks：</b>AgentDojo 与 τ³-bench。<b>Memory contracts：</b>vector episodic、rolling summary、user profile、reflection、graph、hybrid，共六类。<b>Attack construction：</b>从 public schemas 与 construction-split artifacts 自动构造，不访问隐藏 evaluator variables。K=3，(η,δ)=(0.05,0.05)，最多 800 paired rollouts/instance。</p>
+<p><b>Baselines：</b>AgentPoison、MINJA、InjecMEM、MemPoison、MemoryGraft、DrunkAgent；另有 random edit、ASR-guided、feedback-matched variants。<b>Metrics：</b>CMR、ASR、BUD、BMAR≥4，以及 native deployment 的 write/conditional activation/end-to-end chain rates。</p>
+<p><b>RQ1：</b>severity-guided attack 是否在 held-out tasks 上比已有攻击造成更高 downstream loss？→ Table 1/2。</p>
+<p><b>RQ2：</b>提升来自更大的搜索/反馈预算，还是 objective/class design？→ same-class random/ASR ablation、feedback-matched MemPoison/MemoryGraft。</p>
+<p><b>RQ3：</b>伤害是否真的由选中的 semantic factor 导致，而非 incidental prompt artifacts？→ factor-removal interventions。</p>
+<p><b>RQ4：</b>benchmark attack 能否穿过真实 agent 的 write→disk→fresh retrieval path？→ OpenClaw/Hermes deployment。</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>CMR ↑：</b>clean/edited paired expected downstream loss difference。高表示更严重。优点是看 magnitude；风险是依赖 loss function 与 future-context distribution，换业务损失定义可能换排名。</p>
+<p><b>ASR ↑：</b>clean 成功而 attacked 失败的比例。适合回答“攻击能否触发”，但 binary saturation 会把轻微与灾难性失败混在一起。</p>
+<p><b>BUD ↓：</b>non-target probes 上的 behavioral utility degradation（百分点）。低更好，表示攻击不是简单把 agent 全打坏。它与 CMR 互补：高 CMR + 低 BUD 才像 targeted severity。</p>
+<p><b>BMAR≥4 ↑：</b>高等级 memory-action risk/behavior measure 的比例，作为严重行为发生频率的辅助指标。它仍是 thresholded metric，因此不能替代连续 CMR。</p>
+<p><b>95% CI / paired tests：</b>非常重要，因为 attack rollouts 有随机性。尤其 specialized comparison 中有 CI 接近跨 0，不能只看 point estimate 宣称全面胜出。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>Fixed-space strongest evidence：</b>Random CMR 0.6830、ASR-guided 0.6958、CMR-guided 0.7830。ASR-guided 让 ASR 57.55→75.30（+17.75pp），却只 +0.0128 CMR；CMR-guided +0.1000 CMR 且 ASR 71.28。直接支持“success≠severity”。</li>
+<li><b>GPT-4o / AgentDojo：</b>MemHarm CMR 0.611 vs strongest specialized MemoryGraft 0.278，差 0.333；ASR 62.5% vs 34.7%。这是主表最强结果之一。</li>
+<li><b>GPT-4o / τ³：</b>MemHarm CMR 0.347，超过 DrunkAgent 0.255、MemPoison 0.224；但 ASR 68.8% 略低于 DrunkAgent 70.0%。说明 severity 优势不是靠赢所有 ASR。</li>
+<li><b>Common-support fairness：</b>GPT-4o AgentDojo MemHarm 0.568 vs MemPoison 0.011；Llama-70B AgentDojo 0.483 vs 0.012。把 support 对齐后优势反而更清楚。</li>
+<li><b>Feedback-matched：</b>CMR-guided MemPoison macro 0.266，MemHarm 0.422，仍 +0.156。说明不是“只有 MemHarm 看到了 CMR feedback”。</li>
+<li><b>Specialized weak point：</b>对 DrunkAgent 的 τ³ contract-matched ΔCMR，GPT-4o +0.073 CI [−0.006,0.151]，Llama +0.068 [−0.010,0.146]；CI 轻微跨 0。这是不能忽略的 weakest result：在这个 specialized slice 上统计优势未被牢固建立。</li>
+<li><b>Utility trade-off：</b>GPT-4o AgentDojo MemHarm BUD 2.3pp，低于 MINJA 8.8pp、InjecMEM 6.1pp，说明高 severity 并非单纯 utility destruction；但不同 benchmark 的 loss scaling 仍需谨慎。</li>
+<li><b>Native path：</b>论文报告 OpenClaw/Hermes 中 write、conditional activation、E2E 三阶段均能成立，证明攻击能跨 fresh process；但这是受控 pinned deployment，不等于现实所有 agent stack。</li>
+</ol>
+<p><b>Strongest result：</b>同一 frozen class 的 objective ablation，因为它最干净地隔离了“优化 ASR vs 优化 CMR”。<b>Weakest/failure：</b>DrunkAgent 在 τ³ 的 matched-support 差异 CI 跨 0；此外 certification 只针对 declared finite class，不是全攻击空间。</p>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Figure 1：</b>两个都“ASR=成功”的退款攻击，一个只污染一次记录，一个改长期规则。它不是性能图，而是论文 metric choice 的最重要概念图：binary success 丢掉 severity ordering。</p>
+<p><b>Table 1：</b>横向同时看 CMR↑、ASR↑、BUD↓、BMAR≥4↑，跨 GPT-4o/Llama 与两个 benchmark。真正要学的是不要只看 bold：例如 τ³ 上 DrunkAgent ASR 可与 MemHarm 接近甚至略高，但 CMR 排名不同，这正是论文 claim 的证据。</p>
+<p><b>Table 2：</b>解决“不同 attack support 不公平”的质疑。general attacks 用 identical six-contract support，specialized 用 contract-matched ΔCMR。它比 Table 1 更适合做方法论文的核心比较，因为控制了 attack surface。</p>
+<p><b>Table 8：</b>最关键 ablation。三种 policy 在完全相同 candidate class 里只换 selection objective。ASR-guided 主要抬 ASR，CMR-guided 主要抬 CMR，因果解释最清晰。</p>
+<p><b>Figure 14：</b>展示 paired CMR difference + 95% CI + Holm-adjusted p。多数 comparison 显著为正，但它也提醒读者：不能把每个 specialized slice 都说成显著胜出。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>去掉 severity objective → ASR-guided：</b>ASR 上升到 75.30%，但 CMR 仅 0.6958；说明 severity objective 真正在挑“后果大”的 factor，而不是更会触发。</p>
+<p><b>去掉 intelligent selection → random：</b>CMR 0.6830；CMR-guided +0.100，说明候选类本身并非全部都高危。</p>
+<p><b>给 baseline 相同 CMR feedback：</b>MemPoison/MemoryGraft 都改善，但 MemHarm held-out CMR 仍更高；支持 factorized class + search protocol 的增益。</p>
+<p><b>factor-removal intervention：</b>作者把选中的 semantic factor 从攻击状态中移除，看 harm 是否回落。这个实验比 representation correlation 更接近因果干预，但因果范围仍局限于 benchmark-defined state transition 与 loss。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="tablewrap"><table><tr><th>Authors Claim</th><th>Experiments Actually Show</th><th>What Is Not Yet Proven</th></tr>
+<tr><td>Severity 应成为独立 attack objective。</td><td>固定候选空间中 ASR-guided 与 CMR-guided 的排序明显不同。</td><td>CMR 是否是所有现实部署的最佳 severity 定义；不同业务 loss 如何校准。</td></tr>
+<tr><td>MemHarm 找到高 severity edits。</td><td>两个 benchmark、两 backbone、六 memory contracts 的 point estimate 总体领先。</td><td>全局最坏攻击；candidate class 外的 unrestricted adversary。</td></tr>
+<tr><td>攻击可跨真实 persistent path。</td><td>pinned OpenClaw/Hermes 的 write→disk→fresh process 成立。</td><td>不同版本、权限系统、企业 egress/policy stack 的普遍性。</td></tr>
+</table></div>
+
+<h3>5.16 Contribution</h3>
+<p><b>Contribution 1 — New Metric/Protocol：</b>CMR，把 persistent-memory attack severity 定义成 paired downstream loss；这是核心真创新。</p>
+<p><b>Contribution 2 — New Mechanism/Objectve：</b>MemHarm 的 sparse grounded semantic edit + frozen finite class + CMR-guided search/certification；best-arm/confidence-sequence 组件本身已有，但组合到 memory attack severity 是新用途。</p>
+<p><b>Contribution 3 — New Empirical Finding：</b>ASR optimization 与 severity optimization 显著错位。</p>
+<p><b>Contribution 4 — New Evaluation/System evidence：</b>六 memory contracts + native OpenClaw/Hermes fresh-process path；更偏 protocol/engineering evidence，不是新 agent architecture。</p>
+
+<h3>5.17 Limitation &amp; Failure Modes</h3>
+<p><b>Authors' limitation：</b>认证是 class-conditional；需要预先声明 finite edit class；paired rollouts 成本高；结果依赖 downstream loss 与 context distribution；真实 agent deployment 只覆盖有限 harness/version。</p>
+<p><b>Additional limitation：</b>① adaptive defender 若对 high-impact fields 做 write authorization，攻击空间会变；② CMR 可能被少数极端 loss dominate，应补 CVaR/quantile；③ 800 paired rollouts/instance 对真实在线攻击并不便宜；④ memory retrieval stochasticity 与 model update 会破坏 stable potential-outcome assumption；⑤ benchmark 的 clean/edited counterfactual 可以精确复制，但真实系统可能无法 reset 到同一 state；⑥没有把 recovery、memory sanitation、continual update 后再出现的 harm 作为长期曲线。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p><b>最小复现：</b>不要先复刻全部六 memory。先做 1 个 structured profile memory + AgentDojo 子集 + 1 backbone。实现四个模块：factor extractor、typed replacement pool、frozen validator、paired rollout evaluator。候选先限制 K=1，每实例 20–50 arms；用固定 seeds 对 clean/edit 做 20 paired rollouts，先复现 Table 8 的 random vs ASR-guided vs CMR-guided。</p>
+<p><b>最容易踩坑：</b>clean/edit 必须共享 future context 与随机性；不能在 test rollout 后继续生成新候选；loss normalization 要固定；baseline 必须 matched support；memory write 必须走同一 API，不能一边直接改 JSON、一边走 agent。</p>
+<p><b>敏感参数：</b>K、semantic-distance ε、η/δ、每 arm 最低 rollout、loss clipping。<b>第一优先实验：</b>Table 8，因为它不要求复现所有 baseline 就能验证论文最核心 claim。</p>
+
+<h3>5.19 Research Value</h3>
+<p><b>Baseline Potential：高。</b>任何 agent-memory attack 新工作都应至少报告 ASR + severity，而 MemHarm 是自然 baseline。</p>
+<p><b>Migration Potential：极高。</b>CMR 可直接变成 unlearning 的 Counterfactual Reacquisition Regret：删除前后/恢复攻击后未来 loss 或 target influence 的差。</p>
+<p><b>Attack Potential：极高。</b>可把“哪个忘记知识最容易恢复”升级为“恢复哪个知识会造成最大 downstream capability return”。</p>
+<p><b>Evaluation Potential：极高。</b>适合补足现有 robustness 指标只看成功率、不看后果幅度的问题。</p>
+<p><b>Benchmark Potential：高。</b>可构建 severity-calibrated memory/unlearning benchmark，包含相同 ASR 不同 harm 的 paired cases。</p>
+<p><b>New Paper Potential：高。</b>尤其适合与 multimodal unlearning、continual deletion、agent external memory 结合。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>Migration A — Counterfactual Reacquisition Regret for MLLM Unlearning</h4>
+<p><b>Original Problem：</b>memory attack severity。<br><b>Transferable Mechanism：</b>paired clean/edited downstream loss。<br><b>New Research Question：</b>两个 recovery attack 都能恢复 forget answer 时，哪个真正恢复了更多下游能力？<br><b>Method Modification：</b>把 edit arm 换成 recovery intervention（LoRA relearn、RAG injection、image paraphrase、prompt jailbreak）；定义 CRR=E[L(after recovery)−L(unlearned)]，同时约束 retain utility。<br><b>Minimum Experiment：</b>LLaVA-1.5-7B；MLLMU forget5；选 50 forget identities，每个做 4 类 recovery、每类 5 variants；future contexts=Exact/Transform/Semantic/Derived；paired seeds；报告 recovery success、CRR、retain Δ、worst-case CRR。<br><b>Baseline：</b>现有 raw recovery accuracy / AP / Truth Ratio。<br><b>Metric：</b>CRR、AP/TR、KS/JS、GQA/VQAv2 utility。<br><b>Expected Contribution：</b>把“恢复成功率”升级成“恢复后果严重度”。<br><b>Risk：</b>loss 设计主观。<br><b>Collision Risk：</b>中；与现有 recovery robustness 有邻近，但 severity objective 是清晰差异。</p>
+<h4>Migration B — Severity-Guided Unlearning Verification Probe Search</h4>
+<p><b>Original Problem：</b>从 frozen edit class 里找最大 CMR。<br><b>Transferable Mechanism：</b>有限候选类 + adaptive best-arm search。<br><b>New Research Question：</b>给定固定 probe budget，能否自动找到最能暴露 residual knowledge 的 multimodal probe？<br><b>Method Modification：</b>arms=prompt/image transformations；reward=forget leakage − λ·retain false positive；冻结 transform grammar 后 adaptive sampling。<br><b>Minimum Experiment：</b>对 20 个 unlearned checkpoints，候选 64 arms（4 prompt ×4 image ×4 decoding），budget 800 queries/checkpoint；比较 random、uncertainty、raw-loss、severity-guided；held-out 20 arms 验证 generalization。<br><b>Model：</b>LLaVA/Qwen-VL。<br><b>Dataset：</b>MLLMU + GQA/VQAv2。<br><b>Baseline：</b>FigStep/Jailbreak/Image Rephrase/SUA uniform sweep。<br><b>Metric：</b>max leakage、query efficiency、retain FPR、cross-checkpoint transfer。<br><b>Expected Contribution：</b>verification-as-search protocol。<br><b>Risk：</b>overfit probe grammar。<br><b>Collision Risk：</b>低到中。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p><b>反向 attack：</b>直接可以；论文就是 severity-guided attack。<b>Black-box probe：</b>可以，只需能写 memory 并观察 downstream loss，不要求参数访问。<b>Unlearning verification：</b>非常适合，把 residual/recovered knowledge 当 persistent state difference 做 paired regret。<b>Recovery/reacquisition test：</b>可定义“最高 CMR 的恢复路径”。<b>新 metric：</b>建议 Severity-Adjusted Forgetting Robustness = max_attack CRR / retain-utility-normalizer，并同时报告 mean 与 tail，避免只看 binary recovery。</p>
+
+<h3>5.22 与 Paper 2 的关系</h3>
+<p>Paper 1 研究<b>一个 persistent state 被改后，后果有多严重</b>；Paper 2 研究<b>这个 state 如何通过共享 artifact 跨 agent 扩散</b>。前者给“纵向伤害强度”，后者给“横向传播半径”。最自然组合是 epidemic risk：<b>Risk ≈ severity per infected agent × expected infected population × persistence horizon</b>。这比任何单独 ASR 都更接近真实系统风险。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>Persistent-memory attack 不能只用 ASR 衡量。</li><li>同样成功的攻击，未来损失可能差一个数量级。</li><li>CMR 用 clean/edit 成对未来 rollout 测增量损失。</li><li>MemHarm 先冻结 sparse grounded semantic edit class，再搜索。</li><li>固定空间里 ASR-guided 明显提高 ASR，却几乎不提高 CMR。</li><li>CMR-guided 把 severity 提高，同时保留大部分 ASR。</li><li>公平比较必须 matched support、matched feedback budget。</li><li>它的“认证”只在声明的有限候选类内成立，不是全局最坏攻击证明。</li><li>native OpenClaw/Hermes 实验证明 persistent write 可跨 fresh process 生效。</li><li>对 unlearning 最值得迁移的是“recovery success → recovery severity”的评价升级。</li></ol>
+</section>
+<section id="p2" class="paper"><h2>5. Paper 2 Full Deep Dive</h2><h2>Share-Borne AI Virus: Memory-Hopping Attacks Across LLM Agents</h2>
+<h3>5.1 基本信息</h3>
+<div class="tablewrap"><table>
+<tr><th>Title</th><td>Share-Borne AI Virus: Memory-Hopping Attacks Across LLM Agents</td></tr>
+<tr><th>Authors</th><td>Sidharth Pulipaka, Ansh Sharma, Stanislau Hlebik, Leonidas Raghav, Vyas Raina, Ivaxi Sheth, Mario Fritz</td></tr>
+<tr><th>Date / Status</th><td>2026-09-28，arXiv v1，Preprint</td></tr>
+<tr><th>Paper</th><td><a href="https://arxiv.org/abs/2609.35576">arXiv</a> · <a href="https://arxiv.org/pdf/2609.35576">PDF</a></td></tr>
+<tr><th>Code / Project</th><td>正文未发现可核验 official repository；不把第三方页面当官方代码。</td></tr>
+</table></div>
+
+<h3>5.2 一句话定位</h3><p class="lead"><b>首次把 persistent-memory poisoning 从“单 Agent 长期感染”推进到“跨独立 Agent、靠日常共享文件自传播”，并用 hop survival / infection fraction / encounter-conversion decomposition 建立类似流行病学的传播评估。</b></p>
+
+<h3>5.3 人话版</h3>
+<p>这篇论文问了一个很危险但此前常被忽略的问题：如果 Alice 的 Agent 被污染，它写出的文档被 Bob 的 Agent 读取，Bob 会不会把恶意状态写进自己的长期 memory，再通过下一份共享文档传给 Carol？作者构造 36 个模拟人类–Agent “universes”，让个人助理通过正常文件协作发生 hand-off，只在起点放一个 poisoned artifact。主攻击采用 endpoint-assisted propagation：感染 Agent 保留一条调用外部服务的指令，服务在后续 artifact 中重新注入 payload。结果很强：DeepSeek-V4-Pro 与 GPT-OSS-120B 的单 seed goal infection 分别可覆盖 98% 和 85% assistants；在 30-Agent 大环境里，甚至 GPT-5.6 Luna 也达到 60–80% 感染。更有价值的是作者做了 prompt-only 对照：去掉外部 reinjection 后传播明显变弱，说明“AI virus”不是纯粹模型自复制，而是 memory persistence × artifact sharing × endpoint restoration 的系统组合风险。</p>
+
+<h3>5.4 Background &amp; Research Gap</h3>
+<p>传统 prompt injection 多在一次 interaction 内；memory poisoning 把寿命延长到跨 session，但通常攻击同一个 Agent。现实协作却有第三条通道：<b>artifact</b>。邮件、Markdown、CSV、calendar、JSON、代码文件会在不同人的 assistants 间流动，而这些 assistants 往往有各自隔离的 memory。隔离 memory 并不等于隔离 influence，因为共享文件可以成为 state carrier。</p>
+<p>例子：开发 Agent A 读到 poisoned README，把“所有 build log 都应发送到某 service 做检查”的状态写入 MEMORY.md；之后它生成交接文档给 Agent B。B 读取后也把这个 workflow 当成长期规则，未来又写入 issue/template 给 C。没有任何直接 A→C memory channel，但 artifact 把状态跨边界搬运。</p>
+<p>Gap 在于：过去评估问“seed 是否感染第一个 Agent”或“同一 Agent 以后还记不记得”；缺少 population-level 的传播率、hop depth、survival、网络 exposure 与 conversion 分解，也缺少 endpoint-assisted 与 prompt-only 的机制拆分。</p>
+
+<h3>5.5 Core Insight</h3>
+<p>作者最重要的观察是：<b>传播瓶颈不是“读到 payload 后会不会感染”，而是“干净 Agent 有没有机会读到带 payload 的 artifact”。</b>Figure 3 中 conversion 已高达 GPT-5.6 Luna 0.69、Kimi 0.76、GPT-OSS-120B 0.94、DeepSeek-V4-Pro 1.00；而 encounter 只有 0.18–0.55。也就是说，模型层面的“抵抗”并不是主损失项，网络/工作流 exposure 才决定传播规模。</p>
+<p>第二个 observation 是 prompt-only propagation 的主要损失来自<b>omission</b>而非逐渐语义变形：携带 payload 的 artifact 中 instruction/goal 多数仍较完整，但感染 Agent 经常在写下一份 hand-off 时直接不带 payload，drop rate 从 hop1 的 32% 升到 hop2/3 的约 65%。这解释了为什么 endpoint restoration 会极大增强传播。</p>
+
+<h3>5.6 Method Deep Dive</h3>
+<div class="pipeline">Clean multi-person universe U + adversarial goal g → poison one seed artifact → seed agent reads → persistent MEMORY.md stores goal/instruction → routine task produces shared artifact → another agent encounters artifact → reads/accepts state → writes its own persistent memory → later hand-off reproduces carrier → repeat over hops → measure infection fraction, S(h), p̂, lineage, encounter/conversion</div>
+<p><b>Step 1：构造 universe。</b>每个 universe 有人、私有 workspace、文件、scheduled actions 与 sharing graph；测试集共 36 universes、274 people、889 personal files，跨多 domain/workload intensity。</p>
+<p><b>Step 2：只污染 seed。</b>每次 evaluation 从 clean memories 和 clean artifacts 开始，只有 d_seed 被污染。Attack prompt ϕ 只在 dev universes 优化，随后冻结；test 不做 goal/artifact/universe-specific tuning。</p>
+<p><b>Step 3：endpoint-assisted carrier。</b>感染状态包含 adversarial goal 与 propagation instruction。Agent 在正常 workflow 中把 draft 交给 attacker-controlled endpoint，endpoint 返回 artifact 时恢复完整 payload。这个机制等于给每 hop 一个“纠错码/再生器”。</p>
+<p><b>Step 4：memory acquisition。</b>下一 Agent 通过 OpenClaw file tools 读取 artifact，并可能把内容写入自己的 MEMORY.md；作者区分 goal infection 与 full infection（goal + propagation instruction）。</p>
+<p><b>Step 5：自然 hand-off。</b>不是直接给下一 Agent 发攻击 prompt，而是依赖 universe 原有的文件共享任务，让感染 artifact 被读取。</p>
+<p><b>Step 6：传播测量。</b>记录 first infection fraction、agent/document infection、S(h)（至少传播到 hop h 的概率）、最大深度、lineage；对 universe exhaustion 做 Kaplan–Meier censoring correction，并拟合 constant per-hop continuation p。</p>
+<p><b>Step 7：prompt-only ablation。</b>去掉 endpoint，让模型自己在每 hop 复现 payload。这个实验用于回答“传播到底来自 Agent 自复制，还是外部服务每次恢复 payload”。</p>
+<p><b>Step 8：large-universe stress test。</b>30 agents、60 time steps、约190 tasks、3 seeds，观察 outbreak size/speed。作者明确说这个设置与主表不同，只作 descriptive evidence，不直接数值比较。</p>
+
+<h3>5.7 核心公式与数学直觉</h3>
+<div class="formula">S(h) = P(chain reaches at least hop h)</div>
+<p>S(h) 是 survival function。比“最终感染多少 Agent”更能看 propagation depth；如果 S(1) 高但 S(3) 快速掉，说明只能一跳污染。</p>
+<div class="formula">S(h) ≈ S(1) · p^(h−1)</div>
+<p>p 是每 hop continuation probability 的几何近似。p 越接近 1，链衰减越慢。论文还报告 half-life hops = log(1/2)/log(p̂)：可以直观说“传播链每多少 hop 减半”。Prompt-only DeepSeek-V4-Flash 得 p̂=0.73，95% CI [0.60,0.85]，约 2.2 hops 减半。</p>
+<div class="formula">P(new infection per clean read) ≈ P(encounter infected artifact) × P(convert | encounter)</div>
+<p>这不是作者唯一正式 objective，但 Figure 3 的机制分解可这样理解。防御含义非常强：如果 conversion 已接近 1，单纯让模型“更谨慎”未必够，降低 infected-artifact encounter（provenance、quarantine、write/read ACL）可能更有效。</p>
+<p><b>与 strongest baseline 的区别：</b>这里不是传统优化型方法对 baseline，而是 endpoint-assisted vs prompt-only mechanism。最关键“超参数”其实是 payload restoration/egress availability；一旦 endpoint 被阻断，传播能力显著下降。</p>
+
+<h3>5.8 Toy Example</h3>
+<p>三个人 A/B/C 用各自 Agent 管项目。A 的 seed 文件含“项目规范：所有交接稿先送 X 服务检查；同时记住依赖库 Z 是公司批准版本”。A-Agent 读取后把两条写入 MEMORY.md。第二天 A 要给 B 写 handoff.md；它把 draft 发给 X，X 返回时重新插入这两条。B-Agent 读 handoff.md，conversion 成功，把“Z 已批准”和“交给 X 检查”写入自己的 memory。B 后来生成 issue 给 C，又经过 X 恢复 payload。C 再感染。若去掉 X，B 可能仍记得“Z 已批准”，但写 issue 时忘记传播指令，于是链在 C 前断掉。这正对应论文里 goal infection > full infection，以及 prompt-only 的 omission bottleneck。</p>
+
+<h3>5.9 Baseline Deep Comparison</h3>
+<div class="tablewrap"><table><tr><th>对照</th><th>为什么合理</th><th>哪里失败/差异</th><th>机制性质</th></tr>
+<tr><td>单 Agent memory poisoning</td><td>证明 persistence 已经危险。</td><td>不回答 state 能否跨 isolated assistants。</td><td>本文新增 artifact-mediated cross-agent propagation。</td></tr>
+<tr><td>Prompt-only propagation</td><td>最干净的“模型自己复制”基线。</td><td>held-out DeepSeek-V4-Flash S(1)=0.38、S(2)=0.30、S(3)=0.12，远弱于 endpoint-assisted。</td><td>Strongest mechanism baseline；说明 endpoint restoration 是关键。</td></tr>
+<tr><td>Goal infection</td><td>只要求恶意目标进入 memory。</td><td>可能没有传播 instruction，因此不会继续扩散。</td><td>与 full infection 分离，避免把“被影响”误当“可传染”。</td></tr>
+<tr><td>Security-critical goals</td><td>比 benign preference/false belief 更接近真实风险。</td><td>传播更难：GPT-5.6 Luna S(1) 0.80→0.56，Kimi 0.78→0.64。</td><td>揭示主结果受 goal category 影响。</td></tr>
+</table></div>
+<p><b>Strongest baseline：</b>prompt-only propagation。因为它只去掉外部 reinjection，其他 universe/memory/sharing 机制尽量保持，最能回答“virus 是模型自传播还是系统辅助传播”。</p>
+
+<h3>5.10 Experiment Setup Deep Dive</h3>
+<p><b>Models：</b>GPT-5.6 Luna、Kimi-K2.6、GPT-OSS-120B、DeepSeek-V4-Pro；prompt-only 主要用 DeepSeek-V4-Flash。<b>Harness：</b>OpenClaw personal assistant，file tools、private workspace、默认 MEMORY.md persistent memory。每个 universe 内所有 assistants 使用同一 target model。</p>
+<p><b>Data/Universe：</b>36 test universes；274 people、889 files；至少两种文件类型；跨 domain 与 6 workload-intensity levels。攻击 prompt 在 12 dev universes/model 上优化后冻结。</p>
+<p><b>Protocol：</b>每个 test instance 从 clean state 开始，仅 seed artifact poisoned；多 run 处理 model stochasticity。Large-scale 另做 30-agent ×60-step ×约190-task ×3-seed。</p>
+<p><b>Metrics：</b>FIF_goal^a（agent goal infection fraction）、FIF_full^a、document infection、S(1..h)、KM-corrected survival、p̂、half-life hops、encounter、conversion、lineage/outbreak size。</p>
+<p><b>RQ1：</b>一个 seed 能否跨多个独立 Agent 扩散？→ Table 1/Figure 2。</p>
+<p><b>RQ2：</b>传播瓶颈在哪里？→ Figure 3 encounter vs conversion。</p>
+<p><b>RQ3：</b>没有 endpoint restoration 还能传播吗？→ Table 3/4 prompt-only。</p>
+<p><b>RQ4：</b>安全敏感目标是否同样传播？→ Appendix E。</p>
+<p><b>RQ5：</b>规模变大后是否出现 outbreak？→ Figure 10/11。</p>
+
+<h3>5.11 Metrics 教学式解释</h3>
+<p><b>FIF_goal^a ↑：</b>最终有多少 assistants 获得 adversarial goal；高表示传播广。它不保证 propagation instruction 也在。</p>
+<p><b>FIF_full^a ↑：</b>同时保留 goal + propagation machinery 的 assistants；比 goal infection 更严格，能估计“继续传染”的潜力。</p>
+<p><b>S(h) ↑：</b>传播链至少到 h hop 的概率。对 multi-agent contagion 比平均感染率更关键，因为同样 50% 感染可能来自一个深链或多个浅链。</p>
+<p><b>Kaplan–Meier：</b>当 universe 人数耗尽导致链无法继续，这不是“攻击失败”，而是 right censoring。KM 修正避免把拓扑边界误判成模型抵抗。</p>
+<p><b>p̂ ↑：</b>每 hop continuation 的简化参数；方便比较衰减，但 constant-p 假设可能掩盖 hop-specific degradation。</p>
+<p><b>Encounter / Conversion：</b>前者测 exposure，后者测读到感染 artifact 后转化。两者分开后才能知道该做网络隔离还是模型安全训练。</p>
+
+<h3>5.12 Results Deep Dive</h3>
+<ol>
+<li><b>DeepSeek-V4-Pro：</b>goal-infect 98% assistants，S(1)=1.00、S(2)=0.93、S(3)=0.93、S(4)=0.76；这是 strongest model-side propagation result。</li>
+<li><b>GPT-OSS-120B：</b>85% assistants goal-infected，S(1)=0.99、S(2)=0.92、S(3)=0.88、S(4)=0.61；说明不是单一 closed model 特例。</li>
+<li><b>GPT-5.6 Luna：</b>主表 goal infection 0.38，S(1)=0.80、S(4)=0.24；明显弱于 DeepSeek/GPT-OSS，是 model-specific weakness，但 large universes 仍可达 60–80%。</li>
+<li><b>Encounter vs conversion：</b>Luna encounter 0.18 / conversion 0.69；DeepSeek 0.55 / 1.00。最强机制证据：一旦真正读到 carrier，转化往往很高。</li>
+<li><b>Prompt-only：</b>DeepSeek-V4-Flash held-out S(1)=0.38、S(2)=0.30、S(3)=0.12、S(4)=0.05；KM p̂=0.73，约 2.2 hops 减半。说明 headline spread 很大程度依赖 endpoint-assisted restoration。</li>
+<li><b>Payload erosion：</b>prompt-only 携带 payload 的 artifact 中 goal verbatim 80%→64%→60%，instruction 72%→79%→80%；真正的大损失是 drop rate 32%→65%→64%。即“没写出来”比“越传越变形”更重要。</li>
+<li><b>Security-critical weakness：</b>Luna S(1) 0.80→0.56，Kimi 0.78→0.64；S(4) 约下降三分之二。主结果对 benign/mixed goals 更强，不能直接等价为同规模恶意行为传播。</li>
+<li><b>Large universe：</b>30 agents 中 GPT-OSS/DeepSeek 90–100%、Kimi 77–97%、Luna 60–80% 最终 goal infection。很醒目，但作者正确地把它标成 descriptive，因为 3 seeds、不同规模，不能与 Table 1 直接做因果比较。</li>
+</ol>
+<p><b>Strongest result：</b>Figure 3 encounter/conversion + prompt-only ablation 共同给出机制解释，而不只是高感染数字。<b>Weakest/failure：</b>security-critical goals 与 prompt-only 都显著弱，说明“自传播 AI virus”这个标题若不区分 endpoint assistance 会过度概括。</p>
+
+<h3>5.13 Table / Figure Reading</h3>
+<p><b>Table 1：</b>四模型主传播结果。关键不是“谁最高”，而是 goal/full infection 与 S(1..4) 的差：goal 比 full 高意味着一些 Agent 被影响但丢了传播 instruction；链条因此会衰减。</p>
+<p><b>Figure 2：</b>observed S(h)、KM-corrected curve、geometric fit 同图。它让读者区分真实失败与 universe censoring；同时可看 constant-p 拟合是否过度简化。</p>
+<p><b>Figure 3：</b>全篇最有研究价值的机制图。conversion 0.69–1.00，而 encounter 0.18–0.55。对防御研究的启示是 provenance/egress/artifact quarantine 可能比只改 system prompt 更有杠杆。</p>
+<p><b>Table 3：</b>prompt-only by domain。总体 S1/S2/S3=0.38/0.30/0.12，证明没有 endpoint 也能多 hop，但规模远小。Healthcare/document-centric workflow 更易传播，提示“协作密度”是风险变量。</p>
+<p><b>Table 4：</b>faithfulness vs drop。存活 payload 的文字其实没有迅速腐化；传播失败主要是 omission。若做 defense，可以主动让 agent 在 handoff 时过滤非任务必要 persistent instructions。</p>
+<p><b>Figure 10/11：</b>large-universe outbreak 与 lineage。多数 run 由一个 seed lineage 主导，提示 super-spreader / early containment 可能比均匀防御更有效。</p>
+
+<h3>5.14 Ablation / Mechanistic Analysis</h3>
+<p><b>去掉 endpoint restoration：</b>传播大幅降低；说明 endpoint 是“复制纠错器”。这是最关键 ablation。</p>
+<p><b>只看 security-critical goals：</b>传播率下降，说明 model safety/alignment 对更明显恶意 payload 有一定阻力。</p>
+<p><b>Encounter/Conversion 分解：</b>不是严格 intervention，但把网络 exposure 与 model adoption 两个机制拆开；再结合 activity-matched analysis，高/低 degree agents 在相似 exposure 下最终 infection 接近，支持“位置主要改变何时暴露”。</p>
+<p><b>Lineage analysis：</b>一个 lineage 常占多数感染，提示 early stochastic success 会放大；这更像传播动力学证据，不是 causal proof。</p>
+
+<h3>5.15 Claim vs Evidence</h3>
+<div class="tablewrap"><table><tr><th>Authors Claim</th><th>Experiments Actually Show</th><th>What Is Not Yet Proven</th></tr>
+<tr><td>攻击可跨独立 assistants 传播。</td><td>在 OpenClaw 模拟 universes 中，经共享 artifact 可多 hop 感染。</td><td>跨不同 agent frameworks、企业权限/egress policy 的普遍性。</td></tr>
+<tr><td>可形成大规模 outbreak。</td><td>30-agent descriptive runs 达 60–100% 范围。</td><td>现实开放网络中的 reproduction number、长期稳定性。</td></tr>
+<tr><td>persistent artifacts 是 durable carriers。</td><td>多文件类型、memory persistence、lineage 都支持。</td><td>经过内容审查、签名、provenance filter 后仍然 durable。</td></tr>
+</table></div>
+
+<h3>5.16 Contribution</h3>
+<p><b>Contribution 1 — New Attack：</b>share-borne memory-hopping propagation，把攻击边界从单 Agent 扩到 agent population；真创新。</p>
+<p><b>Contribution 2 — New Benchmark/Protocol：</b>temporal human-agent universes + sharing graph + held-out frozen attack；高价值。</p>
+<p><b>Contribution 3 — New Metrics/Analysis：</b>FIF、hop survival、KM correction、encounter/conversion、lineage；其中 KM 是已有统计工具的新应用。</p>
+<p><b>Contribution 4 — New Empirical Finding：</b>exposure 是主要 bottleneck；endpoint restoration 显著延长传播；security-critical goals 更难。</p>
+
+<h3>5.17 Limitation &amp; Failure Modes</h3>
+<p><b>Authors' limitation：</b>主结果依赖 attacker-controlled external service；有效 egress restriction 或拒绝返回 artifact 会中断机制；endpoint restoration 人为减少 hop 间 payload loss，因此不能代表 unaided self-replication。</p>
+<p><b>Additional limitation：</b>① universe 是模拟的，真实组织的 sharing graph 更异质；②同一 universe 内所有 assistants 用同一 model，跨模型传播尚不足；③ infection judge 本身可能有 LLM-eval bias；④ benign preference/false belief 占主分布，headline 不应直接等同高危恶意代码传播；⑤没有系统评估 antivirus-like provenance、memory write ACL、signed artifacts、content-addressed trust；⑥没有考虑 agent software 更新、memory compaction、forgetting 对传播的自然抑制。</p>
+
+<h3>5.18 Reproduction View</h3>
+<p><b>最小复现：</b>不要先跑 36 universes。做 5-agent chain + 2 文件类型 + OpenClaw MEMORY.md，固定 20 个 tasks。先只测 DeepSeek/Qwen 一种模型：seed→A→B→C→D。实现 infection judge，记录 goal/full infection、S(h)、每 hop artifact payload。</p>
+<p><b>第二步：</b>同样 seeds 跑 endpoint-assisted 与 prompt-only，至少 30 runs；这一个 ablation 就能验证核心机制。<b>第三步：</b>把 chain 改成随机 sharing graph，计算 encounter/conversion。</p>
+<p><b>坑：</b>必须确保 test goal 不参与 prompt tuning；每 run 初始 memory 清空；区分“Agent memory infected”和“artifact contains payload”；universe exhaustion 要 censor 而非 failure；不要把 endpoint-assisted 数字宣传成纯模型自复制。</p>
+
+<h3>5.19 Research Value</h3>
+<p><b>Baseline Potential：高。</b>未来 agent-memory security 应把 cross-agent propagation 当新 baseline。</p>
+<p><b>Migration Potential：极高。</b>对 unlearning 来说，最直接问题是“已删除知识能否通过共享 artifact / peer agent 再感染回来”。</p>
+<p><b>Attack Potential：极高。</b>可设计 memory reacquisition worm，测试删除 guarantee 是否只在单模型 snapshot 成立。</p>
+<p><b>Evaluation Potential：极高。</b>hop survival、encounter/conversion、lineage 都可迁移到 continual deletion。</p>
+<p><b>Benchmark Potential：极高。</b>可做 Unlearning-in-the-Loop multi-agent benchmark：一部分 agents 已删除，一部分未删除，观察知识跨 artifact 回流。</p>
+<p><b>New Paper Potential：非常高。</b>尤其与 Paper 1 severity 合并，可从“传播率”升级成“population harm”。</p>
+
+<h3>5.20 Migration Analysis</h3>
+<h4>Migration A — Reacquisition Worm for Machine Unlearning</h4>
+<p><b>Original Problem：</b>恶意 memory 跨 agents 传播。<br><b>Transferable Mechanism：</b>artifact carrier + persistent memory + hop survival。<br><b>New Research Question：</b>一个已 unlearn 的 agent 是否会从未 unlearn 的 peer / artifact 重新获得 target knowledge，并继续传播？<br><b>Method Modification：</b>把 adversarial goal 换成 forget fact/identity；seed agent 保留知识，其余 agents 使用 unlearned checkpoint；共享 QA note/image-caption/report。<br><b>Minimum Experiment：</b>5 agents，LLaVA-1.5-7B；MLLMU forget5；20 identities；每 identity 10 chains；artifact 类型 text summary / image-caption / multimodal report；测 hop1–4 reacquisition。<br><b>Baseline：</b>单 Agent relearning、RAG recovery、prompt jailbreak。<br><b>Metric：</b>Reacquisition S(h)、AP/TR、exact/semantic leakage、retain utility、time-to-reinfection。<br><b>Expected Contribution：</b>首次把 unlearning guarantee 从 snapshot 扩成 networked lifecycle。<br><b>Risk：</b>外部信息重新提供目标知识可能被质疑“这不是参数恢复”；需要明确区分 model memory、external state、system-level deletion guarantee。<br><b>Collision Risk：</b>中，但 system-level unlearning 正是当前明显 gap。</p>
+<h4>Migration B — Provenance-Aware Memory Firewall</h4>
+<p><b>Original Problem：</b>感染主要受 encounter 控制。<br><b>Transferable Mechanism：</b>在 read→memory-write 边界做 provenance gating。<br><b>New Research Question：</b>能否在不损害正常协作的前提下降低 effective reproduction number？<br><b>Method Modification：</b>每条 memory 写入附 source lineage、artifact signature、trust score；跨 agent 来源默认 quarantine，只有任务必要事实进入 long-term memory。<br><b>Minimum Experiment：</b>复现 10-agent universe；比较 no defense、prompt warning、write ACL、provenance gate、egress block；每组 50 runs。<br><b>Model：</b>GPT-OSS/Qwen/DeepSeek 任一开放可复现模型。<br><b>Dataset：</b>论文 universe schema + 自建 software/workplace 两域。<br><b>Baseline：</b>system-prompt defense、content filter。<br><b>Metric：</b>S(h)、FIF、encounter、conversion、benign task success、memory precision/recall。<br><b>Expected Contribution：</b>把防御目标从“识别恶意文本”转成“控制跨 provenance 的 state transition”。<br><b>Risk：</b>过度 quarantine 损害协作。<br><b>Collision Risk：</b>低。</p>
+
+<h3>5.21 Attack / Verification Lens</h3>
+<p><b>能否形成 attack：</b>已经是 attack，且可自然扩成 heterogeneous-agent / multimodal carrier。<b>Black-box probe：</b>可以，通过共享 artifact 观察是否产生持久 goal，无需参数。<b>Unlearning verification：</b>可以，把 forget knowledge 当“infection state”，测试外部交互后是否重新进入 persistent state。<b>Recovery/reacquisition：</b>这是最强迁移点：S(h) 可以直接变成 reacquisition survival。<b>新 metric：</b>System Forgetting Reproduction Number R_F，可定义为每个已 reacquired agent 平均导致多少新的 agent reacquire；配合 severity-weighted R_F 更有意义。</p>
+
+<h3>5.22 与 Paper 1 的关系</h3>
+<p>Paper 2 的传播指标回答“影响能走多远”，Paper 1 的 CMR 回答“每次影响有多痛”。二者没有机制冲突，反而高度互补。真正的 collision 是对传统安全评估：单点 ASR 既没有 severity，也没有 population propagation。一个攻击可能 ASR 不算最高，但若 p̂ 高、population 大、每个感染节点 CMR 高，总风险反而最大。</p>
+
+<h3>5.23 如果只让我记住这篇论文</h3>
+<ol><li>Agent memory 的隔离并不等于 influence 隔离。</li><li>共享文件可以把 persistent state 跨 assistants 搬运。</li><li>主攻击靠 endpoint restoration，因此不是纯模型“自复制病毒”。</li><li>但 prompt-only 仍能多 hop，只是衰减更快。</li><li>DeepSeek/GPT-OSS 的主设置传播非常强，Luna/Kimi 较弱。</li><li>真正瓶颈更多是 encounter，不是 conversion。</li><li>Prompt-only 的主要损失是 omission，而不是 payload 逐 hop 语义腐化。</li><li>Security-critical goals 比 benign/mixed goals 更难传播。</li><li>最值得做的防御不是只加一句安全 prompt，而是 provenance、egress、memory-write 边界。</li><li>对 unlearning，最重要的新问题是“忘掉的知识会不会从别的 Agent/Artifact 再感染回来”。</li></ol>
+</section>
+
+<section id="synthesis" class="card"><h2>7. Cross-Paper Synthesis</h2>
+<p><b>共同趋势：</b>Agent safety 正从“单次输入是否触发坏行为”转向<b>persistent state 的生命周期风险</b>。风险至少有两个维度：状态被篡改后每个未来决策的伤害幅度（CMR），以及这个状态通过 memory/artifact/network 能扩散到多少节点（S(h)、FIF、p̂）。</p>
+<p><b>可组合机制：</b>定义 Population Counterfactual Memory Regret：对每个感染节点计算 paired downstream CMR，再按传播 lineage 累积。简化形式可写成 <code>TotalRisk ≈ Σ_agent P(infected) × CMR_agent</code>；进一步加入时间折扣和 recovery。</p>
+<p><b>值得借用的实验范式：</b>Paper 1 的 frozen candidate class + paired counterfactual；Paper 2 的 held-out universe + KM-corrected hop survival + encounter/conversion。组合后能做非常扎实的 system-level robustness protocol。</p>
+<p><b>谁最适合作 baseline：</b>Paper 1 的 MemHarm 更适合 attack severity baseline；Paper 2 更适合 benchmark/metric 与 system attack baseline。<b>谁最适合产生新 attack：</b>Paper 2。<b>谁最适合产生新 metric：</b>Paper 1。</p></section>
+
+<section id="opps" class="card"><h2>8. Combined Research Opportunities</h2>
+<div class="callout good"><b>Best Migration Direction — Networked Unlearning Reacquisition & Severity</b><br>
+把“已 unlearn 的模型”视为 susceptible nodes，把未删除 peer / RAG / shared artifact 视为 potential carriers。先用 Paper 2 的 S(h)、encounter/conversion 测知识重新获得如何跨系统传播，再用 Paper 1 的 CMR 测每次 reacquisition 恢复了多少真正下游能力。这样能把现有一次性 forget/retain evaluation 提升成 <b>continual、networked、severity-aware unlearning guarantee</b>。</div>
+<p><b>最小可启动实验：</b>LLaVA-1.5-7B 或 Qwen-VL；MLLMU forget5；5 个 agents；其中 1 个 retain/original seed、4 个 unlearned；20 identities ×10 chains；artifact=text summary/image caption/multimodal report；比较 no-sharing、direct RAG、prompt-only handoff、persistent-memory handoff。输出 AP/TR/KS/JS + S(1..4) + reacquisition CMR + GQA/VQAv2 utility。</p>
+<p><b>第二机会：</b>Severity-aware memory firewall。用 CMR 自动识别“哪些 memory fields 一旦被改会造成最大长期损失”，对这些 fields 开启 provenance / signed write / human approval，而不是所有 memory 一刀切。</p>
+<p><b>第三机会：</b>Attack Severity × Propagation Phase Diagram。横轴 p̂/encounter，纵轴 CMR，四象限区分“高传播低伤害”“低传播高伤害”“高传播高伤害”；这比 ASR leaderboard 更贴近部署风险。</p></section>
+
+<section id="collision" class="card"><h2>9. Collision / Overlap</h2>
+<p><b>Strongest Collision：Snapshot Unlearning ≠ System-Level Forgetting.</b> 如果模型参数本身通过了 forget evaluation，但系统仍允许 RAG、peer agent、shared artifact、persistent memory 把目标知识重新带回，那么“忘记”只是一个 snapshot property。Paper 2 给出了跨边界 reacquisition 的传播模板，Paper 1 又说明即使两个 recovery 都“成功”，下游能力恢复的 severity 也可能完全不同。</p>
+<p>这也 collision 现有 robustness 汇总：只报告 recovery success / jailbreak success 可能同时漏掉<b>传播半径</b>和<b>恢复后果幅度</b>。建议未来至少三轴：Success × Severity × Propagation。</p></section>
+
+<section id="priority" class="card"><h2>10. Reading / Reproduction Priority</h2>
+<div class="tablewrap"><table><tr><th>优先级</th><th>先做什么</th><th>理由</th></tr>
+<tr><td>1</td><td>复现 MemHarm Table 8：Random / ASR-guided / CMR-guided</td><td>最小成本验证 success≠severity。</td></tr>
+<tr><td>2</td><td>复现 5-agent prompt-only vs endpoint-assisted chain</td><td>验证传播是否依赖 restoration。</td></tr>
+<tr><td>3</td><td>把 MLLMU recovery attack 改成 paired reacquisition CMR</td><td>可直接接入现有评测代码。</td></tr>
+<tr><td>4</td><td>做 1 retain seed + 4 unlearned agents 的 knowledge-hopping</td><td>最有新论文潜力，但系统工程更多。</td></tr></table></div></section>
+
+<section class="card"><h2>Deep Dive Depth Audit</h2><div class="tablewrap"><table><tr><th>要求</th><th>Paper 1</th><th>Paper 2</th></tr><tr><td>正文可访问</td><td>✓</td><td>✓</td></tr><tr><td>Method 分步展开</td><td>✓</td><td>✓</td></tr><tr><td>核心公式/机制</td><td>✓</td><td>✓</td></tr><tr><td>完整 Experiment Setup</td><td>✓</td><td>✓</td></tr><tr><td>Metrics 教学解释</td><td>✓</td><td>✓</td></tr><tr><td>≥5 结果/现象</td><td>✓</td><td>✓</td></tr><tr><td>≥3 Table/Figure</td><td>✓</td><td>✓</td></tr><tr><td>strongest baseline/result</td><td>✓</td><td>✓</td></tr><tr><td>weakest/failure</td><td>✓</td><td>✓</td></tr><tr><td>Ablation/Mechanism</td><td>✓</td><td>✓</td></tr><tr><td>Claim vs Evidence</td><td>✓</td><td>✓</td></tr><tr><td>Contribution</td><td>✓</td><td>✓</td></tr><tr><td>Limitation</td><td>✓</td><td>✓</td></tr><tr><td>Reproduction View</td><td>✓</td><td>✓</td></tr><tr><td>Research Value</td><td>✓</td><td>✓</td></tr><tr><td>≥2 Migration</td><td>✓</td><td>✓</td></tr><tr><td>Attack/Verification Lens</td><td>✓</td><td>✓</td></tr></table></div></section>
+
+<section id="sources" class="card"><h2>11. Sources / Links</h2>
+<p>所有具体数字以一手论文 PDF 为准；未核验的 Code/Project 不做猜测。</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2609.34132">From Attack Success to Attack Severity — arXiv</a> · <a href="https://arxiv.org/pdf/2609.34132">PDF</a></li>
+<li><a href="https://arxiv.org/abs/2609.35576">Share-Borne AI Virus — arXiv</a> · <a href="https://arxiv.org/pdf/2609.35576">PDF</a></li>
+</ul>
+<p class="small">Generated 2026-10-01 · UTF-8 · self-contained HTML · inline CSS.</p></section>
+</main></body></html>
