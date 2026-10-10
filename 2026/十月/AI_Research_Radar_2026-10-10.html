@@ -1,0 +1,678 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily AI Research Radar — 2026-10-10</title>
+<style>
+:root{--bg:#0b1220;--surface:#111e32;--surface2:#172740;--ink:#e7eef9;--muted:#9fb0c9;--line:#2b3f5b;--accent:#5ed9b5;--blue:#82b8ff;--amber:#ffce76;--red:#ff8f9b}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(135deg,#0b1220,#10223a 60%,#0b1220);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","Microsoft Yahei",sans-serif;line-height:1.78}
+a{color:#a3d5ff;text-decoration:none;border-bottom:1px solid #456c8b}a:hover{color:#fff;border-color:var(--accent)}
+main{max-width:1260px;margin:auto;padding:22px 26px 90px}header.hero{padding:45px 44px 30px;border:1px solid #365370;background:linear-gradient(120deg,#1b3451,#0d1c30 75%);border-radius:22px;margin-bottom:22px;box-shadow:0 15px 45px #0005}
+.eyebrow{font-size:13px;letter-spacing:2px;color:var(--accent);font-weight:700}h1{font-size:clamp(28px,4vw,48px);line-height:1.15;letter-spacing:-.7px;margin:12px 0 16px}header p{color:#bcd0e7;max-width:930px}.hero .date{font-size:14px;color:var(--amber)}
+nav.toc{position:relative;padding:20px 22px;background:#132239;border:1px solid var(--line);border-radius:15px;margin-bottom:26px}nav.toc h2{font-size:18px;margin:0 0 10px}nav.toc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:8px 14px}nav.toc a{font-size:13px;padding:6px 8px;border-radius:7px;border:1px solid #2c4461;background:#152941}
+.panel{padding:26px 30px;background:var(--surface);border:1px solid var(--line);border-radius:18px;margin:20px 0;scroll-margin-top:20px}
+h2{font-size:24px;line-height:1.3;margin:0 0 18px;border-left:4px solid var(--accent);padding-left:14px}h3{font-size:18px;margin:23px 0 10px;color:#c4e8ff}h4{font-size:15px;color:var(--amber)}p{margin:10px 0 14px}strong{color:#fff}ul,ol{padding-left:24px}li{margin:6px 0}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:11px;margin:14px 0 22px}.stat{border:1px solid #35526c;border-radius:13px;padding:13px;background:#172941}.stat b{display:block;font-size:26px;color:var(--accent);line-height:1.2}.stat span{display:block;color:#b8c8df;font-size:12px;margin-top:6px}
+.rank{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px}.rankcard{background:#192c44;border:1px solid #34506e;border-radius:13px;padding:18px}.rankcard .num{color:var(--amber);font-size:12px;font-weight:700;letter-spacing:1px}.rankcard h3{margin:5px 0;font-size:17px}.rankcard p{font-size:14px;color:#c9d7e9}
+.paper{background:#13243b;border:1px solid #314c68;border-radius:14px;margin:13px 0;scroll-margin-top:20px}.paper[open]{background:#142740}.paper summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px 18px}.paper summary::-webkit-details-marker{display:none}.paper summary:after{content:'展开 ▾';font-size:12px;color:#9cb4d3;margin-left:auto}.paper[open] summary:after{content:'收起 ▴'}.paper-title{font-weight:700;font-size:16px;max-width:800px}.pill{font-size:11px;padding:3px 8px;background:#28425e;border-radius:99px;color:#cce2ff}.id{font-size:11px;color:#809bb7}.tier{display:inline-block;padding:4px 9px;font-weight:800;border-radius:7px;font-size:12px;white-space:nowrap}.tier-S{background:#184d3f;color:#9af6cb}.tier-A{background:#394675;color:#c9d9ff}.tier-B{background:#61472c;color:#ffe0aa}.paper-body{border-top:1px solid #314c68;padding:14px 22px 24px}.paper-body h3{margin-top:25px;border-bottom:1px solid #31465f;padding-bottom:7px}.source{color:#a9bbd4;font-size:12px;background:#1c3049;padding:9px 12px;border-radius:8px}.tiny{margin-top:18px;font-size:11px}
+table{width:100%;border-collapse:collapse;display:block;overflow-x:auto;margin:16px 0 22px;font-size:13px}th,td{border:1px solid #34506d;padding:8px 10px;text-align:left;vertical-align:top;min-width:80px}th{background:#203c56;color:#fff}td{background:#142941}tr:nth-child(even) td{background:#172c45}
+.idea{border:1px solid #395d71;border-radius:14px;padding:20px 24px;margin:18px 0;background:#152c42}.idea .subtitle{color:var(--accent);font-size:13px;margin-top:-10px}.alert{border-left:4px solid var(--red);background:#2a2639;padding:14px 18px;border-radius:6px;margin:12px 0}.watchrow{display:grid;grid-template-columns:minmax(270px,1fr) 170px 2fr;gap:14px;border-bottom:1px solid #2d415a;padding:11px 0;align-items:start;font-size:13px}.watchrow .cat{color:var(--amber)}.watchrow .why{color:#c0d0e3}.priority{display:grid;grid-template-columns:125px 1fr;gap:12px;border-bottom:1px solid #2c415b;padding:12px 0}.priority b{font-size:12px}.read-now{color:var(--accent)}.read-week{color:var(--blue)}.read-save{color:var(--amber)}.read-skip{color:var(--red)}
+.note{font-size:13px;color:#b9cde4;padding:12px 16px;border-left:3px solid #759ec7;background:#162943;border-radius:4px}footer{color:#91a6c2;font-size:12px;margin-top:35px;text-align:center}
+@media(max-width:700px){main{padding:12px 12px 50px}.panel{padding:18px 14px}.paper-body{padding:12px 13px}.watchrow{grid-template-columns:1fr;gap:2px}.priority{grid-template-columns:1fr;gap:4px}header.hero{padding:25px 20px}.paper-title{font-size:14px}}
+@media print{body{background:#fff;color:#111}.panel,.paper,header.hero{background:#fff;color:#111;box-shadow:none}a{color:#064b83}details{display:block}details .paper-body{display:block}}
+</style></head><body><main>
+<header class="hero" id="top"><div class="eyebrow">DAILY AI RESEARCH RADAR · IDEA MINER</div><h1>Research Radar <span style="color:var(--accent)">2026.10.10</span></h1><p>RL × Agent / Multi-Agent × Video Acceleration × Inference Acceleration<br>从论文机制、实验证据到可做的研究交叉点。不是机器遗忘专属日报。</p><div class="date">研究窗口：2026-10-08—10-09（UTC 新稿） · 近 5 日补充 1 篇 · 中文独立 HTML</div></header>
+<nav class="toc"><h2>目录 · Jump to Section</h2><div class="grid"><a href="#executive">Executive Summary</a><a href="#most-important">Most Important</a><a href="#top3">Top 3 必读</a><a href="#top5">Top 5</a><a href="#rl">RL Highlights</a><a href="#agent">Agent Highlights</a><a href="#video">Video Highlights</a><a href="#inference">Inference Highlights</a><a href="#tier-s">Tier S</a><a href="#tier-a">Tier A</a><a href="#tier-b">Tier B</a><a href="#ideas">Idea Mining</a><a href="#collisions">Collision Detection</a><a href="#priority">Reading Priority</a><a href="#watchlist">Candidate Watchlist</a><a href="#stats">今日统计</a><a href="#sources">Sources / Links</a></div></nav>
+<section id="executive" class="panel"><h2>Executive Summary</h2><div class="statgrid"><div class="stat"><b>48</b><span>Candidate Pool</span></div><div class="stat"><b>13</b><span>Formal Papers</span></div><div class="stat"><b>4</b><span>RL Papers</span></div><div class="stat"><b>7</b><span>Agent Papers</span></div><div class="stat"><b>3</b><span>Video Acceleration Papers</span></div><div class="stat"><b>4</b><span>Inference Acceleration Papers</span></div><div class="stat"><b>0</b><span>Unlearning Papers</span></div><div class="stat"><b>0</b><span>Other Papers</span></div><div class="stat"><b>3</b><span>Tier S</span></div><div class="stat"><b>5</b><span>Tier A</span></div><div class="stat"><b>5</b><span>Tier B</span></div></div><p>本期以 <strong>2026-10-08/09 的 arXiv 新论文与更新</strong> 为主（arXiv 的 Friday recent 列表中多篇正文标注 10 月 8 日 UTC 提交），另补入 10 月 5 日的 ThunderSyncRL 作为近 5 日高价值工作。先跨 cs.AI、cs.LG、cs.CV、cs.CL、cs.DC 扫描候选，再统一筛选；<strong>48 篇可追溯候选，13 篇正式分析，35 篇 Watchlist</strong>。其中 Tier S 3 篇均读取到 Method/Experiments；部分 Tier B 因正文关键实验尚未完成核验，明确降低证据等级，绝不虚构数字。</p>
+<p><strong>四条主线今天分别出现了什么？</strong> <strong>RL：</strong>SynCo 把题目生成器与推理策略共同放入 GRPO 闭环；ThunderSyncRL 证明 Agent RL 可通过流式梯度在零 policy staleness 下缩短达标时间。<strong>Agent：</strong>MASS 把信息交接契约作为自监督来源，VAMR 进一步把多个视频问题的 credit 分配到共享轨迹的相关回合；Hippocam 探索可逆层级记忆。<strong>Video Acceleration：</strong>iCATS 通过 QK 交互聚类、logSNR 动态稀疏和 GPU tail merging 在 720p 视频生成上取得真实秒数收益；VAMR 报告处理帧数下降，但尚不能直接换算 wall-clock。<strong>Inference Acceleration：</strong>TokenRouter 解决 token-level 模型切换的 decode 服务调度；RaReCache 针对跨模型 prefill/TTFT；VFold 针对长上下文 KV 容量。这三者优化的是不同瓶颈，不应混为一个“加速倍数”。</p>
+<p><strong>今日关键判断：</strong>最值得学习的是 <strong>“算法级重要性选择 + 系统级调度 + 可验证的信息流”</strong>。对系统论文一定核对原始延迟/吞吐和强基线；对 Agent/RL 论文一定核对独立评价、错误传播与 reward hacking。Unlearning 本轮有检索但没有足够核实的 24–72h 高价值候选进入正式收录；这不是方向被取消，而是按同一科研价值门槛筛选。</p>
+<div class="note">统计为多标签口径：一篇论文可同时计入 RL、Agent、Video、Inference；因此方向数量相加可能大于正式论文数。仅 Tier S/A/B 互斥。</div></section>
+<section id="most-important" class="panel"><h2>Today’s Most Important Paper</h2><p><strong>Recursive Self-Improvement through Multi-Agent Self-Supervision (MASS)</strong> — <a href="https://arxiv.org/abs/2610.12176">arXiv 2610.12176</a>。今天最重要不在于榜单最高分，而在于它提出一个可迁移机制：<strong>优化信息交接契约，再把多 Agent 协作轨迹变成模型参数的监督</strong>。它同时给出强正证据（更高 token 监督效率、研究 benchmark 改进）和负证据（SWE-bench / Terminal-Bench 回落），便于判断研究边界。<strong>优先读：</strong>Section 3 Method、Figure 3 的跨角色/负面结果、Figure 6 的 token 效率。<strong>未来价值：</strong>Agent memory、RL credit assignment、错误传播与自动科研 workflow 的共同基础。</p>
+</section>
+<section id="top3" class="panel"><h2>Top 3 必读</h2><div class="rank"><article class="rankcard"><div class="num">01 · MUST READ</div><h3><a href="https://arxiv.org/abs/2610.12176" target="_blank" rel="noopener noreferrer">MASS</a></h3><p>学习 workflow contract 如何成为自监督来源；先看 Section 3、Figure 3、Figure 6。最适合延伸到 Agent 信息流与信用分配。</p></article><article class="rankcard"><div class="num">02 · MUST READ</div><h3><a href="https://arxiv.org/abs/2610.11302" target="_blank" rel="noopener noreferrer">iCATS</a></h3><p>学习交互感知稀疏 + SNR 预算 + kernel tail merging；先看 Table 1、Table 5。最适合学习理论 FLOPs 与真实延迟的分离。</p></article><article class="rankcard"><div class="num">03 · MUST READ</div><h3><a href="https://arxiv.org/abs/2610.12242" target="_blank" rel="noopener noreferrer">TokenRouter</a></h3><p>学习 request-centric API 与 model-centric serving；先看 Section 4、Table 2、Figure 1(a)。最适合跨模型 Agent 推理系统。</p></article></div></section>
+<section id="top5" class="panel"><h2>Top 5 · 综合研究优先级</h2><ol><li><strong><a href="https://arxiv.org/abs/2610.12176" target="_blank" rel="noopener noreferrer">MASS</a></strong> — 机制创新+正负证据完整；跨 Agent 训练价值最高</li><li><strong><a href="https://arxiv.org/abs/2610.11302" target="_blank" rel="noopener noreferrer">iCATS</a></strong> — 真实视频生成秒数+精度消融；系统证据扎实</li><li><strong><a href="https://arxiv.org/abs/2610.12242" target="_blank" rel="noopener noreferrer">TokenRouter</a></strong> — 多模型 serving 的 decode 瓶颈与调度建模</li><li><strong><a href="https://arxiv.org/abs/2610.11345" target="_blank" rel="noopener noreferrer">SynCo</a></strong> — 双 Agent RL curriculum；强 frozen-synth 对照</li><li><strong><a href="https://arxiv.org/abs/2610.11358" target="_blank" rel="noopener noreferrer">RaReCache</a></strong> — 跨模型 prefill/TTFT 与 Agent handoff 直接相关</li></ol><p class="note">Tier 是论文研究价值等级，Top 5 是本日阅读优先级，二者不是同一个排序目标。</p></section>
+<section id="rl" class="panel"><h2>RL Highlights</h2><p><strong>SynCo</strong> 用独立 Synthesizer/Reasoner 的多 Agent GRPO 同时更新训练分布和推理能力：八数学任务平均 78.72，对照 Frozen Synth 75.85。关键机制是 task quality/answer reliability/teachability 与最终正确性共同反馈。<strong>ThunderSyncRL</strong> 则是另一条路线：GRPO 目标不变，把可分解的 score gradient 提前算，达到相同 SWE-bench Verified 目标用 121.3 而非 233.5 GPU-hours。前者是<strong>学习信号</strong>，后者是<strong>训练调度</strong>；两者不可把训练速度提升误说成 sample efficiency。另留意 MetaOPD 的 token weighting，但其公式和数字本轮尚未核实。</p>
+</section>
+<section id="agent" class="panel"><h2>Agent / Multi-Agent Highlights</h2><p><strong>MASS</strong> 把交接契约和信息路由优化后蒸馏回共享模型，研究类 benchmark 单位输出 token 性能提高 1.2–1.6×，但 SWE-bench Verified 回落，提醒避免过度外推。<strong>VAMR</strong> 将多个视频问题共享一条工具轨迹，使用问题级 critic 和 round alignment；<strong>Hippocam</strong> 用 intent 层级和使用驱动的记忆再巩固减少长期上下文冗余。建议重点检查错误如何从共享 memory 传播到下游 Agent，而不只是平均成功率。</p>
+</section>
+<section id="video" class="panel"><h2>Video Acceleration Highlights</h2><p><strong>iCATS</strong> 是今天最扎实的视频生成系统证据：Hunyuan 1730→854 秒，SVG2 同速率下 PSNR 26.247→31.017；Wan T2V 则是 1889→1222 秒，不能只宣传最大 2×。<strong>VAMR</strong> 报告 LVBench 帧处理量 -61.4%、推理轮次 -85.9%，但尚未从本轮材料核实实际 GPU latency。<strong>FastBench</strong> 是值得追踪的高动态流式视频评估方向，具体实验数字待查。</p>
+</section>
+<section id="inference" class="panel"><h2>Inference Acceleration Highlights</h2><p><strong>TokenRouter</strong> 主要优化 decode 的跨模型切换、异步调度与 batch admission；<strong>RaReCache</strong> 主要优化模型切换后的 prefill/TTFT，目标饱和负载下报告 p50/p99 TTFT 分别最多 5.0×/6.4×；<strong>VFold</strong> 通过离线对齐合并相邻层 Value，减少 25% 总 KV cache，却不能因此声称 25% latency 加速。系统设计上，三者可形成互补栈，但合并后必须实测内存、消息与重算开销。</p>
+</section>
+<section id="tier-s" class="panel"><h2>Tier S · 3 篇</h2><p class="note">默认展开；Method、Experiments、强基线、负面结果和 Migration 优先。</p>
+<details class="paper tiercard-S" id="p-2610.12176" open>
+ <summary><span class="tier tier-S">Tier S</span><span class="paper-title">Recursive Self-Improvement through Multi-Agent Self-Supervision</span><span class="pill">Agent / Multi-Agent</span><span class="id">2610.12176</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.12176" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：Method + Experiments 已核验</div>
+ <p><strong>Basic Information.</strong> Hyunin Lee、Jinglue Xu、Jeffrey Seely、Donghyun Lee、Somayeh Sojoudi、Matei Zaharia、Yujin Tang；UC Berkeley / Sakana AI。2026-10-08 v1；arXiv preprint，未据此认定已被主会录用。<a href="https://arxiv.org/abs/2610.12176">Paper</a> · <a href="https://arxiv.org/html/2610.12176v1">HTML 全文</a>（正文附官方代码链接）。</p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>传统自我改进让同一个模型做题、批改、再改进自己，但遇到开放式科研任务，单模型往往看不出自己犯的错。MASS 的办法不是先找更强教师，而是让同一个模型扮演多个分工明确的 Agent，自动进化“谁做什么、把什么结果交给谁”的工作流，再把成功的多 Agent 执行轨迹蒸馏回模型参数。两轮之后，研究类任务的单位输出 token 得分提高约 1.2–1.6 倍，测试任务胜率从第一轮 53.9% 升到第二轮 69.9%。最有价值的是：<strong>信息流设计本身可以成为可学习的监督信号</strong>，而不是把长链推理简单拼接起来。</p>
+<h3>Background &amp; Gap</h3>
+<p>已有路线一是单 Agent 自反思与自训练：同一模型提出答案、评价答案并更新，容易把自身偏差循环强化。路线二是固定多 Agent workflow：能分工，但不同任务最优拓扑不同，固定角色和传递格式可能把有用信息丢掉。具体例子：量化研究需要数据处理、策略实现、回测验证。若数据 Agent 只把“收益不错”传给回测 Agent，而不传成本假设、时间切分与数据来源，后续步骤就会在错误基础上继续。论文把关键 Gap 定位在 <strong>workflow optimization 与 trajectory supervision 的联动</strong>：先发现更有效的交接，再把这种协作习惯学进权重。</p>
+<h3>Core Insight 与 Method Deep Dive</h3>
+<p><strong>Pipeline：</strong>研究任务 → 生成 orchestrator–subagent 工作流 → 执行并产生 workspace → 同模型成对评价 → 修改工作流中的角色/调用顺序/输出契约 → 选出高质量多 Agent 轨迹 → SFT 更新共享模型 → 下一轮继续搜索。</p>
+<ol>
+<li><strong>工作流表示。</strong> 每个子 Agent 由角色 <code>r</code>、指令 <code>u</code>、输出契约 <code>c</code> 描述，另有调用顺序/信息路由 <code>h</code>。论文刻意把搜索重点放在 <code>h</code> 和 <code>c</code>，不是只换 persona 名称；因为后续 Agent 实际能看到什么，决定了任务是否可复用、可验证。</li>
+<li><strong>内循环进化。</strong> 固定当前模型权重，执行候选工作流，比较候选 workspace 与当前最优 workspace，由模型给出相对偏好与反馈，再修改工作流。保留最优候选的精英搜索不保证全局最优，且自评价可能偏差；作者用外部模型只做最终评估，避免训练过程直接泄漏外部评审信号。</li>
+<li><strong>外循环蒸馏。</strong> 每个训练任务独立执行 18 次候选轨迹，经 pairwise tournament 与 Bradley–Terry 排序，挑选优质轨迹；同时监督 orchestrator 的分派/整合动作与 subagent 的局部执行。训练目标是带 token mask 的 SFT 交叉熵：只对目标 assistant token 计算负对数似然，不把工具返回和上下文当作预测目标。其关键不是新的 RL reward，而是<strong>高质量协作轨迹的监督密度</strong>。</li>
+<li><strong>递归更新。</strong> 更新后的模型同时替换求解器、评估器、优化器；因此下一轮 workflow 搜索也会变化。两轮结果支持这一反馈闭环在选定任务上有效，但不能据此断言无限轮次持续增长。</li>
+</ol>
+<p><strong>Toy Example。</strong> 输入“分析一个新策略是否有真实超额收益”。初始单 Agent 可能写回测代码后直接报告 Sharpe。MASS 搜索出的流程可以是：Agent A 交付数据切分和缺失值日志 → Agent B 交付可执行策略及依赖 → Agent C 交付含交易成本与泄漏检查的回测报告 → Orchestrator 汇总并标注未验证假设。若 C 发现未来信息泄漏，评价器偏好保留证据链的版本；下一轮 <code>c</code> 便要求 B 交付特征可用时间。蒸馏时模型同时学习“何时委派”与“如何给出可验证产物”。这是解释性示例，不是论文原始案例的逐字复现。</p>
+<h3>Baseline Comparison 与 Setup</h3>
+<p><strong>对照一：</strong>单 Agent 轨迹 SFT，合理但把所有局部与全局动作混在一个长序列中。<strong>对照二：</strong>固定多 Agent workflow，只能享受即时协作，无法把成功模式内化。<strong>对照三：</strong>同模型单轮 MASS，缺少第二轮递归收益。最重要的强对照是<strong>更大训练 token 预算的单 Agent SFT</strong>，因为它排除了“多 Agent 只是用了更多训练 token”这一简单解释。</p>
+<p>基座 <strong>Qwen3.6-27B-FP8</strong>、执行器 qwen-code 0.20.0；12 个合成科研编程任务覆盖金融、机器人、药学，其中 9 个拟训练、3 个留作测试，最终 8 个进入 SFT。119 条 teacher trajectories → 2,435 windows → 17.2M supervised tokens；LoRA rank 64、alpha 128、dropout 0.05，峰值 LR 3e-5，1,624 optimizer steps。公开测试包括 ScienceAgentBench、MLR-Bench、DSBench、AstaBench、Terminal-Bench 2.0、SWE-bench Verified。外部评价用两个强模型，各 3 个随机种子，成对胜率去掉平票。<strong>RQ：</strong>训练得到的能力是否能跨求解、优化、评价三角色迁移？多 Agent 数据是否比单 Agent 更高效？</p>
+<h3>Results：数字 → 对照 → 意义</h3>
+<ul>
+<li><strong>测试任务胜率：</strong>第一轮相对初始模型 53.9%，第二轮相对初始模型 69.9%；第二轮相对第一轮仍有 60.8%。支持递归改进，但仅验证两轮。</li>
+<li><strong>研究任务：</strong>MLR-Bench 从 1.58±0.38 → 2.40±0.28；ScienceAgentBench 从 28.8±1.5 → 31.7±2.0；四个研究 benchmark 的 score/output-token 约 1.2–1.6×。</li>
+<li><strong>评估器：</strong>与外部评审的一致准确率 0.73 → 0.91 → 0.93；说明只训练执行轨迹，也可能改善评价能力，但外部评审不等于绝对真值。</li>
+<li><strong>监督效率：</strong>多 Agent 学生用 28.82M processed supervised tokens 达到 68.3% 胜率，单 Agent 42M tokens 仅 64.0%，节省 31.4% 处理 token 且高 4.3pp；这是本文最强的机制证据之一。</li>
+<li><strong>负面结果不能略过：</strong>Terminal-Bench 2.0 从 37.5±2.2 降到 35.2±1.7；SWE-bench Verified 从 62.6±1.4 降到 61.1±0.6。开放式研究提升<strong>没有</strong>自动转化为所有代码 Agent 能力提升。</li>
+</ul>
+<p><strong>Figure 1</strong> 展示内外循环；<strong>Figure 3</strong> 拆分求解器/优化器/评估器三角色；<strong>Figure 5</strong> 观察角色说明逐渐通用、交接契约与调用顺序更任务化；<strong>Figure 6</strong> 给出训练 token 与性能对照。消融显示优化器容量比评价器容量更可能成为 workflow 搜索瓶颈；不过工作流结构与数据质量的贡献仍难完全因果分离。</p>
+<h3>Claim vs Evidence / Contribution / Limitation</h3>
+<p><strong>Authors claim：</strong>多 Agent 信息流提供可递归改进的自监督。<strong>Experiments actually show：</strong>在有限合成科研任务和两轮更新下，外部偏好、训练效率及部分公开研究 benchmark 改善。<strong>Not proven：</strong>无限轮收敛、真正科学发现质量、跨领域普适性，以及在 SWE-bench 上的正迁移。</p>
+<p><strong>Contribution 1 [New Mechanism]：</strong>可进化的角色/输出契约/信息路由；<strong>Contribution 2 [New Objective/Training Recipe]：</strong>orchestrator 与 subagent 轨迹联合 SFT；<strong>Contribution 3 [New Empirical Finding]：</strong>多 Agent 数据在给定实验中提供更高监督效率。<strong>Authors' limitation / additional：</strong>自评误差、仅两轮、任务集小且部分私有、外部 LLM 评判偏好；长程记忆污染与错误级联缺少系统评估。</p>
+<h3>Research Value &amp; Migration</h3>
+<p><strong>Baseline Potential：高</strong>，可作为 multi-agent self-training 对照。<strong>Migration Potential：高</strong>，把 <code>handoff contract</code> 看成学习对象。<strong>Systems Value：中</strong>，多 Agent 执行更贵；<strong>Evaluation Potential：高</strong>，可设计信息流缺失与错误传播测试。<strong>New Paper Potential：中高</strong>，但需避开单纯 workflow search。</p>
+<p><strong>Original Problem → Transferable Mechanism → New Research Question → Method Modification → Minimum Experiment → Model → Dataset → Baseline → Metric → Expected Contribution → Risk：</strong>开放式研究自监督 → 可验证信息交接契约 → 错误传播感知的通信拓扑是否比单纯得分搜索更稳健？ → 对每次 handoff 记录 provenance 与不确定性，按下游错误归因惩罚高风险交接 → 2–3 Agent 的代码修复/研究复现实验，人工注入错误证据并观察下游修复 → Qwen3-8B 或同量级开源模型 → SWE-smith 子集/可执行研究任务 → 固定拓扑、MASS 风格拓扑、无 provenance → 成功率、传播深度、恢复率、token/成本 → <strong>可验证信息流优化</strong> → evaluator bias 与工具环境噪声。</p>
+<h3>五句话总结</h3>
+<p>第一，MASS 把多 Agent 信息流变成自监督来源。第二，它通过工作流进化加 SFT 而非纯 RL 完成两轮递归改进。第三，多 Agent 轨迹的监督效率优于更大 token 预算的单 Agent 对照。第四，Terminal-Bench 和 SWE-bench 的回落提醒我们不要把研究 benchmark 改进外推到所有 Agent。第五，最值得迁移的是可验证的 handoff contract 与错误传播评估。</p>
+
+ <div class="source tiny">篇幅核验：约 1896 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+<details class="paper tiercard-S" id="p-2610.11302" open>
+ <summary><span class="tier tier-S">Tier S</span><span class="paper-title">iCATS: Fast Video Generation via Interaction-Aware Sparse Attention and Timestep-Adaptive Sparsity</span><span class="pill">Video Acceleration</span><span class="id">2610.11302</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.11302" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：Method + Experiments 已核验</div>
+ <p><strong>Basic Information.</strong> Chengfeng Han、Baole Ai、Xianlu Bian、Jie Yao、Zilong Huang、Ang Wang、Dandan Ding。2026-10-08 v1；arXiv preprint，作者单位与代码发布状态未在本轮核实。<a href="https://arxiv.org/abs/2610.11302">Paper</a> · <a href="https://arxiv.org/html/2610.11302v1">HTML 全文</a>。</p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>视频扩散模型一次生成视频要反复做注意力计算。已有稀疏注意力会跳过很多不重要的 token 对，但常见做法是先分别聚类 Query 和 Key，再猜哪些区域该计算；猜错就影响画面。iCATS 改为根据 Query–Key 的相互作用来聚类，按照去噪阶段的信噪比动态分配稀疏预算，最后把 GPU 上填不满的尾块合并。它不需要重新训练模型。HunyuanVideo-T2V-13B 的端到端生成从 1730 秒降到 854 秒，约 2.03 倍；同速率下 PSNR 从强基线 SVG2 的 26.247 提升到 31.017 dB。亮点不是单纯削 FLOPs，而是同时改进<strong>选择正确性、时间预算与硬件执行</strong>。</p>
+<h3>Background &amp; Gap</h3>
+<p>DiT 视频生成含大量跨帧 token；密集 attention 复杂度与 token 数平方相关。SVG 等方法利用预设时空稀疏模式，SVG2 用聚类动态估计稀疏块，优点是训练自由、能直接部署，缺点有三：独立聚类不一定保持真正重要的 Q–K 交互；固定 top-p 无法适应不同去噪时刻；不规则 cluster 映射到 GPU block 后产生 padding 和 kernel 空转。具体例子：两个 Query 特征在欧氏空间很近，却分别关注运动物体和背景；若按 Query 自身相似性合并，就可能漏掉对运动边界关键的 Key 区域。</p>
+<h3>Core Insight 与 Method Deep Dive</h3>
+<p><strong>Pipeline：</strong>预先获得噪声调度 → 按 Q–K 交互构造聚类与重要性估计 → 每个 timestep 根据 logSNR 选择 top-p → 生成稀疏注意力 mask → 合并不规则 query 尾块 → 专用 GPU kernel 计算 sparse attention → DiT 继续去噪。</p>
+<ol>
+<li><strong>Interaction-aware clustering。</strong> 传统分别对 Q/K 做 k-means，优化的是各自几何距离；iCATS 改为让聚类更忠实于 QK 内积结构。论文把交互目标改写为可低成本求解的二次型，避免真的构建完整 QK 注意力矩阵，否则“为选择稀疏区域先做一次 dense attention”会得不偿失。</li>
+<li><strong>SNR-guided schedule。</strong> 去噪初、中、末阶段对近似误差容忍度不同。令 <code>ℓ_t = logSNR(t)</code>，<code>x_t = ℓ_t − ℓ_pivot</code>，<code>p_min</code> 为最小保留比例，则 <code>top-p_t = p_min + (1-p_min)[1 − sigmoid(k x_t)]</code>（适用稀疏阶段）。<code>pivot</code> 从 logSNR 相邻变化最小位置自动确定，<code>k</code> 由初始保留阈值 <code>τ</code> 决定；top-p 离线算好，不引入显著在线控制开销。注意这里 top-p 是保留注意力质量的预算控制，不等于直接“保留 p% 的 token”。</li>
+<li><strong>Tail merging。</strong> 同一 head 中若两个 query cluster 访问完全相同的 key-cluster 集，可无损合并。对于 block size 无法整除的剩余 cluster，再根据 key-mask 的 Hamming 距离寻找兼容目标，合并尾块以减少 padding；这种合并可能稍微增加理论稀疏计算，却减少真实 GPU 空转。</li>
+</ol>
+<p><strong>Toy Example。</strong> 一段 5 秒视频含 1000 个关键候选块。初期噪声大时需要较密集的全局交互，中间阶段可以只计算运动主体相关区域，末期细节又需要较高保留比例。若两组 Query 都访问同一组 Key，原本两个各占半个 GPU block 的工作可合并成一个满块。这样同时减少错误跳过与空块执行；具体数字仅为解释性示例。</p>
+<h3>Baseline Comparison / Setup</h3>
+<p><strong>SVG：</strong>手工/统计稀疏模式，速度好但不够内容自适应。<strong>SVG2：</strong>动态独立聚类，是最关键的强基线；同速率下质量不如交互感知聚类。<strong>Dense DiT：</strong>准确性和视频质量参照，同时也是 wall-clock 加速的分母。测试 <strong>HunyuanVideo-T2V-13B、Wan2.1-T2V-14B、Wan2.1-I2V-14B</strong>；5 秒 720p，Penguin Benchmark/VBench 提示，138 条 Wan T2V prompt 用于消融，主要实验使用 <strong>8×H100</strong>。PSNR/SSIM/LPIPS 比较与 dense 输出的相似性，VBench 衡量生成质量。<strong>RQ：</strong>相同真实延迟下是否更保真？稀疏率与真实时间是否一致？三组件是否互补？</p>
+<h3>Efficiency Breakdown（未报告不补数字）</h3>
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th style="text-align:right">Baseline</th>
+  <th style="text-align:right">Proposed</th>
+  <th style="text-align:right">Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Frames</td>
+  <td style="text-align:right">5s / 720p 视频；具体帧数未核实</td>
+  <td style="text-align:right">相同任务</td>
+  <td style="text-align:right">Not Reported</td>
+</tr>
+<tr>
+  <td>Visual Tokens</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+</tr>
+<tr>
+  <td>Attention sparsity, Hunyuan</td>
+  <td style="text-align:right">Dense 0%</td>
+  <td style="text-align:right">iCATS-Base 66.1%</td>
+  <td style="text-align:right">理论 sparse attention 计算减少 66.1%</td>
+</tr>
+<tr>
+  <td>Wall-clock, Hunyuan T2V</td>
+  <td style="text-align:right">1730s dense</td>
+  <td style="text-align:right">854s Base</td>
+  <td style="text-align:right"><strong>2.03×</strong></td>
+</tr>
+<tr>
+  <td>Wall-clock, Wan2.1 T2V</td>
+  <td style="text-align:right">1889s dense</td>
+  <td style="text-align:right">1222s Base</td>
+  <td style="text-align:right"><strong>1.55×</strong></td>
+</tr>
+<tr>
+  <td>Wall-clock, Wan2.1 I2V</td>
+  <td style="text-align:right">1519s dense</td>
+  <td style="text-align:right">1084s Base</td>
+  <td style="text-align:right"><strong>1.41×</strong></td>
+</tr>
+<tr>
+  <td>Throughput / FPS</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+</tr>
+<tr>
+  <td>GPU Memory</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+</tr>
+<tr>
+  <td>Quality Hunyuan PSNR vs dense</td>
+  <td style="text-align:right">SVG2 26.247 dB</td>
+  <td style="text-align:right">iCATS-Base 31.017 dB</td>
+  <td style="text-align:right">+4.770 dB（同约 2.03×）</td>
+</tr>
+</tbody>
+</table>
+<h3>Results / Tables / Ablation</h3>
+<ul>
+<li><strong>Table 1：Hunyuan。</strong> SVG2 用 853s、PSNR 26.247；iCATS-Base 用 854s、PSNR 31.017、VBench 0.844（dense 也是 0.844）。强点是<strong>几乎不改变速度却显著提高相对 dense 的重建保真度</strong>。</li>
+<li><strong>Table 1：Wan T2V。</strong> SVG2 用 1226s、PSNR 25.606；iCATS-Base 用 1222s、PSNR 29.301。Turbo 用 1176s、PSNR 28.172，展示可调节速度/质量 Pareto。</li>
+<li><strong>Table 1：Wan I2V。</strong> dense 1519s，iCATS-Base 1084s，Turbo 1057s；最快约 1.44×，说明 2× 并非跨模型通用。</li>
+<li><strong>Table 2：聚类诊断。</strong> top-p 覆盖 0.896 → 0.913，注意力输出 MSE <code>8.99×10⁻⁴ → 5.75×10⁻⁴</code>，约下降 36%；这是机制层面证据。</li>
+<li><strong>Table 4：人工偏好。</strong> 在 220 票中 iCATS-Base 获 54.1%、SVG2 获 18.6%、相近 27.3%；该人评范围有限，不能直接外推到所有提示。</li>
+<li><strong>Table 5：消融。</strong> Wan T2V Anchor 1227s/PSNR 25.894；加入 IC+SG 后 1213s/28.283；再加入 TM 后 1171s/28.372。TM 让理论 sparsity 从 70.0% <strong>降到 69.0%</strong>，却让时间从 1213s <strong>降到 1171s</strong>：这是“FLOPs 与真实延迟不等价”的漂亮例子。</li>
+</ul>
+<h3>Claim vs Evidence / Contribution / Limitation</h3>
+<p><strong>Authors claim：</strong>训练自由的稀疏注意力在多种视频 DiT 上获得更优质量效率平衡。<strong>Evidence：</strong>三模型的真实秒数、质量指标、组件消融与人评。<strong>Not proven：</strong>跨更多 GPU、单卡/多卡低资源、流式视频理解与更长生成时长的收益。<strong>Contribution 1 [New Mechanism]：</strong>交互感知聚类；<strong>2 [New Scheduling]：</strong>logSNR 动态 top-p；<strong>3 [New System/Engineering]：</strong>tail merging 改善 block 利用率。作者承认聚类尚未为多 GPU 并行充分优化，token-level kernel 仍可改进。附加风险是特定 timestep 的误差可能在多步去噪累积。</p>
+<h3>Research Value &amp; Migration</h3>
+<p><strong>Baseline Potential：高</strong>（SVG2/DiT 加速）。<strong>Migration Potential：高</strong>（动态预算 + 硬件反馈）。<strong>Systems Value：高</strong>（真实 8×H100 秒数）。<strong>Evaluation Potential：高</strong>（把理论稀疏率和 kernel 效率分离）。<strong>New Paper Potential：中</strong>，直接复制聚类思路容易撞题。</p>
+<p><strong>Original Problem → Transferable Mechanism → New Research Question → Method Modification → Minimum Experiment → Model → Dataset → Baseline → Metric → Expected Contribution → Risk：</strong>视频 DiT 的 QK 冗余 → 交互感知选择与预算自适应 → Video VLM 中能否按问题难度与跨帧信息增益分配 token/帧预算？ → 用 query-conditioned QK 交互近似打分，按不确定性调节保留率并对 GPU block 做合并 → 在 1–2 个长视频 QA 数据集对比固定帧数/均匀 pruning/动态预算 → 轻量 Video VLM → LongVideoBench 子集 → Uniform、top-k、原模型 → accuracy、frames、tokens、真实 TTFT、peak memory → <strong>可验证的精度-延迟预算控制</strong> → 选择器自身开销与证据遗漏。</p>
+<h3>五句话总结</h3>
+<p>第一，iCATS 通过交互聚类改善稀疏注意力的正确性。第二，logSNR 让预算跟随去噪阶段而变化。第三，tail merging 证明减少 padding 有时比提高稀疏率更能加速。第四，真实加速依模型为 1.41–2.03×，不能只引用最漂亮的 2×。第五，迁移到 Video VLM 时必须重新设计 query-conditioned 的预算控制。</p>
+<h3>额外的系统分析：为何稀疏率不是加速率？</h3>
+<p>以 Hunyuan iCATS-Base 为例，注意力理论 sparsity <strong>66.1%</strong>，但整段视频真实生成只快 <strong>2.03×</strong>。原因包括非 attention 模块（MLP、归一化、调度器）、稀疏索引构建、聚类、GPU kernel 的内存访问与并行度。假设 attention 仅占端到端时间的某个比例，即便 attention 完全免费，整体也受 Amdahl's law 限制。反过来，Tail Merging 稍微牺牲稀疏率却改善实际时间，正说明<strong>稀疏率是算术指标，不是系统指标</strong>。部署时还应单独测量 clustering time、mask construction time、sparse kernel time、non-attention time，报告端到端的真实 <code>wall-clock</code>。在 8×H100 的条件下取得的数字不能直接外推到单张 3090/4090，也不能等同于实时 FPS。</p>
+
+ <div class="source tiny">篇幅核验：约 1592 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+<details class="paper tiercard-S" id="p-2610.12242" open>
+ <summary><span class="tier tier-S">Tier S</span><span class="paper-title">TokenRouter: Efficient Serving System for Token-Level LLM Routing</span><span class="pill">Inference Acceleration</span><span class="id">2610.12242</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.12242" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：Method + Experiments 已核验</div>
+ <p><strong>Basic Information.</strong> Tianyu Fu、Tengxuan Liu、Ruoxi Wang、Yixin Dong、Yi Ge、Yichen You、Yu Wang；2026-10-08 v1；论文摘要标注 <strong>NeurIPS 2026 accepted</strong>，代码链接位于 arXiv 页面，作者单位本轮未独立核实。<a href="https://arxiv.org/abs/2610.12242">Paper</a> · <a href="https://arxiv.org/html/2610.12242v1">HTML 全文</a>。</p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>为了省推理成本，模型可以让小 LLM 生成容易的 token，遇到困难 token 才转给大 LLM。但真正部署时，一个请求可能每几个 token 就切换一次模型，传统 serving 系统每次都重新调度、匹配前缀，导致 GPU 等待与小 batch。TokenRouter 把“单请求如何选择模型”的编程逻辑和“每个模型如何批量执行”的运行时解耦：每个模型有自己的子服务器、KV 缓存和调度器，请求异步转移，等待合适时机再凑 batch。论文在多种 routing 算法与工作负载上报告相对较强服务基线 <strong>2.01–64.15× decoding throughput</strong> 提升，但这个大范围强烈依赖基线实现；更有意义的是给出具体 TTFT、吞吐和端到端延迟，证明<strong>算法上的 token 级路由，必须配套系统层面的异步调度</strong>。</p>
+<h3>Background &amp; Gap</h3>
+<p>Query-level routing 在整个请求开始时选模型，易服务；token-level routing 可把难 token 升级到大模型，算法上更细，但模型间控制权频繁交换，造成两类开销。第一，<strong>step desynchronization</strong>：两个模型执行进度不一致，某模型等待另一模型给回 token。第二，<strong>batch admission delay</strong>：到达某模型的请求零散，立即执行导致 batch 太小；盲目等更多请求又增加等待时间。举例：4 个数学题请求同时在小模型跑，只有 1 个触发高熵转发，大模型立即处理这 1 个请求，其他 3 个稍后到达又重新启动，吞吐会非常差。</p>
+<h3>Core Insight 与 Method Deep Dive</h3>
+<p><strong>Pipeline：</strong>请求进入 entry model → 本地 decode → <code>route(result)</code> 判断是否切换 → <code>send(req)</code> 只传对方未见过的 token suffix 与位置锚点 → 目标模型 <code>receive(peer_req)</code> 恢复请求 → 子服务器独立排队、异步执行与 delayed batching → 回传或继续 decode。</p>
+<ol>
+<li><strong>Request-centric programming。</strong> 开发者只需实现 <code>route / send / receive</code> 三个操作。<code>route</code> 可根据 entropy、置信度或路由器输出选择 peer；<code>send</code> 维护请求 ID、未见 suffix 和位置锚点，避免每次重传完整上下文；<code>receive</code> 把 peer message 还原为本地可继续解码的状态。这是 API 抽象，不是新的 token-level routing 策略。</li>
+<li><strong>Model-centric execution。</strong> 每个模型由独立 subserver 管理自己的 scheduler、runner 和 KV pool。请求跨模型移动，但某模型内仍可以做连续 batching 与 prefix caching。论文基于 SGLang 构建，额外优化 CUDA graph 与 handoff-resume。</li>
+<li><strong>Delayed batching。</strong> 对小 batch 不一定马上启动 decode；调度器等待更多本地请求进入。过早执行造成低利用率，等待过久又让队列饥饿。论文使用离散时间马尔可夫链，根据并发数 <code>N</code>、模型间转移概率 <code>P</code>、各模型单步延迟 <code>L_i</code>，估计吞吐 <code>Throughput(B)</code> 并选择最大化吞吐的阈值 <code>B*</code>。核心超参不是随便拍的“等 5ms”，而是与路由分布及负载有关。</li>
+<li><strong>边界。</strong> 它优化的是跨模型 token-routing 的 <strong>decode serving</strong>，不是直接让单个 Transformer 的 attention FLOPs 减少，也不是普遍提高模型本身的正确率。质量取决于底层 routing 算法；系统主要改变调度与状态传递。</li>
+</ol>
+<p><strong>Toy Example。</strong> 4 个 Agent 请求使用 0.6B/32B 两模型。A、B 只需要小模型，C 的第 30 个 token 置信度不足，D 的第 33 个 token 也需升级。传统服务 C 一到就启动大模型，D 随后到又启动一次；TokenRouter 允许两个 peer 请求在大模型的同一批次执行，并保留各自位置锚点。返回后小模型只处理自己尚未看到的 suffix。注意真实收益取决于路由频率和并发，单请求低并发下 delayed batching 可能不划算。</p>
+<h3>Baseline Comparison / Experiment Setup</h3>
+<p><strong>Official Code：</strong>原 routing 论文的参考实现，算法忠实但常缺服务级调度；可能非常慢。<strong>Std. Serving：</strong>作者搭建的 SGLang 每模型服务器 + 外部 token dispatcher，是更合理的系统对照；但没有原生 handoff-resume。<strong>LLM-only：</strong>不路由的纯大模型服务，是吞吐/质量 Pareto 的参考，不是同一算法的直接系统对照。最强对照需要<strong>在相同 routing 决策、硬件、并发与工作负载下</strong>判断。</p>
+<p>5 种算法：CITER、R2R、R-Stitch、Co-LLM、ME。模型包括 Qwen3-0.6B、8B、32B（部分模型对），实验机器 <strong>8×A100-80GB</strong>，大模型有 TP=2 配置，部分部署通过 CUDA MPS 共享 GPU。工作负载：AIME2024 低推理（约 100 token 输入，最多 2048 输出）、高推理（最多 8192 输出）和 SWE-Smith Agent trajectory（约 8192 输入，最多 1024 输出）。<strong>RQ：</strong>固定 routing 算法时能否提高真实 token/s、减少请求完成时间？负载变长、并发增加是否稳定？</p>
+<h3>Bottleneck / System Metrics</h3>
+<p><strong>Bottleneck：</strong>Decode 的跨模型调度、KV 状态维护、batch admission；并非主要减少 prefill attention FLOPs。是否需要重新训练？<strong>TokenRouter 系统本身不要求重新训练模型</strong>，但部分底层路由算法（如 CITER router、Co-LLM）有训练/微调。硬件：实验依赖 A100 与 CUDA/SGLang，迁移到其他 GPU 需要重新调参。model-specific：运行时框架相对通用，route/send 语义需针对算法实现。</p>
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th style="text-align:right">Baseline</th>
+  <th style="text-align:right">Proposed</th>
+  <th style="text-align:right">Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>TTFT, R2R concurrency 4</td>
+  <td style="text-align:right">Official 0.11s</td>
+  <td style="text-align:right">0.11s</td>
+  <td style="text-align:right">相同</td>
+</tr>
+<tr>
+  <td>TTFT, Co-LLM concurrency 4</td>
+  <td style="text-align:right">Official 1.14s</td>
+  <td style="text-align:right">0.067s</td>
+  <td style="text-align:right">显著下降</td>
+</tr>
+<tr>
+  <td>Decode throughput, R2R</td>
+  <td style="text-align:right">Official 89.62 token/s</td>
+  <td style="text-align:right">244.56 token/s</td>
+  <td style="text-align:right">2.73×</td>
+</tr>
+<tr>
+  <td>Decode throughput, CITER</td>
+  <td style="text-align:right">Official 17.16 token/s</td>
+  <td style="text-align:right">149.31 token/s</td>
+  <td style="text-align:right">8.70×</td>
+</tr>
+<tr>
+  <td>Decode throughput, Co-LLM</td>
+  <td style="text-align:right">Official 3.46 token/s</td>
+  <td style="text-align:right">76.02 token/s</td>
+  <td style="text-align:right">21.97×</td>
+</tr>
+<tr>
+  <td>Request latency, R2R</td>
+  <td style="text-align:right">Official 751.15s</td>
+  <td style="text-align:right">270.19s</td>
+  <td style="text-align:right">2.78×</td>
+</tr>
+<tr>
+  <td>Request latency, CITER</td>
+  <td style="text-align:right">Official 7.64s</td>
+  <td style="text-align:right">0.48s</td>
+  <td style="text-align:right">15.92×</td>
+</tr>
+<tr>
+  <td>KV memory</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+</tr>
+<tr>
+  <td>FLOPs</td>
+  <td style="text-align:right">不改变原路由策略计算</td>
+  <td style="text-align:right">不改变原路由策略计算</td>
+  <td style="text-align:right">Not Reported</td>
+</tr>
+<tr>
+  <td>Accuracy / Quality</td>
+  <td style="text-align:right">取决于原 routing 算法</td>
+  <td style="text-align:right">主要保持原 routing 语义</td>
+  <td style="text-align:right">不可由吞吐数字推出质量提高</td>
+</tr>
+</tbody>
+</table>
+<h3>Results / Figures / Ablations</h3>
+<ul>
+<li><strong>Figure 5/6：</strong>在 15 个算法×负载组合中，作者报告相对较强服务基线吞吐提高 <strong>2.01–64.15×</strong>、对 Std. Serving 的请求延迟下降 <strong>2.03–63.64×</strong>。最大倍数受到低效基线影响，不能当作“相对 SGLang 单模型快 64×”。</li>
+<li><strong>Table 2：</strong>R2R 的吞吐 89.62→244.56 token/s，TTFT 0.11s 不变，说明主收益在 decode 和请求完成时间；Co-LLM TTFT 1.14→0.067s 则说明不同算法的瓶颈并不相同。</li>
+<li><strong>Figure 1(b)：</strong>并发 1→16 时吞吐增 <strong>8.61×</strong>，仍保留单用户速度的 <strong>51.7%</strong>；不是无代价水平扩展。对照 R2R 官方实现 5.14× 且仅保留 31.3%。</li>
+<li><strong>Figure 1(a) 消融：</strong>扩展 CUDA graph 后吞吐 230.79 token/s；加异步执行到 296.86；再加 delayed batching 到 <strong>372.48</strong>。相对同图中的官方 R2R 134.9 token/s 为 2.76×。可明确看出不是单一 kernel trick，而是多个系统优化叠加。</li>
+<li><strong>Table 3：</strong>模型对变化时相对 R2R 官方实现的吞吐增益 <strong>1.99–3.21×</strong>；长输出 8192 token 的负载中 TokenRouter 吞吐相对稳定，而 Std. Serving 丢失 <strong>58.1–85.2%</strong> 吞吐。</li>
+</ul>
+<h3>Claim vs Evidence / Contribution / Limitation</h3>
+<p><strong>Authors claim：</strong>为 token-level routing 提供高效、开发者友好的通用 serving。<strong>Experiments actually show：</strong>特定 A100/SGLang/模型对/5 种算法下显著吞吐提升与延迟降低。<strong>Not proven：</strong>跨厂商 GPU、任意模型族、极大并发、复杂多租户公平性、真实线上 token routing 的质量稳定性。</p>
+<p><strong>Contribution 1 [New System]：</strong>请求级编程、模型级执行的分离；<strong>2 [New Scheduling]：</strong>路由感知 delayed batching 的解析阈值；<strong>3 [New Engineering]：</strong>handoff-resume 与本地 KV pool 复用。局限包括路由频繁切换的消息成本、模型对/部署拓扑依赖、调度模型依赖稳态概率，以及 TTFT/TPOT 未对所有配置完整报告。</p>
+<h3>Research Value &amp; Migration</h3>
+<p><strong>Baseline Potential：很高</strong>（跨模型推理 serving）。<strong>Migration Potential：高</strong>（把 Agent 子模型路由与 KV 状态迁移统一设计）。<strong>Systems Value：极高</strong>（真实吞吐与延迟）。<strong>Evaluation Potential：高</strong>（对比相同路由语义的系统实现）。<strong>New Paper Potential：中高</strong>，但单纯“再做 delayed batching”撞题风险高。</p>
+<p><strong>Original Problem → Transferable Mechanism → New Research Question → Method Modification → Minimum Experiment → Model → Dataset → Baseline → Metric → Expected Contribution → Risk：</strong>token-level LLM routing → request-centric 状态交接 + model-centric 执行 → 多 Agent 在模型升级/降级与跨会话恢复时，能否保留部分 KV、memory 与 provenance 以降低 TTFT？ → 在 TokenRouter 式 handoff 增加跨模型 selective recompute 与状态一致性校验 → 2 模型 coding-agent 多轮对话模拟器 → Qwen3-0.6B/8B 或 8B/14B → SWE-Smith 子集 → full re-prefill、纯 token routing、RaReCache 风格部分重算 → TTFT p50/p99、tokens/s、任务成功率、状态错误率 → <strong>可验证的跨模型 Agent 状态迁移系统</strong> → 误复用缓存导致错误与内存碎片。</p>
+<h3>五句话总结</h3>
+<p>第一，TokenRouter 解决的是 token 级模型切换的系统瓶颈。第二，它不靠减少单模型 FLOPs，而靠异步执行、KV 保持和 delayed batching。第三，R2R 的 89.62→244.56 token/s 比抽象的 64× 更适合工程决策。第四，路由算法的质量与 serving 系统的效率必须分开评估。第五，它与 RaReCache 组合存在明确的系统研究空间，但需要认真做碰撞检测。</p>
+
+ <div class="source tiny">篇幅核验：约 1797 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+</section>
+<section id="tier-a" class="panel"><h2>Tier A · 5 篇</h2><p class="note">默认折叠；点击论文标题查看机制、实验与迁移。</p>
+<details class="paper tiercard-A" id="p-2610.11345" >
+ <summary><span class="tier tier-A">Tier A</span><span class="paper-title">SynCo: Data Synthesis Co-Training for Self-Evolving LLMs via Multi-Agent Reinforcement Learning</span><span class="pill">RL / Agent</span><span class="id">2610.11345</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.11345" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：全文/摘要与关键数字混合核验，具体见正文</div>
+ <p><strong>来源：</strong>2026-10-08 v1；Wei Yang 等 11 位作者；arXiv preprint。<a href="https://arxiv.org/abs/2610.11345">Paper</a> · <a href="https://arxiv.org/html/2610.11345v1">HTML</a>。</p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>很多数学推理 RL 训练用固定题库，模型学会后题目就太简单；用一个固定生成器不停造题，又可能造出无法验证的题。SynCo 让两个独立训练的 Agent 一起进化：Synthesizer 观察当前 Reasoner 的能力，产生可验证且有教学价值的题；Reasoner 做多次 rollout 并用正确性反馈更新。解题结果同时反过来奖励或惩罚造题 Agent。八个数学 benchmark 的平均准确率报告为 78.72，冻结生成器时为 75.85。它把 curriculum generation 从离线数据工程提升为<strong>可学习的双边博弈</strong>，关键问题是如何防止生成器只生产“刚好骗过奖励”的题。</p>
+<h3>Background &amp; Gap / Core Insight</h3>
+<p>静态合成数据容易被 learner 饱和，纯 self-play 可能在难度和可验证性之间失衡。SynCo 认为训练数据分布本身应是策略变量：一方负责“提出有教学价值的问题”，另一方负责“解决问题”，彼此根据真实 rollout 更新。<strong>Pipeline：</strong>当前能力摘要 → Synthesizer 生成结构化数学任务 → 验证入库 → Reasoner 多次尝试 → 正确性与难度/可靠性/teachability 信号 → 分别计算两个 Agent reward → GRPO 更新 → 下一轮课程再生成。</p>
+<p><strong>RL Formulation。</strong> 对 Reasoner，state 是当前题目与上下文，action 是推理/答案 token，trajectory 是完整解题 rollout，policy 是参数化 LLM，reward 主要来自可验证的最终正确性；对 Synthesizer，state 包含 Reasoner 能力反馈，action 是任务生成 token，reward 结合任务质量、答案可靠性与解题结果提供的教学价值。两者独立参数化，使用 GRPO 组相对优化。<strong>Credit Assignment：</strong>多个 Reasoner rollout 的结果共同为合成任务提供反馈；组内相对优势用于更新策略。<strong>KL/Entropy：</strong>正文含完整目标与训练设置，本轮未逐式核实具体系数，不应凭经验补写。Reward 既含规则可验证成分，也含任务质量相关信号；最终正确性通常稀疏，合成端有更丰富信号。Reward hacking 风险：生成器可制造格式正确但语义重复、过易或难以稳定验证的题。Exploration 依赖多次 rollout 与不断变化的题目分布；训练稳定性需看两策略同步变化造成的非平稳性。</p>
+<h3>Experiment Setup / Results</h3>
+<p>主基座 <strong>Qwen3-8B</strong>，另有 Qwen3-4B 跨规模验证；使用 UnityMAS-O 的 GRPO 训练。八个数学 benchmark：<strong>GSM8K、SVAMP、ASDiv、GSM-Hard、MATH-500、AIME24、AIME25、Minerva</strong>。对照包含 MetaMathQA、ScaleQuest-Math、OpenMathInstruct-2、R-Zero、Static-Pool GRPO、Offline-Augment GRPO、Reject-Sample SFT，以及关键消融 <strong>SynCo (Frozen Synth)</strong>。主要 RQ：联合优化生成器是否优于冻结生成器？提升来自旧题还是未解题？生成器能否预测真实梯度价值？</p>
+<ul>
+<li><strong>平均准确率：</strong>SynCo <strong>78.72</strong>，Frozen Synth <strong>75.85</strong>，MetaMathQA <strong>73.65</strong>。相对冻结生成器 +2.87pp，相对 MetaMathQA +5.07pp；对同一框架的 frozen 消融更能说明生成器更新的贡献。</li>
+<li><strong>GSM-Hard：</strong>SynCo <strong>63.31</strong>，Frozen <strong>61.26</strong>，MetaMathQA <strong>55.42</strong>，显示更难题目上存在收益。</li>
+<li><strong>AIME25：</strong>SynCo <strong>73.33</strong>，Frozen <strong>66.67</strong>；但某些小数据集分数波动可能很大，不能把这一项当普适显著性证明。</li>
+<li><strong>MATH-500：</strong>SynCo <strong>87.80</strong>，Frozen <strong>85.60</strong>；仍需核查不同随机种子与生成题去重。论文称收益多数来自此前未解问题，机制解释合理，但具体分布与显著性要看正文相应 RQ 图。</li>
+</ul>
+<p><strong>Contribution [New Mechanism / New Objective]：</strong>双策略共同更新数据分布和推理策略；<strong>[New Empirical Finding]：</strong>在八个数学任务上冻结生成器的消融存在差距。<strong>Limitation：</strong>主要数学可验证环境，无法直接外推开放式 Agent；造题 reward 可能与真实泛化能力错位；未从本轮材料核实 rollout 总数、训练 tokens、GPU-hours、收敛方差，均标记 <strong>Not Reported / Not Verified</strong>。<strong>Research Value：高</strong>，适合研究环境生成与 agent RL；Worth Deep Reading：<strong>YES</strong>。</p>
+<p><strong>Migration / Minimum Experiment：</strong>把 Synthesizer 换成可执行 Agent 环境生成器，基于工具调用失败模式产生新任务，Reasoner 在小型代码/网页沙盒中训练；固定环境库、随机课程、冻结 Synthesizer、双边更新四组比较。Model：Qwen3-4B/8B；Dataset：可执行 tool-use 任务子集；Metric：held-out success、unique failure coverage、reward hacking rate、GPU-hours/成功率。<strong>Risk：</strong>环境可验证性与生成器串谋。</p>
+
+ <div class="source tiny">篇幅核验：约 929 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+<details class="paper tiercard-A" id="p-2610.12338" >
+ <summary><span class="tier tier-A">Tier A</span><span class="paper-title">VFold: Symmetry-Aware Cross-Layer Value Cache Compression</span><span class="pill">Inference Acceleration</span><span class="id">2610.12338</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.12338" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：全文/摘要与关键数字混合核验，具体见正文</div>
+ <p><strong>来源：</strong>Neha Verma、Sungwon Kim、Kenton Murray、Kevin Duh；2026-10-08 v1；arXiv preprint。<a href="https://arxiv.org/abs/2610.12338">Paper</a> · <a href="https://arxiv.org/html/2610.12338v1">HTML</a> · <a href="https://github.com/nverma1/vfold">Code</a>。</p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>长上下文 LLM 的 KV Cache 很占显存，常见压缩方法要么丢 token，要么量化，要么每次 decode 都做额外的投影。VFold 发现相邻层的 <strong>Value cache</strong> 虽然表面上向量方向不同，但经过合适的线性变换可以对齐、合并；关键是把这个变换和逆变换提前折进注意力权重，正常前向无需额外解压计算。它将 Value Cache 减半，等于整个 KV Cache 约减少 25%，在三种模型的长上下文任务上保留超过 98% 的完整缓存性能。真正值得学的是：<strong>先利用网络内部的等价重参数化，再做低开销状态共享</strong>，而不是把 KV 全部一视同仁地剪掉。</p>
+<h3>Background / Method</h3>
+<p>KV Cache 使 autoregressive decode 避免重复计算历史 token，但 context×batch 增大时 HBM 占用严重。MiniCache 直接合并跨层 cache 可能损伤质量；低秩跨层方法又引入在线重构开销。VFold 首先对相邻层 Value 做 CCA 对齐，并通过 Hungarian matching 解决 KV heads 的排列问题。对于 attention head 输出 <code>(A·V)·W_O</code>，插入任意可逆 <code>T</code> 后 <code>(A·V·T)·(T⁻¹·W_O)</code> 数学上等价；因此可以离线把 <code>T</code> 融入 <code>W_V</code>，把 <code>T⁻¹</code> 融入 <code>W_O</code>，不需要模型重新训练。随后对齐后的相邻层 V 做平均，只存一份共享缓存。<strong>Key 不能同样随意合并</strong>：它影响 softmax 选择，且 RoPE 限制等价变换。</p>
+<p><strong>Bottleneck：</strong>长上下文 Decode 的 KV 显存容量，间接影响 batch size；主要不是 prefill 算力。<strong>训练：</strong>无需微调；离线校准 CCA。<strong>Model-specific：</strong>需要访问/修改 attention 权重，GQA 有额外 head 映射。<strong>硬件：</strong>本轮未核实特定 GPU 对真实延迟的影响。</p>
+<h3>Experiment / Results</h3>
+<p>Models：<strong>Llama-3.1-8B-Instruct、Mistral-Small-3.1-24B-Instruct、Qwen3-8B</strong>；Datasets：<strong>RULER 16K、LongBench</strong>；对照 <strong>MiniCache、CommonKV</strong> 与 full KV，另检查与 KIVI 4-bit、ThinK key pruning 的组合。主要 RQ：跨层对齐是否能在 25% KV 内存压缩时保留任务性能？</p>
+<ul>
+<li><strong>机制消融：</strong>Llama-3.1-8B 的 GSM8K，full KV <strong>80.7%</strong>；平均 Keys 后 <strong>2.7%</strong>；平均 Values 后 <strong>79.5%</strong>。这强烈支持 K/V 不对称，不能仅凭 CKA 相似就合并 Key。</li>
+<li><strong>RULER 16K：</strong>full KV 平均 <strong>92.48</strong>，VFold <strong>91.14</strong>，MiniCache <strong>41.80</strong>，CommonKV <strong>76.92</strong>；VFold 保留约 <strong>98.55%</strong> full 性能，同时减少 25% 总 KV 容量。</li>
+<li><strong>CCA 对齐：</strong>合并后 Value 与源 cache 的 cosine similarity 接近 <strong>0.85</strong>；但余弦相似不等价于下游任务性能，仍需 benchmark 证明。</li>
+<li><strong>组合压缩：</strong>正文说明可与 4-bit KIVI、ThinK 组合；具体各组合的延迟和质量数值本轮未逐项核实，不臆造。</li>
+</ul>
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th style="text-align:right">Baseline</th>
+  <th style="text-align:right">VFold</th>
+  <th style="text-align:right">Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>KV Memory</td>
+  <td style="text-align:right">Full cache</td>
+  <td style="text-align:right">75% of full</td>
+  <td style="text-align:right">-25%</td>
+</tr>
+<tr>
+  <td>RULER 16K avg</td>
+  <td style="text-align:right">92.48</td>
+  <td style="text-align:right">91.14</td>
+  <td style="text-align:right">-1.34 points</td>
+</tr>
+<tr>
+  <td>TTFT</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+</tr>
+<tr>
+  <td>TPOT / Tokens/s</td>
+  <td style="text-align:right">Not Verified</td>
+  <td style="text-align:right">Not Verified</td>
+  <td style="text-align:right">不得从内存压缩推算加速</td>
+</tr>
+<tr>
+  <td>FLOPs</td>
+  <td style="text-align:right">Full attention</td>
+  <td style="text-align:right">离线变换后基本相同的 attention 形式</td>
+  <td style="text-align:right">Not Reported</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Contribution [New Mechanism]：</strong>利用 attention symmetry 的无额外在线变换对齐；<strong>[New Empirical Finding]：</strong>V 比 K 更适合跨层合并；<strong>[New Engineering]：</strong>与其他压缩技术组合。<strong>Limitation：</strong>25% 总 KV 节省不是 25% latency 降低；对非常长 context、批量变化、层间异质性和质量崩溃边界仍需实测。<strong>Research Value：高</strong>，尤其适合长上下文和模型内部状态压缩；Worth Deep Reading：<strong>YES</strong>。</p>
+<p><strong>Migration / Minimum Experiment：</strong>把跨层 V 对齐和 agent 长轨迹的关键片段保留结合，比较 full KV、VFold、VFold+selective eviction；模型 Qwen3-8B，数据 LongBench/长工具轨迹，指标 p50/p99 TPOT、最大并发、GPU peak memory、long-horizon success。预计贡献是“结构冗余压缩 × 语义重要性保留”的联合策略；风险是累积误差和跨层不均匀冗余。</p>
+<h3>关键对照为什么有说服力？</h3>
+<p>作者并不只拿一个随机剪枝方案做弱对照，而是比较了 MiniCache 和 CommonKV 这类同样想利用跨层冗余的方法。对 16K RULER，MiniCache 平均 41.80，说明“直接合并”可能极不安全；CommonKV 的 76.92 虽优于 MiniCache，但仍明显落后于 VFold 的 91.14。这个差距支持“对齐变换”比粗暴共享更重要。另一方面，VFold 仍比 full KV 的 92.48 低 1.34 分，且个别子任务退化比均值更大，不能只用“&gt;98% retained”掩盖长尾风险。<strong>最关键图表</strong>是 Figure 2（CKA 与 cosine 差异）、Table 1（K/V 不对称）和 Table 2（RULER 各子任务）；研究时应先重现这三处再扩展到更长上下文。</p>
+<h3>更精确的迁移边界</h3>
+<p>VFold 压缩的是<strong>层维度的表示冗余</strong>，而不是 token 维度的语义冗余；把它和 token eviction 相加可能产生非线性质量损失。建议做 <code>层对齐 × token 保留比例</code> 的二维实验矩阵，报告 Needle、aggregation、multi-hop QA 分任务曲线，而不是只报告 LongBench 平均分。若在短 context 或小 batch 下 GPU 并未触碰容量墙，25% 显存节省也可能完全不改善 TPOT。可把该负结果纳入系统论文的设计规则，而非当成方法失败。</p>
+
+ <div class="source tiny">篇幅核验：约 993 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+<details class="paper tiercard-A" id="p-2610.11358" >
+ <summary><span class="tier tier-A">Tier A</span><span class="paper-title">RaReCache: Bridging the Gap in Cross-Model KV Cache Reuse via Rank disagreement-based Selective Recomputation</span><span class="pill">Inference Acceleration</span><span class="id">2610.11358</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.11358" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：全文/摘要与关键数字混合核验，具体见正文</div>
+ <p><strong>来源：</strong>Sreetama Sarkar、Saptarshi Mitra、Sitao Huang、Souvik Kundu、Peter A. Beerel；2026-10-08 v1；arXiv preprint。<a href="https://arxiv.org/abs/2610.11358">Paper</a> · <a href="https://arxiv.org/html/2610.11358v1">HTML</a>。</p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>一个 Agent 会话从小模型切到大模型时，虽然两者看到的是同一段文字，但各自 KV Cache 的内部表示不同，通常要让大模型重新 prefill 全部上下文，导致 TTFT 很高。RaReCache 发现跨模型缓存映射的错误并非均匀分布，而是集中在少数信息密集的 token 上。它用一个 rank disagreement 指标找出这些危险位置，只让大模型重算关键 token，其余位置沿用小模型映射来的 KV。论文报告 Qwen3 0.6B→14B 时重算 30% token 仍保留目标模型 95–99% 准确率；在线服务下中位 TTFT 最多下降 5×、p99 下降 6.4×。它特别适合跨模型 Agent 和级联推理。</p>
+<h3>Background / Core Insight / Method</h3>
+<p>旧方法是 full target prefill（正确但慢）或全量线性 KV mapping（快但模型规模差距大时精度下降）。核心观察是跨模型映射失败集中在低秩校准无法覆盖的表示方向。<strong>Pipeline：</strong>小模型完成 prefill → 用校准得到的闭式线性映射转到目标模型 KV 空间 → 按 mapped KV 在低支持输出方向的能量计算 rank disagreement → 选择高风险 token 位置 → 目标模型选择性重新计算这些位置 → 用修复后的缓存 decode。这里的“重算 30%”是 token 位置预算，不意味着总 prefill 时间恰好减少 70%，因为选择、映射、重算和调度都有成本。</p>
+<p><strong>Bottleneck：</strong>跨模型切换后的 <strong>Prefill/TTFT</strong>，不是单模型稳定 decode。<strong>Training：</strong>基于校准的映射与选择性重算，非重新训练完整目标模型；具体校准成本需核查正文。<strong>Model-specific：</strong>跨模型映射依赖模型族和层/头结构。<strong>Long-context / Agent：</strong>共享长上下文、频繁升级模型时收益潜力最大；若切换很少或上下文短，收益可能抵不过映射开销。</p>
+<h3>Experiment Setup / Results</h3>
+<p>作者报告两个模型族、五个 benchmark；关键规模对：<strong>Qwen3-0.6B→14B（23× 参数差）</strong>、<strong>Llama3-8B→70B（8.8×）</strong>。主要 RQ：重算少量关键位置能否恢复目标精度？在线 TTFT 和吞吐是否改善？</p>
+<ul>
+<li>Qwen3 23× 跨规模时，<strong>30%</strong> token 重算保留目标准确率 <strong>95–99%</strong>；这是强模型差距下的质量保留证据，但仍有 1–5% 相对性能损失空间。</li>
+<li>Llama3 8.8× 跨规模时，<strong>40%</strong> 重算保留 <strong>96.5%</strong> 目标准确率；所需预算更大，说明预算并不随参数差距简单单调变化。</li>
+<li>作者报告 <strong>最多 3.04× prefill speedup</strong>；必须区分此数与在线 TTFT。</li>
+<li>在线单 GPU 服务吞吐 <strong>1.8×</strong> full target prefill；目标模型饱和负载下，<strong>median TTFT 5.0×、p99 TTFT 6.4× 改善</strong>，尾延迟结果很有系统价值。</li>
+</ul>
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th style="text-align:right">Full target prefill</th>
+  <th style="text-align:right">RaReCache</th>
+  <th style="text-align:right">Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Prefill latency</td>
+  <td style="text-align:right">1.0× 参照</td>
+  <td style="text-align:right">最快 1/3.04</td>
+  <td style="text-align:right">up to 3.04× speedup</td>
+</tr>
+<tr>
+  <td>TTFT p50 / p99</td>
+  <td style="text-align:right">1.0×</td>
+  <td style="text-align:right">最快 1/5.0 / 1/6.4</td>
+  <td style="text-align:right">条件性结果</td>
+</tr>
+<tr>
+  <td>Serving throughput</td>
+  <td style="text-align:right">1.0×</td>
+  <td style="text-align:right">1.8×</td>
+  <td style="text-align:right">+80%</td>
+</tr>
+<tr>
+  <td>Recompute positions</td>
+  <td style="text-align:right">100% target</td>
+  <td style="text-align:right">30%（Qwen 案例）</td>
+  <td style="text-align:right">-70% target positions</td>
+</tr>
+<tr>
+  <td>Decode TPOT</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+</tr>
+<tr>
+  <td>GPU Memory</td>
+  <td style="text-align:right">Not Verified</td>
+  <td style="text-align:right">Not Verified</td>
+  <td style="text-align:right">不臆造</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Contribution [New Mechanism]：</strong>rank disagreement 驱动的错误定位；<strong>[New System]：</strong>跨模型 prefill 委派 + selective recomputation；<strong>[New Empirical Finding]：</strong>少量位置主导映射误差。<strong>Limitation：</strong>映射可能泄漏模型族依赖，选择器开销随 context 变化，选择错误会导致输出质量劣化，在线 TTFT 取决于目标负载。<strong>Research Value：极高</strong>，与 TokenRouter 互补；Worth Deep Reading：<strong>YES</strong>。</p>
+<p><strong>Migration / Minimum Experiment：</strong>构建“Agent 升级大模型”工作负载，分别对比 full target prefill、纯 cache mapping、RaReCache、RaReCache+TokenRouter 式异步 handoff；模型 Qwen3-0.6B/14B；数据 SWE-Smith 多轮轨迹；指标 TTFT p50/p99、任务成功率、跨模型状态一致性、吞吐、KV 显存。风险：选择性重算不能在所有模型结构上稳定恢复目标语义。</p>
+<h3>与既有路线的边界及失败分析</h3>
+<p><strong>Full prefill</strong> 的好处是精确，不需要跨模型映射；<strong>纯线性映射</strong> 不需重算，但在模型差距大时对信息密集 token 误差集中；<strong>RaReCache</strong> 以额外重算预算换准确性，实质是在“映射误差”和“目标算力”之间选择 Pareto 点。最值得注意的失败模式是少数关键 token 恰好没有被 rank disagreement 选中：这些 token 可能是代码里的变量定义、工具返回的状态码或用户新增约束，错误会在后续 decode 放大。因而 Agent workload 的质量评估不能只看通用 benchmark 准确率，还应包括<strong>状态一致性、工具动作是否改变、长期约束是否丢失</strong>。如果模型切换后发生错误，必须能区分是路由决策、缓存映射还是目标模型本身的原因。</p>
+<h3>最小可复现实验细化</h3>
+<p>先只选同族小/大模型、固定长度 4K/16K/32K 三档上下文，控制 batch=1/4/16 和重算比例 10%/30%/50%/100%。每个条件测 p50/p99 TTFT、prefill GPU time、CPU 映射耗时、peak HBM 与 exact-target output agreement。随后加入跨模型 Agent 工具轨迹，检查“某次工具输出被替换为长度相同但语义不同的文本”时选择器是否能识别关键位置。这一对抗性检验可能比再刷一个平均分更能形成新的研究贡献。</p>
+
+ <div class="source tiny">篇幅核验：约 1099 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+<details class="paper tiercard-A" id="p-2610.11171" >
+ <summary><span class="tier tier-A">Tier A</span><span class="paper-title">VAMR: Multi-Question Agentic Reasoning for Efficient Long-Form Video Understanding</span><span class="pill">Video / Agent / RL</span><span class="id">2610.11171</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.11171" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：全文/摘要与关键数字混合核验，具体见正文</div>
+ <p><strong>来源：</strong>Runquan Gui、Hanzhu Chen、Zehao Wang、Hanxin Zhu、Xin Li、Zhibo Chen；2026-10-08 v1；arXiv preprint。<a href="https://arxiv.org/abs/2610.11171">Paper</a> · <a href="https://arxiv.org/html/2610.11171v1">HTML</a>。</p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>一段长视频可能同时要回答“谁进了房间”“桌上物体何时移动”“最后发生了什么”。传统视频 Agent 每个问题都重新扫描视频、重新建记忆、重新调用工具，浪费大量帧和推理轮次。VAMR 让多个问题共享一条 Agent 工具轨迹：一轮检索到的视觉证据可以同时服务多个问题，但每个问题仍保留自己的证据状态。训练时它提出 question-horizon policy optimization，为不同时间完成的问题分别计算优势，再对齐到真正服务该问题的轮次。LVBench 准确率 62.1%，比 VideoARM 高 4.3pp，同时推理轮次减少 85.9%、处理帧减少 61.4%。这是<strong>视频压缩、Agent memory 与 RL credit assignment</strong> 三条线的交叉。</p>
+<h3>Background &amp; Gap / Method</h3>
+<p>单问题独立轨迹忽视跨问题的证据复用。例如两个问题都需要第 40 秒的同一段场景，传统流程会重复 seek、采帧和视觉编码。VAMR 的核心不是简单拼接多个问题，而是让 policy 在每一轮决定“哪些问题需要继续探索、哪些已经可以提交答案”，同时维护共享视频故事与问题私有证据。<strong>Pipeline：</strong>视频+问题集合 → 持久 policy 判断未解决问题 → question-conditioned 工具调用一次服务多题 → layered memory 更新共享故事与单题证据 → 对已充分证实问题提交答案 → 未完成问题继续下一轮 → SFT 初始化 → QHPO 训练。</p>
+<p><strong>RL Formulation。</strong> State 包括当前多问题状态、共享/局部 memory 与工具历史；action 包括选择工具、选择服务问题、回答；policy 是持久化的 Agent 模型；trajectory 是多个问题交织的多轮交互；reward 来源于各问题的最终回答表现，具体数值构造与 KL 系数本轮未逐式核实。<strong>Credit Assignment 的关键：</strong>question-level critic 为仍活跃的问题估计 value，round alignment 把每个问题 advantage 只分给直接服务它的轮次，再聚合到共享 actor。相比给整个多问题 episode 一个最终奖励，这能减少无关动作被错误奖励的风险。Reward hacking 仍可能来自过早提交简单问题、忽略难问题或重复利用伪证据。</p>
+<h3>Experiment Setup / Results</h3>
+<p>Datasets：<strong>LVBench、Video-Holmes、LongVideoBench</strong>；对照至少包括 <strong>VideoARM</strong> 以及论文所述其他 iterative methods。实验关注 accuracy、reasoning rounds、processed frames；具体 GPU/模型规模、batch、总训练 token 本轮未逐项核实，避免补数字。主要 RQ：共享工具轨迹是否真正减少重复视觉处理？问题级信用分配能否提升多问题成功率？</p>
+<ul>
+<li><strong>LVBench accuracy：62.1%</strong>，比 VideoARM <strong>+4.3pp</strong>；推算对照约 57.8%，该值为差分计算，不作为论文直接报告的独立数字。</li>
+<li><strong>Reasoning rounds：-85.9%</strong>；说明跨问题合并交互的潜在 Agent 延迟收益，但 rounds 不是 wall-clock 秒数。</li>
+<li><strong>Processed frames：-61.4%</strong>；这是视觉输入工作量下降，不等于 GPU FLOPs 或端到端延迟同比下降。</li>
+<li>作者称在三 benchmark 上总体准确率最高、迭代方法中轮次最少；具体各 benchmark 分数未在本轮摘要材料中逐一核实。</li>
+</ul>
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th style="text-align:right">Baseline</th>
+  <th style="text-align:right">Proposed</th>
+  <th style="text-align:right">Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Frames processed</td>
+  <td style="text-align:right">VideoARM 参照</td>
+  <td style="text-align:right">VAMR</td>
+  <td style="text-align:right">-61.4%（LVBench）</td>
+</tr>
+<tr>
+  <td>Visual tokens / FLOPs</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+</tr>
+<tr>
+  <td>Reasoning rounds</td>
+  <td style="text-align:right">VideoARM 参照</td>
+  <td style="text-align:right">VAMR</td>
+  <td style="text-align:right">-85.9%</td>
+</tr>
+<tr>
+  <td>Wall-clock latency</td>
+  <td style="text-align:right">Not Verified</td>
+  <td style="text-align:right">Not Verified</td>
+  <td style="text-align:right"><strong>不能由轮次直接推算</strong></td>
+</tr>
+<tr>
+  <td>Throughput / FPS / GPU Memory</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+</tr>
+<tr>
+  <td>Accuracy</td>
+  <td style="text-align:right">约 57.8%（由差值反推）</td>
+  <td style="text-align:right">62.1%</td>
+  <td style="text-align:right">+4.3pp</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Contribution [New Mechanism]：</strong>跨问题共享轨迹和分层记忆；<strong>[New Objective]：</strong>question-horizon advantage 对齐；<strong>[New Empirical Finding]：</strong>更少帧和轮次下更高准确率。<strong>Limitation：</strong>问题相关性低时共享收益可能下降；记忆污染会跨问题传播；需要检验单题/多题混合流、真实时延、工具并发和 QHPO 训练稳定性。<strong>Research Value：极高</strong>，与视频 Agent 研究最直接；Worth Deep Reading：<strong>YES</strong>。</p>
+<p><strong>Migration / Minimum Experiment：</strong>让共享 memory 为每个问题保留 provenance 和证据置信度，并对每轮工具调用使用 counterfactual question advantage；模型开源 Video VLM + 小型 planner；数据 LVBench/LongVideoBench 多问题组合；对照独立 Agent、共享 Agent 无 QHPO、共享 Agent+QHPO；指标多问题准确率、frames、tokens、真实 wall-clock、错误跨题传播率。预计贡献是<strong>证据可靠性感知的跨问题信用分配</strong>；风险是问题级 critic 自身偏差。</p>
+<h3>共享记忆如何导致 Failure Propagation？</h3>
+<p>共享 story memory 的好处是避免重复探索，但若第一次视觉检索把人物 A 误认成 B，后续所有问题都可能引用同一错误故事。QHPO 能改进回合级 credit assignment，却未必自动校正错误的 memory entry。一个可操作的扩展是把共享故事拆成带来源的 evidence atoms，每个 atom 保存视频时间戳、工具调用、置信度与支持的问题集合。若后续证据矛盾，触发局部重检索而不是重看整段视频。实验应人为注入 1%、5%、10% 的错误记忆，测多问题准确率的级联下降与恢复成本；这能直接连接 Agent 安全与 Video Acceleration。</p>
+
+ <div class="source tiny">篇幅核验：约 1099 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+<details class="paper tiercard-A" id="p-2610.05935" >
+ <summary><span class="tier tier-A">Tier A</span><span class="paper-title">ThunderSyncRL: Lossless Acceleration of Agentic Reinforcement Learning</span><span class="pill">RL / Agent / Systems</span><span class="id">2610.05935</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.05935" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：全文/摘要与关键数字混合核验，具体见正文</div>
+ <p><strong>来源：</strong>Seil Kang、Hangoo Kang、Tarun Suresh、Youngeun Kim、Shreyas Pimpalgaonkar、Seong Jae Hwang、Azalia Mirhoseini；arXiv 2610.05935，2026-10-05 提交，<strong>RECENT 5d（非当天首发）</strong>；本轮依据论文摘要及可获取的逐页技术解析核实主要机制与数字。<a href="https://arxiv.org/abs/2610.05935">Paper</a> · <a href="https://www.alphaxiv.org/abs/2610.05935">Technical overview</a>。</p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>Agent RL 训练特别浪费时间：不同工具轨迹长短不一，训练 GPU 必须等一整个 group 的 rollout 和 reward 到齐才开始反向传播。异步 RL 可以让 GPU 忙起来，但容易用旧策略数据，改变优化目标。ThunderSyncRL 提出一个巧妙折中：<strong>保持同一策略快照和同步 optimizer step 不变，但把可提前计算的梯度片段流式计算</strong>。GRPO 可以先累积每条轨迹的 reward-weighted 和 unweighted score gradients，等 group 统计量齐了再线性组合；OPD 则在工具调用期间提前计算已完成 turn 的蒸馏梯度。作者报告在 SWE-bench Verified 与 Terminal Bench 4.0 上达到相同目标表现的训练用时最多快约 1.9×，且不引入 policy staleness。</p>
+<h3>Background &amp; Gap / Core Insight</h3>
+<p>同步 GRPO 等全部轨迹完成再计算 advantage，保证 on-policy，但工具等待让 learner 空闲；完全异步更新有 policy lag，可能导致 off-policy 偏差。作者观察：<strong>优势归一化依赖整个 group，但某条轨迹的 score gradient 只依赖该轨迹和固定策略参数</strong>，因此可以把组级归一化延后而先算局部梯度。对 OPD，同样把 turn 的教师打分与工具等待解耦。方法是系统执行顺序变换，不是换一个 reward 或新的 policy objective。</p>
+<h3>Method / RL Formulation</h3>
+<p><strong>Pipeline：</strong>冻结本轮 policy snapshot → Agent rollout 与环境/工具交互 → 每条轨迹 reward 就绪即计算局部 score gradient → 累加两个 sufficient statistics → 等 group 全部结束计算 GRPO 均值/标准差 → 组合得到与同步批量形式一致的梯度 → 唯一一次 optimizer step → 发布新策略。</p>
+<p><strong>State：</strong>工具/环境当前观测与对话历史；<strong>Action：</strong>Agent token 与工具动作；<strong>Policy：</strong>当前冻结快照；<strong>Trajectory：</strong>多轮工具交互；<strong>Reward：</strong>原 GRPO 环境/验证器给出的 reward，方法不重定义它；<strong>Advantage：</strong>group-relative 标准化 reward；<strong>Objective：</strong>原 GRPO/OPD；<strong>KL/Entropy：</strong>不改变原目标，具体系数随实验配置；<strong>Credit Assignment：</strong>仍沿用原算法的组相对或蒸馏 token 监督，只改变何时算梯度。Reward hacking 风险不会因系统加速自动解决。Exploration 与采样分布原则上保持同步语义；稳定性收益主要来自<strong>零策略陈旧</strong>，而非新的探索策略。</p>
+<h3>Experiment Setup / Results</h3>
+<p>作者在软件工程 Agent 环境使用 GRPO/OPD，包含 SWE-smith 训练与 SWE-bench Verified、Terminal Bench 4.0 评估；公开技术解析报告 Qwen-3.8-27B 相关配置，训练 GPU 与并行分配因实验不同而变化。<strong>RQ：</strong>相同逻辑 batch 和 optimizer 更新下能否提前做 backward？能否在固定 GPU-hour 预算下保持质量？</p>
+<ul>
+<li><strong>训练效率：</strong>在 SWE-bench Verified 目标 pass@3 <strong>74.01%</strong> 下，同步 <strong>233.5 GPU-hours</strong>，ThunderSyncRL <strong>121.3 GPU-hours</strong>，约 <strong>1.93×</strong> 达标效率。</li>
+<li><strong>固定预算：</strong>128 GPU-hours 时 GRPO 相对一更新陈旧的 Async baseline 在 SWE-bench Verified pass@3 <strong>+2.47pp</strong>；但不同 schedule 不只差 staleness，不能单因果归因。</li>
+<li><strong>数学等价性：</strong>FP32 B200 上固定逻辑 batch 的相对梯度误差报告 GRPO <strong>5.1×10⁻⁷</strong>、OPD <strong>1.1×10⁻⁶</strong>；支持数值等价而非 bitwise 相同。</li>
+<li><strong>利用率：</strong>技术解析中的 GPU utilization 图，同等 GPU-hours 下示例从 Sync 8 steps 到 ThunderSyncRL 15 steps，揭示 overlap 的直接收益；具体上界受 learner/rollout 比例约束。</li>
+</ul>
+<p><strong>Baseline：</strong>Sync 最公平地隔离时间重排；Async/Fully Async 展示 policy staleness 代价；RolloutPipe 等已有流水线方法更偏 group 粒度。<strong>Contribution [New System]：</strong>按依赖就绪提前释放梯度计算；<strong>[New Empirical Finding]：</strong>训练系统可在不改变目标的情况下显著缩短 wall-clock。<strong>Limitation：</strong>保留部分梯度状态消耗显存；不同 RL objective 未必有可分解统计量；不是每个训练场景都能重叠足够工作；不代表 sample efficiency 或每次更新 FLOPs 减少。<strong>Research Value：高</strong>，尤其适合工具耗时不均匀的 Agent RL；Worth Deep Reading：<strong>YES</strong>。</p>
+<p><strong>Migration / Minimum Experiment：</strong>在多 Agent 协作 RL 中把每个子 Agent 的完成信号变成梯度 readiness event，保持同一策略快照与统一 optimizer barrier；模型 Qwen3-4B/8B；数据可执行工具任务；对照同步 GRPO、异步 GRPO、按完整 group pipeline；指标 wall-clock-to-target、GPU-hours、pass@k、gradient equivalence、peak memory。预期贡献是<strong>多 Agent 依赖图感知的零陈旧训练流水线</strong>；风险是跨 Agent reward 不能局部分解，导致实际 overlap 有限。</p>
+<h3>与 sample efficiency 的严格区分</h3>
+<p>这里最容易混淆三个概念：<strong>每次参数更新消耗的算力</strong>、<strong>达到同等能力的 GPU-hours</strong>、<strong>达到同等能力所需的训练样本</strong>。ThunderSyncRL 主要改变第一项的调度与第二项的墙钟成本，并未证明第三项一定改善。固定同步逻辑 batch 仍然需要相同数量的轨迹；只是 learner 不再闲等最慢的工具调用。GRPO 的组级 reward 归一化必须等所有奖励到齐，所以最终 optimizer barrier 不能随意去掉。若一个任务的 reward 只能在所有 Agent 联合完成后计算，流式梯度的可提前程度可能明显下降。这一失败情形非常值得在多 Agent RL 中做真实测量。</p>
+
+ <div class="source tiny">篇幅核验：约 1104 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+</section>
+<section id="tier-b" class="panel"><h2>Tier B · 5 篇</h2><p class="note">默认折叠；证据不足处明确标记 Not Verified / Not Reported，不伪造实验。</p>
+<details class="paper tiercard-B" id="p-2610.12124" >
+ <summary><span class="tier tier-B">Tier B</span><span class="paper-title">Use and Disuse: Intent-Structured Experience Consolidation for Memory and Learning in LLM Agents</span><span class="pill">Agent / Memory</span><span class="id">2610.12124</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.12124" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：摘要/标题与部分可获取信息；未核验项目明确标记</div>
+ <p><strong>2026-10-08 v1 · <a href="https://arxiv.org/abs/2610.12124">Paper</a> · <a href="https://arxiv.org/html/2610.12124v1">HTML</a></strong></p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>LLM Agent 长期运行时会不断积累工具记录、任务中间结果与用户目标。全部保留会撑爆上下文，直接摘要又容易丢掉以后需要的细节。论文提出 Hippocam：用层级意图组织正在做的任务，任务完成后只把对未来有用的状态与结果固化到长期记忆；长期不用的历史逐渐被压缩，但原始交互仍可按需恢复。被重新检索并用于新任务的经验会再次参与巩固，因此“用到的记忆变强，不用的记忆变抽象”。它把 working memory、episodic experience 和技能积累放进一个无参数更新的循环，特别适合持续运行的工具 Agent。</p>
+<h3>Background / Core Method</h3>
+<p>旧路线往往在“无限日志”与“一次性摘要”间二选一。Hippocam 的关键不是多一个向量数据库，而是把记忆更新绑定到<strong>intent 生命周期</strong>：<code>active intent → nested subtasks → completed intent consolidation → recursive prefix compression → hierarchical recall → reuse and reconsolidation</code>。当任务切换时，活跃上下文只保留当前意图；完成的子任务保留结果、约束、可复用步骤而非全部草稿。老经验通过多层抽象保留检索入口，需要细节时沿层级下钻到原始交互。被重新使用的经验进入新一轮 consolidation，可补充或纠错。</p>
+<h3>Experiment / Main Finding</h3>
+<p>摘要明确描述机制及“无需参数更新”的设计，但本轮未逐项核实实验数据集、对照、准确率、token 成本和失败恢复率，<strong>不将摘要中的能力陈述伪装成量化结果</strong>。若后续精读，应优先查长程任务完成率、memory recall precision、context tokens、恢复失败率，以及“使用频率”与“重要性”不一致时的错误。它和 DeltaReplay、Memory Type Varies、Memento 3 都有较强主题重叠，区别需要落到巩固策略和实验证据。</p>
+<p><strong>Contribution：</strong>意图层级 + 递归压缩 + 可逆细节恢复 + 使用驱动再巩固。<strong>Limitation：</strong>长期不用但极关键的约束可能被过度抽象；摘要未提供独立证明其长期收益的具体数字。<strong>Why It Matters / Connection：</strong>Agent memory 的真正价值是决策和技能复用，不是摘要本身。<strong>Potential Use：</strong>在多 Agent 会话管理器上实现 intent-aware consolidation 原型，对比 flat summary、RAG-only、层级记忆的 token 成本、任务恢复率与错误传播。<strong>阅读等级：</strong>READ THIS WEEK（机制相关，证据仍待深查）。</p>
+
+ <div class="source tiny">篇幅核验：约 580 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+<details class="paper tiercard-B" id="p-2610.11989" >
+ <summary><span class="tier tier-B">Tier B</span><span class="paper-title">MetaOPD: Meta-Learned Token Weighting for On-Policy Distillation</span><span class="pill">RL / Distillation</span><span class="id">2610.11989</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.11989" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：摘要/标题与部分可获取信息；未核验项目明确标记</div>
+ <p><strong>2026-10-08 v1 · <a href="https://arxiv.org/abs/2610.11989">Paper</a></strong></p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>On-Policy Distillation 让学生模型在自己的轨迹上学习教师，但一条轨迹里不是每个 token 都有同样的教学价值。MetaOPD 从标题与论文入口显示的研究问题出发，提出通过元学习决定蒸馏 token 的权重，而不是所有 token 等权更新。直观上，工具调用的关键决策 token、推理分叉点和重复模板文本对能力的影响不同。这个方向可能提高蒸馏的有效监督密度，也可能与 ThunderSyncRL 的梯度流式计算互补：前者改变<strong>学什么</strong>，后者改变<strong>何时计算</strong>。</p>
+<h3>Background / Core Method</h3>
+<p>普通 token-level KL/CE 蒸馏默认统一权重或使用手工权重，可能把预算花在已学会的模板上。可考虑的核心技术问题是：元目标如何从 held-out 能力反馈推导 token 权重？权重是否依赖在线策略？是否会让学生只优化局部容易 token？<strong>重要核验边界：</strong>本轮只核实了论文标题与 arXiv 收录，未成功读取完整 Method/Experiments；因此不能声称其确切元目标公式、训练架构、reward 类型、baseline 或实验结果。</p>
+<h3>Experiment / Main Finding</h3>
+<p><strong>Not Verified：</strong>模型、数据集、GPU-hours、具体提升、最优超参和消融数字。它暂列 Tier B，是因为问题与 RL/OPD 高度相关，<strong>不是</strong>因为已有证据足以判断方法优于 GRPO 或均匀蒸馏。正式复核时应比较 uniform OPD、entropy-based weighting、gradient-norm weighting、meta-learned weighting，并严格固定 teacher queries 和训练 tokens。</p>
+<p><strong>Contribution（待全文验证）：</strong>可能是新的 token weighting / meta objective。<strong>Limitation：</strong>元权重可过拟合验证集；梯度高的 token 未必对应长期能力。<strong>Connection：</strong>RL credit assignment、蒸馏效率、agent trajectory learning。<strong>Potential Use：</strong>小模型 tool-use OPD 中比较关键动作 token 与普通文本 token 的加权训练，以 held-out tool success / GPU-hour 为主指标。<strong>阅读等级：</strong>SAVE → 待全文核实再升级。</p>
+<h3>后续核验门槛</h3>
+<p>这篇暂不进入高 Tier 的原因是本轮缺少可复核的正文实验表，不是题目不重要。要升级为 Tier A，至少需要：可公开复现的模型/数据/协议，两个以上强基线，明确的数值结果及方差/置信区间，一组能隔离核心机制的消融，以及失败案例。若论文没有报告真实延迟、计算量或长程成功率，应明确标记缺口，不能把推测当作作者实证结论。</p>
+
+ <div class="source tiny">篇幅核验：约 572 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+<details class="paper tiercard-B" id="p-2610.12061" >
+ <summary><span class="tier tier-B">Tier B</span><span class="paper-title">When Should Agents Think? Adaptive Reasoning via Cross-Turn Estimation</span><span class="pill">Agent / Inference</span><span class="id">2610.12061</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.12061" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：摘要/标题与部分可获取信息；未核验项目明确标记</div>
+ <p><strong>2026-10-08 v1 · <a href="https://arxiv.org/abs/2610.12061">Paper</a></strong></p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>多轮 Agent 不需要每一轮都进行长链推理：有些回合只是确认工具成功或复用刚得到的状态，另一些回合则需要重新规划。论文题为 <em>When Should Agents Think? Adaptive Reasoning via Cross-Turn Estimation</em>，研究方向是利用跨回合信息估计决定何时分配推理预算。这个问题非常实用，因为 Agent 总成本不仅来自模型每次生成多少 token，还来自重复思考、工具等待和长期上下文膨胀。合理的系统应该把推理预算分给会改变后续行动的关键回合，而不是平均铺开。</p>
+<h3>Background / Core Method</h3>
+<p>常见 Agent 固定每轮 reasoning budget，容易在简单确认步骤上浪费推理 token，或在环境突变时预算不足。该研究的潜在核心是 cross-turn estimation：利用历史交互估计当前回合是否需要额外推理。<strong>可核实范围：</strong>已确认论文题名、日期及可访问 PDF，但本轮未可靠提取正文关键公式、阈值和实验表；不能把上述直觉当作作者的精确实现。Method/Reward/Training 的细节需要二次阅读后再升级 Tier。</p>
+<h3>Experiment / Main Finding</h3>
+<p><strong>Not Verified：</strong>具体模型、数据集、基线、TTFT、TPOT、token saving、任务成功率。对这类方法最重要的评估不是只看推理 token 减少，而是画出 <code>任务成功率—总 wall-clock—工具调用数—token</code> 四维 Pareto。尤其要看 long-horizon：早期省下的推理是否导致后期更多错误恢复成本。</p>
+<p><strong>Contribution（待验证）：</strong>跨回合预算分配这一问题设定。<strong>Limitation：</strong>预算预测误差可能累积；不确定性高时反而需要更多思考。<strong>Why It Matters：</strong>它连接 Agent 规划与 inference acceleration，而非纯模型 kernel 加速。<strong>Potential Use：</strong>在可执行 Agent benchmark 上设计 <code>always-think / never-think / threshold / learned-budget</code> 对照，记录每回合的错误与回滚成本。<strong>阅读等级：</strong>SAVE，待完整数字核验。</p>
+<h3>后续核验门槛</h3>
+<p>这篇暂不进入高 Tier 的原因是本轮缺少可复核的正文实验表，不是题目不重要。要升级为 Tier A，至少需要：可公开复现的模型/数据/协议，两个以上强基线，明确的数值结果及方差/置信区间，一组能隔离核心机制的消融，以及失败案例。若论文没有报告真实延迟、计算量或长程成功率，应明确标记缺口，不能把推测当作作者实证结论。</p>
+
+ <div class="source tiny">篇幅核验：约 590 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+<details class="paper tiercard-B" id="p-2610.11600" >
+ <summary><span class="tier tier-B">Tier B</span><span class="paper-title">Error-Propagation Modeling for Failure Attribution in LLM-Based Multi-Agent Systems</span><span class="pill">Agent / Security</span><span class="id">2610.11600</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.11600" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：摘要/标题与部分可获取信息；未核验项目明确标记</div>
+ <p><strong>2026-10-08 v1 · <a href="https://arxiv.org/abs/2610.11600">Paper</a></strong></p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>多 Agent 系统失败时，很难知道责任在哪：最后写答案的 Agent 可能只是照着上游错误证据执行；真正的错误发生在更早的检索、摘要或工具调用。论文题目 <em>Error-Propagation Modeling for Failure Attribution in LLM-Based Multi-Agent Systems</em> 指向一个重要方向：将多 Agent 的失败归因从“谁最后输出错了”改成“错误沿着什么依赖路径传播”。如果能建立可靠的传播模型，Agent 训练时的 credit assignment、在线监控、信息流压缩和错误恢复都可以共享同一套证据。</p>
+<h3>Background / Core Method</h3>
+<p>传统端到端成功率只能看到结果，逐步 LLM-as-judge 容易把下游复述当成原始错误。研究应把消息、工具输出、记忆写入与 Agent handoff 组成因果/依赖图，再判断哪些上游节点对最终失败具有必要性。<strong>注意：</strong>以上是基于研究问题的机制分析，并非对作者已验证具体模型的断言；本轮仅核实 arXiv 标题和提交日期，未获取完整实验数字。</p>
+<h3>Experiment / Main Finding</h3>
+<p>模型、benchmark、错误注入协议、归因精度与训练收益 <strong>Not Verified</strong>。应优先查作者是否使用可控故障注入来建立 ground truth，是否与 message-level attention、LLM judge、leave-one-out ablation 比较，是否能区分“错误被发现并修复”和“错误被传播”。没有这些实验，错误传播可视化只能是描述性证据。</p>
+<p><strong>Contribution（待验证）：</strong>多 Agent 失败归因的建模框架。<strong>Limitation：</strong>多 Agent 交互存在反馈环，简单 DAG 可能不足；反事实重跑的随机性会影响归因。<strong>Connection：</strong>MASS 的 handoff contract、VAMR 的共享记忆、Agent 安全监控。<strong>Potential Use：</strong>为多 Agent 协作构建故障注入基准：错误来源识别 F1、传播层数、恢复成功率、额外 token/latency。<strong>阅读等级：</strong>READ THIS WEEK（作为 Collision 线索，实验需二次核实）。</p>
+<h3>后续核验门槛</h3>
+<p>这篇暂不进入高 Tier 的原因是本轮缺少可复核的正文实验表，不是题目不重要。要升级为 Tier A，至少需要：可公开复现的模型/数据/协议，两个以上强基线，明确的数值结果及方差/置信区间，一组能隔离核心机制的消融，以及失败案例。若论文没有报告真实延迟、计算量或长程成功率，应明确标记缺口，不能把推测当作作者实证结论。</p>
+
+ <div class="source tiny">篇幅核验：约 582 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+<details class="paper tiercard-B" id="p-2610.12427" >
+ <summary><span class="tier tier-B">Tier B</span><span class="paper-title">FastBench: Can Streaming VLMs Perceive High-Dynamic Real-World Streams?</span><span class="pill">Video / Evaluation</span><span class="id">2610.12427</span></summary>
+ <div class="paper-body"><div class="source"><a href="https://arxiv.org/abs/2610.12427" target="_blank" rel="noopener noreferrer">arXiv 论文入口</a> · 正文来源等级：摘要/标题与部分可获取信息；未核验项目明确标记</div>
+ <p><strong>2026-10-09 arXiv recent list（原始提交日期以论文页为准）· <a href="https://arxiv.org/abs/2610.12427">Paper</a></strong></p>
+<h3>人话版：这篇论文到底干了什么？</h3>
+<p>流式视频 VLM 往往在静态或低变化率视频上测试，看起来能实时处理，却不一定能应对高速运动、短时事件和快速切换场景。FastBench 的标题 <em>Can Streaming VLMs Perceive High-Dynamic Real-World Streams?</em> 直接质疑现有流式 VLM 在高动态真实世界中的感知能力。它值得关注的不是又做一个平均准确率排行榜，而是能否暴露<strong>帧选择、流式记忆更新、视觉编码延迟</strong>三者的耦合失败：跳过某一帧可能省时，却让关键事件永久丢失。</p>
+<h3>Background / Core Method</h3>
+<p>Video VLM 加速方法常把低冗余假设当作默认条件，但高动态场景的变化频率与问答证据出现时间可能高度不均匀。FastBench 从题名看是评价/benchmark 工作，而不是已证明的推理加速算法。<strong>已核实：</strong>论文在 2026-10-09 的 cs.CV recent 列表，标题与作者列表可查。<strong>未核实：</strong>benchmark 的具体构造、数据规模、模型数量、指标与结果数字；因此此处不编造数据集或所谓性能下降幅度。</p>
+<h3>Experiment / Main Finding</h3>
+<p>具体 benchmark protocols 与分数 <strong>Not Verified</strong>。建议精读时重点检查：实时流是否严格遵守因果可见性、是否允许未来帧泄漏、是否同时报告事件检测延迟与正确率、输入 FPS 与输出 token/s 如何匹配。对 Video Acceleration 而言，只有 frames/FLOPs 下降而没有实时 latency/accuracy 证据，不能说明系统真正更快更好。</p>
+<p><strong>Contribution（待验证）：</strong>面向高动态流的 evaluation gap。<strong>Limitation：</strong>场景采集和标注偏差可能影响泛化；高动态并不总意味着语义信息密度高。<strong>Connection：</strong>iCATS 关注生成侧 attention，VAMR 关注理解侧多问题共享；FastBench 可作为视频理解加速的压力测试。<strong>Potential Use：</strong>在固定延迟预算下比较均匀采帧、运动强度采帧、query-aware 采帧，绘制 accuracy—latency—FPS 曲线。<strong>阅读等级：</strong>SAVE，等全文核验后决定是否升级。</p>
+<h3>后续核验门槛</h3>
+<p>这篇暂不进入高 Tier 的原因是本轮缺少可复核的正文实验表，不是题目不重要。要升级为 Tier A，至少需要：可公开复现的模型/数据/协议，两个以上强基线，明确的数值结果及方差/置信区间，一组能隔离核心机制的消融，以及失败案例。若论文没有报告真实延迟、计算量或长程成功率，应明确标记缺口，不能把推测当作作者实证结论。</p>
+
+ <div class="source tiny">篇幅核验：约 628 个中文汉字，另含英文术语、公式与数据表；资料不足时不为凑字数编造。</div></div></details>
+</section>
+<section id="ideas" class="panel"><h2>Idea Mining · 3 个可验证研究方向</h2><p class="note">以下是研究假设，不是论文已证明的结论。星级为本期主观研究判断，Compute Cost 星越多表示越贵；每个 Idea 都有最小实验和撞题风险。</p>
+<article class="idea"><h3>Idea 1 — Provenance-Grounded Credit Assignment for Multi-Agent Handoffs</h3><div class="subtitle">RL × Agent × Memory × Failure Attribution</div><p><strong>Inspiration：</strong>MASS 证明 workflow 的信息交接影响自监督质量；VAMR 用问题级 critic 将 advantage 对齐到实际服务问题的回合；Error-Propagation Modeling 提醒最终失败可能来自上游消息。</p>
+<p><strong>Gap：</strong>现有多 Agent 优化经常把最终任务成功率平均归因给所有子 Agent 或所有 handoff，难以区分“错误产生”“错误传播”“错误被修复”。<strong>Hypothesis：</strong>如果对 handoff 中每条证据维护 provenance，并用局部反事实干预估计其对最终成功的贡献，信用分配会比均匀 step reward 更准确，减少 reward hacking 和错误级联。</p>
+<p><strong>Proposed Method：</strong>把消息/工具输出/记忆写入表示成带时间戳的 evidence DAG；在可执行任务中随机屏蔽、替换或修复少量节点，估计 downstream value delta；训练一个轻量 handoff critic，为共享策略提供<strong>只对因果相关节点生效</strong>的 advantage；把 uncertainty 写入输出契约。</p>
+<p><strong>Minimum Viable Experiment：</strong>3 个角色（Planner / Executor / Verifier）完成 100–300 个可执行工具任务，在 10%/20% 回合注入可追踪错误，比较 final-only GRPO、uniform step reward、MASS 风格 workflow、provenance credit。<strong>Model：</strong>Qwen3-4B/8B；<strong>Dataset：</strong>SWE-smith 子集或自建可执行工具环境；<strong>Baseline：</strong>final reward、per-step judge、无 provenance、固定拓扑；<strong>Metric：</strong>task success、source attribution F1、error propagation depth、recovery rate、token/GPU-hour；<strong>Expected Contribution：</strong>新 credit assignment 机制 + 可控错误传播评估。</p>
+<p><strong>Novelty：★★★★☆　Feasibility：★★★☆☆　Compute Cost：★★★☆☆（越高越贵）</strong>。<strong>Risk：</strong>反事实重跑成本大、judge 不稳定、因果图含循环；<strong>Collision Risk：高</strong>（MASS、VAMR、Error-Propagation），必须把“有干预 ground truth 的 credit”作为差异点；<strong>Best Venue：</strong>ICLR / NeurIPS（机制+强实验）或 ACL/EMNLP（Agent 轨迹）。</p>
+</article>
+<article class="idea"><h3>Idea 2 — Quality-Gated Cross-Model KV Handoff for Long-Horizon Agents</h3><div class="subtitle">Inference Acceleration × Agent × KV Cache</div><p><strong>Inspiration：</strong>TokenRouter 解决 decode 时多模型间的高频 handoff；RaReCache 让小模型预填缓存供大模型使用并选择性重算；VFold 用无额外在线投影的跨层 Value 合并压缩容量。</p>
+<p><strong>Gap：</strong>这些工作分别解决路由调度、跨模型缓存误差和单模型层冗余，缺少针对<strong>多轮工具 Agent 反复升级/降级模型</strong>的统一状态一致性与质量门控。<strong>Hypothesis：</strong>只有在预计 TTFT 收益大于映射/校验开销、且关键工具状态被可靠保留时才复用缓存，能改善端到端任务成本而不显著损伤工具行为。</p>
+<p><strong>Proposed Method：</strong>在模型切换前对上下文标注 tool-state critical spans，估计 RaReCache 风格的 rank disagreement；按预计收益选择 full prefill、partial recompute 或不切换；TokenRouter 式 runtime 保持请求 ID、位置锚点与 KV 生命周期；必要时结合 VFold 节省目标模型缓存容量。</p>
+<p><strong>Minimum Viable Experiment：</strong>Qwen3 0.6B→14B 的 4K/16K/32K 多轮 Agent 轨迹，设置 1/4/16 并发，比较 full prefill、纯线性映射、RaReCache、TokenRouter 式异步调度、quality-gated 组合。<strong>Model：</strong>Qwen3 系列；<strong>Dataset：</strong>SWE-Smith 工具轨迹及自建跨模型升级任务；<strong>Baseline：</strong>TokenRouter、RaReCache、full target；<strong>Metric：</strong>TTFT p50/p99、TPOT、tokens/s、peak KV HBM、任务成功率、状态一致性；<strong>Expected Contribution：</strong>端到端 quality-constrained Agent handoff scheduler。</p>
+<p><strong>Novelty：★★★☆☆　Feasibility：★★★★☆　Compute Cost：★★★★☆</strong>。<strong>Risk：</strong>跨模型 KV 对齐脆弱，显存/通信开销可能吞掉收益；<strong>Collision Risk：很高</strong>（TokenRouter + RaReCache 已分别覆盖核心组件），<strong>仅做拼接不构成论文</strong>；<strong>Best Venue：</strong>MLSys / OSDI / ASPLOS（若系统贡献扎实）。</p>
+</article>
+<article class="idea"><h3>Idea 3 — Wall-Clock-Aware Evidence Budgeting for Streaming Video Agents</h3><div class="subtitle">Video Acceleration × RL × Agent × Dynamic Inference</div><p><strong>Inspiration：</strong>iCATS 显示更高理论 sparsity 未必更快，GPU tail merging 可以在 sparsity 下降时提升真实速度；VAMR 将多个问题的视觉探索合并；FastBench 指向高动态流的证据遗漏风险。</p>
+<p><strong>Gap：</strong>Video Agent 常用固定帧数、固定 token 预算或仅优化 QA accuracy，缺少<strong>对实际 GPU 延迟负责</strong>的跨问题、跨时间、跨视觉 token 的联合预算策略。<strong>Hypothesis：</strong>使用“预计证据增益/真实边际毫秒”的动作价值，并根据视频动态与问题不确定性更新预算，能在同等 wall-clock 下取得更高正确率。</p>
+<p><strong>Proposed Method：</strong>把帧选择、视觉 token 保留、工具 seek 和继续推理视为统一动作；cost predictor 由真实 GPU profiling 学习，而不是仅用 FLOPs 近似；使用问题级 advantage 或 bandit feedback 选择动作，保存可验证的 evidence provenance；对高动态区域设置不可忽略的覆盖下限。</p>
+<p><strong>Minimum Viable Experiment：</strong>在一款开源 Video VLM 上比较 uniform sampling、motion-aware、query-aware、VAMR-style multi-question、cost-aware policy，先用 100–300 条视频建立 profiling 表，再在 holdout 上测。<strong>Model：</strong>开源 7B 级 Video VLM；<strong>Dataset：</strong>LongVideoBench/LVBench 子集及高动态视频压力样本；<strong>Baseline：</strong>均匀采帧、固定 top-k token、VAMR；<strong>Metric：</strong>accuracy、frames、visual tokens、真实 TTFT、GPU memory、FPS、evidence recall；<strong>Expected Contribution：</strong>以 wall-clock 为目标的可验证视频 Agent 预算优化。</p>
+<p><strong>Novelty：★★★★☆　Feasibility：★★★★☆　Compute Cost：★★★☆☆</strong>。<strong>Risk：</strong>profiling 难迁移硬件，错误漏帧不可恢复，奖励可能偏好过短路径；<strong>Collision Risk：中高</strong>（iCATS/VAMR/已有 query-aware pruning），必须强调系统实测 + 多问题 + 动态流；<strong>Best Venue：</strong>CVPR / ICCV / NeurIPS（机制）或 MLSys（系统）。</p>
+</article>
+</section>
+<section id="collisions" class="panel"><h2>Collision Detection · ⚠️ 4 组重叠风险</h2><h3>⚠️ Collision Warning 1 — 多 Agent 信息流与信用分配</h3>
+<p><strong>Collision Paper：</strong><a href="https://arxiv.org/abs/2610.12176">MASS</a>、<a href="https://arxiv.org/abs/2610.11171">VAMR</a>、<a href="https://arxiv.org/abs/2610.11600">Error-Propagation Modeling</a>。<strong>已解决：</strong>MASS 优化 handoff contract 并蒸馏，VAMR 将问题 advantage 对齐到相关轮次，Error-Propagation 的题名已覆盖失败归因主题。<strong>与新 Idea 重合：</strong>都在“哪些消息/回合对最终结果重要”上发力。<strong>剩余 Gap：</strong>有真实故障注入标签的因果证据归因，以及跨 Agent 错误修复 credit。<strong>如何差异化：</strong>不要只做另一种 message importance score，必须有可控 intervention、source attribution ground truth、long-horizon recovery。<strong>是否继续：YES，条件是先做小规模归因可行性实验。</strong>证据等级：**前两篇正文已读；第三篇机制与数字待核实。</p>
+<h3>⚠️ Collision Warning 2 — 跨模型 KV 与路由系统</h3>
+<p><strong>Collision Paper：</strong><a href="https://arxiv.org/abs/2610.12242">TokenRouter</a>、<a href="https://arxiv.org/abs/2610.11358">RaReCache</a>、<a href="https://arxiv.org/abs/2610.12338">VFold</a>。<strong>已解决：</strong>decode handoff 调度、跨模型部分重算、跨层 V cache 合并分别已有独立方案。<strong>与新 Idea 重合：</strong>quality-gated handoff 直接调用已有组件。<strong>剩余 Gap：</strong>工具状态一致性、Agent 级 SLO、跨多次切换的累积误差、真实 end-to-end Pareto。<strong>如何差异化：</strong>明确新调度策略及理论/实验，做三种组件交叉消融，必须证明组合优于分别使用。<strong>是否继续：MAYBE</strong>，先测 baseline 是否已接近上限。</p>
+<h3>⚠️ Collision Warning 3 — Video 动态预算与系统速度</h3>
+<p><strong>Collision Paper：</strong><a href="https://arxiv.org/abs/2610.11302">iCATS</a>、<a href="https://arxiv.org/abs/2610.11171">VAMR</a>、<a href="https://arxiv.org/abs/2610.11251">V-CoLA</a>。<strong>已解决：</strong>生成侧 timestep 稀疏、理解侧多问题共享、视觉 token 压缩已有对应研究。<strong>与新 Idea 重合：</strong>动态保留 token/帧和多问题证据复用。<strong>剩余 Gap：</strong>直接优化真实 GPU latency 的跨层预算与高动态流证据覆盖。<strong>如何差异化：</strong>测量 wall-clock、p99、错误漏帧，并报告 FLOPs 不等于 latency 的失败案例。<strong>是否继续：YES</strong>，优先做无训练的 profiling + budget baseline。</p>
+<h3>⚠️ Collision Warning 4 — 零陈旧 Agent RL 流水线</h3>
+<p><strong>Collision Paper：</strong><a href="https://arxiv.org/abs/2610.05935">ThunderSyncRL</a>。<strong>已解决：</strong>对 GRPO/OPD 的部分梯度提前计算、保留同步更新。<strong>剩余 Gap：</strong>跨 Agent 联合 reward 依赖图是否存在可安全提前计算的 sufficient statistics。<strong>如何差异化：</strong>需要新 objective decomposition 或真实多 Agent dependency-aware scheduler，不能只把已有实现部署到另一个 benchmark。**是否继续：仅在可证明多 Agent reward 可分解时继续。</p>
+</section>
+<section id="priority" class="panel"><h2>Reading Priority</h2><div class="priority"><b class="read-now">READ NOW</b><div><strong><a href="https://arxiv.org/abs/2610.12176" target="_blank" rel="noopener noreferrer">MASS</a></strong><br>Section 3 Method、Figure 3（跨角色提升与负面任务）、Figure 6（supervised token 效率）</div></div><div class="priority"><b class="read-now">READ NOW</b><div><strong><a href="https://arxiv.org/abs/2610.11302" target="_blank" rel="noopener noreferrer">iCATS</a></strong><br>Section 4 interaction-aware clustering、Table 1（质量/秒数）、Table 5（tail merging 反常消融）</div></div><div class="priority"><b class="read-now">READ NOW</b><div><strong><a href="https://arxiv.org/abs/2610.12242" target="_blank" rel="noopener noreferrer">TokenRouter</a></strong><br>Section 4.2–4.3、Table 2（TTFT/throughput/latency）、Figure 1(a)（系统组件消融）</div></div><div class="priority"><b class="read-week">READ THIS WEEK</b><div><strong><a href="https://arxiv.org/abs/2610.11345" target="_blank" rel="noopener noreferrer">SynCo</a></strong><br>Section 3 reward formulation + Section 4 Frozen Synth 对照；核实 reward hacking</div></div><div class="priority"><b class="read-week">READ THIS WEEK</b><div><strong><a href="https://arxiv.org/abs/2610.11358" target="_blank" rel="noopener noreferrer">RaReCache</a></strong><br>Method 的 rank disagreement 与 p50/p99 TTFT 实验；跨模型切换误差</div></div><div class="priority"><b class="read-week">READ THIS WEEK</b><div><strong><a href="https://arxiv.org/abs/2610.11171" target="_blank" rel="noopener noreferrer">VAMR</a></strong><br>QHPO 的 question-level critic / round alignment 与帧数对照</div></div><div class="priority"><b class="read-week">READ THIS WEEK</b><div><strong><a href="https://arxiv.org/abs/2610.05935" target="_blank" rel="noopener noreferrer">ThunderSyncRL</a></strong><br>GRPO 两个梯度统计量的严格等价推导 + GPU-hour-to-target</div></div><div class="priority"><b class="read-week">READ THIS WEEK</b><div><strong><a href="https://arxiv.org/abs/2610.12338" target="_blank" rel="noopener noreferrer">VFold</a></strong><br>Table 1 K/V 不对称、Table 2 RULER 16K、Figure 2 CKA</div></div><div class="priority"><b class="read-save">SAVE</b><div><strong><a href="https://arxiv.org/abs/2610.12124" target="_blank" rel="noopener noreferrer">Hippocam</a></strong><br>重点补长程记忆对照、可逆检索与记忆污染实验</div></div><div class="priority"><b class="read-save">SAVE</b><div><strong><a href="https://arxiv.org/abs/2610.12427" target="_blank" rel="noopener noreferrer">FastBench</a></strong><br>等待全文 benchmark 构造与实时延迟指标核验</div></div><div class="priority"><b class="read-save">SAVE</b><div><strong><a href="https://arxiv.org/abs/2610.11989" target="_blank" rel="noopener noreferrer">MetaOPD</a></strong><br>待核实元权重目标函数、真实 sample efficiency</div></div><div class="priority"><b class="read-save">SAVE</b><div><strong><a href="https://arxiv.org/abs/2610.12061" target="_blank" rel="noopener noreferrer">When Should Agents Think?</a></strong><br>待核实跨回合估计的实现及端到端 latency</div></div><div class="priority"><b class="read-save">SAVE</b><div><strong><a href="https://arxiv.org/abs/2610.11600" target="_blank" rel="noopener noreferrer">Error-Propagation Modeling</a></strong><br>待核实故障注入 ground truth 与归因指标</div></div><div class="priority"><b class="read-skip">SKIP</b><div><strong>泛泛的 unlearning 题名匹配</strong><br>本期没有可核实且达到同等 Tier 门槛的新工作；不是取消持续跟踪</div></div></section>
+<section id="watchlist" class="panel"><h2>Candidate Watchlist · 35 篇</h2><p class="note">每篇均可点击 arXiv 入口；多数为题名/列表级初筛，价值说明是后续核验方向，不冒充已完成精读。Candidate Pool = 正式 13 + Watchlist 35 = 48。</p><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12135" target="_blank" rel="noopener noreferrer">Q-Shaped Options for Hierarchical Reinforcement Learning</a></strong><div class="id">arXiv:2610.12135</div></div><div class="cat">RL</div><div class="why">层级策略与 option 设计相关，值得检查 Q 结构是否改善信用分配。优先查看训练目标与离线/在线对照；本轮仅完成标题级初筛。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12420" target="_blank" rel="noopener noreferrer">A Unified Bellman Operator for Safety-Critical Reinforcement Learning</a></strong><div class="id">arXiv:2610.12420</div></div><div class="cat">RL</div><div class="why">将安全约束纳入 Bellman 框架，可能为 reward 与 constraint 分离提供理论工具。需核查定理假设与实际控制实验。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11692" target="_blank" rel="noopener noreferrer">Can Jev be Your Q or Policy in Reinforcement Learning?</a></strong><div class="id">arXiv:2610.11692</div></div><div class="cat">RL</div><div class="why">讨论替代价值函数或策略表示，可能影响 RL 表示学习。待核查具体 Jev 定义与实验。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12362" target="_blank" rel="noopener noreferrer">Closing the Horizon Gap in Policy Optimization for Adversarial MDPs</a></strong><div class="id">arXiv:2610.12362</div></div><div class="cat">RL / Theory</div><div class="why">关注长 horizon 下的理论优化缺口。需确认是否具有可迁移到 LLM Agent 的实证价值。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11502" target="_blank" rel="noopener noreferrer">Fed-GRPO: Reward-Signal-Driven Federated Group Relative Policy Optimization</a></strong><div class="id">arXiv:2610.11502</div></div><div class="cat">RL</div><div class="why">联邦场景下的 GRPO 可能涉及 reward 统计不一致。值得检查隐私、异质性与通信开销。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11464" target="_blank" rel="noopener noreferrer">Who Verifies the Verifier? Co-Evolving Inspectable Graders with Self-Improving Agents</a></strong><div class="id">arXiv:2610.11464</div></div><div class="cat">RL / Agent</div><div class="why">验证器与 Agent 共演化，直接撞上 reward drift 和 self-evaluation 问题。注意该条为 NeurIPS 2026 Workshop 接收，不等于主会。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11384" target="_blank" rel="noopener noreferrer">Environmental Feedback Modeling Matters: Rethinking Feedback Treatment in Agentic Hindsight Self-Distillation</a></strong><div class="id">arXiv:2610.11384</div></div><div class="cat">Agent / RL</div><div class="why">环境反馈如何进入 hindsight 自蒸馏值得精读。优先看反馈噪声与策略更新之间的因果消融。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12375" target="_blank" rel="noopener noreferrer">OnTrack: Real-Time Monitoring and Intervention in LLM Agent Trajectories via Streaming Structure-Aware Optimal Transport</a></strong><div class="id">arXiv:2610.12375</div></div><div class="cat">Agent / Safety</div><div class="why">针对流式轨迹进行在线干预，适合评估故障传播的可检测性。检查延迟、误报和长轨迹泛化。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12452" target="_blank" rel="noopener noreferrer">BrickBench: Evaluating Agentic Brick Design</a></strong><div class="id">arXiv:2610.12452</div></div><div class="cat">Agent / Benchmark</div><div class="why">新的实体构造类 Agent benchmark，可补足纯文本任务评估。重点检查工具链和可复现评分协议。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12436" target="_blank" rel="noopener noreferrer">Ecology of AI Agents: Collaboration Creates a Population Threshold for Takeoff</a></strong><div class="id">arXiv:2610.12436</div></div><div class="cat">Multi-Agent</div><div class="why">研究群体协作的阈值现象，可能是多智能体涌现的建模线索。需要区分模拟模型结论与真实 LLM 系统证据。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12341" target="_blank" rel="noopener noreferrer">Can AI Agents Learn Their Way to the Top? Evaluating Heuristic Learning in a Long-Running Game Agent Competition</a></strong><div class="id">arXiv:2610.12341</div></div><div class="cat">Agent / Lifelong</div><div class="why">长期比赛提供在线适应证据，适合关注经验是否真正跨回合复用。检查比赛规则与随机性。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11707" target="_blank" rel="noopener noreferrer">DeltaReplay: Task-Relative Memory Reuse for Mobile GUI Agents</a></strong><div class="id">arXiv:2610.11707</div></div><div class="cat">Agent / Memory</div><div class="why">GUI Agent 的任务相对记忆复用，和跨会话迁移很接近。优先看重复任务比例、失败恢复和存储成本。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11613" target="_blank" rel="noopener noreferrer">AgentEvolver: System-Wide Self-Evolution Through Task Execution</a></strong><div class="id">arXiv:2610.11613</div></div><div class="cat">Agent / Self-improvement</div><div class="why">系统级自演化可能涉及 prompt、工具与技能共同变化。需验证改进归因与是否存在反馈污染。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11573" target="_blank" rel="noopener noreferrer">Memory Type Varies: Empowering LLM Agents for Long-Term Memory with Diverse Strategies</a></strong><div class="id">arXiv:2610.11573</div></div><div class="cat">Agent / Memory</div><div class="why">多种记忆策略的选择问题与 Hippocam 形成比较。优先看不同任务类型下的路由和消融。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11552" target="_blank" rel="noopener noreferrer">Safe, Persistent, and Evolving Agent Harness for Understanding Partially Observable Worlds</a></strong><div class="id">arXiv:2610.11552</div></div><div class="cat">Agent / Harness</div><div class="why">将持久化与安全性统一到部分可观测 Agent harness。重点核查状态一致性和长程交互。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11529" target="_blank" rel="noopener noreferrer">ReTeach: Building a Self-Teacher through Multi-Round Reflection and Retry</a></strong><div class="id">arXiv:2610.11529</div></div><div class="cat">Agent / Learning</div><div class="why">多轮反思与重试的自教师机制，需防止自我确认偏误。重点核查独立验证器的作用。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11794" target="_blank" rel="noopener noreferrer">Memento 3: Model-Based Recursive Self-Improvement through Reflective Rulebooks</a></strong><div class="id">arXiv:2610.11794</div></div><div class="cat">Agent / Memory</div><div class="why">反思式规则本与多智能体自监督形成直接对照。适合碰撞检测：记忆更新是否等价于策略更新。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12367" target="_blank" rel="noopener noreferrer">Which Skill to Distill? SGUID: Selecting a Compact Skill Bank for Model-Skill Co-Evolution</a></strong><div class="id">arXiv:2610.12367</div></div><div class="cat">Agent / Skill</div><div class="why">压缩技能库而非无限积累，适合研究遗忘与检索的成本。检查技能覆盖、冲突和选择策略。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12274" target="_blank" rel="noopener noreferrer">HarnessSQL: Harness-Native Training for SQL Agents in Realistic Database Environments</a></strong><div class="id">arXiv:2610.12274</div></div><div class="cat">Agent / RL</div><div class="why">SQL 工具环境有可执行结果，可用于可验证 Agent 训练。关注训练 harness 与真实 DB 工作负载的差异。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11850" target="_blank" rel="noopener noreferrer">VEDJE: Video-Efficient Discriminative Joint Encoder for Scalable Video-Text Retrieval</a></strong><div class="id">arXiv:2610.11850</div></div><div class="cat">Video Acceleration</div><div class="why">视频-文本检索效率方法。需查是否报告端到端吞吐而不仅编码器 FLOPs。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11070" target="_blank" rel="noopener noreferrer">No Distillation Needed: Single-Pass Real-Time Talking Heads via Acausal Noise Shaping</a></strong><div class="id">arXiv:2610.11070</div></div><div class="cat">Video Generation</div><div class="why">单次前向的实时生成是另一条加速路线。需要验证视频质量、实时帧率及硬件条件。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11233" target="_blank" rel="noopener noreferrer">MiniVer-V: Identifying Minimal Sufficient Evidence for Short Video Verification</a></strong><div class="id">arXiv:2610.11233</div></div><div class="cat">Video / Pruning</div><div class="why">最小充分证据与 query-aware 帧选择高度相关。可用于研究可验证的视频 token 预算分配。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12464" target="_blank" rel="noopener noreferrer">What 30,000 Hours of Ego-centric Video Does Not Teach</a></strong><div class="id">arXiv:2610.12464</div></div><div class="cat">Video / Representation</div><div class="why">大规模视频数据的能力边界可能改变采样优先级。检查任务定义和跨域泛化。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11251" target="_blank" rel="noopener noreferrer">V-CoLA: Vision Token Compression with Linear Attention</a></strong><div class="id">arXiv:2610.11251</div></div><div class="cat">Multimodal Efficiency</div><div class="why">视觉 token 压缩与线性注意力结合，可能减少 VLM prefill。需要分离压缩率与真实延迟。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12459" target="_blank" rel="noopener noreferrer">WorldGuide: Goal-Directed Video World Model for Procedural Task Execution</a></strong><div class="id">arXiv:2610.12459</div></div><div class="cat">Video / Agent</div><div class="why">视频世界模型服务过程性任务执行，可连接视频压缩与 Agent 规划。优先看规划成功率和滚动误差。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11750" target="_blank" rel="noopener noreferrer">Where Draft Trees Lose Target Mass: Exit-Guided Speculative Decoding</a></strong><div class="id">arXiv:2610.11750</div></div><div class="cat">Inference Acceleration</div><div class="why">草稿树出口的目标概率质量可影响验证通过率。重点核查真实 decode throughput 和额外开销。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11201" target="_blank" rel="noopener noreferrer">PageWeaver: KV-Guided Query Unions for Sparse Attention</a></strong><div class="id">arXiv:2610.11201</div></div><div class="cat">Inference Acceleration</div><div class="why">KV 引导的查询并集稀疏注意力，有望减少访存。需看动态批处理和 GPU kernel 表现。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11158" target="_blank" rel="noopener noreferrer">Zepp: Accelerating Distributed MoE Serving under Relaxed Balance Constraints</a></strong><div class="id">arXiv:2610.11158</div></div><div class="cat">Inference / Serving</div><div class="why">分布式 MoE 服务优化。重点比较负载均衡约束放松后的跨 GPU 通信与延迟尾部。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12133" target="_blank" rel="noopener noreferrer">Rehearse Everything, Remember Nothing: Attic-KV Rehearses What Will Be Read</a></strong><div class="id">arXiv:2610.12133</div></div><div class="cat">Inference / KV</div><div class="why">针对即将读取的 KV 做 rehearsal 的设计。需验证是否降低真实 HBM/DRAM 流量。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11570" target="_blank" rel="noopener noreferrer">Scaling to Tens of Thousands of Test-Time Iterations with Loop-Native Attention Residuals</a></strong><div class="id">arXiv:2610.11570</div></div><div class="cat">Reasoning / Efficiency</div><div class="why">极长 test-time iteration 的可扩展性方向。需要检查计算增长率与真实能力收益。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11775" target="_blank" rel="noopener noreferrer">RouterInterp: Understanding Superposed Specialisation in Mixture of Experts Routing</a></strong><div class="id">arXiv:2610.11775</div></div><div class="cat">Interpretability</div><div class="why">MoE 路由专门化的可解释性工作，可能支持路由效率分析。论文列表注明 ICML 2026 正式发表。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12445" target="_blank" rel="noopener noreferrer">Caught in the Act: Probes Effectively Detect Sabotage and Catch Unverbalized Deception</a></strong><div class="id">arXiv:2610.12445</div></div><div class="cat">Security / Interpretability</div><div class="why">用探针检测未言明的破坏行为，关联 Agent 内部状态监测。重点核查分布外误报与攻击适应性。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11773" target="_blank" rel="noopener noreferrer">Safe Actions Alone Do Not Ensure Safe Agents: Identifying Unfulfilled Obligations with Guard Models</a></strong><div class="id">arXiv:2610.11773</div></div><div class="cat">Agent / Security</div><div class="why">安全动作不等于任务安全完成；适合测试长期义务漏履行。列表显示有代码和数据链接。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.11620" target="_blank" rel="noopener noreferrer">Where to Adapt Matters: Layer-Selective Fine-Tuning for Capability Retention</a></strong><div class="id">arXiv:2610.11620</div></div><div class="cat">Continual / Retention</div><div class="why">分层微调与能力保留的联系可迁移到持续学习。不能自动等同于 Machine Unlearning。</div></div><div class="watchrow"><div><strong><a href="https://arxiv.org/abs/2610.12304" target="_blank" rel="noopener noreferrer">Looking Inside LLMs: Small-World Connectivity as a Signature of Reasoning Performance</a></strong><div class="id">arXiv:2610.12304</div></div><div class="cat">Interpretability</div><div class="why">用网络连接结构解释推理表现，需检查因果干预而非纯相关。适合与推理加速中的动态计算交叉。</div></div></section>
+<section id="stats" class="panel"><h2>今日统计 / Depth Audit / Research Integrity</h2><p><strong>检索日期：</strong>2026-10-10（Asia/Shanghai）。<strong>主要新稿窗口：</strong>2026-10-08 至 2026-10-09（UTC）。<strong>补充：</strong>ThunderSyncRL 于 2026-10-05 提交，仍在最近 5 天内，不计作 1–3 月 BACKFILL。</p>
+<p><strong>Candidate Pool：48</strong>；<strong>Formal Papers：13</strong>；<strong>Watchlist：35</strong>；<strong>Tier S/A/B：3/5/5</strong>。正式多标签方向：<strong>RL 4</strong>（SynCo、ThunderSyncRL、MetaOPD、VAMR），<strong>Agent/Multi-Agent 7</strong>（MASS、SynCo、VAMR、ThunderSyncRL、Hippocam、When Should Agents Think、Error-Propagation），<strong>Video Acceleration / Efficient Video 3</strong>（iCATS、VAMR、FastBench），<strong>Inference Acceleration 4</strong>（TokenRouter、VFold、RaReCache、When Should Agents Think），<strong>Unlearning 0</strong>，<strong>Other 0</strong>。其中 FastBench 是评估侧，不代表已经提出加速算法；MetaOPD、When Should Agents Think 等证据有限的条目不应与已读全文的 Tier S 混为同等可信度。</p>
+<p><strong>Depth Audit：</strong>Tier S 3/3 均有 Method、实验设置、具体结果、strongest baseline、负面/边界、迁移；Tier A 5/5 有可核实的至少 2 个关键实验现象或明确标注证据边界；Tier B 中 4 篇仅完成标题/摘要级核验，不能满足严格的 600–1000 字实证精读标准，因此<strong>主动标记降级</strong>，避免虚构模型、数据和结果。部分 A 的细分超参数也未完全核验，均在正文说明。</p>
+<p><strong>7 天冷却检查：</strong>本轮未能取得此前 7 天全部日报的可审计 Tier S 历史；所选 Tier S 都是 10 月 8 日提交的新稿，未据此声称已经完成全历史去重。<strong>Unlearning：</strong>主动检索但未获得足够可核实的新候选进入正式篇幅；不为了机械平衡而虚增数量。</p>
+<p><strong>Research Integrity：</strong>凡未核实 Venue、Code、GPU Memory、FLOPs、TTFT、TPOT、FPS、超参数等字段，写 Not Verified/Not Reported；摘要支持的数字明确标记作者报告，不作独立复现实验结论。</p>
+</section>
+<section id="sources" class="panel"><h2>Sources / Links</h2><h3>一手论文入口与本轮检索起点</h3>
+<ul>
+<li><a href="https://arxiv.org/list/cs.AI/recent">arXiv cs.AI recent</a>、<a href="https://arxiv.org/list/cs.LG/recent">cs.LG recent</a>、<a href="https://arxiv.org/list/cs.CV/recent">cs.CV recent</a>、<a href="https://arxiv.org/list/cs.CL/recent">cs.CL recent</a>、<a href="https://arxiv.org/list/cs.DC/recent">cs.DC recent</a>。列表页的 “Fri, 9 Oct 2026” 是 arXiv recent 批次标识；部分论文的 Submission History 为 8 Oct UTC，日期以单篇论文页为准。</li>
+<li>Tier S 原文：<a href="https://arxiv.org/html/2610.12176v1">MASS HTML</a>、<a href="https://arxiv.org/html/2610.11302v1">iCATS HTML</a>、<a href="https://arxiv.org/html/2610.12242v1">TokenRouter HTML</a>。</li>
+<li>Tier A 重点原文：<a href="https://arxiv.org/html/2610.11345v1">SynCo</a>、<a href="https://arxiv.org/html/2610.12338v1">VFold</a>、<a href="https://arxiv.org/html/2610.11358v1">RaReCache</a>、<a href="https://arxiv.org/html/2610.11171v1">VAMR</a>、<a href="https://arxiv.org/abs/2610.05935">ThunderSyncRL</a>。</li>
+<li>本期补充技术解析：<a href="https://www.alphaxiv.org/abs/2610.05935">ThunderSyncRL alphaXiv overview</a>；涉及 GPU-hour 与 gradient equivalence 的具体数字依据此可获取资料，并与论文入口关联。</li>
+</ul>
+<h3>如何解读报告中的证据等级</h3>
+<p><strong>Full text verified</strong>：本轮读取了 Method 和 Experiments 的主要段落/表格。<strong>Abstract verified</strong>：摘要和 arXiv 元数据已核实，方法细节/实验表可能未逐项确认。<strong>Title-level watch</strong>：仅确认 arXiv 列表标题、ID、部分作者与方向；所有潜在价值均是待验证研究假设。报告内的链接直接指向一手来源，便于自行复核。</p>
+</section>
+<footer>AI Research Radar · 2026-10-10 · Self-contained HTML · UTF-8 · All links are external references · <a href="#top">回到顶部 ↑</a></footer></main></body></html>
