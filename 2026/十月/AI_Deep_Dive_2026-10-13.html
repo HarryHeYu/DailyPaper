@@ -1,0 +1,373 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Deep Dive · 2026-10-13</title><style>
+:root{--bg:#0b1220;--panel:#121e31;--card:#18263a;--ink:#edf4fb;--muted:#b6c7d8;--accent:#78d9ca;--blue:#8bb9fa;--line:#34465d;--gold:#f2c875}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.93}a{color:var(--accent);text-decoration:none;border-bottom:1px solid #468b88}a:hover{color:#b2fff1}header{padding:70px max(5vw,22px) 44px;background:linear-gradient(125deg,#172d47,#102437 65%,#163c3e);border-bottom:1px solid var(--line)}.eyebrow{font-size:13px;letter-spacing:3px;color:var(--accent);text-transform:uppercase}h1.hero{font-size:clamp(34px,5vw,65px);line-height:1.2;letter-spacing:-1px;max-width:1000px;margin:16px 0 12px}.lede{font-size:18px;max-width:900px;color:var(--muted)}.wrap{max-width:1120px;margin:0 auto;padding:0 26px}.stats{display:flex;flex-wrap:wrap;gap:12px;margin:25px 0}.stat{border:1px solid #55717c;background:#102d3b;padding:10px 16px;border-radius:10px;color:#cdece9}nav{position:sticky;top:0;z-index:10;background:#0b1725f5;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}nav .wrap{display:flex;gap:20px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}nav a{font-size:13px;white-space:nowrap}main{padding-bottom:100px}section.article{margin:48px 0;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:30px clamp(22px,4vw,58px);box-shadow:0 12px 50px #0002}section.article>h1:first-child{font-size:clamp(26px,3.2vw,38px);line-height:1.35;color:#f3f9ff;margin:4px 0 26px}h2{font-size:23px;line-height:1.45;color:var(--accent);margin-top:40px;margin-bottom:15px;border-left:4px solid var(--accent);padding-left:13px}h3{color:var(--blue);font-size:19px}p{margin:13px 0}strong{color:#fff}blockquote{margin:20px 0;padding:13px 20px;border-left:3px solid var(--gold);background:#233247;color:#d7e6f4;border-radius:0 8px 8px 0}code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;background:#23364b;color:#ffdcaa;padding:2px 6px;border-radius:4px;overflow-wrap:anywhere;font-size:.9em}pre{background:#091321;padding:16px;border-radius:8px;overflow:auto}pre code{background:none}table{border-collapse:collapse;min-width:730px;font-size:14px;line-height:1.65}table th{background:#1e3a50;color:#dcfff8;text-align:left}table th,table td{border:1px solid #3d5166;padding:10px 13px;vertical-align:top}table tr:nth-child(even) td{background:#17283b}.table-wrap{overflow-x:auto;border:1px solid #34465d;border-radius:10px;margin:20px 0}ul,ol{padding-left:26px}li{padding-left:4px;margin:6px 0}.note{background:#183b3d;border-left:4px solid #6cd4bc;padding:14px 18px;border-radius:8px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}.card{background:var(--card);border:1px solid var(--line);padding:20px;border-radius:12px}.card h3{margin:0 0 6px}.card p{margin:0;color:var(--muted)}.audit{background:#162d33;padding:22px;border-radius:12px}.badge{display:inline-block;border-radius:50px;padding:2px 10px;background:#174a46;color:#abf3e8;font-size:12px}footer{border-top:1px solid var(--line);padding:30px;color:var(--muted);text-align:center}@media(max-width:680px){body{font-size:15px;line-height:1.86}header{padding-top:48px}section.article{padding:22px 17px;margin:24px 0}h2{font-size:20px}nav .wrap{gap:10px}nav a{font-size:12px}}
+@media print{body{background:#fff;color:#222}section.article{background:#fff;color:#222;box-shadow:none;border:1px solid #bbb}h2{color:#0b665a}a{color:#006b7b}nav{display:none}blockquote{background:#eee;color:#222}strong{color:#111}table th{background:#ddd;color:#222}}
+</style></head><body><header><div class="wrap"><div class="eyebrow">Research Intelligence · Independent Deep Reading</div><h1 class="hero">Daily Top Papers<br>Deep Dive</h1><p class="lede">2026 年 10 月 13 日 · 两篇机制导向精读 · RL / Agent × Video KV / Efficient Inference</p><div class="stats"><span class="stat">02 Full Papers</span><span class="stat">4900 + 5587 汉字</span><span class="stat">Sources: arXiv HTML + Appendices</span><span class="stat">Self-contained / UTF-8</span></div></div></header><nav><div class="wrap"><a href="#overview">本期选择</a><a href="#paper1">01 TreeHCA</a><a href="#paper2">02 CORAL-KV</a><a href="#synthesis">跨论文综合</a><a href="#audit">深度审计</a><a href="#sources">来源说明</a></div></nav><main class="wrap"><section id="overview" class="article"><h1>Today's Deep Dive Selection</h1><div class="cards"><div class="card"><h3>01 · TreeHCA</h3><p>RL / Agent · 2026-10-09<br>核心：Hindsight 分叉探索 × 逆概率信用校正。Qwen3-8B 多跳加权 EM 50.25%，相对最强已发表对照 +1.63pp。</p></div><div class="card"><h3>02 · CORAL-KV</h3><p>Video / KV Systems · 2026-10-07<br>核心：跨层预测 × 2-bit 残差缓存。MAGI-1 reusable 对 QVG-4 +4.95dB PSNR、缓存 -37.3%。</p></div></div><p class="note"><strong>方法与证据优先：</strong>本期仅两篇，每篇均超过 4500 个汉字；正文、表图、附录与复现设计已逐项核对。原始提交日期不等于 10 月 12 日上架日期。HTML 离线可读；论文和代码链接需要联网。</p></section><section class="article" id="paper1"><h1>Paper 1 · TreeHCA：把“去哪里探索”和“如何分配功劳”变成同一个统计问题</h1>
+<blockquote>
+<p><strong>基本信息</strong>：Debajoy Mukherjee、Jeremy Carleton、Sushil Vemuri、Srinivas Shakkottai、Dileep Kalathil；Texas A&amp;M University，Electrical and Computer Engineering。arXiv:2610.12828v1，2026-10-09 提交；当前核实状态为预印本，未确认正式会议录用。论文：<a href="https://arxiv.org/abs/2610.12828">arXiv</a> · <a href="https://arxiv.org/html/2610.12828v1">可读正文</a> · <a href="https://github.com/TheBlackCat22/TreeHCA">官方代码</a>。<strong>方向：RL × Multi-turn Agent；本期新论文。</strong></p>
+</blockquote>
+<h2>1. 一句话定位与人话版</h2>
+<p><strong>定位</strong>：在终局奖励稀疏的多轮搜索 Agent 中，TreeHCA 用同一套 hindsight 信息决定“在哪个历史节点补采样”与“如何校正被选择的样本”，从而将轨迹级奖励转化为更有意义的回合级学习信号。</p>
+<p>一个 Agent 为了回答问题，先想、再查资料、再想、再查，最终回答对了，传统 GRPO 往往给整条路径上的生成 token 一样的正优势；但其中某次搜索可能完全跑偏，只是后面侥幸补救成功。反过来，最终答错也不意味着之前所有搜索都无效。TreeHCA 认为，不能只改变“奖励怎样回传”，还要改变“采样时看到哪些对照”。它先在一条轨迹中找出让标准答案似然下降的回合，回到这个回合之前的共同历史，再采几个不同的行动及工具结果；高分候选更可能被继续执行。因为这种挑选偏向高分支路，回传奖励时不能把观察到的频率直接当原始策略的概率，于是引入逆 hindsight 权重。实验在三个 Qwen 骨干、七个问答集上给出整体提升，但相对最强基线的幅度并非巨大，且要多付约 9%–11% 的训练时间。<strong>重要的是采样—估计一致性，而不是又发明了一个奖励函数。</strong></p>
+<h2>2. Background、旧范式与 Research Gap</h2>
+<p>把搜索问答看作部分可观测序列决策：状态不是孤立的一句话，而是问题、此前推理、工具调用、工具观察的完整历史；动作同时包含本回合的推理文本和搜索请求；环境返回检索片段。一个示例：问“哪位科学家指导了某位获奖者的博士论文”，第一轮检索到人物传记，第二轮搜索导师关系，第三轮核验。最终答对只给一个 1，答错给 0。若第一轮引用错人但第三轮纠正，平均奖励会误奖错误搜索。更糟的是，若所有采样轨迹都在第一轮犯同样的错，再好的 credit estimator 也缺少反事实证据。</p>
+<p><strong>GRPO/GSPO</strong> 从多个完整 rollout 得到组内相对优势，主要解决策略优化稳定性，并不自动区分回合功劳。<strong>GiGPO</strong> 通过相似状态分组得到局部反馈，困难在于长历史很难可靠匹配。<strong>HCAPO</strong> 用后见信息评估已采动作，但依赖现有线性轨迹中恰好出现好坏对照。<strong>IGPO/IGRPO</strong> 利用参考答案似然的变化作为信息增益或扩展信号，和 TreeHCA 的选点思想最近。<strong>TreeGRPO、AEPO、AT²PO</strong> 在树中共享前缀并分配扩展预算，尤其 AT²PO 的熵驱动扩展是最关键的同预算树基线。论文真正填补的 gap 是：若扩展分布有偏，优势估计就必须知道“这些分支为何被选中”，否则采样改进可能反而污染 credit。</p>
+<h2>3. Core Insight：观察、假设、理论边界</h2>
+<p>作者观察到一个决定性现象：<strong>单纯按不确定性探索，不等于探索那些决定最终正确率的节点</strong>。一个工具调用可以很确定却很错误；一个开放式推理 token 可以很不确定却无关紧要。因此，作者用标准答案在当前历史下的平均 log-likelihood 作为“该历史是否更接近正确答案”的训练期代理信号。若完成某个动作并看到工具结果后，这个分数明显下降，就把它的父节点标为值得重新尝试的位置。</p>
+<p>这属于有直觉支撑的<strong>经验代理</strong>，不是严格等价的成功概率。理论层面，真正的 hindsight ratio 可以通过贝叶斯公式连接动作后成功率与父节点成功率；若采样分布被这个比率倾斜，重要性权重应取倒数。作者还证明有限候选池内的精确无偏恒等式。需要区分三个层次：① 理论上准确的条件概率；② 实践中用标准答案似然差代替；③ 以有限、自适应构造的树做自归一化 backup。前者有数学恒等式，<strong>不能由此前提直接宣称后者有限样本无偏</strong>。</p>
+<h2>4. Method Deep Dive：输入到输出</h2>
+<p><strong>Input：</strong> 问题 x、训练期参考答案 y*、固定 rollout 策略 π、终局验证器、Wikipedia 搜索工具，以及 M、K、L、N、阈值 κ。<strong>Step 1：</strong> 从 π 生成 M 条完整“思考→工具→观察→回答”轨迹，保存共享前缀为树。<strong>Step 2：</strong> 对每个已完成回合计算前后参考答案 log-likelihood 差 δ；负值大的节点被视为疑似误导点。<strong>Step 3：</strong> 回到这些节点的父历史，每个父历史重新采 N 个策略动作，执行工具以获得完整候选回合。<strong>Step 4：</strong> 对候选按 exp(δ) 归一化随机选择一个，延长到终局；原有路径保留，树形成同一历史下的可比兄弟。<strong>Step 5：</strong> 每个叶子用终局 0/1 奖励做组内标准化。<strong>Step 6：</strong> 自底向上，用每个子节点 exp(-δ) 的归一化权重回传优势。<strong>Step 7：</strong> 将该节点优势赋给本回合策略生成 token，在 GSPO-token 类裁剪目标下更新参数。<strong>Output：</strong> 一个通过更有信息量的树样本训练过的搜索 Agent。</p>
+<p>关键实现细节：动作与工具观察被合并为 completed child，δ 同时包含搜索结果的作用；但优化 loss <strong>只更新模型生成的 token</strong>，工具返回、问题文本和提示不参与梯度。每次采样期间固定旧策略，避免在同一棵树内混用不同策略概率。扩展时仅让被抽中的候选继续走到终局，避免 N 个候选全部完成带来的额外成本。父历史被重新访问时必须保留准确的工具状态和 token 前缀，否则对照不是同一条件分布。</p>
+<h2>5. 核心公式：从 Bayes 到树回传</h2>
+<p>定义 π(u|h) 为历史 h 下选择动作 u 的概率，Vπ(h)=P(R=1|h)，Qπ(h,u)=P(R=1|h,u)。成功条件的 hindsight ratio 是：</p>
+<p><code>ρ_HCA(h,u;1) = P(u | h,R=1)/π(u|h) = Qπ(h,u)/Vπ(h)</code>。</p>
+<p>因此 <code>log ρ = log Q - log V</code>。大于 1 表示这个动作在成功轨迹中出现得比无条件策略更频繁；小于 1 表示它降低成功机会。实际的 Q、V 无法枚举，使用 <code>ℓ(h;y*) = (1/J) Σ_j log π(y*_j | h,s*,y*_&lt;j)</code>，并令 <code>δ(c)=ℓ(h⁺;y*)−ℓ(h⁻;y*)</code>。这里 J 是参考答案 token 数，s* 是固定的回答诱导指令。<strong>这是代理，不是从概率定理推出来的等式</strong>：如果模型对标准答案自信却仍可能因检索污染而失败，δ 会误导采样。</p>
+<p>候选选择概率 <code>α_i = exp(δ_i)/Σ_j exp(δ_j)</code>。选择偏向“更可能让正确答案出现”的分支，却没有贪心地永远选最大值，因而保留探索。若基础子节点分布为 p(c)，按正分数 s(c) 倾斜后 <code>q_s(c)=p(c)s(c)/Z</code>，其中 <code>Z=E_p[s]</code>，则 <code>E_q[(Z/s(C))f(C)]=E_p[f(C)]</code>。这里 f 可以是某种延续价值；分母 s 正是纠正过度采样高分候选的必要项。</p>
+<p>更重要的是有限池：从 p 独立抽 N 个候选，只随机延长索引 I，且 <code>P(I=i|C_1:N)=α_i</code>，则 <code>E[f(C_I)/(N α_I)|C_1:N]=(1/N)Σ_i f(C_i)</code>。这个恒等式<strong>条件于完整候选池</strong>，不是随便用 1/expδ 就自动获得精确无偏性。实践的树回传使用 <code>w̃(n,c)=exp(-δ_c)/Σ_{c'∈Ch(n)}exp(-δ_c')</code>，以及 <code>A(n)=Σ_c w̃(n,c)A(c)</code>；它是 self-normalized 近似，归一化稳定但有限样本可能有偏。叶子初始化 <code>A(leaf)=(R−μ_R)/σ_R</code>，若组内奖励无方差则置零，避免除零和凭空创造信用。</p>
+<p>更新目标沿用裁剪策略梯度思想：序列比率 <code>r_i(θ)=exp[(1/N_i)Σ_t M_it log(πθ/πold)]</code>，通过 stop-gradient 的序列缩放因子配合逐 token 的 min/clip 项和回合优势 A_it。这里有<strong>两个完全不同的权重</strong>：逆 hindsight 修正“采样哪条支路”的偏差；πθ/πold 的比率控制“参数更新离旧策略多远”。混淆二者会导致错误实现。裁剪 ε=0.2 是报告的 Qwen3 设置；未报告的 KL 系数不能擅自补写。奖励是规则验证的终局 binary outcome，训练期另用标准答案作引导，属于额外监督而非纯无标签在线 RL。</p>
+<h2>6. 手算 Toy Example：一条有错但被补救的搜索链</h2>
+<p>假设问题的正确答案为 A。初始轨迹先搜索“相关人物”，返回无关网页，使答案 A 的平均 log-prob 从 -0.7 变成 -1.5，于是 δ=-0.8；后续偶然找到正确文献，最终 R=1。另一条原始轨迹从同一问题开始但最终 R=0。TreeHCA 会优先回到第一条轨迹中那次失败搜索之前，而不是奖励所有成功轨迹 token。</p>
+<p>在这个父历史下新采两个候选：候选甲检索准确文献，δ=+0.4；候选乙仍检索错误页面，δ=-0.6。它们的 s 分别是 exp(0.4)=1.492、exp(-0.6)=0.549；选择甲的概率约 0.731，乙约 0.269。若选择甲并获得 R=1，不能把“甲被采到 73.1%”解释为原策略本来就偏爱甲；有限池的校正因子是 <code>1/(2×0.731)=0.684</code>，若选乙则是 <code>1/(2×0.269)=1.859</code>。这是<strong>说明性数值，不是论文实验</strong>。树回传时，高分甲的倒数权重较小，低分乙权重较大，以抵消偏向成功分支的采样。若所有叶子都 R=1，σ=0，优势全为零：算法仍可能花探索成本但无法从没有区分度的奖励学习。</p>
+<h2>7. Baseline Deep Comparison：谁最强、为什么</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Baseline</th>
+  <th>核心机制</th>
+  <th>合理性</th>
+  <th>在本文 setting 的不足</th>
+  <th>TreeHCA 的增量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>GRPO / GSPO</td>
+  <td>完整轨迹组相对优势，稳定策略更新</td>
+  <td>简单、成熟、容易扩展</td>
+  <td>好坏回合共用同一终局反馈</td>
+  <td>回到父历史采对照，转成回合优势</td>
+</tr>
+<tr>
+  <td>GiGPO</td>
+  <td>相似环境状态聚合局部信用</td>
+  <td>更接近 step-level 学习</td>
+  <td>长历史状态匹配不可靠</td>
+  <td>共享真实前缀而非跨历史近似匹配</td>
+</tr>
+<tr>
+  <td>HCAPO</td>
+  <td>后见式动作评分，修正线性轨迹信用</td>
+  <td>是 Qwen2.5 链方法最强平均基线 44.3</td>
+  <td>现有样本缺少关键替代动作</td>
+  <td>先补样本再校正选样偏差</td>
+</tr>
+<tr>
+  <td>TreeGRPO / IGRPO</td>
+  <td>树共享前缀；后者按信息增益扩展</td>
+  <td>同样可获取分叉对照</td>
+  <td>扩展与信用估计未按同一倾斜分布配对</td>
+  <td>正向选样与逆向 backup 成对设计</td>
+</tr>
+<tr>
+  <td>AT²PO / AEPO</td>
+  <td>熵引导扩展与树回传</td>
+  <td>Qwen3 同预算强对手；8B AEPO 单跳很强</td>
+  <td>熵高不必然影响答案正确性</td>
+  <td>用结果相关性而非仅不确定性分配预算</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest baseline 必须按 setting 说</strong>：Qwen2.5 链比较是 HCAPO（44.3）；Qwen3-4B 的多跳是 AT²PO（47.62），单跳 AT²PO（55.55）；Qwen3-8B 多跳最强已发表比较是 AEPO（48.62），单跳 AEPO（57.94）。不能把单个基线在所有表格中一概称为最强。</p>
+<h2>8. 实验设置与指标教学</h2>
+<p><strong>RQ1：补采样是否比普通链/熵树更有用？</strong> 三个骨干 Qwen2.5-3B-Instruct、Qwen3-4B、Qwen3-8B；七个 QA 集：多跳 HotpotQA、2WikiMultihopQA、MuSiQue、Bamboogle；单跳 Natural Questions、TriviaQA、PopQA。搜索 Wikipedia 索引，每次工具调用返回 top-3 段落。Qwen3 训练：多跳在 HotpotQA 250 steps，单跳在 NQ 200 steps；每条最多 6 次工具调用、6192 个回答 token；AdamW、LR 1e-6、训练 batch 64、PPO minibatch 8、prompt 2000 tokens、M=10、K=6、L=2、每父候选 N=2。Qwen2.5 实验 200 steps、最多 4 turns、rollout 512、阈值 κ=-0.14；具体协议见论文附录。对照中部分数值来自既有论文而非同一代码重新训练，解释差值时须谨慎。</p>
+<p><strong>EM (Exact Match)</strong>：抽取答案标准化后与标注答案完全一致的比例，越高越好。它易于自动化、减少评委偏见，但对语义等价表达、别名、部分正确较苛刻。<strong>F1</strong>：按答案 token 的 precision/recall 调和平均，越高越好；它能容忍部分重叠，却未必验证事实链是否可信。<strong>Weighted Avg EM</strong>：按各测试集样本数加权，不能误当七个数据集的简单平均；大测试集支配总分。<strong>训练 wall-clock</strong>：同硬件的真实训练耗时，是系统成本而不是 GPU 显存或 rollout 数量的同义词。<strong>三 seed 均值±标准差</strong>：描述重复训练变异，不是显著性检验；没有配对检验不能把小于 1pp 的差距直接写成统计显著。</p>
+<h2>9. Results Deep Dive：八个定量证据与反证</h2>
+<ol>
+<li><strong>Table 1</strong>：Qwen2.5 七集平均 EM，TreeHCA 44.9、HCAPO 44.3，提升 <strong>+0.6pp</strong>。这支持整体改善，但幅度小，且不能凭均值证明每项任务都有提升。</li>
+<li><strong>Table 1 的反例</strong>：Bamboogle 上 HCAPO <strong>64.5</strong>，TreeHCA <strong>32.4</strong>，差 <strong>-32.1pp</strong>；该列明显异常，不能在摘要中省略。此处应复核评估协议、数据切分或表格录入，不能武断归因。MuSiQue 两者均 <strong>14.8</strong>，说明不是所有困难任务都受益。</li>
+<li><strong>Table 3，4B 多跳</strong>：TreeHCA <strong>48.52</strong> 对 AT²PO <strong>47.62</strong>，+0.90pp；单跳 <strong>56.38</strong> 对 <strong>55.55</strong>，+0.83pp。胜出但优势有限。</li>
+<li><strong>Table 3，8B 多跳</strong>：<strong>50.25</strong> 对最强 AEPO <strong>48.62</strong>，+1.63pp；单跳 <strong>58.75</strong> 对 AEPO <strong>57.94</strong>，+0.81pp。模型增大后多跳提升更明显，但不能推出单调 scaling law。</li>
+<li><strong>Table 3 的任务弱项</strong>：4B Bamboogle，TreeHCA <strong>53.60</strong> 低于 AT²PO <strong>55.20</strong>；4B TriviaQA 66.61 高于 AT²PO 64.94，但 8B MuSiQue 24.50 只略高于 GSPO 24.35。优势具有任务异质性。</li>
+<li><strong>Table 4 成对消融</strong>：Hindsight+TreeHCA credit <strong>51.76 EM / 65.88 F1</strong>；Hindsight+AT²PO credit <strong>49.60 / 62.74</strong>，差 <strong>+2.16 EM / +3.14 F1</strong>，直接支持“credit 与探索要匹配”。</li>
+<li><strong>Table 4 的交互作用</strong>：固定 TreeHCA credit，Hindsight 51.76、Entropy 51.17、Random 49.02；但固定 AT²PO credit 时，Entropy 50.78 <strong>高于</strong> Hindsight 49.60。说明不是“hindsight 搜索普遍更好”，而是与相应 backup 联合更好。</li>
+<li><strong>Table 5/9 成本</strong>：4B 多跳 <strong>48.52±0.75</strong>、8B <strong>50.25±1.27</strong>（三 seed）；8×H200 上 TreeHCA 34.40/36.20 小时，对 AT²PO 31.50/32.58 小时，分别多 <strong>9.2%/11.1%</strong>。更强正确率不是免费的 sample-efficiency 胜利；论文没有证明等 GPU 小时下仍占优。</li>
+</ol>
+<h2>10. Table/Figure Reading 与机制验证</h2>
+<p><strong>Figure 1</strong> 是最关键的概念图：左侧一个低分历史分叉成保留原路径与新路径，右侧叶子结果经逆分数回传；图是算法解释，不是效果证据。<strong>Figure 2</strong> 把实际的 N=2 候选、随机选择与完整延长画清楚，注意不是每个候选都完整 rollout。<strong>Table 3</strong> 按骨干、单跳/多跳分组；若只挑最大值会忽略不同任务、不同模型和数据集大小权重。<strong>Table 4</strong> 才是最接近机制检验的 2×2 交叉消融，明确证明探索与 credit 之间存在交互。<strong>Table 5/9</strong> 联读才能区分精度、训练波动和代价。消融是有控制的干预，但只能支持特定训练协议中的模块因果贡献，不能证明 δ 是真实因果信用。</p>
+<h2>11. Claim vs Evidence、Contribution 与 Limitation</h2>
+<p><strong>Authors Claim</strong>：统一 hindsight-guided exploration 与 inverse-hindsight credit，使多轮 Agent 获得更好训练信号。<strong>Experiments Actually Show</strong>：在指定 Wikipedia 搜索问答、三 Qwen 骨干、七个集上平均 EM 优于对照，交叉消融表明配对有收益，理论证明的是规定采样分布下的变换恒等式。<strong>What Is Not Proven</strong>：参考答案似然就是成功概率；有限自适应树 backup 完全无偏；跨工具/网页/代码执行等开放环境可泛化；在相同 GPU 小时下必然胜出；所有数据集都有改善。</p>
+<p><strong>Contribution 1 [New Mechanism]</strong>：低 hindsight score 定位并补采样共同历史；借鉴信息增益但把“需要对照的父节点”明确化。<strong>Contribution 2 [New Objective/Estimator]</strong>：将逆倾斜采样校正与树优势回传配对；精确有限池恒等式是重要理论澄清，实用自归一化仍是近似。<strong>Contribution 3 [New Empirical Finding]</strong>：探索规则与 credit 规则的交互作用显著于消融；这比“平均提高 0.9pp”更值得借鉴。不是新 benchmark，也不是重新发明 GSPO。</p>
+<p><strong>作者承认/可直接核实的限制</strong>：额外 rollout 与训练时间；答案似然代理依赖参考答案；不同种子/任务变动。<strong>额外限制</strong>：搜索工具反馈可带噪声；高分候选倾斜可能降低尾部探索多样性；答案长度与 token 化改变 ℓ 的尺度；对模型原本就知道答案的问题，δ 可能奖励不检索；若所有叶子奖励一致，学习信号消失；代理误差与 self-normalized 权重可能累积偏差。对奖励攻击尤其需要防止 Agent 通过格式匹配或答案泄漏提高 ℓ 而非真正找到证据。</p>
+<h2>12. Reproduction View：最小可开工实验</h2>
+<p>官方代码已有链接，但此处没有声称已本地运行。推荐先用 <strong>Qwen2.5-3B-Instruct + HotpotQA 的小子集</strong> 验证结构而非直接复刻 8×H200 的 34 小时训练。代码拆为 <code>rollout.py</code>（保存完整回合与工具结果）、<code>score.py</code>（teacher-forced 标准答案 logprob、δ）、<code>branch.py</code>（阈值与父节点选择、N=2 候选、按 expδ 抽样）、<code>backup.py</code>（叶子标准化、逆权重反向拓扑回传）、<code>loss.py</code>（mask 工具 token、GSPO ratio）、<code>evaluate.py</code>（EM/F1、工具次数、训练耗时）。建议固定 seed=42，先跑 100 个问题、每题 5 条初始轨迹，记录每个父节点的 δ、候选概率、选择索引、叶子奖励，检查所有权重之和为 1。</p>
+<p><strong>第一项单元测试</strong>：给定两个候选 s=(2,1)，在模拟中按 α=(2/3,1/3) 采样，验证 <code>f(C_I)/(2α_I)</code> 的样本均值收敛到 <code>(f1+f2)/2</code>；再故意去掉逆权重，观察偏差。<strong>第一项训练实验</strong>：固定相同采样预算，比较 Hindsight+TreeHCA、Entropy+TreeHCA、Hindsight+AT²PO；主要输出 EM/F1、单位 GPU 小时增益、每题有效不同工具结果数。敏感点是 κ=-0.14、候选 N、teacher forcing 模板、工具结果的确定性、共享前缀复制、σ_R=0 的处理。最先核对论文 Table 4 的相对排序，而不是强行追逐绝对 51.76。</p>
+<h2>13. Research Value 与两条 Migration</h2>
+<p><strong>Baseline Potential：高</strong>，是同一搜索问答环境的强树 RL 对照。<strong>Migration Potential：高</strong>，采样偏差与 credit 耦合可迁移到工具调用和多 Agent。<strong>Systems Potential：中</strong>，共享前缀、复用工具结果、按预算扩展可能减少重复调用，但论文未证实推理加速。<strong>Attack Potential：高</strong>，可对 δ 的代理正确性设计证据污染攻击。<strong>Evaluation Potential：高</strong>，可测“真正关键的动作被选中多少”。<strong>Benchmark Potential：中高</strong>，反事实工具结果可构造 credit 校验集。<strong>New Paper Potential：中高</strong>，需要突破参考答案依赖与校正偏差才有独立贡献。</p>
+<p><strong>Migration A：Agent Memory / Continuity 的因果回溯。</strong> Original Problem：多轮 Agent 的工具历史冗长，错误记忆污染后续规划。Transferable Mechanism：在共享历史节点补采样，并对选择概率校正。New Research Question：哪些记忆写入/检索真正提升后续任务成功，而不是仅提高答案似然？Method Modification：把 action 改为 <code>write / retrieve / ignore memory</code>，把 δ 改为验证器成功率差的近似，加入 memory-write 成本。Minimum Experiment：在 LoCoMo 或 LongMemEval-S 中抽 200 个多轮查询，冻结同一 3B/4B 模型；每个查询构造原记忆、删去最近一条记忆、替换为候选摘要三个分支；每分支同工具预算跑 3 次；记录 EM、token 成本、检索次数、污染传播率；与 FIFO、向量相似度、entropy selection、随机选择比较。Model：Qwen3-4B。Dataset：LoCoMo/LongMemEval-S。Baseline：普通检索、entropy 分叉。Metric：正确率、有效记忆使用率、成本、错误传播。Expected Contribution：<strong>验证器驱动的 memory credit</strong>。Risk：反事实分支不满足同分布；Collision Risk：与记忆价值估计、trajectory influence、HCA/IGRPO 相关研究重合，投稿前必须系统查新。</p>
+<p><strong>Migration B：无参考答案的工具调用 RL。</strong> Original Problem：线上 Agent 没有 y<em>，不能 teacher-force 答案。Transferable Mechanism：保留“结果相关选点 + 逆概率校正”的配对，不保留答案似然这个具体代理。New Research Question：能否用可执行的中间验证（网页引用是否真实、代码单测是否通过）替代 y</em>？Method Modification：将 δ 定义为前后可验证约束通过率的变化，用 critic 估计低置信历史，再按已知 α 修正。Minimum Experiment：取 100 个 SWE-bench Lite 任务，固定相同工具调用预算与 2 次扩展/任务；对每个失败测试点在上一编辑动作处分叉 2 个候选补丁，执行隔离测试；比较随机、熵和 verifier-delta 三种分叉；记录 pass@1、tests passed、token/GPU hour、选择偏差与估计方差。Model：同一开源 coding model。Dataset：SWE-bench Lite。Baseline：GRPO、随机树、entropy tree。Metric：resolved rate、成本、branch diversity、critic calibration。Expected Contribution：不依赖标准答案的 agentic credit。Risk：测试通过可被 reward hacking；Collision Risk：test-guided search、verifier RL、TreeHCA/AT²PO 已覆盖部分构件，创新点应落在校准与鲁棒性。</p>
+<p><strong>Attack/Verification Lens</strong>：可构造“正确答案高似然但证据为假”的搜索结果，比较 δ 与真实成功概率的相关性；对照无工具与有工具输出检验 Agent 是否只是利用参数知识；按历史位置测 branch selection 的 recall@K；用逆概率权重的有效样本量 ESS 测方差爆炸。只有这些测试成立，才能把信用分配从“更高 EM”推进到“更可信的因果机制”。</p>
+<h2>14. 如果只记住十句话</h2>
+<ol>
+<li>多轮 Agent 的终局奖励无法区分中途好坏决策。2. 仅换 credit estimator 但不补反事实轨迹，仍缺信息。3. TreeHCA 用参考答案 logprob 下降找回溯节点。4. 它从共同父历史采多个候选，仅延长被抽中的分支。5. 高分分支更常被抽到，回传必须逆权重校正。6. 有限池校正有严格恒等式，实际自归一化树回传仍是近似。7. 最重要的证据是探索×credit 的交叉消融。8. 8B 多跳平均 EM 50.25，对 AEPO 48.62。9. 训练时间比 AT²PO 多约 9%–11%，且某些任务明显退步。10. 最值得迁移的是“采样机制与估计器成对设计”，而非固定的答案似然公式。</li>
+</ol>
+</section><section class="article" id="paper2"><h1>Paper 2 · CORAL-KV：视频生成的 KV 缓存，不必每层从零保存</h1>
+<blockquote>
+<p><strong>基本信息</strong>：Albert Ge、Akash Haridas、Utkarsh Saxena、Ruijing Yang、Ian Colbert、Frederic Sala、Vikram Appia、Emad Barsoum；AMD 与 University of Wisconsin–Madison。arXiv:2610.12514v1，2026-10-07 提交；目前核实为预印本，未确认正式发表。论文：<a href="https://arxiv.org/abs/2610.12514">arXiv</a> · <a href="https://arxiv.org/html/2610.12514v1">HTML 正文与附录</a>。<strong>代码状态：作者在 Reproducibility Statement 中写“将发布代码和评估数据”，本次未核实到可用官方仓库，不能写成已开源。方向：Video Acceleration × KV Cache / Efficient Inference；近 7 日新论文。</strong></p>
+</blockquote>
+<h2>1. 一句话定位与人话版</h2>
+<p><strong>定位</strong>：CORAL-KV 把自回归视频生成中的逐层 KV 缓存视为可预测的相关信号，而非彼此独立的数据块，通过跨层预测与低比特残差编码降低历史视频缓存占用，同时减轻压缩误差造成的时序断裂。</p>
+<p>生成长视频时，模型会反复关注以前帧留下的 key/value（KV）表示。若每层、每个历史 patch 都按 BF16 保存，缓存很快变成几十 GB。常见的 QVG 方法会在每个层内把相似向量聚类，再用低比特保存偏差，但视频越长，早期小误差越可能累积成脸部变形、结构漂移，甚至在“一个缓存块刚被压缩后”的首帧出现明显跳变。CORAL-KV 的出发点是：相邻 Transformer 层对同一批历史 token 的表示有很强线性相关性，所以不必每层都完整存 K/V。先用上一层<strong>已重建</strong>的 K 预测这一层 K，再用当前层重建 K 和上一层重建 V 预测当前 V，真正需要存的只是预测残差。为了避免 dense 预测器自身太大，采用每个 head 的 block-diagonal 加跨 head low-rank；残差经 Hadamard 变换和 2-bit EDEN-2 编码。实验中，MAGI-1 的 reusable 版本以 0.99GB 缓存达到 31.09dB PSNR，而 QVG-4 是 1.58GB、26.14dB。<strong>它证明的是更好的显存—保真度折中，而不是视频生成时间被大幅加速。</strong></p>
+<h2>2. Background：为什么视频 KV 与普通 LLM 不完全相同</h2>
+<p>自回归视频扩散模型不是一次性生成整段视频，而是按时间块推进：生成当前块时，attention 要读前面已生成块的历史 K/V。若层数 L、每层 K/V 通道宽 C、保留的 patch token 数 T、BF16 每元素 16 bit，那么理论存储量 <code>M_BF16 = 2×L×T×C×16 bits</code>。其中前面的 2 来自 K 和 V，T 随视频长度增长；视频分辨率越高，每帧 token 越多，存储负担越大。论文举例：HY-WorldPlay 285 帧、近 720p 的完整历史 BF16 缓存需要 <strong>46.71GB</strong>。这不是模型权重，更不是整进程峰值显存，只是缓存状态。</p>
+<p>一个直观例子：第 29 帧开始首次读取刚压缩的历史块。若先前人物的脸在 KV 中发生微小量化偏差，生成器不一定在当前帧立刻崩坏，但随后多次把错误历史当条件，脸型会渐渐偏离 BF16 参考。QVG 在同一层内找 centroid，适合捕获 token 间相似性；然而如果不同层对相同 token 有冗余，它没有直接利用。另一条路线是 DensityKV 之类的 token selection，直接丢弃不重要位置；这减少 token 数，却改变可见历史。CORAL-KV <strong>保留每个历史位置</strong>，只压缩其数值表示，因此可以与稀疏注意力/选择 token 的方法组合，但组合效果并未在本文系统验证。</p>
+<p><strong>Research Gap</strong> 不只是“再把 4-bit 改成 2-bit”。问题是：如何在保持全历史位置的同时，把层间冗余转化成更小的缓存，并让解码时的预测器足够轻，避免“缓存省了、预测器比缓存还大、生成反而很慢”的系统悖论。</p>
+<h2>3. Core Insight：跨层可预测性与证据边界</h2>
+<p>作者先做线性预测探针，而不是先设计复杂网络。用前一层 K 预测本层 K，HY-WorldPlay 可解释方差约 <strong>94%</strong>、MAGI-1 约 <strong>89%</strong>；相比之下文中引用的 Llama-3.2-3B 类比约 80%。用上一层 V 预测本层 V 的可解释方差分别约 <strong>85%/65%</strong>，但如果把<strong>当前层 K</strong> 也加入 V 预测输入，变成 <strong>97%/82%</strong>。这给出明确的计算依赖：必须先重建当前层 K，才能重建当前层 V。</p>
+<p>在相同 BF16 参数存储下，Figure 2(b)/Appendix Table 5 的离线预测相对 MSE：HY K <strong>0.0669</strong> 对在线 centroid <strong>0.1626</strong>，HY V <strong>0.2618</strong> 对 <strong>0.4445</strong>；MAGI K <strong>0.0080</strong> 对 <strong>0.0162</strong>，MAGI V <strong>0.3806</strong> 对 <strong>0.5226</strong>。作者还在未用于拟合的视频上验证，说明不是简单记忆训练样本。可是这只证明了<strong>给定相邻层状态的经验线性可预测性</strong>，不能推出模型结构中存在已证明的低秩定律；尤其探针实验使用干净前层状态，和实际递归重建时的误差传播不同。本文自己也明确承认缺乏形式理论解释。</p>
+<h2>4. Method Deep Dive：编码、存储、重建、生成</h2>
+<p><strong>Input</strong>：冻结的视频生成模型、离线校准视频的各层 BF16 KV、已满的历史 KV block。<strong>Step 1 — Calibration</strong>：在 32 条 MovieGen Extended 校准视频上收集层间 KV 对，按层拟合 K/V 的线性预测器。<strong>Step 2 — Compact predictor</strong>：预测器由 head 内 block-diagonal <code>D</code> 与跨 head 低秩 <code>AB</code> 相加构成，交替最小化残差平方和。<strong>Step 3 — Encode</strong>：第 0 层没有上一层，用 INT4 anchor 直接保存；对后续层，先用解码端真正可用的<strong>已重建</strong>前层状态做预测，再算真实 K/V 减预测的残差。<strong>Step 4 — Quantize</strong>：将残差每 64 通道做 Hadamard 变换，按 2-bit EDEN-2 二元向量码本量化，另外保存缩放因子。<strong>Step 5 — Store</strong>：仅保存 anchor、残差码、scale、少量元数据与可共享预测器，不保留展开后的 BF16 历史。<strong>Step 6 — Read</strong>：后续视频块需要注意力历史时，逐层解码残差、应用 D+AB、加回预测值，输出 attention 所需的 K/V layout。<strong>Output</strong>：一个在压缩缓存条件下继续生成的视频；不改变主模型权重。</p>
+<p>这条链的依赖顺序至关重要：<code>K̂_(l−1) → K̃_l → K̂_l → [K̂_l,V̂_(l−1)] → Ṽ_l → V̂_l</code>。不能偷用原始 BF16 的 K_l 预测 V_l，因为部署时那份原始状态已经被释放，否则实验会发生信息泄漏。第 0 层 anchor 决定整个递归的起点；过度压缩 anchor 会把误差传给所有上层。reusable 配置在视频间共享离线预测器；video-adapted 配置保留离线低秩项，只对每个当前视频的已满缓存块在线重拟合 head 内 D，质量更好，但增加内存和拟合时间。</p>
+<h2>5. 核心数学：预测残差为何比直接量化有利</h2>
+<p>逐层重建写为：</p>
+<p><code>K̃_l = P^K_l(K̂_(l−1))</code>，<code>K̂_l = K̃_l + Q_R(K_l−K̃_l)</code>；</p>
+<p><code>Ṽ_l = P^V_l([K̂_l,V̂_(l−1)])</code>，<code>V̂_l = Ṽ_l + Q_R(V_l−Ṽ_l)</code>。</p>
+<p>波浪号表示预测值，帽子表示重建值，<code>Q_R</code> 是残差量化/解码算子，方括号表示通道拼接。若预测误差 e 的幅值与分布比原始 K/V 更集中，固定 2-bit 预算就可以更精细地覆盖剩余变化；如果预测器不准，残差仍大，压缩不会自动有优势。<code>P_l(x)=D_l x + A_l(B_l x)</code>：D 是 head 内独立小矩阵，A∈R^(C×r)、B∈R^(r×C) 负责跨 head 的全局关联，r=128 是主配置。K 预测器参数量 <code>H_KV d²+2Cr</code>，V 预测器 <code>2H_KV d²+3Cr</code>，其中 d=C/H_KV；比 dense 的 K:C²、V:2C² 更节省。HY 上参数减少 <strong>13.1×</strong>，MAGI 上 <strong>3.0×</strong>。这里 low-rank 是压缩跨 head 线性映射，不是把缓存 token 直接投影到 r 维存储。</p>
+<p>离线拟合采用交替 block minimization：先固定 AB，以 <code>argmin_D ||DX−(Y−ABX)||²_F</code> 拟合 D；再固定 D，以秩不超过 r 的 <code>argmin_AB ||ABX−(Y−DX)||²_F</code> 拟合低秩项，重复 3 轮。Frobenius 范数把全部校准 token 的平方误差求和；它优化的是 cache-space 重建，不直接优化视频感知质量。Gram 矩阵、最小二乘与低秩分解可能出现条件数问题，复现时需要关注正则化/数值精度，但<strong>不能凭常识替论文添加未报告的正则系数</strong>。</p>
+<p>残差编码：每 64 个通道做正交 Hadamard 混合 H64，缓解少数异常坐标支配量化尺度；每对变换后数值用固定 16 码字 EDEN-2，等价每值 2 bit。另存 scale：K 每 64 个残差值一个 FP8 E4M3 scale，V 每 128 个残差值一个 FP16 scale，二者都对应额外 <strong>0.125 bit/value</strong>，主 reusable 格式总计 <strong>2.125 bpv</strong>（尚不等于完整缓存平均 bpv，因为 anchor、预测器、metadata 另计）。video-adapted 使用不同 scale 配置，不能把两种方案的比特预算混成一组。</p>
+<p>新指标 <strong>QBD</strong> 定义为缓存块刚被压缩后的视频边界突变相对背景突变的强度。对每帧计算 DINO ViT-B/16 归一化嵌入 h_t，相邻余弦相似度 <code>s_t=h_t·h_(t−1)</code>，以整段中位相似度 m 为背景，<code>d(u)=m−min(s_u,s_(u+1),s_(u+2))</code>。将所有压缩边界起点 B 的 d 平均除以非边界起点 I 的 d 平均：<code>QBD = mean_B d / mean_I d</code>。论文再用相同边界位置的 BF16 视频作归一化，<strong>越接近 1 越像无压缩基准；越高说明边界更突兀</strong>。注意 QBD 依赖 DINO 表征与窗口定义，不是逐像素保真，也不直接证明真实人类偏好。</p>
+<h2>6. 手算 Toy Example：两层、两个 head 的缓存</h2>
+<p>假设一个 token 在上一层的 K̂ 为 <code>[1.0,2.0,3.0,4.0]</code>，两个 head 各 2 通道。head 内 D 预测为 <code>[1.1,1.9,3.2,3.8]</code>，跨 head 的 AB 再贡献 <code>[0.1,0.0,-0.1,0.1]</code>，则本层 K̃=<code>[1.2,1.9,3.1,3.9]</code>。真实本层 K=<code>[1.25,1.85,3.05,3.95]</code>，只需编码残差 <code>[+0.05,-0.05,-0.05,+0.05]</code>，而不是保存四个接近 1–4 的大数。若低比特量化/反变换重建残差为 <code>[+0.04,-0.04,-0.06,+0.06]</code>，K̂=<code>[1.24,1.86,3.04,3.96]</code>，逐坐标误差均为 0.01。下一步用<strong>这个 K̂</strong> 和上一层 V̂ 一起预测本层 V，而不是使用真实 K。</p>
+<p>这个例子是机制演示，不是论文的实际 EDEN 码本数值；实际码本、64 通道 Hadamard、scale packing 与 GPU layout 复杂得多。假设每个缓存块有 1 万 token、很多层，即便每值只省十几个 bit，累积节省也很大；但预测器若要为每层保存一个 C×C dense 矩阵，省下的缓存可能被权重吃掉，所以必须同时计算 <code>compressed states + predictors + scales + anchors + metadata</code>，不能只比较 residual bitwidth。</p>
+<h2>7. Baseline Deep Comparison：强质量与强效率是两回事</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Baseline</th>
+  <th>做法</th>
+  <th>为什么合理</th>
+  <th>缺陷 / 适用边界</th>
+  <th>本文改变</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>BF16 full cache</td>
+  <td>不压缩历史 K/V</td>
+  <td>是原始输出与延迟的参照</td>
+  <td>46.71GB HY 全历史、6.77GB MAGI；难扩长视频</td>
+  <td>以较小缓存逼近 BF16 输出</td>
+</tr>
+<tr>
+  <td>QVG-1</td>
+  <td>每块在线拟合一阶段 centroid、低比特残差</td>
+  <td>简单、内存小、在线适应</td>
+  <td>重建误差与边界断裂较大</td>
+  <td>跨层预测而非仅层内聚类</td>
+</tr>
+<tr>
+  <td>QVG-4</td>
+  <td>四阶段 centroid、同类 residual bit budget</td>
+  <td><strong>reusable 配置的最直接 matched baseline</strong></td>
+  <td>HY 13.36GB、MAGI 1.58GB，仍有误差</td>
+  <td>reusable 6.90/0.99GB，PSNR 更高</td>
+</tr>
+<tr>
+  <td>QVG-Pro</td>
+  <td>四阶段且更细残差组</td>
+  <td><strong>质量最强的 QVG 基线</strong>，应与 adapted 比</td>
+  <td>更高缓存与 boundary artifact</td>
+  <td>adapted MAGI 32.47dB 对 28.70dB</td>
+</tr>
+<tr>
+  <td>AQUA-KV</td>
+  <td>dense 跨层预测+残差量化</td>
+  <td>检验跨层预测本身是否已足够</td>
+  <td>HY dense 预测器巨大、延迟开销 +71.7%</td>
+  <td>用 block-DPLR 减参数与运算</td>
+</tr>
+<tr>
+  <td>DensityKV</td>
+  <td>选择保留 token 而非全位置</td>
+  <td>从 token 维度节省缓存</td>
+  <td>可能丢掉关键历史位置</td>
+  <td>保留位置；附录在匹配缓存下 PSNR +3.27–5.11dB</td>
+</tr>
+</tbody>
+</table></div>
+<p>论文的 strongest baseline 必须按目标拆开：<strong>质量对照 QVG-Pro</strong>，<strong>相同 residual bit 分配与延迟对照 QVG-4</strong>，<strong>检验跨层机制是否真的需要紧凑化的对照 AQUA-KV</strong>。不能把 BF16 的“无压缩”视为公平的同显存 baseline。</p>
+<h2>8. 实验设置与 Metrics 教学</h2>
+<p><strong>RQ1：层间预测是否真正优于 centroid？</strong> 两个模型 HY-WorldPlay（285 帧、704×1280、4 denoising steps）和 MAGI-1（192 帧、720×720、16 denoising steps）；32 条校准视频、独立的配置选择集与 <strong>355 条 held-out MovieGen Extended prompts</strong>。HY 每满块 7040 visual tokens，MAGI 每块 12150。HY 保真度评估<strong>仅保留最近 48 latent frames</strong>，但表格的 285 帧全历史缓存容量是按所有已满块累计；这两种场景不可混为“实测在 46.71GB 历史上连续生成 285 帧”。MAGI 使用模型自己的 context 限制。完整视频采用相同 prompt、seed、conditioning，与 BF16 成对比较。</p>
+<p><strong>PSNR</strong>：像素均方误差的对数形式，单位 dB，越高越接近 BF16 参考；提高 3dB 大致对应 MSE 下降约一半，但不等于人类主观质量提高一半。<strong>SSIM</strong>：亮度/对比/结构相似度，越高越好；对局部错位可能敏感。<strong>LPIPS</strong>：深层视觉特征感知距离，越低越好；它不是视频时间一致性的完整测量。<strong>VBench-6</strong>：六个无参考视频质量维度（主体、背景、成像、美感、运动平滑、闪烁），各维越高一般越好，但“更平滑”可能是动作被抹平。<strong>QBD</strong>：压缩边界的突变比，越低/越接近 BF16 的 1 越好，专门补 VBench 的盲点。<strong>Latency overhead</strong>：<code>O_m=(ΣT_method/ΣT_BF16)−1</code>，越低越好；正的 8.7% 代表<strong>比 BF16 慢 8.7%</strong>，不是快 8.7%。<strong>Total cache memory</strong>：包括 codebooks/predictors/scale/anchors 的存储状态，不等于 peak GPU memory。<strong>95% paired bootstrap CI</strong>：以 prompt 为统计单位对配对差值重采样，区间若不含零说明相应比较较稳健，但不替代不同硬件上的外部复现。</p>
+<h2>9. Results Deep Dive：至少十个可核实数字</h2>
+<ol>
+<li><strong>Table 1，HY reusable vs QVG-4</strong>：PSNR <strong>16.98 vs 16.66dB</strong>，+0.32dB；缓存 <strong>6.90 vs 13.36GB</strong>，-48.4%；生成开销 <strong>+8.7% vs +15.3%</strong>（相对 BF16）。这是“少占内存、质量略好、额外开销较低”，而不是绝对加速。</li>
+<li><strong>Table 1，MAGI reusable vs QVG-4</strong>：PSNR <strong>31.09 vs 26.14dB</strong>，+4.95dB；缓存 <strong>0.99 vs 1.58GB</strong>，-37.3%；开销 <strong>+6.8% vs +10.3%</strong>。该模型上的质量提升远大于 HY，说明机制效应与模型几何相关。</li>
+<li><strong>Table 1，MAGI adapted vs QVG-Pro</strong>：PSNR <strong>32.47 vs 28.70dB</strong>，+3.77dB；SSIM <strong>0.913 vs 0.872</strong>，+0.041；LPIPS <strong>0.111 vs 0.162</strong>，下降 0.051；缓存 <strong>1.15 vs 1.73GB</strong>，-33.5%左右。代价是 adapted 开销 <strong>+10.0%</strong>，略高于 QVG-Pro <strong>+9.6%</strong>，不能宣称 adapted 同时在所有效率指标更快。</li>
+<li><strong>Table 1，HY adapted vs QVG-Pro</strong>：PSNR <strong>17.38 vs 17.16dB</strong>，仅 +0.22dB；缓存 <strong>9.74 vs 14.46GB</strong>，-32.6%；开销 <strong>+29.1% vs +17.7%</strong>，明显更慢。它是<strong>最重要的弱项</strong>：在线适配不是免费的质量提升。</li>
+<li><strong>Figure 2(a)/Table 5</strong>：K 跨层预测 explained variance <strong>94%/89%</strong>，为预测残差思路提供直接观测；但 clean-state 探针的相对 MSE 不等于递归量化后的最终视频质量。</li>
+<li><strong>Figure 4/Appendix G.1</strong>：无预测器到 block-DPLR，选择集 HY PSNR <strong>14.14→17.55</strong>（+3.41dB，95% CI [2.76,4.12]），MAGI <strong>25.19→31.99</strong>（+6.81dB，[6.25,7.39]）；两者均 <strong>32/32</strong> 配对胜出。支持预测器有贡献，但这是 32 条 selection prompts，不能当 355 条测试集结果。</li>
+<li><strong>Figure 5/Appendix G.2</strong>：H64 相对 H16，K 残差量化误差在 HY/MAGI 下降 <strong>7.49%/2.96%</strong>，视频 PSNR +<strong>0.69/+0.25dB</strong>；V 误差变化 &lt;0.03%。说明变换的收益主要在 key，且跨模型不同。</li>
+<li><strong>Table 2，MAGI QBD</strong>：QVG-Pro <strong>2.527</strong>，reusable <strong>2.150</strong>，adapted <strong>1.328</strong>，BF16 标准化为 <strong>1</strong>。adapted 接近把 QVG-Pro 的边界异常减半；但是仍没有达到无压缩的 1。</li>
+<li><strong>Table 2，HY 运动平滑反例</strong>：QVG-Pro 的 motion <strong>98.274</strong> 高于 reusable <strong>98.105</strong>，flicker <strong>96.440</strong> 也高于 reusable <strong>95.998</strong>。论文另测得 QVG 的相邻帧变化比 BF16 少 <strong>13%</strong>，更平滑可能只是<strong>运动被抑制</strong>，所以不能只拿 VBench 说 QVG 更好。</li>
+<li><strong>Table 1 的 16-video 内存外推</strong>：HY reusable <strong>102.90GB</strong> 对 QVG-4 <strong>213.82GB</strong>；预测器可共享是关键。但这些是共享参数的内存核算，不是实际同时生成 16 个视频的 throughput 实测。</li>
+<li><strong>Figure 10 长程弱化</strong>：MAGI 在 24–95 帧，reusable 对 QVG-Pro +<strong>2.97dB</strong>，到 144–191 帧只剩 <strong>+1.32dB</strong>，仍为正但缩小；adapted 对应 <strong>+3.74→+3.36dB</strong>。这说明 reusable 长时误差仍在累积，不能写成完全消除漂移。</li>
+<li><strong>Appendix Table 10 非单调</strong>：校准 prompt 数 2/8/16/32，HY PSNR <strong>17.58/18.02/18.59/17.94</strong>，不是“校准越多越好”；MAGI <strong>37.22/37.89/38.06/38.39</strong> 则单调。提示校准分布、模型几何和选择过程会影响最优预算。</li>
+</ol>
+<h2>10. Table/Figure Reading：至少五处值得细读</h2>
+<p><strong>Figure 2</strong> 分三部分：a 的可解释方差验证预测顺序，b 的相对 MSE 排除“只靠 centroid 已足够”，c 的边界帧展示真实失真形态。它既有机制证据，也有定性示例；定性图片不能代替大样本显著性。<strong>Figure 3</strong> 是编码/解码数据流，特别留意当前层 K̂ 进入 V predictor，以及前层必须使用重建值；这两点是复现时最易造成信息泄漏的地方。<strong>Figure 4</strong> 以 PSNR 比较 block-diagonal、low-rank、block-DPLR、dense 与 adapted，支持“head 内+跨 head”互补；附录等内存 Table 8 更严格，MAGI 独立 low-rank 对 DPLR 的差值 <strong>-2.778dB</strong>（CI [-3.240,-2.344]）。<strong>Table 1</strong> 横向同时列 PSNR、SSIM、LPIPS、单视频/16 视频缓存和 latency，必须一起读；不能只截取 PSNR 或显存一列。<strong>Table 2</strong> 让 QBD 与 VBench 并列，说明“平滑度高”与“动作保真”可能冲突。<strong>Figure 10</strong> 按视频时间展开 PSNR 差和 bootstrap 区间，是评估长时漂移比单一平均数更可靠的证据。<strong>Appendix Table 7</strong> 显示 1/5/9 个缓存块的内存曲线：reusable <strong>1.21/4.06/6.90GB</strong>，QVG-4 <strong>1.48/7.42/13.36GB</strong>；第一块受共享预测器固定成本影响，长视频才摊薄成本。</p>
+<h2>11. Ablation、机制性证据与替代解释</h2>
+<p>去掉预测器：PSNR 大降，证明跨层条件重建有用。只保留 head 内 D 或只保留低秩 AB：效果低于二者组合；等内存对照减少了“参数多所以更好”的解释。把 rank 从 16 增至 128：MAGI 离线 PSNR <strong>28.84→31.99dB</strong>；到 rank 256 几乎不再改善，说明不必无限增加 rank。在线更新低秩 AB：质量提升与只更新 D 接近，但拟合耗时 <strong>2.6×</strong>，因而选择更新 head 内 D。把 layer-zero anchor 从 INT4 换 BF16：HY PSNR 反而 <strong>-0.31dB</strong>，MAGI +0.09dB（CI 跨零），不支持“anchor 越精细越好”。把 scale group 从 64 改 128：内存仅降 <strong>2.1%/4.9%</strong>，PSNR 却损失 <strong>0.23/0.82dB</strong>。这些是机制与工程选择的实验证据，不等于发现唯一最优的通用架构。</p>
+<p>还需谨慎解读两个点。第一，offline centroids 对照表明共享预测器优于简单把 QVG 的 centroid 改成离线固定，但不同 residual codec 的 scale 精度也有差异，不能将全部收益归因于 Hadamard。第二，延迟是在 <strong>MI355X</strong> 上 16 个匹配 prompts、相同 attention 实现、两种执行顺序测得；部分方法对照属于不同实验，作者明确不建议跨独立 timing run 直接比较。尤其“16-video memory”只是会计外推，不是 16 路并发 FPS 实验。</p>
+<h2>12. Video Efficiency Breakdown：明确区分容量与速度</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th>Baseline</th>
+  <th>Proposed</th>
+  <th>Change / 结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Frames</td>
+  <td>HY 285；MAGI 192</td>
+  <td>相同</td>
+  <td>不是减少帧数的方法</td>
+</tr>
+<tr>
+  <td>Visual Tokens/block</td>
+  <td>HY 7040；MAGI 12150</td>
+  <td>相同</td>
+  <td><strong>没有 token pruning</strong></td>
+</tr>
+<tr>
+  <td>KV residual bit budget</td>
+  <td>QVG-4 matched residual budget</td>
+  <td>reusable 2.125 bpv residual</td>
+  <td>比较仍须计 anchor/预测器</td>
+</tr>
+<tr>
+  <td>FLOPs</td>
+  <td>Not Reported</td>
+  <td>Not Reported</td>
+  <td>不能宣称 FLOPs speedup</td>
+</tr>
+<tr>
+  <td>HY full-history cache</td>
+  <td>QVG-4 13.36GB</td>
+  <td>reusable 6.90GB</td>
+  <td>-48.4%</td>
+</tr>
+<tr>
+  <td>MAGI cache</td>
+  <td>QVG-4 1.58GB</td>
+  <td>reusable 0.99GB</td>
+  <td>-37.3%</td>
+</tr>
+<tr>
+  <td>HY generation overhead vs BF16</td>
+  <td>QVG-4 +15.3%</td>
+  <td>reusable +8.7%</td>
+  <td>压缩方案之间更省时间，仍慢于 BF16</td>
+</tr>
+<tr>
+  <td>MAGI generation overhead vs BF16</td>
+  <td>QVG-4 +10.3%</td>
+  <td>reusable +6.8%</td>
+  <td>仍是正开销</td>
+</tr>
+<tr>
+  <td>FPS / throughput</td>
+  <td>Not Reported</td>
+  <td>Not Reported</td>
+  <td>没有 16 并发吞吐实测</td>
+</tr>
+<tr>
+  <td>Whole-process peak GPU memory</td>
+  <td>Not Reported</td>
+  <td>Not Reported</td>
+  <td>表格是 stored-cache memory</td>
+</tr>
+<tr>
+  <td>MAGI PSNR</td>
+  <td>QVG-4 26.14dB</td>
+  <td>reusable 31.09dB</td>
+  <td>+4.95dB</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>加速到底发生在哪？</strong> 它主要减少历史缓存的存储容量与搬运压力，而不是减少 denoising steps 或视觉 token 数；解码端反而要执行 D+AB 预测、反 Hadamard、codebook lookup 和 layout conversion。作者实现融合 GPU kernel，以降低这些额外开销。论文没有报告可核实的 end-to-end FPS 增益，也没有证明相对 BF16 的 wall-clock speedup；相反主表都是正 latency overhead。<strong>是否需要 retraining？</strong> 不需要重新训练主视频生成器，但需要离线 predictor calibration；adapted 还需要在线拟合。<strong>是否硬件相关？</strong> 有，GPU kernel/attention layout 和 MI355X timing 不能无条件外推到 H100/RTX 3090。<strong>是否适用于 streaming / agent video？</strong> 存在结构性潜力，尚需验证短块读写、跨模型可预测性、边界时延与峰值 workspace。</p>
+<h2>13. Claim vs Evidence、Contribution、Limitations</h2>
+<p><strong>Authors Claim</strong>：跨层预测+残差编码在更小缓存下提供更高视频保真度、较低边界不连续性。<strong>Experiments Actually Show</strong>：在 HY-WorldPlay 与 MAGI-1、355 个 held-out prompts、匹配 BF16 参考下，PSNR/SSIM/LPIPS、QBD 和部分 VBench 维度支持上述折中；预测器消融、等参数对照与长程曲线支持机制有用。<strong>What Is Not Proven</strong>：全部视频模型都有线性可预测性；无损恢复 BF16 输出；16 并发吞吐改善；整进程 peak GPU memory 按同等比例下降；任意长视频误差不累积；视频语义/物理正确性不受影响。</p>
+<p><strong>Contribution 1 [New Mechanism/System]</strong>：视频 KV 的层间结构化预测 + 残差缓存。<strong>Contribution 2 [New Engineering]</strong>：block-DPLR 以 head 内 D 和跨 head AB 在预测质量与参数成本间折中；融合解码避免 dense predictor。<strong>Contribution 3 [New Metric/Protocol]</strong>：QBD 检测量化块边界的时序异常，并与 BF16 paired fidelity 联用。<strong>Contribution 4 [New Empirical Finding]</strong>：在某些视频模型上层间可预测性很强、视频越长共享预测器越划算。应承认跨层预测、Hadamard、向量量化各自都有先例，创新主要是<strong>在自回归视频缓存中的组合、结构设计与严格评价</strong>。</p>
+<p><strong>Authors' Limitations</strong>：仅两个视频模型和一个 held-out prompt 来源；跨层线性规律无正式理论解释；HY 全历史内存与 48 latent-frame 保真窗口不是同一运行；内存不代表全进程峰值；16 路并发没有 throughput 实测；生成时间在 MI355X 上测得；与 token selection 的组合尚未探索。<strong>Additional Limitations</strong>：在线 adapted 的拟合耗时在短视频场景不划算；解码 workspace 可能引入峰值尖峰；层间误差与 attention 误差耦合会造成长程退化；视觉指标可能忽略物理一致性与语义错误；不同 GPU 的 kernel fusion 可移植性未证实；代码尚未核实可公开获取，完整复现门槛较高。</p>
+<h2>14. Reproduction View：分阶段验证，不要先跑 285 帧</h2>
+<p>建议先做 <strong>KV tensor-only 验证</strong>，不直接复刻昂贵的完整视频：从一段可访问的视频生成器缓存中抓取相邻层 K/V，固定 2–8 个视频作校准，另取 2 个 held-out；用 <code>fit_predictor.py</code> 分别训练 D、AB、D+AB；用 <code>encode_residual.py</code> 对 K/V 计算 residual、Hadamard、码本、scale；用 <code>decode_cache.py</code> 递归重建；用 <code>profile.py</code> 记录每层相对 MSE、压缩字节数、预测器参数、GPU latency 和 peak allocated bytes。<strong>第一个必须通过的单测</strong>：解码器只输入上一层 K̂/V̂ 和存储码，绝不能引用原始 BF16 的当前层缓存；对随机向量检查重建与编码端模拟解码完全一致。</p>
+<p>第二阶段做小型视频生成，固定 prompt、seed、模型版本和生成步数，比较 BF16、scalar INT2、centroid INT2、block-DPLR+INT2、block-DPLR+H64/EDEN；记录每帧 PSNR/LPIPS、每个量化边界 QBD、总缓存/峰值显存、单帧 decode 时间。先尝试 rank=16/64/128、anchor INT4/BF16、scale K:64/V:128；不能把作者未提供的精确 kernel 实现细节当成已知。最先复核 Figure 2 的可预测性和 Figure 4 的消融排序，再挑战主表的 PSNR。关键坑包括 KV head 维度、K/V 依赖顺序、不同模型 latent frame 到 RGB frame 的映射、codebook packing、FP8 E4M3 scale、共享参数是否重复计入内存，以及 BF16 参考输出是否使用完全一致的随机种子。</p>
+<h2>15. Research Value 与两条可执行 Migration</h2>
+<p><strong>Baseline Potential：高</strong>，是视频 KV 数值压缩的强参照。<strong>Migration Potential：高</strong>，层间冗余可迁移至 Video VLM/LLM 推理，但需重新校准。<strong>Systems Potential：高</strong>，可共享 predictor 的多流缓存与 fused decode 适合系统研究。<strong>Attack Potential：中</strong>，可构造高运动/边界压力提示来触发漂移。<strong>Evaluation Potential：高</strong>，QBD 可补全传统 PSNR/LPIPS。<strong>Benchmark Potential：高</strong>，可以建立质量—缓存—时间三轴 Pareto 评测。<strong>New Paper Potential：中高</strong>，需要新增真正的吞吐收益或跨模态普适机制，而不只是复制 2-bit 量化。</p>
+<p><strong>Migration A：Streaming Video VLM 的跨层 KV 预测。</strong> Original Problem：长视频问答随着帧数增加，视觉 KV 占满显存。Transferable Mechanism：利用相邻 Transformer 层 KV 可预测性，仅存 residual。New Research Question：VLM 的视觉 token 与文本 token 是否应使用不同 predictor/bit budget？Method Modification：按 token modality 分桶拟合 block-DPLR，视觉 residual 2/4-bit、文本保留 4/8-bit，query-aware 动态选择；只压缩已完成前缀。Minimum Experiment：选一款可访问的 3B–7B Video VLM；从 100 段视频提取 8/16/32/64 帧输入，每段配 2 个问题；前 20 段校准、后 80 段评估；实现 no compression、uniform INT4、layerwise INT4、block-DPLR+residual 四组；batch=1/4，测 TTFT、TPOT、KV bytes、peak GPU、Video QA accuracy、answer consistency；画质量—延迟—显存 Pareto。Model：开源 Video VLM。Dataset：Video-MME 子集或 LongVideoBench 子集。Baseline：uniform KV quant、token pruning。Metric：准确率、TTFT/TPOT、显存、质量退化。Expected Contribution：模态条件的跨层预测压缩。Risk：视频 VLM 跨层相关性不如生成模型；Collision Risk：AQUA-KV、跨层 KV sharing、VideoMLA 等已有方法，需要先对照再声称新颖。</p>
+<p><strong>Migration B：面向 Agent 视频流的边界感知缓存策略。</strong> Original Problem：Agent 需要持续读取视频，压缩块切换时可能产生短暂语义错误。Transferable Mechanism：QBD 的边界检测 + 可复用预测器。New Research Question：能否在不显著增加平均缓存的前提下，保护关键帧/动作转换边界？Method Modification：维护每块的 residual 误差估计与在线 QBD proxy，触发时将最近一块从 2-bit 升级 4-bit 或短时保留 BF16 anchor；稳定时退回 2-bit。Minimum Experiment：使用 30 个包含场景切换/快速运动的视频，每个分成 8–16 帧 chunk；对相同开源 Video VLM 执行事件问答与动作定位；实现 fixed-2bit、fixed-4bit、QBD-triggered mixed precision、随机升级四组；在同等平均缓存预算下测 event F1、boundary error rate、TTFT/TPOT、峰值显存和平均字节/帧；重点绘制边界前后 5 帧误差曲线。Model：开源 Video VLM。Dataset：带事件时间戳的视频 QA/temporal grounding 子集。Baseline：固定比特、基于 token salience 的升级。Metric：边界准确率、F1、平均内存、延迟。Expected Contribution：针对在线感知的质量风险预算分配。Risk：DINO-QBD 需要未来帧/离线 embedding，不可直接用于实时系统，必须设计因果在线 proxy；Collision Risk：动态量化与 keyframe protection 已有大量研究，独立创新应在可验证的边界指标与实时策略。</p>
+<p><strong>Attack / Verification Lens</strong>：用快速摄像机运动、细小文字、频繁遮挡、人物出入画面、超长持续生成等输入对压缩策略做 stress test；统计边界异常与最终动作理解错误是否相关；构造“PSNR 尚可但事件识别错”的反例；检查 predictor calibration 分布外迁移是否触发系统性失真。若想形成新 benchmark，必须同时报告 cache-only bytes、whole-process peak、FPS/throughput、QBD、质量和硬件型号，避免用理论 FLOPs 代替 wall-clock。</p>
+<h2>16. 如果只记住十句话</h2>
+<ol>
+<li>长视频生成的 KV 缓存随历史 token 增长，HY 示例全历史达 46.71GB。2. QVG 在层内聚类，但层间也存在强冗余。3. CORAL-KV 先预测当前层 K，再用当前 K 与前层 V 预测当前 V。4. 存的是低比特预测残差，不是每层完整 K/V。5. block-diagonal 加 low-rank 防止预测器本身吞掉节省的内存。6. 主 reusable 配置采用 H64、EDEN-2 与约 2.125 residual bpv。7. MAGI reusable 比 QVG-4 PSNR 高 4.95dB，缓存少 37.3%。8. adapted 更准但可能更慢，HY 对 BF16 的开销达 +29.1%。9. QBD 揭示压缩块切换时的时序断裂，普通平滑分数可能掩盖运动坍缩。10. 最值得研究的是跨层预测与动态精度/实时系统结合，并用真实 wall-clock 和峰值显存验证。</li>
+</ol>
+</section><section class="article" id="synthesis"><h1>Cross-Paper Synthesis · 两种“条件性保留”机制</h1>
+<h2>为什么今天选择这两篇</h2>
+<p>检索以 arXiv 2026-10-12 新上架计算机科学列表为入口，并检查 RL、Agent、Video 与 Inference 四条主线。最终优先选 <strong>2026-10-09 提交的 TreeHCA</strong> 与 <strong>2026-10-07 提交的 CORAL-KV</strong>：两者都在最新上架列表中、正文和关键附录可访问，且具备明确的机制、强基线、可核实数字、消融和失败模式。两篇的原始提交日期均早于最优先的 24–72 小时窗口；这是基于机制和证据质量作出的选择，而非伪称它们今天刚提交。两篇都不属于 1–3 个月的 BACKFILL。此期优先深度而非机械覆盖四个方向，因此没有凑齐 RL/Agent/Video/Inference 各一篇。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>比较维度</th>
+  <th>TreeHCA</th>
+  <th>CORAL-KV</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>原始瓶颈</td>
+  <td>终局奖励不能告诉 Agent 哪个回合真正有用</td>
+  <td>长视频历史 KV 占据大量存储且量化误差累积</td>
+</tr>
+<tr>
+  <td>被利用的结构</td>
+  <td>共享历史下不同 continuation 的结果差异</td>
+  <td>相邻 Transformer 层对相同 token 的线性相关</td>
+</tr>
+<tr>
+  <td>核心操作</td>
+  <td>选关键父节点、补采样、逆选择概率校正</td>
+  <td>跨层预测、低秩+分块映射、残差量化</td>
+</tr>
+<tr>
+  <td>额外开销</td>
+  <td>更多 rollout、参考答案 logprob、训练约 +9%–11%</td>
+  <td>预测/解码/可选在线拟合，BF16 相对延迟仍为正</td>
+</tr>
+<tr>
+  <td>机制证据</td>
+  <td>交叉消融与有限池 importance identity</td>
+  <td>explained variance、等内存结构消融、长程 PSNR/QBD</td>
+</tr>
+<tr>
+  <td>最大误读风险</td>
+  <td>“逆分数回传一定无偏”</td>
+  <td>“缓存减少 48% 等于生成加速 48%”</td>
+</tr>
+</tbody>
+</table></div>
+<h2>共同趋势：不是均匀对待每一份历史</h2>
+<p>TreeHCA 不应给每个回合平均分配信用，也不应平均探索所有分叉；CORAL-KV 不应把每层缓存都当成独立不可压缩的对象。两者都在回答“<strong>历史的哪些部分是真正不可替代的信息？</strong>”。前者从任务结果看行动的条件价值，后者从表征预测看缓存的条件残差。共同研究语言是 <strong>conditional information value</strong>：给定已知状态/历史，新增一个决策或表示究竟提供了多少无法从既有信息预测的内容。</p>
+<p>但这只是跨领域概念互补，<strong>不是已被实验证明的统一定理</strong>。TreeHCA 的 importance weighting 面对的是策略采样分布，CORAL-KV 的 residual coding 面对的是数值压缩误差；把两个公式直接合并是类别错误。真正可组合的是评测思想：对“保留/丢弃/补采”的决策建立成本—效果的可测边际价值，并在长时间尺度检验误差如何传播。</p>
+<h2>Combined Research Opportunities：三条方向</h2>
+<p><strong>方向 1：Video Agent 的任务相关 KV 预算</strong>。视频 VLM 可以先用 CORAL 式跨层 residual compression 压缩一般历史，再用 TreeHCA 式分叉试验确定哪些历史片段一旦降低精度会让最终任务失败。最小实验先冻结 VLM，在 100 个视频问答任务中对同一帧块分别使用 2-bit/4-bit/BF16，记录答案是否变化和 cache bytes；以成本相同的随机分配、attention salience、运动强度分配为基线。研究点不是“把两篇方法堆起来”，而是<strong>终局任务收益能否可靠指导缓存精度</strong>。风险是每个候选分支需要重新推理，在线部署未必划算。</p>
+<p><strong>方向 2：Agent 记忆的反事实残差</strong>。把 Agent 已知状态可预测的重复记忆当作可压缩信息，而对无法预测、又影响后续行动的事件提高保留精度。先做离线轨迹实验：用历史摘要预测下一条工具结果，计算残差，再对关键失败回合做 counterfactual retrieval。指标同时看答案 EM、工具成本、错误传播率和记忆 bytes。需严格防止以标准答案信息污染记忆选择。</p>
+<p><strong>方向 3：长程可靠性 benchmark</strong>。TreeHCA 的错误可沿工具链传播，CORAL-KV 的压缩误差可沿视频时间传播。统一的评测框架可以用“发生扰动的时间点—首次输出错误的时间—错误持续长度—恢复概率”刻画传播。Agent 侧用可验证工具结果，Video 侧用压缩边界与动作事件标注；同一报告中分别呈现性能和资源，不做跨任务单一综合分数。</p>
+<h2>Collision / Overlap：必须先查新的近邻</h2>
+<p><strong>TreeHCA</strong> 与 HCAPO、IGPO/IGRPO、TreeGRPO、AT²PO 的重合很直接：hindsight、answer-likelihood、树扩展与 turn-level credit 都不是全新组件。它更独特的是有限池采样分布的显式校正与成对消融。若后续工作只把 score 换成另一个 verifier，很可能与既有工作碰撞。<strong>CORAL-KV</strong> 与 AQUA-KV 的跨层预测、QVG 的低比特视频 KV、QuantWM 的视频量化、DensityKV 的 token selection 存在相邻设计空间；新论文需要拿出明确不同的硬件行为、鲁棒性机制或动态决策，而非只报告另一组 PSNR。<strong>本期两篇之间没有直接相同问题设置或相互否定的核心假设，因此 Strongest Cross-Paper Collision = NONE</strong>；只有“条件性信息价值”的概念交集。</p>
+<h2>阅读与复现优先级</h2>
+<p><strong>第一优先阅读 TreeHCA 的 Equation 8–14、Table 4、Appendix D</strong>：它直接影响多轮 Agent 训练实验设计，尤其值得核对有限池精确校正与实际树回传的差别。若已有 Agent/RL 环境，优先做 100 条轨迹的选择偏差单测和交叉消融。<strong>第二优先阅读 CORAL-KV 的 Equation 1、Figure 2/4、Table 1/2、Appendix F/G</strong>：若具备视频生成模型与显存分析条件，先复现 tensor-only 跨层预测，不急于完整视频。作为强 baseline，TreeHCA 更适合 Agent/RL；作为系统/加速 idea，CORAL-KV 更适合；作为 benchmark/metric 机会，CORAL-KV 的 QBD 与 TreeHCA 的分叉信用校验均有价值；作为 attack/evaluation，优先检查 TreeHCA 的 reference-likelihood 代理污染。</p>
+<h2>来源与核实边界</h2>
+<p>所有论文数值、方法与实验限制均来自各自 arXiv HTML 正文及附录；比较中的百分比差由原表计算，保留了原始 baseline 名称与指标方向。<strong>来源 1</strong>：<a href="https://arxiv.org/html/2610.12828v1">TreeHCA v1 正文、表 1–9、附录 D</a>；<a href="https://arxiv.org/abs/2610.12828">arXiv 摘要页/提交日期</a>；<a href="https://github.com/TheBlackCat22/TreeHCA">官方代码</a>。<strong>来源 2</strong>：<a href="https://arxiv.org/html/2610.12514v1">CORAL-KV v1 正文、表 1–10、附录 F–H</a>；<a href="https://arxiv.org/abs/2610.12514">arXiv 摘要页/提交日期</a>。<strong>当日新上架索引</strong>：<a href="https://arxiv.org/list/cs/new">arXiv cs/new — Monday, 12 October 2026</a>。网页链接需联网才能访问，但本报告的文字、公式、表格和 CSS 均内置，可离线阅读。</p>
+</section><section id="audit" class="article"><h1>Depth Audit / 质量审计</h1><div class="audit"><p><span class="badge">PASS</span> 两篇原始论文 HTML 正文与关键附录均可访问；每篇汉字数分别为 <strong>4900 / 5587</strong>（不计跨论文综述）。</p><p><span class="badge">PASS</span> Method 的输入—步骤—输出、公式变量、toy example、至少 3–5 个 baseline、strongest baseline、实验设置与指标教学均已包含。</p><p><span class="badge">PASS</span> 每篇列出至少 8 个定量现象、至少 5 处 Table/Figure、Ablation、Claim/Evidence、Contribution、Limitations、Reproduction、Research Value、两条可执行 Migration 与 Attack/Verification Lens。</p><p><span class="badge">CAUTION</span> CORAL-KV 的代码仅为“将发布”；未将缓存容量下降误称为 BF16 wall-clock 加速。TreeHCA 有理论精确恒等式，但有限树的实用自归一化 backup 不被写成严格无偏。</p><p><span class="badge">CAUTION</span> 复现计划属于研究建议而非已执行实验；toy examples 为说明性构造；论文未报告的系统指标统一写 Not Reported。</p></div></section><section class="article" id="sources"><h1>Sources / Links</h1><p>原始论文：<a href="https://arxiv.org/html/2610.12828v1">TreeHCA full text</a>、<a href="https://arxiv.org/html/2610.12514v1">CORAL-KV full text</a>；官方代码：<a href="https://github.com/TheBlackCat22/TreeHCA">TreeHCA GitHub</a>；检索索引：<a href="https://arxiv.org/list/cs/new">arXiv Computer Science New Submissions</a>。</p><p>本报告对表格数字的二次计算标记了基线；任何没有正式公开的代码、未报告的指标或未验证的复现结果均不视为事实。</p></section></main><footer>Daily Top Papers Deep Dive · 2026-10-13 · UTF-8 / Offline-readable HTML</footer></body></html>
