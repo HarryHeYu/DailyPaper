@@ -1,0 +1,323 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Deep Dive · 2026-10-14</title><style>
+:root{--bg:#f7f9fd;--fg:#1d2941;--muted:#65758f;--card:#fff;--blue:#2663d6;--line:#dce5f2;--accent:#eaf2ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.92 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+header{background:linear-gradient(115deg,#101d40,#244b91);color:#fff;padding:64px max(20px,calc((100vw - 1050px)/2)) 50px}
+header .eyebrow{font-size:12px;letter-spacing:2px;color:#b6d2ff}header h1{font-size:38px;line-height:1.3;letter-spacing:-.8px;margin:12px 0}header p{color:#d4e1fb;max-width:870px;margin:12px 0}
+.layout{max-width:1080px;margin:auto;padding:26px 22px 100px}nav{padding:24px 28px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 6px 24px #203d7010;margin-bottom:26px}nav h2{font-size:20px;margin:0 0 10px}nav a{display:inline-block;margin:4px 18px 4px 0}
+.paper{padding:30px 44px 40px;margin:26px 0;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 8px 28px #15294c0c;overflow-wrap:anywhere}
+h1,h2,h3{line-height:1.4;scroll-margin-top:22px}section h1{font-size:28px;margin:8px 0 24px;padding-bottom:16px;border-bottom:2px solid #dbe7fb}h2{font-size:21px;margin:38px 0 16px;color:#183d7b}h3{font-size:18px;color:#24508f}p{margin:13px 0;text-align:justify}a{color:var(--blue);text-decoration:none;border-bottom:1px solid #a9c2ff}a:hover{color:#0b3b97}strong{color:#123a74}blockquote{border-left:4px solid var(--blue);background:#f4f8ff;padding:12px 18px;margin:18px 0}code{font:0.91em/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;background:#eef4ff;border-radius:5px;padding:2px 5px;overflow-wrap:anywhere}pre{padding:16px;background:#142340;color:#e5efff;overflow:auto;border-radius:9px}pre code{background:transparent;color:inherit}table{border-collapse:collapse;min-width:650px;font-size:14px;line-height:1.65;margin:18px 0}th,td{border:1px solid var(--line);padding:12px 14px;text-align:left;vertical-align:top}th{background:#edf4ff}tr:nth-child(even){background:#fafcff}.table-scroll{width:100%;overflow-x:auto;margin:16px 0}ul,ol{padding-left:25px}.pill{display:inline-block;background:#e9f3ff;color:#2059aa;padding:3px 12px;border-radius:100px;font-size:13px;margin:0 7px 7px 0}.stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}.stat{background:#ffffff1a;border:1px solid #ffffff38;padding:10px 16px;border-radius:12px;min-width:180px}.stat b{display:block;font-size:23px}.stat span{font-size:12px;color:#d4e1fb}.note{background:#fff6e6;border:1px solid #f4dbad;padding:16px 22px;border-radius:12px;margin-bottom:20px;color:#6d4c16}.toclist{columns:2}.toclist li{break-inside:avoid;margin-bottom:5px}footer{color:#7484a0;text-align:center;margin-top:30px;font-size:13px}@media(max-width:720px){header{padding:35px 22px}header h1{font-size:27px}.layout{padding:14px}.paper{padding:20px 18px}section h1{font-size:23px}.toclist{columns:1}body{font-size:15px}}
+</style></head><body>
+<header><div class="eyebrow">AI RESEARCH RADAR · DEEP DIVE / 2026-10-14</div><h1>Agent 协作边界 × Rollout 纠错学习</h1><p>两篇完整精读：Humanize MLE Agents（HMA）与 Rollout-Time Intervention（RTI）。不追求凑满方向，只追求方法、数学、证据、失败模式和可执行研究迁移。</p><div class="stats"><div class="stat"><b>2</b><span>Deep Dive Papers</span></div><div class="stat"><b>5,730 / 5,924</b><span>每篇中文汉字数（正文统计）</span></div><div class="stat"><b>2026-10-12</b><span>最新已核实 arXiv recent 批次</span></div></div></header>
+<main class="layout"><div class="note"><strong>证据提示：</strong>本文是独立核对原始论文、附录与官方代码后形成的分析。作者实验结果、教学构造案例与建议实验已分别标识；未提供的系统成本或速度指标不做推断。两篇均为 2026-10-09 v1，非 10 月 14 日新提交。</div><nav id="top"><h2>目录 / Contents</h2><div class="toclist"><ol>
+<li><a href="#paper1">Paper 1 · HMA — Agent 会话轮换与 CR-SMDP</a></li>
+<li><a href="#paper2">Paper 2 · RTI — 失败轨迹最小纠错与 RL</a></li>
+<li><a href="#paper3">Cross-Paper Synthesis — 统一框架与科研机会</a></li>
+</ol></div><p><span class="pill">完整中文精读</span><span class="pill">公式与结果</span><span class="pill">复现与迁移</span><span class="pill">可点击论文/代码</span></p></nav><section class="paper" id="paper1"><h1 id="s1-0">Paper 1 · Humanize MLE Agents：为什么让两个原生 Agent 轮换，比持续堆叠上下文更有效？</h1>
+<p><strong>基本信息</strong>：<em>Humanize MLE Agents: Multi-Agent Session Alternation Beyond Single-Agent Limits</em>；Changye Li、Zijian Zhang、Muheng Li、Yiduo Pang 等 15 位作者；清华大学、浙江大学、NVIDIA、MIT。arXiv:2610.13494v1，<strong>2026-10-09 提交，2026-10-12 进入近期列表</strong>；目前核实为预印本，未确认正式发表。 <a href="https://arxiv.org/abs/2610.13494">论文</a> · <a href="https://arxiv.org/html/2610.13494v1">完整 HTML</a> · <a href="https://github.com/humanfia/hma">官方代码</a>。本篇属于 Agent / Multi-Agent，兼具层级 RL 的理论视角，但<strong>没有训练一个新 RL policy</strong>。</p>
+<h2 id="s1-1">1. 一句话定位与人话版</h2>
+<p><strong>定位</strong>：将多个原生编码 Agent 的跨会话交替，建模为保留共享工作成果、重置局部上下文的 semi-MDP，在固定实验与时间预算下研究“何时切换才真正增加可达的优质解”。</p>
+<p>想象让一个编程 Agent 连续六小时参加 Kaggle：它一开始能快速试不同特征、模型与参数，后来往往重复尝试小改动，输出的思考内容也越来越短。给它塞更多经验 Markdown、技能文件和复杂 harness，不一定能救场；模型升级后，这些旧指令甚至可能拖后腿。HMA 不修改任何模型参数，而是让两个使用各自原生工具链的 Agent 轮流接管同一个工作目录。每个会话最多完成五次有效实验，就清空该 Agent 的临时对话上下文，把代码、预测文件、训练结果和历史候选留在磁盘；下一位 Agent 读共享成果继续探索。最后专门留出时间回顾并挑选候选。在 75 个 MLE-bench 任务上，最佳顺序达到 78.2% 的 any-medal，强于六小时最强单 Agent 的 72.4%，也高于此前公开系统的 70.2%。论文的重要性不是证明“两个人总比一个人强”，而是给跨 Agent 接续建立了可检验的状态、终止和预算理论。</p>
+<h2 id="s1-2">2. Background &amp; Research Gap：单 Agent 的长程瓶颈</h2>
+<p><strong>任务本质</strong>不是回答一个问题，而是维护一条实验序列：读数据→写训练脚本→训练/验证→比较 leaderboard 指标→决定下一次实验→保存最佳提交。它同时要求连续性与新鲜探索。传统单 Agent 方案用越来越长的对话历史维持连续性，或依赖自定义 harness 注入 planning、skills、memory、反思模板。这里有两种失败：一是早期决定形成路径依赖，例如过早认定 XGBoost 已足够好，后面只调学习率；二是模型本身升级，旧 harness 仍强制重复模型已能自动完成的步骤。论文称前者为 long-horizon deceleration，后者为 harness staleness。</p>
+<p><strong>具体例子</strong>：某 Kaggle 回归任务，Agent A 已生成特征工程与五折验证脚本，并得到分数 0.80；它继续花两小时反复尝试 0.001 的学习率变化。Agent B 接管时，保留文件、验证结果与 checkpoint，但不继承 A 全部推理噪声；B 可能想到基于时间的验证泄漏检查，使分数到 0.84。之后 A 回来又能基于 B 的发现重新组合特征。真正有效的信息是<strong>可执行且可评估的工作产物</strong>，不一定是上一会话的完整语言上下文。</p>
+<p><strong>研究缺口</strong>：此前 MLE 系统多比较“哪个模型或 harness 单独更强”，较少在严格共享预算下研究两套原生 model–harness pair 的轮换。即使已经有 handoff 系统，也未必量化强弱模型的接入时间、每段实验数量、启动顺序和候选保留是否决定收益。HMA 把这些变成可测的控制变量。</p>
+<h2 id="s1-3">3. Core Insight：观察与因果边界</h2>
+<p><strong>观察一</strong>：六个单 Agent 配置在 0–2 小时与 3–5 小时比较，每次回复的平均输出 token 下降 <strong>29.8%–45.0%</strong>。这说明回复长度与持续改进同步下降，但“token 数=推理质量”并非定理：更精炼也可能代表更高效。因此这只是探索活跃度的代理，而非因果证明。</p>
+<p><strong>观察二</strong>：在 16 任务的 DeepSeek harness 比较中，弱 V4 上 ScienceFlow 25.0% 优于原生 harness 16.7%；强 V4.1 上原生 harness 77.1% 反而优于 ScienceFlow 68.8%、MLEvolve 50.0% 与 ML-Master 37.5%。这支持旧工程脚手架可能失效的经验判断，但模型、预算和系统实现仍会影响结论，不能推广为“所有自定义 harness 都无用”。</p>
+<p><strong>观察三</strong>：共享工作目录可把一次 Agent 运行视为一个完整 option，option 结束时清空私有上下文，仍保留能让下一 Agent 接着做的外部状态。只要 Agent A 能以非零概率制造 B 可利用、但单 Agent 不易到达的状态，就可能产生协同收益。这是作者理论建模的核心，属于<strong>有明确充分条件的数学命题</strong>，并非无条件的普适优势。</p>
+<h2 id="s1-4">4. Method Deep Dive：从输入到最终候选</h2>
+<p><strong>完整流程</strong>：<code>Task + W₀ → 初始化 A/B 原生 Agent → Agent A 完成 ≤k 次实验 → 归档候选/工具结果 → 清空局部 context → Agent B 继续同一 workspace → 循环切换 → 最后 15 分钟交叉复核 → 选最终 Ê</code>。</p>
+<p><strong>Step 1：把原生 Agent 当成不可拆的执行单元。</strong> A、B 不是简单两个不同提示词，而是各自原生模型、CLI、工具、会话管理的组合。论文不要求将两个模型塞进统一 prompt，也不替换其内部 planner。这样更接近真实部署，但带来模型版本、API 计费、工具权限和实验执行速度不一致的混杂因素。</p>
+<p><strong>Step 2：定义共享状态。</strong> 工作空间 W 存代码、数据处理脚本、日志、模型权重、预测文件；保留结果 E 是目前认为最优的提交；c^(u) 是当前 Agent 的私有对话。<code>x=(W,E,c^(u))</code>。一次实验是能被计数的接受结果，不等于一次 token 生成或一个工具调用。应给每个实验不可变 ID、提交路径、指标、时间戳和作者，避免交接后覆盖文件造成候选失踪。</p>
+<p><strong>Step 3：按 option 执行与截断。</strong> 当前 Agent 持续做实验，直到自然结束、累计 k 个接受实验或预算用尽。论文默认 k=5。切换时<strong>不回滚</strong> workspace，只清空上下文，再启动另一 Agent。它保留外部记忆却重置内部注意路径，既不同于把长上下文截断后继续同一模型，也不同于每轮从空目录重来。</p>
+<p><strong>Step 4：把所有候选记入 archive。</strong> 即使最新候选不如历史最好，也不直接删除。论文理论要求最优结果保留，实际系统靠候选归档与最终 review 近似满足；这里是从数学理想到工程实现的重要落差。若不归档，最后一个 Agent 可能误把失败版本当最佳。</p>
+<p><strong>Step 5：留出最终复核。</strong> 总六小时中最后 15 分钟给最后执行者之外的 Agent 检查 archive，选择最终候选；没有可用 review 则回退到最新有效结果。此步不提供隐藏 test score，只能依据允许访问的验证结果和产物质量判断。最后得到可提交文件 Ê。</p>
+<p><strong>潜在失败模式</strong>：实验耗时不均导致 k 次实验对应的真实时间悬殊；上下文重置可能丢失未写入文件的关键知识；两个 Agent 同时修改工作目录会有并发覆盖；某模型对另一个模型的命名约定不熟悉；最后 review 可能错误挑选。论文以顺序轮换降低并发风险，但并未解决所有跨 Agent provenance 问题。</p>
+<h2 id="s1-5">5. 数学对象与公式：CR-SMDP 究竟证明了什么？</h2>
+<p><strong>状态与策略</strong>：x=(W,E,c)，u∈{A,B} 表示活跃 Agent；每个会话是 option <code>oᵢ=(Iᵢ,πᵢ,βᵢ)</code>，分别是可启动状态集、内部策略和终止规则。工作流策略 μ 决定接下来选哪个 option。奖励定义为 <code>rₙ₊₁=q(Eₙ₊₁)−q(Eₙ)</code>，q∈[0,1] 是保留候选质量。这个增量 reward 与最终分数一致且可望远镜求和，但前提是 E 的质量定义一致且保留策略可靠。<strong>HMA 不是用这个 reward 对 GPT/Claude 反向传播</strong>；这是理论分析的量。</p>
+<p><strong>Bellman 关系</strong>：<code>Q^μ(x,o)=r̄ᵒ(x)+Σₓ′Pᵒ(x,x′)V^μ(x′)</code>，<code>V^μ(x)=Σₒ μ(o|x)Q^μ(x,o)</code>。Q 表示先让某 Agent 继续一个会话的预期总改进；V 表示允许调度器选择会话后的预期总改进。semi-MDP 与普通 MDP 的区别在于一个 option 可以执行多个实验，终止才发生上层调度。</p>
+<p><strong>上下文重置算子</strong>：<code>f(W,E,c)=(W,E,∅)</code>。它明确区分保留的外部事实与丢弃的语言上下文，能解释为何“会话连续性”和“上下文连续性”不是同一件事。若重要假设只写在 c 里而没进入 W，f 会造成信息损失；反过来若 W 里有污染性提示或错误脚本，重置也不会自动清理。</p>
+<p><strong>协同超越条件</strong>：设单 Agent 参考家族长期性能上限 <code>U*</code>，选择阈值 τ&gt;U*；假设每个 A→B 周期中，A 至少以 α 的概率进入对 B 有帮助的中间状态，B 再至少以 β 的概率抵达超过阈值的状态。令 a=αβ、初始失败概率 F₀，则 <code>Perf_μ(2km) ≥ τ[1−F₀(1−a)^m]</code>。当 m 增长、a&gt;0 且最优结果保留时，下界逼近 τ。<strong>关键限制</strong>：α、β 的正下界、参考不可达状态和保留性是强假设，论文实验没有逐任务直接估计 αβ，因此定理是充分条件而非对 78.2% 的经验因果解释。</p>
+<p><strong>预算公式</strong>：对目标成功概率 p₀，近似 <code>N_suff≈(2k/a)·ln[1/(1−p₀)]</code> 次实验。例：若 k=5、a=0.1、p₀=0.9，粗略需要 10/0.1×2.303≈230 次实验；这只是示例代入，<strong>不是论文实测成本</strong>。k 越大单周期花费越高，a 也可能随 k 改变，故不能只把 k 调小就声称预算必降。</p>
+<p><strong>截断是否有利</strong>：论文定义 interruption advantage 为重置切换后的价值减去继续当前 Agent 的价值。只有 <code>Δ_NTA(N)+A_μk(N)&gt;0</code> 才能保证截断工作流超过参考上限。若 A 在当前方向正接近重大突破，强制切换会产生负 advantage；这与“频繁切换总更好”正好相反。</p>
+<h2 id="s1-6">6. 完整 Toy Example：六次实验怎样传递信息？</h2>
+<p>设任务是房价回归，初始分数越大越好，六次实验的总预算只是演示。A 第一次用 LightGBM 得 0.70，第二次做目标编码得 0.75，第三次试深树过拟合退到 0.71；archive 保存 0.75。假设 k=3，调度器切到 B。B 不继承 A 的聊天，但在 workspace 看到训练脚本、五折指标和历史 CSV，检查发现 A 随机划分造成时间泄漏，改为时间切分后得到可泛化的 0.73；第二次加外部时序特征达 0.78。B 退出后 A 再接手，结合 A 的目标编码与 B 的时序特征，达到 0.81。最终 reviewer 从 0.75、0.78、0.81 等候选中选择合法且验证最稳的版本。</p>
+<p>这个例子中，B 的 0.73 看似比 0.75 低，但提供了修正验证协议的知识，可能是之后 0.81 的必要中介；只按每次局部分数决定是否保留工作目录会误删关键知识。反过来，若 B 的“修正”实际破坏评价规则，后续所有候选会被污染。要真正归因，需要对照“只切模型不重置”“只重置不切模型”“不共享文件”“保留文件但不传指标”等条件，而非只看最终是否获奖。</p>
+<h2 id="s1-7">7. Baseline Deep Comparison：到底比谁强？</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>对照</th>
+<th>做法与合理性</th>
+<th>在本 setting 的不足</th>
+<th>HMA 改变了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude Opus 5 /goal</td>
+<td>单一强 Agent 使用原生 harness，六小时持续探索；<strong>同预算最强单 Agent</strong></td>
+<td>72.4% medal，长程会话可能减速</td>
+<td>引入 GPT 补充探索、清空上下文，78.2%；机制是跨 option 调度</td>
+</tr>
+<tr>
+<td>GPT-5.6-sol /goal</td>
+<td>强编码模型单独跑完整六小时</td>
+<td>68.0%，中后期改进递减</td>
+<td>Opus/GPT 互补，不是更换 prompt</td>
+</tr>
+<tr>
+<td>ScienceFlow</td>
+<td>自定义科学研究 harness，历史发表的最强公开工作流</td>
+<td>70.2%，但使用 24 小时，且模型和硬件设置不完全相同</td>
+<td>HMA 78.2% / 6 小时；<strong>不能当作严格同模型消融</strong></td>
+</tr>
+<tr>
+<td>MLEvolve</td>
+<td>自演化 ML 工程流程，原文 12 小时</td>
+<td>65.3%，流程复杂且对 backbone 版本敏感</td>
+<td>不动原生 harness，仅在工作流层交替</td>
+</tr>
+<tr>
+<td>NTA</td>
+<td>两个 Agent 自然结束才交接，保留上下文重置逻辑</td>
+<td>伙伴可能直到 5.75 小时仍未参与；但某些顺序反而强于 k=5</td>
+<td>k 截断提前接入，<strong>不保证总分一定更高</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>这里有两个不同的 strongest baseline：<strong>同预算同任务的 Claude Opus 5（72.4%）</strong>最适合判断工作流增益；<strong>公开工作流 ScienceFlow（70.2%）</strong>用于与既有系统对比，但存在模型、时长、实现差异，不能把 8.0pp 完全归因于“切换”本身。</p>
+<h2 id="s1-8">8. Experiment Setup 与 Metrics 教学</h2>
+<p><strong>研究问题 RQ1</strong>：轮换是否超过组成它的两个单 Agent？75 个 MLE-bench Kaggle 任务，难度 Lite=22、Medium=38、High=15。每次六小时、一块 NVIDIA A10、max reasoning effort；主要模型为 Claude Opus 5、GPT-5.6-sol、DeepSeek-V4.1-Flash、Kimi K3、GLM-5.3。使用官方原生 harness，k=5，最后 15 分钟 review。论文主表对单 Agent 提供重复运行均值与标准差；部分调度消融只跑一轮，应区分统计强度。</p>
+<p><strong>研究问题 RQ2</strong>：是否仅在某一强弱配对有用？论文比较五个不同模型对、六个起始顺序配置；把每个组合与两个 constituent 的平均表现比较，也检查是否超过较强 constituent。注意“相对均值 +8pp”与“相对最强成员 +5.8pp”分母不同。</p>
+<p><strong>研究问题 RQ3</strong>：收益是否来自重置、伙伴接入、最后选择？Figure 4 追踪 response tokens 与 medal 随时间；Appendix F 扫 k=1/3/5、起始顺序、自然退出与最终 review。附录单独统计原生会话启动/结束、工具时间与第二 Agent 实际参与，避免把“计划切换”误当“已实际接管”。</p>
+<p><strong>Any-medal rate</strong>：任务最终提交获 bronze/silver/gold 的比例，越高越好，体现“有多少任务达最低可接受性能”，但不代表每个任务提升幅度。<strong>Gold rate</strong>：获得金牌的任务比例，难度更高。<strong>Med+</strong>：超过人类排行榜中位数的比例；<strong>Mean Percentile</strong>：各任务 leaderboard 百分位的平均，反映连续排名而非阈值跳变。<strong>Response tokens/response</strong>：单次模型输出长度的代理，不能单独作为 reasoning quality。<strong>Historical retention</strong>：历史上至少有一个获奖候选的任务中，最终是否仍选到获奖版本；它测的是选优能力，不是搜索能力。所有指标需同时看任务数量、重复次数、预算与模型差异。</p>
+<h2 id="s1-9">9. Results：至少八个数字背后的证据链</h2>
+<p><strong>结果 1（主结果）</strong>：Opus→GPT 的 HMA 78.2%，对六小时 Opus 72.4% 为 <strong>+5.8pp</strong>，对 ScienceFlow 70.2% 为 <strong>+8.0pp</strong>。作者主张流程级协作可超越强单体，数据支持特定 MLE-bench 与模型组合；不能证明任意任务、任意模型均可超越。</p>
+<p><strong>结果 2（高难任务）</strong>：High 子集 HMA 62.2%，两个单体均值 46.7%，为 <strong>+15.5pp（表中四舍五入 +15.6）</strong>。高难度可能更需要互补探索，但样本仅 15 任务，误差会比总榜更大。</p>
+<p><strong>结果 3（弱伙伴也可能贡献）</strong>：GPT→Kimi HMA 70.7%，GPT 单独 68.0%，提升 2.7pp；相对两单体均值 61.1% 提升 9.6pp。若只比较均值会夸大相对最佳单体的价值，必须并列报告两种差值。</p>
+<p><strong>结果 4（最弱配对）</strong>：DeepSeek→Kimi 62.7%，高于较强单体 DeepSeek 的 61.3%，仅 <strong>+1.4pp</strong>；这说明协同存在边际较小的配置，且无法推断所有 pair 都大幅改善。</p>
+<p><strong>结果 5（token 轨迹）</strong>：HMA 后期回复长度保留 86.4%，匹配单 Agent 仅 60.7%，相差 25.7pp；它与更持续的分数增长同向，但并未排除会话长度、模型混合及 prompt 差异。</p>
+<p><strong>结果 6（prefix 与预算）</strong>：k=5 的前缀保留 <strong>97.83%</strong> 已观察收益，只执行约 <strong>73.77%</strong> 原 option 实验数。这是历史轨迹的 prefix 统计，不能直接等同“真实端到端速度提升 1/0.7377 倍”。</p>
+<p><strong>结果 7（重要反例）</strong>：GPT→Kimi 的 NTA <strong>77.3%</strong>，强于 k=5 的 <strong>70.7%</strong>，而 k=1/3 仅 65.3%/66.7%。这明确反驳“固定截断在所有顺序都更好”；强模型占用更多预算时可能收益更大。</p>
+<p><strong>结果 8（交接确实提前）</strong>：GPT→Kimi 的 NTA 到 3 小时只有 17/75 任务出现第二 Agent 回复，HMA 为 55/75；中位首次接入从 5.97 小时提前到 1.89 小时。它证明了调度机制真的改变伙伴参与，而不是只改了任务名称。</p>
+<p><strong>结果 9（保留能力）</strong>：450 次任务运行中，330 次曾产生获奖候选；最终 review 使获奖保留由 311/330=94.2% 到 319/330=96.7%，恢复 8 个奖牌。说明 archive/review 有独立价值，但仍漏掉 11 个历史奖牌。</p>
+<p><strong>结果 10（非 MLE 外推）</strong>：单次 48 小时 kernel 优化达到 878 cycles，比社区榜首 864 cycles 多 14（差 1.62%）；<strong>分数越低越好</strong>，且采用不同判题种子，不应写成“正式获得第十名”或“验证了跨领域 SOTA”。</p>
+<h2 id="s1-10">10. Table / Figure 精读：看见作者没有放大的弱项</h2>
+<p><strong>Table 1（Harness Staleness）</strong>：行是原生 DeepSeek Harness 与三个专用 harness，列是弱/强两个 DeepSeek 版本。最有价值的不是 ScienceFlow 弱模型 +8.3pp，而是强模型 -8.3pp，以及 ML-Master 强模型 -39.6pp。异常在于专用系统给了 12–24 小时而原生只给 6 小时，说明 harness 增益与 backbone、运行时长纠缠；小样本 16 任务也限制结论。</p>
+<p><strong>Figure 2（Long-horizon Deceleration）</strong>：横轴是运行时间，纵轴为每次回复输出 token；六模型后期下降 29.8–45.0%。该图证明“输出长度随时间下降”，不能证明“认知能力下降”。建议复现实验同时测有效新实验率、失败恢复率、重复操作率和单位成本得分改进。</p>
+<p><strong>Table 2（Main Comparison）</strong>：列分 Lite/Medium/High/All、Gold、Med+、Mean Percentile；行先列单体和公开系统，再列六组 HMA。Opus→GPT All 78.2% 最高，但 GPT→GLM Lite <strong>77.3%</strong> 低于 constituent 均值 <strong>78.8%</strong>（-1.5pp），不能把“总体好”误说成“所有难度指标都好”。</p>
+<p><strong>Figure 3（Prefix Retention）</strong>：横轴是前 k 次实验占原 option 实验数比例，纵轴是保留的历史增益比例。k=5 落在高增益保留区，但这是观察性曲线，最重要的真实对照在 Figure 7 和 Table 11：k=5 比 k=1、3 好。</p>
+<p><strong>Figure 4 与 Figure 7（持续探索 vs 截断反例）</strong>：Figure 4 把输出长度与 medal 轨迹放在同一时间轴；Figure 7 进一步按起始顺序和 k 值拆开。前者显示总体相关性，后者显示强模型持续执行有时优于更早交接，因而“切换收益”必须以具体预算、伙伴互补性为条件。</p>
+<h2 id="s1-11">11. Ablation、Claim vs Evidence、Contribution</h2>
+<p><strong>去掉短 cap（NTA）</strong>：伙伴更晚进入；GPT-first NTA 却有 77.3%，说明提前接入不是充分条件。<strong>缩小 cap 5→3→1</strong>：GPT→Kimi medal 70.7→66.7→65.3，频繁切换可能破坏连续优化。<strong>改变起始顺序</strong>：Opus→GPT 78.2%，GPT→Opus 73.3%，差 4.9pp；首发者强弱与占用时间会改变收益。<strong>去掉 final review（固定搜索轨迹）</strong>：历史奖牌保留 96.7→94.2%，说明 review 主要防止最后选错，而不是提升搜索本身。</p>
+<p><strong>Authors Claim</strong>：两个原生 Agent 轮换可以突破单 Agent 参考上限，长程探索活跃度更持久，特殊 harness 随模型变强可能过时。<strong>Experiments Actually Show</strong>：75 个 MLE-bench、六组配对、固定六小时下多数组合有总体 medal 收益，且伙伴接入时间、历史候选保留可量化。<strong>Not Yet Proven</strong>：所有任务或模型组合都获益；输出 token 增加意味着推理质量提高；理论 αβ 在真实运行中满足统一正下界；模型更换与重置各自独立的因果效应；跨平台 API 成本可忽略。</p>
+<p><strong>Contribution 1 — New Empirical Finding</strong>：长程输出长度下降与 harness staleness 的系统测量；发现本身有价值但不是全新模型机制。<strong>Contribution 2 — New Formalization</strong>：用 CR-SMDP、option kernel、参考上限、协同可达性和截断 advantage 描述跨会话轮换，理论条件清晰。<strong>Contribution 3 — New System / Engineering</strong>：原生 Agent + 共享工作目录 + 固定实验 cap + review 的简洁组合；单个部件并非首创，创新更多在统一协议和强实证。<strong>Contribution 4 — New Evaluation Protocol</strong>：对起始顺序、候选保留、伙伴参与时间做分解，值得迁移为通用 agent workflow benchmark。</p>
+<h2 id="s1-12">12. Limitation、复现与科研价值</h2>
+<p><strong>Authors' limitation（论文显露）</strong>：理论需要最佳候选保留和协同可达性；真实工作流不完全满足单调性；固定 k 不是最优策略，有限预算存在启动顺序效应；AOPT 仅一个案例，不能当跨领域平均效果。<strong>Additional limitation</strong>：模型版本随时间变化、云 API 价格和调用限额、不同 tokenizer 的输出长度不可直接比较；共享文件可能引入不可见数据污染；同目录协作难以分离谁贡献了最终结果；最终 review 使用 validation 信号可能过拟合；论文没有在所有配置上做严格配对的同模型重置消融。</p>
+<p><strong>最小复现</strong>：优先打开 <a href="https://github.com/humanfia/hma">humanfia/hma</a>，核对 README、configs、src 与 tests；用可重复的轻量 MLE 任务替代全 75 个昂贵 Kaggle。为每次实验生成 <code>run_id,agent,session,experiment,artifact,validation_score,wall_time</code>；将两个 Agent 顺序运行，分别执行 <code>single-A / single-B / A→B k=5 / B→A k=5 / NTA / same-model-reset</code>，锁定同一数据 split、同一六小时或同一实验数预算，最后只让 reviewer 看验证集指标。<strong>首个最有辨识度的实验</strong>：同模型 reset 与异模型 reset 对比，确定收益是“重置”还是“互补”；再扫 k=1/3/5/∞，画 final score、时间、伙伴实际参与率。注意运行失败后的 workspace 回滚、文件哈希和提交候选不可变性。</p>
+<p><strong>Research Value</strong>：Baseline Potential 高——HMA 是清晰的 orchestration baseline；Migration Potential 高——跨编码/研究 Agent 的连续性是通用问题；Systems Potential 高——可做预算感知动态调度与状态快照；Attack Potential 中——恶意 workspace artifact 会跨 Agent 扩散；Evaluation Potential 高——可定义真实贡献与 handoff tax；Benchmark Potential 高——固定预算跨模型会话协作基准；New Paper Potential 中高——若能证明动态终止优于固定 k，并给出严格对照与可复现成本，有机会形成方法论文。</p>
+<h2 id="s1-13">13. 两个可立即开工的 Migration</h2>
+<p><strong>Migration A · 面向 Coding Agent 的动态 handoff 调度</strong>。<strong>Original Problem</strong>：固定 k 有时损失强模型连续性。<strong>Transferable Mechanism</strong>：CR-SMDP option 终止优势。<strong>New Research Question</strong>：根据最近三次实验收益与重复度动态决定切换，是否在同成本下超过 k=5 和 NTA？<strong>Method Modification</strong>：维护每次实验的 validation gain、相似代码 diff、失败率、当前 Agent 运行时长；拟合轻量二分类器预测 <code>switch_advantage&gt;0</code>，仅当连续两次收益下降且伙伴预计收益较高才切换。<strong>Minimum Experiment</strong>：选 12 个可重跑任务、两种 Agent，六种策略各 3 seeds；统一最多 30 个实验或 2 小时；保存所有 artifact 与日志；先做固定阈值策略，再做 logistic regression。<strong>Model</strong>：两种可访问的 coding agent。<strong>Dataset</strong>：MLE-bench 可运行子集或自建 tabular suite。<strong>Baseline</strong>：single、NTA、k=1/3/5、random switch。<strong>Metric</strong>：any-medal/validation gain、wall-clock、$/success、handoff latency、partner participation。<strong>Expected Contribution</strong>：明确动态终止是否降低交接税。<strong>Risk</strong>：小数据拟合不稳，验证指标噪声。<strong>Collision Risk</strong>：与 adaptive handoff/option termination 文献有重叠，必须强调可复现的跨原生 harness 因果对照。</p>
+<p><strong>Migration B · 可验证的跨 Agent 工作记忆与 provenance</strong>。<strong>Original Problem</strong>：共享 W 保留成果也传播错误。<strong>Transferable Mechanism</strong>：<code>f(W,E,c)</code> 的“保留外部、清空内部”分离。<strong>New Research Question</strong>：带来源和置信度的结构化交接摘要，是否比裸 workspace 更能避免污染且不损失连续性？<strong>Method Modification</strong>：每个候选记录输入哈希、代码 commit、数据 split、指标、失败说明；交接时自动生成只读 manifest，接手 Agent 必须先核验候选而非直接信任前一 Agent 的自然语言总结。<strong>Minimum Experiment</strong>：构造 100 个跨会话任务，其中 20% 注入过期指标、错误文件路径或虚假最优分数；比较无摘要、自由文本摘要、manifest+验证三组，重复 3 seeds。<strong>Model</strong>：任意两种 coding agent。<strong>Dataset</strong>：固定 100 个 repo/ML 工作流样例。<strong>Baseline</strong>：HMA 裸 workspace、普通 handoff summary。<strong>Metric</strong>：错误继承率、最终成功率、token 成本、恢复时间、可追踪率。<strong>Expected Contribution</strong>：从会话连续性升级为“证据连续性”。<strong>Risk</strong>：验证开销大、manifest 不完整。<strong>Collision Risk</strong>：与 AgentGit、provenance memory、workflow versioning 重合，差异必须落在可量化的污染传播与修复机制。</p>
+<h2 id="s1-14">14. Attack / Verification Lens 与十句话记忆</h2>
+<p><strong>Attack</strong>：在共享目录放置带错误标签的“最佳实验”文件，检查后续 Agent 是否盲信。<strong>Black-box probe</strong>：仅观察输出和文件变更，估计伙伴是否真的吸收前序实验。<strong>Robustness</strong>：中断会话、删除日志、伪造验证分数、版本不兼容。<strong>Efficiency stress</strong>：长训练耗时导致 k 次实验跨越全部预算。<strong>Recovery</strong>：要求从失败版本恢复历史最佳。<strong>New metric</strong>：Verified Handoff Utility = 切换后相对同预算不切换的净收益，外加 provenance-preserving rate。<strong>Benchmark</strong>：跨模型、跨工具、跨会话的可验证持续工程任务。</p>
+<ol>
+<li>HMA 的基本单位是一次原生 Agent 会话，而不是一次 LLM token。2. 共享工作目录是持久记忆，临时上下文可清空。3. k=5 是实证选择，不是理论最优常数。4. 78.2% 是 75 个 MLE-bench 任务上的最佳组合。5. 与最强同预算单体相比是 +5.8pp，而非 +8.0pp。6. +8.0pp 是相对另一套公开系统且预算不同。7. 交接可以让伙伴更早参与，但有时会牺牲强模型的连续搜索。8. 论文定理依赖协同可达性和最优结果保留等强条件。9. 最值得复现的是固定 k、自然结束、同模型重置的对照。10. 最值得研究的是<strong>何时切换，以及如何证明接手者真正利用了历史成果</strong>。</li>
+</ol>
+</section>
+<section class="paper" id="paper2"><h1 id="s2-0">Paper 2 · Rollout-Time Intervention：让失败轨迹被“最小纠正”后真正学进模型</h1>
+<p><strong>基本信息</strong>：<em>Rollout-Time Intervention: Unlocking Agentic Reinforcement Learning Beyond Policy Limits</em>；Xi Chen、Ruixue Ding、Zhigaoyuan Wang、Fanrui Zhang、Qiang Zhang 等 12 位作者；Alibaba Token Hub、HKUST (Guangzhou)、Amap。arXiv:2610.13438v1，<strong>2026-10-09 提交，2026-10-12 进入近期列表</strong>；目前核实为预印本。 <a href="https://arxiv.org/abs/2610.13438">论文</a> · <a href="https://arxiv.org/html/2610.13438v1">完整 HTML</a> · <a href="https://github.com/Alibaba-NLP/qqr">官方代码与训练脚本</a>。方向：RL for Agents × Credit Assignment × Off-policy Correction。</p>
+<h2 id="s2-1">1. 一句话定位与人话版</h2>
+<p><strong>定位</strong>：在 on-policy Agent RL 几乎采不到成功轨迹时，RTI 通过训练时的任务规则辅助纠正、分布偏移过滤和 token 级权重，使原模型能从原本学不到的成功行动中更新，而部署时不需要纠错器。</p>
+<p>一个工具 Agent 如果总把“需要用户自己操作的工具”误当成自己能调用的工具，可能八次 rollout 全错。GRPO 的组内奖励全是零，优势也就接近零，模型学不到任何东西。RTI 不直接把标准答案塞进 prompt，而是在训练 rollout 过程中，让同一模型扮演三个角色：Validator 用评分规则发现关键违规，Corrector 在不泄露答案的情况下最小幅度改写当前行动，Verifier 检查是否有越权信息或不可信推理。修正后的行动必须仍是原策略“有可能说出来”的内容：用原始 prompt 重新计算 perplexity，偏移太大就丢弃。成功的干预轨迹只替换失败组中的一个样本，关键纠正 token 再加适度权重。论文报告 Qwen3-8B 在 Navigation 上从 GRPO 的 35.33% 提高到 57.33%，在 Claw-Eval-Hard20 上从 22.50% 到 50.00%。真正的研究点是：<strong>突破探索边界的监督必须同时满足“能成功、无泄漏、可学习”</strong>。</p>
+<h2 id="s2-2">2. Background &amp; Research Gap：为什么纯 on-policy RL 会停住？</h2>
+<p>将 Agent 轨迹写成 <code>τ=[reasoning z₁, action a₁, observation o₁, …, final y]</code>。模型策略 πθ 给出下一段推理或工具调用，环境提供反馈，最终验证器给 0/1 reward。GRPO 对同一任务采 G 条轨迹，利用组内均值和方差形成相对优势。若某个任务对当前模型太难，G=8 条轨迹全错，<code>r_i=0</code>，则 <code>A_i=(0−0)/(0+ε)=0</code>；这批样本不会把模型引向正确策略。重复采样也可能始终被早期同一错误卡住。</p>
+<p><strong>具体失败例子</strong>：用户让客服协助修改运营商账户设置，其中某步只能由用户在手机端完成。Agent 错误地向后台 API 发送“用户端操作”请求，得到错误后仍反复重试。它其实知道工具规则，也会向用户解释步骤，只是早期把控制权归属判断错了。一个合规的“请用户点击设置页面”就能让剩余流程恢复正常。纯 RL 需要随机撞到这条策略；RTI 在训练时把关键错误转成可学习的成功样本。</p>
+<p><strong>旧方法的不足</strong>：SFT 用大量专家轨迹训练，但昂贵且与当前 policy 分布可能脱节；GRPO/GSPO/AEPO 改进 on-policy 优化或熵控制，却无法凭空制造未探索到的成功分支；OPD、LUFFY 引入较强教师或离线成功数据，能解决一部分覆盖问题，但老师自身有能力上限，而且分布差异会使重要性权重不稳定。RTI 关注“用当前 policy 纠错而非直接由大模型代做”，并把可学习性放进筛选门槛。</p>
+<h2 id="s2-3">3. Core Insight：一次小纠正比整条重写更可学</h2>
+<p><strong>作者观察</strong>：很多 Agent 失败不是每个推理步骤都错，而是某个关键工具动作、控制权判断或地名消歧错误，导致后续进入失败循环。只修正决定性一步，模型其余能力仍可发挥。这个观察来自 τ²-Telecom 与 Navigation 的失败轨迹及案例，属于经验观察，不能证明所有 hard task 都只需一步修复。</p>
+<p><strong>第二层 insight</strong>：干预后的轨迹并非从原 rollout prompt 下采样。若 Corrector 因为拿到了隐藏评分规则而写出当前 policy 极不可能产生的回答，强行拿它做 GRPO，既可能泄漏测试信息，也可能造成高方差梯度。因此作者同时要求 integrity gate（是否合规）与 PPL gate（是否在可学习的分布邻域）。这与“教师越强越好”的直觉不同：过强教师给出的优质行动可能离学生太远。</p>
+<p><strong>第三层 insight</strong>：不是纠正文本的每个 token 都同等关键。比如“请您”与“请调用 user-side tool”中，后者决定了控制权归属；RTI 比较 corrected prompt 与原 rollout prompt 对每个 token 的概率，增大那些真正受纠错信息影响的 token 的训练权重。注意这仍是<strong>相关性代理</strong>，不是真正的 causal token attribution；概率差大可能来自措辞变化，而非策略关键点。</p>
+<h2 id="s2-4">4. Method Deep Dive：完整训练流水线</h2>
+<p><strong>完整流程</strong>：<code>Task x → G 条纯 on-policy rollout → 若至少一条成功则普通 GRPO → 若全部失败则启动 Validator → Corrector → Verifier → 原 prompt PPL gate → 继续 rollout 直至终局 → 成功则替换一个失败样本 → 计算组优势 + token reweight → clipped policy update → 新 πθ</code>。</p>
+<p><strong>Step 1：先采一组纯 on-policy 轨迹。</strong> 每个训练 query 采 G=8 条，temperature 0.8；记录生成 token 的旧策略 logprob、工具调用、环境 observation、终局 reward。若有任何成功，完全不启动干预，直接按 GRPO 训练。这一点减少了在容易任务上引入 off-policy 噪声的机会，也让方法成本随失败率变化。</p>
+<p><strong>Step 2：失败组触发 Validator。</strong> Validator 在训练时可读取评价规则或 rubric，用它判断当前动作是否明确违反硬约束。关键是诊断信息与执行 Agent 的可见历史必须分离。它可以知道“用户端工具不能由 Agent 调用”，但不能把隐藏账户值、最终坐标或标准答案直接写入接下来的动作。</p>
+<p><strong>Step 3：Corrector 最小改写。</strong> 输入可见历史、工具 schema、错误草稿和经过处理的诊断，输出修正行动。作者要求风格接近、逐步修复、禁止泄漏和最小干预；例如把错误的 API 调用改成面向用户的操作指导，而不是把整段对话改写成标准答案。这样纠正后的轨迹与当前 policy 仍共享大部分前缀。</p>
+<p><strong>Step 4：Verifier 双重审查。</strong> 检查修正是否满足任务约束、是否泄露了隐藏信息、是否凭空编造原上下文推不出的事实；失败就回退原行动。去掉这个模块后 Navigation Pass@1 反而低于 GRPO，说明“错误纠正器”可以制造比不干预更糟的训练样本。</p>
+<p><strong>Step 5：PPL gate 重新评分。</strong> 将 validator/corrector 的特权信息全部从 prompt 移除，在原始 rollout 条件下计算修正片段的平均 token 负 logprob，取指数得到 perplexity；高于阈值 δ 则拒绝。这里衡量的是<strong>原策略能否合理生成这段纠正</strong>，不是这段纠正的事实正确率；事实性由 Verifier 和终局 reward 负责。</p>
+<p><strong>Step 6：继续环境执行并只接纳成功轨迹。</strong> 被接受的修正进入环境，继续后续步骤；若最终 reward=1，则替换 G 条全错轨迹中的一个。若最终仍失败，不强制加入。替换一个而非整个 group 是为了在原始失败轨迹与成功干预轨迹之间保留相对对照，形成非零 group advantage。</p>
+<p><strong>Step 7：带校准权重的 GRPO。</strong> 对纯 on-policy token 权重为 1；对纠正 token 计算校准 prompt 与原 prompt 的概率比，并限制在 0.8–1.2。对环境 observation token 置 loss mask，不应让模型“学习输出工具返回的文本”。梯度更新后，下一轮仍从没有干预的原始策略开始采样，以检验真正学进模型，而不是让纠错器在部署时永远兜底。</p>
+<h2 id="s2-5">5. 公式教学：Reward、Advantage、KL、PPL、重要性权重</h2>
+<p><strong>GRPO 的组优势</strong>：<code>Aᵢ=(rᵢ−μᵣ)/(σᵣ+ε)</code>。rᵢ 是第 i 条轨迹的 0/1 成功值，μᵣ 和 σᵣ 是同组 G 条的均值与标准差，ε 避免除零。最大化优势加权 logprob 会增加成功样本的生成概率，降低失败样本概率。若全错，μ=σ=0，训练没有方向。RTI 的关键不在于发明新 reward，而是让困难任务组内出现一个可用的 r=1。</p>
+<p><strong>原始 clipped objective</strong>：对每个生成 token 的新旧策略比 <code>ρ_grpo=πθ(token|history)/πold(token|history)</code>，最大化 <code>min(ρA, clip(ρ,1−ε_clip,1+ε_clip)A)</code>；clip 防止单次更新过猛。原论文 Preliminaries 还写了 <code>−β KL(πθ||πref)</code> 的常见正则项，但其最终 RTI Eq.(7) 主要展示带权的 clipped surrogate，不能自动假设每个复现配置都用了同样 KL 系数。KL 惩罚与 clipping 都限制偏离，却不是同一数学对象：KL 约束整体策略分布，clip 只约束采样 token 的局部概率比。</p>
+<p><strong>PPL gate</strong>：<code>PPL_roll(ũ)=exp{−(1/T) Σₜ log π_roll(ũₜ | visible_history,ũ_&lt;t)}</code>。T 是修正片段 token 数，数值越小表示模型越能自然说出该片段。<code>PPL≤δ</code> 才保留。若 δ 太小，正确但稍有新意的策略也被丢弃；δ 太大，离策略太远的修正可能导致不稳定。注意 PPL 是 token 平均概率的指数，<strong>不等于两个完整轨迹分布的 KL 距离</strong>，也不能保证有限方差。</p>
+<p><strong>Reasoning-shift weight</strong>：<code>ρ_cal^t=exp[log π_cal(ũₜ|h,ũ_&lt;t)−log π_roll(ũₜ|h,ũ_&lt;t)]</code>，再做 <code>wₜ=clip(ρ_cal^t,1−ε_cal,1+ε_cal)</code>。这里 π_cal 与 π_roll 可来自<strong>同一模型、不同条件 prompt</strong>；π_cal 带 validator 反馈，π_roll 只有可见历史。比值高的 token 更依赖纠错信息，权重略大；比值低的 token 略小。<code>ε_cal=0.2</code> 意味着权重 0.8–1.2，且 stop-gradient。与常规 off-policy importance sampling <code>π_target/π_behavior</code> 不同，它是用于<strong>突出干预 token 的校准系数</strong>，不应宣称给出了严格无偏估计。</p>
+<p><strong>最终目标</strong>：<code>J_RTI=E[(1/G)Σᵢ (1/|τᵢ|)Σₜ wₜ·min(ρ_grpo Aᵢ,clip(ρ_grpo)Aᵢ)]</code>。与最强 RL baseline 的区别在于<strong>样本分布和 token 权重</strong>，而非把 GRPO 完全换成另一种优化器。理论附录给出 O(1/√K) 的梯度平稳性上界，但假设 smoothness、梯度对齐和干预项二阶矩受控；它不证明实际非凸训练必收敛到更优策略，也不证明对任何 δ 都成立。</p>
+<h2 id="s2-6">6. Toy Example：把“八条全错”变成有效学习信号</h2>
+<p>假设一个 Navigation 任务需要依次经过 A、B、C 三处景点。Agent 查询 B 时拿到两个同名地点，错误地选择离 A、C 都很远的坐标；接下来直接调用 direction，因坐标不匹配，八条 rollout 的 reward 都为 0。原始 GRPO 组优势全为 0。RTI 在第一个误选 B 的位置让 Validator 指出“该 POI 与已知路线区域不一致，需要补充 region 检索”，Corrector 将 <code>direction(A,B_wrong,C)</code> 改成 <code>poi_search(B, region=附近城市)</code>，Verifier 检查没有偷看真实 B 坐标。假设原策略对改写的 PPL=4.2，小于 δ=5，于是执行补查，得到正确 B，最终 direction 成功，reward=1。</p>
+<p>现在组奖励是 <code>[1,0,0,0,0,0,0,0]</code>，均值 μ=0.125，标准差约 0.331，成功轨迹优势约 <code>(1−0.125)/0.331=2.65</code>，失败轨迹优势约 <code>−0.125/0.331=−0.38</code>。在成功轨迹里，<code>region=</code> 和 <code>poi_search</code> 可能得到较高校准比值，clip 后最多 1.2 倍权重；礼貌措辞可能仍接近 1。训练若真正有效，下一轮<strong>不用</strong> Validator 的 Agent 就会主动检查地理一致性。这个小例子展示 reward 稀疏性如何被打破，但 PPL、坐标和优势数字除 G=8 外均为教学构造，<strong>不是论文的实验记录</strong>。</p>
+<h2 id="s2-7">7. Baseline Deep Comparison：谁是最强对照？</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>原机制及合理性</th>
+<th>在本 setting 的瓶颈</th>
+<th>RTI 的机制变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GRPO</td>
+<td>同组采样、相对优势、clipped policy gradient；最干净的 on-policy 基线</td>
+<td>全失败组无正信号</td>
+<td>仅在全失败时制造经验证的成功样本</td>
+</tr>
+<tr>
+<td>GSPO</td>
+<td>改善序列级重要性与稳定性</td>
+<td>稳定优化不等于找到正确动作</td>
+<td>在采样侧引入纠正与 PPL gate</td>
+</tr>
+<tr>
+<td>AEPO</td>
+<td>熵相关调节，鼓励有效探索</td>
+<td>对超出当前探索边界的任务仍可能失败</td>
+<td>关键错误处的外部 rubric 诊断</td>
+</tr>
+<tr>
+<td>OPD</td>
+<td>较强教师对学生蒸馏，产生指导信号</td>
+<td>教师策略和学生有分布差异，教师也可能不会</td>
+<td>同一模型不同角色纠错，减少外部 teacher 依赖</td>
+</tr>
+<tr>
+<td>LUFFY</td>
+<td>混合离线专家与在线轨迹并控制 off-policy</td>
+<td>质量高的专家轨迹不一定可学习</td>
+<td>只接纳近策略、最小纠正、终局成功的轨迹</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest baseline 需要按任务说</strong>：Qwen3-8B 的 Navigation 上 OPD 37.33% 为最强非 RTI RL 对照（GRPO 35.33%）；Telecom OPD 55.26%；Retail LUFFY 71.93%；Airline AEPO 51.00%；Claw-Eval-Hard20 LUFFY 30.00%。在 Qwen3.5-9B 的 Claw-Hard20 上 LUFFY 61.25% 最强。论文将多个模型、多个 benchmark 汇总为“全面优于”时，应以这些<strong>逐列最强值</strong>而非固定 GRPO 作为严格竞争基准。</p>
+<h2 id="s2-8">8. Experiment Setup：数据、模型、协议、成本</h2>
+<p><strong>RQ1：弱模型在复杂工具交互中是否突破 on-policy 上限？</strong> 两个骨干：Qwen3-8B 与 Qwen3.5-9B。五个测试 setting：Navigation、τ²-Telecom、τ²-Retail、τ²-Airline、Claw-Eval-Hard20。训练/测试数量分别是 Navigation <strong>600/150</strong>、Telecom <strong>1148/114</strong>、Retail <strong>563/114</strong>、Airline <strong>271/50</strong>、Claw <strong>160/20</strong>。Navigation 使用高德真实 POI API、3–9 个途经点、最多六轮工具交互，按 origin/destination/waypoints 的精确参数匹配给 reward。</p>
+<p><strong>RQ2：提升是“模型自身学会”还是只靠纠错器？</strong> 比较训练中干预前与干预后 rollout 成功率、训练外独立 evaluation Pass@k，以及干预片段的 PPL 随时间变化。若仅干预后成功率高而原模型无干预评估不涨，说明方法只是训练时外挂，不能宣称能力内化。</p>
+<p><strong>RQ3：三个组件各有什么作用？</strong> 在 Qwen3-8B 的 Navigation 与 Telecom 上分别去掉 Post-Check、PPL gate、token reweight；扫描 δ=0/3/5/20/∞；另用 397B 大模型担任纠错者，与同模型 self-intervention 对比。</p>
+<p><strong>训练配置</strong>：Adam，lr=1e−6、weight decay=0.1、temperature=0.8、G=8、GRPO clip=0.2、calibration clip=0.2；环境 observation token 不计算 loss。作者报告 8×NVIDIA H20、tensor parallel=4 训练，教师基线额外服务在 16×PPU-ZW810E 上。<strong>训练总 GPU 小时、所有模型端到端美元成本与各方法相同成功轨迹数下的严格效率对照未见统一完整披露</strong>，不应推断 RTI “更省算力”。</p>
+<p><strong>重要实现核对</strong>：论文 §5.4 在 Navigation 上选 δ=5，并有“所有实验采用 δ=5”的表述；但 2026-10-14 查到的官方 qqr README 明确列出 <strong>Navigation δ=5，τ²/Claw δ=20</strong>。这可能是代码后续调整、实验配置差异或文字不一致；复现时必须锁定 Git commit、训练脚本实际参数，不能把两者混为同一配置。官方仓库包含 <code>qqr/off_policy/rti/</code>、<code>qqr/examples/navigation/</code>、<code>scripts/navigation/</code>、训练数据与 run 脚本；这比只声称“有代码”更可操作。</p>
+<h2 id="s2-9">9. Metrics 教学：Pass@k 与 Pass^k 不是一回事</h2>
+<p><strong>Pass@k</strong>：对每个任务独立尝试 k 次，只要至少一次成功就算该任务成功，最后对任务求平均。越高越好，反映覆盖面和“多试几次能否做对”。<strong>Pass^k</strong>：同一任务 k 次全部成功才算成功，越高越好，反映重复稳定性。若某任务单次成功概率 p 且各次独立，则理论上 <code>Pass@k≈1−(1−p)^k</code>，<code>Pass^k≈p^k</code>；实际存在任务难度异质性，不能简单由总体 p@1 推算其他 k。</p>
+<p><strong>p@1</strong>：作者四轮评测中 Pass@1 的平均。<strong>avg p@k</strong>：对 k=1..4 的 Pass@k 再平均。<strong>avg p^k</strong>：同理对 all-success 指标平均。三个指标不能混着报：一个模型可能偶尔成功、Pass@4 很高，却每次结果不稳定、Pass^4 很低。<strong>PPL_roll</strong> 越低表示纠正越接近原策略，但不保证更正确；<strong>训练 pre-intervention success</strong> 才更直接衡量能力是否内化。<strong>Claw-Eval task_score</strong>：<code>safety × (0.8 completion + 0.2 robustness)</code>，按阈值判 pass；它含 LLM judge 主观性，不如 Navigation 的精确工具参数完全可验证。</p>
+<h2 id="s2-10">10. Results Deep Dive：十个关键数字与边界</h2>
+<p><strong>结果 1（Navigation, Qwen3-8B）</strong>：RTI 57.33%，GRPO 35.33%，提升 <strong>22.00pp</strong>；对最强 OPD 37.33% 为 <strong>+20.00pp</strong>。这是清晰的工具纠错收益，但仅 150 测试任务、任务来自特定合成地图协议。</p>
+<p><strong>结果 2（Telecom, Qwen3-8B）</strong>：RTI 61.40%，GRPO 36.84%，<strong>+24.56pp</strong>；对最强 OPD 55.26% 为 +6.14pp。这个 setting 正对应用户侧/Agent 侧工具控制权混淆，机制解释比较可信。</p>
+<p><strong>结果 3（Retail, Qwen3-8B）</strong>：RTI 73.68%，最强 LUFFY 71.93%，只有 <strong>+1.75pp</strong>；说明并非每个领域都有大幅收益，原模型已较容易探索成功时 RTI 触发率下降。</p>
+<p><strong>结果 4（Airline, Qwen3-8B）</strong>：RTI 56.00%，AEPO 51.00%，<strong>+5.00pp</strong>；相比 Retail 增益大一些，但并非革命性。若只挑 Navigation、Claw 展示会高估平均效应。</p>
+<p><strong>结果 5（Claw-Hard20, Qwen3-8B）</strong>：RTI 50.00%，GRPO 22.50%，<strong>+27.50pp</strong>；LUFFY 30.00%，<strong>+20.00pp</strong>。20 个 hard task 的样本非常小，且专门挑了 base policy 罕见成功的任务，适合验证边界突破，不适合估计总体部署提升。</p>
+<p><strong>结果 6（Claw-Hard20, Qwen3.5-9B）</strong>：RTI <strong>85.00%</strong>，基础模型 26.25%，<strong>+58.75pp</strong>；最强 LUFFY 61.25%，<strong>+23.75pp</strong>。这是最强相对结果，但训练数据专门针对这 20 个任务合成，不能等同严格跨任务 OOD 泛化。</p>
+<p><strong>结果 7（较强模型已饱和）</strong>：Qwen3.5-9B 在 Telecom 上 base 92.11%，RTI 96.49%，仅 +4.38pp；与 AEPO、OPD、LUFFY 的 96.49% 持平。这说明能力接近天花板时 RTI 优势缩小，不能把它说成所有设置均显著击败 strongest baseline。</p>
+<p><strong>结果 8（Verifier 是刚需）</strong>：Navigation 去掉 Post-Check 后 26.00%，比完整 RTI 57.33% 低 <strong>31.33pp</strong>，也低于 GRPO 35.33%；这不是“少一点提升”，而是干预数据可能伤害模型。</p>
+<p><strong>结果 9（PPL gate 的稳定性）</strong>：Telecom 去掉 PPL gate 后 Pass@1 61.40→54.39（-7.01pp），Pass^4 31.58→18.42（-13.16pp）。后者跌得更厉害，说明过滤分布偏移不仅影响能否偶尔成功，还影响重复可靠性。</p>
+<p><strong>结果 10（Token 权重贡献较小）</strong>：Navigation 去掉 reweight，Pass@1 57.33→55.33，仅 -2.00pp；Telecom 61.40→60.53，仅 -0.87pp。token 归因有帮助，但最大增益来自安全、近策略的成功轨迹本身；应防止把所有效果归因于一个新的 token objective。</p>
+<h2 id="s2-11">11. Figure / Table 深读与 Ablation 解释</h2>
+<p><strong>Table 1（Qwen3-8B 五任务）</strong>：每个 benchmark 有 p@1、avg Pass@k、avg Pass^k 三列。Navigation 的 avg Pass^k：RTI 46.67%；在消融 Table 3 的同一骨干上，完整 RTI 的 Pass^4 为 39.33%，GRPO 为 24.67%。这类全成功指标比单次成功率更能体现稳定性。弱点在 Retail：RTI avg Pass@k=85.09%，LUFFY=84.87%，只 +0.22pp；因此“全面胜出”也可能是微小数值优势。</p>
+<p><strong>Table 2（Qwen3.5-9B）</strong>：强骨干使 Telecom、Retail 接近饱和，RTI 在 Claw-Hard20 的 85.00% 才是最有研究价值的信号。与此同时 Navigation 上 RTI 74.67%，GRPO 71.33%，仅 +3.34pp；跨模型能力边界决定干预的收益空间。</p>
+<p><strong>Table 3（Ablation）</strong>：行是 GRPO、去 Post-Check、去 PPL、去 Reweight、完整 RTI，列是 Navigation/Telecom 的 Pass@1..4 和 Pass^1..4。最强机制证据是去 Post-Check 导致低于 GRPO；最弱增量证据是 reweight 的 Pass@1 变化较小。由于组件相互作用，单项消融差值不等于模块独立因果贡献。</p>
+<p><strong>Figure 3（δ sweep）</strong>：横轴训练步，纵轴 Navigation Pass@4；δ=0 退化为 GRPO，δ=∞ 无过滤但收敛较低，δ=20 波动大，δ=5 最佳。该曲线是超参搜索证据，不意味着所有模型、任务的最佳 δ 都等于 5；尤其需要核对代码配置差异。</p>
+<p><strong>Figure 4/5/6（能力内化与强教师反例）</strong>：Figure 4 将训练中干预前、干预后 Pass@8 与评估 Pass@4 对照，若干预前也上涨才支持内化。Figure 5 的干预 PPL 下降与更丰富的交互轮次分布提供辅助证据，但可能受被选择样本分布改变影响。Figure 6 显示使用更大 397B 教师干预不如同模型 self-intervention，说明<strong>教师能力高不等于学生更可学</strong>；还需要在相同干预接受率和计算预算下做严格比较。</p>
+<p><strong>Ablation 机制归纳</strong>：去 Verifier → 泄漏/幻觉污染，可能负迁移；去 PPL gate → 接纳离策略太远的行为，训练稳定性变差；去 reweight → 仍有成功纠正，但学习焦点分散；δ 过小 → 没有足够纠正样本；δ 过大 → 低概率行动增加梯度噪声。它们分别对应数据正确性、分布可学性、token 贡献权重三个不同问题。</p>
+<h2 id="s2-12">12. Claim vs Evidence、Contribution 与局限</h2>
+<p><strong>Authors Claim</strong>：RTI 能超越当前 policy 的探索能力边界，不依赖强外部教师，并能稳定学到新推理模式。<strong>Experiments Actually Show</strong>：在两种 Qwen 骨干、五类任务和特定训练配置下，独立无干预评估有提升；多个消融与训练曲线支持纠错/过滤的必要性。<strong>Not Yet Proven</strong>：在完全新任务分布中仍能维持同等增益；对隐藏 rubric 绝无信息泄漏；token 权重确实是因果 credit；相同 GPU/美元成本下仍优于所有方法；理论收敛上界足以解释经验优势。</p>
+<p><strong>Contribution 1 — New Mechanism</strong>：仅对全失败组执行 Validator–Corrector–Verifier，并把成功轨迹作为组内一个样本；核心新意是 rollout 阶段的可验证最小纠错。<strong>Contribution 2 — New Training Protocol</strong>：原 prompt PPL 过滤与校准 token 权重，把 off-policy 样本可学习性纳入数据入口；数学部件源于已知重要性比与 clipping，但组合有明确动机。<strong>Contribution 3 — New Empirical Finding</strong>：较强教师未必更好，Verifier 缺失会产生负迁移，且模型能逐渐在无干预条件下成功。<strong>Contribution 4 — New Benchmark/Protocol</strong>：Navigation 的空间锚定多途经点构造与精确参数匹配，便于研究真实工具行为，而非仅评价最终自然语言回答。</p>
+<p><strong>Authors' limitation（从实验边界可见）</strong>：训练依赖可访问的任务规则或 rubric；复杂环境必须有可靠终局评估；强模型对容易任务增益有限；离策略纠正有稳定性风险。<strong>Additional limitation</strong>：Verifier 本身由 LLM 扮演，可能误判泄漏；Claw 采用 LLM-as-judge 且样本只有 20；Navigation 数据由强模型合成并筛选，可能存在模板偏差；修正的 PPL 低不代表真实任务合理；额外的三角色推理会增加 rollout 成本；PPL gate 对低概率但真正新颖的策略存在保守偏见；训练/评估若共享任务模板可能高估泛化。</p>
+<h2 id="s2-13">13. Reproduction View：最小实现与核验点</h2>
+<p><strong>官方入口</strong>：<a href="https://github.com/Alibaba-NLP/qqr">qqr</a> 中 <code>qqr/off_policy/rti/</code> 是诊断、纠错、post-check 和 PPL 参考打分；<code>qqr/off_policy/train_async</code> 是两阶段采样训练入口；<code>qqr/reward_models/utils.py</code> 包含 token reweight；<code>scripts/navigation/run-qwen3-8B.sh</code> 是最明确的复现脚本。需要先匹配 qqr 与 slime 版本，再配置地图 API 与 inspector endpoint。<strong>敏感参数</strong>：G=8、temperature=0.8、δ、ε_cal=0.2、最大工具轮次、修正接受率、是否只替换一个失败样本。</p>
+<p><strong>最小复现版本</strong>：若没有 8×H20，可先不训练完整 Qwen，而是使用 100–200 个可确定判分的本地工具任务和小型开源模型，只验证 <code>all-fail detection → correction → verifier → PPL gate → final success → group advantage</code> 是否能产出合规样本；第二阶段再做 LoRA/小批量 GRPO 更新。<strong>最先跑的实验</strong>：固定 100 个全失败任务，统计 Validator 发现错误比例、Verifier 接受率、PPL 通过率、终局成功率、额外 token/GPU 秒，再比较四个组件组合。<strong>关键验收</strong>：在独立测试集上关闭全部纠错角色后，Pass@1 是否真正上升；若仅训练时成功，不能算能力提升。</p>
+<p><strong>Research Value</strong>：Baseline Potential 高——适合 hard-agent RL 采样策略对照；Migration Potential 高——可迁移到 coding agent 的失败工具调用和 video agent 的错误帧选择；Systems Potential 中高——需要训练期多角色调度和 PPL scoring 缓存；Attack Potential 高——恶意 rubric/validator 可把“纠错”变成后门；Evaluation Potential 高——可测 correction faithfulness、off-policy distance 与 internalization；Benchmark Potential 高——Navigation 精确工具调用易审计；New Paper Potential 中高——若把纠错可学性与因果 credit 区分并建立鲁棒协议，可形成新训练或评测方法。</p>
+<h2 id="s2-14">14. 两条可执行 Migration：跨方向而不是换名复用</h2>
+<p><strong>Migration A · Coding Agent 的因果错误点纠正 RL</strong>。<strong>Original Problem</strong>：代码 Agent 在长任务中一处工具/测试错误导致整条轨迹失败。<strong>Transferable Mechanism</strong>：失败组触发最小干预 + PPL gate + 无干预复测。<strong>New Research Question</strong>：针对 <code>git checkout</code>、单元测试失败、错误依赖安装的关键行动纠正，能否比整条专家轨迹 SFT 更省训练样本？<strong>Method Modification</strong>：Validator 使用可验证 test assertion 和工具调用约束，Corrector 只改一个 tool action，Verifier 禁止直接把 patch 的隐藏标准答案注入。<strong>Minimum Experiment</strong>：选择 200 个小型 SWE 任务，每任务采 8 条；记录首个可验证失败动作；纠错后续跑到单测通过；构建 <code>GRPO / SFT-success / RTI-no-gate / RTI-full</code> 四组，固定总生成 token；LoRA 训练 3 seeds。<strong>Model</strong>：Qwen3-8B 或同级开源 coding model。<strong>Dataset</strong>：可本地复现的 SWE-bench Lite 子集或自建单元测试仓库。<strong>Baseline</strong>：GRPO、成功轨迹 SFT、teacher distillation。<strong>Metric</strong>：独立 task resolved、token/$/success、纠错接受率、原始策略无干预成功率。<strong>Expected Contribution</strong>：验证“局部纠错比全轨迹替换更可学”。<strong>Risk</strong>：测试 oracle 不完整、长轨迹成本高。<strong>Collision Risk</strong>：与 process supervision、SWE trajectory repair 文献相近，必须用“只修一处且保留原策略分布”的因果对照区分。</p>
+<p><strong>Migration B · Video Agent 的视觉决策干预与可学性过滤</strong>。<strong>Original Problem</strong>：视频 Agent 在长视频中选错关键帧，后续 QA 轨迹无法恢复。<strong>Transferable Mechanism</strong>：只在失败轨迹的关键 frame selection 处插入经验证的替代行动，过滤与原策略相差过远的决策。<strong>New Research Question</strong>：纠正一两个 frame/token selection 决策能否改善 Video QA，而无需全量增加帧数？<strong>Method Modification</strong>：把行动定义为下一批要读取的帧索引，Validator 用训练集 temporal grounding 标注诊断遗漏证据，Corrector 从原候选窗口选邻近关键帧，Verifier 禁止直接泄露答案；用策略的帧选择 logprob 或可学习评分代替语言 token PPL。<strong>Minimum Experiment</strong>：取 500 个有时间定位标签的 Video QA 样例，统一每题最多 16 帧；比较 uniform、learned selector、selector+unfiltered correction、selector+gated correction；记录训练时被修正帧比例，测试时完全关闭 oracle。<strong>Model</strong>：开源 Video VLM + 轻量帧选择器。<strong>Dataset</strong>：有证据时间段标注的 Video QA 子集。<strong>Baseline</strong>：均匀抽帧、query-aware selection、无门控纠错。<strong>Metric</strong>：QA accuracy、evidence recall、frames、visual tokens、FLOPs、实际 latency、GPU memory。<strong>Expected Contribution</strong>：把 RL 的可学性约束引入视频信息预算决策。<strong>Risk</strong>：帧选择器概率不校准、视觉证据缺失无法靠小修正补救。<strong>Collision Risk</strong>：与 adaptive frame selection、temporal grounding、video agent reflection 有交叉，需证明训练后无 oracle 的效率—质量 Pareto 改善。</p>
+<h2 id="s2-15">15. Attack / Verification Lens 与十句话记忆</h2>
+<p><strong>Attack</strong>：篡改 Validator rubric 使 Corrector 偷看隐藏答案，测试模型是否学到捷径。<strong>Black-box probe</strong>：训练后只给原始任务，不提供纠错提示，检测是否重现关键行动。<strong>Robustness</strong>：将工具 schema 改名、注入误导性观察、打乱环境回馈顺序。<strong>Efficiency stress</strong>：让绝大多数任务失败，观察三角色干预开销和训练吞吐下降。<strong>Recovery</strong>：训练后再改变 rubric，检查是否只记住旧评分规则。<strong>New metric</strong>：Corrected-Trajectory Learnability = 干预后成功率与训练后原策略成功率之间的差距；差距越小才越可能真正内化。<strong>Benchmark</strong>：可验证工具动作错误点、隐藏规则隔离和跨分布修复。</p>
+<ol>
+<li>RTI 解决的是全失败 rollout 组缺乏正梯度的问题。2. 干预只在全组失败时触发。3. Validator 可用训练期 rubric，但不能把隐藏答案交给 Corrector。4. Verifier 缺失会让性能低于纯 GRPO。5. PPL gate 衡量修正对原策略是否“可说出来”，不是事实真伪。6. Token 权重是校准比值而非严格因果归因。7. 最强提升出现在困难 Claw-Hard20，但样本仅 20。8. 强教师未必比同模型纠错更可学习。9. 复现时要核对论文与官方仓库 δ 配置的差异。10. 最重要的下一步是证明<strong>纠错被模型真正内化，而不是训练时借了 oracle 的光</strong>。</li>
+</ol>
+</section>
+<section class="paper" id="paper3"><h1 id="s3-0">Cross-Paper Synthesis：共同趋势、互补机制与可投稿切口</h1>
+<h2 id="s3-1">1. 为什么今天选这两篇？</h2>
+<p>本次独立查看 arXiv cs.AI、cs.LG、cs.DC、cs.CV 近期列表及官方正文，优先 2026-10-12 公开列表中的新工作；<strong>2026-10-14 上午查询时，arXiv 的 recent 页面最近可见批次仍为 10 月 12 日</strong>，因此没有把未确认的 10 月 13/14 论文当成已发表。没有使用 08:00 Radar。四条第一优先级方向均进入候选扫描，但没有为了每个方向凑一篇而牺牲单篇深度。昨天的 TreeHCA、CORAL-KV 不再重复选择。</p>
+<p>HMA 适合回答<strong>部署/编排层</strong>的问题：在不训练模型的情况下，怎样让多 Agent 更持续地找到好结果？它提供 75 任务、跨模型、交接顺序和真实时间预算证据。RTI 适合回答<strong>训练/学习层</strong>的问题：当模型根本采不到正确行动时，怎样获得不泄漏且可学习的成功轨迹？它有真实工具环境、两个骨干、五个 benchmark、组件消融和代码。两篇都允许从失败中恢复，但改变的对象不同：HMA 改变<strong>谁继续执行</strong>，RTI 改变<strong>失败行动能否成为训练信号</strong>。</p>
+<h2 id="s3-2">2. 机制互补、冲突与可组合框架</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>HMA</th>
+<th>RTI</th>
+<th>组合时要防止什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>决策粒度</td>
+<td>一个 Agent session / option</td>
+<td>一个 rollout 中的关键行动/token</td>
+<td>不要把会话终止与 token 纠错混成同一控制器</td>
+</tr>
+<tr>
+<td>状态保留</td>
+<td>共享 workspace、candidate archive</td>
+<td>可见 history、工具 observation、policy weights</td>
+<td>特权 validator 证据不能进入部署记忆</td>
+</tr>
+<tr>
+<td>触发信号</td>
+<td>完成 k 次实验或自然结束</td>
+<td>同一组 G 条 rollout 全失败</td>
+<td>二者都是固定/规则触发，可能非最优</td>
+</tr>
+<tr>
+<td>质量保证</td>
+<td>最终 review 选历史候选</td>
+<td>Verifier + PPL gate + terminal reward</td>
+<td>reviewer/validator 可能错误或被攻击</td>
+</tr>
+<tr>
+<td>学习方式</td>
+<td>无权重训练，系统级继续搜索</td>
+<td>有 GRPO 梯度，更新 πθ</td>
+<td>不可把运行时收益误记为模型能力提升</td>
+</tr>
+<tr>
+<td>主要成本</td>
+<td>切换、重复初始化、双 Agent 调用</td>
+<td>多角色纠错、PPL scoring、额外 rollout</td>
+<td>必须统一真实 wall-clock 与美元预算</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>互补一</strong>：HMA 的共享工作目录可以存 RTI 所需的失败轨迹、错误类型、工具 schema 和验证结果；不同 Agent 能互相生成候选修复。<strong>互补二</strong>：RTI 的“纠正必须可学习”原则可以反过来约束 HMA 的 handoff：交接摘要必须可验证、接手者能够从可见工作产物恢复，而不是只能靠特权提示才能继续。<strong>互补三</strong>：HMA 的 option 终止 advantage 可用于决定何时召唤额外 Agent 作为纠错者，避免每一步都付多 Agent 费用。</p>
+<p><strong>真实冲突一</strong>：HMA 鼓励切换不同强模型寻找互补性；RTI 的结果却提示过强教师产生的纠正可能离学生分布太远。这意味着“换更强 Agent 解决问题”与“让原 Agent 学会解决问题”不是同一优化目标。<strong>真实冲突二</strong>：HMA 依赖共享 workspace 充分保留有价值信息；RTI 刻意把训练期 privileged rubric 与原策略可见信息隔离。若把所有历史消息无差别写进共享记忆，就可能同时破坏可学性与评测有效性。</p>
+<p><strong>统一框架建议</strong>：<code>Observable State → Failure/Progress Detector → {Continue Current Agent, Handoff to Peer, Minimal Correction} → Verifier → Provenance Ledger → Budget-aware Scheduler → [optional RL update]</code>。训练时可以用可验证 reward 评估不同控制动作，部署时则只允许观察任务本身可访问的信号。框架应至少拆分三个目标：当前任务成功率、无外部帮助的能力内化率、总系统成本。</p>
+<h2 id="s3-3">3. Combined Research Opportunities：三个不同层次的实验</h2>
+<p><strong>机会 A：Adaptive Handoff vs Adaptive Intervention（最值得先做）</strong>。选择 100 个编码 Agent 任务，构建 <code>always continue / fixed handoff / error-triggered handoff / error-triggered minimal correction / joint scheduler</code> 五组；所有方法共享总 token 与 wall-clock 上限。将“最近验证增益”和“可验证错误位置”作为状态，研究哪类失败应该切换模型、哪类失败只需修正当前动作。关键评估是 task resolved、额外调用数、真实切换税和相同成本下的 Pareto 曲线。若联合策略没有超过最强单项，说明两种机制的互补性尚未得到证据支持。</p>
+<p><strong>机会 B：Provenance-Aware Intervention Benchmark（更适合评测论文）</strong>。在共享目录里引入三种受控污染：虚假的最佳分数、带泄漏答案的纠错日志、失效工具 schema。区分 <code>visible task evidence</code>、<code>privileged training-only rubric</code>、<code>untrusted peer artifact</code> 三个信息级别，统计污染传播、恢复、无泄漏成功率。与普通“最后能否完成任务”不同，它直接测<strong>哪些历史信息可以合法影响未来行动</strong>。</p>
+<p><strong>机会 C：Counterfactual Credit for Handoff（更偏机制论文）</strong>。对同一个中间 workspace 快照分别运行 A 继续、B 接手、A 重置、B 纠错四种反事实分支，测量条件增益 <code>Δq</code> 与时间成本。再拟合一个小模型预测最佳动作，比较基于固定 k、PPL 阈值和 learned scheduler 的校准误差。此实验不需要先训练大型 LLM，能够优先验证核心科学问题：观察到的收益究竟来自互补能力、重置、更多样本还是历史成果的正确选择。</p>
+<h2 id="s3-4">4. Collision / Overlap：如何避免把已有组件重新包装成新论文</h2>
+<p><strong>HMA 与传统 multi-agent handoff</strong>：仅提出“两个 Agent 轮流执行”没有足够创新；需要动态终止优势、同预算强对照、可追踪工作产物和跨模型泛化。论文自身的 NTA 77.3% &gt; k=5 70.7% 是很好的反例，说明新的调度方法不能只宣称“更早切换”。</p>
+<p><strong>RTI 与 teacher distillation / trajectory repair</strong>：仅把失败行动交给更强模型修复也不新；必须严格分离 privileged rubric，展示 PPL 过滤和无干预能力内化，并比较相同成本下的有效成功轨迹数。论文中 self-intervention 优于大教师，是值得复现的边界，但不能把它写成“强教师永远无用”。</p>
+<p><strong>与昨天的 TreeHCA 的重叠提醒</strong>：若将 credit assignment 当成新 Idea，先核对是否已存在“基于后见信息为关键动作分配信用”的工作。RTI 目前的校准比值是 likelihood proxy，未提供真正的因果 credit；一个潜在新点是用反事实工具行动差值替代 token 概率比，且必须通过 action-level causal intervention 证明增益，而非只重命名 weighting。</p>
+<h2 id="s3-5">5. Reading / Reproduction Priority</h2>
+<p><strong>阅读优先级 #1：RTI §4 + Appendix C/D + 官方代码</strong>。若目标是近期做 RL 训练方法或 Agent learning，这篇有明确模块和可运行脚本。第一天核对 <code>δ</code>、post-check、PPL scorer 与 <code>reshape_gt_tis_function</code>，第二天先跑小规模失败组统计，第三天做独立无干预评估。</p>
+<p><strong>阅读优先级 #2：HMA §3 + Table 2 + Appendix F</strong>。若目标是跨 Agent 编排、session continuity 或系统评测，这篇更直接。第一天复现同模型 reset vs 异模型 handoff，第二天测试 k=1/3/5/∞，第三天添加 provenance/错误传播注入。最先不要盲目跑全 75 任务：先确保工作目录隔离、时间预算、日志与结果选择协议正确。</p>
+<p><strong>系统加速优先级</strong>：这两篇都不是纯推理加速或视频加速论文。它们没有报告 TTFT、TPOT、GPU memory、visual tokens 或视频 FPS 的统一对照，因此这些数值<strong>Not Reported</strong>，不能推导出任何模型推理 wall-clock speedup。HMA 的时间收益来自工作流搜索，RTI 的收益来自训练信号，两者都可能增加推理调用成本。视频迁移实验必须重新测 Frames、Tokens、FLOPs、Latency、Throughput/FPS、GPU Memory、Accuracy，不能借用本文结果冒充加速。</p>
+<h2 id="s3-6">6. Sources / Links 与核验说明</h2>
+<ul>
+<li><strong>HMA</strong>：<a href="https://arxiv.org/abs/2610.13494">arXiv 摘要</a> · <a href="https://arxiv.org/html/2610.13494v1">论文全文</a> · <a href="https://github.com/humanfia/hma">官方仓库</a>。主要核对：正文 §2–4、Table 1/2、Figure 2/3/4/5/6、Appendix B/C/D/F/G。</li>
+<li><strong>RTI</strong>：<a href="https://arxiv.org/abs/2610.13438">arXiv 摘要</a> · <a href="https://arxiv.org/html/2610.13438v1">论文全文</a> · <a href="https://github.com/Alibaba-NLP/qqr">官方 qqr 代码</a>。主要核对：§3–5、Table 1/2/3、Figure 3–6、Appendix B/C/D；代码 README 的 RTI 配置。</li>
+<li><strong>发现日期</strong>：两篇 arXiv v1 都标注 2026-10-09；2026-10-14 检索时出现在 10 月 12 日 recent 列表中。不能把“今天精读”误写成“今天首发”。</li>
+<li><strong>证据标记</strong>：文中实验数字来自作者论文与官方代码说明；教学 toy example 与迁移实验的构造数字是<strong>研究设计</strong>，不是作者已验证结果。未报告的成本、推理速度或统计量一律不填造。</li>
+</ul>
+</section><footer>AI Deep Dive · 2026-10-14 · Self-contained UTF-8 HTML · <a href="#top">返回顶部</a></footer></main></body></html>
