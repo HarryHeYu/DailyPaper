@@ -1,0 +1,356 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Daily Top Papers Deep Dive 2026-10-15 BLADE RadixFlow full research review"><title>AI Deep Dive — 2026-10-15 | BLADE × RadixFlow</title><style>
+:root{color-scheme:light dark;--bg:#f6f7fb;--surface:#fff;--ink:#1b2639;--muted:#607089;--border:#dce2eb;--accent:#385dd1;--chip:#eaf0ff;--code:#f0f4fb;--shadow:0 10px 40px rgba(27,38,57,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1220;--surface:#111d30;--ink:#e8eef8;--muted:#a4b1c4;--border:#293a52;--accent:#92b2ff;--chip:#203657;--code:#1a2a42;--shadow:0 12px 44px rgba(0,0,0,.24)}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.92}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}header{background:linear-gradient(130deg,#14244b,#294f9e 70%,#436bca);color:#fff;padding:60px max(24px,calc((100vw - 1080px)/2)) 54px}header .eyebrow{font-size:13px;letter-spacing:.2em;color:#bcd2ff;font-weight:700}header h1{font-size:clamp(31px,4.2vw,54px);line-height:1.16;margin:17px 0}header p{max-width:760px;color:#e0e8ff;font-size:17px}.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.pill{border:1px solid #7996d0;color:#f0f5ff;border-radius:100px;padding:5px 13px;font-size:13px}main{max-width:1120px;margin:auto;padding:26px 24px 80px}nav{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px 28px;box-shadow:var(--shadow);margin-bottom:26px}nav h2{margin:0 0 10px;font-size:18px}nav .navlinks{display:flex;flex-wrap:wrap;gap:14px}nav details{margin:12px 0 0;border-top:1px solid var(--border);padding-top:8px}summary{cursor:pointer;color:var(--accent);font-weight:600}.subnav{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:5px 16px;padding:10px 0}.subnav a{font-size:13px;color:var(--muted)}article{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:clamp(22px,4vw,50px);box-shadow:var(--shadow);margin-bottom:30px}article h1{font-size:clamp(24px,3vw,34px);line-height:1.4;margin:0 0 16px;padding-bottom:20px;border-bottom:2px solid var(--border)}article h2{font-size:23px;margin:48px 0 15px;line-height:1.4;border-left:4px solid var(--accent);padding-left:15px}article h3{font-size:18px;margin:27px 0 10px}article p{margin:12px 0;text-align:justify;overflow-wrap:anywhere}article ul,article ol{padding-left:24px}article li{margin:9px 0}article strong{color:var(--ink)}article blockquote{border-left:4px solid var(--accent);margin:20px 0;background:var(--chip);padding:10px 20px;border-radius:0 12px 12px 0}article blockquote p{margin:4px 0}code{background:var(--code);padding:2px 5px;border-radius:5px;font-size:.92em;white-space:break-spaces;overflow-wrap:anywhere}pre{background:var(--code);border-radius:12px;padding:16px;overflow:auto;line-height:1.55}pre code{padding:0}.table-scroll{overflow-x:auto;margin:22px 0;border:1px solid var(--border);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:680px;font-size:14px;line-height:1.65}th,td{border-bottom:1px solid var(--border);padding:11px 12px;text-align:left;vertical-align:top}th{background:var(--chip);white-space:nowrap}tr:last-child td{border-bottom:none}tr:nth-child(even) td{background:color-mix(in srgb,var(--surface) 90%,var(--chip))}footer{text-align:center;color:var(--muted);font-size:13px;padding:20px}small,.note{color:var(--muted)}.alert{padding:16px 20px;background:var(--chip);border-radius:12px;border:1px solid var(--border);margin:15px 0}.back{display:block;text-align:right;font-size:13px;margin-top:28px}::selection{background:#91b4ff66}@media(max-width:650px){main{padding:15px 12px}header{padding:42px 22px}article{padding:23px 18px}article h2{font-size:20px}body{font-size:15px}}
+</style></head><body><header id="top"><div class="eyebrow">RESEARCH INTELLIGENCE / FULL PAPER REVIEW</div><h1>Daily Top Papers<br>Deep Dive</h1><p>2026 年 10 月 15 日 · 两篇完整精读。聚焦多 Agent 责任归因与混合 LLM 推理调度：从核心机制、公式、定量证据到可直接开工的研究迁移。</p><div class="stats"><span class="pill">2 FULL PAPERS</span><span class="pill">AGENT / MULTI-AGENT</span><span class="pill">INFERENCE SYSTEMS</span><span class="pill">2026-10-13 SUBMISSIONS</span><span class="pill">NO BACKFILL</span></div></header><main><nav><h2>目录 · Contents</h2><div class="navlinks"><a href="#blade-0">BLADE · Multi-Agent Failure Attribution</a><a href="#radix-0">RadixFlow · Hybrid LLM Serving</a><a href="#cross-0">Cross-Paper Synthesis</a></div><details><summary>BLADE · Multi-Agent Failure Attribution · 章节目录</summary><div class="subnav"><a href="#blade-1">1. 人话版：它到底在解决什么</a><a href="#blade-2">2. Background &amp; Research Gap：为何 tracing 不等于 blame</a><a href="#blade-3">3. Core Insight：把交接当作最小审计单元</a><a href="#blade-4">4. Method Deep Dive：从轨迹到责任图</a><a href="#blade-5">5. 公式与数学直觉</a><a href="#blade-6">6. Toy Example：一次完整归因</a><a href="#blade-7">7. Baseline Deep Comparison：哪一个最强</a><a href="#blade-8">8. 实验设置、指标教学与 Research Questions</a><a href="#blade-9">9. Results Deep Dive：八个必须记住的证据</a><a href="#blade-10">10. Figure / Table 精读</a><a href="#blade-11">11. Ablation 与 Claim vs Evidence</a><a href="#blade-12">12. Contribution、Limitations 与 Research Value</a><a href="#blade-13">13. Reproduction View：第一周能做什么</a><a href="#blade-14">14. 两条可直接开工的 Migration</a><a href="#blade-17">15. Attack / Verification Lens 与十句话记忆</a></div></details><details><summary>RadixFlow · Hybrid LLM Serving · 章节目录</summary><div class="subnav"><a href="#radix-1">1. 人话版：它到底做了什么</a><a href="#radix-2">2. Background &amp; Research Gap：从 prefix hit 到 runnable work</a><a href="#radix-3">3. Core Insight：依赖阻塞是局部条件</a><a href="#radix-4">4. Method Deep Dive：状态检查与安全扫描</a><a href="#radix-5">5. 核心公式、性质和数学直觉</a><a href="#radix-6">6. Toy Example：为什么 6 轮变 4 轮</a><a href="#radix-7">7. Baseline Deep Comparison：究竟赢了什么</a><a href="#radix-8">8. Experiment Setup：问题、数据、硬件与指标</a><a href="#radix-9">9. System Metrics：明确区分真实速度与理论工作量</a><a href="#radix-10">10. Results Deep Dive：八个现象与反例</a><a href="#radix-11">11. Table / Figure Reading：读图时避免的误判</a><a href="#radix-12">12. Ablation、Claim vs Evidence 与失败模式</a><a href="#radix-13">13. Contribution 与 Research Value</a><a href="#radix-14">14. Reproduction View：优先重现机制而非完整规模</a><a href="#radix-15">15. 两条 Migration：从调度器机制走向新研究</a><a href="#radix-18">16. Attack / Verification Lens 与十句话记忆</a></div></details><details><summary>Cross-Paper Synthesis · 章节目录</summary><div class="subnav"><a href="#cross-1">1. 今天为什么选择这两篇</a><a href="#cross-2">2. 共性：把容易混淆的两个概念拆开</a><a href="#cross-3">3. 能否组成一个统一研究框架</a><a href="#cross-4">4. 研究机会：三个最值得实验的 Gap</a><a href="#cross-5">5. Collision / Overlap：需要避开的研究重合</a><a href="#cross-6">6. Reading / Reproduction Priority</a><a href="#cross-7">7. 来源、核验与证据边界</a></div></details></nav><div class="alert"><strong>今日选择与阅读提示</strong>：BLADE（arXiv:2610.18780）在五组失败轨迹上的步骤归因宏平均为 57.6%，对照 All-at-once 为 52.0%；RadixFlow（arXiv:2610.18143）在五个 Hybrid 模型上降低平均延迟约 3%–24%，但节省的 worker rounds 并不等价于同比例 wall-clock 加速。两篇均阅读了全文及关键附录，所有未经论文验证的实验设计均明确标为本报告提议。<br><small>正文中外部论文/代码链接可点击；本报告是独立研究解读，不代表作者原文、审稿结论或独立复现实验。</small></div><article id="article-blade"><h1 id="blade-0">Paper 1｜BLADE：从信息来源追踪走向“信息使用责任审计”</h1>
+<blockquote class="lead">
+<p><strong>一句话定位</strong>：多 Agent 系统失败时，不能把“错误信息来自谁”直接当作“谁犯了决定性错误”；BLADE 在信息交接边界审计接收方如何使用证据，再以全局轨迹决定责任。</p>
+</blockquote>
+<p><strong>论文</strong>：BLADE: Auditing Information Use for Failure Attribution in LLM Multi-Agent Systems。<strong>作者</strong>：Xiaoguang Guo、Yaohao Long、Chuxu Zhang；<strong>机构</strong>：University of Connecticut；<strong>状态</strong>：arXiv v1，2026-10-13 提交，未据此声称已被会议接收。<strong>正文</strong>：<a href="https://arxiv.org/html/2610.18780v1">arXiv HTML</a> / <a href="https://arxiv.org/pdf/2610.18780">PDF</a>；<strong>代码</strong>：<a href="https://github.com/GXG-CS/BLADE">GXG-CS/BLADE</a>（已可访问；依赖 Jev API，仓库有离线缓存示例）。</p>
+<h2 id="blade-1">1. 人话版：它到底在解决什么</h2>
+<p>假设一个团队由搜索、代码执行、验证和汇总四个 Agent 组成。工具给出了正确计算结果，但验证 Agent 看错了两个地名，汇总 Agent 又忠实照抄。最终答案错误时，单看谁最后输出错误、谁最早提到相关地名，都会把责任归错。BLADE 的办法是先找出每个决定引用了哪些上游消息，再专门审计这些“从证据到决定”的交接：接收者是否曲解原文、是否把未经验证的猜测当成事实、是否继承了已存在的错误，或者是否真的修正了错误。审计产生一张带语义标签的责任图，但图上的局部怀疑不是最后裁决；最终仍让判别模型通读任务、轨迹和责任图，选择最关键的错误步骤。论文在 1,228 条失败轨迹上报告五组子集的平均步骤归因准确率 57.6%，高于 All-at-once 的 52.0%。价值不只在百分点，而在把“传播路径”和“责任证据”拆开，使调试、修复与跨 Agent 评测有了可操作的分析单位。</p>
+<h2 id="blade-2">2. Background &amp; Research Gap：为何 tracing 不等于 blame</h2>
+<p>多 Agent 轨迹不是普通的线性对话：一次工具输出会被多次转述、总结、改写，可能在十几步之后才改变最终答案。传统日志定位先回答“哪个步骤先出错”，但这句话有歧义。某个步骤第一次出现错误文本，不代表它第一次引入错误推断；可能只是转述上游已错误的文本。反过来，最早的错误可能已被下游纠正，未必决定最终失败。因而合理的标注目标应是：若只纠正该步骤并让后续合理重跑，原本失败是否会转为成功；若有多个这样的步骤，取最早的决定性步骤。这是论文采用的归因目标，而不是从相关性自动推断因果。</p>
+<p>具体想象一个航班预订 Agent：工具显示“转机时间 35 分钟，不满足至少 60 分钟要求”，规划 Agent 却解释为“35 分钟足够”，后续执行 Agent 按规划订票。数据来源和工具无错；错误来自规划 Agent 对任务约束的违反。只构建依赖边 <code>工具→规划→执行</code>，无法自动判断哪条边发生了语义违约。BLADE 借用了程序切片、数据血缘和契约式责任思想，但没有假装自然语言语义能被完全形式化验证：它让一个输出选项概率的模型提供带不确定性的判断。</p>
+<p>与 Who&amp;When 的直接定位、FALAT 的依赖导向搜索、TrajDebug 的错误生命周期分析相比，这篇工作的研究缺口非常具体：<strong>在源事件和使用它的决策之间，显式区分误用、继承、修复</strong>。该机制也不是完整的自动修复系统；它只在失败已知且轨迹已记录时给出回溯式诊断。</p>
+<h2 id="blade-3">3. Core Insight：把交接当作最小审计单元</h2>
+<p>核心观察可以写成三种情形：<code>正确证据→错误解释</code> 是接收方新引入的 breach；<code>错误证据→忠实转述</code> 是 inherited/propagation；<code>错误证据→正确纠正</code> 是 repair。三个案例的依赖图都可能是相同的一条边，单靠边的存在与否不能区分。这个 insight 是受具体多 Agent 失败案例启发的机制性建模假设，实验对其效用提供支持，但它本身不是严格的因果定理。</p>
+<p>重要的第二层 insight 是：<strong>证据收集可以局部化，最终裁决不应被局部证据硬约束</strong>。若某次审计给出 0.6 的“误读”概率，不能直接锁定接收者；可能这次误读被修复，也可能真正决定结果的是更早的未审计步骤。因此框架一边用依赖概率减少审计范围，一边保留所有事件作为最终候选。这里的“defeasible”可理解为：局部证据可被更强的全局证据推翻。</p>
+<h2 id="blade-4">4. Method Deep Dive：从轨迹到责任图</h2>
+<p><strong>完整流程</strong>：<code>Task q + Failed trajectory τ → 事件规范化 → 四类依赖概率 → 阈值筛边 → 每步 Top-K 来源 → 任务约束抽取 → 九类语义交接审计 → G=(V,E,R,F) → 全局决定性步骤与责任 Agent</code>。</p>
+<p><strong>Step A｜定义对象。</strong> 轨迹 <code>τ=(e₁,…,e_T)</code> 中每个事件可能是 Agent 发言、工具结果、用户消息或系统事件；<code>a(e_t)</code> 是事件所属 Agent，工具事件可能没有 Agent 身份。输入只包含任务和记录轨迹，推理时不给参考答案或归因标签。输出 <code>t*</code> 是决定性错误步骤，Agent 归属由该步骤记录的 actor 决定。注意：如果决定性步骤是没有 actor 的工具记录，归属映射需要额外处理；论文定义允许 actor 未定义。</p>
+<p><strong>Step B｜依赖重建。</strong> 对每个当前事件 <code>e_t</code>，分别问 Jev 四个问题：它依赖、重复、反驳、修复了哪个更早事件？选项包含此前所有事件与“none”，返回概率 <code>pᵣ(u,t)</code>。只保留概率达到 <code>θ=0.3</code> 的关系边；这张图是<strong>候选依赖证据</strong>，不是已经验证的真实因果 DAG。若长轨迹中前文被截断，边的漏检会直接影响后续审计覆盖。</p>
+<p><strong>Step C｜选择 handoff。</strong> 只使用 depends-on 的概率，对每个接收事件从满足阈值的来源中选概率最高的 <code>K=2</code> 个。这样每个事件最多审计两条交接，避免把每对历史消息都丢给语义判别器。K 小可节省调用，但在多源综合决策中可能漏掉第三个关键来源；K 大会增加成本并引入无关证据。尤其要区分“Top-K 审计”与“Top-K 最终嫌疑人”：后者<strong>不存在</strong>，最终候选仍是全部事件。</p>
+<p><strong>Step D｜约束与事件类型。</strong> 从原始任务 <code>q</code> 提取 requirement spans <code>R</code>，如“必须中文输出”“不可调用外网”“只能选择直达航班”。仓库按列表、话语连接词、分号、句子等规则切分；这不是训练出的形式化约束求解器。模型还将事件区分为决策和证据，仅保留流入决策的非正常交接发现。分句过粗会漏掉细粒度要求，过细则可能失去上下文限定。</p>
+<p><strong>Step E｜语义契约审计。</strong> 对每个候选 <code>(source, decision)</code>，让 Jev 在完整轨迹与约束背景下选择九种使用标签之一。大类是 kept（忠实、未实际使用、证据不足）、breach（未经核实采用、使用不适用证据、误解、错误纠正等）、inherited/repaired（传播既有错误或有效修复）。保留非 kept 的发现 <code>F=(source,decision,label,probability)</code>。这里的概率是 Jev 对标签的模型置信，不是“造成失败的因果概率”；不能混为一谈。</p>
+<p><strong>Step F｜全局可撤销诊断。</strong> 最后将 <code>G=(V,E,R,F)</code> 与原始任务、完整轨迹一起交给 Jev，对<strong>全部</strong>事件做决定性步骤选择。局部发现只提供线索；若某个 breach 后来被修复，最终裁决可以选择其他步骤。全局模型没有真正执行反事实重放，因而对“纠正该步会否成功”的判断仍属模型近似。作者通过共享判别模型和对照消融来证明信息组织方式有用，而不是证明每个局部标签完全正确。</p>
+<h2 id="blade-5">5. 公式与数学直觉</h2>
+<p><strong>依赖概率</strong>：<code>pᵣ(u,t)=P_Jev(e_u | s_τ, x_(t,r))</code>。<code>s_τ</code> 是完整轨迹上下文，<code>x_(t,r)</code> 是关系 r 的选择题。最大化概率选来源意味着找最符合关系描述的前序事件；阈值 <code>θ</code> 则控制边的召回和噪声。四种关系中 depends-on 用于审计规划，其余提供全局结构线索。</p>
+<p><strong>审计集合</strong>：<code>U_t={u&lt;t : p_dep(u,t)≥θ}</code>，<code>S_t=TopK(U_t)</code>，<code>H=⋃ₜ{(e_u,e_t):u∈S_t}</code>。这不是端到端训练损失，而是启发式预算分配策略。最坏候选对数量约为 <code>O(T²)</code>，审计对数上界 <code>K(T−1)</code>；但依赖问题仍需查看多个历史候选，因此“审计线性”不等于整个推理复杂度线性。</p>
+<p><strong>审计标签</strong>：<code>p_(u,t)(ℓ)=P_Jev(ℓ | s_(τ,R), x_use(u,t))</code>，取最大概率标签 <code>ℓ*</code> 和对应 <code>π</code>。最大化只是判别标签，不是 RL reward 优化；把概率阈值设得过低可能让噪声 breach 充斥图，过高则丢失弱证据。作者保留的是非 kept 且接收事件为 Agent 决策的 findings。</p>
+<p><strong>最终决策</strong>：<code>t̂=argmax_{t=1…T} P_Jev(e_t | q,τ,G)</code>，<code>â=a(e_t̂)</code>。对比最强的直接 baseline All-at-once：它也在同一 Jev 接口上选择步骤，但没有结构化交接审计证据。故两者的差别主要是<strong>证据构建和输入组织</strong>，不是换更强的判别模型或训练更大模型。全局 argmax 不保证校准，若多个事件分数接近，应保留 top-2 及置信差而非过度自信。</p>
+<h2 id="blade-6">6. Toy Example：一次完整归因</h2>
+<p>任务：找出两座城市间最远的组合。<code>e₁</code> 搜索 Agent 提供城市列表；<code>e₂</code> 计算工具正确输出“Braintree—Honolulu”；<code>e₃</code> 验证 Agent 错读为“Honolulu—Quincy”；<code>e₄</code> 汇总 Agent 忠实复述；<code>e₅</code> 最终回答错误。依赖阶段会给 <code>e₂→e₃</code>、<code>e₃→e₄</code> 较高概率；审计 <code>e₂→e₃</code> 得到 MISINTERPRETATION，审计 <code>e₃→e₄</code> 得到 PROPAGATION。责任图显示“错误在 e₃ 引入，在 e₄ 延续”。全局诊断选择 <code>e₃</code>，而不是因 e₅ 最后出错就归责 e₅。仓库离线示例也采用该情境，示例中最终 <code>e0003</code> 的选择概率为 0.47、审计 MISINTERPRETATION 为 0.60；这些数值属于仓库单例演示，<strong>不能</strong>当成整套 benchmark 的平均表现。</p>
+<p>反例：若 <code>e₄</code> 主动复核并纠正 e₃，随后 e₅ 因另一独立错误失败，那么 e₃ 虽有 breach，却不再是决定性步骤。这说明 BLADE 为什么不把 breach 标签直接转成最终责任。更难的例子是两条独立错误都足以导致失败，单步反事实的定义会变得不稳定；此时可考虑多错误集合归因作为后续研究。</p>
+<h2 id="blade-7">7. Baseline Deep Comparison：哪一个最强</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>工作方式与合理性</th>
+<th>在本任务的局限</th>
+<th>BLADE 的改变</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>All-at-once</td>
+<td>一次读全轨迹，直接选责任步骤；信息完整且成本低</td>
+<td>不强制比较来源和接收方的语义契约</td>
+<td>在同一 Jev 决策前构建结构化责任证据</td>
+</tr>
+<tr>
+<td>Step-by-step / Binary search</td>
+<td>逐步检查或折半定位；搜索过程清晰</td>
+<td>容易被下游错误症状、非单调的错误修复误导</td>
+<td>先审计信息交接，再全局选择</td>
+</tr>
+<tr>
+<td>FALAT</td>
+<td>用依赖结构找错误传播路径；与本文最接近</td>
+<td>依赖存在不等于接收者违约</td>
+<td>增加 breach / inherited / repaired 标签</td>
+</tr>
+<tr>
+<td>TRIAGE</td>
+<td>以结构与严重程度组织可疑步骤</td>
+<td>结构怀疑未必指向决定性错误</td>
+<td>用交接证据区分源头与传播</td>
+</tr>
+<tr>
+<td>TrajDebug</td>
+<td>分析错误生命周期和下游影响；在 Agent 宏平均上很强</td>
+<td>未把每条 source→decision 的语义使用审计作为中心单位</td>
+<td>加入可检索的 handoff finding</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>strongest baseline 需按指标区分</strong>：步骤归因宏平均的最强直接对照是 All-at-once（52.0%）；Agent 归因宏平均最高的已有对照是 TrajDebug（64.0%）。不能把两种任务混写成“同一个 baseline 最强”。所有比较均是作者在共享 Jev 接口下重新实现的策略，不能直接理解为对各原论文完整系统的原生端到端复现。</p>
+<h2 id="blade-8">8. 实验设置、指标教学与 Research Questions</h2>
+<p><strong>数据</strong>：Who&amp;When 的 HC、AG 两组自然失败，Who&amp;When Pro 的 Magentic-One、DyLAN、MetaGPT 三组注入失败，总计 1,228 条失败轨迹。输入不包含答案、真值责任标签；作者移除了可能泄漏注入位置的 ledger 等字段。对超过 Jev 32k token 的部分长轨迹做统一裁剪，这有利于对照公平，却可能损失长程依赖证据。</p>
+<p><strong>判别器</strong>：Jev <code>jev-1.13.0</code>，多项选择题返回每个选项概率；BLADE 本身 training-free，但不是零成本、也不是不依赖外部模型。关键超参 <code>θ=0.3</code>、<code>K=2</code>。没有对 Jev 之外多个判别模型做完整横向泛化。<strong>RQ1</strong>：交接审计能否比直接读轨迹更准？<strong>RQ2</strong>：收益来自依赖图还是审计语义？<strong>RQ3</strong>：少审计一些边是否优于穷举？<strong>RQ4</strong>：长轨迹与调用成本是否可接受？</p>
+<p><strong>Agent Accuracy</strong>：预测责任 Agent 与标注一致的比例，越高越好，但同一 Agent 多次犯错时不能定位具体步骤。<strong>Step Accuracy</strong>：预测的决定性事件与标注一致的比例，越高越好；DyLAN 按标注 Agent 与 round 匹配。<strong>Tolerance-k</strong>：允许预测步骤与真值在 ±k 个事件内，检验“差一步”与“差很远”，k 越大越宽松，不能代替严格准确率。<strong>Macro Average</strong>：五个子集等权平均，不代表 1,228 个样本等权微平均。<strong>Audit ratio</strong>：实际审计 handoff 数 / 穷举 handoff 数，越低越省，但要与准确率一起看。</p>
+<h2 id="blade-9">9. Results Deep Dive：八个必须记住的证据</h2>
+<ol>
+<li><strong>整体 Step：57.6% vs 52.0%，+5.6pp</strong>。最直接支持“结构化责任证据优于裸轨迹”这一结论；但绝对准确率仍有约 42.4% 的错误，不应描述成可靠的自动裁判。</li>
+<li><strong>整体 Agent：66.8% vs TrajDebug 64.0%，+2.8pp</strong>。提升小于步骤定位增益，说明方法更适合精细化定位而非仅判断团队成员。</li>
+<li><strong>HC：31.0% vs All-at-once 24.1%，+6.9pp</strong>。自然失败的精确步骤定位仍然非常难；这是方法绝对性能最弱的子集。</li>
+<li><strong>AG：54.0% vs 50.0%，+4.0pp</strong>。在算法生成的协作流程中，交接证据同样有帮助，但不能把提升解释为对所有任务类型有效。</li>
+<li><strong>Magentic-One：80.9% vs 78.7%，+2.2pp</strong>。本来就很强的直接 baseline 使相对增益有限；值得研究边际收益是否被高基线压缩。</li>
+<li><strong>DyLAN：56.6% vs 52.6%，+4.0pp</strong>。按 agent-round 的容忍规则计分；不能与严格 event ID 的子集无条件比较。</li>
+<li><strong>MetaGPT：65.4% vs 54.3%，+11.1pp</strong>。这是对 All-at-once 的最大单子集增益；同时该子集 TrajDebug 已达 63.0%，与最强非直接对照只差 +2.4pp。</li>
+<li><strong>审计消融与选择成本</strong>：Magentic-One 中只给依赖边为 78.4%，完整审计 80.9%；有 breach 的交接在决定性步骤入口约 70%，此前步骤约 4%；选择性审计仅为穷举的 13–23%，在三组子集匹配或优于穷举。机制指向“查对边、查对语义”而非“查得越多越好”。</li>
+</ol>
+<p><strong>不确定性</strong>：附录按任务簇配对 bootstrap 报告相对 All-at-once 的宏平均步骤增益 +5.6pp，95% CI [2.8,8.6]；区间大于零支持采样意义上的差异，但不解决 Jev 模型依赖、标签定义和外部真实工作流泛化。</p>
+<h2 id="blade-10">10. Figure / Table 精读</h2>
+<p><strong>Figure 1（错误源与传播）</strong>：工具正确给出城市对，后续 Agent 误读，最后被忠实传播。图想证明“沿着错误文本回溯不等于责任归因”。它是机制示例而非统计证据；如果工具本身不可靠，责任可能在更上游。</p>
+<p><strong>Figure 2（完整管线）</strong>：依赖关系 <code>E</code> 负责定位检查对象，审计发现 <code>F</code> 负责描述使用行为，最后 <code>G</code> 进入全局诊断。图中最容易忽视的是“全事件仍可选”，它是避免局部标签误判造成硬性错误的关键。</p>
+<p><strong>Table 1（五子集主结果）</strong>：列按 HC/AG/Magentic-One/DyLAN/MetaGPT 拆分 Agent 与 Step，再给宏平均。读表要先确定你关心 Step 还是 Agent，再寻找每列的 strongest baseline；例如 HC Agent 的 ErrorProbe 63.8% 高于 BLADE 58.6%，说明“每项都最好”是错误表述。</p>
+<p><strong>Table 2（机制消融）</strong>：HC/AG/M-One/DyLAN 四列，Full 分别为 31.0/54.0/80.9/56.6；只给依赖为 27.6/51.6/78.4/53.9；打乱证据为 25.9/52.4/76.7/52.0。打乱配对后退化提示信息交接的对应关系重要；但它仍是模型输入扰动，不等价于真实因果干预。</p>
+<p><strong>Figure 3/4（容忍度与审计预算）</strong>：Figure 3 的横轴是允许的定位偏差 k，纵轴是准确率，不能拿 k&gt;0 的数字冒充严格 Step Accuracy；Figure 4 上部看相对穷举的准确率变化，中部是审计次数的对数刻度，下部是 findings 集中于决定性步骤的比例。后者证明选择机制更“聚焦”，但聚焦也可能受标注策略影响。</p>
+<h2 id="blade-11">11. Ablation 与 Claim vs Evidence</h2>
+<p>去掉审计、只留依赖：四组结果均比 Full 差 2.4–3.4pp，说明“语义使用”带来独立增益。去掉 breach findings：Magentic-One 从 80.9 降至 78.3，表明识别新引入的错误比只记传播更关键。把证据随机分配到别的事件对：性能下降，说明不是“给模型更多文本”就能解释全部增益。DyLAN 以同预算最近事件代替依赖来源，决定性步骤发现比例由 28.4% 降至 15.0%，准确率由 56.6% 降至 54.6%，说明依赖规划优于简单 recency。更长轨迹（&gt;7 Agent 步）中 56.1% 对 52.6%，有增益但绝对性能下降。</p>
+<p><strong>Authors Claim</strong>：审计信息使用比只追踪依赖更能支持责任定位，选择性审计可节省检查。<strong>Experiments Actually Show</strong>：在五组失败轨迹和共享 Jev 接口下，完整方法的宏平均最好；四组消融显示语义发现稳定有益；部分场景下少审计比全审计好。<strong>What Is Not Yet Proven</strong>：不同判别模型是否仍有相同排序；真正在线纠错是否提高任务成功率；同一个 breach 标签是否能在反事实重放中被证实；在长达千步且带隐私工具的真实代理中是否可扩展。</p>
+<h2 id="blade-12">12. Contribution、Limitations 与 Research Value</h2>
+<p><strong>Contribution 1 — New Mechanism</strong>：把 source→decision handoff 作为可审计的责任单位，是最值得迁移的创新；程序切片和契约思想本身并非新发明。<strong>Contribution 2 — New System/Engineering</strong>：概率依赖筛选、九类标签、责任图与全局可撤销诊断组合为可运行流程。<strong>Contribution 3 — New Empirical Finding</strong>：依赖图本身增益不稳，而有语义的 breach 证据显著更有效；审计更多并不必然更好。没有新训练 objective，也没有声称提出新的基础模型。</p>
+<p><strong>Authors' Limitations</strong>：只用两个 benchmark 家族、一个 Jev 判别器；依赖完整轨迹，长上下文裁剪可能丢证据。<strong>Additional Limitations</strong>：失败轨迹才有明确诊断对象，成功但违规的运行不在主设置；标注“最早决定性步骤”本身可能存在多因一果；Agent 之间私有记忆或未记录的工具状态无法审计；判别器可能偏好流畅解释而非真实因果；恶意 Agent 可以把关键指令藏在无显式引用的消息里；对实时在线系统而言全轨迹多次判别有延迟成本。训练自由不等于部署自由：仍需要 Jev 访问与费用管理。</p>
+<p><strong>Research Value 分项</strong>：Baseline Potential 高——同一接口下的审计消融清楚；Migration Potential 高——可迁移到 memory、skill、tool、handoff；Systems Potential 中——当前是离线诊断而非实时防护；Attack Potential 高——可构造语义改写与引用污染攻击；Evaluation Potential 高——能定义错误引入率/传播率；Benchmark Potential 高——可扩充多错误和纠错轨迹；New Paper Potential 中高——前提是证明新的干预式验证或在线修复，而非只换标签 prompt。</p>
+<h2 id="blade-13">13. Reproduction View：第一周能做什么</h2>
+<p>仓库已有 <code>blade/config.py</code>、<code>trajectory.py</code>、<code>operators/</code>、<code>pipeline.py</code>、<code>jev/</code>、<code>examples/</code>；Python≥3.9。最短 smoke test 是安装后执行 <code>python -m blade examples/who_and_when_ag68.json --offline --cache-dir examples/jev_cache</code>，它使用缓存响应，避免先申请 API key。随后运行 <code>python -m blade ... --json</code> 检查 <code>graph.edges</code>、<code>graph.findings</code>、<code>probabilities</code> 是否与示例一致。完整重跑则需要 Jev API 和 benchmark 原始失败轨迹。最容易踩坑的是把 benchmark 的注入 ledger 或标签字段误放入模型输入、不同方法上下文裁剪不一致、把工具事件错误映射为 Agent、缓存 key 未覆盖 prompt 版本。</p>
+<p>最小研究复现建议先选 AG 子集 50 条失败轨迹，固定判别器与温度（若 API 支持），分别运行 All-at-once、dependencies-only、Full、shuffle-findings 四组；记录 exact Step Accuracy、Agent Accuracy、每条审计数、token/美元成本、失败类型。先检查“Full 优于 dependencies-only 且 shuffle 退化”这一机制命题，而不是第一天就追求整套 1,228 条完整分数。若没有 Jev，可替换成支持多选概率的本地模型，但要标为<strong>迁移复现</strong>而不是原论文数值复现。</p>
+<h2 id="blade-14">14. 两条可直接开工的 Migration</h2>
+<h3 id="blade-15">Migration A｜跨 Agent 会话交接的责任追踪（Agent / Multi-Agent）</h3>
+<p><strong>Original Problem</strong>：错误信息经过多 Agent 传播后难以确定引入者。<strong>Transferable Mechanism</strong>：交接审计 + 可撤销全局诊断。<strong>New Research Question</strong>：跨会话的 summary、handoff 和 memory merge 是否比原始工具输出更容易引入事实扭曲？<strong>Method Modification</strong>：将 source 从普通消息扩展为带 provenance 的 session summary / tool result / checkpoint，将 decision 定义为接续 Agent 的首个行动；加入“省略必要前提”“时效过期”“权限越界”标签。<strong>Minimum Experiment</strong>：从 40 个开源仓库任务构造 160 次两阶段 Agent 交接；每条保存原始会话、压缩摘要、恢复指令、后续 5 次工具调用；人工注入四类交接错误各 40 次，保留无错误对照；比较 no-audit、dependency-only、handoff-audit、full replay。<strong>Model</strong>：同一开源 7B/8B coding model 或固定 API Agent；<strong>Dataset</strong>：公开仓库的 issue-to-fix 小任务与可审计日志；<strong>Baseline</strong>：关键词引用、最近消息、All-at-once；<strong>Metric</strong>：错误源 Step-F1、最终任务通过率、修复前延迟、token 成本；<strong>Expected Contribution</strong>：跨 Agent continuity 的信息血缘评测协议；<strong>Risk</strong>：摘要本身缺失证据导致无解；<strong>Collision Risk</strong>：与现有 Agent failure attribution 和 provenance tracing 高重叠，必须突出跨会话压缩与实际修复收益。</p>
+<h3 id="blade-16">Migration B｜因果验证的 Memory Poisoning 定位（Security / Continual Agent）</h3>
+<p><strong>Original Problem</strong>：长程记忆污染被反复引用后很难找到首次影响决策的位置。<strong>Transferable Mechanism</strong>：区分 source poison、receiver misuse、faithful propagation。<strong>New Research Question</strong>：只审计 top-K 高影响记忆交接，能否以更少检查次数定位真正导致错误行动的记忆？<strong>Method Modification</strong>：给 memory entry 加版本、时间、检索分数和信任来源；审计标签加入“过期但真实”“未授权来源”“检索偏置”。<strong>Minimum Experiment</strong>：建立 100 条带长期记忆的多轮工具任务，每条注入一条错误记忆并在 1/3/5 次后触发引用；做删除该记忆、替换正确记忆、保留但提示冲突三种反事实重跑；比较预测责任和实际成功率变化。<strong>Model</strong>：同一 8B instruct Agent；<strong>Dataset</strong>：可控任务生成集加 20 条人工复核样本；<strong>Baseline</strong>：attention/检索相似度排序、时间最近、全轨迹判别；<strong>Metric</strong>：Top-1 causal hit、干预成功率、审计调用数、误报率；<strong>Expected Contribution</strong>：从语义归因迈向干预验证；<strong>Risk</strong>：替换记忆改变其他状态，反事实不纯；<strong>Collision Risk</strong>：memory poisoning 检测已有工作，创新必须是责任归因与修复闭环。</p>
+<h2 id="blade-17">15. Attack / Verification Lens 与十句话记忆</h2>
+<p><strong>Attack</strong>：让恶意 Agent 正确引用来源但偷偷更改约束、拆散关键证据、或伪造“已纠正”标签，测试审计器能否识别。<strong>Black-box probe</strong>：比较仅替换一个来源消息前后的最终责任概率。<strong>Robustness</strong>：改写语序、隐藏中间事件、加入无关交接，画归因稳定性曲线。<strong>Efficiency stress</strong>：T 从 10 增至 100/1000，测依赖问题数、审计数、成本。<strong>Recovery test</strong>：纠正预测错误步骤后重跑后续轨迹，验证最终任务是否恢复。可定义 <code>Verified Attribution@1</code>：预测的步骤经最小干预后实际改变失败结局的比例；这比仅与人工标签匹配更接近因果目标。</p>
+<p><strong>如果只记十句</strong>：① 信息依赖不是责任。② 正确证据也会被错误使用。③ 错误信息也可能被忠实传播。④ 修复事件不能自动算责任源。⑤ 先用概率依赖筛选 handoff。⑥ 再对接收者的使用方式做语义契约审计。⑦ breach、propagation、repair 是不同信号。⑧ 最终归因仍保留全事件候选。⑨ 五子集 Step 宏平均 57.6%，提升可见但远非完美。⑩ 最值得做的后续研究是把离线归因连接到可验证的反事实修复。</p>
+<a class="back" href="#top">↑ 返回顶部</a></article><article id="article-radix"><h1 id="radix-0">Paper 2｜RadixFlow：缓存命中不等于当前轮次可执行</h1>
+<blockquote class="lead">
+<p><strong>一句话定位</strong>：混合架构 LLM 的前缀缓存调度存在“匹配成功但状态尚未发布”的依赖阻塞；RadixFlow 把队列级停顿改为单个消费者等待，填补可避免的 batch 空槽。</p>
+</blockquote>
+<p><strong>论文</strong>：RadixFlow: Filling Execution Bubbles in Prefix-Cached Hybrid LLM Serving。<strong>作者</strong>：Huihao Jing、Wenbin Hu、Shaojin Chen、Haochen Shi、Haoyu Huang、Sirui Zhang、Yuxuan Liu、Zhongwei Xie、Haoran Li；<strong>机构</strong>：HKUST（论文所示）；<strong>状态</strong>：arXiv v1，2026-10-13 提交，未确认正式会议接收；<strong>全文</strong>：<a href="https://arxiv.org/html/2610.18143v1">arXiv HTML</a> / <a href="https://arxiv.org/pdf/2610.18143">PDF</a>；<strong>代码实现</strong>：论文指向 <a href="https://github.com/mode-io/vllm-jev">mode-io/vllm-jev</a>，作者声明已集成，本文未独立运行验证。</p>
+<h2 id="radix-1">1. 人话版：它到底做了什么</h2>
+<p>很多推理请求拥有相同的系统提示、文档或历史消息。前缀缓存让模型不用每次从头计算这些相同 token。但在同时使用注意力和递归状态模块的 Hybrid LLM 中，“两个请求前缀相同”不等于“第二个请求此刻就能安全读取缓存”。如果第一个请求正在本轮 GPU 计算中生成某段 recurrent state，第二个请求必须等它完成发布。原有调度器碰到这个暂时不能运行的消费者，可能直接停止扫描队列，连后面完全独立、已经可执行的请求都没装进 batch，留下空槽。RadixFlow 只把受依赖阻塞的请求放入等待队列，继续尝试后面的请求，下一轮再检查它。实验在五个 Hybrid 模型上报告平均延迟降低约 3%–24%，worker rounds 降低约 11%–44%，而缓存复用率几乎不变。它最重要的启示是：推理系统不能只优化缓存命中率，还必须区分“命中”“状态就绪”“资源可容纳”三件事。</p>
+<h2 id="radix-2">2. Background &amp; Research Gap：从 prefix hit 到 runnable work</h2>
+<p>传统 Transformer 的前缀 KV cache 可以按 token 前缀查找已存在的 K/V；如果共享块已经完整写入，命中通常意味着可以复用。但混合模型可能同时拥有 attention KV、Mamba 类 recurrent state、convolution state。恢复计算不只需要 KV：必须在一致的时间边界拥有<strong>全部必要状态</strong>。因此 prefix lookup 返回的最长匹配位置 <code>ĥ</code> 可能比当前已发布、可安全恢复的位置 <code>h</code> 更靠后。若把“匹配”直接当成“可运行”，就可能读到尚未完成的状态；若为了安全而停止整个队列扫描，又会让其他独立请求白白等待。</p>
+<p>把它想成仓库：A、B 都要同一箱半成品，生产者 P 正在本轮加工，A 不能在 P 完成前取走。队列顺序是 <code>P→A→D</code>，D 需要另一箱已就绪材料。保守调度器见到 A 不可执行就停下，D 也进不去；正确做法是先执行 P 和 D，下一轮再执行 A。这里的问题不在于 GPU 算不动，而是调度器把局部数据依赖升级成了全局扫描屏障，即 head-of-line blocking。</p>
+<p>相关工作可以分三层：PagedAttention / RadixAttention 解决缓存存储与前缀索引；Marconi 一类工作考虑 Hybrid 模型的完整状态复用；dynamic batching、request ordering 和 serving systems 处理何时聚合请求。RadixFlow 不提出新注意力 kernel，也不主要提高 cache hit；它填的是<strong>状态可用性和 batch 构建策略之间</strong>的空隙。它的效果特别依赖请求流具有多个共享前缀的分支、较少 decode、足够多独立工作可填槽。</p>
+<h2 id="radix-3">3. Core Insight：依赖阻塞是局部条件</h2>
+<p>作者观察到同一轮内存在 producer–consumer 依赖：生产者被本轮选中，消费者虽然前缀匹配，却只能等到生产者的 state 在轮末发布。这个 <code>Blocked</code> 与“token budget 满了”“内存分配失败”不是一回事。若调度器把所有失败都视为 stop，会浪费可用资源；若把所有失败都视为 skip，又可能掩盖真实容量限制。RadixFlow 的关键创新不是简单地“遇错继续”，而是依赖原生状态检查的<strong>三态分流</strong>：Ready 就选、Blocked 就暂缓并继续、Other 仍走原生处理。</p>
+<p>这是一个有条件的系统不变量：只在同一已知状态、固定扫描顺序和就绪单调性等条件下，才能证明新的 batch 可行且包含旧策略已选工作。证明并不意味着在所有流量和硬件上都必然更快；一轮塞入更多 token 后，每轮耗时也会上升。论文的亮点正是把“减少 worker round”与“减少真实 latency”分开量化，避免把 44% 的轮次节省误写成 44% 加速。</p>
+<h2 id="radix-4">4. Method Deep Dive：状态检查与安全扫描</h2>
+<p><strong>完整流程</strong>：<code>Arrived requests → 按前缀拆成 branches → bounded admission → 原生顺序扫描 → native state check → Ready 进 batch / Blocked 进等待队列 / Other 原生处理 → 执行并发布状态 → 下一轮唤醒消费者 → 完成所有 branches</code>。</p>
+<p><strong>Step A｜把逻辑请求转成可调度分支。</strong> 论文用阅读理解多选题：一个问题有四个候选答案，每个候选形成一条 branch，四条 branch 共享文档和问题前缀，只在选项处不同。系统一次 worker round 有两个容量约束：最多 <code>S</code> 个 row，以及最多 <code>T</code> 个 scheduled token。长 prompt 的 prefill 往往主导耗时，每个 branch 只生成一个 token，因此非常适合暴露共享前缀的调度问题。要注意这里不是“普通聊天每次生成几百 token”的代表性 workload。</p>
+<p><strong>Step B｜区分两种前缀长度。</strong> <code>ĥ_t(r)</code> 是按 token 查找到的最长前缀匹配，<code>h_t(r)</code> 是当前实际可以用完整状态恢复的最长边界。对于 Hybrid，缓存状态包含 KV、recurrent、convolution 组件；某个组件尚在生产时，即使文本匹配也不能在该位置恢复。作者保留原生状态检查和 cache 管理，不绕过安全约束；这是其工程可部署性的核心条件。</p>
+<p><strong>Step C｜构建部分 batch。</strong> 令当前 batch 为 <code>B</code>，待检查 branch 为 <code>r</code>。原生检查返回 <code>σ_t(r|B)∈{Ready,Blocked,Other}</code>。Ready 意味着加上它仍满足容量和状态就绪；Blocked 特指与已选 producer 的同轮状态依赖；Other 包含预算不足和不识别的分配失败。策略只有在明确识别 Blocked 时继续扫描，不能把 OOM 或容量超限当成同样可跳过的“局部等待”。</p>
+<p><strong>Step D｜局部等待与下一轮唤醒。</strong> 若 Ready，通过原生 allocator 把 r 加入 B；若 Blocked，放入 <code>D_t</code> 并保持注册，扫描后续可执行分支；若 Other，沿用原生动作（可能停止）。本轮执行 B 并将新产生的状态发布到 <code>C_(t+1)</code>，下一轮唤醒 D_t 重新检查。整个过程没有承诺等待者一定在下一轮成功：若资源紧张或状态仍不完整，还需继续等待。实现必须保证事件唤醒不会丢失，避免 starvation。</p>
+<p><strong>Step E｜Flexible admission。</strong> 为了让足够多已到达的 branch 进入扫描集合，方法在调度前允许短暂聚合，固定最多等待 5ms；但当 worker 已在执行、row 填满或 token 预算填满时提前放行。与“等整个逻辑请求的四个分支凑齐”不同，它逐 branch 放行。这个模块单独形成 Radix+Flex 消融，可用来隔离 admission 和 traversal 的收益。若流量稀疏，5ms 本身可能比所节省的等待还大，必须看真实分布。</p>
+<p><strong>Step F｜Fragmentation guard（可选）。</strong> 当剩余 token budget 太小，立即选一个 branch 会把它切成额外小 fragment；扩展版 RadixFlow+Frag 可能暂缓这个 branch，寻找更合适的工作填入。它改变的是片段边界与后续缓存轨迹，可能改善也可能拖慢，因此作者把它当扩展而非核心主方法。对齐边界和重算开销要用真实 token ledger 检查，不能只比较轮次数。</p>
+<h2 id="radix-5">5. 核心公式、性质和数学直觉</h2>
+<p><strong>就绪判定</strong>：<code>σ_t(r|B)∈{Ready,Blocked,Other}</code>。它不是神经网络分类 loss，而是对原生调度状态的抽象。<code>C_t</code> 是已经发布且通过原生检查的状态集合，<code>A_t</code> 是已到达且尚有工作可调度的 branch 集合。Ready 是可以安全执行的谓词；Blocked 需要等待生产者；Other 不允许被当成可跳过的普通依赖。核心正确性首先是“不会读未发布状态”，其次才是性能。</p>
+<p><strong>容量下界</strong>：给定总 scheduled tokens <code>W</code>、row visits <code>V</code>、依赖链深度 <code>D</code>，至少需要 <code>K_min=max(⌈W/T⌉,⌈V/S⌉,D)</code> 轮。第一个项限制 token 吞吐，第二项限制并行 row 数，第三项限制有依赖的串行阶段。即使 GPU 无限快，也不能让依赖深度为四的工作在一轮全部执行；优化目标应是接近这个下界，而不是声称零等待。</p>
+<p><strong>固定轮次性质</strong>：在相同的当前缓存状态与原生扫描顺序下，RadixFlow 的选择集合包含 prefix-stop 的选择集合，且每个被选 branch 都通过 native state check。若 readiness 随 batch 缩小不变坏、扫描未因 Other 终止，则该轮不存在“后面明明 Ready 却没扫描”的可避免空槽。这里的包含关系<strong>不能直接推出整个请求流的 round 数单调下降</strong>：因为不同轮次的缓存状态会因策略而改变，所以作者必须用 replay 实验验证整体效果。</p>
+<p><strong>缓存复用率</strong>：<code>ρ=(Σ_r H_r)/(Σ_r I_r)</code>，<code>H_r</code> 是原生报告的 cache-hit tokens，<code>I_r</code> 是输入 token。ρ 高表示少算前缀，但不保证 batch 排得好；两策略 ρ 几乎相同却有不同 latency，正是论文的核心证据。注意 hit token 是系统报告口径，不能自动等同于 GPU FLOPs 或 HBM traffic 的同等比例节省。</p>
+<p><strong>轮次成本分解</strong>：<code>T_host=Σ_t c(B_t)=K·c̄</code>；对旧策略 0、新策略 1，<code>T_host,0−T_host,1=(K₀−K₁)c̄₀−K₁(c̄₁−c̄₀)</code>。第一项是“少调用几轮”的潜在收益，第二项是“每轮变重”的代价。若 K 降 40% 但每轮平均成本大增，实际 host time 可能只降几个百分点。这个恒等式不需要模型假设，适合所有 batch scheduler 的归因报告；但 host-wrapper time 不等于纯 GPU kernel time，也不直接等于单请求端到端延迟。</p>
+<h2 id="radix-6">6. Toy Example：为什么 6 轮变 4 轮</h2>
+<p>设 <code>S=4</code> 行，每轮 token budget 足够容纳四个较短片段。队列顺序为 <code>P,A,D,E,F,…</code>，P 正在计算 A 所依赖的共享状态。原生 prefix-stop 先选择 P，检查 A 时发现其匹配状态仍在 P 的本轮执行中，于是停止扫描；即使 D/E/F 都独立且 Ready，剩余 row 也空着。RadixFlow 在 A 处返回 Blocked，将 A 放入等待集合，继续把 D/E/F 装入本轮，执行后发布 P 的状态；下一轮重新检查 A，就可以安全恢复。</p>
+<p>论文 Figure 1 的更完整例子有 15 个工作片段、总计 12,970 token，四行容量。旧策略用了六轮并留下九个空 row，新的扫描只用四轮、留下一个空 row，达到了该例的容量下界。这里的 6→4 是<strong>示意实例</strong>，不能作为全模型 1.5× wall-clock 加速数字；真实运行还包含 CPU 调度、GPU 执行、状态拷贝和队列等待。</p>
+<p>若 D 本身也需要 P 尚未发布的状态，则它同样会被 Blocked，无法填槽；若 token budget 已满，Other 会终止或按原生规则处理；若没有后续独立请求，继续扫描也不会带来收益。三个反例解释了为什么这一方法在满负载、共享分支密集时有效，却不保证每个 workload 都提升。</p>
+<h2 id="radix-7">7. Baseline Deep Comparison：究竟赢了什么</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>策略</th>
+<th>原理</th>
+<th>合理性与不足</th>
+<th>与本文的差别</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Radix</td>
+<td>原生 admission + prefix-stop；共享 overlay 下的对照</td>
+<td>安全且简单，但遇 Blocked consumer 会截断扫描</td>
+<td>仅改变选入 batch 的策略</td>
+</tr>
+<tr>
+<td>Radix+Timer5</td>
+<td>延迟最多 5ms 聚合到达工作</td>
+<td>可能改善批量大小，也会额外等待；不能修复依赖阻塞</td>
+<td>属于 admission 控制而非 traversal</td>
+</tr>
+<tr>
+<td>Radix+Timer10</td>
+<td>更长 10ms 聚合</td>
+<td>在高负载可聚合更多，但对低延迟不利</td>
+<td>对照“只等更久”是否足够</td>
+</tr>
+<tr>
+<td>Radix+Flex</td>
+<td>有条件提前释放的 5ms admission</td>
+<td>改善入队时机，仍可能在 Blocked 停止</td>
+<td>隔离真正的 traversal 增益</td>
+</tr>
+<tr>
+<td>RadixFlow+Frag</td>
+<td>在主方法上避免某些短 fragment</td>
+<td>可能改变缓存边界和等待公平性</td>
+<td>是扩展，不应替代主方法归因</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>strongest baseline</strong> 不能一概而论：按 Qwen3.5-4B 的延迟，Timer10（11.5s）优于 Radix+Flex（12.8s）与 Radix（13.1s）；但主方法 10.0s 仍更低。对 Qwen3.5-9B，Timer5/Timer10/Flex 都在 26.5s 左右，主方法 24.8s。对全注意力 Qwen3-8B，Radix+Flex 16.3s 比主方法 16.4s 略好；这正是<strong>机制专用性</strong>的重要反例。实验 Radix 基线运行在共同的 overlay 中，并非未改动的 stock vLLM，解释性能时必须保留这个限制。</p>
+<h2 id="radix-8">8. Experiment Setup：问题、数据、硬件与指标</h2>
+<p><strong>RQ1</strong>：调度变化是否改善真实 client latency、replay throughput 和 round 数？<strong>RQ2</strong>：收益主要来自 5ms admission 还是绕过 Blocked 的 traversal？<strong>RQ3</strong>：减少 round 后为何延迟收益远小于 round 收益？论文依次用主表、逐模块消融、batch occupancy、host-time 分解回答。</p>
+<p><strong>Workload</strong>：QuALITY 1,034 道问题（62 篇文章）和 RACE-M 517 道问题（128 篇文章），每题四个分支、每分支仅生成 1 token；cold/mixed/reuse 三种流与两种输入顺序，共 9,306 个逻辑请求/策略。cold 只是不跨问题共享，单题四分支仍共享前缀。输入超长则拒绝而非截断。<strong>模型</strong>：Qwen3.5-0.8B/4B/9B/27B、Nemotron-9B（五个 Hybrid）以及 Qwen3-8B full-attention 对照。<strong>环境</strong>：vLLM 0.29、A800 GPU、eager execution、关闭 asynchronous scheduling、allocator utilization 0.8；不同模型的 row 容量 S=16 或 64，token 预算 T=8192。对原生调度器用 64 道 held-out 问题定一次预算，再冻结全部策略。</p>
+<p><strong>负载</strong>：Qwen 统一 offered rate 5 req/s，较大模型处于超载；Nemotron 1.5 req/s，约为其原生校准吞吐的 80%。因此 27B 的 164 秒平均延迟主要含严重排队，不能解释为“单条 prompt 的 GPU 推理要 164 秒”。<strong>Client latency</strong>：提交后到完成的耗时，越低越好；<strong>Replay throughput</strong>：完整 replay 的完成请求数 / 墙钟时间，越高越好，但包含到达与 drain，不是最大饱和吞吐；<strong>Rounds K</strong>：非空 worker 调用次数，越低通常越省调度开销，但每轮可能更重；<strong>Reuse ρ</strong>：命中 token 占比，越高通常越少重算，但不是最终用户指标。</p>
+<p><strong>TTFT/TPOT</strong>：由于每 branch 只生成一个 token，论文没有给出可与长文本生成服务直接比较的完整 TTFT/TPOT 曲线；应标 <code>Not Reported</code>，不能拿 first selection 代替 TTFT。<strong>GPU Memory、KV Memory、FLOPs、Energy</strong>：主表未报告可比较的端到端数值，均标 <code>Not Reported</code>。<strong>Accuracy/Quality</strong>：论文主要测 serving performance 而非答案正确率；输出敏感性在附录讨论，不能把未报告的 benchmark accuracy 写成零损失。</p>
+<h2 id="radix-9">9. System Metrics：明确区分真实速度与理论工作量</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Model / Metric</th>
+<th style="text-align:right">Radix baseline</th>
+<th style="text-align:right">RadixFlow</th>
+<th>Change / 判断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen3.5-0.8B latency</td>
+<td style="text-align:right">0.256 s</td>
+<td style="text-align:right">0.232 s</td>
+<td>−9.3%（作者口径）</td>
+</tr>
+<tr>
+<td>Qwen3.5-4B latency</td>
+<td style="text-align:right">13.1 s</td>
+<td style="text-align:right">10.0 s</td>
+<td>−23.6%</td>
+</tr>
+<tr>
+<td>Qwen3.5-9B latency</td>
+<td style="text-align:right">26.7 s</td>
+<td style="text-align:right">24.8 s</td>
+<td>−7.1%</td>
+</tr>
+<tr>
+<td>Qwen3.5-27B latency</td>
+<td style="text-align:right">164 s</td>
+<td style="text-align:right">159 s</td>
+<td>−3.1%</td>
+</tr>
+<tr>
+<td>Nemotron-9B latency</td>
+<td style="text-align:right">2.44 s</td>
+<td style="text-align:right">2.15 s</td>
+<td>−12.0%</td>
+</tr>
+<tr>
+<td>Qwen3-8B full-attention latency</td>
+<td style="text-align:right">16.4 s</td>
+<td style="text-align:right">16.4 s</td>
+<td>≈0%</td>
+</tr>
+<tr>
+<td>Qwen3.5-27B rounds</td>
+<td style="text-align:right">11,748</td>
+<td style="text-align:right">6,529</td>
+<td>−44.0%</td>
+</tr>
+<tr>
+<td>Qwen3.5-27B replay throughput</td>
+<td style="text-align:right">0.743 req/s</td>
+<td style="text-align:right">0.766 req/s</td>
+<td>+3.1%（表格舍入）</td>
+</tr>
+<tr>
+<td>Qwen3.5-27B cache reuse</td>
+<td style="text-align:right">68.497%</td>
+<td style="text-align:right">68.508%</td>
+<td>+0.011pp</td>
+</tr>
+<tr>
+<td>Qwen3.5-27B rows/round</td>
+<td style="text-align:right">6.51</td>
+<td style="text-align:right">12.11</td>
+<td>+86.0%</td>
+</tr>
+<tr>
+<td>TTFT / TPOT</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>不能由 first-selection 推算</td>
+</tr>
+<tr>
+<td>GPU / KV memory</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>需独立 profile</td>
+</tr>
+<tr>
+<td>FLOPs / Energy</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>不能将 round 变化当作 FLOPs 变化</td>
+</tr>
+<tr>
+<td>Accuracy / quality</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>主评估是 serving 而非 QA 分数</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="radix-10">10. Results Deep Dive：八个现象与反例</h2>
+<ol>
+<li><strong>4B 的最大主方法延迟改善：13.1→10.0s（−23.6%）</strong>。同样的模型和到达轨迹下是强证据；但流量是 prefill-dominated，多候选 QA，外推到长 decode 要谨慎。</li>
+<li><strong>27B 轮次减少 44%，延迟只降 3.1%</strong>。这是最重要的“不能把理论工作量当 wall-clock”的案例；单轮更重，且过载排队影响巨大。</li>
+<li><strong>27B rows/round 6.51→12.11（+86%）</strong>。说明减少轮次确实来自更密集的 batch，而不是偷偷提高缓存复用率；但更密集也可能增加 kernel 时间。</li>
+<li><strong>27B cache reuse 68.497→68.508%</strong>。只增加 0.011 个百分点；因此收益不是“缓存命中大幅提高”，而是已有可执行工作更早进入执行。</li>
+<li><strong>9B 轮次 11,042→7,444，latency 26.7→24.8s</strong>。round 降约 32.6%，延迟降 7.1%；作者的 host-cost 分解表明增加的每轮成本吞掉了约 60% 的轮次信用。</li>
+<li><strong>Nemotron-9B 2.44→2.15s，throughput 1.442 req/s 不变</strong>。在 offered load 未饱和时，用户等待下降但系统完成率受外部到达率限制；不应把 throughput 不变理解为方法无效。</li>
+<li><strong>full-attention 对照 16.4→16.4s</strong>。虽然 round 数 9,223→6,746，但延迟不变，说明该方法不是对所有 Transformer 的通用加速；这是关键负结果。</li>
+<li><strong>Frag 扩展在 27B 159→151s</strong>。相比主方法额外约 5% 延迟改善，并伴随 reuse 增加约 1.66pp；不能把这部分归因给核心 traversal，属于另一个可能改变缓存轨迹的机制。</li>
+</ol>
+<p>补充一个 tail 证据：9B p95 从 73.3s 降到 70.6s，但论文没有在主表给出所有模型、所有 batch size 的统一 P95/P99 结论。对真实 SLO 系统应把 tail latency 放到与 mean 同等地位。</p>
+<h2 id="radix-11">11. Table / Figure Reading：读图时避免的误判</h2>
+<p><strong>Figure 1（六轮对四轮）</strong>：图上蓝色边框是第一轮选入工作，虚线格是空槽；P 是生产者、A 是消费者、D 是独立分支。作者想展示旧策略遇到 A 后停止，新的策略继续填 D。图是“存在可避免 bubble”的构造性证据，不是所有请求流都能达到 4 轮下界。</p>
+<p><strong>Figure 2（状态发布时序）</strong>：图中实心状态代表已发布，空心 recurrent 状态还在飞行中。最重要的是 cache lookup、native state check、restore、forward、publish 的先后关系。若实现跳过 state check，可能提高表面吞吐但产生错误输出；论文不允许这种捷径。</p>
+<p><strong>Table 1（六策略×六模型）</strong>：同时展示 latency、replay req/s、rounds、reuse。它最强的论证是五个 Hybrid 均改善延迟，FA 对照不改善；但 4B、9B、27B offered load 都可能导致不同排队强度，不能把百分比直接当模型大小 scaling law。</p>
+<p><strong>Table 2（占用与首次选择）</strong>：27B rows/round 6.51→12.11，registration-to-first-selection 160.538→153.314s；9B 6.61→10.02、25.682→23.255s。它验证了“装得更满、选得更早”；但 first selection 是调度事件，不是首 token 真正从 GPU 生成的时刻。</p>
+<p><strong>Figure 3（轮次信用与成本抵消）</strong>：左侧看 round saving 和 latency gain，右侧拆解 gross round credit 与 retained-round cost shift。真正重要的是二者差额，而非只看左侧的最大下降柱。<strong>Figure 4（占用分布与延迟分布）</strong>：占用曲线右移通常更好，延迟曲线左移更好；两者并非严格单调对应。特别是 27B 的 dense round 可改善等待，却增加服务阶段耗时。</p>
+<h2 id="radix-12">12. Ablation、Claim vs Evidence 与失败模式</h2>
+<p><strong>Admission vs traversal</strong>：27B 的 Radix+Flex 只比 Radix 节省约 1.6% rounds，而完整 RadixFlow 约节省 44%，说明主要机制确实是绕过 Blocked；Nemotron 则不同，admission 先节省约 27% rounds，traversal 进一步贡献约 8%，表明不同模型与负载的收益来源并不统一。<strong>Full-attention negative control</strong>：traversal 从 Flex 的 6,782 rounds 到 6,746，增量很小，支持“recurrent state readiness 是关键条件”。<strong>Frag</strong>：额外收益不是纯 traversal，可能来自 fragment 对齐和缓存边界改变，不能混淆。</p>
+<p><strong>Authors Claim</strong>：把“命中但未就绪”的消费者局部阻塞，可安全填补执行空槽并降低 Hybrid 推理延迟。<strong>Experiments Actually Show</strong>：在 vLLM 0.29、A800、固定预算、QA 四分支、低 decode 的设置中，五个 Hybrid 平均延迟改善且复用率稳定；固定轮次性质有条件证明。<strong>What Is Not Yet Proven</strong>：动态异构集群、prefill/decode 分离、CUDA graph、不同 GPU、长输出、高并发多租户、在线 streaming Agent 工作负载是否保留收益；不证明 FLOPs 大幅减少；不证明 tail SLO 全面改善。</p>
+<p><strong>Authors' Limitations / 可从实验读出的边界</strong>：主工作负载是候选评分，非通用聊天；使用 A800 和 eager execution；更密集轮次增加每轮成本；在 full attention 上延迟不改善。<strong>Additional Limitations</strong>：三态分类若因底层实现变化失效，可能误把资源错误当 Blocked；等待队列可能发生 starvation；更密集 batch 的峰值内存压力未被主表完整呈现；分支数变为 1 时可填槽机会下降；若请求到达速度太低，短 admission 可能增加额外等待；若过载极重，平均客户端延迟高度依赖 replay 终止与排队协议。</p>
+<h2 id="radix-13">13. Contribution 与 Research Value</h2>
+<p><strong>Contribution 1 — New Empirical Finding</strong>：Hybrid 前缀命中与状态可用性不同，阻塞位置会影响整轮利用率。<strong>Contribution 2 — New Mechanism/System Engineering</strong>：在原生状态检查约束下，三态扫描、消费者等待队列、下轮重新检查；这是最值得学习的设计。<strong>Contribution 3 — Theoretical/System Analysis</strong>：固定轮次可行性与包含关系、容量下界、worker-time 恒等分解。<strong>Contribution 4 — New Empirical Protocol</strong>：用同一 overlay、held-out 参数、full-attention 对照与多负载回放区分机制收益；并非新模型、新 loss 或新 KV 压缩算法。</p>
+<p><strong>Baseline Potential 高</strong>：对新调度策略提供明确且可隔离的对照。<strong>Migration Potential 高</strong>：适合 streaming video、Agent 共享上下文、混合状态模型。<strong>Systems Potential 高</strong>：实现位置在 scheduler，潜在可直接进入 serving 栈。<strong>Attack Potential 中</strong>：恶意构造依赖可造成队列阻塞或饥饿。<strong>Evaluation Potential 高</strong>：可定义 avoidable bubble rate、ready-but-unselected wait。<strong>Benchmark Potential 中高</strong>：需要新的真实 Agent 到达轨迹。<strong>New Paper Potential 中高</strong>：若能证明跨设备、多租户与不同生成长度下的稳定 SLO 收益，而不是只复用三态跳过规则。</p>
+<h2 id="radix-14">14. Reproduction View：优先重现机制而非完整规模</h2>
+<p><strong>代码路径</strong>：作者声明在 <code>vllm-jev</code> 集成，先固定仓库 commit、vLLM 版本、CUDA、GPU、模型 checkpoint，确认原生状态检查返回码与文中 Ready/Blocked/Other 的映射。优先复现 Figure 1 的 P/A/D 三分支顺序：插入日志记录 <code>producer_id, consumer_id, cache_ready_len, matched_len, check_reason, batch_rows, token_budget, wake_round</code>，确认 A 被延后、D 被选入且没有读取未发布状态。其次使用一台可用 GPU 和最小 Hybrid 模型跑 100 道多选题，比较 Radix、Radix+Flex、RadixFlow 三组；先画 rounds/row occupancy 和 first selection，再跑延迟，最后才尝试 27B。</p>
+<p><strong>最易踩坑</strong>：错误把 <code>matched_len</code> 当 <code>ready_len</code>；把 <code>Other</code> 全部当可跳过；未冻结模型 tokenizer 与 batch budgets；不同策略 cache namespace 未隔离；基线 overlay 与 stock vLLM 混比；用 offered rate 计算饱和 throughput；漏算 drain 时间；把 host-wrapper 耗时误称 GPU kernel 时间。最关键首跑判据不是“延迟至少快 20%”，而是<strong>在固定状态与顺序下，新策略选中的 Ready 分支包含旧策略选择集合，同时未引入无效状态读取</strong>。</p>
+<p>建议保存三个 trace 层次：请求到达（client）、scheduler selection（host）、GPU execution（device）。若只看 client latency，难以区分排队和计算；若只看 worker rounds，又容易夸大最终收益。给每条 branch 记录首次可执行时间与首次被选时间，两者差值就是直接可用的“可避免等待”近似。完整复现还应检查不同 batch size、prompt 长度、output length 和 cache reuse 的交互项。</p>
+<h2 id="radix-15">15. 两条 Migration：从调度器机制走向新研究</h2>
+<h3 id="radix-16">Migration A｜Streaming Video VLM 的状态就绪调度（Video / Inference）</h3>
+<p><strong>Original Problem</strong>：Hybrid LLM 的同轮依赖阻塞造成可避免空槽。<strong>Transferable Mechanism</strong>：将缓存命中与状态就绪分离，局部阻塞消费者，继续装入独立工作。<strong>New Research Question</strong>：多视频流共享视觉编码缓存时，是否也存在“帧特征索引命中但异步编码尚未完成”的队头阻塞？<strong>Method Modification</strong>：把 state check 扩展为 <code>frame_features_ready / temporal_memory_ready / kv_ready</code> 三个条件，显式记录生产者 CUDA event；仅等待未完成的帧/流，允许独立流继续批处理。<strong>Minimum Experiment</strong>：采集 20 段公开视频，各切 30/60/120 帧，构造 2/4/8 并发视频流，按相同 query 复用历史帧编码；比较 FIFO-stop、ready-skip、cache-aware ready-skip；分别扫 8/16/32 visual tokens per frame 的预算。<strong>Model</strong>：可运行的开源 Video VLM；<strong>Dataset</strong>：公开 Video QA 子集；<strong>Baseline</strong>：FIFO 与普通 prefix-cache scheduler；<strong>Metric</strong>：wall-clock latency、FPS、GPU utilization、视觉 token 数、peak VRAM、QA accuracy、等待分布；<strong>Expected Contribution</strong>：视频特征与文本 KV 的跨模态状态就绪调度；<strong>Risk</strong>：视频模型实际瓶颈可能在视觉 encoder 而非共享状态；<strong>Collision Risk</strong>：与现有异步流水线/动态 batching 高重叠，需证明多模态依赖特有的 ready-state 价值。</p>
+<h3 id="radix-17">Migration B｜Agent 并发工具调用的依赖感知调度（Agent / Systems）</h3>
+<p><strong>Original Problem</strong>：队列中一个等待状态的消费者阻塞了独立工作。<strong>Transferable Mechanism</strong>：producer–consumer DAG 与局部等待队列。<strong>New Research Question</strong>：Agent 工作流中，某个工具结果尚未完成时，是否可以安全推进其他独立工具、检索与摘要，降低 end-to-end task latency？<strong>Method Modification</strong>：把 LLM branch 替换为 tool-call node，给每个节点声明输入依赖、权限、状态 ready 条件与资源预算；保持执行结果可重放，禁止依赖未完成结果的下游行动。<strong>Minimum Experiment</strong>：选 50 个 coding / research Agent 任务，每个构造 6–20 个工具节点，注入 50/200/500ms 的工具延迟；对照 sequential、naive parallel、DAG-ready scheduler；用任务输出 hash 与状态 diff 检查语义一致性。<strong>Model</strong>：固定一个 coding Agent 模型；<strong>Dataset</strong>：可复现 GitHub issue 工具轨迹或合成 DAG；<strong>Baseline</strong>：FIFO 与全并发；<strong>Metric</strong>：任务成功率、makespan、P95、资源峰值、非法依赖执行次数、可避免空闲率；<strong>Expected Contribution</strong>：具备状态安全约束的 Agent 调度协议；<strong>Risk</strong>：工具有副作用，重排执行不一定语义等价；<strong>Collision Risk</strong>：与通用 DAG scheduler 重叠，必须突出 LLM 推理状态和工具语义的联合调度。</p>
+<h2 id="radix-18">16. Attack / Verification Lens 与十句话记忆</h2>
+<p><strong>Attack</strong>：构造大量看似前缀相同但状态尚未 ready 的请求，使 scheduler 频繁扫描与唤醒，观察是否可形成拒绝服务或不公平等待；这是防御性压力测试设计，不代表论文已证明攻击。<strong>Black-box probe</strong>：固定到达率与 prompt，改变四分支顺序，检查延迟变化能否揭示 head-of-line blocking。<strong>Robustness</strong>：混入不共享前缀的短请求、长 decode、动态 cache eviction。<strong>Efficiency stress</strong>：测每轮 ready check 次数、CPU overhead、host/GPU time、P99、峰值 VRAM。<strong>Recovery test</strong>：强制延迟某个 producer 的状态发布，验证消费者不会读未完成数据，下一轮能正确恢复。建议新指标 <code>Avoidable Bubble Ratio</code>：可执行且资源允许却未被选择的空 row 比例；它比“round 数下降”更接近机制目标。</p>
+<p><strong>如果只记十句</strong>：① Prefix hit 不等于 runnable。② Hybrid 模型除了 KV 还需要 recurrent/convolution state。③ 生产者未发布状态时消费者必须等。④ 等消费者不等于停整个队列。⑤ Ready、Blocked、Other 必须区别处理。⑥ RadixFlow 保留原生安全检查。⑦ 固定轮次有条件的可行性证明。⑧ 五个 Hybrid 的平均延迟下降 3%–24%，full-attention 对照没有相应延迟收益。⑨ 27B 轮次降 44% 但延迟只降 3.1%，说明重 batch 成本不可忽略。⑩ 最值得迁移的是跨模态或跨 Agent 的“状态就绪而非仅依赖匹配”调度思想。</p>
+<a class="back" href="#top">↑ 返回顶部</a></article><article id="article-cross"><h1 id="cross-0">Cross-Paper Synthesis｜共同趋势、组合机会与 Collision</h1>
+<h2 id="cross-1">1. 今天为什么选择这两篇</h2>
+<p>两篇均在 2026-10-13 提交 arXiv v1，属于本次 24–72 小时新论文窗口；均可阅读完整正文、方法、实验与关键附录，且有公开代码线索。BLADE 的优势是机制问题清晰：<strong>来源的真实性与接收者的责任必须分离</strong>，并提供多个对照和归因消融；RadixFlow 的优势是系统机制与成本拆解扎实：<strong>缓存匹配与状态就绪必须分离</strong>，并报告跨模型真实延迟、轮次、占用率和反例。两者跨 Agent reliability 与 inference systems，非为了方向配额而拼凑。近两日另有自进化 Agent、reward attribution 等候选，但本次以可完整核查和可直接迁移为优先，不重复 10 月 13–14 日已选的论文。</p>
+<h2 id="cross-2">2. 共性：把容易混淆的两个概念拆开</h2>
+<p>BLADE：<code>Information dependency ≠ Responsibility</code>。一条消息确实依赖上游，不说明责任在上游；必须检查接收者如何使用。RadixFlow：<code>Prefix match ≠ State readiness</code>。一个 branch 的 token 前缀确实匹配缓存，不说明它本轮可以安全运行；必须检查状态是否已发布。两者的系统哲学高度一致：<strong>不要把廉价的代理指标直接当成最终可行动条件</strong>。依赖边与缓存命中都是候选信号，真正决定行动的分别是契约审计和 native state check。</p>
+<p>二者还有一个共同的设计模式：<strong>局部判断不应过度约束全局结果</strong>。BLADE 允许最终诊断推翻局部 breach 标签；RadixFlow 遇到单个 Blocked branch 时不阻塞后续 Ready branch。前者避免局部怀疑导致误判，后者避免局部等待造成吞吐损失。一个面向语义正确性，一个面向执行可行性。二者都依赖局部分类的质量：若 BLADE 的审计器标签不准，或 RadixFlow 的状态检查把 Other 误判为 Blocked，系统会出现不同类型的失败。</p>
+<h2 id="cross-3">3. 能否组成一个统一研究框架</h2>
+<p>最直接的组合是 <strong>Audited, State-Ready Agent Execution</strong>：每条 Agent handoff 附带 provenance、约束、状态就绪条件和执行结果；调度器只放行依赖满足的工具/模型节点；完成后记录 source→decision 的语义使用情况。当最终任务失败时，BLADE 式审计定位责任；当任务变慢时，RadixFlow 式 trace 定位可避免空槽。这样可以同时回答两个问题：<strong>谁在错误地使用信息？谁在不必要地等待信息？</strong></p>
+<p>建议定义两套正交指标：Correctness axis = verified attribution、handoff breach rate、repair success；Efficiency axis = ready-but-unselected wait、makespan、P95、resource utilization。只有在两轴上同时测量，才不会把“激进并发”误当成全面进步。若强行把二者合成单一分数，权重选择可能掩盖安全和延迟的真实 trade-off。</p>
+<h2 id="cross-4">4. 研究机会：三个最值得实验的 Gap</h2>
+<p><strong>Opportunity A｜Agent handoff 的因果信息血缘</strong>。在 BLADE 语义审计之后增加真正的反事实重放：替换一个交接摘要、重跑后续工具动作，比较结果。最小研究：40 个任务、四种污染、两阶段交接、四个 baseline；优先验证 <code>Step-F1 → 修复成功率</code> 是否相关。最有可能形成新 benchmark/metric，但要警惕已有 provenance、agent debugging 与 memory poisoning 工作的覆盖。</p>
+<p><strong>Opportunity B｜跨 Agent 状态就绪调度</strong>。从 RadixFlow 迁移三态检查到工具结果、session state、shared memory：一个工具未完成只阻塞真正依赖它的后续节点，独立节点继续执行。先用 50 个可重放任务与合成延迟证明 correctness-preserving makespan improvement，再引入真实 coding Agent。最有可能形成系统论文，但必须区分它与已有通用 DAG scheduling 的新意。</p>
+<p><strong>Opportunity C｜视频 Agent 的统一语义/系统审计</strong>。当视觉帧缓存尚未发布时，调度器应局部等待；当摘要已发布但 Agent 曲解关键帧时，语义审计应定位误读。两者可以在 streaming Video QA 上用“帧到达—编码—缓存—Agent 推断—回答”完整 trace 做联合实验。关键不在于拼接两个名字，而在于证明<strong>加速不会提高误读率</strong>，并找出哪种缓存复用会诱发语义错误。</p>
+<h2 id="cross-5">5. Collision / Overlap：需要避开的研究重合</h2>
+<p><strong>直接的论文机制冲突：NONE。</strong> BLADE 研究错误责任归因，RadixFlow 研究执行队列调度，目标与实验对象不同，不构成彼此否定的 Collision。<strong>潜在研究重合风险</strong>：BLADE 已经覆盖依赖图 + handoff 审计，不能把“给消息画图、再让模型判错”作为全新 idea；RadixFlow 已经覆盖 Blocked consumer 跳过与次轮唤醒，不能把“遇到依赖等待时继续执行其他任务”作为全新通用调度创新。迁移研究必须增加新对象、新约束或新证据，例如跨会话摘要的反事实修复、跨模态状态一致性、工具副作用安全、真实端到端收益。</p>
+<h2 id="cross-6">6. Reading / Reproduction Priority</h2>
+<p><strong>READ NOW — BLADE</strong>：优先看 Section 3.3 的九类 handoff audit、Table 2 的 dependencies-only / shuffled / without breach 对照、附录 A 的标签泄漏清理、仓库离线示例。若做 Agent / Multi-Agent 研究，先复现 <code>依赖图→语义审计→可撤销归因</code>，再决定是否值得加入干预验证。</p>
+<p><strong>READ NOW — RadixFlow</strong>：优先看 Figure 1 的 P/A/D 例子、Algorithm 1 三态扫描、Table 1 六模型、Equation (2) 的 host-time 分解，以及 Appendix D/E 的条件化证明。若做推理/视频加速，先用最小 producer–consumer trace 验证状态安全，再用真实 wall-clock 与 P95 验证收益。</p>
+<p><strong>Reproduction order</strong>：BLADE 离线单例（无需 API key）→ 50 条小样本消融；RadixFlow 三分支确定性测试 → 小模型多选 QA replay → 长输出/不同并发扩展。不要一开始就为追求漂亮主表运行 27B 全规模。</p>
+<h2 id="cross-7">7. 来源、核验与证据边界</h2>
+<p><strong>主来源</strong>：<a href="https://arxiv.org/html/2610.18780v1">BLADE arXiv v1</a>、<a href="https://arxiv.org/abs/2610.18780">BLADE 论文元信息</a>、<a href="https://github.com/GXG-CS/BLADE">BLADE 官方代码</a>；<a href="https://arxiv.org/html/2610.18143v1">RadixFlow arXiv v1</a>、<a href="https://arxiv.org/abs/2610.18143">RadixFlow 论文元信息</a>、<a href="https://github.com/mode-io/vllm-jev">vllm-jev 实现仓库</a>。本文所有实验数字来自作者论文正文/附录，未进行独立复现实验。原创 toy examples、迁移方案、研究价值与额外局限属于本报告的分析和提议，不能当作作者已经验证的结果。未见正式 venue 证明时不标注已接收；未报告的 FLOPs、TTFT、GPU memory 不推测填值。日期以 arXiv 提交日为准，不把今日报告日期误写成论文发表日期。</p>
+<a class="back" href="#top">↑ 返回顶部</a></article></main><footer>Daily Top Papers Deep Dive · 2026-10-15 · Sources: arXiv original papers and author code repositories · Self-contained UTF-8 HTML</footer></body></html>
