@@ -1,0 +1,276 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Deep Dive 2026-10-16</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#263244;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans CJK SC","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.92}header{background:linear-gradient(120deg,#122541,#23547d);color:white;padding:54px max(24px,calc((100vw - 1100px)/2)) 42px}header h1{font-size:36px;line-height:1.25;margin:8px 0}header p{opacity:.9;max-width:900px}.wrap{max-width:1100px;margin:0 auto;padding:28px 24px 80px}nav,.paper,.synthesis{background:#fff;border:1px solid #e0e8f1;border-radius:16px;padding:32px 40px;margin-bottom:24px;box-shadow:0 8px 30px rgba(15,39,67,.045)}nav a{margin-right:20px}a{color:#17659e;text-decoration:none;border-bottom:1px solid #b5d4e7}a:hover{color:#0c365a}h2{color:#183b5d;font-size:25px;border-bottom:1px solid #d9e4ef;padding-bottom:10px;margin-top:40px}h3{color:#1d567c;font-size:19px;margin-top:28px}p{margin:12px 0}strong{color:#133e64}blockquote{border-left:4px solid #7eb7d7;background:#f2f8fc;padding:10px 20px}code{background:#eaf1f7;padding:2px 5px;border-radius:4px;white-space:normal}table{border-collapse:collapse;width:100%;min-width:650px;margin:14px 0}th,td{border-bottom:1px solid #dae5ed;padding:9px 12px;text-align:left;vertical-align:top}th{background:#eaf3f9;color:#163b59}table{display:block;overflow-x:auto}li{margin:6px 0}.badge{display:inline-block;border:1px solid #82c4da;background:#e5f4fb;border-radius:40px;padding:2px 12px;color:#184a70;font-size:13px}.meta{color:#bcd5ed;font-size:14px}.intro{font-size:18px}.stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}.stat{background:rgba(255,255,255,.12);border-radius:12px;padding:10px 18px}section{scroll-margin-top:20px}footer{color:#738092;font-size:13px}@media(max-width:700px){header{padding:35px 22px}header h1{font-size:27px}nav,.paper,.synthesis{padding:22px 18px}h2{font-size:22px}}@media(prefers-color-scheme:dark){body{background:#101b29;color:#d4deea}nav,.paper,.synthesis{background:#172638;border-color:#31445a}h2{color:#a9d9fb;border-color:#34465a}h3{color:#8fcdf4}strong{color:#b1dcfb}th{background:#253e55;color:#d9edff}td,th{border-color:#31465b}a{color:#82c9f5;border-color:#426781}code{background:#2c4054}}</style></head><body><header><div class="meta">DAILY TOP PAPERS DEEP DIVE · 2026-10-16 · 两篇正文核验</div><h1>从可验证轨迹到可复用 Agent 能力</h1><p class="intro">Explorer-Zero × LAGO：一个研究长程 Agent 如何获得可学习的中间奖励，另一个研究如何将成功行为封装为长期复用的技能。重点是机制、实验边界、复现与可执行的科研迁移。</p><div class="stats"><span class="stat">2 papers</span><span class="stat">RL × Agent</span><span class="stat">Primary source: arXiv HTML</span><span class="stat">No BACKFILL</span></div></header><main class="wrap"><nav><h2>目录 / Today's Selection</h2><p><a href="#p1">① Explorer-Zero · 自动任务与可验证子目标奖励</a></p><p><a href="#p2">② LAGO · 可复用增长式 Agent Options</a></p><p><a href="#synthesis">③ 跨论文合成、Collision 与研究机会</a></p><p>两篇均于 2026-10-14 提交，处于 72 小时优先窗口；选择依据是方法完整、定量对照丰富、存在可检验的理论/系统机制，并能形成相互补充的研究路线。没有为了平均覆盖四方向而加入证据不足的 Video / Inference 论文。</p></nav><section id="p1" class="paper"><div class="badge">01 · Explorer-Zero</div><h2>基本信息与一句话定位</h2>
+<p><strong>Title</strong>：Explorer-Zero: Improving Self-Play for Long-Horizon Tasks with Decomposable Verifiable Rewards。<strong>Authors</strong>：Tianyu Liu（ETH Zurich，研究实习期间完成）、Davide Belli、Bence Major、Arash Behboodi、Tribhuvanesh Orekondy（Qualcomm AI Research）。<strong>首次提交</strong>：2026-10-14，arXiv:2610.19868v1；<strong>状态</strong>：预印本，未核实正式会议录用；<strong>正文</strong>：<a href="https://arxiv.org/html/2610.19868v1">arXiv HTML</a> / <a href="https://arxiv.org/abs/2610.19868">摘要</a>。论文正文未明确给出可核实的官方代码仓库，代码状态标记 <strong>Not Verified</strong>。</p>
+<p><strong>一句话定位</strong>：它试图同时解决长程 Agent RL 的两个数据瓶颈——可实现的训练任务从哪里来，以及没有完成最终目标的轨迹怎样仍然产生可学习的奖励差异。</p>
+<h3>人话版：为什么值得精读</h3>
+<p>假设让一个 Agent 自己学习操作手机应用。传统训练需要人工编写“把购物车清空，再建立待办提醒”这样的任务，并编写能够检查结果的程序；每个任务还得可实现，成本很高。更糟的是，模型即使完成了“清空购物车”，却没能建立提醒，最终只收到零分，和完全没有行动的轨迹无法区分。Explorer-Zero 的想法是让另一个 Agent 先进入同一环境探索：它实际清空购物车、建立提醒，并把中间状态和最终状态保存为检查点。随后 Solver 从原始状态独立尝试完成这条任务，成功一个子目标就获得可验证的部分奖励。Proposer 与 Solver 交替训练，前者逐渐提出适合后者能力边界的组合任务。论文在 ALFWorld、ScienceWorld 和 AppWorld 上报告了优于所比较自博弈基线的结果；AppWorld 的 30B 代理达到 59.67% TGC，接近使用人工任务训练的 62.65%。真正值得借鉴的是：<strong>一条探索轨迹可以同时生产任务、验证器和稠密监督</strong>，而不仅是供模型模仿的示例。</p>
+<h2>Background &amp; Research Gap：旧范式到底卡在哪里</h2>
+<p>普通 RLVR 预先准备任务分布 D，模型执行轨迹 τ，环境验证器只判断任务是否完成，优化 E[R(x,τ)]。在数学推理中，最终答案往往容易自动核验；但对带有持久状态的环境，用户可能要求跨越多个 API、对象与依赖关系的修改。写任务时要知道初始状态允许什么，写验证器时要知道哪些字段才代表真正完成，二者必须匹配。AppWorld 原始工作曾报告任务数据生成需要数月人工投入，说明瓶颈不仅是生成一段自然语言。</p>
+<p>具体看一个家居任务：先找到盘子、把盘子冷却、再放回柜子。任务生成器如果只观察初始场景，可能提出不存在的物品或无法实现的状态；如果只在结束时验证盘子是否放回柜子，又可能忽略“冷却”这一中间条件。纯二元终局奖励还会把“已经冷却但未放回”和“从未找到盘子”视为相同的零分。随着轨迹变长，成功率 p 降低，GRPO 一个 group 里所有 rollout 都失败的概率升高，训练信号逐渐消失。</p>
+<p>代表方案各有合理性。R-Zero 通过 challenger/solver 自博弈和共识验证减少人工答案；Self-Challenging Agents 让固定 challenger 产生任务及可执行检查器；人类标注任务的 RL 则直接利用可靠目标和验证条件。它们的共同缺口是：在状态复杂且多步的环境中，能否让提案者先“实际做成”，并把过程中的有用状态转换为奖励。Explorer-Zero 并非第一次使用 reward shaping、hindsight relabeling 或自博弈，其新意在于把三者绑定到一个交互式任务生成闭环。</p>
+<h2>Core Insight：一个被实际访问过的状态就是监督资产</h2>
+<p>作者的第一个观察是“可组合任务来自已发生的状态变化”。与让语言模型凭空写“将 A 放到 B”不同，Proposer 通过环境交互先证明任务在这个起点至少存在一条实现路径，终态是一个可复现的目标。第二个观察是“失败轨迹之间仍有差别”：虽然没有到终点，访问过一个或两个中间检查点的轨迹不应与毫无进展者同分。这一判断有理论推导支撑：只要失败轨迹完成的子目标数量存在差异，组内归一化奖励就不必全部坍缩。</p>
+<p>注意这里存在三个层次的证据。<strong>可达性</strong>来自 proposer 的实际执行，属于构造性证明；<strong>奖励不坍缩</strong>在给定子任务计数分布条件下有数学证明；<strong>学到更强的 Agent 能力</strong>则来自有限 benchmark 的实验，不能从前两个事实逻辑必然推出。还有一个重要近似：检查点并不是完整环境快照逐字节相等，而是相对于共同初始状态的“任务相关变化”匹配；这个定义决定了验证器既可能过严，也可能被无关变化绕过。</p>
+<h2>Method Deep Dive：从探索到交替训练</h2>
+<p><strong>Input → 环境初态 s0 → Proposer 探索并 declare → 执行任务并 subtask/finish → 记录参考状态差分 → 过滤 → Solver 重置执行 → 终态与检查点验证 → GRPO 更新 Solver → 根据求解率更新 Proposer → 下一轮。</strong></p>
+<p><strong>步骤一：探索和声明。</strong> Proposer 初始没有给定具体任务，只知道工具接口和环境观察。它最多使用 T_P 个交互步，先观察物体、应用、可调用 API，再通过 <code>declare(task_description)</code> 明确要完成的任务。这个设计避免直接把随机初态映射成一个未必可达的目标。失败模式是 proposer 可能探索大量无关对象，甚至利用异常工具返回构造无意义任务，因此后面必须过滤。</p>
+<p><strong>步骤二：证明可达并写入检查点。</strong> Proposer 在同一环境中实际执行任务。每当完成有意义的局部状态变化，调用 <code>subtask(description)</code>，系统记录参考状态 s_ref,k；最终调用 <code>finish</code>，记录 s_ref,final。读操作没有持久状态变化时，记录产生观察值的 API 调用及其返回值，防止“只会读”的任务无法验证。对子任务，论文采用无序检查清单而不是显式依赖图；这降低实现复杂度，却不能严格表达“必须先完成 A 才允许 B”。</p>
+<p><strong>步骤三：有效性筛选。</strong> 仅保留有合法 finish、无冗余检查点、描述中对象或应用曾在 proposer 轨迹出现的任务。两个检查点状态差分相同且描述词级 Jaccard 相似度大于 0.6 时视为冗余。它过滤了重复申报，但不等于语义验证：若 proposer 声称“安全删除”而实际只修改了表面字段，形式检查可能通过。</p>
+<p><strong>步骤四：隔离 Solver 的信息。</strong> 环境重置到相同 s0，Solver 只看任务文字和工具接口，<strong>不看 proposer 的演示轨迹和参考状态</strong>。这一点很重要，否则它只需照抄动作，就无法检验任务是否真正训练出自主策略。系统记录 Solver 访问过的全部状态；子目标只需在某个中间时刻达成，不要求最终状态仍保留该变化。终态必须满足最终参考条件。</p>
+<p><strong>步骤五：交替更新。</strong> 训练 proposer 时冻结 solver，用 solver 的多次执行估计当前任务的成功率；训练 solver 时冻结 proposer，用生成任务进行 GRPO。四轮外循环逐渐改变任务难度和策略能力。这样任务分布不是固定教材，而是随学生水平变化的课程。关键风险是 proposer 学会偏好“容易骗过验证器”的任务，或者 solver 专门利用检查点定义；二者协同进化可能提高训练奖励却降低真实任务能力，因此必须始终用独立 benchmark 验收。</p>
+<h2>核心公式与数学直觉</h2>
+<p>普通目标为 <code>max_θ E_{x~D,τ~πθ}[R(x,τ)]</code>。本文把 D 替换为 proposer 生成的任务分布，并给 solver 一个分层奖励。Proposer 的难度项为 <code>R_diff = 1 - |2 p̂(x) - 1|</code>，其中 p̂ 是冻结 solver 对该任务 G_P 次 rollout 的成功率。p̂=0.5 时该项为 1；p̂=0 或 1 时为 0。这鼓励既非过难也非过易的任务，而不是盲目最大化失败率。</p>
+<p>Proposer 另有 <code>R_sub = w_sub K</code> 与 <code>R_div = w_div |A(τ_prop)|</code>：K 是非冗余子任务数，A 是 proposer 使用的不同动作类型集合。权重 w_sub 与 w_div 均在附录设为 0.3。增大 w_sub 可能促使提出更多可组合目标，也可能导致拆碎任务和“刷检查点”；增大 w_div 可以鼓励探索不同动作，也可能鼓励无关 API 调用。论文通过去重与任务相关性分析缓解，但没有从根本上消除 reward hacking。</p>
+<p>Solver 的终态奖励为 <code>R_final = 1[s_T ≃ s_ref,final]</code>。子任务进度为 <code>R_subgoal = (1/K) Σ_k 1[∃s∈VisitedStates(τ): s ≃ s_ref,k]</code>，K=0 时定义为 0。最终 <code>R_solver = 1</code> 若终态成功，否则取 R_subgoal。注意这是<strong>轨迹级部分奖励</strong>，并非每一步都立即给密集 reward；credit 仍需通过组内优势估计传到动作 token。</p>
+<p>GRPO 的核心直觉是对同一任务采样 G 条轨迹，令 <code>A_i=(R_i-mean(R))/std(R)</code>，用 A_i 调整对应轨迹的 log-probability，并用 clipping/KL 抑制策略漂移。附录给出 group size=16、clip=0.3、KL penalty=0.001。KL 项惩罚新策略偏离参考策略过大；其系数太高会压制探索，太低可能导致语言质量或工具调用格式退化。与 Self-Challenging 的差别不在“有没有 GRPO”，而在奖励和任务构造同时发生改变。</p>
+<p><strong>奖励坍缩定理。</strong> 二元终局奖励下，G 条独立轨迹全部成功或全部失败的概率为 <code>p^G+(1-p)^G</code>。若已经知道全部失败，则组内 reward 完全相同，坍缩概率是 1。假设失败轨迹完成 j 个子任务的条件概率为 q̃_j，则子目标计数奖励的坍缩概率为 <code>Σ_j q̃_j^G</code>。只要至少两个不同 j 的概率非零，这个和就严格小于 1。举例：失败轨迹各有 50% 概率完成 0 或 1 个子任务，G=4 时坍缩概率为 <code>2×(0.5)^4=0.125</code>；而纯终局奖励条件于全部失败时是 1。定理证明“可能有信号”，<strong>不保证信号指向正确策略</strong>。</p>
+<h2>Toy Example：一个跨应用任务怎样变成训练样本</h2>
+<p>假设初态中购物车有两件商品，待办列表为空。Proposer 先读取购物车，声明“清空购物车并建立检查大额支出的待办”；执行删除操作后记录检查点 C1：购物车商品数从 2 变 0；随后创建 Todoist 任务并记录 C2：指定标题出现在 Inbox；最终保存两个条件同时满足的终态。Solver 在同一初态执行四条候选轨迹：τ1 什么也没做；τ2 只清空购物车；τ3 只建立待办；τ4 两者均完成。K=2 时，四条 reward 分别为 0、0.5、0.5、1。若 τ4 也失败，只剩 0、0.5、0.5、0.5，仍有组内方差，梯度可以区分“毫无进展”与“部分完成”。</p>
+<p>这个例子还揭示验证风险：如果系统只检查待办标题而不检查日期，Solver 可以提交一个错误日期却被判为完成。若先创建后删除，是否仍算成功取决于终态与子目标匹配定义；当前方法不显式验证顺序。把状态差分写成可审计的 predicate，并让终态测试独立于 proposer 的自我描述，是工程落地时不可省略的环节。</p>
+<h2>Baseline Deep Comparison（3–5 个）</h2>
+<p><strong>Self-Challenging Agents — strongest self-play baseline。</strong> 冻结的 challenger 产生任务、验证器和示例，合理之处是监督构造更直接；缺点是 proposer 不与 solver 共同学习，且中间步骤没有被系统地转化为部分奖励。本文把提案者训练起来，并利用其实际状态轨迹作为验证材料。改进同时含新监督机制和任务生成工程，不能归功于某一个单独组件。</p>
+<p><strong>R-Zero。</strong> 用自生成问题和求解器共识推断目标，适合答案容易归纳的场景；状态型环境中多数答案可能共同错误。本文直接对照 proposer 已实现的状态差分，减少了依赖多数共识的环节。但参考状态本身是否充分表达用户意图仍需检验。</p>
+<p><strong>Zero-shot base / In-Context demonstrations。</strong> 不更新模型或给 1–4 条人工演示，部署简单、训练成本低；在复杂多步任务中，示例无法自动形成覆盖持续变化环境的任务分布。本文用环境互动换取更丰富的训练信号，代价是显著的训练 GPU 和环境执行开销。</p>
+<p><strong>Human-annotated RL。</strong> 有完整任务与可靠评估规则，往往是上界式参照；它在论文主指标上通常仍高于纯自博弈。Explorer-Zero 的优势不是完全替代人工数据，而是能够先无人工任务预训练，再改善后续 human-data RL。比较时必须严格区分“不使用人工任务训练”与“benchmark 评测本身有人工定义”。</p>
+<h2>Experiment Setup 与 Metrics 教学</h2>
+<p><strong>Models</strong>：ALFWorld、ScienceWorld 使用 Qwen3-4B；AppWorld 使用 Qwen3-4B-Instruct-2507 和 Qwen3-30B-A3B-Instruct-2507。<strong>Datasets</strong>：ALFWorld 文本家居交互、ScienceWorld 文本科学操作、AppWorld 跨应用 API 任务。<strong>Splits</strong>：ALFWorld unseen validation、ScienceWorld test、AppWorld test_normal；Table 2 的 ALFWorld 消融是 valid-seen，不能与 Table 1 直接混成同一结果。<strong>Protocol</strong>：每任务四次采样报告均值和标准差；自博弈阶段不使用人工训练任务或演示。<strong>Training</strong>：四个 outer loop，LoRA rank=32、α=32，AdamW，学习率 1e-4，group=16，proposer 每任务估计求解率时用 8 条 rollout；上下文 40,960 tokens，最多 30/40 回合；8×H100。附录报告每训练步 proposer 约 500s、solver 约 200s，整次 ALFWorld 约 15 GPU-node hours，AppWorld 约 29 GPU-node hours（按作者定义，不能简单换算成单卡小时而不说明并行口径）。</p>
+<p><strong>Success Rate</strong>：一个任务全部完成才算成功，越高越好；它能直接体现端到端能力，却掩盖完成了多少中间步骤。<strong>TGC</strong>：AppWorld Task Goal Completion，任务通过全部 benchmark 测试的比例，越高越好；对复杂任务十分严格。<strong>SGC</strong>：Scenario Goal Completion，同一 scenario 的全部任务变体都成功的比例，通常比 TGC 更难；两者互补，因为 TGC 高不代表同一情境所有变体都稳定。<strong>Zero-reward rollout fraction</strong>：零奖励轨迹比例，越低表示训练反馈更稠密，但不自动等于更强能力；若奖励可被作弊，低零奖励率反而可能误导。<strong>Subtask count</strong>：任务分解程度，不是质量指标，需要结合相关性和最终成功率。</p>
+<p><strong>RQ1</strong>：没有人工训练任务时，是否超过自博弈基线？<strong>RQ2</strong>：交互式 proposer 和子目标监督各起什么作用？<strong>RQ3</strong>：子任务奖励是否减少零反馈与 reward collapse？<strong>RQ4</strong>：收益是否集中在真正多步、跨应用任务？<strong>RQ5</strong>：作为预训练能否改善后续人工数据 RL？</p>
+<h2>Results Deep Dive：数字、差值和证据边界</h2>
+<table>
+<thead>
+<tr>
+  <th>Setting / metric</th>
+  <th style="text-align:right">Strongest comparator</th>
+  <th style="text-align:right">Explorer-Zero</th>
+  <th style="text-align:right">差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>ALFWorld Qwen3-4B success</td>
+  <td style="text-align:right">Self-Challenging 66.40</td>
+  <td style="text-align:right">85.07</td>
+  <td style="text-align:right">+18.67 pp</td>
+</tr>
+<tr>
+  <td>ScienceWorld Qwen3-4B success</td>
+  <td style="text-align:right">Self-Challenging 35.69</td>
+  <td style="text-align:right">42.92</td>
+  <td style="text-align:right">+7.23 pp</td>
+</tr>
+<tr>
+  <td>AppWorld 4B TGC</td>
+  <td style="text-align:right">Self-Challenging 32.20</td>
+  <td style="text-align:right">38.39</td>
+  <td style="text-align:right">+6.19 pp</td>
+</tr>
+<tr>
+  <td>AppWorld 30B TGC</td>
+  <td style="text-align:right">Self-Challenging 51.93</td>
+  <td style="text-align:right">59.67</td>
+  <td style="text-align:right">+7.74 pp</td>
+</tr>
+<tr>
+  <td>AppWorld 30B SGC</td>
+  <td style="text-align:right">Self-Challenging 32.25</td>
+  <td style="text-align:right">39.29</td>
+  <td style="text-align:right">+7.04 pp</td>
+</tr>
+<tr>
+  <td>AppWorld 30B TGC vs human RL</td>
+  <td style="text-align:right">human RL 62.65</td>
+  <td style="text-align:right">59.67</td>
+  <td style="text-align:right">-2.98 pp</td>
+</tr>
+<tr>
+  <td>ScienceWorld human RL→RL+Ours</td>
+  <td style="text-align:right">49.63</td>
+  <td style="text-align:right">63.26</td>
+  <td style="text-align:right">+13.63 pp</td>
+</tr>
+<tr>
+  <td>AppWorld 30B human RL→RL+Ours TGC</td>
+  <td style="text-align:right">62.65</td>
+  <td style="text-align:right">69.20</td>
+  <td style="text-align:right">+6.55 pp</td>
+</tr>
+</tbody>
+</table>
+<p><strong>最强结果</strong>是 ALFWorld 相比最强自博弈基线的 +18.67 pp；但更有研究价值的是 ScienceWorld 人工 RL 加上自博弈初始化后提高 +13.63 pp，说明中间监督可能与真实任务训练互补。<strong>最弱结果</strong>是 AppWorld 4B SGC：Explorer-Zero 16.96 对 Self-Challenging 16.25，仅 +0.71 pp，远弱于其他维度，提示复杂 scenario 的整体稳定性没有同步跃升。<strong>未超越的参照</strong>：纯自博弈在 AppWorld 30B TGC 仍落后人工 RL 2.98 pp，不应宣称已全面替代人工标注。<strong>代价</strong>：需要多次环境 rollout、8×H100 训练，不是“免费数据”。</p>
+<h2>Table / Figure Reading 与 Ablation</h2>
+<p><strong>Table 1</strong> 行是 baseline / self-play / human RL / RL+Ours，列是三个环境和模型尺寸，展示主效应。不能忽视其中的 SGC 弱项和人工 RL 参照：4B AppWorld TGC 从 38.39 到 46.38 的差距仍有 7.99 pp；30B AppWorld SGC 则出现纯自博弈 39.29 略高于 human RL 38.39 的交叉现象，说明 TGC/SGC 排序不完全一致。</p>
+<p><strong>Table 2</strong> 逐步加入交互式任务提议和 subtask：ScienceWorld 从 one-shot 4.80 → interactive 24.70 → +subtask 42.92；AppWorld 30B TGC 从 29.46 → 45.83 → 59.67。这个表支持“交互生成”和“子任务机制的组合”重要；但添加 subtask 时改变了任务构造与奖励，因此不能把 14.84 pp 完全解释为奖励密度的纯因果效应。ALFWorld 的 Table 2 使用 valid-seen，与主表 unseen validation 不同。</p>
+<p><strong>Figure 2</strong> 比较 proposer 轨迹长度、API 数量和最终任务相关操作占比：subtask 版本轨迹长度近似、API 调用反而较少，但更多操作与最终目标有数据流联系。作者使用 backward program slicing 判定贡献操作，这比简单统计调用次数更可信；但“数据流相关”仍不等于“必要因果步骤”。</p>
+<p><strong>Figure 3</strong> 三组趋势：探索步从约 14 减至 7，执行任务步从约 7 增至 10，平均 subtask 从约 0.8 增至 2.3；右图零奖励 rollout 末期约 22% vs 不用子任务的 39%。这是对优化信号机制最直接的可视证据，不过零奖励比例降低不能单独证明奖励语义正确。</p>
+<p><strong>Figure 4</strong> 按参考解中的测试谓词、API 调用和代码行数划分任务复杂度：简单任务收益不稳定，最高复杂度区间收益明显；Todoist、Splitwise 等跨应用任务增益较大。这个结果与“组合性越强，终局稀疏奖励越糟”的假设一致，但复杂度代理变量可能与任务类别相关，仍需在匹配任务类别后检验。</p>
+<p><strong>Figure 5 / Appendix E</strong> 30B AppWorld 的训练曲线：有 subtask 的系统继续进步，no-subtask 早早平台化；图中每个 checkpoint 单次 rollout 评估，不应把曲线终点直接当 Table 1 的四次采样平均值。附录定性轨迹还显示有时 proposer 错把登录当成子任务，验证了过滤器并不完美。</p>
+<h2>Claim vs Evidence / Contribution / Limitations</h2>
+<p><strong>Authors Claim</strong>：通过交互式提案与可验证检查点实现无人工任务的长程自博弈训练，降低奖励坍缩并提升任务能力。<strong>Experiments Actually Show</strong>：在三个指定模拟环境、几种 Qwen 配置及论文定义的验证器下，优于所选自博弈对照；组合方案改善后续人工 RL；零奖励比例与任务相关性分析支持机制解释。<strong>What Is Not Yet Proven</strong>：开放互联网与真实用户状态中的验证可靠性、未知环境的泛化、长期训练稳定性、奖励对齐、成本优势、完全独立于训练任务构造的因果作用。</p>
+<p><strong>Contribution 1 — New Mechanism</strong>：把探索轨迹变成“自然语言任务 + 状态差分验证器 + 中间检查点”的三联数据结构；真正创新是闭环组合，单个思想不是全新。<strong>Contribution 2 — New Objective / Theoretical Analysis</strong>：难度平衡奖励和子目标计数奖励及坍缩概率命题；概率结论依赖条件分布，不等于无条件性能保证。<strong>Contribution 3 — New Empirical Finding</strong>：自博弈初始化与人工 RL 互补，在复杂跨应用任务上收益更集中；这是特定 benchmark 的经验发现。</p>
+<p><strong>Authors' Limitation / 可见边界</strong>：检查点采用任务相关状态匹配，子任务未建模依赖；环境必须支持可靠重置、快照或状态差分；跨环境规则需分别实现。<strong>Additional Limitation</strong>：reward hacking 可利用检查器遗漏字段；proposer/solver 共进化可能形成合谋式漏洞；人工编写的环境验证基础设施依然存在，不能说完全没有人工工程成本；高昂 rollout 与训练成本妨碍小团队复现；缺少真实开放环境长时间部署；多个检查点即使形式正确也可能鼓励非必要步骤。</p>
+<h2>Reproduction View：从最小实验开始</h2>
+<p>建议先不追求 8×H100 全复现。先在 ALFWorld 选择固定 50–100 个可重置初态，统一 Qwen3-4B 和温度、最大步数，编写 <code>snapshot(state)</code>、<code>delta(state,s0)</code>、<code>match(delta_a,delta_b)</code>、<code>propose()</code>、<code>filter_task()</code>、<code>rollout_solver()</code>、<code>reward()</code> 六个模块。<strong>首跑实验</strong>不训练模型：固定同一批生成任务和 16 条 rollout，对比 binary reward 与 subtask reward 的 group advantage 方差和 collapse rate，确保数值机制成立。随后用 LoRA rank=32、α=32、学习率 1e-4 训练 1 个小循环，对比 no-subtask 和 full，报告 success、平均 API 次数、每任务 GPU 秒、检查点误判率。</p>
+<p>配置示意：<code>env=ALFWorld; seeds=[42,43,44]; task_states=100; proposer_rollouts=8; solver_group=16; max_turns=30; sub_weight=0.3; div_weight=0.3; kl=0.001; lora_rank=32</code>。务必保存初态哈希、轨迹、参考差分、过滤原因、任务文本与评估脚本版本。最易踩坑的是读操作没有状态差分、状态中含随机 ID、相同对象不同索引、环境重置不彻底和把任务生成器的示例泄漏给 solver。最能验证核心 claim 的不是最终成功率一个数字，而是“在成功率相近时，子目标奖励是否显著降低 group collapse，并最终提高独立任务表现”。</p>
+<h2>Research Value / Attack &amp; Verification Lens</h2>
+<p><strong>Baseline Potential</strong>：可作为长程 RLVR 的自动任务生成强基线，尤其适合具备快照 API 的模拟器。<strong>Migration Potential</strong>：状态差分检查点可迁移到 coding agent、网页 agent 与多代理交接。<strong>Systems Potential</strong>：快照、回滚、轨迹存储与批量验证器可以系统化，成本优化空间大。<strong>Attack Potential</strong>：故意构造“状态相似但语义不符”的对抗子任务测试奖励漏洞。<strong>Evaluation Potential</strong>：定义 checkpoint precision/recall、奖励误判率与 partial-progress calibration。<strong>Benchmark Potential</strong>：创建带多步依赖图、可控不可逆副作用和跨应用任务的验证集。<strong>New Paper Potential</strong>：研究“如何在自动生成监督中证明检查点的因果必要性”比单纯换 reward 权重更有原创空间。</p>
+<p><strong>Migration A — Coding Agent 可验证里程碑。</strong> Original Problem：代码修复只有最终测试通过与否；Transferable Mechanism：探索轨迹中的状态差分可成为部分进度检查点；New Research Question：对长程 SWE 修复，哪些中间状态能提供正确 credit 而不鼓励过拟合测试？Method Modification：将检查点改成可运行的子测试、AST 约束与 patch diff，不用“文件被改动”当成功。Minimum Experiment：取 SWE-bench Verified 固定 50 个任务，离线收集 4 条修复轨迹/任务；对每条轨迹在 Docker 隔离环境执行定位测试、目标测试、回归测试，构造 0/0.5/1 三档奖励；固定同一训练预算比较 binary-GRPO、里程碑-GRPO 和随机里程碑-GRPO。Model：Qwen3-4B 作为成本可控原型；Dataset：SWE-bench Verified 50 个训练实验任务与不重叠 50 个评估任务；Baseline：binary-GRPO / fixed heuristics；Metric：resolve rate、reward collapse、regression rate、GPU-hours；Expected Contribution：可审计的代码状态奖励；Risk：测试泄漏和环境成本；Collision Risk：与已有 process reward / milestone-guided shaping 高，需要以“自动从可验证状态提取检查点”差异化。</p>
+<p><strong>Migration B — 多代理交接状态的因果 credit。</strong> Original Problem：多 Agent 协作的中间交接失败难归因；Transferable Mechanism：可复现的中间状态作为监督对象；New Research Question：某条交接信息是否真正使后续任务可完成？Method Modification：对 handoff 前后的工作区快照做 replay，在固定 executor 下替换、删去或打乱交接内容，记录目标检查点命中。Minimum Experiment：收集 30 个跨 Agent 编码任务，固定 Codex/Claude 等其中一个执行器及温度，对每任务三组 handoff（原始/删减/随机）各跑 3 次，比较通过率与步骤级状态变化。Model：固定可用 coding agent；Dataset：30 个本地可测试 GitHub issue；Baseline：full history、summary-only、random handoff；Metric：delta success、token cost、checkpoint fidelity、false-positive rate；Expected Contribution：面向跨 Agent 信息的可验证因果归因；Risk：重放非确定性、任务污染；Collision Risk：与 agent attribution / counterfactual replay 相邻，必须强调真实环境状态和交接对象双重干预。</p>
+<h2>如果只记住这篇论文（9 句）</h2>
+<p>第一，Explorer-Zero 的创新对象不只是策略，而是训练任务的生产机制。第二，Proposer 必须先实际执行才能形成可达目标。第三，中间状态差分把探索轨迹变成可验证监督。第四，Solver 不看示范轨迹，避免把模仿当作自主求解。第五，Proposer 难度项偏好成功率约 50% 的任务。第六，子目标奖励让失败轨迹之间仍有差异。第七，奖励坍缩概率定理证明的是有信号的条件，而非必然更优。第八，三环境实验支持组合方案，但不能完全隔离每个组件的因果作用。第九，最值得迁移的是“状态可重放的里程碑监督”，最应警惕的是验证器被利用。</p>
+</section><section id="p2" class="paper"><div class="badge">02 · LAGO</div><h2>基本信息与一句话定位</h2>
+<p><strong>Title</strong>：LAGO: Language Agents with Reusable Growing Options。<strong>Authors</strong>：Yuran Wu、Mengkang Hu、Qionglin Qiu、Fanqing Meng、Qiguang Chen、Yuhang Zhou、Qiudan Zhang、Xu Wang；论文列出深圳大学、香港大学、湖南大学、新加坡国立大学、Evolvent Research Team、复旦大学等机构。<strong>提交日期</strong>：2026-10-14，arXiv:2610.19843v1；<strong>状态</strong>：预印本，未核实正式会议录用。<strong>全文</strong>：<a href="https://arxiv.org/html/2610.19843v1">arXiv HTML</a> / <a href="https://arxiv.org/abs/2610.19843">摘要</a>。论文正文没有可核实的官方代码链接，代码状态 <strong>Not Verified</strong>。</p>
+<p><strong>一句话定位</strong>：LAGO 将多 Agent 的“角色”升级为可持久存储、可检索、可验证、可复用的时间扩展动作，从而让任务流中的能力积累发生在 Agent library 而非模型权重中。</p>
+<h3>人话版：它究竟在做什么</h3>
+<p>一个 Coding Agent 反复遇到相似工作：理解仓库结构、定位失败测试、检查接口兼容性、修复回归。单体 Agent 每次都从头规划，容易在长上下文中迷路；手工固定“规划者—编码者—审查者”流水线又不够灵活。LAGO 引入一个 Meta-Agent，它收到新任务后判断是否拆分、需要哪些子任务；每个子任务优先从长期 Agent library 找到已有的专用执行者，没有合适角色才临时创建新 Agent。执行结束后验证结果，成功且足够新颖的 option 才进入库；库还会去重、淘汰和版本化。主实验在冻结 Qwen3.5-35B-A3B 上，SWE-bench Verified 全 500 题解决率为 58.6%；同一 150 题、同一权重、同一温度与官方评估器下，LAGO 为 60.3%，mini-SWE-agent 为 49.3%，Terminus 2 为 57.3%。重要的是它把“历史成功能力”变成可以路由的行动单元；但论文也明确承认：高复用率不等于复用内容导致性能提升，推理预算未完全匹配，因果证据仍有限。</p>
+<h2>Background &amp; Research Gap：为什么固定多 Agent 还不够</h2>
+<p>ReAct 风格 Agent 把推理、工具调用、观察、修正串成一个循环，架构简洁但在复杂软件工程中同时承担定位、编辑、测试、验证和错误恢复。随着任务跨度增加，上下文可能充满无关日志，早期假设被后续工具输出覆盖，某一步错误还能影响之后全部操作。固定角色多 Agent 能分摊工作，却通常由开发者事先决定角色和交互拓扑。任务换成新仓库、新框架时，静态角色未必适合；而以前成功过的专项能力也没有统一的生命周期管理。</p>
+<p>举例：任务 A 要修复 Python 包的 import 循环，Agent 临时调用一个“依赖图分析者”；任务 B 在另一个仓库又遇到循环依赖。如果第二次仍然重新设计 prompt、工具权限和验证规则，系统没有积累可操作的技能。若只把任务 A 的聊天记录塞进上下文，既增加 token 成本，也无法保证历史操作适用于任务 B。LAGO 的研究问题因此不是“多叫几个 Agent 是否更强”，而是“如何定义一个可复用的 Agent 能力对象，什么时候使用它，什么时候让它退休”。</p>
+<p>相关路线包括层级强化学习中的 options、SWE-agent 等代码执行框架、MetaGPT/AutoGen 这样的多 Agent 协作，以及从历史轨迹提取 skill 的工作。LAGO 的独特之处在于把 option 定义成一个<strong>有接口契约、终止条件、验证器和库治理规则的 Agent 实例</strong>。它并没有声称发明时间抽象；其主要贡献是将 options 的结构化抽象落实为任务流中的动态 Agent 库，并通过可比较的代码修复实验评估。</p>
+<h2>Core Insight：复用的是可验证的行为单元，不是原始对话</h2>
+<p>作者认为“能力”应该以时间扩展的 action 表示。一个 option 可以执行几十次工具调用，但对上层 meta-agent 来说只是“定位循环依赖”“检查回归”这样的高层动作。与直接检索文本记忆相比，它携带明确的工具边界、输出契约和停止条件，便于路由、组合、验证和版本控制。这个思想在理论上继承 semi-MDP / hierarchical RL 的时间抽象；在工程上表现为 library 检索与 option 生命周期。</p>
+<p>这里需要区分三种东西：<strong>Episodic memory</strong> 是过去某次执行发生了什么；<strong>Procedural skill / option</strong> 是未来遇到相似输入时如何行动；<strong>Meta-policy</strong> 是当前应该调用哪个 option。LAGO 把第二种变成可持久对象，第三种交给 meta-agent 决定，而第一种只作为生成或验证选项的证据。它不要求改变执行器权重，因此具备跨任务流积累的可行性，但若 option spec 与现实工具版本脱节，复用会传播旧错误。</p>
+<p>论文的数据支持“库确实被大量使用”和“移除库会降低有限子集上的结果”，却尚未彻底支持“是某条已学会的技能内容本身带来提升”。高复用率也可能来自路由器喜欢套用通用 prompt。因此本文最有启发的不是 84.4% 这个复用率本身，而是<strong>如何设计一个能分辨‘调用过’和‘因调用而受益’的实验</strong>。</p>
+<h2>Method Deep Dive：option 从创建到退休</h2>
+<p><strong>Input task → Meta-Agent 判断与分解 → 检索 Agent library → 命中则 reuse，否则 spawn → 子 Agent 执行工具链 → verifier 检查 → 汇总结果 → successful &amp; novel 时 admit → deduplicate / prune / version → 更新后的库供下一任务使用。</strong></p>
+<p><strong>步骤一：构造上层决策状态。</strong> Meta-Agent 观察任务状态、可容纳在 prompt 中的上下文、外部持久记忆与当前 library。它必须判断当前任务是否可由原始工具直接完成，还是需要拆成多个相对独立的子任务。过度拆分会产生协调成本、冲突编辑与遗漏边界；拆分不足则重新退化为一个超长 Agent。这里的“分解质量”是影响结果的潜在机制，但论文未提供一个对任意任务通用的最优拆分求解器。</p>
+<p><strong>步骤二：检索或生成。</strong> 对每个子任务，系统按 option 的角色规格检索已有条目，若存在合适项则复用；若没有或此前多次失败，就根据 spec 创建新 option。这里的检索不同于纯向量文本召回：最终需要满足工具权限、输入输出格式、可执行条件、环境版本等约束。检索到相似描述不等于它能处理当前仓库。若忽略这些约束，系统会在库越来越大时出现“错误复用”的长期风险。</p>
+<p><strong>步骤三：时间扩展执行。</strong> 子 Agent 拿到自己的上下文与工具，独立循环多步，直到验证成功、失败、超时或达到 turn limit。它将结果和验证信号返回 meta-agent。并行子任务可以缩短 wall-clock，但共享工作区时容易产生文件冲突；如果多个子 Agent 同时编辑同一文件，最终聚合器需要解决补丁顺序与依赖问题。论文的架构图有并行分派，但并没有完整隔离并行性收益。</p>
+<p><strong>步骤四：admission 与治理。</strong> 新 option 只有任务级验证通过且与现有库足够不同才被接纳。去重合并相似角色和行为，保留验证表现更好的版本；pruning 移除很少使用或回归检查失败的条目；versioning 记录 prompt、工具、模型和验证器版本。没有治理，库会出现近义角色爆炸、过期技能与重复消耗。重要的是：论文的 objective 有库大小惩罚，但并未证明所有治理阈值经过严格全局优化。</p>
+<p><strong>步骤五：跨任务流复用。</strong> 每次任务完成后，library 的状态进入下一次决策。主系统冻结权重；附加实验另行对 Qwen3-30B meta-agent 使用成功分解轨迹做 SFT。二者必须区分：LAGO 的基本机制是无需权重更新的系统层记忆；SFT 是可选改进，不是主实验性能的必要前提。若把这两组数字混在一起，会错误地把训练收益归给 library。</p>
+<h2>核心公式、变量与数学直觉</h2>
+<p>论文定义 <code>o=(spec_o, π_o, β_o, v_o)</code>：spec 包含角色、目标、可用工具、输入输出契约和执行预算；π_o 是子 Agent 的内部策略；β_o 是停止条件；v_o 是结果验证器。上层只需要把 o 当成可调用 action，但执行时间 τ 可变，这正是 temporally extended option 的含义。与每一步都由同一大模型重新规划相比，option 将一段闭环行为封装为可复用模块。</p>
+<p>上层状态 <code>x_t = φ(s_t,c_t,m_t,L_t)</code>：s 是任务实际状态，c 是当前上下文，m 是外部记忆，L 是 library。φ 表示把这些信息组织成决策输入，不是论文证明了最优的状态表示。动作空间 <code>A_t = A_prim ∪ O(L_t)</code>，随 library 增长而改变。A_prim 是普通工具动作，O(L_t) 是可用的复用 Agent。这里的理论挑战是非平稳动作空间：今天没有的 option 明天可能出现，因此简单静态 policy 假设不成立。</p>
+<p>新 option 接纳规则为 <code>admit(o_new)=1[v_task(o_new)≥θ_task ∧ novelty(o_new,L_t)≥θ_nov]</code>。阈值 θ_task 越高，库质量门槛越严格但可能错过尚不成熟的技能；θ_nov 越高，库更小却可能合并实际上具有重要边界差异的角色。若 verifier 误判，错误 option 可能被固化并在未来多次复用，造成放大效应。因而 verifier version 应当是每条 option 的重要 provenance。</p>
+<p>任务流目标为 <code>max Σ_i [Success(τ_i)+λ Quality(τ_i)] - ρ |L_T|</code>。λ 控制任务质量的相对权重，ρ 控制库膨胀成本；这是一种设计目标，不代表论文主系统实际执行了基于梯度的全局优化。ρ 太低会不断 spawn 近义角色，ρ 太高会让系统过度复用不适合的旧角色。与单体 ReAct 的“逐步生成工具动作”相比，这个目标显式关注跨任务复用的长期成本。</p>
+<p><strong>RL Formulation 的边界</strong>：虽然借用 options 与 semi-MDP 术语，主系统不是 RL 训练出来的 option policy；没有对 meta-agent 做标准在线 policy-gradient 的报告。State/Action/Policy/Reward 可以作抽象映射，但不应凭空补写 PPO/GRPO 的优势函数或 KL 正则。论文可选 SFT 用成功分解轨迹监督 meta-agent，并不等价于对整个库治理目标的强化学习优化。</p>
+<h2>Toy Example：一次可复用的修复过程</h2>
+<p>任务 A：“修复 Python 包中循环导入导致的单元测试失败。”Meta-Agent 识别三个子问题：依赖关系定位、最小改动、回归验证。库中没有依赖分析 option，于是 spawn <code>dependency-diagnoser</code>，spec 规定只读文件、允许运行静态分析工具、输出 <code>suspected_edges.json</code>、最多 30 次调用；执行器找到循环边后，verifier 检查输出路径存在、边能在实际 import 图中重现。若结果有效且与已有库条目不同，就 admit 进 library。</p>
+<p>任务 B 在另一个仓库出现类似循环导入。Meta-Agent 检索到这个 option，但应先检查语言版本、包管理器、目录布局是否兼容。若匹配则调用，不必重新写角色 prompt；它仍然需要重新读取新仓库，不能复制任务 A 的具体文件名。执行成功后记录运行成本和结果；失败则降级到通用工具 Agent 或 spawn 变体，并触发库中旧条目的回归检查。最终产物是修复补丁和经过治理的 library，而不是一个不断变长的历史聊天记录。</p>
+<p>这个案例中的危险在于：如果 verifier 只检查“生成了 JSON 文件”，恶意或无能的 option 也能被 admit。更好的验证是重新构建依赖图、执行目标测试、检查最小修复前后差异；同时在复用时记录命中原因与候选备选项，便于日后做 counterfactual attribution。</p>
+<h2>Baseline Deep Comparison：不要把不同协议的榜单混算</h2>
+<p><strong>mini-SWE-agent</strong>：一个轻量 ReAct 工具循环，优点是简单、可复现、协调开销小；缺点是任务分解和验证都压在同一上下文里。LAGO 引入上层分解和可复用 option，属于架构机制加工程治理的复合差异。150 题同协议对比，49.3% vs 60.3%，相差 11.0 pp。</p>
+<p><strong>Terminus 2 — strongest controlled baseline</strong>：比最小 ReAct 更成熟的 terminal-agent scaffold，能更好利用执行环境，论文同协议重跑达到 57.3%。LAGO 的 60.3% 只高 3.0 pp，考虑 n=150 的统计不确定性，不应把这点差异描述为已经稳健显著。它是最重要的实际对照，因为更接近强系统而非弱 strawman。</p>
+<p><strong>Vanilla DeepSeek-V3.2</strong>：单 Agent、无分解无库，在 SWE-bench Pro 50 题上 34.0%；双 DeepSeek LAGO 达 50.0%。这支持整体系统的潜力，但同时改变了角色组织与执行次数，不能直接断言库复用贡献了全部 +16 pp。</p>
+<p><strong>LAGO without decomposition / without library / shuffled reuse</strong>：这是组件消融而非外部方法，最适合追问机制。去掉 decomposition 下降 4 个任务，去掉 library 下降 6 个任务，打乱复用内容下降 2 个任务；差异小且样本量仅 50，说明“是否有库”可能比“具体复用内容是什么”更容易在当前实验观察到，不能得出强因果结论。</p>
+<p><strong>静态多 Agent pipeline / 纯历史记忆检索</strong>：理论上分别是固定角色和检索旧记录，合理但未在论文主控表中进行完全匹配的正式实验。可作为后续研究基线，但不应虚构其数字或声称论文已经击败它们。</p>
+<h2>Experiment Setup、Metrics 与 Research Questions</h2>
+<p><strong>RQ1</strong>：在固定骨干、任务和评估器下，LAGO 比已有 scaffold 更好吗？<strong>RQ2</strong>：分解质量是否与性能差异一致，跨模型和跨任务还成立吗？<strong>RQ3</strong>：库是否真的被调用，规模是否受治理控制？</p>
+<p>主系统 Meta-Agent 与 Executor 均为冻结 <strong>Qwen3.5-35B-A3B</strong>，温度 0、single attempt，官方 SWE-bench Verified Docker evaluator。完整 500 题结果只对 LAGO 测试，为 58.6%；150 题 repo-proportional 分层抽样、seed=42，用同一任务 ID 对 mini-SWE-agent、Terminus 2、LAGO 做端到端重跑。作者明确说明：不同 scaffold 的 context window 和 inference budget <strong>未完全匹配</strong>；因此这属于同权重、同评测协议的系统比较，不是严格控制所有计算成本的单变量实验。</p>
+<p>组件消融在固定 50 题上执行：相同 Qwen3.5-35B-A3B、温度 0、单次尝试、65,536-token context、workspace truncation；未完成 rollout 按失败计。跨模型实验另用 SWE-bench Pro 50 题，meta/executor 分别采用 DeepSeek-V3.2、Qwen3-30B base 或成功分解轨迹 SFT 版本；BrowseComp 则包含英文 50 题与中文 50 题。DeepSeek 服务端的版本在论文中被限定为 2026-02-17 至 03-23 的接口映射，不应默认为当前在线版本。</p>
+<p><strong>Resolve rate</strong>：提交 patch 通过 FAIL_TO_PASS/PASS_TO_PASS 官方 Docker 测试的比例，越高越好；能衡量最终修复但不能测中间诊断质量。<strong>BrowseComp accuracy</strong>：开放域多跳检索问题答对比例，越高越好；不能与代码修复 resolve rate 直接比较。<strong>Reuse rate</strong>：<code>reuse/(reuse+spawn)</code>，越高仅表示更多调用来自库，不一定意味着更高质量或更少 token。<strong>Library size</strong>：option 数量，不是越小越好；应与任务覆盖和成功率联合观察。<strong>Binomial uncertainty</strong>：n=150 的率差可有约 ±8 pp 级别不确定性，n=50 更大；单次端到端 rerun 缺乏独立重复实验时尤其需要保守。</p>
+<h2>Results Deep Dive：至少八组有边界的证据</h2>
+<table>
+<thead>
+<tr>
+  <th>证据</th>
+  <th style="text-align:right">对照</th>
+  <th style="text-align:right">LAGO / 变化</th>
+  <th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>SWE-bench Verified 150 题</td>
+  <td style="text-align:right">mini-SWE 49.3%</td>
+  <td style="text-align:right">60.3%</td>
+  <td>+11.0 pp</td>
+</tr>
+<tr>
+  <td>SWE-bench Verified 150 题</td>
+  <td style="text-align:right">Terminus 2 57.3%</td>
+  <td style="text-align:right">60.3%</td>
+  <td>+3.0 pp，较弱</td>
+</tr>
+<tr>
+  <td>SWE-bench Verified 全 500</td>
+  <td style="text-align:right">未同规模重跑对照</td>
+  <td style="text-align:right">58.6%</td>
+  <td>绝对水平，非榜单胜出</td>
+</tr>
+<tr>
+  <td>50 题去分解</td>
+  <td style="text-align:right">Full 30/50</td>
+  <td style="text-align:right">26/50</td>
+  <td>少 4 题</td>
+</tr>
+<tr>
+  <td>50 题打乱复用内容</td>
+  <td style="text-align:right">Full 30/50</td>
+  <td style="text-align:right">28/50</td>
+  <td>少 2 题</td>
+</tr>
+<tr>
+  <td>50 题去库</td>
+  <td style="text-align:right">Full 30/50</td>
+  <td style="text-align:right">24/50</td>
+  <td>少 6 题</td>
+</tr>
+<tr>
+  <td>SWE-bench Pro</td>
+  <td style="text-align:right">Vanilla DS 34%</td>
+  <td style="text-align:right">dual DS 50%</td>
+  <td>+16 pp</td>
+</tr>
+<tr>
+  <td>BrowseComp EN/ZH 平均</td>
+  <td style="text-align:right">Vanilla DS 33%</td>
+  <td style="text-align:right">dual DS 46%</td>
+  <td>+13 pp</td>
+</tr>
+<tr>
+  <td>Qwen3 meta SFT vs base，DS executor</td>
+  <td style="text-align:right">34%</td>
+  <td style="text-align:right">40%</td>
+  <td>+6 pp，5 赢 2 退</td>
+</tr>
+<tr>
+  <td>150 题独立库运行</td>
+  <td style="text-align:right">51 spawn</td>
+  <td style="text-align:right">276 reuse</td>
+  <td>84.4% reuse</td>
+</tr>
+</tbody>
+</table>
+<p><strong>最强端到端对照</strong>是相对 mini-SWE-agent 的 +11.0 pp；但这个基线较弱，不能忽略与 Terminus 2 只有 +3.0 pp。<strong>最强跨域现象</strong>是双 DeepSeek 在 SWE-bench Pro +16 pp、BrowseComp +13 pp，说明框架可能不只对一个数据集有效；但样本小且模型/流程改变。<strong>最弱机制证据</strong>是 shuffle reused content 只少 2/50 题：这可能意味着内容复用作用有限，也可能是扰动不够强或统计功效不足。<strong>模型特异弱项</strong>：双 Qwen3-30B 在 SWE-bench Pro 仅 4–6%，明显弱于 DeepSeek executor，表明好分解不能补偿执行器能力不足。<strong>失败案例</strong>：部分任务因格式错误的工具调用、子 Agent 超出执行限制、回合数耗尽而没有 patch，属于系统稳定性而非知识不足。</p>
+<h2>Table / Figure Reading 与消融因果边界</h2>
+<p><strong>Table 1</strong> 固定 150 个 SWE-bench Verified 任务、同一冻结权重与官方 Docker 评估器，三个 scaffold 的 49.3、57.3、60.3% 一目了然。真正要读的是脚注：温度相同、单次尝试，但上下文和推理预算不完全相同；因此它回答“交付系统在该协议下谁表现好”，不能回答“option library 单独贡献多少”。</p>
+<p><strong>Table 2</strong> Full 30/50、no decomposition 26/50、shuffle content 28/50、no library 24/50，附约 ±13.6–13.8 pp 的 95% 二项区间。所有 ablation 用固定分母 50，未完成也算失败。这个设计避免只统计成功跑完的任务，但极宽的区间提醒我们：四题、六题差距不能轻率解释成普遍机制规律。</p>
+<p><strong>Table 3</strong> 在 SWE-bench Pro 50 题流中，双 DS 的 spawn=24、reuse=89、reuse rate=78.8%；Qwen3 base meta+DS executor 是 30/172/85.1%；SFT meta+DS executor 是 31/197/86.4%。SFT 系统复用更多，但不是最强整体配置，因此“复用越多越好”并不成立；可能是 router 的分解粒度改变了调用次数。</p>
+<p><strong>Table 4 与 Table 5</strong> 是跨模型、跨任务证据。Table 4 固定 DS executor，Qwen3 base meta 34% → SFT meta 40%，但双 DS 达 50%；Table 5 BrowseComp 英文/中文，双 DS 从 Vanilla 22/44 提高到 32/60，平均从 33 到 46。跨任务方向一致，却不能证明所有领域均适用，因为问题分布、搜索工具与执行器不同。</p>
+<p><strong>Figure 2 / Figure 3</strong> 描述一条与主比较分开的 150 题库运行：初始库 123 条，经初次去重降至约 80，最终 86；复用累计 276 次、spawn 51 次。两图共同证明 library 不是摆设，且在这段流中没有无限膨胀；但 150 题不足以判断长期平衡，更无法仅凭曲线识别每条 option 的因果收益。</p>
+<p><strong>Figure 5 / Appendix B</strong> 对同一 50 题比较 Qwen3 base 与 SFT meta：两者共同成功 15 题、共同失败 28 题、SFT 独有成功 5 题、base 独有成功 2 题。净改善三题的同时存在回归，支持“更精细分解可能遗漏边界”的讨论。<strong>Figure 7</strong> 还显示 150 题中 27 题没有 patch，另有 31 题靠最终 diff fallback 恢复；工程补救路径可能对整体分数有贡献，需要单独消融。</p>
+<h2>Claim vs Evidence / Contribution / Limitations</h2>
+<p><strong>Authors Claim</strong>：增长式可复用 Agent option 库提升复杂任务的组织与执行能力，并在任务流中积累技能。<strong>Experiments Actually Show</strong>：同权重同任务协议下系统整体优于两个 scaffold 的观察结果；在 50 题上移除库或分解后有若干失败增量；高比例 option 被复用；可选 meta-agent SFT 在固定 DS executor 下改善一部分任务。<strong>What Is Not Yet Proven</strong>：每条历史 option 的内容真的导致后续成功、长时间库增长稳定、完全控制 token/计算预算后仍有优势、强 verifier 能防止技能污染、跨真实项目分布长期泛化。</p>
+<p><strong>Contribution 1 — New System/Engineering</strong>：动态 option library，含检索、spawn、验证、接纳、去重、淘汰和版本化；组合创新明显。<strong>Contribution 2 — New Mechanism Adaptation</strong>：把 HRL option 抽象迁移到语言 Agent，赋予工具权限和验证契约；时间抽象本身并非原创。<strong>Contribution 3 — New Empirical Finding</strong>：冻结模型的多 Agent scaffold 及库治理在部分代码修复与检索任务中有益，但强基线差距较小。<strong>Contribution 4 — Evaluation Protocol</strong>：对竞争 scaffold 在同任务同模型下重跑，比直接拼接各论文 leaderboard 更严谨；不过未匹配所有推理资源。</p>
+<p><strong>Authors' Limitation</strong>：150/50 题规模限制统计可靠性；复用内容没有被完全因果隔离；上下文和推理预算未严格相同；seed library 可能污染评估，因此必须使用不相交任务；verifier 具有任务依赖性。<strong>Additional Limitation</strong>：新 option 可能来自一次偶然成功并被过度泛化；相似度去重可能合并不同能力边界；旧工具 API 或安全权限变化导致失效；并行子 Agent 产生竞态修改；库治理引入持久磁盘和索引成本；角色 spec 可能携带 prompt injection；强执行器带来的收益可能掩盖 library 的作用。长期部署应记录每次 option 调用的版本、输入、验证结果与回滚路径。</p>
+<h2>Reproduction View：先做机制级实验，不急着刷 500 题</h2>
+<p>实现最小的 <code>OptionSpec</code>、<code>OptionRegistry</code>、<code>Router</code>、<code>Executor</code>、<code>Verifier</code>、<code>AdmissionGate</code> 和 <code>AuditLog</code>。一个 option 至少包含：ID、版本、模型、工具白名单、输入 schema、输出 schema、终止条件、验证器版本、创建任务 ID、成功/失败统计。任务级记录必须能回放：原始 prompt、工作区 commit、检索候选、选择分数、子任务树、工具轨迹、patch、测试结果和最终库变更。</p>
+<p>首跑固定 20 个小型可测试 Python issues，单模型、温度 0、每题最多 60 次工具调用。比较四组：单 Agent ReAct、固定 planner+executor、动态 option 但不跨任务保存、动态 option 且跨任务保存。然后用 matched-budget 约束总 token 和工具调用上限，避免只因为多花钱就得到更高通过率。第二阶段增加两种因果干预：将被检索 option 的具体指导内容打乱但保留长度/格式，以及把真实命中的 option 换成同样可执行的次优候选。指标包括 resolve rate、reuse success uplift、token cost、错误传播率、库规模和 regression failures。</p>
+<p>如果想严格复刻论文表，固定 SWE-bench Verified 150 ID、Qwen3.5-35B-A3B、temperature=0、single attempt、官方 Docker；但论文没有提供可核实官方仓库时，需要自行实现 scaffold，结果只能叫“机制复现”，不应声称精确复刻作者代码。最容易踩坑的是不同框架的上下文截断、子 Agent 最大 turn、最终 diff fallback、测试环境镜像版本、库预热任务与评估任务重叠。最有说服力的证据是同一任务流、同一预算下，库复用的<strong>具体内容</strong>经过反事实替换后显著影响后续成功，而不只是调用次数上升。</p>
+<h2>Research Value / Attack &amp; Verification Lens</h2>
+<p><strong>Baseline Potential</strong>：适合做持续 Coding Agent 的强系统基线，尤其是 option 的生命周期与跨任务治理。<strong>Migration Potential</strong>：可迁移到多模型 handoff、科研 Agent、长期工具调用和多模态处理流水线。<strong>Systems Potential</strong>：检索索引、增量去重、并行调度、工具权限和可重放日志都有实际工程价值。<strong>Attack Potential</strong>：构造污染的 option spec、伪造成功验证器、旧版本 API 诱导错误复用，检查攻击如何跨任务放大。<strong>Evaluation Potential</strong>：区分 option retrieved、option executed、option causally helpful 三种事件。<strong>Benchmark Potential</strong>：构造同类子问题多次出现但上下文条件变化的 task stream，检验持续学习而非单题成功。<strong>New Paper Potential</strong>：真正的缺口在“可验证的 skill 因果贡献、路由错误归因和安全治理”，比再做一个角色库更有研究空间。</p>
+<p><strong>Migration A — 跨 Coding Agent 的可验证 Option Handoff。</strong> Original Problem：不同 CLI Agent 会话之间的能力难复用；Transferable Mechanism：将一段历史成功工作抽象为带契约和验证器的 option；New Research Question：跨模型迁移的 option 是否比纯会话摘要更能提升后续修复？Method Modification：对 option 增加 provider-neutral schema、工具适配层、provenance 与原生恢复指针。Minimum Experiment：固定 30 个来自 3 个仓库的 issue，每题准备“同类问题曾出现”的历史轨迹；在相同 executor 和预算下比较 no memory、raw history、summary、validated option，任务按时间排序且评测 issue 与 seed option 来源严格不重叠；每题三次执行并保存所有子任务树。Model：可用的固定 coding agent；Dataset：30 个可执行测试的仓库 issue；Baseline：ReAct / summary-only / static multi-agent；Metric：resolve rate、per-task tokens、option transfer success、negative-transfer rate；Expected Contribution：可验证的跨 provider 程序性记忆；Risk：模型与工具接口不一致；Collision Risk：与 LAGO、CODESKILL、session continuity 工具重叠，需要以“跨 Agent 原生上下文 + 反事实验证”差异化。</p>
+<p><strong>Migration B — Agent Skill 污染与回归治理 Benchmark。</strong> Original Problem：长期库可能保留过时或恶意技能；Transferable Mechanism：option admission、versioning、pruning 与 verifier；New Research Question：一次污染是否会在 100 个后续任务中被放大，哪些治理策略能阻止？Method Modification：在库中注入过期工具参数、错误输出 schema、相似但不等价的 option，设计 shadow evaluation 和回滚。Minimum Experiment：建立 100 题按时间排列的工具任务流，前 20 题建立 10 个选项，之后每 10 题注入 1 个受控错误条目；比较无治理、只去重、只回归测试、完整治理，记录每次检索候选和最终执行结果。Model：Qwen3-4B 或固定可调用模型；Dataset：本地可重置 API sandbox；Baseline：无库/原始 LAGO 风格/规则过滤；Metric：attack propagation depth、false admission、recovery latency、success rate、库大小；Expected Contribution：跨任务 skill 安全与长期稳定性评价；Risk：模拟攻击与真实部署存在差距；Collision Risk：与 memory poisoning / skill governance 已有工作相邻，需突出“验证器版本与长期状态迁移”的可复现协议。</p>
+<h2>Agent Architecture / Long-Horizon / Failure Propagation</h2>
+<p>结构是 <code>Task → Meta planning → Library retrieval → Executor tools → Environment → Verifier → Admission / Prune → Future task</code>。状态由活动上下文、外部记忆、库和工作区共同构成；trajectory 是每次 option 执行日志，skill 是 option spec+policy+verifier，tool history 是可回放的工具调用序列，shared state 是多个子 Agent 操作的仓库文件和测试状态。长期能力依赖库质量、路由质量和环境一致性，论文展示了 150 题的复用但没有证明 1000 题后仍稳定。错误传播链是：错误 option 被接纳 → 相似任务反复命中 → 子 Agent 生成错误补丁 → verifier 误判 → 错误记录强化路由偏好。要截断传播，至少需要隔离工作区、独立验证、版本化、定期回归和可逆撤销。</p>
+<h2>如果只记住这篇论文（9 句）</h2>
+<p>第一，LAGO 把专用 Agent 定义为时间扩展的可复用 option。第二，option 不只是 prompt，还包括策略、终止条件和验证器。第三，Meta-Agent 的动作空间随着 library 增长而改变。第四，主系统不训练模型权重，学习发生在外部库。第五，SWE-bench Verified 全 500 题的 58.6% 是绝对结果，不是对其他 scaffold 的全量胜出。第六，150 题同协议下 LAGO 60.3%，但只比强基线 Terminus 2 高 3.0 pp。第七，库复用率 84.4% 证明调用活跃，不能证明每条内容的因果贡献。第八，去库与去分解消融支持组件作用，但 50 题统计不确定性大。第九，最值得研究的是跨任务 skill 的可验证因果价值和错误传播治理。</p>
+</section><section id="synthesis" class="synthesis"><div class="badge">Cross-Paper Synthesis</div><h2>Cross-Paper Synthesis：今天共同揭示什么</h2>
+<p>这两篇研究位于同一个长期 Agent 闭环的不同位置。Explorer-Zero 关注<strong>怎样从环境状态变化生产可学习的任务和 reward</strong>，LAGO 关注<strong>怎样把执行过的能力包装成可复用的 option 并长期治理</strong>。前者需要可重置、可比较的状态，后者需要可版本化、可调用的技能；二者都依赖 verifier，但对 verifier 的正确性没有完全解决。一个自然的统一框架是：探索轨迹生成状态检查点 → 用检查点验证 option → 将通过验证的 option 加入库 → 未来任务检索 option → 用真实环境状态反事实验证复用贡献。</p>
+<p><strong>机制互补</strong>：Explorer-Zero 的子目标检查点可成为 LAGO 的 option admission/regression test；LAGO 的 option library 可帮助 Explorer-Zero proposer 更高效地探索和组合任务。<strong>潜在冲突</strong>：Explorer-Zero 鼓励增加非冗余子目标，LAGO 的目标惩罚库膨胀；更细的拆分不一定带来更好的最终结果，甚至可能导致过度专门化。<strong>证据差异</strong>：Explorer-Zero 有奖励坍缩概率定理与多环境训练实验，LAGO 有同模型 scaffold 重跑和长期库调用统计，但两者都未完成完整的因果隔离。</p>
+<h2>Combined Research Opportunities：三个可执行方向</h2>
+<p><strong>方向 1（首选）：State-Verified Skill Library。</strong> 在 LAGO 的每个 option 中附带 Explorer-Zero 风格的状态前置条件、后置条件与中间检查点。先在 ALFWorld 构造 100 个连续任务，比较“纯 spec option”“带状态契约 option”“带状态契约+回归验证 option”，固定模型、任务流、预算。关键指标不是库大小，而是 option causal uplift、错误复用率、最终任务成功率和每任务 token。创新性来自“把 skill 复用变成可审计的状态干预”，而不是仅把两套代码拼接。</p>
+<p><strong>方向 2：Counterfactual Skill Credit。</strong> 对同一个任务固定初态和随机种子，分别使用选中的 option、候选第二名、禁用库和打乱 option 内容，估计每条 option 的增量成功概率。对 30 个代码任务每个设置 3–5 次重跑，采用配对差异和 bootstrap 置信区间。此方向正面回应 LAGO “复用次数不等于因果贡献”的局限，也为跨 Agent provenance 提供可操作指标。</p>
+<p><strong>方向 3：Verifier Hacking Stress Test。</strong> 设计状态表面匹配但语义失败的任务，测试 Explorer-Zero 的检查点与 LAGO 的 admission gate 是否会同时被欺骗；加入不可逆操作、顺序依赖、工具权限变化和版本漂移。先在本地 API sandbox 构造 40 个恶意或过期条件，报告 false-positive verification、污染扩散深度、回滚恢复时间。它既可以是攻击/评测论文，也可成为持续 Agent 系统的工程质量门槛。</p>
+<h2>Collision / Overlap：哪些想法已被占据</h2>
+<p>“用自博弈生成 Agent 任务”已有 R-Zero、Self-Challenging、State2State 等相关工作；“把成功轨迹变成可复用 skill”也有层级 RL options、Voyager（embodied agent）、CODESKILL 等先例。直接声称“首次自动生成子任务”或“首次长期保存 Agent skill”会构成明显撞题。真正未解决的交叉问题是<strong>一条被检索的 skill 是否造成后续成功、其验证器是否可靠，以及这种收益能否在固定成本下跨任务持续</strong>。今日最强 Collision 不是两篇彼此重复，而是它们与既有 skill learning / process reward / counterfactual attribution 的机制边界重叠；新论文必须设计更严格的反事实协议。</p>
+<h2>Reading / Reproduction Priority</h2>
+<p><strong>READ NOW</strong>：Explorer-Zero §3.1–3.3、Table 1/2、Figure 3、Appendix D，优先复现 reward collapse 的数学与最小实验。<strong>READ NEXT</strong>：LAGO §3.2–3.5、Table 1/2/3、Figure 2/3、§6 Limitations，优先实现 option schema 与 matched-budget ablation。<strong>最适合 baseline</strong>：Explorer-Zero（长程 RL 训练）；<strong>最适合 system idea</strong>：LAGO（持久 option 治理）；<strong>最适合新 benchmark/metric</strong>：二者结合的 state-verified causal skill credit；<strong>最适合 attack/evaluation</strong>：验证器欺骗与库污染传播。</p>
+<h2>Sources / Links</h2>
+<ul>
+<li><a href="https://arxiv.org/html/2610.19868v1">Explorer-Zero arXiv HTML 正文（2026-10-14）</a>；<a href="https://arxiv.org/abs/2610.19868">arXiv 元数据</a>。主要核对 §3–5、Table 1/2、Figure 2–5、Appendix D/E/F。</li>
+<li><a href="https://arxiv.org/html/2610.19843v1">LAGO arXiv HTML 正文（2026-10-14）</a>；<a href="https://arxiv.org/abs/2610.19843">arXiv 元数据</a>。主要核对 §3–6、Table 1–6、Figure 2/3/5/7、Appendix A/B。</li>
+<li>相关机制： <a href="https://doi.org/10.1016/S0004-3702(99">Sutton et al., Options (1999)</a>00052-1)；<a href="https://arxiv.org/abs/2310.06770">SWE-bench</a>；<a href="https://arxiv.org/search/?query=R-Zero&amp;searchtype=all">R-Zero 相关检索</a>。</li>
+</ul>
+<p><strong>事实口径说明</strong>：论文报告值均按其自身定义与表格记录；没有额外实验或独立复现，不能把作者报告当成已验证的生产效果。所有新迁移方案、toy examples 和批判性假设均是本报告的研究推导，不是原论文声称的结果。</p>
+</section></main><footer class="wrap">独立研究整理 · 所有论文结果需以作者原文和实验协议为准 · 2026-10-16</footer></body></html>
