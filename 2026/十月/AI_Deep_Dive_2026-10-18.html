@@ -1,0 +1,525 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Daily Top Papers Deep Dive — 2026-10-18</title><style>
+:root{--ink:#233347;--muted:#68788a;--accent:#186d8d;--accent2:#d67d36;--paper:#fff;--bg:#eef3f6;--line:#dce5eb;--light:#f5f9fb}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.94}a{color:#08759a;text-decoration:none;border-bottom:1px solid #9fc4d4}a:hover{color:#a95223}header{background:linear-gradient(125deg,#142a41,#1e5468);color:white;padding:55px max(5vw,25px) 40px}header .overline{font-size:13px;letter-spacing:3px;color:#b6d6e0;text-transform:uppercase}header h1{font-size:clamp(28px,4vw,48px);margin:13px 0 12px;line-height:1.22;letter-spacing:-1px}header p{max-width:1100px;color:#d8e7ed}header .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.badge{padding:4px 12px;border:1px solid #66879a;border-radius:40px;color:#d9edf5;font-size:12px}.layout{max-width:1450px;margin:0 auto;display:grid;grid-template-columns:280px minmax(0,1fr);gap:24px;padding:25px 25px 100px}.side{position:sticky;top:18px;align-self:start;max-height:calc(100vh - 36px);overflow:auto;background:white;border:1px solid var(--line);border-radius:15px;padding:19px 16px;box-shadow:0 4px 20px #2546600c}.side h3{font-size:12px;color:var(--muted);letter-spacing:2px;margin:20px 5px 8px}.side a{display:block;border:0;padding:5px 8px;border-radius:7px;font-size:12.5px;line-height:1.5;color:#34506b}.side a:hover{background:#eaf3f7}.side .lvl3{padding-left:19px;color:#6a7d90;font-size:11.5px}.side .toplink{font-weight:700;font-size:14px;color:#126785}.content{min-width:0}.summary,.paper,.cross{background:white;border:1px solid var(--line);border-radius:17px;padding:clamp(20px,3.6vw,55px);margin-bottom:24px;box-shadow:0 5px 25px #2546600b}.summary{background:linear-gradient(125deg,#ffffff,#f5fafc)}.summary h2{margin-top:0}.hero-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{border:1px solid #d8e5ec;background:white;border-radius:12px;padding:18px}.card strong{display:block;font-size:16px;color:#153f57}.card p{font-size:14px;color:#566a7d;margin-bottom:0}.section-tag{font-size:12px;letter-spacing:2px;color:var(--accent2);font-weight:800}.paper h2,.cross h2{margin-top:48px;border-top:1px solid var(--line);padding-top:28px;font-size:25px;color:#1c435d;line-height:1.4}.paper h2:first-of-type,.cross h2:first-of-type{border:0;padding-top:0;margin-top:20px}.paper h3,.cross h3{font-size:19px;margin:30px 0 12px;color:#245a70}.paper p,.cross p{margin:12px 0 16px;text-align:justify;overflow-wrap:anywhere}.paper ul,.cross ul{padding-left:24px}.paper li,.cross li{margin:6px 0}.paper strong,.cross strong{color:#143e55}.paper blockquote{border-left:4px solid var(--accent2);background:#fff8f0;padding:8px 20px}.formula{font-family:ui-monospace,"SFMono-Regular",Consolas,monospace;font-size:14px;line-height:1.8;overflow-x:auto;white-space:nowrap;background:#f2f7fb;border-left:4px solid #3983a1;padding:16px 20px;margin:18px 0;border-radius:4px}.table-wrap{overflow-x:auto;margin:20px 0;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;min-width:690px;font-size:13px;line-height:1.6}th,td{padding:11px 13px;border-bottom:1px solid #e0e8ee;vertical-align:top;text-align:left}th{background:#eaf3f8;color:#20536b;font-weight:700}tr:nth-child(even) td{background:#f9fbfd}tr:hover td{background:#f0f7fb}code{font-family:ui-monospace,Consolas,monospace;font-size:.9em;background:#edf4f7;border-radius:4px;padding:2px 4px}footer{text-align:center;color:#667b8b;font-size:12px;margin:20px 0 60px}@media(max-width:980px){.layout{display:block;padding:12px}.side{position:static;max-height:none;margin-bottom:16px}.side .lvl3{display:none}.hero-grid{grid-template-columns:1fr}header{padding:30px 22px}}@media print{body{background:white}.side{display:none}.layout{display:block;padding:0}.summary,.paper,.cross{border:0;box-shadow:none;padding:15px;margin:0}a{color:#000}.paper h2{page-break-after:avoid}header{background:white;color:black;padding:20px}header p,.badge{color:black}}
+</style></head><body>
+<header><div class="overline">AI RESEARCH · LONG-FORM PAPER NOTES</div><h1>Daily Top Papers<br>Deep Dive · 2026-10-18</h1><p>本期独立核验两篇 10 月中旬新稿的原文、公式、实验与附录。以可执行修复和动态稀疏为两条主线，重点讨论真实证据、系统代价、失败模式与研究迁移。</p><div class="meta"><span class="badge">2 PAPERS · 深度精读</span><span class="badge">Agent / Multi-Agent</span><span class="badge">Video Acceleration</span><span class="badge">中文 · 自包含 HTML</span></div></header>
+<div class="layout"><aside class="side"><a class="toplink" href="#selection">今日选择</a><a class="toplink" href="#paper-aria">① ARIA · 多 Agent 在线修复</a><a class="tocitem lvl2" href="#aria-1">1. 基本信息与研究定位</a><a class="tocitem lvl3" href="#aria-2">1.1 人话版（先理解问题）</a><a class="tocitem lvl2" href="#aria-3">2. Background、Gap 与核心观察</a><a class="tocitem lvl2" href="#aria-4">3. Method Deep Dive：从离线轨迹到在线修复</a><a class="tocitem lvl3" href="#aria-5">3.1 数据源选择：repair-optimality</a><a class="tocitem lvl3" href="#aria-6">3.2 事件归一化、定位与修复证据</a><a class="tocitem lvl3" href="#aria-7">3.3 三阶段训练，实际细分五个训练相位</a><a class="tocitem lvl3" href="#aria-8">3.4 运行时可实施的边界</a><a class="tocitem lvl2" href="#aria-9">4. Toy Example：一条错误如何被拦住</a><a class="tocitem lvl2" href="#aria-10">5. Baseline Deep Comparison：为什么选择这些对手</a><a class="tocitem lvl2" href="#aria-11">6. Experiment Setup 与 Metrics 教学</a><a class="tocitem lvl2" href="#aria-12">7. Results：定量证据链与反例</a><a class="tocitem lvl3" href="#aria-13">7.1 关键图表逐张读</a><a class="tocitem lvl2" href="#aria-14">8. Claim vs Evidence、创新与局限</a><a class="tocitem lvl2" href="#aria-15">9. Reproduction View：最小可跑验证</a><a class="tocitem lvl2" href="#aria-16">10. Research Value 与两条可立即开工的迁移</a><a class="tocitem lvl3" href="#aria-17">Migration A：Handoff-Verified Repair for Coding Agents</a><a class="tocitem lvl3" href="#aria-18">Migration B：Counterfactual Gate Audit for Tool-use Security</a><a class="tocitem lvl2" href="#aria-19">11. 如果只记住这篇（九句话）</a><a class="toplink" href="#paper-gsrs">② GSRS · 视频稀疏加速</a><a class="tocitem lvl2" href="#gsrs-1">1. 基本信息与一句话定位</a><a class="tocitem lvl3" href="#gsrs-2">1.1 人话版（250–400 字）</a><a class="tocitem lvl2" href="#gsrs-3">2. Background、Research Gap 与核心机制</a><a class="tocitem lvl2" href="#gsrs-4">3. Method Deep Dive：逐步走过整个 pipeline</a><a class="tocitem lvl3" href="#gsrs-5">3.1 空间-时间 token 重排与 warmup</a><a class="tocitem lvl3" href="#gsrs-6">3.2 Growing Sparsity：Top-p 与时间表</a><a class="tocitem lvl3" href="#gsrs-7">3.3 Reduced Search：为什么始终回到 S₁，而非上一轮 mask</a><a class="tocitem lvl3" href="#gsrs-8">3.4 关键公式：为什么旧 LSE 不够精确</a><a class="tocitem lvl3" href="#gsrs-9">3.5 Toy Example：从注意力权重到 mask</a><a class="tocitem lvl2" href="#gsrs-10">4. Baseline Deep Comparison：strongest baseline 如何选</a><a class="tocitem lvl2" href="#gsrs-11">5. Experiment Setup、指标和效率拆解</a><a class="tocitem lvl2" href="#gsrs-12">6. Results：至少八项具体证据与解释</a><a class="tocitem lvl3" href="#gsrs-13">6.1 Table / Figure 深读</a><a class="tocitem lvl2" href="#gsrs-14">7. Ablation、Claim vs Evidence 与局限</a><a class="tocitem lvl2" href="#gsrs-15">8. Reproduction View：从简化版到真实内核</a><a class="tocitem lvl2" href="#gsrs-16">9. Research Value 与两条研究迁移</a><a class="tocitem lvl3" href="#gsrs-17">Migration A：Query-Aware Dynamic Sparsity for Long-Video VLM</a><a class="tocitem lvl3" href="#gsrs-18">Migration B：Worst-Case Sparse Attention Audit for Video DiT</a><a class="tocitem lvl2" href="#gsrs-19">10. 如果只记住这篇（九句话）</a><a class="toplink" href="#synthesis">跨论文综合</a><a class="tocitem lvl2" href="#synthesis-1">1. Cross-Paper Synthesis：两篇共同说明什么</a><a class="tocitem lvl2" href="#synthesis-2">2. Combined Research Opportunities</a><a class="tocitem lvl2" href="#synthesis-3">3. Collision / Overlap：哪些已经有人做</a><a class="tocitem lvl2" href="#synthesis-4">4. Reading / Reproduction Priority</a><a class="tocitem lvl2" href="#synthesis-5">5. Sources / Links 与证据审计</a></aside>
+<main class="content"><section id="selection" class="summary"><div class="section-tag">TODAY'S SELECTION</div><h2>为什么选这两篇？</h2><div class="hero-grid"><div class="card"><strong>① ARIA — Execution-Verified Repair</strong><p>解决多 Agent 错误传播时的在线干预：3953 条执行验证修复样本，联合学习 gate 与 patch；官方代码可访问。正文约 5254 汉字。</p></div><div class="card"><strong>② GSRS — Growing Sparsity</strong><p>解决视频 DiT 逐步去噪时的无效注意力计算：A800 端到端 1.55×/1.68×，H800 最高 2.21×；正文约 4922 汉字。</p></div></div><p><strong>筛选理由：</strong>两篇均有完整 HTML 正文、公式、定量表格、消融及附录；ARIA 标记 BACKFILL，GSRS 属近 72 小时；分别代表 Agent 可靠性和 Video/Inference 加速，且不与 10 月 13–17 日已选论文重复。GSRS 官方实现未核实，不将其标记为已开源。核心取舍是证据完整性优先于凑满三篇。</p><p><strong>Best Migration Direction：</strong>Risk-Calibrated Selective Intervention（可验证风险驱动的动态计算/执行预算）。<strong>Strongest Collision：</strong>NONE（两篇之间无直接撞题；各自方向存在明确相邻工作）。</p></section>
+<article class="paper" id="paper-aria"><div class="section-tag">PAPER 01 · AGENT / MULTI-AGENT</div><h1>ARIA · Runtime Inspection and Amendment</h1><h2 id="aria-1">1. 基本信息与研究定位</h2>
+<p><strong>题名</strong>：ARIA: Runtime Inspection and Amendment for Multi-Agent Systems。<strong>作者</strong>：Bolin Shen、Yushun Dong；<strong>机构</strong>：Florida State University。<strong>版本</strong>：arXiv:2610.20780v1，页面标注 2026-10-14，出现在 10 月 16 日 cs.AI 新稿列表；<strong>BACKFILL（比严格 72 小时窗口略早，但机制价值高）</strong>；目前按预印本处理，<strong>Venue：未报告</strong>。<strong>论文</strong>：<a href="https://arxiv.org/html/2610.20780">arXiv 正文</a> / <a href="https://arxiv.org/pdf/2610.20780">PDF</a>；<strong>代码</strong>：<a href="https://github.com/LabRAI/ARIA">LabRAI/ARIA</a>，仓库包含 <code>src/aria</code>、<code>src/repair</code>、<code>src/inference</code>、<code>configs</code> 和评测脚本，已公开，不等于所有模型权重与原始轨迹都完整开放。</p>
+<p><strong>一句话定位</strong>：把多 Agent 执行中的“事后发现哪里错了”推进为“运行到错误边界时，低成本识别、定位并替换下一条可执行消息”，通过执行验证的历史修复轨迹训练一个跨框架的干预策略。</p>
+<h3 id="aria-2">1.1 人话版（先理解问题）</h3>
+<p>假设一个编程 Agent 把需求交给规划 Agent，后者误把“不能删除用户文件”理解成“允许清空临时目录”，接着执行 Agent 根据错误计划发出危险指令。等最终测试失败才回看日志，虽然能找到原因，却已浪费工具调用，甚至可能改坏环境。ARIA 的想法是：先离线收集大量真实失败轨迹，在失败发生的位置切断旧轨迹，提出新的消息或步骤，真正恢复执行并用任务评测器确认成功；然后把“错误是什么、该在哪一步截断、用什么替换、是否值得干预”作为训练目标。作者汇集超过 2.4 万条轨迹，筛出 3953 对经过执行验证的修复样本；再用结构化监督、偏好学习和执行反馈优化，让较小的修复模型在其他 Agent 继续运行之前做检查。其意义不是宣称可以任意回滚多 Agent 系统，而是把验证成本从每次在线搜索移到离线数据建设，并把<strong>修复收益与误干预风险</strong>放进同一决策问题。</p>
+<h2 id="aria-3">2. Background、Gap 与核心观察</h2>
+<p>传统 MAS（Multi-Agent System）靠角色分工提升任务覆盖：MetaGPT 是相对固定的角色流水线，OpenManus 偏工具调用与委派，Magentic-One 通过 ledger 协调，AG2 使用群聊式消息路由。系统的难点不止单模型幻觉，而是<strong>错误沿依赖边传播</strong>：一个 Agent 的未经核验陈述成为下游 Agent 的前提；后续工具执行会把错误固化成外部状态。此时“发现错误”与“能修复错误”不是一回事。</p>
+<p>已有 Who&amp;When 偏向定位责任 Agent 和步骤；AgentRx 从约束与工具规范追踪故障；ErrorProbe 结合回溯与执行验证形成诊断；DoVer 能尝试消息或计划编辑并重放，因而在“验证具体补丁”上更接近 ARIA。然而这些方法若在每次新故障出现时反复试错，在线成本会高，而且定位标签未必告诉模型如何输出一个能被执行器接受的替代事件。ARIA 的 gap 是<strong>把事后验证过的干预变成可迁移的运行时预测能力</strong>。</p>
+<p>核心洞察一：采集数据时不能只找“最容易失败”的 Agent，也不能只找“最容易修复”的 Agent；要找失败概率与条件修复率乘积最大的配置。核心洞察二：训练数据必须包含<strong>未修复执行仍失败、修复执行确实成功</strong>的成对证据，而不是语言模型给补丁打高分。核心洞察三：在线干预要控制 false positive——原本会成功的运行被改坏，与恢复一个失败同样重要。这三项分别属于统计产出率原则、执行层实证构造和成本敏感控制设计，尚不能自动推导出普遍的因果定位正确性。</p>
+<h2 id="aria-4">3. Method Deep Dive：从离线轨迹到在线修复</h2>
+<p><strong>流程</strong>：配置候选 MAS×Benchmark×Host → 收集成功/失败轨迹 → 定位首个坏事件与归因 → 在切点替换后缀并成对重放 → 留存执行验证样本 → SFT → DPO/诊断迁移 → GRPO/门控优化 → 运行时检查待交付消息 → 合法时替换并继续。</p>
+<h3 id="aria-5">3.1 数据源选择：repair-optimality</h3>
+<p>一个 source cell 为 <code>c=(A,B,M)</code>，分别固定多 Agent 框架、任务分布和 host 模型。设 <code>a(c)</code> 为源运行通过概率，<code>r(c)</code> 为在源运行失败的条件下补丁经评测通过的概率，则每次源运行得到有效修复样本的期望率为：</p>
+<div class="formula">S(c) = [1 − a(c)] · r(c)；N 次有效源执行的预期验证修复数 = N·S(c)</div>
+
+<p>例子：系统甲失败率 80%，失败后仅 10% 能修复，<code>S=0.08</code>；系统乙失败率 40%，失败后 50% 能修复，<code>S=0.20</code>。即便甲更“脆弱”，乙每 100 次运行预期提供 20 条有效训练样本，而甲只有 8 条。这是产出率计算，不是新型 RL objective。必须把基础设施故障、评测器无结果与真正认知失败分开，否则 <code>1-a</code> 会被无关错误污染。</p>
+<h3 id="aria-6">3.2 事件归一化、定位与修复证据</h3>
+<p>把原生 MAS 消息、工具事件、工作区工件统一成有稳定 event ID 的可观察序列 <code>τ=(e₁,…,e_T)</code>；每条含角色、类型、内容及工具字段。长日志默认最多保留 64 个事件（最初 4 个和最后 60 个），所以“最早错误”只能相对于可见片段确定。定位模块先输出错误事件、证据、置信度；归因模块将其归入 6 组 26 类 repair attribution，并给出修复操作；补丁模块生成 <code>diagnosis + cut-event ID + replacement events</code>。合法补丁需遵守 ID、角色和顺序约束，不能凭空伪造工具结果，最多八个替代事件。</p>
+<div class="formula">τ′ = (e₁,…,e_k) ∥ (ê₁,…,ê_L)；保留 e_k，删除其后旧后缀，再接替代事件。</div>
+
+<p>关键是<strong>paired execution</strong>：同一任务、同一切点下，原控制轨迹仍失败，修改后通过官方 evaluator 才算 verified pair。单纯 JSON 合法、LLM 说“看起来修好了”都不够。这个设计增强了可操作证据，但环境随机性与多条可行修复并存意味着它不是唯一因果解释的证明。</p>
+<h3 id="aria-7">3.3 三阶段训练，实际细分五个训练相位</h3>
+<p><strong>Stage 1 / Structured SFT</strong>：把结构化输出分解为诊断 <code>d</code>、切点 <code>k</code>、替代事件 <code>e</code>，分别条件建模，并用部分前缀训练 inspection gate <code>gθ(τ≤t)</code>。反馈 dropout 让模型既能读完整失败及 evaluator feedback 做 post-hoc，也能在没有最终答案的 runtime 使用。损失可以理解为三项负对数似然相加：</p>
+<div class="formula">L_SFT = −E[log pθ(d|x̃) + log pθ(k|x̃,d) + log pθ(e|x̃,d,k)]</div>
+
+<p>最重要的 failure mode 是级联错误：诊断错会让切点与补丁都错；门控把成功轨迹误判为失败，会制造新故障。附录把首个坏事件索引 <code>b</code> 对应的门控目标设为 <code>1[t≥b]</code>，正文采用相应切点之后的判别写法；复现时应以项目的数据投影规则核对 off-by-one，而不是混用两种事件索引。</p>
+<p><strong>Stage 2 / Outcome-anchored DPO + Diagnosis Transfer</strong>：对同一可见前缀，成功补丁 <code>a⁺</code> 优于失败旧后缀或失败补丁 <code>a⁻</code>；用 SFT 检查点作为参考分布，增加成功补丁的相对对数几率：</p>
+<div class="formula">L_DPO = −E log σ{ β[(log πθ(a⁺|h)−log πref(a⁺|h)) − (log πθ(a⁻|h)−log πref(a⁻|h))] }</div>
+
+<p><code>β</code> 调节偏好强度相对参考策略的约束。诊断文字本身没有执行结果，作者使用“给相似事件提供诊断后，正确补丁的对数似然提升”作为迁移 proxy；这一步<strong>不是</strong>直接证明诊断因果正确，只证明对预测修复有帮助。</p>
+<p><strong>Stage 3 / Execution-grounded GRPO + Gate GRPO</strong>：从当前策略采样修复，实际恢复执行，奖励包含任务是否通过、是否有害、执行开销：</p>
+<div class="formula">r(y|x)=1[evaluator accepts] − λ_h·1[harmful] − λ_c·b(y)</div>
+
+<p>对诊断 <code>d</code> 的奖励混合源事件及不同 source cell 的 sibling repair 结果：<code>V(d)=(1−α)·平均源奖励 + α·平均跨 cell 奖励</code>；<code>α</code> 越高越重视跨框架迁移，但可能牺牲本 cell 最优修复。诊断 token 与补丁 token 分别做组内优势归一化，近似 GRPO；随后门控在相同随机种子的原始与干预运行之间优化：</p>
+<div class="formula">r_gate = Success_intervened − Success_baseline − λ_c·ΔExecutionBudget</div>
+
+<p>这里 state 是可见事件前缀，action 是“不改”或“定位+替代消息”，policy 是门控与修复模型，trajectory 是整个 MAS 运行，reward 是官方执行反馈，credit 分配到诊断、补丁和触发决策。它并非环境每一步都有 dense reward：大部分任务结果仍是稀疏二值信号，且 GRPO 需要额外 rollout；reward hacking 风险包括针对公开评测器过拟合、通过选择简单可修复样本获得虚高收益。附录特别指出当前 reference trainer 单次 inner update 的概率比为 1，不应把配置了 clipping 就宣传为多轮 PPO。</p>
+<h3 id="aria-8">3.4 运行时可实施的边界</h3>
+<p>作者的四个原生接入点都位于<strong>模型回答交付前</strong>。门控看当前待交付回答与历史，触发时产出建议，宿主验证合法性后决定是否替换。现有实现每次运行最多替换<strong>一条待发出的纯文本消息</strong>；不能直接修改 tool-call 结构化结果、回滚已经发生的工具动作或执行多事件重放。论文里训练补丁可描述更长的 continuation，但当前 live adapter 不等于具备完整回滚能力。运行时 EB=1 只表示没有再次执行整套 MAS，不表示 inspection 模型调用和 token 开销为零。</p>
+<h2 id="aria-9">4. Toy Example：一条错误如何被拦住</h2>
+<p>设三个 Agent：Planner、Coder、Reviewer。任务是“计算订单金额，但退款记录应排除”。Planner 事件 e₁ 给出字段；Coder 待发事件 e₂ 写成 <code>SUM(amount)</code>，漏掉 <code>status != refunded</code>；Reviewer 后续会执行 SQL 并交付错误总额。历史失败轨迹为 <code>[e₁,e₂,e₃,e₄]</code>。ARIA 在 e₂ 即将交付时读到“退款记录也被计入”的约束冲突，门控触发；定位 <code>k=1</code>，归因为过滤条件遗漏，建议将 e₂ 改为 <code>SELECT SUM(amount) FROM orders WHERE status != 'refunded'</code>，保持 Planner 已确认的上文不变。宿主校验这只是合法纯文本替换后交付，后续 Reviewer 重新检查结果。</p>
+<p>离线构造样本时，还要把替换前的运行与替换后的运行送到同一测试用例执行，证实前者失败、后者成功。运行时不能偷看答案，也不能凭“Reviewer 可能会修正”预先声称成功。若 Planner 已经删除数据库，则文本替换也无法恢复：这是当前接口的不可逆动作边界。再若 Coder 原本 SQL 正确，误触发反而会引入损害，因此 gate 的代价必须与修复能力共同优化。</p>
+<h2 id="aria-10">5. Baseline Deep Comparison：为什么选择这些对手</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Baseline</th>
+  <th>它怎么做，为什么合理</th>
+  <th>在本任务的缺口</th>
+  <th>ARIA 改动性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Zero-shot repair</td>
+  <td>让通用模型直接读失败日志给补丁；零训练门槛</td>
+  <td>不知道哪些补丁曾真正修复，结构与触发校准差</td>
+  <td>数据+学习机制</td>
+</tr>
+<tr>
+  <td>Who&amp;When</td>
+  <td>定位责任 Agent 和步骤；适合诊断</td>
+  <td>定位正确不代表替代 continuation 能通过评测</td>
+  <td>从归因到执行验证</td>
+</tr>
+<tr>
+  <td>AgentRx</td>
+  <td>利用任务约束/工具规范找关键错误</td>
+  <td>规则定位与修复生成间仍有断层</td>
+  <td>增加结构化补丁学习</td>
+</tr>
+<tr>
+  <td>ErrorProbe</td>
+  <td>回溯与验证错误模式；可积累经验</td>
+  <td>经验不一定变成跨系统在线门控</td>
+  <td>联合学习 gate 与 patch</td>
+</tr>
+<tr>
+  <td>DoVer</td>
+  <td>生成干预、重放并检查效果，修复证据最接近</td>
+  <td>每个新故障在线重试有额外 EB；依赖 replay</td>
+  <td>将昂贵搜索前置到训练</td>
+</tr>
+<tr>
+  <td>Spark to Fire / SafeAgent</td>
+  <td>在线控制跨 Agent 消息 / 调停行动</td>
+  <td>干预目标与已验证修复策略不完全一致</td>
+  <td>训练面向成功-伤害权衡</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest baseline 不能跨表一刀切</strong>：在 post-hoc Qwen2.5-7B 的总体 SR 上，Who&amp;When 为 31.6%，是该比较块最强对手；在 runtime Qwen2.5-7B 上，SafeAgent 的 17.8% SR 高于 Spark to Fire 的 13.5%，且其 HIR=13.9%，应与 ARIA 的 21.4%/2.00% 成对比较。作者在统一事件接口上做了 repository-local baseline 适配，并非逐个运行官方仓库的原始完整系统，这一点影响外部效度。</p>
+<h2 id="aria-11">6. Experiment Setup 与 Metrics 教学</h2>
+<p><strong>RQ1</strong>：给定失败轨迹，能否以近似同样的重执行预算完成更多修复？<strong>RQ2</strong>：换一个未见过的 MAS，修复策略能否迁移？<strong>RQ3</strong>：SFT、偏好学习、执行优化各自起什么作用？源轨迹覆盖 MetaGPT、OpenManus、Magentic-One、AG2 四框架；GSM-PLUS、MMLU、HumanEval、OlympiadBench、GAIA、SWE-bench-Lite 六 benchmark；源 host 含 Llama-3.1-70B、Qwen3-8B/32B、GPT-5.5 不同 reasoning tier、Claude-Sonnet-4-6 与 Claude-Opus-4.8。被训练的 repair backbone 是 Qwen2.5-Instruct 1.5B/3B/7B/14B 及 Llama-3.1-8B，不应把 host 模型与修复模型混淆。</p>
+<p>数据按任务 ID 做 nominal 60/20/20 训练/验证/测试，避免同一任务不同轨迹跨 split；未见系统测试将相应框架全部从训练、校准与选 checkpoint 中排除。SWE-bench-Lite 通过官方 Docker harness 验证，HumanEval 运行测试，GAIA 使用公开 quasi-exact answer matching；无法解析评测输出不等于失败。Reference recipe：Qwen2.5-7B、seed42、1 epoch、AdamW、LR 2e−4、LoRA rank16、BF16、梯度累积8、最大 4096 token、prompt 1024 token、feedback dropout0.25、DPO β0.1。配置值不是所有 release checkpoint 的实测训练账单；实际 GPU-hours、完整训练 tokens <strong>Not Reported</strong>。</p>
+<p><strong>SR（Success Rate）</strong>：通过任务数/该测试池任务数，越高越好；post-hoc 分母是确认失败的任务，runtime 分母是所有任务，因此两种 SR 不能互换。<strong>HIR（Harmful Intervention Rate）</strong>：结构错误、违反任务约束或实际替换造成评分下降的任务数/全测试池，越低越好；不是“在所有触发里有害的比例”。<strong>EB（Execution Budget）</strong>：平均每题完整 MAS 执行次数，越低越省重跑；但忽略局部模型推理、检查延迟与 token，需同时报告 wall-clock 和调用费用。报告中只给了 EB 作为主要成本指标，不可将 EB=1 解读为实时零开销。</p>
+<h2 id="aria-12">7. Results：定量证据链与反例</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>论文表格</th>
+  <th>对比</th>
+  <th>结果与差值</th>
+  <th>严格解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Table 1 / post-hoc Qwen</td>
+  <td>ARIA vs Who&amp;When</td>
+  <td>35.3% vs 31.6%，+3.7 pp</td>
+  <td>最强诊断基线之上仍有增益，EB 两者约 2</td>
+</tr>
+<tr>
+  <td>Table 1 / post-hoc Llama</td>
+  <td>ARIA vs Who&amp;When</td>
+  <td>16.9% vs 12.5%，+4.4 pp</td>
+  <td>跨修复 backbone 保持优势</td>
+</tr>
+<tr>
+  <td>Table 1 / Qwen HumanEval</td>
+  <td>ARIA vs DoVer</td>
+  <td>21.1% vs 18.4%，+2.7 pp</td>
+  <td>代码任务优势小于总体，不能宣称压倒性</td>
+</tr>
+<tr>
+  <td>Table 1 / Qwen SWE-L</td>
+  <td>ARIA vs Who&amp;When</td>
+  <td>6.15% vs 3.08%，+3.07 pp</td>
+  <td>相对翻倍但绝对通过率仍低，是真实弱项</td>
+</tr>
+<tr>
+  <td>Table 2 / runtime Qwen</td>
+  <td>ARIA vs SafeAgent</td>
+  <td>SR 21.4% vs 17.8%，+3.6 pp；HIR 2.00% vs 13.9%，−11.9 pp</td>
+  <td>同时提升通过率并降低有害干预</td>
+</tr>
+<tr>
+  <td>Table 2 / runtime Llama</td>
+  <td>ARIA vs SafeAgent</td>
+  <td>SR 19.2% vs 18.4%，+0.8 pp；HIR 1.49% vs 5.50%，−4.01 pp</td>
+  <td>通过率提升很小，主要优势是保守选择</td>
+</tr>
+<tr>
+  <td>Table 2 / Magentic-One Llama</td>
+  <td>ARIA vs SafeAgent</td>
+  <td>1.20% vs 0.80%，但 vs Spark 2.99% 更低</td>
+  <td>某个框架并非所有对手都胜，绝对性能极差</td>
+</tr>
+<tr>
+  <td>Table 3 / unseen system</td>
+  <td>ARIA 14B vs SafeAgent 7B</td>
+  <td>SR 22.4% vs 17.6%；HIR 4.79% vs 6.19%</td>
+  <td>大模型迁移好，但容量不匹配，不能当公平同规模对比</td>
+</tr>
+<tr>
+  <td>Table 4 / RQ3 子集</td>
+  <td>Full vs Stage1+3</td>
+  <td>SR 19.2% vs 17.6%，+1.6 pp；HIR 1.49% vs 3.13%</td>
+  <td>偏好阶段仍有独立作用</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest result</strong>：Qwen runtime HIR 从 SafeAgent 的 13.9% 降到 2.00%，且 SR 从 17.8% 升到 21.4%；比单纯提升修复率更能说明 gate 的价值。<strong>Weakest/failure</strong>：Magentic-One 绝对成功率低，SWE-L post-hoc 只有 6.15%；未见系统 HIR 仍会升高，说明 transfer 不等于无损。<strong>模型依赖</strong>：1.5B 在 Table 3 的 unseen SR=15.0%，甚至低于 SafeAgent 17.6%；大模型确有容量门槛。<strong>数据集依赖</strong>：数学和知识任务在聚合中占比较大，真实长周期软件工程的效果可能被平均数掩盖。</p>
+<h3 id="aria-13">7.1 关键图表逐张读</h3>
+<p><strong>Table 1</strong> 行是 post-hoc 方法，列是六任务 SR、总体 SR 和 EB。它证明在同一失败池与相近重执行次数下，ARIA 的修复成功率更高；但不能证明每种错误都定位得更准确，也不能从 EB 推出推理耗时。注意 DoVer 的 Qwen EB=3.24，ARIA=2.00，预算不同；最严格的预算比较还需看 Figure 3(b)。</p>
+<p><strong>Table 2</strong> 行是在线方法，列为各 MAS SR、总体 SR/HIR/EB。最有价值的是同时看 SR 与 HIR；若只看 SR，可能鼓励一个“见错就改”的激进 gate。Qwen 的 Magentic-One 仅 4.59%，说明协调拓扑复杂时还有大量未解故障。</p>
+<p><strong>Figure 3</strong> 左半是 SR–HIR 的二维权衡，右半是随 EB 增加的 SR 曲线。曲线趋势支持更强的初始补丁质量，而不是无限重试堆结果；但图形不能直接归因到诊断阶段，仍要靠消融。</p>
+<p><strong>Table 3 / Figure 4(a)</strong> 测未见系统与模型规模，1.5B→14B 的 unseen SR 15.0%→22.4%，HIR 8.18%→4.79%；既展示 scale 作用，也提醒实际部署若只能跑小模型可能达不到宣传效果。</p>
+<p><strong>Table 4 / Figure 4(b)</strong> 是三阶段消融与成功/失败转换流。Stage1→Stage1+2：in-domain SR 14.5%→16.6%，HIR 8.22%→4.15%；Stage1+3 的 SR=17.6%，HIR=3.13%；三者全用 SR=19.2%，HIR=1.49%。说明 Stage2/3互补，而非任何一个模块可单独替代。<strong>特别注意 RQ3 用单独固定子集，不能把 Table 4 的 19.2% 与 Table 2 的 21.4% 解释为性能下降。</strong></p>
+<h2 id="aria-14">8. Claim vs Evidence、创新与局限</h2>
+<p><strong>Authors Claim</strong>：可在运行时修复 MAS 错误；执行验证的历史修复可迁移到新系统；三阶段训练优于直接 prompt 或事后重试。<strong>Experiments Actually Show</strong>：在给定四种框架、六种 benchmark、指定消息替换接口、官方/适配评测协议下，ARIА 提高部分修复 SR 并降低 HIR；在完全排除某框架训练数据时仍有一定泛化。<strong>Not Yet Proven</strong>：对不可逆工具操作、权限边界、并发共享状态、长达数千步任务、攻击者主动投毒的记忆、不同供应商动态 API 变化仍有效；诊断文本一定是唯一真正根因；以及全流程总成本优于简单重试。</p>
+<p><strong>Contribution 分类</strong>：① New Benchmark/Dataset：3953 条 verified repair pairs 的跨 MAS 监督数据，属于较实在的数据贡献；② New Mechanism/System：gate+定位+替代消息的跨框架运行时协议，机制与工程兼有；③ New Objective：以 paired execution 奖励惩罚误干预并对诊断做跨 cell credit，属于已有 SFT/DPO/GRPO 组件的任务化组合，而非发明新优化器；④ New Empirical Finding：小模型通过离线修复训练可改善在线修复，且容量与门控校准重要。</p>
+<p><strong>Authors' limitation（可从接口与伦理陈述核验）</strong>：实时接入仅支持待发文本替换，不能回滚已执行工具；实际部署应保留宿主权限检查及人工监督。<strong>Additional limitation</strong>：配对验证只针对当前 evaluator 的目标，可能忽略未覆盖副作用；历史前缀训练的 gate 与真实运行中的分布可能不一致；source selection 可能偏向容易修复的错误而漏掉灾难性长尾；多 Agent 交互中跨任务数据泄漏、同一模板导致的过拟合需要额外审计。资源消耗、跨机器时延与模型调用成本未在主结果里形成完整 cost accounting。</p>
+<h2 id="aria-15">9. Reproduction View：最小可跑验证</h2>
+<p>官方仓库建议 Python 3.11 + <code>uv</code>，CUDA 用于训练与服务，框架依赖隔离；例如 <code>uv sync --locked</code>，AG2 另用 <code>UV_PROJECT_ENVIRONMENT=.venv-ag2 uv sync --locked --extra ag2</code>。原生实验需要对应 benchmark 安装；GAIA 需要合法 HF 访问，SWE-bench-Lite 需要 Docker。完整训练顺序为 <code>SFT → Repair DPO → Diagnosis Transfer → Repair GRPO → Gate GRPO</code>，入口统一 <code>python main.py -c &lt;config.yml&gt;</code>。最小验证不要直接重跑 2.4 万轨迹：先用仓库 <code>configs/manual_api_repair/ag2/gsm-plus.yml</code> 做一批已知失败、可公开验证的算术任务，保存原始 trace、cut、patch、两条 paired run 和 evaluator verdict；再用仓库 <code>configs/data_views/rq1_eval.yml</code> 构建 RQ1 子集，复现 zero-shot 与 ARIA 的 SR/EB 差异。</p>
+<p>复现最容易踩坑的是把失败的 HTTP/容器执行当作认知失败、任务级 split 泄漏、替代消息被宿主拒绝却计为 applied、以及把未完成的训练预算当作已完成更新。对每个任务记录 task_id、框架版本、host 模型、repair checkpoint、seed、修复前后结果、原始/替代文本、是否真正 enact、额外 tokens 与 wall-clock。<strong>首个可证伪实验</strong>：同样预算与相同失败任务下，verified-pair SFT 是否超过零样本补丁；第二个实验比较 gate on/off 对 HIR 的影响。先复现“有无增益”，再追求论文的全部 SR。</p>
+<h2 id="aria-16">10. Research Value 与两条可立即开工的迁移</h2>
+<p><strong>Baseline Potential</strong>：ARIA 的 paired execution repair protocol 可作为跨 Agent 故障恢复基线。<strong>Migration Potential</strong>：可迁移到代码 Agent 的 session handoff、工具执行前预检、可恢复任务状态。<strong>Systems Potential</strong>：把可实施补丁范围变成宿主明确的 capability contract。<strong>Attack Potential</strong>：故意在交接消息注入假成功记录，测 gate 是否误改。<strong>Evaluation Potential</strong>：SR/HIR 与“错误传播深度”联合衡量。<strong>Benchmark Potential</strong>：构造不可逆工具调用、异步多写者、状态版本冲突的 stress suite。<strong>New Paper Potential</strong>：把纯文本替换扩展为带事务语义的可验证状态恢复，并展示严格因果归因，存在研究空间，但必须检索现有 AgentRx/DoVer/ARIA 同题风险。</p>
+<h3 id="aria-17">Migration A：Handoff-Verified Repair for Coding Agents</h3>
+<p><strong>Original Problem</strong>：ARIA 在单条待发消息上做故障修复。<strong>Transferable Mechanism</strong>：执行验证的失败—修复成对轨迹与保守 gate。<strong>New Research Question</strong>：跨会话切换时，错误摘要是否会沿 Agent handoff 扩散，能否只修改摘要而不改变已验证事实？<strong>Method Modification</strong>：给每个 handoff 包附加 source event IDs、workspace commit/hash、未完成任务和可信度；只允许 gate 修改尚未提交的摘要字段，禁止伪造工具结果。<strong>Minimum Experiment</strong>：固定 100 个多步代码任务，制造 4 类摘要扰动（错误文件路径、旧测试结果、遗漏失败、错误依赖版本），每任务配相同初始 commit，跑无检查/LLM 审核/ARIA 风格 gate 三组，记录下一 Agent 是否重复错误。<strong>Model</strong>：Qwen2.5-7B 或已有可运行 coding-agent 模型；<strong>Dataset</strong>：SWE-bench-Lite 的可复现实例子集加自建 handoff perturbations；<strong>Baseline</strong>：no-gate、zero-shot verifier、ARIA 原始文本门控；<strong>Metric</strong>：最终任务通过率、错误传播率、HIR、额外 tokens/latency；<strong>Expected Contribution</strong>：带来源约束的 handoff 修复协议；<strong>Risk</strong>：注入扰动过于人工、模型本身能自行纠正；<strong>Collision Risk</strong>：与 ARIA/DoVer 和已有 provenance-aware agent debugging 高重合，创新必须落在“跨会话状态可验证性”而不是又训练一个诊断器。</p>
+<h3 id="aria-18">Migration B：Counterfactual Gate Audit for Tool-use Security</h3>
+<p><strong>Original Problem</strong>：runtime 修复以最终成功和 HIR 优化。<strong>Transferable Mechanism</strong>：同 seed 干预/不干预成对对照、诊断—补丁 credit。<strong>New Research Question</strong>：恶意工具结果能否诱使修复 gate 在原本正确的轨迹上执行错误干预？<strong>Method Modification</strong>：增加可实施性过滤器、工具结果可信级别、反事实触发一致性检查，且把攻击成功与误触发分别记账。<strong>Minimum Experiment</strong>：在 60 个 GAIA 或合成工具任务中，把 1 个检索结果改成伪系统指令/伪测试通过/伪授权三类，分别在 trigger 前后插入；对原任务与攻击任务成对运行，随机种子相同，记录 gate action、patch、终局。<strong>Model</strong>：7B repair model + 固定 host；<strong>Dataset</strong>：GAIA 可公开验证子集及人工污染的工具返回；<strong>Baseline</strong>：no-gate、简单 schema guard、ARIA gate；<strong>Metric</strong>：攻击成功率、false-intervention rate、SR、HIR、开销；<strong>Expected Contribution</strong>：对修复器本身的攻击与鲁棒性基准；<strong>Risk</strong>：模型可能只学会拒绝所有工具结果；<strong>Collision Risk</strong>：与 prompt injection/agent guardrail 工作冲突，需证明“修复器被诱导干预”是独立失败机制。</p>
+<h2 id="aria-19">11. 如果只记住这篇（九句话）</h2>
+<ol>
+<li>ARIA 研究的是多 Agent <strong>执行中</strong>的故障修复，而不只是事后归因。2. 3953 条修复样本必须经过原始失败、修改后成功的配对执行验证。3. <code>S=(1−a)r</code> 告诉我们采集“可修复失败”比采集“最多失败”更有效。4. 模型学习诊断、切点、替代事件和是否干预。5. SFT 教格式，DPO 教偏好，执行反馈 GRPO 教实际恢复。6. 门控奖励把误改原本正确的运行作为负面结果。7. Qwen runtime 的 21.4% SR 与 2.00% HIR 比单看成功率更重要。8. 现有 live hook 只能替换一条待发文本，不能回滚工具或保证系统安全。9. 最值得迁移的是“验证过的状态交接 + 保守干预 + 同条件反事实审计”，不是照抄三种训练算法。</li>
+</ol>
+</article>
+<article class="paper" id="paper-gsrs"><div class="section-tag">PAPER 02 · VIDEO ACCELERATION</div><h1>GSRS · Growing Sparsity and Reduced Search</h1><h2 id="gsrs-1">1. 基本信息与一句话定位</h2>
+<p><strong>题名</strong>：Sparse Attention for Video Generation Acceleration via Growing Sparsity and Reduced Search；<strong>方法简称</strong>：GSRS。<strong>作者</strong>：Yun Dai、Yuyun Chen、Jiarui Wen、Huiping Zhuang、Cen Chen、Ziqian Zeng；<strong>机构</strong>：South China University of Technology。<strong>版本</strong>：arXiv:2610.21129v1，2026-10-15，10 月 16 日列入 cs.CV 新稿；<strong>Venue</strong>：未报告，按预印本处理。<strong>正文</strong>：<a href="https://arxiv.org/html/2610.21129">arXiv HTML</a>；<strong>PDF</strong>：<a href="https://arxiv.org/pdf/2610.21129">原文 PDF</a>。<strong>代码状态</strong>：截至本次核查，正文没有提供 GSRS 专属官方仓库链接；文中给出 TileLang、Block Sparse Attention 的实现依赖，但不应把依赖库链接当作本方法已开源。</p>
+<p><strong>一句话定位</strong>：不是在每一步都固定保留 25% attention，而是依据视频扩散过程“越到后期越集中”的实测规律，让稀疏程度随去噪进程增长，并用早期候选集降低后续搜索成本。</p>
+<h3 id="gsrs-2">1.1 人话版（250–400 字）</h3>
+<p>视频生成模型通常不是一次画出整段视频，而是在几十轮去噪中不断修改视频潜变量。每一轮的 DiT 都要让海量时空 token 彼此做 attention；长视频、高分辨率下，这个过程非常贵。以往稀疏 attention 虽然能跳过部分 token 对，但常常全程使用相同稀疏率，还要花不少时间判断哪些块值得保留。GSRS 首先观察到：去噪早期注意力分布较散，后期逐渐集中在少量且较近的块上；而早期找到的重要块往往在后期仍有用。于是它在最初完整计算一段时间，随后每隔若干步重新选块，但每次保留的累计注意力概率门槛逐步降低；并且第二次起只在第一次确定的候选集内搜索。为了避免使用上一轮 softmax 归一化因子造成误选，它把精确块权重统计融合进 FlashAttention。论文在两种 720p 视频 DiT 上报告 A800 端到端 1.55×/1.68× 加速，在 H800 附录最高 2.21×；质量与完整 attention 接近。它的价值在于把<strong>动态计算预算、候选复用、准确统计和真实 wall-clock</strong>连成闭环，而不只是报告 FLOPs 下降。</p>
+<h2 id="gsrs-3">2. Background、Research Gap 与核心机制</h2>
+<p>标准 self-attention 先算 <code>Z=QKᵀ/√d</code>，再对每个 query 行 softmax，最后乘 <code>V</code>。当序列长度 <code>L</code> 随视频帧数与空间 patch 数一起增加时，<code>QKᵀ</code> 规模为 <code>L×L</code>；复杂度近似 <code>O(L²d)</code>，中间显存也可能成为问题。FlashAttention 通过分块与在线 softmax 降低 HBM 读写，但它不会自动把所有无用 query-key 配对消掉。块稀疏 attention 则只计算重要的 <code>(query block, key block)</code> 组合，必须支付“找出重要块”的搜索成本。</p>
+<p>旧范式有两类：静态窗口或预设稀疏形状，部署简单但容易漏掉跨帧长程关系；动态搜索按输入计算重要块，适应性更好却可能花掉大量额外时间。进一步地，如果一整段去噪过程都用同一稀疏率，就等于假定早期结构建立与后期细节修补的 attention 需求相同。GSRS 正是填补这个<strong>跨 denoising timestep 的预算分配缺口</strong>。例如 50 步去噪中，第 10 步还在决定整体运动，若仅保留极少块可能丢掉关键远程依赖；第 40 步可能主要修复局部纹理，仍然全局密集计算则浪费。</p>
+<p><strong>Observation 1</strong>：论文 Figure 1 在 Wan2.1 与 HunyuanVideo 上观察到 attention entropy 与 mean attention distance 随去噪步数总体下降，表示权重更集中、依赖更局部。<strong>Observation 2</strong>：Figure 2/3 显示早期高权重块在后期保留相当高的 attention recall。它们是跨模型、提示词、head 的经验趋势，不是对每个 query/head/提示词都成立的数学定理；突发运动、场景切换可能违反。由此得到两个机制：Growing Sparsity（后期提高稀疏率）和 Reduced Search（后续只在早期大候选集里找）。第三个关键工程观察是旧步的 LSE 可能漂移，导致块重要性估计失准。</p>
+<h2 id="gsrs-4">3. Method Deep Dive：逐步走过整个 pipeline</h2>
+<p><strong>流程</strong>：Video prompt/latent → 3D token Hilbert/Gilbert 重排 → 前 20% 去噪步 Full Attention warmup → 首次全空间块重要性统计 → Top-p 建立基准候选集 S₁ → 非搜索步复用当前 mask → 后续搜索步只在 S₁ 内重算块权重 → 递减 p 更新 mask → sparse attention → 最终生成视频。</p>
+<h3 id="gsrs-5">3.1 空间-时间 token 重排与 warmup</h3>
+<p>将 3D 视频张量直接按行优先展开，可能让真实空间邻近的 token 落在不同块中，导致块稀疏结构不符合运动连续性。作者使用 Generalized Hilbert/Gilbert curve 将时空邻近位置映射到更相近的一维顺序，提升块内局部性。实验块大小 <code>B=128</code>。这不是 GSRS 独有的新理论，但决定了“邻近 attention”能否变成真实块级跳过。</p>
+<p>50 步去噪的前 20%（默认十步）先走 full attention。第 10 步第一次在全空间做块权重统计，形成 <code>S₁</code>。早期 warmup 让结构建立阶段避免激进剪枝；其代价是最初若干步不省计算。注意它是<strong>推理时 warmup</strong>，不需要微调 DiT 权重；论文并未证明可以完全取消 warmup。后续搜索步是 20、30、40，非搜索步沿用最近一次 mask。</p>
+<h3 id="gsrs-6">3.2 Growing Sparsity：Top-p 与时间表</h3>
+<p>对某个 head、某个 query block，按 key block 重要性从大到小排序，选最小集合，使累计归一化权重 ≥ <code>p</code>。与固定 Top-k 的本质差异：若某 head 的前 5 块已覆盖 95% 注意力，则 <code>p=.95</code> 只需 5 块；若另一个 head 很分散，可能要 20 块。相同 <code>p</code> 自动产生不同稀疏率，避免给所有 head 同一计算预算。</p>
+<p>默认在 <code>{10,20,30,40}</code> 四个搜索步使用 <code>{0.95,0.90,0.85,0.80}</code>。越往后门槛越低，意味着可以跳过更多块，但这里不是“保证每步恰好少算 5%”；Top-p 的保留数量由每个 head 的实际分布决定。<strong>失败模式</strong>：如果后期某段运动突然要求远距离依赖，固定下降 schedule 可能删掉新重要的远程块。最自然的改进是基于当前不确定性自适应调整 p，而不是盲目下降。</p>
+<h3 id="gsrs-7">3.3 Reduced Search：为什么始终回到 S₁，而非上一轮 mask</h3>
+<p>第一次搜索在全空间找出较宽松的 <code>S₁</code>，此后在每个搜索步都对 <code>S₁</code> 内的块重新打分，生成新的 <code>S_k</code>。这里容易误解为 <code>S₄⊂S₃⊂S₂⊂S₁</code> 的永久单调删减；实际上 <strong>S₂、S₃ 可以彼此不包含</strong>，只需都属于 <code>S₁</code>。某块在第 20 步没入选，仍可能在第 30 步被重新选中。相比“上一轮 mask 搜索”，它允许候选集内部的回归；相比“每次全空间搜索”，它节省大量块重要性计算。</p>
+<p>例如 <code>S₁={A,B,C,D,E}</code>，第二次选 <code>{A,C,D}</code>，第三次若 C 变弱、B 变强，可以选 <code>{A,B,E}</code>。只查上一轮 <code>{A,C,D}</code> 会永远丢掉 B；GSRS 的 S₁ 限制保留了这种恢复能力。不过最初不在 S₁ 的 F 从此不可见，因此它仍有早期候选偏置，不能说“所有未来重要块都能恢复”。</p>
+<h3 id="gsrs-8">3.4 关键公式：为什么旧 LSE 不够精确</h3>
+<p>记 query token <code>i</code> 对 key token <code>j</code> 的 score 为 <code>z_ij=q_iᵀk_j/√d</code>，当前行的 log-sum-exp 为 <code>L_i=log Σ_j exp(z_ij)</code>。对于 query block <code>u</code> 与 key block <code>v</code>，块重要性定义为行均值：</p>
+<div class="formula">W_uv = (1/B) Σ_(i∈u) Σ_(j∈v) exp(z_ij − L_i)，且在同一候选归一化空间 Σ_v W_uv = 1。</div>
+
+<p>问题是 FlashAttention 逐个读 key block 时，完整 <code>L_i</code> 要到最后一个块处理完才知道。若拿上一去噪步 <code>L_i^old</code> 代替当前值，则每个 query 行被乘上 <code>exp(L_i^new−L_i^old)</code>；不同 query 行乘数不同，聚合后<strong>不仅 Top-p 总和不再为 1，连两个块的相对排名都可能翻转</strong>。这正是论文区别于单纯 cached-LSE 近似的机制重点。</p>
+<p>作者在每个 key block 内计算数值稳定的块 log-sum-exp：</p>
+<div class="formula">m_iv = max_(j∈v) z_ij；G_iv = m_iv + log Σ_(j∈v) exp(z_ij − m_iv)</div>
+
+<p>等整行当前 <code>L_i</code> 可用后，再恢复：</p>
+<div class="formula">W_uv = (1/B) Σ_(i∈u) exp(G_iv − L_i)</div>
+
+<p>这两相设计只存每个 query 行与 key block 的一个标量，不必保存完整 <code>L×L</code> 权重矩阵。<strong>精确性限定</strong>：在后续 search step，它是对当前候选 <code>S₁</code> 中 key 集合的归一化精确权重，不是对早已排除的全空间块重新恢复；这一区分决定了所谓 exact importance 的适用边界。数值稳定的 max-subtraction 也不能防止候选集本身遗漏关键块。</p>
+<h3 id="gsrs-9">3.5 Toy Example：从注意力权重到 mask</h3>
+<p>假设某 query block 对五个 key block 的当前归一化权重为 <code>[0.40,0.30,0.15,0.10,0.05]</code>，按重要性排序即 A、B、C、D、E。第 10 步 <code>p=.95</code>，累计 A+B+C+D=0.95，得到 <code>S₁={A,B,C,D}</code>；E 从后续搜索空间剔除。第 20 步，在 S₁ 内重新归一化后权重假设为 <code>[0.55,0.25,0.12,0.08]</code>，<code>p=.90</code>，选 A+B+C=0.92。第 30 步 B 变弱、D 变强，候选权重变为 <code>[0.60,0.05,0.10,0.25]</code>，<code>p=.85</code>，选 A+D=0.85；D 可以“重新出现”，尽管上一步未入选。第 40 步 <code>p=.80</code> 时再选最少覆盖 80% 的块。非搜索步直接沿用上次选择，无需重新全量打分。</p>
+<p>若错误地使用上一轮 LSE，使某行块权重总和从 1 放大为 1.2，那么 <code>p=.90</code> 可能只需选择前两块就“虚假达标”，导致漏算。这个小例子说明为何“候选复用”和“当前 LSE 统计”必须共同实现；若只把 p 调小而不处理估计误差，很难区分真实可稀疏与测量偏差。</p>
+<h2 id="gsrs-10">4. Baseline Deep Comparison：strongest baseline 如何选</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Baseline</th>
+  <th>核心机制</th>
+  <th>为什么合理</th>
+  <th>论文 setting 的弱点 / 与 GSRS 的差别</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Full Attention</td>
+  <td>所有 query-key 配对完整计算</td>
+  <td>质量参考上界，零稀疏误差</td>
+  <td>最慢，Wan A800 3689s、Hunyuan 3057s</td>
+</tr>
+<tr>
+  <td>SVG</td>
+  <td>预设空间-时间稀疏结构</td>
+  <td>实现直观，省搜索</td>
+  <td>结构固定，不适应 head 和 timestep</td>
+</tr>
+<tr>
+  <td>SpargeAttention</td>
+  <td>动态稀疏 attention</td>
+  <td>适用面广</td>
+  <td>Wan A800 1.35×，GSRS 1.55×；搜索和调度不够利用跨步规律</td>
+</tr>
+<tr>
+  <td>SVG 2</td>
+  <td>改进稀疏结构/选择</td>
+  <td>Wan 的强速度基线 1.50×</td>
+  <td>Wan 的 VBench-Q 83.19%，GSRS 83.72%；机制仍缺递增稀疏+精确候选统计</td>
+</tr>
+<tr>
+  <td>SVOO</td>
+  <td>利用输入稳定性/动态分块</td>
+  <td>Hunyuan 上 PSNR 30.31、LPIPS 0.172，质量强</td>
+  <td>GSRS 为 32.37、0.138，且 1.68× vs 1.55×</td>
+</tr>
+<tr>
+  <td>AdaSpa / LiteAttention</td>
+  <td>cached LSE 或逐块 skip</td>
+  <td>与 GSRS 的重要性估计最接近</td>
+  <td>前者旧 LSE 会漂移；后者被丢弃块无法恢复；附录有专门机制比较</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest baseline 取决于指标</strong>：Wan A800 的速度最强对手是 SVG2（1.50×），Hunyuan A800 的 SVOO、SVG2 都约 1.55×；Hunyuan 质量上 SVOO 的 PSNR/LPIPS 更接近 GSRS。不能简单说“所有 baseline 都比 GSRS 差很多”：比如 Wan 上 SVG 的 VBench-Q 83.69% 与 GSRS 83.72% 几乎相同，但 latency 差距更大。GSRS 的真正新意是动态时间表+候选搜索+精确统计的组合，Top-p、FlashAttention 和 Hilbert 重排本身都是已有技术。</p>
+<h2 id="gsrs-11">5. Experiment Setup、指标和效率拆解</h2>
+<p><strong>RQ1</strong>：递减稀疏与候选复用能否在真实视频 DiT 上减少 wall-clock 而维持质量？<strong>RQ2</strong>：精确 LSE 权重统计是否必要？<strong>RQ3</strong>：不同 p、搜索频率、warmup 和硬件的 trade-off 如何？模型为 Wan2.1-T2V-14B 与 HunyuanVideo-T2V-13B，均 720p、50 denoising steps，分别 21 与 32 latent frames，每帧 3600 tokens；使用 VBench 原始提示词。主实验单 NVIDIA A800、CUDA12.8；附录另有单 H800。实现基于 TileLang fused attention 与 Block Sparse Attention CUDA kernel，block size128，默认搜索步 10/20/30/40，前 10 步 full attention。模型重训练：<strong>不需要</strong>；是否可直接在普通消费级 GPU 重现：<strong>未验证</strong>。</p>
+<p><strong>PSNR</strong> 测生成帧与 full-attention 结果的像素重建差，越高越相似，但“更像 baseline”不等于人类觉得更好。<strong>SSIM</strong> 测结构相似度越高越好；<strong>LPIPS</strong> 感知特征距离越低越好；三者均以相同 seed 的 full-attention 输出为参考。<strong>VBench-Q</strong> 是视频质量的聚合指标，越高越好；还报告 Subject Consistency 与 Imaging Quality，不能把单一总分当作所有运动细节无损。<strong>Density</strong> 为相对 full attention 的实际 attention 计算密度，越低越省该模块的计算，但不是总 FLOPs 或显存占用百分比。<strong>Latency</strong> 为单次端到端生成耗时，越低越好；<strong>Speedup</strong> 为同 GPU 同设置下 full/GSRS latency，越高越好。TTFT/TPOT 是 LLM serving 指标，此视频生成工作不适用；吞吐/FPS、GPU 能耗和总 FLOPs 在主结果中 <strong>Not Reported</strong>；峰值显存在附录 Table 6 <strong>有单独的 125-frame HunyuanVideo 配置</strong>，Full 为 65.60GB、GSRS 为 62.65GB，不能把该数值直接套到主表的 32 latent-frame 生成配置。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Efficiency metric</th>
+  <th style="text-align:right">Wan Full</th>
+  <th style="text-align:right">Wan GSRS</th>
+  <th style="text-align:right">Hunyuan Full</th>
+  <th style="text-align:right">Hunyuan GSRS</th>
+  <th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Latent frames</td>
+  <td style="text-align:right">21</td>
+  <td style="text-align:right">21</td>
+  <td style="text-align:right">32</td>
+  <td style="text-align:right">32</td>
+  <td>没有减少帧数</td>
+</tr>
+<tr>
+  <td>Tokens / frame</td>
+  <td style="text-align:right">3600</td>
+  <td style="text-align:right">3600</td>
+  <td style="text-align:right">3600</td>
+  <td style="text-align:right">3600</td>
+  <td>没有剪掉输入 token</td>
+</tr>
+<tr>
+  <td>Attention density</td>
+  <td style="text-align:right">100%</td>
+  <td style="text-align:right">30.63%</td>
+  <td style="text-align:right">100%</td>
+  <td style="text-align:right">25.06%</td>
+  <td>只描述 attention 计算密度</td>
+</tr>
+<tr>
+  <td>A800 end-to-end latency</td>
+  <td style="text-align:right">3689s</td>
+  <td style="text-align:right">2380s</td>
+  <td style="text-align:right">3057s</td>
+  <td style="text-align:right">1825s</td>
+  <td>真实 wall-clock</td>
+</tr>
+<tr>
+  <td>A800 speedup</td>
+  <td style="text-align:right">1×</td>
+  <td style="text-align:right">1.55×</td>
+  <td style="text-align:right">1×</td>
+  <td style="text-align:right">1.68×</td>
+  <td>不等于密度倒数</td>
+</tr>
+<tr>
+  <td>H800 end-to-end latency</td>
+  <td style="text-align:right">2573s</td>
+  <td style="text-align:right">1443s</td>
+  <td style="text-align:right">2265s</td>
+  <td style="text-align:right">1026s</td>
+  <td>附录独立硬件对照</td>
+</tr>
+<tr>
+  <td>H800 speedup</td>
+  <td style="text-align:right">1×</td>
+  <td style="text-align:right">1.78×</td>
+  <td style="text-align:right">1×</td>
+  <td style="text-align:right">2.21×</td>
+  <td>最高 2.21× 出自这里</td>
+</tr>
+<tr>
+  <td>VBench-Q（A800）</td>
+  <td style="text-align:right">83.75%</td>
+  <td style="text-align:right">83.72%</td>
+  <td style="text-align:right">83.98%</td>
+  <td style="text-align:right">84.01%</td>
+  <td>近似持平，非全面质量保证</td>
+</tr>
+<tr>
+  <td>Total FLOPs / FPS</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>不应臆造</td>
+</tr>
+<tr>
+  <td>Peak GPU memory（Appendix Table 6，125 frames）</td>
+  <td style="text-align:right">—</td>
+  <td style="text-align:right">—</td>
+  <td style="text-align:right">65.60 GB</td>
+  <td style="text-align:right">62.65 GB</td>
+  <td>附录另设 125 帧、720p 条件，减少 2.95GB（约 4.5%）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>为何 density 25% 不等于 4×？</strong> 端到端时间还包括视频 VAE、非 attention MLP、调度与内存访问、搜索和 kernel launch；前十步还是 full attention，搜索步需要统计，实际稀疏 kernel 利用率受 GPU 架构影响。因此 25.06% attention density 对应 1.68× A800 加速是合理的系统结果，不是“理论没有达到目标”的简单失败。</p>
+<h2 id="gsrs-12">6. Results：至少八项具体证据与解释</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>来源</th>
+  <th>数字/差值</th>
+  <th>支持什么</th>
+  <th>替代解释与边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Table 1 / Wan A800</td>
+  <td>3689→2380s，节省1309s，1.55×</td>
+  <td>真正端到端变快</td>
+  <td>仅单 A800、指定 720p/50步</td>
+</tr>
+<tr>
+  <td>Table 1 / Hunyuan A800</td>
+  <td>3057→1825s，节省1232s，1.68×</td>
+  <td>两种 DiT 都有效</td>
+  <td>不等于所有分辨率同倍数</td>
+</tr>
+<tr>
+  <td>Table 1 / Wan VBench</td>
+  <td>83.75→83.72%，−0.03 pp</td>
+  <td>聚合质量几乎持平</td>
+  <td>局部细节仍可能损失</td>
+</tr>
+<tr>
+  <td>Table 1 / Hunyuan VBench</td>
+  <td>83.98→84.01%，+0.03 pp</td>
+  <td>无明显聚合质量退化</td>
+  <td>微小增益不能视为统计显著</td>
+</tr>
+<tr>
+  <td>Table 1 / Hunyuan vs SVOO</td>
+  <td>PSNR 32.37 vs 30.31，+2.06；LPIPS 0.138 vs 0.172</td>
+  <td>与 full 输出更接近</td>
+  <td>指标是相似度，不是人类偏好</td>
+</tr>
+<tr>
+  <td>Table 3 / Cached LSE</td>
+  <td>PSNR 31.96→25.32，−6.64；VBench 84.99→84.04</td>
+  <td>当前 LSE 精确统计重要</td>
+  <td>更低 density 20.89% 同时更快，非等算量</td>
+</tr>
+<tr>
+  <td>Table 3 / No reduced search</td>
+  <td>latency 1825→1990s，+165s；density 25.06→28.62%</td>
+  <td>候选复用降低开销</td>
+  <td>PSNR 32.57 略高，质量-速度有 trade-off</td>
+</tr>
+<tr>
+  <td>Table 5 / Top-p vs Top-k25%</td>
+  <td>PSNR 31.96 vs 29.84，+2.12；latency 1825 vs 1813s</td>
+  <td>自适应 head 预算提升相似度</td>
+  <td>不是严格相同实际 density</td>
+</tr>
+<tr>
+  <td>Appendix G / H800</td>
+  <td>Hunyuan 2265→1026s，2.21×</td>
+  <td>不同 GPU 上更大速度增益</td>
+  <td>不可把 H800 数字写成 A800 主结果</td>
+</tr>
+<tr>
+  <td>Appendix C / warmup</td>
+  <td>1→10 步 PSNR 24.60→32.37；latency 1680→1825s</td>
+  <td>早期 full attention 保护相似度</td>
+  <td>VBench-Q 波动较小，PSNR 与感知不完全一致</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest result</strong>：H800 的 Hunyuan 2.21× wall-clock speedup 与近似持平 VBench-Q。<strong>Weakest/failure</strong>：Cached LSE 替换导致 PSNR 大跌；极短 warmup 的 PSNR 24.60 说明不能无代价激进跳过；<code>p={.85,.80,.75,.70}</code> 虽有 1.87× A800 加速，但 PSNR 仅 28.95，存在明显相似度退化。<strong>模型依赖</strong>：Wan 与 Hunyuan 加速比例不同；<strong>数据依赖</strong>：基于 VBench prompt，不足以证明所有动作、镜头切换或长时一致性；<strong>trade-off</strong>：p 更低/搜索更少常能再快一点，但会改变像素一致性。</p>
+<h3 id="gsrs-13">6.1 Table / Figure 深读</h3>
+<p><strong>Figure 1</strong> 横轴是 denoising step，纵轴分别是 entropy 与平均注意力距离，下降趋势支持“后期更稀疏”的方向；但均值可能掩盖个别 head 的反常增长，不能直接当作单调保证。<strong>Figure 2/3</strong> 展示早期候选块的后续 attention recall 与块权重图，支撑复用 <code>S₁</code>；真正该审计的是 recall 最低的 prompt/head，而不只是平均 recall。</p>
+<p><strong>Figure 4</strong> 上半画逐步减小的 p，下半画固定早期候选 <code>S₁</code> 与后续重新搜索；两种机制互补，且 mask 在 <code>S₁</code> 内可以非单调变动。图中最容易被忽略的是首次全量 search 的开销：不能把全流程说成从第一步起就稀疏。</p>
+<p><strong>Table 1</strong> 同时放 PSNR/SSIM/LPIPS、VBench-Q、density、latency 和 speedup，是主要证据链。比如 Hunyuan 上 SVOO 的 Subject Consistency=96.88%，高于 GSRS 96.66%，但 GSRS 的总体 VBench-Q 更高，说明质量维度并非全胜。表中的 PSNR 32.37 与后续 Table 3 的 31.96 来自不同实验/固定子集，不能当作同一实验的数值矛盾。</p>
+<p><strong>Table 2/3/4/5</strong> 分别控制 p 时间表、候选搜索与权重统计、搜索频率、Top-p vs Top-k。Table 2 的默认 schedule PSNR=31.96，固定 p=.90 则 30.28 但 latency 更低（1774s）；证明的不是“递减 p 在所有目标上绝对最优”，而是默认权衡下相似度更好。Table 4 四次搜索 1825s，相比只在第10步搜索 2076s 更快，但频繁搜索本身也有开销，最佳间隔应由实际注意力变化与 kernel 成本决定。</p>
+<p><strong>Appendix C/E/G</strong> 让结论更可靠：warmup 增加提升相似度，五随机种子 PSNR=31.35±0.97、VBench-Q=84.43±0.65，H800 上有单独延迟测量。随机种子变化并不小，VBench-Q 相差 0.03 pp 不应夸大成质量提升。附录 H 对跨架构适用性明确有限，作者未验证所有扩散结构。</p>
+<h2 id="gsrs-14">7. Ablation、Claim vs Evidence 与局限</h2>
+<p>逐项看“去掉什么→指标怎么变→机制含义”：把当前 LSE 换成缓存 LSE，PSNR 31.96→25.32，说明权重归一化偏差可能导致错误 Top-p；去掉 Reduced Search，latency 1825→1990s，说明限制候选确实省成本；把候选改为上一轮 mask，PSNR 31.96→30.87，说明允许候选集内部重新进入有帮助；固定 p=.90，PSNR 30.28 低于递减策略 31.96，说明跨步预算合理。注意这些是<strong>组件消融的性能因果证据</strong>，不是严格证明“entropy 下降导致质量不变”的数学因果链。</p>
+<p><strong>Authors Claim</strong>：GSRS 无需训练，利用注意力动态减少无用计算，并在两种视频 DiT 上取得 1.55–2.21× 速度提升。<strong>Experiments Actually Show</strong>：指定模型、分辨率、50步、VBench 提示词和 A800/H800 条件下，attention density 显著下降，实际延迟下降且聚合质量近似维持。<strong>What Is Not Yet Proven</strong>：视频任意长度与场景切换下稳定；极端 prompt 的最坏质量；不同显存带宽和 batch size 下的加速；与 KV/feature cache、量化、distillation 组合是否互不干扰；对 streaming video VLM 是否可直接套用。</p>
+<p><strong>Contribution 分类</strong>：① New Empirical Finding：跨 denoising step 的 entropy/distance 下降及早期块 recall；② New Mechanism：递减 Top-p + 基准候选集反复搜索；③ New System/Engineering：fused 当前 LSE 块权重统计；④ New Objective：并无新训练目标，主要是推理调度与算子实现；⑤ New Benchmark：没有新数据集。<strong>作者明确局限</strong>：至少需要初始 full-attention warmup，研究范围限定视频 DiT。<strong>额外局限</strong>：主表未提供同配置峰值显存，但附录 Table 6 提供另一 125 帧配置的显存；能耗、总 FLOPs 和大 batch serving 未报告；块重排可能改变 cache layout；早期遗漏的块无法再进入；Top-p 的统计与排序本身有成本；单 GPU 的 end-to-end 数字不能直接推断多卡吞吐。</p>
+<h2 id="gsrs-15">8. Reproduction View：从简化版到真实内核</h2>
+<p>若无官方 GSRS 仓库，先做算法级最小实现：用 PyTorch 生成一个小型多 head attention 张量，按 B=16/32 分块，计算全量 softmax 的真实块权重 <code>W_uv</code>，实现 Top-p 排序、<code>S₁</code> 候选集、递减 p 与 mask 复用。先写单元测试：<code>Σ_v W_uv≈1</code>、缓存 LSE 漂移会导致错误累计、mask 可以在 <code>S₁</code> 内重新进入、不同 head 的保留块数不同。然后接入可跑的公开 Wan2.1 小规模推理或论文相同的 14B 模型；在单 GPU 先固定 seed、prompt、latent shape 和 50 步，用 hook 保存每层每头每步 entropy、distance、候选 recall 与 wall-clock。</p>
+<p>完整系统复现要遵循：CUDA12.8、TileLang fused search、Block Sparse Attention 非搜索步 kernel、Generalized Hilbert 重排、B=128、10/20/30/40 搜索、p=.95/.90/.85/.80、前十步 full attention。要分别测 kernel-only、search-step、non-search-step、whole-video latency，报告 GPU 型号、驱动、dtype、batch、峰值显存。<strong>首跑实验</strong>建议固定 20 个 VBench prompts 做 Full vs GSRS 的 paired-seed 视频生成，复现 Hunyuan 3057→1825s 的方向与 VBench-Q 接近；若硬件不足，先做缩短帧数的趋势验证，不宣称复现了论文主表。</p>
+<p>最容易踩坑的是：把 p 当成保留比例；把候选内的 exact LSE 误当全空间 exact；只比较 attention FLOPs 不计 search/重排；使用不同随机种子计算 PSNR；误把 H800 2.21× 写成 A800；或直接把单步内核加速当作整段视频加速。每次报告都必须注明测的是 kernel、denoising step 还是 end-to-end。</p>
+<h2 id="gsrs-16">9. Research Value 与两条研究迁移</h2>
+<p><strong>Baseline Potential</strong>：适合作为训练自由的 DiT attention 稀疏基线。<strong>Migration Potential</strong>：跨时间动态预算分配可以迁移到视频理解、长上下文推理与流式感知。<strong>Systems Potential</strong>：精确块权重统计与可复用候选集可成为通用 GPU attention primitive。<strong>Attack Potential</strong>：构造低频出现、但决定视频内容的远程块，攻击早期候选稳定性假设。<strong>Evaluation Potential</strong>：增加 worst-case attention recall、quality tail-risk 和 latency P99。<strong>Benchmark Potential</strong>：镜头切换/高速运动/长视频场景的稀疏失效测试。<strong>New Paper Potential</strong>：用动态风险预算取代固定 p schedule，但须与 AdaSpa、LiteAttention、GSRS 及近期动态 token pruning 做明确 collision 检索。</p>
+<h3 id="gsrs-17">Migration A：Query-Aware Dynamic Sparsity for Long-Video VLM</h3>
+<p><strong>Original Problem</strong>：GSRS 依据去噪步分配注意力预算。<strong>Transferable Mechanism</strong>：按信息集中度调预算、早期候选集重用、精确归一化块权重。<strong>New Research Question</strong>：视频理解中，query 不同、帧间变化不同，能否自适应保留关键时间块并减少 VLM prefill？<strong>Method Modification</strong>：把 denoising step 改成视频时间窗口或层深；候选集由初始粗采样帧与 query cross-attention 形成，按窗口 entropy 与运动变化调 p；允许镜头切换触发全空间刷新。<strong>Minimum Experiment</strong>：固定 200 个 Video-MME/LongVideoBench QA，采样 32/64/128 帧；比较无压缩、固定 token budget、静态 Top-k、动态 p+候选刷新；每题同 seed、同模型，记录 frame recall、visual token 数、TTFT、GPU 峰值与 QA accuracy。<strong>Model</strong>：Qwen3-VL-8B 或可用的 LLaVA-OneVision-7B；<strong>Dataset</strong>：Video-MME 与 LongVideoBench；<strong>Baseline</strong>：uniform frame sampling、FastV、VisionZip/VETO（按可用实现）；<strong>Metric</strong>：QA accuracy、TTFT、prefill tokens/s、P99 latency、attention recall；<strong>Expected Contribution</strong>：以 query-conditioned risk 控制视频 token 预算；<strong>Risk</strong>：VLM attention 不一定呈现 DiT 的去噪单调规律，候选生成开销可能抵消收益；<strong>Collision Risk</strong>：与 VETO、TTF、CaCoVID 等视频 token 压缩高度相邻，需把“风险触发的候选刷新”做成核心差异。</p>
+<h3 id="gsrs-18">Migration B：Worst-Case Sparse Attention Audit for Video DiT</h3>
+<p><strong>Original Problem</strong>：GSRS 的早期 <code>S₁</code> 限制可能漏掉后期突然重要的块。<strong>Transferable Mechanism</strong>：以候选 attention recall 与质量损失为验证信号。<strong>New Research Question</strong>：哪些运动/镜头模式导致 early-candidate 假设失效，能否在质量损失前检测并重建候选集？<strong>Method Modification</strong>：定义每步 full-attention shadow recall <code>R_t=Σ_{v∈S₁}W_uv</code>，使用少量随机 head/probe 估计 R_t；低于阈值时执行一次 full refresh，并对 p 做局部回退。<strong>Minimum Experiment</strong>：选 50 个 VBench prompt 加 50 个程序化“快速移动/突变场景”prompt；同 seed 生成 Full、GSRS、GSRS+Refresh，记录每层/head 最低 recall、PSNR P10、VBench-Q、latency、refresh 次数，扫阈值 0.8/0.9/0.95。<strong>Model</strong>：Wan2.1-T2V-14B（算力不足先用缩小模型作机制验证）；<strong>Dataset</strong>：VBench + 自建 stress prompts；<strong>Baseline</strong>：Full、GSRS、固定 p、定时全刷新；<strong>Metric</strong>：tail PSNR、VBench-Q、P99 latency、worst-head recall；<strong>Expected Contribution</strong>：稀疏注意力最坏情况评测与自恢复策略；<strong>Risk</strong>：shadow probe 的计算开销、质量损失与 recall 不完全对应；<strong>Collision Risk</strong>：与动态稀疏搜索及异常刷新方法可能重合，须展示“最坏风险可控”而非仅均值加速。</p>
+<h2 id="gsrs-19">10. 如果只记住这篇（九句话）</h2>
+<ol>
+<li>GSRS 针对的是视频 DiT 反复去噪时的 attention 计算，而不是剪掉视频帧。2. 作者观察到后期 attention 通常更集中、更局部。3. 因此 Top-p 门槛从 .95 逐步降到 .80，后期允许更多块跳过。4. 第一次搜索得到较宽候选 <code>S₁</code>，后续只在 <code>S₁</code> 内重搜。5. 它允许候选集内被暂时丢弃的块重新出现，但 <code>S₁</code> 外的块不能回来。6. 当前 LSE 的精确块权重统计避免旧 LSE 漂移引发错误 Top-p。7. A800 主表速度是 Wan 1.55×、Hunyuan 1.68×，H800 附录最高 2.21×。8. VBench-Q 近似不变，不代表每个 prompt 和每个运动细节都无损。9. 最有价值的后续研究是风险驱动的候选刷新、最坏质量审计与迁移到 query-aware 视频理解。</li>
+</ol>
+</article>
+<section class="cross" id="synthesis"><div class="section-tag">CROSS-PAPER RESEARCH SYNTHESIS</div><h1>跨论文综合、研究机会与 Collision</h1><h2 id="synthesis-1">1. Cross-Paper Synthesis：两篇共同说明什么</h2>
+<p>今天两篇看似分别研究 Agent reliability 和 Video DiT acceleration，实则都在回答一个系统问题：<strong>何时应当花费额外计算或修改执行路径，何时应当保留原路径？</strong> ARIA 让检查器只在预期修复收益大于误干预风险时改变待发消息；GSRS 让 attention 在当前概率质量足够集中时减少块计算，并在需要时重新搜索。前者的错误代价是“把本来正确的运行改坏”，后者的错误代价是“跳过本来重要的注意力块”。两者都需要可验证反馈、选择性执行和明确成本，但优化目标并不相同，不能强行说它们提出同一方法。</p>
+<p>ARIA 通过同 seed 的 baseline/intervention paired execution 估计真实任务收益；GSRS 通过 full attention 对照、精确 LSE 权重统计、质量指标和 wall-clock 验证稀疏决策。值得迁移的是<strong>先定义可测的干预风险，再决定预算</strong>，而不是简单把 Agent 的 GRPO 套到 DiT 或把 GSRS 的 Top-p 直接搬到 Agent memory。两者也暴露相同的“早期决策锁死未来空间”风险：ARIA 只看截断的 64 个事件，早期被裁掉的根因可能不可见；GSRS 把未来搜索限制在最初的 S₁，候选外的后来重要块无法回来。它们都值得加入周期性 refresh、置信度不足时回退与长程失效监测。</p>
+<h2 id="synthesis-2">2. Combined Research Opportunities</h2>
+<p><strong>Opportunity A — Risk-Calibrated Selective Intervention</strong>：将系统的每次干预统一表述为 <code>Expected Benefit − Harm Probability×Harm Cost − Compute Cost</code>。在 Agent 上 benefit 是任务恢复概率，harm 是破坏原本正确的执行；在 Video 上 benefit 是减少 attention latency，harm 是输出质量的尾部下降。最小验证不要求联合训练两种模型：先在 ARIA 记录 gate 的置信度分桶与实际 harm rate；在 GSRS 记录每步 entropy、candidate recall、PSNR P10；分别做风险校准曲线，再看是否能用同一个预算控制框架解释两种系统。</p>
+<p><strong>Opportunity B — Counterfactual State/Attention Audit</strong>：为每次“保留还是跳过”保留 shadow 证据。Agent 保存原消息与替代消息并做 paired run；Video 对少量 sampled heads 周期性执行 full-attention probe，与 sparse 输出比较。统一记录 <code>(state_id, action, estimated_risk, observed_outcome, compute_cost)</code>。研究价值在于提出一个通用的 intervention ledger，而不是仅以最终成功率或 FLOPs 评判策略。</p>
+<p><strong>Opportunity C — Long-Horizon Recovery Benchmark</strong>：故意让 Agent 的错误摘要跨多次 handoff 传播，同时让视频模型的关键运动块在后半段才出现。观察系统是否有能力“重新打开被排除的候选”，并分别统计修复时延和质量尾部风险。这里的共享概念是<strong>候选空间随时间收缩带来的不可恢复性</strong>；但两个任务的因果机制不同，应分别设计基准，最后再比较抽象规律。</p>
+<h2 id="synthesis-3">3. Collision / Overlap：哪些已经有人做</h2>
+<p><strong>直接论文 Collision：NONE</strong>。ARIA 的主题是执行验证的 MAS 在线修复，GSRS 是视频扩散注意力调度，研究对象与实验协议不相同。<strong>方法级重叠：明显存在</strong>：ARIA 与 DoVer、Who&amp;When、AgentRx、ErrorProbe 在诊断/修复任务上相邻；GSRS 与 AdaSpa、LiteAttention、SVOO、SVG2 在稀疏选择上相邻。研究迁移时要避免“再做一个 gate”或“再把 p 设成动态值”这种薄创新。潜在新意必须落在可证伪的新设置：如不可逆动作下的可实施性证明、最坏 head recall 下的质量保障、跨会话状态 provenance、实时计算成本的校准。</p>
+<p>两篇还有<strong>证据类型差异</strong>：ARIA 的 SR/HIR 是任务结果与有害干预率，能比较任务级影响，却不能直接给出毫秒级系统效率；GSRS 的 latency 是真实端到端时间，质量评测仍是 VBench 与 full-attention 相似度，不能保证所有主观视频质量。对任意“更安全且更快”的新论文，应同时要求可验证任务结果、真实 wall-clock 和 worst-case failure，而不是只选一种好看的指标。</p>
+<h2 id="synthesis-4">4. Reading / Reproduction Priority</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>优先级</th>
+  <th>工作</th>
+  <th>适合做什么</th>
+  <th>最先跑的实验</th>
+  <th>主要障碍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td>ARIA</td>
+  <td>Agent runtime、handoff、provenance、故障恢复</td>
+  <td>公开 AG2/GSM-PLUS 子集：verified pair + gate-on/off HIR</td>
+  <td>需多套框架依赖、API 与配对执行</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>GSRS</td>
+  <td>视频 DiT attention、动态计算预算、kernel 工程</td>
+  <td>小规模精确块权重单测，再同 seed 生成 20 个 VBench 样本</td>
+  <td>官方 GSRS 实现链接未确认；14B 模型/大显存</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>两篇联合</td>
+  <td>可验证的风险预算与候选刷新</td>
+  <td>统一 intervention ledger，绘制 risk–cost–quality 曲线</td>
+  <td>统一理论抽象容易掩盖任务差异</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>推荐阅读顺序</strong>：先读 ARIA 的 Section 2.1–2.2、Table 2、Appendix B.6–B.7；再读 GSRS 的 Section 4–5、Table 1/3、Appendix A.2/A.3/G/H。若目标是近期动手复现，ARIA 有官方代码和配置更适合先做受控小实验；若目标是系统加速机制创新，GSRS 的精确 LSE 统计、候选复用和 worst-case recall 更值得深入。</p>
+<h2 id="synthesis-5">5. Sources / Links 与证据审计</h2>
+<p><strong>Primary Sources</strong>：<a href="https://arxiv.org/html/2610.20780">ARIA arXiv HTML</a>（Section 2、Table 1–4、Appendix B–E）、<a href="https://github.com/LabRAI/ARIA">ARIA official code</a>（Quick Start、configs、scripts）、<a href="https://arxiv.org/html/2610.21129">GSRS arXiv HTML</a>（Section 4–6、Table 1–5、Appendix A–K）、<a href="https://arxiv.org/pdf/2610.21129">GSRS PDF</a>。<strong>检索窗口</strong>：2026-10-15 至 2026-10-18；两篇 v1 分别标注 10 月 14/15 日；GSRS 属近 72 小时，ARIA 的 v1 日期略早于严格 72 小时窗口，明确标记 BACKFILL（仍在近期高价值补充范围）。<strong>Code status</strong>：ARIA 官方仓库可访问；GSRS 官方代码链接未在论文中发现，不作已发布推断。<strong>Depth Audit</strong>：两篇均核验了正文、方法公式、实验设置、主要 baseline、5+ 定量结果、3+ 表图、消融、作者与额外局限、复现路径、两条可执行迁移；数值未报告时明确标记，跨测试池与跨 GPU 结果不混算。本文迁移方向是研究假设，不是作者已经证明的实验结论。</p>
+</section><footer>Research digest · 2026-10-18 · 所有数值均以文中所引原始论文的相应实验设置为准；研究迁移为建议而非原论文已验证结论。</footer></main></div></body></html>
