@@ -1,0 +1,483 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Deep Dive — 2026-10-19</title><style>
+:root{--ink:#233147;--muted:#64748b;--line:#dce5ee;--bg:#f3f6fa;--panel:#fff;--accent:#155e9a;--accent2:#15847c;--warn:#9c4c22}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;font-size:16px;line-height:1.88}
+a{color:#0968b1;text-decoration:none;border-bottom:1px dotted #91b8d3}a:hover{color:#064477;border-bottom-style:solid}
+.hero{background:linear-gradient(125deg,#11243d,#164b70 65%,#166b77);color:#fff;padding:64px max(28px,calc((100vw - 1100px)/2)) 48px}.hero .eyebrow{font-size:13px;letter-spacing:.13em;text-transform:uppercase;color:#b4d8e9}.hero h1{font-size:clamp(28px,4.1vw,44px);line-height:1.3;margin:15px 0}.hero p{color:#d5e7f2;max-width:880px}.hero .badge{display:inline-block;background:#ffffff18;border:1px solid #ffffff55;padding:5px 11px;border-radius:30px;font-size:13px;margin:8px 8px 0 0}
+main{max-width:1130px;margin:0 auto;padding:24px 20px 90px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 24px #20324d0c;padding:28px 34px;margin:22px 0}.lead{font-size:18px;color:#344f6b}.paper{border-top:6px solid var(--accent)}.paper.hyco{border-top-color:var(--accent2)}
+h2{font-size:23px;color:#153e64;line-height:1.45;margin:38px 0 12px;border-bottom:1px solid var(--line);padding-bottom:10px;scroll-margin-top:24px}h3{font-size:19px;margin:22px 0 10px;color:#174b70;scroll-margin-top:24px}p{margin:13px 0}strong{color:#133f64}blockquote{border-left:4px solid var(--accent);padding:9px 16px;background:#f3f8fc;margin:20px 0}code{background:#edf4f8;color:#0b5475;border-radius:4px;padding:2px 5px;white-space:pre-wrap;overflow-wrap:anywhere;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9em}pre{background:#12283f;color:#d5ebfa;border-radius:10px;padding:17px;overflow-x:auto;line-height:1.55}pre code{color:inherit;background:none}.table-scroll{overflow-x:auto;margin:20px 0;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse;font-size:14px;min-width:650px}th,td{padding:11px 13px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{background:#eaf3f9;color:#15415f;font-weight:700}tr:nth-child(even) td{background:#f8fbfd}ul,ol{padding-left:26px}li{margin:7px 0}
+.toc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}.toc-box{background:#f6f9fc;border:1px solid var(--line);padding:18px;border-radius:12px}.toc-box h3{margin:0 0 8px}.toc-box a{display:block;font-size:13px;line-height:1.65;margin:7px 0}.kicker{font-weight:700;color:#2c7292;letter-spacing:.05em}.paper-head{border-bottom:1px solid var(--line);padding-bottom:15px;margin-bottom:15px}.paper-head h2{border:0;padding:0;margin:10px 0;font-size:29px}.paper-head p{color:var(--muted)}.meta-pill{display:inline-block;background:#e6f2fa;color:#135d85;padding:3px 11px;border-radius:999px;font-size:12px;font-weight:700;margin-right:6px}.hyco .meta-pill{background:#e5f5f1;color:#13685e}.footnote{font-size:13px;color:var(--muted)}.back{position:fixed;right:18px;bottom:18px;background:#174a73;color:white;border-radius:999px;padding:8px 16px;box-shadow:0 4px 14px #0003;border:0}.back:hover{color:white}@media(max-width:650px){main{padding:12px}.card{padding:20px 17px}.hero{padding:42px 22px}.paper-head h2{font-size:23px}body{font-size:15px}}
+@media print{body{background:white}.hero{color:#111;background:white;padding:20px}.hero p{color:#333}.card{box-shadow:none;break-inside:auto}.back{display:none}a{color:#0b5475}}
+</style></head><body>
+<header class="hero" id="top"><div class="eyebrow">Independent Research Deep Dive · 2026-10-19</div><h1>Daily Top Papers Deep Dive</h1><p>今天精读 2 篇：多 Agent 自组织强化学习 MPT，以及端云混合草稿推理 HyCo。两篇均核对 arXiv 正文、实验表格和附录；数字与迁移构想明确区分。</p><span class="badge">2 Papers · 10,851 Chinese characters</span><span class="badge">RL / Multi-Agent + Efficient Inference</span><span class="badge">Source verified · 15 Oct 2026</span></header>
+<main><section class="card" id="selection"><div class="kicker">TODAY'S SELECTION</div><h2>今天为什么选这两篇</h2><p><strong>#1 MPT</strong>：机制完整，公式、受控编排消融、跨环境结果和开源代码齐全；直接回答长期 Agent 的“谁行动、谁得到训练信用”。<strong>#2 HyCo</strong>：具有真实手机与云 GPU 的系统计时，特别清楚地区分 server GPU time 与用户交付速度，并承认 ε 接受的质量代价。</p><p>四条主线同级竞争，不机械凑方向。本次从最近 2026-10-15 至 16 的 arXiv 新稿筛选，避开过去七天已精读的论文。近期跨周末，采用略超 72 小时的检索窗口；未使用 Radar 输出。</p></section>
+<section class="card" id="toc"><div class="kicker">NAVIGATION</div><h2>全文目录</h2><div class="toc-grid"><div class="toc-box"><h3><a href="#paper-mpt">Paper 1 · MPT</a></h3><a href="#mpt-1">1. 基本信息与一句话定位</a>
+<a href="#mpt-2">2. 人话版（先抓住问题）</a>
+<a href="#mpt-3">3. Background &amp; Research Gap：固定拓扑为什么不够</a>
+<a href="#mpt-4">4. Core Insight：出价同时是一种信用传输契约</a>
+<a href="#mpt-5">5. Method Deep Dive：一条轨迹如何被训练</a>
+<a href="#mpt-6">6. 核心公式与数学直觉</a>
+<a href="#mpt-7">7. Toy Example：三步把一份奖励分回去</a>
+<a href="#mpt-8">8. Baseline Deep Comparison：真正强的对手是谁</a>
+<a href="#mpt-9">9. Experiment Setup：能否真正复现</a>
+<a href="#mpt-10">10. Metrics 教学式解释</a>
+<a href="#mpt-11">11. Results Deep Dive：数字、差异与证据边界</a>
+<a href="#mpt-12">12. Table / Figure 精读</a>
+<a href="#mpt-13">13. Ablation / Mechanistic Analysis</a>
+<a href="#mpt-14">14. Claim vs Evidence</a>
+<a href="#mpt-15">15. Contribution：新意在哪里</a>
+<a href="#mpt-16">16. Limitation &amp; Failure Modes</a>
+<a href="#mpt-17">17. Reproduction View：最小可运行验证</a>
+<a href="#mpt-18">18. Research Value</a>
+<a href="#mpt-19">19. Migration A：Agent 记忆与跨会话归因</a>
+<a href="#mpt-20">20. Migration B：无环境回滚的信用近似</a>
+<a href="#mpt-21">21. RL / Agent 专项与 Attack / Verification Lens</a>
+<a href="#mpt-22">22. 如果只记住这篇论文（9 句话）</a></div><div class="toc-box"><h3><a href="#paper-hyco">Paper 2 · HyCo</a></h3><a href="#hyco-1">1. 基本信息与一句话定位</a>
+<a href="#hyco-2">2. 人话版（250–400 字）</a>
+<a href="#hyco-3">3. Background &amp; Research Gap</a>
+<a href="#hyco-4">4. Core Insight：不同模型擅长不同草稿结构</a>
+<a href="#hyco-5">5. Method Deep Dive：一轮端云协作发生什么</a>
+<a href="#hyco-6">6. 核心公式与数学直觉</a>
+<a href="#hyco-7">7. Toy Example：从一条主链长出树</a>
+<a href="#hyco-8">8. Baseline Deep Comparison</a>
+<a href="#hyco-9">9. Experiment Setup Deep Dive</a>
+<a href="#hyco-10">10. Metrics 教学式解释</a>
+<a href="#hyco-11">11. Results Deep Dive：最重要的 10 个证据点</a>
+<a href="#hyco-12">12. Table / Figure Reading</a>
+<a href="#hyco-13">13. Ablation / Mechanistic Analysis</a>
+<a href="#hyco-14">14. Claim vs Evidence</a>
+<a href="#hyco-15">15. Contribution：创新还是组合</a>
+<a href="#hyco-16">16. Limitation &amp; Failure Modes</a>
+<a href="#hyco-17">17. Reproduction View：先复现哪个实验</a>
+<a href="#hyco-18">18. Research Value</a>
+<a href="#hyco-19">19. Migration A：面向 Agent 的动态端云草稿预算</a>
+<a href="#hyco-20">20. Migration B：Video VLM 的跨帧混合草稿与缓存</a>
+<a href="#hyco-21">21. Inference 专项：真正少算了什么</a>
+<a href="#hyco-22">22. Attack / Verification Lens</a>
+<a href="#hyco-23">23. 如果只记住这篇论文（9 句话）</a></div><div class="toc-box"><h3><a href="#synthesis">跨论文综合与研究机会</a></h3><a href="#synthesis-1">1. Cross-Paper Synthesis：今天共同揭示什么</a>
+<a href="#synthesis-2">2. Combined Research Opportunities</a>
+<a href="#synthesis-3">3. Collision / Overlap：哪些是重合、哪些不是</a>
+<a href="#synthesis-4">4. Reading / Reproduction Priority</a>
+<a href="#synthesis-5">5. Depth Audit 与证据纪律</a>
+<a href="#synthesis-6">6. Sources / Links</a></div></div></section>
+<article class="card paper" id="paper-mpt"><div class="paper-head"><span class="meta-pill">PAPER 01</span><span class="meta-pill">Agent / Multi-Agent RL</span><h2>Learning Self-Orchestration in Decentralized Agent Swarms</h2><p>Market-based Post-Training · 2026-10-15 · arXiv:2610.22322</p></div><h2 id="mpt-1">1. 基本信息与一句话定位</h2>
+<p><strong>Title</strong>：Learning Self-Orchestration in Decentralized Agent Swarms。<strong>Authors</strong>：Guowei Xu、Zhenting Qi（共同一作）、Amani Kiruga、Himabindu Lakkaraju、Yilun Du；<strong>Affiliation</strong>：Harvard University。<strong>Date</strong>：2026-10-15，arXiv:2610.22322v1；<strong>Venue</strong>：尚未确认正式会议接收，当前为预印本。<strong>Paper</strong>：<a href="https://arxiv.org/html/2610.22322">arXiv 正文</a> / <a href="https://arxiv.org/pdf/2610.22322">PDF</a>；<strong>Project</strong>：<a href="https://guoweixu.com/mpt/">项目主页</a>；<strong>Code</strong>：<a href="https://github.com/Embodied-Minds-Lab/MPT">Embodied-Minds-Lab/MPT</a>，仓库提供训练、评测脚本和权重链接。<strong>主题</strong>：Multi-Agent RL、动态协作、credit assignment。</p>
+<p><strong>一句话定位</strong>：把“谁应该在当前状态执行动作”从固定编排规则变成可学习策略，并让这个选择同时决定延迟奖励怎样向之前的参与者传递。</p>
+<h2 id="mpt-2">2. 人话版（先抓住问题）</h2>
+<p>想象三个 Minecraft 智能体：Logger 只会采木头，Miner 只会挖矿，Smith 只会合成。做铁镐需要三者接力，但固定轮流执行会在需要挖矿时浪费采木者的回合。让一个中央规划器挑人也不一定可靠：它可能不清楚各专家当前真正擅长什么。MPT 让每个专家根据当前状态出价，最高价者获得执行权；出价又是承诺把自己后续收益的一部分返还给前一位行动者。这样，末尾做成铁镐的收益可以沿动作链向前传递。更关键的是，作者通过“恢复同一状态、换个人行动、比较后续结果”的反事实 rollout 教智能体什么时候应该争取执行权。实验显示，在保留相同已训练动作策略时，竞价编排在铁镐任务上获得 41.5 平均奖励，而最强的其他编排策略 GoA 为 25.4。它的价值不只是让 Agent 分工，而是把<strong>分工决策、动作学习和信用分配</strong>耦合为一个可训练闭环。</p>
+<h2 id="mpt-3">3. Background &amp; Research Gap：固定拓扑为什么不够</h2>
+<p>传统多 Agent 框架通常先写死一个流程：Planner 分配任务、Coder 写代码、Reviewer 检查，或者 Round-robin 每人轮一次。这种做法适合角色边界稳定、任务阶段可预测的场景；但在长轨迹中，最需要的能力会随状态切换。Minecraft 起步时应砍木头，制作木镐后应挖石头，收集材料后又应交给合成者。即便拥有正确的专家，如果调度错误，也会把稀缺的交互预算耗在无效动作上。</p>
+<p>更深的 gap 是训练与调度彼此影响：某个 Agent 不被选中，就没有该状态下的训练样本；它的能力不提高，调度器又更不愿选它。这形成“参与机会—经验分布—能力—下一次参与机会”的反馈环。单体 REINFORCE 把所有动作交给一个模型，难以发挥专家化；静态专家切换不能随学习进展变化；只在推理时优化图结构的方法，没有直接通过参数更新改变专家行动能力。MPT 针对的不是一般意义的消息通信，而是<strong>同一环境控制权的竞争性分配</strong>。</p>
+<h2 id="mpt-4">4. Core Insight：出价同时是一种信用传输契约</h2>
+<p>作者的关键观察是：Agent 对“我现在能否推进任务”的估计，可以作为竞价信号；而竞价又能承担一个不同但相关的功能——把下游回报向上游转移。假设 Miner 要挖铁矿，但前面 Logger 先造出了木镐，Miner 之后的成功并非完全来自自己。若 Miner 出价较高，它就让出较多后续价值给上一位行动者。这样不必显式训练一个中心化 value critic，也能把部分延迟奖励送回早期关键动作。</p>
+<p>这里有两个不同性质的论据。<strong>机制层面</strong>：回传公式保证了后续奖励按出价乘积衰减传递，这是明确的数学定义。<strong>经验层面</strong>：学出的竞价比例随任务阶段改变，并在消融中优于随机 credit，说明这种学习信号在所测环境有用。但“出价代表真实因果贡献”不是定理；Agent 可能为了赢得回合报高价，也可能因为高价会让渡奖励而策略性压价。MPT 需要反事实比较约束这种博弈。</p>
+<h2 id="mpt-5">5. Method Deep Dive：一条轨迹如何被训练</h2>
+<p><strong>Input →</strong> 多个角色受限的 Agent、当前环境状态、可验证 reward → <strong>Step 1</strong> 所有 Agent 生成 bid → <strong>Step 2</strong> 最高 bid 者行动 → <strong>Step 3</strong> 环境更新并产生奖励 → <strong>Step 4</strong> 逆序传播 credit → <strong>Step 5</strong> 对获胜者 action 做 REINFORCE → <strong>Step 6</strong> 在争议回合做 counterfactual rollout → <strong>Step 7</strong> 用偏好损失训练 bid → <strong>Output</strong> 更好的专家动作策略与动态执行权分配。</p>
+<p><strong>Step 1：角色限制与局部竞价。</strong> 每个 Agent 有独立参数与受限动作集合，例如 Logger 只能发出采集类指令。每轮所有 Agent 看状态并给出 bid，最高者执行；相同出价随机打破平局，全零则跳过。这是无中央“挑选者”的分布式仲裁，但并非无协调成本：每轮要让多个模型推理竞价。</p>
+<p><strong>Step 2：执行和记录。</strong> 只允许获胜 Agent 发出真实环境动作。训练日志必须同时保存所有人的 bid、胜者身份、获胜动作、奖励、完整环境快照及可恢复的 Agent 状态。否则后续反事实实验无法公平复原。</p>
+<p><strong>Step 3：信用回传。</strong> 从 episode 最后一步向前计算累积价值 v；当前胜者只保留其中的 (1−bid) 部分，其余作为对上一个行动者的价值转移。最终每个 Agent 仅对自己实际执行的 action token 更新参数，而不是拿其他人的文本做监督。每个 Agent 用自己样本的平均 credit 作 baseline 减少梯度方差。</p>
+<p><strong>Step 4：竞价学习。</strong> 在第二名也有非零 bid 的 contested turn，恢复完全相同的环境和智能体状态。对原胜者重新采样竞价，最多三次，直到让第二名获胜；沿新的执行分支跑到结束，比较两个分支从分叉点以后的真实回报。较好分支的竞价文本是 preferred response，较差的是 rejected response；平局丢弃。训练时四次 action update 配一次 bid preference update。注意“换人执行”不是简单把当前动作替换掉，后续所有状态、动作和奖励都可能随之变化。</p>
+<p><strong>Step 5：共同演化。</strong> 竞价和动作更新同一个 Agent 内的参数，因此优化 action 可能改变竞价生成分布，反过来也一样。此处没有证明一定收敛到稳定分工；方法依赖多轮训练的经验稳定性。</p>
+<h2 id="mpt-6">6. 核心公式与数学直觉</h2>
+<p><strong>价值回传（论文式 1）</strong>：</p>
+<p><code>v_t = r̂_t + b_(t+1) · v_(t+1);    c_t = (1 − b_t) · v_t;    v_(T+1)=0</code></p>
+<p>r̂_t 是第 t 轮环境奖励（终局奖励并入最后一步），b_t 是该轮胜者竞价，v_t 是累计价值，c_t 是分给该轮胜者的训练 credit。第 t+k 步的奖励影响第 t 步的权重是中间竞价的连乘；因此 bid 越小，远距离信用越容易消失。第一个行动者向更早时刻转出的份额被丢弃，这不是严格的全回报守恒机制。</p>
+<p><strong>动作目标（论文式 2）</strong>：<code>E[(c_t − mean_credit_i) · ∇ log π_i(action_t | history_i,t)]</code>。正 advantage 提高已执行动作概率，负 advantage 降低；这是 REINFORCE，不是 PPO 或 GRPO，论文该式没有显式 KL penalty。baseline 是每个 Agent 在 batch 中的平均 credit，能降低方差但无法解决所有稀疏奖励问题。</p>
+<p><strong>竞价目标（论文式 3）</strong>：<code>L_bid = −log σ(log π_i(y_win|h) − log π_i(y_lose|h))</code>。它增加更好竞价文本相对较差文本的对数似然差，属于 Bradley–Terry 型 pairwise preference learning。和标准 DPO 的常见写法相比，这里没有显式 reference-policy 比值项；不能直接把它等同于带参考模型约束的 DPO。它优化的是“让哪个竞价结果更可能出现”，而非直接回归一个数值型最佳 bid。</p>
+<p><strong>超参数敏感性</strong>：bid 允许的取值范围和离散档位会影响探索；反事实采样最多三次会造成可替代竞价样本的选择偏差；action/bid 的 4:1 更新比决定两种能力共同演化速度。把高 bid 直接解释为高置信度并不严谨，因为它还包含让渡收益的经济代价。</p>
+<h2 id="mpt-7">7. Toy Example：三步把一份奖励分回去</h2>
+<p>假设三轮分别是 Logger、Miner、Smith，环境奖励为 0、0、10，获胜 bid 依次为 0.2、0.5、0.8。由后往前：<code>v3=10, c3=(1−0.8)×10=2</code>；<code>v2=0+0.8×10=8, c2=(1−0.5)×8=4</code>；<code>v1=0+0.5×8=4, c1=(1−0.2)×4=3.2</code>。三人的 credit 合计 9.2，剩余 0.8 是首轮向不存在的上一位参与者让出的部分。这揭示一个容易忽略的事实：MPT credit 不是 Shapley value，也不等于把总 reward 完全分完。</p>
+<p>若在第二轮将 Miner 的 bid 降低，使 Smith 提前行动，后续只得 3 分，那么该替代竞价是 loser；如果替代分支得 15 分，原竞价反而是 loser。训练不是奖励“永远出高价”，而是奖励在当前状态能改善未来结果的执行权分配。</p>
+<h2 id="mpt-8">8. Baseline Deep Comparison：真正强的对手是谁</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>如何做与合理性</th>
+<th>在此 setting 的不足</th>
+<th>MPT 的机制差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Monolithic REINFORCE</td>
+<td>单模型承担全部动作空间，按 γ=0.95 回报训练；是主训练基线，训练 FLOPs 对齐</td>
+<td>专家能力和调度被混在一套策略中</td>
+<td>独立专家 + 竞价仲裁 + 回传信用；多处机制同时改变</td>
+</tr>
+<tr>
+<td>Round-robin</td>
+<td>三专家按固定顺序轮流，简单、无额外竞价成本</td>
+<td>任务阶段变化时无关专家浪费动作</td>
+<td>动态决定行动者；机制性差异</td>
+</tr>
+<tr>
+<td>AgentNet</td>
+<td>通过图式动态交互选择协作结构</td>
+<td>在固定动作 checkpoint 下表现较低</td>
+<td>MPT 用竞价信号与 credit 耦合</td>
+</tr>
+<tr>
+<td>Graph-of-Agents (GoA)</td>
+<td>推理时组织 Agent 关系；在同动作权重比较中最强，25.4</td>
+<td>没有在此对比中达到学得竞价的调度效果</td>
+<td>同权重隔离编排贡献，41.5；是<strong>最强编排 baseline</strong></td>
+</tr>
+<tr>
+<td>Random-credit</td>
+<td>保留竞价分配与训练，但回传时随机 bid</td>
+<td>丢失 learned bid 与 credit 的关联</td>
+<td>用真实 learned bid 传递信用；这是关键机制消融</td>
+</tr>
+</tbody>
+</table></div>
+<p>必须分清 strongest baseline 的语境：训练曲线以 <strong>monolithic RL</strong> 为主；相同已训练 action 权重的编排对比以 <strong>GoA</strong> 最强。不能把两张实验表中的数字当作同一受控实验直接混算。</p>
+<h2 id="mpt-9">9. Experiment Setup：能否真正复现</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Agent / 数据</th>
+<th>训练与评测</th>
+<th>Reward / 资源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Embodied Crafting</td>
+<td>3×Qwen3-VL-4B-Instruct；Logger/Miner/Smith；MineStudio</td>
+<td>1,614 个训练 world seeds；32 个未见 seeds，3 次运行；120 决策，每次 STEVE-1 执行 40 帧</td>
+<td>12 类技术树事件分阶段奖励，上限 140；环境 4×RTX PRO 6000，RL 4×B200</td>
+</tr>
+<tr>
+<td>Robot Navigation</td>
+<td>3×NaVILA-8B；Turner/Mover/Stopper；VLN-CE R2R/Habitat</td>
+<td>10,744 训练 episodes；88 个 val-unseen，3 次运行；最多 64 决策</td>
+<td>距离推进奖励 λ_d=1.0，成功奖励 λ_s=2.5；环境 2×RTX PRO 6000，RL 4×B200</td>
+</tr>
+<tr>
+<td>Deep Research</td>
+<td>3×gemma-4-E2B-it；Searcher/Opener/Finder；OpenResearcher</td>
+<td>5,000 训练问题；50 个 held-out 问题，3 次运行；最多 64 决策</td>
+<td>qwen3.5-flash LLM judge 给 0/1 终局奖励；RL 4×H200</td>
+</tr>
+</tbody>
+</table></div>
+<p>各实验先做角色 SFT cold start，单体基线 SFT 总算力对齐；之后全参数微调。Minecraft RL learning rate 1e−6、batch 32、grad clip 1.0、entropy coefficient 0；动作最多 320 token、bid 最多 96 token。作者称训练 FLOPs 包含所有 Agent 竞价、行动、反事实分支和更新，较单纯对齐 optimizer step 更公平。但三模型分别部署带来的显存峰值、推理通信延迟未在主要结果中形成端到端部署成本表。</p>
+<p><strong>Research Question A</strong>：在相同训练 FLOPs 下，多专家联合学习是否比单体好？<strong>RQ B</strong>：固定 action checkpoint，是否真的是竞价编排有贡献？<strong>RQ C</strong>：只学动作、只学竞价、随机信用会怎样？<strong>RQ D</strong>：迁移任务、扩展人数和 Agent dropout 后还能否工作？</p>
+<h2 id="mpt-10">10. Metrics 教学式解释</h2>
+<p><strong>Mean Episode Reward</strong>：环境每个 episode 的累计分数，越高越好；Minecraft 上限 140，但高奖励不等于真的做出铁镐——中间里程碑也能得分，必须配合终局成功率。<strong>Deep Research Accuracy</strong>：参考答案经 LLM judge 判定正确的比例，越高越好；可能受 judge 偏差和答案格式影响。<strong>Robot Navigation Reward</strong>：距离缩短与成功停靠奖励之和，可出现超过 1 的值，不是 0–1 成功率。<strong>pass@3</strong>：同一测试 seed 进行三次尝试，至少一次达到指定里程碑的比例；对随机采样有利，不能替代单次成功率。<strong>Training FLOPs</strong>：训练总计算量的估计，用来比较训练效率，但不等于真实 GPU-hours。<strong>SE</strong>：跨测试实例的均值标准误，不是单次运行的标准差，样本仅 32/88/50 时仍有显著不确定性。</p>
+<h2 id="mpt-11">11. Results Deep Dive：数字、差异与证据边界</h2>
+<ol>
+<li><strong>Held-out Crafting：41.5±5.9 vs 20.3±4.1</strong>，绝对高 21.2，约 2.04 倍。支持 MPT 在此环境整体更强；但不能单凭该实验归因于竞价，因为模型专家化也不同。</li>
+<li><strong>Held-out Navigation：1.23±0.18 vs 0.52±0.14</strong>，高 0.71，约 2.37 倍。说明机制跨到视觉导航；指标是复合奖励，不能误写成导航成功率翻倍。</li>
+<li><strong>Held-out Deep Research：21.0±4.1% vs 9.0±2.1%</strong>，高 12.0 个百分点。这里 reward 来自 LLM judge，说明跨工具有效，但也可能受判分器误差影响。</li>
+<li><strong>固定动作权重：MPT 41.5 vs GoA 25.4</strong>，高 16.1，<strong>相对 +63.4%</strong>，是最能隔离调度机制的结果；仍未对齐不同编排的 token/latency 成本。</li>
+<li><strong>双模块协同：41.5 vs 27.2（只训动作）vs 21.5（只训 bid）vs 15.4（都未训）</strong>。两个模块都有贡献；从四格结果看存在交互增益，但不应声称严格因果分解。</li>
+<li><strong>随机信用消融：约 42 vs 31</strong>，差约 11；Round-robin 约 15，三者取自 Figure 7 的约 5×10^18 FLOPs 位置，是图上近似读数，非精确表格。</li>
+<li><strong>参与比例：第 120 决策 Logger 约 80%→45%，Miner 约 10%→40%</strong>，支持角色切换随训练改变；但不是证明所有状态下竞价最优。</li>
+<li><strong>推理时扩群：木镐 pass@3 约 78%→97%，石镐 69%→94%，熔炉 66%→91%（3→12 Agent）</strong>。扩群是复制已训练 Agent，不是训练出 12 种新技能；多副本可提高采样多样性和冗余。</li>
+<li><strong>p=0.9 dropout：12-Agent 约 33 分 vs 3-Agent 约 19 分</strong>。极端掉线下更稳健，但更多 Agent 也意味着更高竞价开销。</li>
+</ol>
+<p><strong>Strongest result</strong>：固定 action 权重仍有 +63.4% 编排收益。<strong>Weakest evidence</strong>：研究任务 accuracy 绝对仅 21%，且受 LLM judge 影响；真正复杂开放网页交互的泛化尚未证明。<strong>Trade-off</strong>：每轮 N 个 Agent 竞价 + 反事实 rollout 换取调度和学习收益。</p>
+<h2 id="mpt-12">12. Table / Figure 精读</h2>
+<p><strong>Table 1（held-out）</strong>：三列是 crafting/navigation/research，不是统一单位；每格为均值±SE。不能对 41.5、1.23、21% 做跨任务平均；该表证明不同环境上方向一致，不证明机制唯一来源。</p>
+<p><strong>Table 2（两组受控比较）</strong>：左表固定训练后的动作策略，GoA 是 25.4 的 strongest；右表是 bid/action 初始或训练后 checkpoint 的 2×2 组合。右表 41.5 比单独训练动作的 27.2 高 14.3，比单独训练 bid 的 21.5 高 20.0；注意这里的“初始”并不是随机网络，而是 SFT 后模型。</p>
+<p><strong>Figure 6（角色随训练演化）</strong>：横轴 episode 决策步，纵轴各角色执行比例；四个面板对应 SFT 后与不同 RL checkpoint。后期 Miner 的参与增加，符合技术树需要，但仅是行为相关性，不能单凭比例判断其动作质量。</p>
+<p><strong>Figure 7（消融）</strong>：横轴累计训练 FLOPs，纵轴奖励；MPT 曲线高于 random credit 和 round-robin。random credit 仍保留动态竞价，故其下降更直接指向 credit 机制，而非单纯“动态调度有用”。</p>
+<p><strong>Figure 8/9/10（迁移、扩群、掉线）</strong>：Figure 8 对新 crafting 目标继续训练；Figure 9 固定训练权重复制人数；Figure 10 改变 Agent dropout 概率。三张图检验不同外推轴，不能把“迁移更快”理解为零样本泛化。</p>
+<h2 id="mpt-13">13. Ablation / Mechanistic Analysis</h2>
+<p><strong>去掉竞价改轮流</strong>：约 42→15，说明执行权分配与相应学习链很关键，但该 ablation 同时改变探索轨迹。<strong>保留竞价、随机化 credit</strong>：约 42→31，更干净地说明学得竞价不仅用于调度，还包含可利用的回报传输信息。<strong>冻结 action、切换 bid checkpoint</strong>：27.2→41.5，验证 bid policy 本身有价值。<strong>冻结 bid、切换 action checkpoint</strong>：21.5→41.5，验证专家能力不可缺。<strong>角色参与可视化</strong>说明分工演化，但没有对竞价信号做因果 intervention 的单独验证；反事实 rollout 才是训练时的干预，而非可视化。</p>
+<h2 id="mpt-14">14. Claim vs Evidence</h2>
+<p><strong>Authors Claim</strong>：Agent 群可以自组织、共同学会何时行动，并在任务迁移、人数增加和掉线时保持收益。<strong>Experiments Actually Show</strong>：在三种受限角色与可验证环境、特定模型规模和训练预算下，MPT 对单体更好；在 Minecraft 中固定 action 权重后竞价优于三种替代编排；对特定新任务与副本扩群有效。<strong>What Is Not Yet Proven</strong>：任意开放任务的自组织、竞价的最优因果贡献分配、异构模型成本最优、真实不可回滚环境的可训练性，以及随 Agent 数量持续增长的计算效率。</p>
+<h2 id="mpt-15">15. Contribution：新意在哪里</h2>
+<p><strong>Contribution 1 [New Mechanism]</strong>：把执行权分配与下游奖励返还绑定到同一个 bid，形成训练闭环。借用了既有经济竞价思想，真正新增的是与参数更新联合训练的具体系统。</p>
+<p><strong>Contribution 2 [New Objective / Training Protocol]</strong>：反事实替代胜者 + pairwise bid preference update；偏好损失本身不是全新数学形式，但将其用于“竞价是否应让位”有机制价值。</p>
+<p><strong>Contribution 3 [New Empirical Finding]</strong>：固定 action 权重仍有调度收益；复制人数和 Agent dropout 的鲁棒性实验提供可借用的评测范式。不是新 benchmark，也没有新 metric 的独立定义。</p>
+<h2 id="mpt-16">16. Limitation &amp; Failure Modes</h2>
+<p><strong>Authors' Limitation</strong>：依赖外部可靠 reward；bid 学习需要从同一状态重放反事实，现实不可逆交互不适用；未训练单体超过 10B 的更大 Agent 群。<strong>Additional Limitation</strong>：所有专家有硬性动作空间分割，这降低调度难度但可能高估角色专门化收益；大量竞价会增加推理 token 和墙钟延迟；反事实环境复原不完全时因果对比失效；终局 reward 稀疏时有大量平局被丢弃；多副本扩群可能仅是多次采样的收益；研究任务 judge 可被答案模板或错误引用误导；高 bid 引起的信用传递与实际贡献并非天然一致。</p>
+<h2 id="mpt-17">17. Reproduction View：最小可运行验证</h2>
+<p>代码仓库已有 <code>src/</code>、<code>configs/</code>、<code>scripts/</code>、<code>eval/</code>、训练/测试数据与权重；优先<strong>先跑公开 checkpoint 的 Minecraft 评测</strong>，再决定是否复现训练。按 README 配置 MineStudio 1.1.6、JDK 8、STEVE-1、SGLang 和独立环境服务；下载 <code>Xkev/mc_society</code>，使用仓库的 <code>serve_mc_agents.sh</code>、<code>eval_mc.sh</code>，在同一 32 seeds 上比较 learned bidding、round-robin 与 random bidding，记录 reward、角色比例、每轮竞价 token 和墙钟时间。</p>
+<p>训练复现再用 <code>Xkev/mc_society_sft</code> 启动 <code>train_mc_mpt.sh</code>，把工作目录放大容量数据盘。第一阶段只做 3-Agent、小 seeds、少步数实验，检查 <code>v_t</code> 逆序递推与首轮 discarded credit；第二阶段加恢复状态、counterfactual branch、4:1 更新；最后跑完整 32 seeds、3 次采样。<strong>最容易踩坑</strong>：环境随机性无法完全复原、bid 文本解析、各 Agent 权重加载错位、训练 FLOPs 统计遗漏全员 bid 和反事实 rollout。最关键的复现结果不是追到 41.5，而是“固定动作策略后，学得 bid 是否稳定优于 GoA/round-robin”。</p>
+<h2 id="mpt-18">18. Research Value</h2>
+<p><strong>Baseline Potential：高</strong>，代码与权重齐，可在 Agent 动态拓扑研究中作为强 baseline。<strong>Migration Potential：高</strong>，竞价-信用机制可改成工具调用、记忆检索或技能选择。<strong>Systems Potential：中</strong>，多模型独立运行、全员竞价昂贵，可研究稀疏竞价和异步推理。<strong>Attack Potential：高</strong>，恶意 Agent 可以操纵 bid、污染信用回传。<strong>Evaluation Potential：高</strong>，可定义 intervention-based causal credit。<strong>Benchmark Potential：中高</strong>，角色错配、随机掉线、错误工具反馈可形成结构化压力测试。<strong>New Paper Potential：中高</strong>，但直接复制“auction + REINFORCE”创新空间不大，最好研究可验证因果 credit 或低成本反事实近似。</p>
+<h2 id="mpt-19">19. Migration A：Agent 记忆与跨会话归因</h2>
+<p><strong>Original Problem</strong>：长期 Agent 的前一段 memory / handoff 对后续成功有贡献，却得不到明确训练信号。<strong>Transferable Mechanism</strong>：bid 作为“愿意承担执行权 + 返还上游价值”的信号；对同状态替代方案做反事实。<strong>New Research Question</strong>：一条记忆是否真正提高后续任务成功，而不是仅被检索到？<strong>Method Modification</strong>：把 Agent bid 改为 memory/skill 的 relevance bid；每次选择记忆时记录 provenance，后续成功奖励沿使用图回传；在可回放沙箱中删除/替换该记忆比较结局。<strong>Minimum Experiment</strong>：固定 200 条多会话代码修复轨迹，每条有 2–5 个候选记忆；三组 <code>no-memory / embedding-top1 / bid-credit</code>；对 50 条做“删除记忆后重跑”，设置 seed=42、temperature=0，最大 12 次工具调用，输出 <code>success, calls, token_cost, causal_delta</code> CSV；先做不训练的排序器，后做小 LoRA preference update。<strong>Model</strong>：Qwen3-8B-Instruct 或同级开源模型。<strong>Dataset</strong>：SWE-bench Lite 任务子集加人工构造跨会话记忆。<strong>Baseline</strong>：BM25、向量 top-k、固定最近记忆。<strong>Metric</strong>：任务成功率、干预后成功率差、每次成功 token、memory precision。<strong>Expected Contribution</strong>：因果使用度而非相似度驱动的记忆学习。<strong>Risk</strong>：回放非确定性、训练数据泄漏。<strong>Collision Risk</strong>：与既有 Agent memory attribution / causal retrieval 工作可能重合，投稿前必须检索。</p>
+<h2 id="mpt-20">20. Migration B：无环境回滚的信用近似</h2>
+<p><strong>Original Problem</strong>：MPT 依赖昂贵且可回滚的反事实 rollout。<strong>Transferable Mechanism</strong>：比较“当前 Agent 赢”和“次优 Agent 赢”的后续价值。<strong>New Research Question</strong>：能否用低成本 world model 或 learned verifier 近似换人执行的结果，并保持调度收益？<strong>Method Modification</strong>：训练小型 outcome predictor 输入 <code>(state, winner, action, runner-up)</code> 预测未来 reward 差，仅在高不确定性时执行真实 counterfactual rollout。<strong>Minimum Experiment</strong>：在 Minecraft 采 5,000 个 contested states，每个采 2 条分支，按 world seed 80/20 分割；拟合轻量 reward-delta regressor；对照 full-counterfactual、随机 20% counterfactual、uncertainty-top20% counterfactual；固定总训练 FLOPs，画 regret 与真实分支数曲线。<strong>Model</strong>：原 MPT 3×Qwen3-VL-4B，预测器用小 MLP 或 0.5B LM。<strong>Dataset</strong>：MineStudio 轨迹和验证 seeds。<strong>Baseline</strong>：原 MPT、无 bid update、均匀抽样。<strong>Metric</strong>：reward、pairwise sign accuracy、counterfactual GPU-seconds、FLOPs。<strong>Expected Contribution</strong>：可部署的低成本近似因果竞价训练。<strong>Risk</strong>：预测器偏差被 Agent 利用、分布漂移。<strong>Collision Risk</strong>：与 model-based MARL、offline counterfactual evaluation 直接相关。</p>
+<h2 id="mpt-21">21. RL / Agent 专项与 Attack / Verification Lens</h2>
+<p><strong>RL Formulation</strong>：state 为环境观察与共享历史；action 包括 bid 文本与获胜者的实际工具/环境动作；policy 是各自独立的 LLM；trajectory 是单个环境的多 Agent 接力；reward 在 crafting/nav 为过程奖励、research 为终局 judge；advantage 是 <code>local_credit − per-agent mean</code>；objective 为 REINFORCE 与 bid preference 交替；未显式使用 PPO clip 或 KL；credit assignment 是 bid 加权逆向回传。<strong>Reward Hacking</strong>：Agent 可能为了拿局部 credit 偏好易得的技术树中间分数，而非真正完成铁镐；研究任务可能学会迎合 judge。<strong>Training Efficiency</strong>：训练 FLOPs 对齐，但反事实分支、每轮全员竞价和多模型服务会造成明显 wall-clock 开销，论文没有给出跨硬件的统一 GPU-hours。</p>
+<p><strong>Agent Architecture</strong>：<code>Observation → all bids → winner → action → environment → reward → credit → action/bid update</code>；state 里包含近期历史、工具输出与当前资源，角色分工由动作约束确定。<strong>Long-horizon</strong>：Minecraft 120 回合、其他最多 64 回合，尚不足以说明无限会话下稳定。<strong>Failure Propagation</strong>：一次错误竞价会让错误 Agent 操作环境，污染后续 state；如果它仍得到正向 credit，错误策略可能被强化。<strong>Attack Lens</strong>：恶意 Agent 可以操纵 bid 或伪造 tool feedback；用固定 checkpoint 注入竞价扰动，测试成功率、错误 credit 占比、后续参与集中度，构成黑盒 probe 和鲁棒性 benchmark。</p>
+<h2 id="mpt-22">22. 如果只记住这篇论文（9 句话）</h2>
+<ol>
+<li>MPT 把 Agent 的执行权变成可学习竞价。2. 最高 bid 获得回合，但要让渡一部分价值给上游。3. 信用沿轨迹按 bid 连乘向前传递。4. Action 用 per-agent REINFORCE 训练。5. Bid 用状态复原后的反事实分支偏好训练。6. 两种训练按 4:1 交替。7. 固定 action 权重后，MPT 41.5 分优于 GoA 25.4 分。8. 它在 crafting、navigation、research 上都有提升，但依赖可验证奖励和环境回滚。9. 最值得迁移的是“参与决策 + 可验证因果信用”，不是拍卖形式本身。</li>
+</ol>
+</article>
+<article class="card paper hyco" id="paper-hyco"><div class="paper-head"><span class="meta-pill">PAPER 02</span><span class="meta-pill">Inference Acceleration</span><h2>HyCo: Hybrid Drafting for Cost-Efficient Mobile–Cloud Speculative Decoding</h2><p>Split MTP Head + One-pass SLM · 2026-10-15 · arXiv:2610.21436</p></div><h2 id="hyco-1">1. 基本信息与一句话定位</h2>
+<p><strong>Title</strong>：HyCo: Hybrid Drafting for Cost-Efficient Mobile-Cloud Speculative Decoding。<strong>Authors</strong>：Hanbin Bae、Heejin Choi、Joohyung Lee、Byoung Jin Choi、Sangjun Park、Hoon-Young Cho；<strong>Affiliation</strong>：Samsung Research, Seoul。<strong>Date</strong>：2026-10-15，arXiv:2610.21436v1；<strong>Status</strong>：ACL Rolling Review（2026 年 10 月轮次）在审，不能写成 ACL 已接收。<strong>Paper</strong>：<a href="https://arxiv.org/html/2610.21436">HTML 全文</a> / <a href="https://arxiv.org/pdf/2610.21436">PDF</a>；<strong>Project / Code</strong>：正文未提供可核验的官方公开实现链接，状态记为 <strong>Not Reported / Not Verified</strong>，不推测已开源。<strong>主题</strong>：Speculative Decoding、Mobile NPU、Device–Cloud Split Inference、MTP。</p>
+<p><strong>一句话定位</strong>：把大模型原生 MTP draft head 搬到手机，与一次小模型前向组合出宽而深的草稿树，从而减少云端 GPU 工作量，同时控制移动端串行草稿开销。</p>
+<h2 id="hyco-2">2. 人话版（250–400 字）</h2>
+<p>推测解码像“先让小模型猜接下来的词，再让大模型一口气批改”。传统云端方案把大模型和它自带的 MTP 草稿头都留在服务器；传统端云方案让手机上的小模型负责猜词，但想生成一棵很深的候选树，就要在手机 NPU 上反复执行小模型，结果手机慢、网络来回也慢。HyCo 的思路是重新分工：服务器把大模型刚算出的隐藏状态、输入嵌入和少量 KV 信息发给手机，手机运行这个大模型的轻量 MTP head，快速构造一条四层主干；再让手机小模型只执行一次，给主干各节点补候选分支。服务器一次验证整棵树。实验在 Galaxy S26 Ultra + RTX PRO 6000、LTE/5G 下进行：相对云端 MTP 自推测，服务器 GPU 每输出 token 的时间在 Spec-Bench 降低 38.6%，手机端用户交付速度为 35.0 tokens/s。但默认的 ε 接受规则是有损的，作者明确承认它会改变原大模型采样分布。最值得学的是<strong>谁承担串行深度、谁提供并行宽度</strong>的系统分工，而不是单看 38.6%。</p>
+<h2 id="hyco-3">3. Background &amp; Research Gap</h2>
+<p>自回归 LLM 每生成一个 token 通常都需要大模型执行一次 decode。Speculative Decoding 先用便宜的 drafter 产生多个候选，再让昂贵 verifier 并行检查，目的是用一次大模型调用提交多个 token。两条常见路线：<strong>Cloud+MTP</strong> 直接用大模型自带多 token 预测头生成一条链，省去外部小模型但仍在服务器串行执行 head；<strong>SpecEdge-style</strong> 把小模型放手机上，通过多轮小模型推理构造树，云端只负责验证，但树越深移动端越慢。</p>
+<p>具体例子：用户让手机助手生成长段文字。若小模型为了四层草稿树要连续跑四次 NPU，哪怕服务器每轮可以多接受几个词，手机仍可能成为瓶颈。反过来，如果服务器承担四次 MTP head 推理，就省不了这部分 GPU 时间。HyCo 试图将“深度”与“分支宽度”拆开：MTP head 用少量状态串行延长主链，小模型用一次批处理给多个节点同时提供分支。它还必须解决跨设备 state handoff、移动端整数计算图、词表大小和 KV 窗口问题。</p>
+<h2 id="hyco-4">4. Core Insight：不同模型擅长不同草稿结构</h2>
+<p>MTP head 已经受过与目标大模型相关的训练，对主链的下一个 token 往往更可信，适合提供 depth；独立 SLM 可以一次在多个前缀位置上产生 top-k 候选，适合提供 width。关键不是把两种预测简单投票，而是<strong>把不同计算依赖映射到不同硬件</strong>：服务器只做昂贵的树验证；手机运行小 MTP head 的顺序步骤，以及一次可并行的小模型前向。</p>
+<p>这个洞察来自作者对每轮耗时和 MAT 的测量，是工程机制发现，而不是复杂度下界。移动端获得服务器隐藏状态的代价不为零：每轮需传 5.6KB 固定信息和每个已提交 token 约 6.1KB 的 KV，首次长上下文最多额外约 6.3MB。作者在实验中证明此分工能降低服务器 GPU-busy 时间，但没有证明多客户端高负载吞吐必然提升，也没有证明在弱网络上总能更快。</p>
+<h2 id="hyco-5">5. Method Deep Dive：一轮端云协作发生什么</h2>
+<p><strong>Input →</strong> 服务器已提交前缀和目标模型状态 → <strong>Step 1</strong> 传 MTP 所需状态到手机 → <strong>Step 2</strong> 手机 MTP head 生成深度 K=4 的链与候补 sibling → <strong>Step 3</strong> 手机 SLM 单次批量前向补树枝 → <strong>Step 4</strong> 对候选节点评分并裁剪为 B=32 → <strong>Step 5</strong> 服务器一次树注意力验证 → <strong>Step 6</strong> exact 或 ε-rule 选择最长合法路径 → <strong>Step 7</strong> 提交路径、更新双方 KV → <strong>Output</strong> 多个已确认 token 与下一轮 handoff。</p>
+<p><strong>Step 1：服务器状态切片。</strong> 服务器不把完整大模型复制给手机，只把 MTP head 需要的输入嵌入 <code>e(x_{t+1})</code>、上一 token 的 hidden state <code>h_t</code>，以及两层的 KV 条目发送过去。手机维护 1,024 token 环形窗口；服务器仍处理完整 prompt。这样手机无须执行大模型的前面所有层，但要付出网络带宽和对中间激活的访问权限。</p>
+<p><strong>Step 2：MTP 主链。</strong> 量化后的原生 MTP head 生成连续四个 top-1 候选，在前两层还保留第二名 token 作为 sibling。深度从 head 的自回归预测得到，而非要求独立 SLM 每层都跑一次。链节点的 score 按 <code>ln(0.66)</code> 累加，0.66 来自验证集观察到的逐层链接受率，故深层节点分数逐步降低。</p>
+<p><strong>Step 3：SLM 横向扩展。</strong> 让 Gemma 4 E2B 的手机 drafter 对 root 与已种下的节点一次并行前向，针对每个位置提出 top-32 候选。候选分数结合其 log probability 和深度惩罚。只保留全树分数最高的 32 个节点并保证祖先闭包，避免出现“保留孙节点却丢失父节点”的非法树。手机发送 token ID 与 parent index，树本身每轮约 2.2KB。</p>
+<p><strong>Step 4：服务器验证。</strong> 在 33 行（root + 32 节点）树 attention mask 下，一次目标模型前向计算各候选位置的分布。Exact 模式只允许匹配目标模型采样的边；默认 ε 模式还允许目标采样分布中概率不低于 ε 的候选。服务器选择可接受的最深路径，优先更多真正采样命中的边，再用概率乘积打破平局；路径末尾加一个 bonus token。</p>
+<p><strong>Step 5：缓存维护与下一轮。</strong> 仅把被接受路径对应的 KV 位置提交到持久前缀，丢弃其他树枝的临时 KV。手机也要搬移 SLM KV 行并维护位置编码，否则下轮草稿可能基于错误前缀。<strong>Failure mode</strong>：任何一端对树父子索引、RoPE 绝对位置、采样规则或 bonus token 的理解不一致，都可能导致 silent mismatch，最终生成错误文本。</p>
+<h2 id="hyco-6">6. 核心公式与数学直觉</h2>
+<p><strong>成本目标</strong>：<code>g = (GPU prefill time + Σ GPU verification time) / # output tokens</code>。越低越好。它不是 TPOT，也不是用户看到的 wall-clock latency；网络、手机等待与排队可能完全不计入 g。若一次验证耗时 25ms、平均提交 MAT=4，纯 decode 部分约 6.25ms/token；如果提高 MAT 却让手机每轮多耗 30ms，用户未必更快。</p>
+<p><strong>节点排序</strong>：MTP 链深度 d 的分数 <code>s_chain(d)=d·ln λ</code>，λ=0.66；SLM 分支节点 <code>s(child)=s(parent)+ln q(child|parent)+ln λ</code>。<code>q</code> 是手机小模型概率。对数求和相当于比较路径概率乘积并惩罚深度；λ 越小越偏向浅层分支，越大越偏向深链。λ 是经验校准值，不是理论最优常数。</p>
+<p><strong>接受规则</strong>：<code>ok(c)= [c = sampled_token(parent)] OR [p̃(c|parent) ≥ ε]</code>。p̃ 是服务器经过 temperature=1、top-k=64、top-p=0.95 后的实际采样分布，不是 raw softmax。默认 ε=0.005；ε=1 恢复 exact。ε 下降意味着更多候选能被提交、MAT 提高，但也更可能偏离 verifier 原本的采样分布；即便候选在目标分布支持集内，也不意味着保持概率权重不变。</p>
+<p><strong>量化校准 KL</strong>：作者用 BF16 MTP head 作 teacher，最小化量化 head 的 token 分布与 teacher 的 KL 差异，100 步 QAT。KL 小代表两分布接近，却不能保证逐 token top-1 完全相同；实际 top-1 agreement 从 87.4% 提高到 91.0%。这是一种训练辅助，不等于重新训练整套大模型。<strong>Strongest baseline objective 差异</strong>：Cloud+MTP 的目标是服务器内原生 head 自推测；HyCo 改变执行位置和树结构，而非提出一个全新的语言建模 loss。</p>
+<h2 id="hyco-7">7. Toy Example：从一条主链长出树</h2>
+<p>设服务器当前前缀为“今天的天气”，MTP head 猜出四个 token：<code>很 → 好 → ， → 适合</code>；第二名在第一层是“不错”，第二层是“晴朗”。手机 SLM 一次并行前向给 root、“很”、“好”等节点增加候选，例如 root 下还有“晴”、 “有”，在“很”之后有“热”。假设经 score 排序保留 32 个节点。服务器并行计算各节点概率，第一层真正抽到“很”，第二层真正抽到“热”，第三层没有匹配候选。Exact 模式只提交“很、热”加一个 bonus token。</p>
+<p>如果第三层某候选“。”虽不是实际抽样 token，但目标分布概率为 0.008，那么 ε=0.005 模式允许它成为路径的一部分，可能一次提交更多 token。问题是：这改变了输出概率；不能因为目标模型也觉得“。”有 0.8% 概率，就认为默认系统仍是无损。再设四次 SLM 串行前向共 60ms，单次并行前向只需 18ms；如果手机 MTP head 耗 20ms，则混合方案移动端 38ms，小于纯 SLM 的 60ms。这些玩具耗时只是解释机制的假设数，<strong>不是论文测量</strong>。</p>
+<h2 id="hyco-8">8. Baseline Deep Comparison</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>怎么做 / 为什么合理</th>
+<th>本文 setting 的失败点</th>
+<th>HyCo 改动</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cloud+MTP</td>
+<td>原生 BF16 MTP head 留服务器，exact 验证；最强<strong>服务器成本参考</strong></td>
+<td>服务器仍串行运行 head，云端 GPU 时间较高</td>
+<td>把 head 下放手机，减少 server GPU work</td>
+</tr>
+<tr>
+<td>SpecEdge-style</td>
+<td>手机 SLM 连续四次推理造 32 节点树，exact 验证；最直接端云对手</td>
+<td>手机草稿耗时高，交付速度慢</td>
+<td>MTP 造深度、SLM 单次造宽度</td>
+</tr>
+<tr>
+<td>SpecEdge-style + PD</td>
+<td>在等待网络期间提前生成下一轮草稿</td>
+<td>某些条件下增加开销，实测交付反降</td>
+<td>HyCo 避免依赖多次前向</td>
+</tr>
+<tr>
+<td>SpecEdge-ε</td>
+<td>与 HyCo 使用<strong>相同 ε 规则</strong>，能控制接受阈值的影响</td>
+<td>MAT 4.13、交付 18.9 tok/s，弱于 HyCo</td>
+<td>在相同 lossy rule 下检验树结构价值；<strong>最强公平同规则 baseline</strong></td>
+</tr>
+<tr>
+<td>HyCo exact / HyCo-2P</td>
+<td>前者不放宽接受，后者额外跑一次 SLM</td>
+<td>exact 省得少，2P 手机交付变慢</td>
+<td>揭示质量—成本—延迟的 Pareto 取舍</td>
+</tr>
+</tbody>
+</table></div>
+<p>关键公平性：HyCo 默认 ε 与 Cloud+MTP exact 的 38.6% 差异同时混入结构和有损接受效果，不能全部归因于混合树。必须同时看 <strong>HyCo exact vs SpecEdge exact</strong> 和 <strong>HyCo ε vs SpecEdge ε</strong>。</p>
+<h2 id="hyco-9">9. Experiment Setup Deep Dive</h2>
+<p><strong>Verifier</strong>：Gemma 4 26B-A4B，4-bit AWQ，在一张 RTX PRO 6000 云 GPU 上运行；采样 temperature 1、top-k 64、top-p 0.95。<strong>Device</strong>：Galaxy S26 Ultra，SM8850、Hexagon Tensor Processor v81，真实商用 LTE/5G；一台手机连接一台服务器，非多用户负载。<strong>Drafters</strong>：服务器原生 MTP head 经 W4 QAT 后移到手机；手机 SLM 为 Gemma 4 E2B QAT checkpoint，经整数 graph surgery 转换。<strong>量化与结构</strong>：MTP head 100 步 KL QAT，两个 drafter 使用 16-bit fixed-point activations；输出 keep set 86,089 tokens；手机窗口 1,024；K=4、D=2、B=32、λ=0.66、ε=0.005。</p>
+<p><strong>训练/验证数据</strong>：UltraChat 200k 训练 split 中 60 prompts 用于 QAT/校准，另有 UC-val 60 prompts 用于超参筛选；词频来自 UC-tr 20,000 对话。<strong>正式测评</strong>：Spec-Bench 全部 480 问题（含 MT-Bench 两轮），最大输出 1,024 token；质量评估非 QA 的首轮完整可评分样本 398 或三次重复共同的 396 条。长文本用 ∞Bench Sum 前 50 篇英文小说，截断 32K token，最大输出 1,200。<strong>判分</strong>：GPT-5.4 作为问题条件 judge，另用 GSM8K、RAG、CNN/DailyMail、WMT14、HELMET 指标交叉检查。<strong>不确定性</strong>：HyCo 与 SpecEdge-ε 在 SB 各跑三次；大多数其他配置只跑一次，CI 用问题级 bootstrap，不能把单次 judge 波动当成已控制。</p>
+<p><strong>RQ1</strong>：混合树在相同接受规则下是否减少云端成本并提升手机交付？<strong>RQ2</strong>：exact 模式是否仍有收益？<strong>RQ3</strong>：多跑一次 SLM、预先草稿或把 head 留服务器是否值得？<strong>RQ4</strong>：性能提升是否伴随可检测的质量下降？<strong>RQ5</strong>：长上下文的 prefill、首次 handoff 和手机内存是否成为新瓶颈？</p>
+<h2 id="hyco-10">10. Metrics 教学式解释</h2>
+<p><strong>GPU time/output token（g）</strong>：服务器忙碌 GPU 时间除以生成 token，越低越好；包含 prefill，但不代表用户等待。<strong>MAT（mean accepted tokens per verification round）</strong>：每轮平均提交 token，越高越好；过高可能来自有损接受。<strong>Delivery speed（tokens/s）</strong>：手机从请求开始到最后 token 的总体交付速率，越高越好；与纯 decode tokens/s 不同。<strong>TTFT</strong>：请求开始到第一个 token 到达的时间，越低越好；首轮大上下文 prefill 会让它升高。<strong>ROUGE-L-Sum</strong>：与参考摘要最长公共子序列相关的重合度，越高通常越好，但容易奖励字面重合而非事实性。<strong>HELMET F1 / precision / recall</strong>：基于参考要点的覆盖与准确程度，越高越好，但对小说中未标注信息无法全面验证。<strong>Judge score</strong>：LLM 给出的 0–100 主观质量分；置信区间包含 0 不等于严格等价。<strong>Server throughput / GPU memory / energy</strong>：本论文未给多用户 loaded throughput、整体 GPU memory 曲线与能耗结果，不能从 g 推断。</p>
+<h2 id="hyco-11">11. Results Deep Dive：最重要的 10 个证据点</h2>
+<ol>
+<li><strong>Spec-Bench server saving：HyCo −38.6±0.2% vs Cloud+MTP 0%</strong>，对比基准 g=7.81ms/token；大约对应 4.80ms/token（按百分比计算），但此数字混有 ε 放宽的贡献。</li>
+<li><strong>同 ε 对比：HyCo −38.6% vs SpecEdge-ε −29.6%</strong>，多节省 <strong>9.0 个百分点</strong>；这是比直接对 Cloud+MTP 更干净的结构对比。</li>
+<li><strong>手机交付：35.0±0.7 vs 18.9±0.1 tokens/s</strong>，比 SpecEdge-ε 约 <strong>1.85×</strong>；同时 MAT 4.71 vs 4.13，且 SLM passes 为 1 vs 4。</li>
+<li><strong>32K 总结：HyCo −29.2% vs SpecEdge-ε −15.7%</strong>，多节省 13.5 个百分点；手机 21.0 vs 12.4 tokens/s，约 1.69×。此任务含长 prefill，因此 server saving 比短输入更难提高。</li>
+<li><strong>Exact 消融：SB −27.7% vs SpecEdge exact −20.6%；32K −11.9% vs −2.9%</strong>。即便不改变目标采样分布，混合结构也有收益，是最有力的机制证据。</li>
+<li><strong>HyCo-2P：SB server saving −44.7%，优于默认 −38.6%，但 delivery 29.0 vs 35.0 tokens/s</strong>；“更省云端”不等于“用户更快”。</li>
+<li><strong>移动 head 搬迁：服务器单轮中位时间 26.8→21.7ms</strong>，约省 5.1ms，但手机每轮多约 20ms；典型的异构资源交换。</li>
+<li><strong>质量总体：HyCo vs Cloud+MTP judge 差 +0.2（95% CI −0.9 至 +1.3）</strong>。不能说严格无损或已证明等价；只说明在所测非 QA 任务没有检出稳定总体下降。</li>
+<li><strong>弱项：翻译 HyCo 比 SpecEdge-ε 低 2.6 分（95% CI −5.2 至 −0.2）</strong>；而 32K ROUGE-L-Sum 37.5 vs 38.5，低 1.0。是明确的任务特异性 trade-off。</li>
+<li><strong>首 token：SB 846ms，32K 4.60s</strong>；证明平均 delivery speed 高仍可能有明显 TTFT。另手机 SLM 单独生成 26.4 tok/s，HyCo 35.0，约快 32.6%。</li>
+</ol>
+<p><strong>Strongest result</strong>：exact 模式与同 ε 模式双重对照均胜，较可信地隔离结构价值。<strong>Weakest result</strong>：翻译与部分摘要质量存在下降，且没有 loaded-service throughput 或 energy。<strong>Failure cases</strong>：480 问题中三次 HyCo 运行分别有 2、1、0 个不节省 server g 的问题，主要是仅约 40 token 的短 RAG 输出；人工查看被筛出的 13 个大幅降分案例发现 6 个实质错误，不能据此估算总体错误率。</p>
+<h2 id="hyco-12">12. Table / Figure Reading</h2>
+<p><strong>Table 1（相关系统分类）</strong>：行是 SpecEdge、SLED、HAT、Cloud+MTP、HyCo 等；列是是否设备起草、是否用原生 head、是否消费服务器 state、是否每 token 都验证。它显示 HyCo 的组合差异，但这不是性能实验，不能据勾选数量推断最好。</p>
+<p><strong>Figure 2（混合树结构）</strong>：图中 MTP 主链 y1:4 负责深度，前两层 runner-up 扩宽，SLM 对多个节点一次给候选；树剪枝后 B=32。读图时应问：哪些候选来自 MTP、哪些来自 SLM？哪些节点必须保留祖先？否则会误以为一次 SLM 就顺序生成四层。</p>
+<p><strong>Table 2（主性能表）</strong>：分 SB-480 与 32K Sum 两组，分别列 server Δg、MAT、mobile tok/s。HyCo-2P 在 Δg 上更好但 tok/s 更差；Cloud+MTP 的手机速度为破折号，不能把 35.0 与一个不存在的基线交付速度比较。</p>
+<p><strong>Figure 3（MAT vs judge）</strong>：不同 ε 规则的横纵轴展示“接受更多 token”和“质量评分”的折中。ε=0.005 的筛选依据是验证集中的经验准则，不是严格质量等价检验；ε=0.02 有重复实验得分 57.1，显示 judge 噪声和配置选择不稳定。</p>
+<p><strong>Table 3/4（附录部署与 QAT）</strong>：MTP W4、123MB NPU graph，另有 242MB embedding LUT；SLM graph 754MB。MTP KL QAT 100 步，top-1 agreement 从 87.4%→91.0%。它们说明手机可运行，但不能忽略总设备内存和首次 6.3MB handoff。</p>
+<h2 id="hyco-13">13. Ablation / Mechanistic Analysis</h2>
+<p><strong>去掉 ε 放宽</strong>：HyCo SB saving 38.6→27.7%，MAT 4.71→3.84；说明默认报告的最大节省部分来自改变分布，不能全记在 hybrid tree 账上。<strong>增加第二次 SLM pass</strong>：MAT 4.71→5.27、saving 38.6→44.7%，但交付 35.0→29.0；说明设备串行时间比额外接受的 token 更昂贵。<strong>head 留服务器</strong>：该变体 36.1 tok/s，但 server saving 只有 14.6%，且同时改了 sibling 等配置，不能称为完全纯净的 placement-only ablation。<strong>Proactive drafting</strong>：SpecEdge-style server saving 20.6→23.9%，交付 16.1→12.1；在此网络/实现下并行预取反而拖慢。<strong>量化 QAT</strong>：top-1 agreement 87.4→91.0%，有利于提升草稿接受，但并不单独证明最终质量不变。<strong>限制词表</strong>：全词表手机轮耗时 77.9ms vs 限制后 52.9ms；但 UC-val 中 3.0% 的 bonus token 在 keep set 外，可能伤害长尾语言。</p>
+<h2 id="hyco-14">14. Claim vs Evidence</h2>
+<p><strong>Authors Claim</strong>：混合 drafter 在端云分工下减少 server GPU 时间、提高移动端交付速度，且整体质量下降有限。<strong>Experiments Actually Show</strong>：在指定 Gemma 家族、Galaxy S26 Ultra、RTX PRO 6000、LTE/5G、单客户端和特定 benchmark 下，精确与放宽接受规则均可实现成本收益；默认 ε 在整体 judge 上没有检出显著差异，但翻译等子任务下降。<strong>What Is Not Yet Proven</strong>：多用户吞吐和实际云成本下降、低带宽/高 RTT 稳定性、其他芯片与闭源 API 的可移植性、严格的语义质量等价、数据隐私安全、图像/视频多模态推理收益。</p>
+<h2 id="hyco-15">15. Contribution：创新还是组合</h2>
+<p><strong>Contribution 1 [New System / Engineering]</strong>：把目标模型原生 MTP head 从服务器迁到手机，利用可传输的中间状态完成 split inference；是主要系统新意。<strong>Contribution 2 [New Mechanism / Engineering]</strong>：MTP chain 提供 depth、一次 SLM 提供 width，混合树按路径分数裁剪；组合方式有价值，但 tree speculative decoding 和 MTP 都不是本文首次提出。<strong>Contribution 3 [New Empirical Finding]</strong>：通过 exact/same-ε 双对照揭示结构收益，并报告 server GPU time 与用户 delivery 的相反变化；有利于后续研究设计更公平的效率 benchmark。<strong>Not New</strong>：KL、QAT、restricted vocabulary、Bradley–Terry 等不是本文的新理论；ε-rule 也有既有采样阈值思想来源。</p>
+<h2 id="hyco-16">16. Limitation &amp; Failure Modes</h2>
+<p><strong>Authors' Limitation</strong>：只有一台手机、一种网络、一类云 GPU、一类 verifier，单客户端；不测真实负载 capacity、货币成本、手机/无线电能耗；默认有损接受改变目标分布；judge 不能充分验证事实；头部与隐藏状态必须可访问，闭源 API 通常不支持；MTP 图与 SLM 图占内存，首次长 prompt 可能传 6.3MB；仅评文本，不含图像和音频；激活传输可能泄漏敏感信息。</p>
+<p><strong>Additional Limitation</strong>：高 RTT 下每轮同步可能压过服务器省下的 5ms；不同 tokenizer 需要 token bridge；分布外专业词汇不在 86K keep set 中时 MAT 下降；在更高 batch size 下服务器 MTP head 原本可能更有效率，迁移收益变化；网络断连后手机与服务器 KV 状态可能不一致；固定 K/B/ε 无法适应不同问题难度。尤其要警惕把 <code>g</code> 下降直接写成“推理速度提升 38.6%”：一个是服务器计算成本，另一个才是用户端速度。</p>
+<h2 id="hyco-17">17. Reproduction View：先复现哪个实验</h2>
+<p>官方公开代码未核验，因此<strong>完整原系统复现难度高</strong>。最小实验应先在单机 GPU 模拟端云两端：选带 MTP head 的开源目标模型，取 head 的 hidden/KV 输入，在独立进程运行 head；另以小模型对多个树节点做一次 batch forward，构造 K=4、B=32 的候选树。服务器进程用 tree mask 验证；在 exact 模式下首先做 1,000 个相同 seed 的分布一致性单元测试，再做 ε=0.005 模式的质量与 MAT 对照。</p>
+<p>建议优先复现<strong>同 ε 下 hybrid tree vs SLM-only tree</strong>，因为它最能检验分工思想且不必一开始就实现移动 NPU 量化。随后增加网络模拟（RTT=10/40/100ms、带宽=10/50/200Mbps）、1K KV window、W4 head 与词表限制。输出每轮 <code>draft_ms, verify_ms, transfer_bytes, accepted_tokens, TTFT, TPOT, tokens_per_s, quality</code>。关键坑：目标模型中间层定义、RoPE 位置、父子树 attention mask、bonus token KV、top-k/top-p 后概率阈值、首轮 prefill 状态同步。若不能确保 exact 分布一致，所有速度数字都没有可比性。</p>
+<h2 id="hyco-18">18. Research Value</h2>
+<p><strong>Baseline Potential：中高</strong>，论文设置详细但公开代码未核验；可做 split speculative baseline。<strong>Migration Potential：高</strong>，将 depth/width 分工迁移到 Video VLM、长上下文 Agent 或异构推理。<strong>Systems Potential：高</strong>，调度、网络、显存、量化与模型结构交叉。<strong>Attack Potential：中高</strong>，手机可访问目标 hidden/KV，存在激活泄漏与篡改可能。<strong>Evaluation Potential：高</strong>，强调 g、TTFT、TPOT、delivery、quality 同时报告。<strong>Benchmark Potential：高</strong>，可定义网络波动和分布外词汇压力测试。<strong>New Paper Potential：中高</strong>，但简单“换设备运行 head”已被本文占据，需加入自适应调度、可靠性或跨模态机制。</p>
+<h2 id="hyco-19">19. Migration A：面向 Agent 的动态端云草稿预算</h2>
+<p><strong>Original Problem</strong>：Agent 在连续工具调用时，每次输出长度与难度变化大，固定 K=4、B=32 不一定合适。<strong>Transferable Mechanism</strong>：MTP 提供串行 depth、SLM 提供并行 width，服务器根据接受率节省 GPU 工作。<strong>New Research Question</strong>：能否根据工具类型、网络 RTT 和前几轮接受率动态选择 K/B/ε，并优化真实任务完成时间而不是单纯 tokens/s？<strong>Method Modification</strong>：加入 contextual bandit，状态为 <code>(RTT, MAT_recent, prompt_len, tool_type, NPU_load)</code>，动作从 K∈{2,4,6}、B∈{8,16,32}、ε∈{1,0.005} 选择，奖励为 <code>−wall_clock_ms − λ·quality_regression</code>。<strong>Minimum Experiment</strong>：在单机两进程模拟端云，用 100 个可验证工具调用任务、seed=42、每种 RTT 重复 3 次；固定 <code>K4-B32</code>、仅动态 K、仅动态 B、完整控制器四组；保存逐轮日志与 Pareto 曲线。<strong>Model</strong>：Gemma 4 或其他公开带 MTP head 模型。<strong>Dataset</strong>：ToolBench 可执行子集或自建 Python 工具任务。<strong>Baseline</strong>：Cloud+MTP、HyCo 固定配置、SpecEdge-style。<strong>Metric</strong>：task success、TTFT、end-to-end task latency、g、MAT、NPU energy（能测时）。<strong>Expected Contribution</strong>：面向真实 Agent workload 的质量约束动态预算。<strong>Risk</strong>：reward hacking（通过少输出掩盖慢速）、训练和部署分布不同。<strong>Collision Risk</strong>：与 adaptive speculative decoding、network-aware scheduling 存在明显交集。</p>
+<h2 id="hyco-20">20. Migration B：Video VLM 的跨帧混合草稿与缓存</h2>
+<p><strong>Original Problem</strong>：长视频 VLM 的 frame tokens 和 text decode 都贵，跨帧重复特征常被重算。<strong>Transferable Mechanism</strong>：把“串行深度由轻量历史状态预测、并行宽度由另一模块提出候选”的思想迁移到视觉 token 选择。<strong>New Research Question</strong>：能否用历史帧特征预测下一帧需要保留的关键 token，并用 query-aware 分支候选减少视觉编码与后续 LLM prefill？<strong>Method Modification</strong>：以小型 temporal predictor 输出连续帧关键 token 主链，再由 query-aware selector 一次提出补充候选，统一预算 B 下用教师模型验证视觉回答变化。这里是研究构想，不是 HyCo 已证明的视觉方法。<strong>Minimum Experiment</strong>：抽取 200 条短/中/长视频 QA，固定 8/32/128 帧三档，视觉 token budget 25/50/100%，对照均匀采样、attention-topk、temporal-only、hybrid；同一 GPU 测 encode、prefill、decode wall-clock，记录答案准确率与峰值显存。<strong>Model</strong>：Qwen2.5-VL-7B 或同等开源 Video VLM。<strong>Dataset</strong>：Video-MME 子集、MVBench。<strong>Baseline</strong>：uniform frames、query-aware frame selection、token pruning。<strong>Metric</strong>：frames、visual tokens、FLOPs、wall-clock、VRAM、QA accuracy。<strong>Expected Contribution</strong>：把草稿结构分工转化为视频推理动态计算预算。<strong>Risk</strong>：跨模态的“验证”成本过高，可能省不了真实时间。<strong>Collision Risk</strong>：与 Video Token Pruning / Adaptive Frame Sampling 高度重叠，需重点检查最新论文。</p>
+<h2 id="hyco-21">21. Inference 专项：真正少算了什么</h2>
+<p><strong>Bottleneck</strong>：云端 MTP 自推测的顺序 head 前向占用服务器 GPU；纯移动端 SLM 造深树需要多次 NPU 前向；网络 RTT 又限制每轮确认速度。<strong>Acceleration Mechanism</strong>：不是减少目标模型单次 verifier 的参数量，而是把顺序 MTP head 前向移到手机，并减少 SLM 前向次数；云端每轮验证更多候选，以更少 GPU 时间输出同样数量的 token。<strong>需要训练吗</strong>：不需要重新训练 verifier；MTP head 需要 100 步 W4 QAT，SLM 做整数 graph surgery 和校准。<strong>硬件相关性</strong>：强依赖可访问原生 head、移动 NPU 整数图和链路质量。<strong>Long-context</strong>：32K 已测，但手机只看 1K 窗口，且 prefill 占比上升，不能直接推到 128K。<strong>Batch-size scaling</strong>：仅单客户端，没有证据。<strong>理论 vs wall-clock</strong>：作者给了真实手机交付速度 35.0 tok/s，因而有 wall-clock 证据；但 g 节省 38.6% 不能直接解释为端到端 1.63×，实际对 SpecEdge-ε 的 delivery 约 1.85×。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align:right">Baseline</th>
+<th style="text-align:right">Proposed</th>
+<th>Change / Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTFT</td>
+<td style="text-align:right">Cloud+MTP 手机端未测</td>
+<td style="text-align:right">846ms SB；4.60s 32K</td>
+<td>不能算相对改善</td>
+</tr>
+<tr>
+<td>TPOT</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>不能由平均 tok/s 直接替代</td>
+</tr>
+<tr>
+<td>Delivery tokens/s（SB）</td>
+<td style="text-align:right">SpecEdge-ε 18.9</td>
+<td style="text-align:right">HyCo 35.0</td>
+<td>约 +85%</td>
+</tr>
+<tr>
+<td>Server g（SB）</td>
+<td style="text-align:right">Cloud+MTP 7.81ms/token</td>
+<td style="text-align:right">约 4.80ms/token</td>
+<td>−38.6%（默认有损）</td>
+</tr>
+<tr>
+<td>Server g（32K）</td>
+<td style="text-align:right">Cloud+MTP 23.91ms/token</td>
+<td style="text-align:right">约 16.93ms/token</td>
+<td>−29.2%</td>
+</tr>
+<tr>
+<td>Loaded throughput</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>单客户端实验</td>
+</tr>
+<tr>
+<td>GPU Memory</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>不能推断峰值显存</td>
+</tr>
+<tr>
+<td>Mobile drafter memory</td>
+<td style="text-align:right">SLM 图 754MB</td>
+<td style="text-align:right">另加 MTP 图 123MB + LUT 242MB</td>
+<td>更高设备内存占用</td>
+</tr>
+<tr>
+<td>FLOPs</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>只报告计时，不要臆算</td>
+</tr>
+<tr>
+<td>Quality</td>
+<td style="text-align:right">Cloud+MTP judge 基线</td>
+<td style="text-align:right">HyCo 差 +0.2（CI −0.9,+1.3）</td>
+<td>未证明等价；翻译弱项</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="hyco-22">22. Attack / Verification Lens</h2>
+<p><strong>攻击面一：中间状态暴露</strong>。手机持有部分 embedding、hidden state 和 KV；若客户端被控制，可能尝试推断 prompt 信息或篡改后续草稿。最小测试是仅在授权、公开合成数据上做 hidden-state membership / prompt-attribute probe，比较原始状态与噪声/量化后的可识别性。<strong>攻击面二：有损接受</strong>。构造低概率但 ε 可接受的候选路径，测试安全拒答、指令遵循和跨语言翻译的偏移；这是效率压力测试与安全评估，不是论文已证明存在可利用攻击。<strong>新 metric</strong>：<code>Verified Quality per Cloud GPU-second</code> 与 <code>Quality-constrained End-to-End Latency</code>，再附 <code>network bytes/output token</code>，避免仅以服务器 g 优化产生虚假收益。</p>
+<h2 id="hyco-23">23. 如果只记住这篇论文（9 句话）</h2>
+<ol>
+<li>HyCo 研究的是手机与云端协同的推测解码。2. 原生 MTP head 负责候选链的深度。3. 小模型单次并行前向负责树的宽度。4. 云端传中间状态给手机，再一次验证整棵树。5. 默认 K=4、B=32、1K KV window、ε=0.005。6. SB 服务器 GPU time/token 相对 Cloud+MTP 降低 38.6%。7. 与同 ε 的 SLM-only 对手相比，手机交付约 1.85 倍。8. 默认 ε 接受改变目标采样分布，翻译存在下降，不能叫严格无损。9. 未来真正值得做的是质量约束的动态计算与网络调度，而不是照搬固定草稿树。</li>
+</ol>
+</article>
+<section class="card" id="synthesis"><div class="kicker">CROSS-PAPER SYNTHESIS</div><h2 id="synthesis-1">1. Cross-Paper Synthesis：今天共同揭示什么</h2>
+<p>两篇论文属于不同层次，但共享一个强机制：<strong>把固定分配变成依状态而变化的资源配置</strong>。MPT 分配“哪个专家获得下一次环境行动”，HyCo 分配“哪种 drafter 在什么硬件上承担串行深度或并行宽度”。二者都反对简单平均：MPT 不让所有 Agent 轮流浪费回合，HyCo 不让 SLM 为所有草稿深度重复前向。另一个共同点是<strong>成本与收益不能只看局部</strong>：MPT 增加竞价/反事实计算换取任务 reward；HyCo 增加手机 NPU/网络负担换取云端 GPU 时间。若把系统优化目标只写成局部 reward 或局部 GPU time，可能出现“局部好、整体差”。</p>
+<h2 id="synthesis-2">2. Combined Research Opportunities</h2>
+<p><strong>机会 A：Cost-Aware Agent Bidding。</strong> 让 Agent 报价不仅代表执行意愿，也报告执行时间、预期 token、工具费用。目标从最大化任务 reward 变成 <code>task_success − α·GPU_seconds − β·wall_clock</code>；用 MPT 的反事实替换和 HyCo 的设备成本计量共同学习动态调度。最小实验：固定 3-Agent 工具任务 100 条，记录每个 Agent 的 reward、响应时间、工具费用；对照固定轮流、只优化 reward 的竞价、成本感知竞价，报告成功率与 Pareto 前沿。核心挑战是不同 Agent 的报价可能不可信，须用实际测量校准。</p>
+<p><strong>机会 B：Selective Counterfactual Compute。</strong> MPT 的每次反事实重跑很贵；HyCo 告诉我们不同候选分支值得不同计算预算。训练一个 uncertainty predictor，只对高争议/高后续影响的 contested turn 启动真实环境回滚，其余用轻量 reward delta 估计。对比完整反事实、随机 20% 反事实、置信度前 20% 反事实，在相同总 FLOPs 下测任务 reward。创新必须落在可验证的 credit bias–cost 曲线，而不是把两篇模块拼接成框图。</p>
+<p><strong>机会 C：Causal Resource Attribution Benchmark。</strong> 同一条 Agent 轨迹同时记录：谁被调度、为什么被调度、消耗多少 GPU/网络资源、删掉这次执行后结局如何。定义 <code>causal gain per GPU-second</code>、<code>counterfactual regret</code> 和 <code>replay stability</code>，为动态 Agent 和推理加速建立统一评价协议。这是评测构想，不是已存在的统一 benchmark。</p>
+<h2 id="synthesis-3">3. Collision / Overlap：哪些是重合、哪些不是</h2>
+<p><strong>直接 Collision：NONE。</strong> MPT 的主要贡献是多 Agent 竞价和信用分配；HyCo 的主要贡献是原生 MTP head 端云迁移与混合草稿树。两者没有相同的模型目标、数据集或直接复现关系。<strong>概念重叠</strong>：都在做选择性分配与延迟收益评估，但“参与机会”不是“候选 token”，不能据此声称方法相同。MPT 与经典 counterfactual MARL、AgentNet/GoA 有真实研究邻域；HyCo 与 SpecEdge、Cloud+MTP、Medusa、adaptive speculative decoding 有真实研究邻域。迁移选题应先检索这两组邻域，防止重新发明已有调度器。</p>
+<h2 id="synthesis-4">4. Reading / Reproduction Priority</h2>
+<p><strong>第一优先：MPT（科研机制）</strong>。先看式 1 的 credit 回传、式 3 的反事实竞价偏好，再看 Table 2 与 Figure 7。代码和 checkpoint 已公开，适合在可回放环境做严格复现与扩展。尤其适合研究 Agent memory/trajectory 的因果归因和跨会话技能选择。</p>
+<p><strong>第二优先：HyCo（系统工程）</strong>。先看 Figure 2 的深宽分工、Table 2 的同 ε / exact 双对照、附录 Algorithm 1–4 的 KV 和 tree mask。公开实现未核验，完整手机 NPU 复现成本高，建议先做单机双进程模拟验证算法正确性，再研究真实网络与移动硬件。</p>
+<p><strong>Baseline 选择</strong>：Agent 动态协作选 MPT；端云推测解码选 HyCo/SpecEdge。<strong>Systems / acceleration idea</strong>：HyCo 更直接。<strong>Benchmark / metric</strong>：优先建立跨硬件端到端质量-成本评测，补足 HyCo 只测单客户端的缺口。<strong>Attack / evaluation</strong>：MPT 的恶意竞价与错误信用传播最易构造受控实验；HyCo 的中间状态泄露和 ε-rule 质量偏移需要严格授权与安全边界。</p>
+<h2 id="synthesis-5">5. Depth Audit 与证据纪律</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>MPT</th>
+<th>HyCo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>可访问正文/附录</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>中文精读汉字数（不含本节）</td>
+<td><strong>5269</strong></td>
+<td><strong>5582</strong></td>
+</tr>
+<tr>
+<td>核心公式/流程/Toy</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>3–5 Baseline / strongest</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>5+ 具体结果</td>
+<td>9 组</td>
+<td>10 组</td>
+</tr>
+<tr>
+<td>3+ Figure/Table 解读</td>
+<td>Table 1/2, Figure 6/7/8/9/10</td>
+<td>Table 1/2/3/4, Figure 2/3</td>
+</tr>
+<tr>
+<td>Ablation、Failure、Claim/Evidence</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>2 个可执行迁移方案</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Code 状态</td>
+<td>官方仓库与权重已核验</td>
+<td>未核验公开实现</td>
+</tr>
+</tbody>
+</table></div>
+<p>两篇均于 <strong>2026-10-15</strong> 提交，距本报告约四天；考虑周末论文发布节奏，属于本次最近论文候选的扩展窗口，<strong>不是 1–3 个月 BACKFILL</strong>。表格中带“约”的 Figure 读数是论文图上近似值；“按百分比计算”的 g 为派生值；作者实验与本报告提出的新实验已明确区分。7 天冷却已避开 10 月 14–18 日报告中已选的论文。</p>
+<h2 id="synthesis-6">6. Sources / Links</h2>
+<p><strong>MPT</strong>：<a href="https://arxiv.org/abs/2610.22322">arXiv 摘要及提交历史</a> · <a href="https://arxiv.org/html/2610.22322">全文与附录</a> · <a href="https://github.com/Embodied-Minds-Lab/MPT">官方 GitHub 代码、配置、权重入口</a> · <a href="https://guoweixu.com/mpt/">项目主页</a>。主要证据：式 1–3、Table 1–2、Figure 6–10、Appendix B–D。</p>
+<p><strong>HyCo</strong>：<a href="https://arxiv.org/abs/2610.21436">arXiv 摘要及投稿状态</a> · <a href="https://arxiv.org/html/2610.21436">全文与附录</a> · <a href="https://arxiv.org/pdf/2610.21436">PDF</a>。主要证据：Figure 2–3、Table 2–4、Appendix C 算法、Appendix E–G 的质量和部署指标。未核验官方公开代码仓库，故不提供推测性链接。</p>
+</section><p class="footnote">报告生成日期：2026-10-19。内容仅依据可访问原文及已核验的官方资源；研究迁移与 Toy Example 均为本报告原创分析，非论文作者实验结论。</p></main><a class="back" href="#top">↑ 返回顶部</a></body></html>
