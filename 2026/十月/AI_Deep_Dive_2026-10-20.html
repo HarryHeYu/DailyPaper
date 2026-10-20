@@ -1,0 +1,427 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Daily Top Papers Deep Dive — 2026-10-20</title><style>
+:root{--bg:#f7f8fb;--ink:#18243a;--muted:#546278;--line:#e1e6ee;--accent:#0c718a;--dark:#12243b;--card:#fff;--soft:#edf7f8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.85 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+a{color:#096f8c;text-decoration:none;border-bottom:1px solid #9bd1db}a:hover{color:#03485c;border-color:currentColor}
+.shell{max-width:1220px;margin:auto;display:grid;grid-template-columns:255px minmax(0,1fr);gap:24px;padding:30px 24px 80px}
+.sidebar{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto;background:#fff;border:1px solid var(--line);border-radius:16px;padding:19px 16px;box-shadow:0 4px 24px #172c4a0a}
+.sidebar h2{font-size:14px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px;color:#142e47}
+.sidebar a{display:block;font-size:13px;line-height:1.45;padding:7px 8px;border:0;border-radius:7px;color:#46566b}
+.sidebar a:hover{background:#eaf5f7;color:#0b637c}.sidebar .mainlink{font-weight:700;color:#163750;margin-top:9px}.sidebar .minor{padding-left:16px;font-size:12px}
+main{min-width:0}.intro,.paper,.synthesis,.sources{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:34px 42px;margin-bottom:24px;box-shadow:0 8px 28px #152c4408}
+.intro{background:linear-gradient(135deg,#11273f 0%,#1c4352 100%);color:#fff;border:0}.intro a{color:#9ce9ee}.intro h1{font-size:35px;line-height:1.3;margin:14px 0 18px;letter-spacing:-.02em}.intro .lead{font-size:18px;color:#e3eef5}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.18em;color:#8be2e8}.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}.hero-card{background:#ffffff13;border:1px solid #ffffff25;padding:17px;border-radius:13px}.hero-card h3{font-size:22px;color:#fff;margin:5px 0}.hero-card p{font-size:14px;color:#e6f0f5}.tag{font-size:11px;letter-spacing:.05em;color:#a8e5e6}.intro .note{color:#c6dce6;font-size:13px;border-left:3px solid #63b8c6;padding-left:12px}
+.paper-label{color:#087a89;letter-spacing:.15em;font-size:12px;font-weight:800}.paper-title{font-size:28px;line-height:1.35;margin:9px 0 22px;color:#172d45}.paper h3,.synthesis h2,.sources h2{font-size:22px;line-height:1.4;color:#15304c;border-bottom:1px solid #dce7eb;padding-bottom:8px;margin-top:42px;margin-bottom:14px}.synthesis h3{font-size:18px;color:#146c81;margin:24px 0 6px}.paper h3:first-of-type{margin-top:20px}
+p{margin:10px 0 15px}strong{color:#0a5b72}.intro strong{color:#fff}blockquote{margin:18px 0;padding:14px 20px;background:#eef7f9;border-left:4px solid #17839a;color:#344b61;border-radius:0 9px 9px 0}blockquote p{margin:0}code{background:#f1f4f8;border:1px solid #e6eaf0;padding:1px 5px;border-radius:4px;color:#b04e39;overflow-wrap:anywhere}pre{white-space:pre-wrap;word-break:break-word;background:#13253a;color:#f1f7fc;padding:16px;border-radius:9px}
+.formula{font-family:"Cambria Math","STIX Two Math","Noto Sans Math",Georgia,serif;background:#f3f7fb;color:#173651;padding:16px 19px;border:1px solid #d9e4ef;border-left:4px solid #1a8099;border-radius:8px;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;margin:17px 0;font-size:16px}
+.table-scroll{width:100%;overflow-x:auto;border:1px solid #e0e8ed;border-radius:10px;margin:17px 0 22px}table{width:100%;border-collapse:collapse;font-size:13px;line-height:1.55;min-width:650px}th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #e6ebf0;vertical-align:top}thead th{background:#eaf3f6;color:#19465b;position:sticky;top:0}tbody tr:nth-child(even){background:#f9fbfd}tbody tr:hover{background:#f0f8f9}
+ol,ul{padding-left:23px}li{margin:7px 0}.synthesis{border-top:5px solid #15879b}.sources{font-size:14px}.foot{font-size:12px;color:#778398;border-top:1px solid #e0e5ee;padding-top:12px;margin-top:25px}
+@media(max-width:900px){.shell{display:block;padding:12px}.sidebar{position:static;max-height:260px;margin-bottom:14px}.intro,.paper,.synthesis,.sources{padding:22px 18px;border-radius:13px}.hero-grid{grid-template-columns:1fr}.intro h1{font-size:27px}.paper-title{font-size:24px}.paper h3,.synthesis h2{font-size:20px}}
+@media print{.shell{display:block;max-width:none}.sidebar{display:none}.intro,.paper,.synthesis,.sources{box-shadow:none;break-inside:avoid-page}.paper{page-break-before:always}a{color:inherit;text-decoration:underline}}
+</style></head><body><div class="shell"><nav class="sidebar" aria-label="报告目录"><h2>Contents / 目录</h2><a class="mainlink" href="#overview">概览与选稿理由</a><a class="mainlink" href="#paper1">Paper 1 · Tev: Scaling Long-Horizon Agentic Environments with Dense Progress Rewards</a>
+<a class="minor" href="#paper1-s01">一句话定位</a>
+<a class="minor" href="#paper1-s02">人话版（先理解全貌）</a>
+<a class="minor" href="#paper1-s03">Background &amp; Research Gap：为什么不是普通 GRPO 就够了</a>
+<a class="minor" href="#paper1-s04">Core Insight：先造正确世界，再造问题</a>
+<a class="minor" href="#paper1-s05">Method Deep Dive：逐阶段走通</a>
+<a class="minor" href="#paper1-s06">核心公式与数学直觉</a>
+<a class="minor" href="#paper1-s07">Toy Example：从输入到输出算一遍</a>
+<a class="minor" href="#paper1-s08">Baseline Deep Comparison：谁才是最强对照</a>
+<a class="minor" href="#paper1-s09">Experiment Setup 与每组研究问题</a>
+<a class="minor" href="#paper1-s10">Metrics 教学式解释</a>
+<a class="minor" href="#paper1-s11">Results Deep Dive：逐项核算，不只看 headline</a>
+<a class="minor" href="#paper1-s12">Table / Figure Reading：把图表当证据</a>
+<a class="minor" href="#paper1-s13">Ablation / Mechanistic Analysis</a>
+<a class="minor" href="#paper1-s14">Claim vs Evidence</a>
+<a class="minor" href="#paper1-s15">Contribution / Limitation</a>
+<a class="minor" href="#paper1-s16">Reproduction View：最小可执行路线</a>
+<a class="minor" href="#paper1-s17">Research Value：七种可用价值</a>
+<a class="minor" href="#paper1-s18">Migration A：Agent Memory / Multi-Agent 的因果信用分配</a>
+<a class="minor" href="#paper1-s19">Migration B：Video/Inference Agent 的成本约束进度奖励</a>
+<a class="minor" href="#paper1-s20">RL / Agent 专用 Lens</a>
+<a class="minor" href="#paper1-s21">Attack / Verification Lens</a>
+<a class="minor" href="#paper1-s22">如果只记住这篇（9 句）</a>
+<a class="mainlink" href="#paper2">Paper 2 · Speculative Forcing for Efficient Autoregressive Video Generation</a>
+<a class="minor" href="#paper2-s01">一句话定位</a>
+<a class="minor" href="#paper2-s02">人话版（先理解全貌）</a>
+<a class="minor" href="#paper2-s03">Background &amp; Research Gap：从扩散步骤到 token 预算</a>
+<a class="minor" href="#paper2-s04">Core Insight：视频不同区域收敛速度不同</a>
+<a class="minor" href="#paper2-s05">Method Deep Dive：一轮视频 chunk 具体发生什么</a>
+<a class="minor" href="#paper2-s06">核心公式与数学直觉</a>
+<a class="minor" href="#paper2-s07">Toy Example：一个 8-token 的四步视频</a>
+<a class="minor" href="#paper2-s08">Baseline Deep Comparison：公平的对照到底是什么</a>
+<a class="minor" href="#paper2-s09">Experiment Setup：模型、数据、硬件、协议</a>
+<a class="minor" href="#paper2-s10">Metrics 教学式解释</a>
+<a class="minor" href="#paper2-s11">Results Deep Dive：至少八个带反例的数字</a>
+<a class="minor" href="#paper2-s12">Table / Figure Reading：逐图拆开作者的证据链</a>
+<a class="minor" href="#paper2-s13">Ablation / Mechanistic Analysis：谁承担了什么</a>
+<a class="minor" href="#paper2-s14">Efficiency Breakdown：理论与真实必须分开</a>
+<a class="minor" href="#paper2-s15">Claim vs Evidence / Contribution</a>
+<a class="minor" href="#paper2-s16">Limitation &amp; Failure Modes</a>
+<a class="minor" href="#paper2-s17">Reproduction View：先复现验证机制，再谈 H100 性能</a>
+<a class="minor" href="#paper2-s18">Research Value：七种可用价值</a>
+<a class="minor" href="#paper2-s19">Migration A：Video VLM 的“可提前接受视觉证据”机制</a>
+<a class="minor" href="#paper2-s20">Migration B：长时程 Agent / World Model 的风险敏感预算控制</a>
+<a class="minor" href="#paper2-s21">Video / Inference 专用 Lens</a>
+<a class="minor" href="#paper2-s22">Attack / Verification Lens</a>
+<a class="minor" href="#paper2-s23">如果只记住这篇（9 句）</a><a class="mainlink" href="#synthesis">跨论文综合</a><a class="minor" href="#opportunities">联合研究机会</a><a class="minor" href="#collision">撞题与先验工作</a><a class="minor" href="#priority">阅读/复现顺序</a><a class="mainlink" href="#sources">来源与链接</a></nav><main>
+<section class="intro" id="overview">
+  <div class="eyebrow">DAILY TOP PAPERS DEEP DIVE / 2026.10.20</div>
+  <h1>把研究真正读透，而不是堆论文标题。</h1>
+  <p class="lead">今天只选两篇：一篇讨论 <strong>Agent 长链 RL 的可验证过程奖励</strong>，另一篇讨论 <strong>视频生成的 token 级提前提交与真实加速</strong>。二者都围绕“何时值得继续计算”展开，但一个在训练时给行为分配信用，一个在推理时给 token 分配计算。</p>
+  <div class="hero-grid">
+    <div class="hero-card"><span class="tag">#1 / Agent × RL / BACKFILL</span><h3>Tev</h3><p>先构造正确世界，再生成长时程任务和可验证进度；27B 的 ALE-CM P@5：0.17 → 0.28。</p><a href="#paper1">阅读完整精读 ↗</a></div>
+    <div class="hero-card"><span class="tag">#2 / Video × Inference / BACKFILL</span><h3>Speculative Forcing</h3><p>预测 token 是否已收敛并提前冻结；LongLive 5s 实测 26.4 → 41.7 FPS。</p><a href="#paper2">阅读完整精读 ↗</a></div>
+  </div>
+  <p class="note"><strong>选稿日期与透明度：</strong>优先检索 2026-10-17 至 2026-10-20 的新论文，并检查近 1–3 个月的高机制价值工作。本期两篇分别于 <strong>10 月 13 日、15 日</strong> 首发，均按要求标记 <code>BACKFILL</code>。原因是两篇具备可访问完整正文、细致实验与强迁移价值，适合完成单篇 4500–7000 中文字的真正精读。昨天已分析的 MPT 与 HyCo 不重复。</p>
+  <p class="note"><strong>证据边界：</strong>所有实验数字来自论文 HTML/项目页面；我们的 toy example、迁移方案与潜在攻击属于分析或新提案，不是论文作者已做的实验。部分模型名称、venue 和代码状态均按 2026-10-20 可见页面记录；论文未报告的系统指标写 <code>Not Reported</code>。</p>
+</section>
+<article class="paper" id="paper1"><div class="paper-label">01 / AGENT × REINFORCEMENT LEARNING</div><h2 class="paper-title">Paper 1 · Tev: Scaling Long-Horizon Agentic Environments with Dense Progress Rewards</h2>
+<blockquote>
+<p><strong>BACKFILL｜Agent × RL｜2026-10-13（arXiv v1）</strong>。作者：Wenbo Hu、Shraman Pramanick、Krishna Kumar Singh、Nanyun Peng、Kai-Wei Chang、Yong Jae Lee；单位：Adobe Research、UCLA。状态：arXiv 预印本，未核实正式会议录用。论文：<a href="https://arxiv.org/abs/2610.18868">arXiv 摘要</a> · <a href="https://arxiv.org/html/2610.18868">全文 HTML</a> · <a href="https://tev-agent.github.io/">项目</a> · <a href="https://huggingface.co/gordonhu/Tev-27B">Tev-27B 权重</a>。<strong>代码和 Tev-Gym 数据：项目页仍标记 Code soon / Data soon，不可写成已开源。</strong></p>
+</blockquote>
+<h3 id="paper1-s01">一句话定位</h3>
+<p>把长时程 Agent 任务从“最终成功才有奖励”的稀疏 RL，改造成“由同一真实世界生成任务、过程评分与最终验证”的可验证渐进训练环境，并证明这套数据—奖励联合设计能改善长链工具执行。</p>
+<h3 id="paper1-s02">人话版（先理解全貌）</h3>
+<p>想象一个 Agent 要把六个月混乱的零售数据修成可信的 SQLite 仓库。它可能已经找到了重复交易、修正了字段、完成了 80% 的表，但因为最后一个文件没提交，传统 RL 只给零分；另一条轨迹什么都没做，也给零分。若一组 24 条轨迹全失败，GRPO 连“哪条比较有希望”都分不出来。Tev 先在后台生成完整正确的世界，再由它故意制造错误输入，同时保存一张可检查的工作流程图。Agent 每执行一次 bash，就用隐藏的正确世界检查工作区，形成 0 到 1 的进度势函数；训练奖励来自进度变化，最终真正提交成功另加一分。作者生成 1,170 个环境，在 9B、27B、320B 模型上实验。27B 在 ALE-CM 的 P@5 从 0.17 到 0.28；但更难的 TB 4.0-CM 上 P@1 仅从 0.04 到 0.10。重要之处不是一个新 loss，而是把“任务能否客观验证”变成训练环境的设计原则。</p>
+<h3 id="paper1-s03">Background &amp; Research Gap：为什么不是普通 GRPO 就够了</h3>
+<p>长时程任务包含大量状态依赖：先分析数据模式，才能修复主键；修复主键，才能构建事实表；事实表可信，才能输出统计报告。普通终局奖励 R∈{0,1} 只关心最后是否提交正确，不能区分“已修好 90%”与“第一步就乱删文件”。对于成功概率 p、每组 G 条 rollout 的 group-relative RL，整组全失败概率是 <strong>(1−p)^G</strong>；例如 p=0.05、G=8 时约 66%，p=0.01 时约 92%。这不是 reward 数值小，而是<strong>组内方差为零，优势函数直接消失</strong>。</p>
+<p>旧方案包括：反复采样直到有成功轨迹、筛选模型能做对的简单任务、使用专家示范前缀、以单元测试通过比例代替过程质量、或训练 LLM judge。它们各有用处，但在专业工作流中存在成本、难度天花板、测试覆盖不足或评分噪声。比如某个数据仓库任务，单元测试只测文件存在，Agent 可以输出格式正确但内容错误的 CSV。Tev 填的 gap 是<strong>生成任务时就拥有可计算的隐藏真值与每阶段正确状态</strong>，而不是生成完任务再补一个不可靠的评分器。</p>
+<h3 id="paper1-s04">Core Insight：先造正确世界，再造问题</h3>
+<p>作者的核心观察是：如果输入、标准答案、分阶段进度、最终验证器来自<strong>同一个潜在世界 W</strong>，它们天然共享语义约束。生成器先构造完整正确的数据结构，再将其渲染为 CSV、JSON、SQLite、模型分片或配置文件，最后注入可逆缺陷。工作流 DAG 给出依赖顺序，进度检查器用隐藏 W 比较当前工作区。这个观察主要是<strong>环境工程与可验证性设计</strong>，不是“所有真实任务都能被分解”的数学定理。它还解决了 separately-generated prompt / checker / artifact 的不一致：提示说需要 100 个订单，checker 却期待 101 个订单，会把正确执行错判为失败。</p>
+<p>关键边界是“正确世界可由初始公开文件恢复”，而非“训练时偷偷告诉 Agent 标准答案”。作者要求渲染可 round-trip、破坏操作可逆，并设置隐藏反作弊探针。只有这样，任务才是可解而非被隐藏信息决定的谜题。<strong>潜在世界提供监督信号，Agent 在执行时仍看不到 W。</strong></p>
+<h3 id="paper1-s05">Method Deep Dive：逐阶段走通</h3>
+<p><strong>Input → seeded latent world W → workflow DAG → clean artifacts → invertible corruption → public task + hidden graders → agent bash trajectory → progress potential Φ → DPPO/PPRS 更新 → trained agent</strong></p>
+<p><strong>Step 0：任务规格与 seed。</strong>为软件、数据、AI/CS、数学运筹、安全、基础设施、量子计算七个领域设计生成器；seed 固定实体规模、缺陷类型和正确结果。危险点是生成器模板太少，模型记住格式而非学会长时程推理。作者用 19 个覆盖维度和难度层级控制变化。</p>
+<p><strong>Step 1：世界 W。</strong>生成一套内部一致的正确记录，例如顾客、产品、交易与外键关系，并验证唯一性、连接合法性和数值范围。W 是标准答案的源头，后续所有中间状态都可由 W 确定。若 W 自身有错，后面再精确的 verifier 也只是在验证错误真值。</p>
+<p><strong>Step 2：工作流 DAG。</strong>将“读源→修复维表→修复事实表→聚合→导出”写成有先后约束的节点，记录每个节点的预期结果与权重。DAG 的关键路径控制依赖深度；节点数量不等于真正的推理难度，作者通过难度层级和实际 rollout 时间补充衡量。</p>
+<p><strong>Step 3：渲染和污染。</strong>从 W 输出干净文件并检查 round-trip，再注入重复、缺失、字段漂移、分片错序等已知可逆错误。公开给 Agent 的只有任务说明与被污染的文件；正确 W、严格 verifier 和进度 scorer 留在隐藏侧。污染不可逆会制造不公平任务，是首要测试门禁。</p>
+<p><strong>Step 4：分离验证。</strong>最终 verifier 只对正式提交的完整工作区给 pass/fail；progress scorer 对每一回合的 workspace 评估阶段正确性。二者与参考求解器应有独立代码闭包，避免复制同一个 bug。论文设置八项资格门禁，包含 14 种 gaming probe 必须得零分；这降低了简单作弊，却不构成形式化的安全证明。</p>
+<p><strong>Step 5：RL 训练。</strong>同任务采样 G=24 条轨迹，每步八个任务共 192 条 rollout。每回合结束后算 Φ(s_t)，将相邻势能差作为 reward，并在最终正式提交成功时给终局项。DPPO 采用 group-centered advantage、total-variation 约束，按相同 turn index 比较回报。最常见失败是所有轨迹仍停留在同一进度节点，组内依然无方差，必须靠任务分层与 active sampling 解决。</p>
+<h3 id="paper1-s06">核心公式与数学直觉</h3>
+<div class="formula">Aᵢ = (Rᵢ − mean(R₁…R_G)) / (std(R₁…R_G) + ε)　　[论文 Eq.2]</div>
+<p>Aᵢ 是第 i 条轨迹相对同组平均回报的优势。全组 Rᵢ=0 时 Aᵢ=0；把 G 从 8 提到 24 能降低全失败概率，却不能解决 p 极小的难任务。分母 ε 只保证数值稳定，不会凭空产生训练信号。</p>
+<div class="formula">Φ(s) = Σ_{v∈V} wᵥ · c̃ᵥ(s),　Σwᵥ=1,　c̃ᵥ(s)=min{cᵤ(s):u∈ancestors(v)∪{v}}　　[论文 Eq.3 的门控解释]</div>
+<p>V 是 DAG 节点集合，wᵥ 是阶段权重，cᵥ 是当前工作区相对 W 的局部正确度；取所有先决节点和本节点的最小值，让“后续漂亮报表”不能掩盖“前置交易表仍然错”。这是<strong>先决条件门控</strong>，不同于直接把所有局部 test-pass 相加。wᵥ 过大将诱导模型优先刷容易拿分的阶段；门控过严又可能让一个早期小错误压制后续所有进度。</p>
+<div class="formula">r_t = Φ(s_t) − Φ(s_{t−1});　R(τ)=𝟙[submitted &amp; passed]+λΣ_t r_t=𝟙[pass]+λΦ(s_T),　λ=0.25　　[论文 Eq.4]</div>
+<p>相邻差分允许奖励“修好了什么”并惩罚“毁掉了什么”，求和望远镜消去中间项。<strong>重要细节：作者并没有采用严格保持最优策略不变的 PBRS 终止势能归零做法</strong>；保留 λΦ(s_T)，有意改变目标。单条成功轨迹回报为 1.25，失败轨迹至多 0.25，因此单条轨迹的成功优先级仍最高；但随机策略的期望偏好与轨迹长度仍需单独分析。</p>
+<p>训练把 λr_t 分配到各 turn、最后一 turn 再加终局奖励，使用 γ=1 的 return-to-go，并按 turn index 做组内中心化。对照 Direct additive Φ(s_t) 且 γ=0：它会反复奖励停在高势能状态的行为，可能鼓励不提交而耗尽上下文。DPPO 的 TV 约束 0.1 控制 policy ratio 的变化，<strong>论文设 β=0，无 KL anchor</strong>；这意味着稳定性依赖 TV 约束与训练配置，不能把它误说成“KL regularization 贡献”。</p>
+<h3 id="paper1-s07">Toy Example：从输入到输出算一遍</h3>
+<p>假设正确世界有 10 笔交易、2 个产品；公开 CSV 被插入两条重复交易，并把一个产品类别拼错。工作流四节点权重分别为：清洗原始记录 0.2、恢复维表 0.2、重建事实表 0.4、输出报告 0.2。Agent 第 1 回合识别重复但没修改文件，Φ=0；第 2 回合去重后第一节点正确，Φ=0.2；第 3 回合修好类别，Φ=0.4；第 4 回合事实表正确，Φ=0.8；第 5 回合导出报告，Φ=1。对应增量奖励乘 λ 为 0、0.05、0.05、0.10、0.05。若忘了执行 submit，R=0.25；如果正确提交，R=1.25。另一条轨迹只修原始记录便停止，R=0.05；即使两条都没有最终成功，训练仍能分出优劣。若 Agent 先伪造报告而维表未修，DAG 门控会压低该报告节点的有效得分。这是<strong>解释性自造小例子</strong>，不是论文原始样本。</p>
+<h3 id="paper1-s08">Baseline Deep Comparison：谁才是最强对照</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>做法与合理性</th>
+<th>在本文 setting 的瓶颈</th>
+<th>Tev 的变化 / 性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Terminal-only DPPO / Sparse</td>
+<td>同数据、同训练，只给提交成功 1 分；最干净的因果对照</td>
+<td>全失败组梯度为零</td>
+<td>增量 Φ + turn-level credit；<strong>机制性</strong></td>
+</tr>
+<tr>
+<td>Direct additive reward</td>
+<td>每 turn 用当前 Φ(s_t) 奖励；实现容易</td>
+<td>停在高势能状态会重复得分，长轨迹耗尽 context</td>
+<td>改用势能差与 γ=1；<strong>目标设计</strong></td>
+</tr>
+<tr>
+<td>PPRS pooled norm</td>
+<td>同样 ΔΦ，但对整条 rollout 归一化</td>
+<td>后期小增量被早期大回报稀释</td>
+<td>相同 turn index 比较；<strong>credit 机制</strong></td>
+</tr>
+<tr>
+<td>Prompt-first / public-view verifier</td>
+<td>先写 prompt 再写输入和评分器，或让模型基于公开材料造 verifier</td>
+<td>评分与真实世界错位、误判与弃组</td>
+<td>先 W 后任务、隐藏真值；<strong>数据工程 + 机制</strong></td>
+</tr>
+<tr>
+<td>SWE-Smith / TMAX / SETA</td>
+<td>可扩展终端任务与测试；是任务规模、时长参照</td>
+<td>任务较短，过程奖励通常不依赖完整隐藏世界</td>
+<td>Tev 延长依赖链并构建阶段真值；<strong>数据集设计</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>strongest baseline 需要分问题定义</strong>：检验 PPRS 是否有效时是“同 Tev-Gym 的 Sparse”；检验整体 Agent 性能时是相同底座的 Qwen3.8-27B base；比较公开任务库时不能把规模最大的 SWE-Smith 当成“训练质量最强模型”。对 ALE-CM 全模型 P@5，Claude Fable 5 的 0.33 高于 Tev-27B 的 0.28，不能宣称总体 SOTA。</p>
+<h3 id="paper1-s09">Experiment Setup 与每组研究问题</h3>
+<p>9B：Qwen3.5-9B，用 264 个 unit-tier 环境；27B：Qwen3.8-27B，用全部 1,170 环境；扩展：GLM-5.3-Flash → Tev-320B。每步 8 个任务 × 24 rollout；单条最长 65,536 response tokens、每回合 16,384、最多 64 次 bash 工具调用。DPPO、AdamW 学习率 1e−6、温度 1、seed 42、bf16、部分 fp32 LM head；27B 训练约四天，使用四节点 B200 或八节点 A100 的配置。32 GPU 运行采用 16 learner + 16 inference，64 GPU 运行 16 + 48。<strong>这不是低算力论文</strong>：复现完整训练成本显著。</p>
+<p><strong>RQ1</strong>：ALE-CM（18 个专家任务：数学科学 8、ML 5、编码系统 5）能否提升？同底座前后对比，5 条独立 rollout。<strong>RQ2</strong>：TB 3.0-CM（22）和 TB 4.0-CM（18）能否零样本迁移？注意是作者筛选的 CM 子集，且 CPU-only harness 限制了覆盖。<strong>RQ3</strong>：TB 2.1（89）是否保留中时程能力？<strong>RQ4</strong>：同数据消融能否隔离 reward、归一化与 world-first 的作用？<strong>RQ5</strong>：换到更强底座后是否仍有增益？前沿模型使用原生 Codex/Claude Code/Gemini CLI harness，Tev 使用 Vanillux2，跨 harness 结果只宜做生态参照。</p>
+<h3 id="paper1-s10">Metrics 教学式解释</h3>
+<p><strong>S@1</strong> 是一次 rollout 的平均分阶段 graded score（0–1，高好），能体现部分工作，但可能被 scorer 偏好误导；<strong>P@1</strong> 是一次 rollout 完整通过严格 verifier 的比例（高好），更贴近真正交付。<strong>S@5/P@5</strong> 是同任务五次独立尝试取最优再汇总；它衡量可达到的最好结果，不等于“一次执行的可靠性”。P@1 上升而 P@5 不动，通常表示同样的任务更稳定，并非解锁了更多新任务。<strong>GPU-h/step</strong> 是每个训练 step 的墙钟时间乘 GPU 数，不能直接推出总训练 token 数或最终总成本。<strong>Agent time</strong> 是固定模型与 harness 的 rollout 时间，不等于人类专家完成任务所需时间。<strong>Pearson r</strong> 衡量 CM 子集与完整榜单模型排名/得分变化的线性一致性，r 高并不能排除子集本身选择偏差。</p>
+<h3 id="paper1-s11">Results Deep Dive：逐项核算，不只看 headline</h3>
+<ol>
+<li><strong>ALE-CM 27B：P@5 0.17→0.28，+0.11 绝对百分点、约 +65% 相对提升。</strong>这是相同底座下最醒目的成功率提升，支持训练 recipe 有效；但只有 18 个任务，最好五次尝试仍仅 28% 完整成功。</li>
+<li><strong>同一组 S@1 0.33→0.40、P@1 0.12→0.16。</strong>平均过程分改善 0.07、一次成功率仅改善 0.04；部分任务的进度进步没有等比例变成完成交付，说明 submit/收尾仍是短板。</li>
+<li><strong>ALE-CM Math &amp; Science P@5 0.25→0.50。</strong>翻倍是最强分项；反例是 ML 类别 P@5 仍为 0.00，且 S@5 由 0.32 降到 0.29，不能概括为“所有能力一致增强”。</li>
+<li><strong>9B 的 S@1 0.25→0.29、P@5 0.06→0.11。</strong>小模型有增益，但 P@1 仅 0.06→0.07，提示主要是增加多次尝试的可达性，而非单次稳健性。</li>
+<li><strong>TB 4.0-CM：27B P@1 0.04→0.10（2.5 倍），但 Claude Opus 5 为 0.52。</strong>相对提升很大，绝对差距仍有 0.42；这是重要弱项，不能用“2.5 倍”掩盖低基数。</li>
+<li><strong>TB 3.0-CM：27B P@1 0.09→0.14，+0.05；P@5 0.24→0.27。</strong>跨数据有增益，但幅度小于部分 in-domain 结果，可能是工作流分布与环境复杂度差异。</li>
+<li><strong>Tev-320B 在 TB 4.0-CM：P@1 0.29→0.37，P@5 没有改善。</strong>更强模型使已有可解任务更稳定，却没有在五次预算下解锁新的难题；这一现象限制了“突破能力边界”的解释。</li>
+<li><strong>TB 2.1：27B P@1 0.764→0.794，+0.030；9B 0.178→0.227，+0.049。</strong>说明长任务训练未必破坏中任务能力，但对大模型增益较小；是否在一般编程能力上同样成立尚未验证。</li>
+<li><strong>Ablation：Sparse S@1=0.25、P@5=0.06；PPRS 0.29、0.11；Direct additive 0.29、0.06。</strong>S@1 一样不代表目标等价：只有 PPRS 的完整提交率同步提升。</li>
+<li><strong>训练成本：Sparse 16.7 GPU-h/step，PPRS 9.0；public-view verifier 22.3。</strong>说明信息性轨迹与评分质量会改变每步耗时；但未给出完全等预算下“总 GPU-h 到目标准确率”的对照，不能宣称总成本精确下降 46%。</li>
+</ol>
+<h3 id="paper1-s12">Table / Figure Reading：把图表当证据</h3>
+<p><strong>Table 1（数据集对照）</strong>：列为规模、领域、rollout 时间、oracle、progressive reward、P@1/P@8。Tev-Gym 1,170 环境、7 领域、median 12.4 分钟、P@1 29%；SWE-Smith 50.1k、2.0 分钟、47%。作者想证明“少但长且难”，实际证明是在 Gemini 3.6 Flash 同协议下的时长与成功率差异；不能推出 Tev 更接近所有真实职业任务。<strong>Figure 3</strong> 是 W→DAG→文件→污染的机制示意，证明可构造一致工作流，不是模型泛化曲线。</p>
+<p><strong>Figure 4（八条轨迹）</strong>：横轴 turn，纵轴 Φ；终局全零时，过程曲线仍分开。它非常直观地说明为什么同组优势不再为零，但只是一个 warehouse task 的案例，不能替代跨任务梯度方差统计。<strong>Table 2（ALE-CM）</strong>：必须同时读 S@1、S@5、P@1、P@5，特别看 ML 子列不进步和前沿模型使用不同 harness 的限制。</p>
+<p><strong>Table 3 / Figure 2（TB 3.0/4.0）</strong>：跨模型 P@1 柱形图把 0.10、0.37 与前沿 0.52 放在一起，揭示“同底座显著进步”与“绝对能力仍弱”同时成立。<strong>Table 5（消融）</strong>：对比 Sparse、Direct additive、PPRS pooled、完整 PPRS，是对目标函数与 credit assignment 最有力的证据；但 PPRS 一行同时包含 ΔΦ、γ=1、按 turn index 归一化，不能把所有收益归因于某一个数学操作。<strong>Figure 5（k8s RCA）</strong>：Tev-27B 在一个具体根因分析案例得 0.97，展示它如何用日志和 YAML 支撑结论；个例不说明全局因果。</p>
+<h3 id="paper1-s13">Ablation / Mechanistic Analysis</h3>
+<p><strong>去掉 dense reward</strong>：P@5 0.11→0.06，且每步 GPU-h 9.0→16.7；说明有效梯度组更少，支持“稀疏奖励饥饿”。<strong>保持 dense、改 pooled norm</strong>：S@5 0.40→0.35、P@5 0.11→0.06；支持同 turn 对齐的重要性，但 turn 长度不齐时后期样本选择偏差仍需研究。<strong>改为 direct Φ(s_t)</strong>：S@1 仍 0.29，P@5 降为 0.06，符合奖励高势能滞留的解释。<strong>去掉隐藏真值 / 改 prompt-first</strong>：S@1 下降到 0.24/0.23；支持一致性价值，但数据生成策略与 reward 同时变化，不能视作严格单变量机制因果。<strong>27B sparse</strong>：论文报告未能完成一个 optimizer step，凸显当前训练管线依赖信息性分组，尚不能说明任何 sparse RL 方法在此任务都必然失败。</p>
+<h3 id="paper1-s14">Claim vs Evidence</h3>
+<p><strong>Authors Claim</strong>：可规模化合成长任务、精确阶段评分、改善 RL 训练和跨任务迁移。<strong>Experiments Actually Show</strong>：七类人工设计生成器上确实产生 1,170 个可验证环境；固定 benchmark 子集和指定模型/harness 上有定量收益；组内梯度从全零变得可区分。<strong>What Is Not Yet Proven</strong>：任意开放网页/多模态真实工作流也能建立 W；奖励不被新型对抗策略利用；在严格等总计算量条件下收益不变；与 VPR 等直接 action-oracle dense reward 方法谁更强。论文的“first”是作者主张，不是经过穷尽先验文献证明的历史优先权。</p>
+<h3 id="paper1-s15">Contribution / Limitation</h3>
+<p><strong>Contribution 1 [New System / Engineering]</strong>：latent-world-first 的生成与验证一致性管线，属于有价值的工程机制；<strong>Contribution 2 [New Benchmark / Dataset]</strong>：Tev-Gym 1,170 个跨七领域任务及覆盖/门禁；<strong>Contribution 3 [New Objective / Training Recipe]</strong>：PPRS 与按 turn 对齐的 DPPO credit；势能差本身源于既有 PBRS，创新在任务真值与训练配方的组合。<strong>Contribution 4 [New Empirical Finding]</strong>：长时程 sparse RL 可能被全失败组卡住，而阶段势能能救活训练。</p>
+<p><strong>Authors' Limitation</strong>：合成终端环境，不是开放互联网或真实组织；每个新工作流仍要人工/编码 Agent 编写并验证生成器；最难 TB 仍远落后顶级模型。<strong>Additional Limitation</strong>：训练集任务模板有限，潜在结构泄漏未被 n-gram 去重完全排除；DAG 依赖和权重带有设计者价值判断；高 Φ 不必然对应未来可成功的策略；测试集仅 18/22/18 个任务，方差可能很大；前沿比较跨 harness；27B 四天多节点成本高；目前代码/数据未放出，不具备一键端到端复现条件。即使 14 个 gaming probes 全过，也不能证明没有 reward hacking。</p>
+<h3 id="paper1-s16">Reproduction View：最小可执行路线</h3>
+<p>先<strong>不要</strong>尝试复现 27B 四天训练。最小版本用 10–30 个确定性文件修复任务、单 bash 工具、3–5 个 DAG 节点和独立 verifier。项目结构建议 <code>world.py</code>（seed→W）、<code>render.py</code>（W→files）、<code>corrupt.py</code>（可逆错误）、<code>progress.py</code>（节点分数+祖先门控）、<code>verify.py</code>（提交检查）、<code>rollout.py</code>（记录 workspace diff/turn）、<code>trainer.py</code>（group reward）。先写单元测试：<code>render</code> round-trip、未修改初始 Φ=0、参考解 Φ=1、破坏已完成节点使 Φ 下降、伪造输出文件无法通过 verifier。对同一批 task/seed，比较 terminal-only、direct Φ、ΔΦ+γ=1、ΔΦ+per-turn norm；每组 G=4/8，至少三个随机种子。最先验证的不是榜单分数，而是<strong>全失败组仍出现非零 advantage、并且 agent 最终 submit rate 上升</strong>。日志必须同时保存 <code>Φ_t</code>、pass、提交动作、工具次数、tokens、rollout wall-clock、每步有效组比例。敏感参数：λ、节点权重、门控定义、turn 对齐、上下文预算、G 与任务难度。</p>
+<h3 id="paper1-s17">Research Value：七种可用价值</h3>
+<p><strong>Baseline Potential：高</strong>，完整 PPRS 与 Sparse 是研究长时程 credit 的直接基线。<strong>Migration Potential：高</strong>，任何能构造可验证中间状态的 Agent / 数据管线都能借鉴。<strong>Systems Potential：中高</strong>，进度评分器可增量计算，但要评估每回合 I/O 和验证成本。<strong>Attack Potential：高</strong>，可以针对 scorer 与 strict verifier 的不一致设计黑盒探测。<strong>Evaluation Potential：高</strong>，从终局 pass 扩展为 progress–submit–recover 三轴。<strong>Benchmark Potential：高</strong>，可用 seed/scale/DAG 深度生成难度阶梯。<strong>New Paper Potential：中高</strong>，关键不在再换一个 λ，而在开放环境中可靠、可审计的进度真值。</p>
+<h3 id="paper1-s18">Migration A：Agent Memory / Multi-Agent 的因果信用分配</h3>
+<p><strong>Original Problem →</strong> 长链工具任务终局反馈稀疏。<strong>Transferable Mechanism →</strong> 依赖门控的可验证进度势能。<strong>New Research Question →</strong> 一条 memory / tool history / inter-agent message 是否真正提升后续任务，而非只是被检索到？<strong>Method Modification →</strong> 将节点从文件阶段改成“信息发现→正确引用→计划选择→工具执行→结果验证”，记录每个记忆条目的来源与首次使用 turn；计算删除该条目后同 seed 轨迹的反事实 ΔΦ 与最终 pass 差。<strong>Minimum Experiment →</strong> 在 ALFWorld 选 100 个任务，固定 1 个 Agent 模型与温度，构造每任务 4 条带/不带 memory 的 paired rollouts；memory 条目附 task/turn/source hash；分别比较 FIFO、embedding retrieval、provenance-aware retrieval；统计检索次数、引用后有效动作比例、终局成功与每 1000 tokens 的进度增益。先实现 <code>memory_store.jsonl</code>、<code>trajectory.jsonl</code>、<code>progress_scorer.py</code>，再做 memory deletion 与错误记忆注入。<strong>Model →</strong> 公开 7B/8B 工具调用模型。<strong>Dataset →</strong> ALFWorld，必要时扩展 WebShop。<strong>Baseline →</strong> no memory / FIFO / semantic retrieval。<strong>Metric →</strong> P@1、Φ-AUC、ΔΦ per token、causal memory utility、误记忆传播率。<strong>Expected Contribution →</strong> 将“检索命中”升级为“可证实的下游贡献”。<strong>Risk →</strong> 反事实 rollout 随机性与评分泄漏。<strong>Collision Risk →</strong> 与已有 agent memory attribution / counterfactual credit 论文存在较高方向重合，须先系统检索并强调可验证进度与 paired evaluation 的新点。</p>
+<h3 id="paper1-s19">Migration B：Video/Inference Agent 的成本约束进度奖励</h3>
+<p><strong>Original Problem →</strong> Agent 在长任务中无视算力/延迟成本。<strong>Transferable Mechanism →</strong> PPRS 提供可分辨的过程效用。<strong>New Research Question →</strong> 能否让 Video QA Agent 自主决定“继续读帧/加深推理/停止”，并在固定质量下减少 GPU 时间？<strong>Method Modification →</strong> 将 Φ 定义为可验证子问题覆盖率，奖励 <code>ΔΦ − α·ΔGPU_ms − β·Δvisual_tokens</code>；与原论文不同，额外加 cost 项，且仅在训练/验证可得答案的任务中使用隐藏真值。<strong>Minimum Experiment →</strong> 在 NExT-QA 先抽 200 题，每题预取 8/16/32 帧候选；冻结 7B Video VLM，训练一个轻量离散 controller，动作是 <code>sample_more_frames(8)</code>、<code>reason</code>、<code>submit</code>；比较固定 8/16/32 帧、熵阈值 early-stop、终局 reward RL 与 cost-aware ΔΦ。每题固定帧解码缓存，记录每动作实际 CUDA latency、峰值显存、答案准确率、停止步数；做 α∈{0,0.1,0.3} 扫描。<strong>Model →</strong> 公开 Video-VLM 7B。<strong>Dataset →</strong> NExT-QA（先小样本）；<strong>Baseline →</strong> uniform frame、adaptive sampling、terminal-only controller。<strong>Metric →</strong> Accuracy、GPU-ms/question、TTFA、tokens、quality–cost Pareto。<strong>Expected Contribution →</strong> 把任务进度和系统成本联合进决策。<strong>Risk →</strong> “部分答案进度”难验证、controller overhead 抵消节省。<strong>Collision Risk →</strong> 与已有 query-aware frame selection / RL compute allocation 高度邻近，需对比真实 wall-clock 而非只报帧数。</p>
+<h3 id="paper1-s20">RL / Agent 专用 Lens</h3>
+<p><strong>State</strong> 是 bash 可观察的文件树、工具输出与上下文，隐藏 W 不属于 policy state；<strong>Action</strong> 是工具调用或 submit；<strong>Policy</strong> 是当前 LLM；<strong>Trajectory</strong> 是多 turn 状态—动作序列；<strong>Reward</strong> 来自隐藏世界计算的 ΔΦ 和提交成功；<strong>Advantage</strong> 是按 turn index 的 group-relative return-to-go；<strong>Objective</strong> 是 DPPO 限制下提高高优势动作概率；<strong>KL/Entropy</strong>：无 KL anchor，温度 1，论文未提供足以分析熵坍缩的完整曲线；<strong>Credit</strong> 从终局一次回报分解为阶段差分。奖励是<strong>程序化、dense、任务内确定性</strong>，不是 learned reward model；reward hacking 仍可能发生在不完善的 scorer。Agent 架构是 <code>Task → LLM planner → bash → workspace → hidden grader → RL update</code>；长链错误可污染文件状态并使后续 DAG 节点无效，失败传播因此不是只看单回合正确率。</p>
+<h3 id="paper1-s21">Attack / Verification Lens</h3>
+<p>设计三个 probe：① 伪造文件名、空表、只写 JSON schema 的“表面正确”攻击，看 Φ 是否异常上涨；② 先修复再破坏上游节点，检查势能是否下降以及模型是否学会修复；③ 只保留高 Φ 的 workspace 却删除 submit 动作，观察 reward 是否鼓励拖延。扩展成 benchmark 可报告 <strong>Progress Gaming Gap = Φ − strict_pass</strong>、<strong>Submit Reliability</strong> 和 <strong>Recovery-after-regression</strong>。注意这些是我们的研究提案，不是作者已经验证的攻击结果。</p>
+<h3 id="paper1-s22">如果只记住这篇（9 句）</h3>
+<ol>
+<li>长任务稀疏 RL 的致命问题是全失败组的优势为零。2. Tev 不只是改 loss，而是从正确世界倒着生成任务。3. DAG 让进度评分考虑前置依赖。4. 每回合 ΔΦ 给失败轨迹排序。5. 最终提交成功仍比任何失败轨迹得分高。6. γ=1 和按 turn index 归一化是训练配方关键。7. 27B 的 ALE-CM P@5 从 0.17 到 0.28。8. TB 4.0-CM 虽提升 2.5 倍但绝对成功率仍只有 0.10。9. 最值得迁移的是“可验证进度—反事实贡献—成本”一体化，而不是复制同一套人工工作流。</li>
+</ol>
+</article><article class="paper" id="paper2"><div class="paper-label">02 / VIDEO ACCELERATION × INFERENCE</div><h2 class="paper-title">Paper 2 · Speculative Forcing for Efficient Autoregressive Video Generation</h2>
+<blockquote>
+<p><strong>BACKFILL｜Video Acceleration × Inference｜2026-10-15（arXiv v1）</strong>。作者：Hyunwook Choi、Seungryong Kim、Dongyoon Han、Sangdoo Yun；单位：KAIST AI、NAVER AI Lab。状态：arXiv 预印本，未核实正式会议录用。论文：<a href="https://arxiv.org/abs/2610.22347">arXiv 摘要</a> · <a href="https://arxiv.org/html/2610.22347">全文 HTML</a> · <a href="https://speculative-forcing.github.io/">项目与视频</a> · <a href="https://github.com/naver-ai/speculative-forcing">GitHub 仓库</a>。<strong>仓库当前只有说明，README 写明代码仍在内部审核，尚未发布实现；不能把“有 GitHub 链接”当作可复现代码已开源。</strong></p>
+</blockquote>
+<h3 id="paper2-s01">一句话定位</h3>
+<p>把视频扩散模型固定 K 步、所有 token 都反复去噪的统一预算，改成“每个时空 token 独立预测何时已接近最终输出、提前冻结并跳过后续计算”的动态推理机制，并在真实 H100 上测量速度与画质权衡。</p>
+<h3 id="paper2-s02">人话版（先理解全貌）</h3>
+<p>一段视频的背景墙可能在第一步去噪时就已经接近最终画面，但快速运动的手、刚从镜头外进入的物体还要三四步才能稳定。传统四步视频生成器不管区域难度，一律把每个 latent token 计算四遍，造成大量重复工作。Speculative Forcing 把每一步得到的“干净 latent 估计”当成草稿，让 verifier 判断某个 token 是否已经足够接近它本来四步后的结果。被接受的 token 立刻冻结，不再进入后续去噪计算，但保留 KV 给尚未完成的 token 参考。作者做了无需训练的历史相似度/逐步稳定性检测，以及一个 4.11M 参数的小型 learned verifier。LongLive 的 5 秒视频从 26.4 到 41.7 FPS，30 秒视频从 24.5 到 37.8 FPS；更难的 Lingbot 世界模型从 18.1 到 24.5 FPS。它证明“少算 token”确实可以变成 wall-clock 加速，但这种接受是近似质量判定，<strong>绝非 LLM speculative decoding 那种分布严格无损的接受规则</strong>。</p>
+<h3 id="paper2-s03">Background &amp; Research Gap：从扩散步骤到 token 预算</h3>
+<p>自回归视频生成不是一次生成整段视频，而是逐 chunk 产生未来几帧。每个 chunk 的 latent 以高斯噪声开始，使用视频 DiT/Transformer 进行 K 次 denoising；历史 chunk 的 KV 被缓存以保持上下文。为了实时生成，Self Forcing / LongLive 等模型把几十步蒸馏到四步，但每一步仍计算整张时空 token 网格。对于一堵不动的墙与突然出现的人脸，这相当于给两个难度完全不同的区域相同的算力。</p>
+<p>旧范式有三类：<strong>减少所有 token 的全局步数</strong>（快但画质下降）；<strong>feature/cache reuse</strong>（仍走完整步序、复用部分特征）；<strong>按帧或 chunk 选择步数</strong>（整块都被最难 token 拖累）。例如镜头横移时，旧画面左侧墙体已经稳定，右侧新露出的物体仍模糊；chunk-wise 只能全块跑四步，或者全块提前停止并损害新区域。本文的 gap 是：<strong>以 token 为粒度做不可逆的 early commitment，已经完成的 token 不再参加后续 forward，而未完成 token 继续细化</strong>。</p>
+<p>与经典 speculative decoding 的相似点是“草稿→验证→接受”，不同点是：经典 LLM draft token 通过 target distribution 的拒绝采样校正以保证输出分布；这里 verifier 估计与原四步生成结果的接近程度，没有严格分布等价证明。用“lossless speculative video decoding”描述它会误导读者。</p>
+<h3 id="paper2-s04">Core Insight：视频不同区域收敛速度不同</h3>
+<p>作者在 Figure 2 对比同一初始噪声、同一条件下第 k 步 clean estimate 与原始四步输出的差距，观察到背景和历史可复用内容较早收敛，运动、遮挡、新视野区域需要更多步骤。这是<strong>可视化和统计支持的经验发现</strong>，不是“背景总能一步完成”的定理。关键假设是：中间 clean estimate 对最终输出的剩余误差可以在不执行未来步骤的情况下预测。训练自由版依赖“像历史内容”或“相邻草稿变化很小”；学习版从 backbone hidden state 直接预测剩余误差。</p>
+<p>真正的系统价值来自把 verifier 输出变成<strong>减少后续模型计算的 mask</strong>，而不只是显示热力图。token 被冻结后仍作为 KV 上下文供其他 token 使用；chunk 完成后执行一次 clean pass 刷新全部 KV，避免下一 chunk 读到不一致的噪声状态。这一步保证后续生成的上下文语义一致，但也解释了为什么理论 token 减少 58% 不会得到同样比例的端到端时间收益。</p>
+<h3 id="paper2-s05">Method Deep Dive：一轮视频 chunk 具体发生什么</h3>
+<p><strong>Input: history KV + prompt/camera + noisy chunk → denoise k=1 → clean draft → verifier score → commit stable tokens → compact active tokens → denoise k=2…K → merge accepted drafts → clean KV refresh → output chunk / next chunk</strong></p>
+<p><strong>Step 1：生成第一个草稿。</strong>K=4，chunk 内 N 个时空 latent token；第一次 denoising 所有 token 都参与，输出每个 token 的 <code>x̂₀^(1)(i)</code>。这个量不是最终 RGB 像素，而是 latent 空间的 clean estimate。每个 token 包含多个输出像素/帧的信息，单 token 的错误可能影响时空一致性。</p>
+<p><strong>Step 2：判定第一次是否可提交。</strong>第一次没有前一版草稿，因此 training-free verifier 把草稿与历史 clean latent token bank 比较，取最相似历史 token 的 L2 距离。若与历史高度相似，则倾向于提前接受；这种跨空间位置的最近邻检索能容忍镜头/物体移动，但相似不代表正确，例如重复纹理会造成错误匹配。学习版则读取当前 backbone 特征预测该 token 与四步输出的剩余距离。</p>
+<p><strong>Step 3：冻结并保留上下文。</strong>接受的 token 固定为当前草稿值 <code>c_t(i)=x̂₀^(k*)(i)</code>，不再 re-noise、不再走后续 denoising forward。它在各层的 key/value 保留，活动 token 仍可 attend 到它。缓存内不同 token 可能来自不同去噪步；因此必须仔细维护 position、timestep、mask 与 KV 写入顺序，否则虽然 FLOPs 降了，结果会因上下文错配而崩溃。</p>
+<p><strong>Step 4：继续 refinement。</strong>未接受的 token 进入下一噪声层级继续预测。在 k≥2 时，training-free verifier 改用相邻 clean estimates 的差值判断稳定性；学习版仍预测剩余 gap。每步先对分数做时空平滑再阈值化，避免棋盘状的零散冻结边界。若 token 到 k=4 仍不满足阈值，就按原始生成器完成全四步。</p>
+<p><strong>Step 5：拼接并刷新。</strong>把来自 k=1、2、3、4 的 token 拼成最终 chunk；执行一次 timestep=0 的 clean forward 刷新所有 token 的 KV，再进入下一个 chunk。论文还把当前 chunk 的 clean pass 与下一 chunk 第一次 denoising pass 合并调度，以降低实际执行开销；比较基线也采用适用的相同优化。<strong>不能简单删掉这次 clean pass</strong>，除非另外证明跨 chunk KV 的正确性。</p>
+<p><strong>Step 6：两种 verifier 的取舍。</strong>Training-free 不需要额外训练数据，但需为每个模型/场景校准 redundancy 和 stability 两个阈值；learned head 需要完整四步 rollout 作 oracle 标签，增加离线成本，但面对强视角变化更稳。两者都不修改视频生成主干参数；后者属于轻量监督训练，不应称整个系统完全 training-free。</p>
+<h3 id="paper2-s06">核心公式与数学直觉</h3>
+<div class="formula">p(c₁,…,c_T) = ∏ₜ p(c_t | c_&lt;t)；　rel_k(i) = || x̂₀^(k)(i) − x̂₀^(K)(i) ||₂ / σ_t　　[论文 Eq.1]</div>
+<p><code>c_t</code> 是第 t 个视频 chunk，<code>x̂₀^(k)(i)</code> 是第 k 次去噪的第 i 个 token 的 clean estimate，<code>x̂₀^(K)</code> 是<strong>同一初始噪声与条件</strong>下原始完整 K 步输出，<code>σ_t</code> 是该完整输出各 token norm 的中位数，防止不同 chunk 尺度影响阈值。<code>rel_k(i)≤ε</code> 表示这个 token 已接近原生成器的最终结果；<strong>在实际推理时 x̂₀^(K) 尚不存在</strong>，所以 rel 是训练标签/Oracle 分析量，不是可直接部署的判断条件。</p>
+<div class="formula">s_red(i)=min_{h∈H} ||x̂₀^(1)(i)−h||₂；　s_stab^(k)(i)=||x̂₀^(k)(i)−x̂₀^(k−1)(i)||₂</div>
+<p>第一式问“当前草稿像不像已有 clean 历史”，第二式问“它这一步变化大不大”。两者分别用 <code>τ_red</code>、<code>τ_stab</code> 判断，并对分数先做时空平滑 S[·]。历史冗余只提供相关性，稳定性也可能是“连续两步都错”；因此二者都是 gap 的 proxy，最容易出现的 false accept 是视觉纹理稳定但语义仍未收敛。</p>
+<div class="formula">L(φ) = [N(K−1)]⁻¹ Σᵢ Σ_{k=1}^{K−1} smoothL1( r̂_k(i), rel_k(i) )　　[论文 Eq.2]</div>
+<p><code>φ</code> 是 3D 卷积 head 参数；<code>r̂_k(i)</code> 由冻结 backbone 的 hidden states 预测，Huber/smooth-L1 在小误差区像平方损失、异常大误差区像绝对值损失，避免少数高 gap token 主导训练。推理时 <code>S[r̂_k](i)≤ε</code> 即接受；增大 ε → 更早接受 → 更快但质量更差，减小 ε → 接近原四步成本与质量。模型没有显式最大化 FPS，而是通过阈值控制 accuracy–latency Pareto。</p>
+<div class="formula">C_denoise = Σᵢ k*(i)；　k̄ = (1/N)Σᵢ k*(i)；　ideal speedup ≈ (K+1)/(k̄+1) = 5/(k̄+1)</div>
+<p><code>k*(i)</code> 是 token 实际提交的步数。相对固定四步的 denoising token 计算，减少比例约 <code>1−k̄/4</code>；但还要加 clean pass，所以理论理想速度比不是 <code>4/k̄</code> 而近似 <code>5/(k̄+1)</code>。实际还受到每步 kernel launch、索引压缩、KV 操作、仍存活 token 数和最长存活步数影响；论文明确指出每 chunk 的最后活跃 token 会拖住整块调度。</p>
+<h3 id="paper2-s07">Toy Example：一个 8-token 的四步视频</h3>
+<p>设某个 chunk 只有 8 个 token：4 个静止背景在 k=1 即满足阈值，2 个缓慢移动物体在 k=2 满足，2 个新出现的手部 token 要到 k=4 才稳定。固定四步需要 8×4=32 次 denoising token 评估；本文只需 <code>4×1+2×2+2×4=16</code> 次，平均 <code>k̄=2</code>，理论 denoising token 计算减半。再加每个 token 一次 clean KV refresh，原方案成本近似 32+8=40，本文 16+8=24，理想速度比 40/24≈1.67×。若执行时间主要由四次完整 kernel launch 决定，实际可能远小于 1.67×；如果 2 个最难 token 可以用高效 sparse kernel 单独计算，则更接近理想。假设 verifier 错把一个手部 token 在 k=1 接受，节省三次评估，却可能在后续 30 秒里积累手部扭曲；因此速度与长期质量必须联合评估。此例仅用于解释算术，不是论文实验。</p>
+<h3 id="paper2-s08">Baseline Deep Comparison：公平的对照到底是什么</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>机制</th>
+<th>合理性与失效处</th>
+<th>本文差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Uniform 4-step</td>
+<td>所有 token 跑四次</td>
+<td>质量参照最可靠，但浪费易区域算力</td>
+<td>token-wise early commit，<strong>最重要质量锚点</strong></td>
+</tr>
+<tr>
+<td>Uniform 2-step / 3-step</td>
+<td>所有 token 提前停止</td>
+<td>速度可比，但复杂区域无法补救</td>
+<td>只给困难 token 额外步数，<strong>机制性</strong></td>
+</tr>
+<tr>
+<td>Surprise Forcing</td>
+<td>以 chunk 难度分配去噪深度、带长期记忆机制</td>
+<td>简单易实现，但 chunk 内异质性大</td>
+<td>单 token 判定，<strong>strongest adaptive baseline（机制上）</strong></td>
+</tr>
+<tr>
+<td>Motion-based / Temporal Difference</td>
+<td>根据相邻帧变化分配预算</td>
+<td>运动不等于未收敛，镜头变化易误判</td>
+<td>对齐与 full-step 的 gap 而非运动量</td>
+</tr>
+<tr>
+<td>Channel Variance / Chunk-wise Acceptance</td>
+<td>用噪声方差或整块均值决定</td>
+<td>混合难易 token 时早停错误传播</td>
+<td>保留 token 级空间差异</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>strongest baseline 要分实验</strong>：衡量质量是否保持时是 Uniform 4-step；衡量同算力预算下 adaptive 方法时是 Surprise Forcing 或 matched-steps 的 Chunk-wise Acceptance；衡量 learned verifier 本身时是 Oracle 与 MLP/on-policy head 消融。论文不是直接比较所有视频生成架构的绝对 SOTA，而是在冻结 LongLive/Lingbot 底座下改推理策略。</p>
+<h3 id="paper2-s09">Experiment Setup：模型、数据、硬件、协议</h3>
+<p><strong>Models</strong>：LongLive 1.3B 与 Lingbot-World 2.0 Causal-Fast 1.3B，均四步生成，主干冻结。<strong>Training</strong>：LongLive learned verifier 用 1,000 个 VidProM prompt 的完整 rollout；Lingbot 用 1,000 个与测试场景分离的初始图像。head 结构 <code>LayerNorm → Conv3D(1536→96, 3³) → GELU → Conv3D(96→48, 3³) → GELU → Conv3D(48→1,1³)</code>，约 4.11M 参数；Adam lr=1e−3、batch=4；输出做 2×2×2 平均池化后还原网格。<strong>Hardware</strong>：单张 NVIDIA H100 报告 FPS。</p>
+<p><strong>RQ1：5 秒短视频</strong>：81 帧、VBench prompt 经 Self Forcing 改写，每个 prompt 五个 seed；VBench 16 个维度。<strong>RQ2：30 秒长视频</strong>：477 帧、VBench-Long + Drift，检验自回归错误累积。<strong>RQ3：交互世界模型</strong>：200 个独立导航场景、每段 253 帧，五个相机控制区间（50/50/50/50/52 次转移），测试平移/旋转的 RPE 与画质。<strong>RQ4：阈值、选择信号、chunk vs token 粒度是否关键？</strong>全部使用相同条件输入与随机 seed；不同场景选择不同阈值（短视频 learned ε=0.28；长视频和世界模型 ε=0.24），所以跨场景速度不能看成同一 operating point。</p>
+<p>LongLive 使用 3 latent-frame attention sink、12-frame local window、3 latent-frame chunk；Lingbot 使用 6 sink、18 window、4-frame chunk，额外输入相机轨迹的 Plücker embedding。training-free 的两个阈值也按场景校准。<strong>重要复现细节</strong>：token mask、clean pass 与下一 chunk 第一次 denoise 的融合、CUDA kernel 和 KV 更新是速度结果的重要组成部分；只在 PyTorch 中给 token 乘 0 不等于减少实际计算。</p>
+<h3 id="paper2-s10">Metrics 教学式解释</h3>
+<p><strong>Mean Steps</strong>：每 token 平均执行多少次 denoising（低好），衡量理论工作量，但忽略额外 clean pass 与不规则计算开销。<strong>FPS/Throughput</strong>：实际每秒生成帧数（高好），是论文真正系统加速证据；需同时注明 GPU、帧数、batch 和计时边界。<strong>VBench / VBench-Long Total、Quality、Semantic</strong>：视频生成质量、视觉与语义的聚合得分（高好），分数差 0.1 不必然具有人类可感知显著性。<strong>Drift</strong>：非重叠时间段 imaging-quality 分数的标准差（低好），反映质量随时间波动，不等于物体身份漂移或物理一致性。<strong>RPE Trans / Rot</strong>：相机轨迹相对位姿误差（低好），衡量是否按控制命令运动；它与画面美观互补。<strong>AUROC</strong>：把“仍需 refinement”的 token 排在“可提前接受”的 token 前面的能力，0.5 接近随机、1 完美；AUROC 高不代表某个实际 ε 下的 false accept 率一定低。<strong>FLOPs / 显存 / 能耗</strong>：论文没有在主表给出完整 FLOPs、peak GPU memory、Joule 的量化对照，必须写 Not Reported，不得拿 token reduction 当实测 FLOPs。</p>
+<h3 id="paper2-s11">Results Deep Dive：至少八个带反例的数字</h3>
+<ol>
+<li><strong>5 秒 LongLive</strong>：4-step 26.40 FPS、VBench 83.08；learned 1.68 steps、41.74 FPS、83.21。实际加速 41.74/26.40≈<strong>1.58×</strong>，总分 +0.13；这是最强系统证据，但不是无损分布保证。</li>
+<li><strong>5 秒 training-free</strong>：1.65 steps、43.61 FPS、83.12，比四步约 <strong>1.65×</strong>；同质量水平下比 learned 略快，说明训练 head 不是每个场景必需。不能忽视阈值是校准出来的。</li>
+<li><strong>5 秒 uniform 2-step</strong>：44.54 FPS、82.46；比 learned 还快一点，却比 83.21 低 <strong>0.75 分</strong>。说明“固定两步”在同速区间损失更多质量，但该质量差是否显著还需置信区间。</li>
+<li><strong>30 秒 LongLive</strong>：4-step 24.45 FPS、VBench-Long 82.69、Drift 1.722；learned 37.78 FPS、82.81、Drift 1.707，约 <strong>1.55×</strong>。表明收益在长视频保留，Drift 略降；0.015 的 Drift 差不能当作大幅改善。</li>
+<li><strong>30 秒 training-free</strong>：38.78 FPS、82.75、Drift 1.685；比 learned 更快且 Drift 更低，但某些一致性子维度更弱。不存在“learned 必然全指标胜出”的结论。</li>
+<li><strong>世界模型 Lingbot</strong>：4-step 18.1 FPS、Quality 82.62、Drift 3.094；learned 24.5 FPS、82.65、2.839，约 <strong>1.35×</strong>。相比 LongLive 加速更小，说明新视野 token 更难早停。</li>
+<li><strong>世界模型相机误差</strong>：4-step Trans RPE=0.328、Rot RPE=0.253；learned 0.328、0.260。平移保持、旋转略变差 0.007；支持基本控制精度，但不能说所有控制指标无损。</li>
+<li><strong>ε sweep</strong>：世界模型 ε=0.24 时 2.55 steps、24.5 FPS、Quality 82.65；ε=0.32 时 1.97 steps、28.3 FPS、Quality 82.07、Drift 3.398。加速更快却明显牺牲画质和稳定性，清楚显示 failure threshold。</li>
+<li><strong>token-wise vs chunk-wise</strong>：相近步数 2.55 vs 2.61，learned token-wise Quality 82.65、Drift 2.839；chunk-wise 82.54、3.214。改善并非只因为“用了一个 head”，还因为预算粒度变细。</li>
+<li><strong>验证器分类能力</strong>：LongLive ε=0.24、k=1 时 learned AUROC 0.934，redundancy 0.828，motion-based 0.701；k=3 时 learned 0.906，stability 0.854。学习特征更能判断剩余 gap，但额外训练是否值得由场景决定。</li>
+</ol>
+<h3 id="paper2-s12">Table / Figure Reading：逐图拆开作者的证据链</h3>
+<p><strong>Figure 1（总体框架）</strong>：展示 token mask、接受后冻结与 KV 继续供上下文使用。它解释了机制，不是性能证据；要检查是否真的跳过对应投影与注意力计算。<strong>Figure 2（收敛差异热力图）</strong>：颜色表示 k-step 与四步输出的 latent gap，背景较早收敛、显露区域较慢；这是作者观察来源，局部可视化不能证明所有视频都如此。</p>
+<p><strong>Table 1（5 秒 VBench）</strong>：行是 1/2/3/4-step、TF、head；列是 Mean Steps、FPS、Total/Quality/Semantic。最关键是 head 1.68 步与 41.74 FPS 对应 83.21，而 uniform 2-step 44.54 FPS 只有 82.46。<strong>Table 2（30 秒）</strong>：增加 Drift 与一致性指标；作者想证明长时间不会加速越多越崩，数据支持 30 秒内的相对稳定，但不能推断分钟级长期无漂移。</p>
+<p><strong>Table 3（Lingbot）</strong>：加入 RPE，揭示动态场景需要 2.55 而不是 1.68 步；反例是旋转 RPE 0.253→0.260，不能只看总 Quality。<strong>Table 4（ε sweep）</strong>：横向看 ε 越大 FPS 越高，但 Quality 在 ε=0.32 明显下降，表明 verifier 阈值是可控 Pareto 而非免费加速。<strong>Table 5（routing ablation）</strong>：相同步数附近 Channel Variance 的 Quality 78.23、Drift 4.996，明显差于 learned 82.65、2.839；Oracle Quality 82.61 也不是绝对更高，可能是指标噪声/目标差异，不能把 learned 超过 Oracle 解释为“预测比真值更准”。<strong>Appendix Table A</strong>：head AUROC 领先 proxy，但 MLP 有时略高于卷积 head，提示卷积结构不是唯一合理设计。</p>
+<h3 id="paper2-s13">Ablation / Mechanistic Analysis：谁承担了什么</h3>
+<p><strong>去掉时空平滑</strong>：世界模型 learned Drift 2.839→2.882、Quality 82.65→82.58，说明邻域一致的接受决策有帮助；幅度有限，尚不能证明每次边界错误都被平滑纠正。<strong>换成 per-token MLP</strong>：2.52 steps、24.8 FPS、Quality 82.67、Drift 2.899，画质甚至略高，说明 backbone 已编码收敛线索，复杂 3D 卷积并非唯一贡献。<strong>改 on-policy head 训练</strong>：2.57 steps、24.5 FPS、Quality 82.67、Drift 2.940，没有明显胜出；训练数据更贴近当前 policy 不一定更好。</p>
+<p><strong>换成 motion / channel variance</strong>：Quality 降到 80.97/78.23，说明“是否运动”和“是否需要更多去噪”不是同一问题。<strong>改 chunk-wise acceptance</strong>：Drift 从 2.839 到 3.214，证实 token 粒度在异质区域有价值。<strong>ε 从 0.24 提到 0.32</strong>：更快但画质变差，是方法的典型 failure case。以上主要是机制关联与干预消融，尚不是对模型内部表示的严格因果定位；未来可以对单 token 接受决策做反事实强制继续计算实验。</p>
+<h3 id="paper2-s14">Efficiency Breakdown：理论与真实必须分开</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align:right">Uniform 4-step</th>
+<th style="text-align:right">Proposed（LongLive 5s, head）</th>
+<th>Change / 证据等级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frames</td>
+<td style="text-align:right">81</td>
+<td style="text-align:right">81</td>
+<td>相同输出帧数</td>
+</tr>
+<tr>
+<td>Visual/Latent Tokens</td>
+<td style="text-align:right">每 chunk N，4 次</td>
+<td style="text-align:right">同 N，平均 1.68 次</td>
+<td><strong>评估次数</strong>约 −58%；token 总数本身未减少</td>
+</tr>
+<tr>
+<td>Denoising Steps</td>
+<td style="text-align:right">4.00</td>
+<td style="text-align:right">1.68</td>
+<td>−58.0%</td>
+</tr>
+<tr>
+<td>FLOPs</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>不得从 steps 直接推导真实总 FLOPs</td>
+</tr>
+<tr>
+<td>Latency / FPS</td>
+<td style="text-align:right">26.40 FPS</td>
+<td style="text-align:right">41.74 FPS</td>
+<td><strong>真实 1.58×</strong>（单 H100）</td>
+</tr>
+<tr>
+<td>Throughput</td>
+<td style="text-align:right">26.40 frames/s</td>
+<td style="text-align:right">41.74 frames/s</td>
+<td>+58.1%</td>
+</tr>
+<tr>
+<td>GPU Memory</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>额外 mask/KV 成本未量化</td>
+</tr>
+<tr>
+<td>Accuracy / Quality</td>
+<td style="text-align:right">VBench 83.08</td>
+<td style="text-align:right">83.21</td>
+<td>+0.13，差异较小</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>另一个 operating point</strong>：LongLive 30s 24.45→37.78 FPS（1.55×），Lingbot 18.1→24.5（1.35×）。理论 clean-pass 修正后的理想速度比在 <code>k̄=1.68</code> 时为 <code>5/2.68≈1.87×</code>，高于实测 1.58×；差距来自 kernel/调度/KV/最慢 token 等开销。论文未报告能耗与 batch scaling，因此不能断言高并发服务同样获益。方法发生在<strong>视频生成 denoising 阶段</strong>，不是视频理解 prefill；对 long video 在 30 秒范围内有证据，对无限 streaming 仍需测量。该机制与 query-aware Video QA 不同，但可迁移为状态/动作条件下的动态算力调度。</p>
+<h3 id="paper2-s15">Claim vs Evidence / Contribution</h3>
+<p><strong>Authors Claim</strong>：不改 backbone 就能在不同视频域里以 token-wise convergence 提前接受，保持原四步画质并加速。<strong>Experiments Actually Show</strong>：两类 1.3B backbone、固定 H100 和给定阈值下 FPS 1.35–1.65×、VBench aggregate 近似持平、世界模型 RPE 大体接近。<strong>What Is Not Yet Proven</strong>：输出分布严格不变；对 7B/14B 视频模型、不同 GPU、batch&gt;1、极长滚动历史、复杂物理交互同样有效；相同平均质量意味着每个视频都无失真。</p>
+<p><strong>Contribution 1 [New Mechanism]</strong>：token-wise early commitment + mixed-step KV retention；<strong>Contribution 2 [New Metric / Protocol]</strong>：以 full-step latent gap 作 oracle，评价 verifier 的 AUROC 与阈值 Pareto（并非首次提出 AUROC）；<strong>Contribution 3 [New System / Engineering]</strong>：active-token 计算、KV refresh、跨 chunk pass 合并；<strong>Contribution 4 [New Empirical Finding]</strong>：低运动区域通常更早收敛、动态世界模型更难提前接受。潜在重复点在于 adaptive denoising / caching / chunk-wise scheduling 已有大量先例，真正的新颖性应聚焦<strong>提前冻结 token 的承诺语义</strong>与其跨 chunk 系统实现，而不是泛称“首次动态计算”。</p>
+<h3 id="paper2-s16">Limitation &amp; Failure Modes</h3>
+<p><strong>Authors' Limitation</strong>：加速取决于原模型对减少去噪步数的容忍度和任务难度；大幅相机运动使更多 token 必须继续精炼；每 chunk 仍受最后活跃 token 的 forward 开销制约，clean pass 也有固定成本。<strong>Additional Limitation</strong>：verifier 用同模型四步输出作 teacher，只能逼近原模型而非真实世界真值；容易在“原模型本来就错”时提前锁定错误；阈值对域转移和视频长度敏感；latent L2 与人类感知不完全一致；极小运动的语义突变可能被 redundancy/stability 误判；不同 timestep KV 混存需要严谨实现；额外 4.11M head 与 score smoothing 会占用显存和带宽；缺少真实峰值显存、能耗、batch 扩展、显著性区间；代码尚未公开，独立复现实验仍受限。</p>
+<h3 id="paper2-s17">Reproduction View：先复现验证机制，再谈 H100 性能</h3>
+<p>最小实现可在一个公开四步 AR 视频生成器上插入三个模块：<code>collect_fullstep.py</code>（同噪声保存 k=1..4 clean estimate 与 hidden state）、<code>verifier.py</code>（redundancy / stability / learned gap）、<code>masked_denoise.py</code>（active-token gather/scatter + layer KV）、<code>refresh_kv.py</code>（chunk 结束 clean pass）、<code>bench.py</code>（CUDA event FPS、显存、画质）。第一阶段不训练 head：固定 20 个 prompt × 3 seed，用 full-step oracle 算每 token <code>rel_k</code> 分布，画 ε 与可接受比例曲线；第二阶段用训练自由版跑 end-to-end，验证 mask 真的减少执行 FLOPs/时间；第三阶段才训练小 head。<strong>最容易踩坑</strong>：把 masked token 置零仍执行完整矩阵乘法，理论 token 数减少而 GPU 时间不变；忘记刷新 KV；只比较不同随机 seed；错误地把 decode VAE 时间算入某一方法；未统一 attention sink/window。</p>
+<p>建议先扫 ε∈{0.16,0.20,0.24,0.28,0.32}，每个 operating point 记录 <code>k̄</code>、false accept rate（以 full-step oracle 为准）、FPS、VBench Total/Drift、max memory；然后做 <code>force_continue</code> 反事实：随机选 10% 已接受 token 强制跑完整四步，观察后续 chunk 的质量变化。最能验证核心 claim 的结果是<strong>在同一生成器、同一 H100、同一 seeds 下，比 uniform 2-step 质量更好、比 uniform 4-step 速度更快</strong>。完整 LongLive 训练脚本与自定义 CUDA 实现目前无法直接从仓库获取，须将其标注为待补齐部分。</p>
+<h3 id="paper2-s18">Research Value：七种可用价值</h3>
+<p><strong>Baseline Potential：高</strong>，token-wise early commit 是 adaptive denoising 的明确对照。<strong>Migration Potential：高</strong>，可迁移到视觉 token、KV eviction、动态 test-time compute。<strong>Systems Potential：高</strong>，真实 FPS 已验证，但还缺高并发与跨硬件测试。<strong>Attack Potential：高</strong>，可构造误导 verifier 的稳定但错误区域。<strong>Evaluation Potential：高</strong>，可以定义 gap calibration / false accept / future drift 三轴。<strong>Benchmark Potential：中高</strong>，运动速度、遮挡、视角变化可参数化形成 stress suite。<strong>New Paper Potential：中高</strong>，重点是 verifier 校准、长期误差传播、系统调度，而非简单再调一个 ε。</p>
+<h3 id="paper2-s19">Migration A：Video VLM 的“可提前接受视觉证据”机制</h3>
+<p><strong>Original Problem →</strong> 视频生成中不同 token 收敛速度不同。<strong>Transferable Mechanism →</strong> 以最终输出的近似 gap 决定 token 何时停止计算。<strong>New Research Question →</strong> 在长视频理解中，哪些 frame/token 已经对当前 query 的答案贡献稳定，能提前退出视觉编码或跨层 attention？<strong>Method Modification →</strong> 用 frozen Video VLM 在完整 32 帧下的最终答案 logit / hidden representation 作为 teacher，训练一个轻量 per-frame gap predictor；对低 gap 帧跳过后续视觉层或减少进入 LLM 的视觉 token，而不是简单删掉所有背景帧。<strong>Minimum Experiment →</strong> 从 NExT-QA 取 300 道题、每题统一解码 32 帧；比较 uniform 8/16/32、随机 8、query-aware top-k、gap-aware 8/16/32；离线用完整输入记录各帧贡献差与最终答题正确性，按 7:1:2 划分校准/验证/测试；测 TTFT、视觉 encoder ms、总 latency、tokens、GPU peak、Accuracy；在“新物体突然出现”和“背景静止但语义变化”两个子集专门做 false-accept stress。<strong>Model →</strong> 开放 7B Video VLM。<strong>Dataset →</strong> NExT-QA；<strong>Baseline →</strong> uniform / adaptive frame sampling。<strong>Metric →</strong> Accuracy、TTFT、wall-clock、token count、false-exit rate。<strong>Expected Contribution →</strong> 将视觉 token 裁剪变成可校准的质量阈值决策。<strong>Risk →</strong> teacher logits 不是真值，答案本身可能错；动态索引 overhead 抵消收益。<strong>Collision Risk →</strong> 与 VETO、VisionZip、query-aware token pruning 接近，需明确“分层 early commit + uncertainty calibration”区别。</p>
+<h3 id="paper2-s20">Migration B：长时程 Agent / World Model 的风险敏感预算控制</h3>
+<p><strong>Original Problem →</strong> 视频生成固定步数浪费算力，但提前接受错误会累积。<strong>Transferable Mechanism →</strong> token-wise verifier + 局部接受 + 保留上下文 + 风险阈值。<strong>New Research Question →</strong> 能否在交互世界模型中按未来动作风险而不是只按 latent gap 分配去噪预算？<strong>Method Modification →</strong> 让 verifier 输入当前相机动作幅度、可见性变化、历史遮挡与 gap，预测“若现在 commit，未来 H 个 chunk 的质量/位姿误差增长”；以风险上限决定 ε，避免高风险新视野过早冻结。<strong>Minimum Experiment →</strong> 在 Lingbot 风格的 200 个相机轨迹中构造静止、平移、旋转、突然反向四组，每组相同 seed；训练一个小风险 head，标签由强制继续四步与提前 commit 的 paired rollouts 产生；对照固定四步、固定 ε=0.24、按运动量调 ε、预测未来误差调 ε；报告 5/10/20 chunk 的 Quality、RPE、Drift、FPS、P95 latency 与显存；绘制 FPS–future-error Pareto。<strong>Model →</strong> Lingbot-World 2.0 Causal-Fast 1.3B（代码/权重可得时）。<strong>Dataset →</strong> 论文 200-scene 设计的独立重建集。<strong>Baseline →</strong> uniform / motion / original verifier。<strong>Metric →</strong> FPS、future Drift、RPE、false-commit rate。<strong>Expected Contribution →</strong> 从即时 latent gap 转为风险敏感长期控制。<strong>Risk →</strong> 成本高、动作分布外泛化、teacher error。<strong>Collision Risk →</strong> 与 adaptive diffusion / world-model uncertainty 研究接近，必须以长期误差的反事实实验证明新增价值。</p>
+<h3 id="paper2-s21">Video / Inference 专用 Lens</h3>
+<p><strong>Bottleneck</strong>：少步视频扩散的反复 denoising Transformer forward，而不是 LLM decode 的 token-by-token sampling；KV 维护是重要次级成本。<strong>究竟少算什么</strong>：对已接受 latent token 不再执行后续去噪的 attention/MLP 投影；没有删除输出帧，也没有宣称 KV memory 按同一比例下降。<strong>是否 retraining</strong>：training-free verifier 不需要；learned head 要离线训练，但 backbone 冻结。<strong>是否硬件相关</strong>：机制通用，速度证据只来自单 H100；动态 gather/scatter 在不同 GPU 可能表现不同。<strong>batch-size scaling</strong>：Not Reported。<strong>long-context/streaming</strong>：30 秒有证据，分钟级/多小时未验证。<strong>理论 vs wall-clock</strong>：5 秒平均步数从 4 到 1.68，但 FPS 只 1.58×，不能写成 2.38× 的真实加速。<strong>迁移到 VLM/Agent/Reasoning</strong>：可迁移的是“预测继续计算的边际价值并提前承诺”，不是照搬扩散的 timestep 公式。</p>
+<h3 id="paper2-s22">Attack / Verification Lens</h3>
+<p>可设计四类 stress test：① <strong>stable-but-wrong</strong>：重复纹理或稳定错误物体，检测“变化小就接受”的错误；② <strong>occlusion reveal</strong>：遮挡解除、突然露出关键物体，检查历史相似度误判；③ <strong>camera distribution shift</strong>：超出训练的高速旋转/平移，检查 gap head 校准漂移；④ <strong>long-run amplification</strong>：前 5 秒局部误差很小，但 30/60 秒后是否被自回归历史放大。建议新指标 <code>Early-Commit False Positive Rate</code>、<code>Error Amplification@H</code>、<code>Verified FPS at Quality≥q</code>。这些属于研究建议，不能写成论文已有攻击结果。</p>
+<h3 id="paper2-s23">如果只记住这篇（9 句）</h3>
+<ol>
+<li>四步视频生成器并非所有 latent token 都需要四步。2. 作者把中间 clean estimate 视为草稿。3. verifier 判断与原四步输出是否足够接近。4. 接受的 token 不再计算，但仍保留 KV 供其他 token 使用。5. chunk 结束还需 clean pass 刷新历史 KV。6. 训练自由版用历史冗余和相邻稳定性，学习版用 4.11M head。7. 5 秒 LongLive 的真实速度是 26.4→41.7 FPS，而不是理论 token 比值。8. 大视角变化的世界模型只有约 1.35× 加速，揭示场景依赖。9. 最值得做的是“可校准的 early commit + 长期错误传播 + 真实系统性能”研究。</li>
+</ol>
+</article>
+<section id="synthesis" class="synthesis">
+<h2>Cross-Paper Synthesis｜共同趋势与机制分野</h2>
+<p>这两篇看似不相干：Tev 优化 Agent 的<strong>训练信用分配</strong>，Speculative Forcing 优化视频生成的<strong>推理算力分配</strong>。但二者共享一个结构：系统先定义一个不可直接在当前时刻完整观察的“最终正确/充分结果”，再构造可在中途获得的 proxy，利用 proxy 决定接下来的资源。Tev 的隐藏世界 W 能直接检查工作区，因此阶段进度近乎程序可验证；视频论文的四步最终输出在提前停止时尚不存在，只能用 learned gap 或冗余/稳定性 proxy 估计。前者重点是<strong>reward fidelity</strong>，后者重点是<strong>verifier calibration</strong>。</p>
+<p>共同的失败模式也清楚：如果代理指标与真实目标不一致，优化器就会沿错误方向前进。Agent 可以刷高 Φ 却不提交；视频 token 可以“看起来稳定”却被错误冻结。两篇都使用显式的保护：Tev 的先决条件门控、独立严格 verifier 和 gaming probes；视频的 full-step oracle 标签、阈值扫描、时空平滑和长期 Drift。两者的实验都提醒我们：<strong>平均指标变好，不代表所有困难子场景得到解决</strong>。Tev 的 ML 子任务没有同步进步，视频的高视角变化场景加速显著缩水。</p>
+<div class="table-scroll"><table><thead><tr><th>维度</th><th>Tev</th><th>Speculative Forcing</th></tr></thead><tbody>
+<tr><td>被优化资源</td><td>rollout 与有效 RL 梯度</td><td>denoising token evaluations / GPU 时间</td></tr>
+<tr><td>中间信号</td><td>工作区 Φ(s) 与 ΔΦ</td><td>latent convergence gap 估计</td></tr>
+<tr><td>最终锚点</td><td>strict submission verifier</td><td>原四步输出及 VBench / RPE</td></tr>
+<tr><td>可验证性</td><td>生成器内真值，结构化任务较强</td><td>未来四步结果不可实时直接访问，需估计</td></tr>
+<tr><td>最大证据</td><td>ALE-CM P@5 +0.11</td><td>LongLive 5s 真实 1.58× FPS</td></tr>
+<tr><td>最弱边界</td><td>TB 4.0-CM P@1 仅 0.10</td><td>世界模型加速仅 1.35×，显存未报告</td></tr>
+</tbody></table></div>
+<h2 id="opportunities">Combined Research Opportunities｜优先做什么</h2>
+<h3>机会 A：Verifier-Calibrated Compute Allocation（优先级最高）</h3>
+<p>设计一个统一的“继续计算是否值得”的决策框架：Agent 选择再检索记忆/再调用工具/再执行 verifier，Video VLM 选择再读帧/再跑视觉层，Video DiT 选择再精炼 token。控制器预测 <code>expected Δverified utility / GPU-ms</code>，并在错误接受风险上设约束。最小可行论文不应从通用多任务大框架开始，而应先在一个可验证任务（如 NExT-QA 的帧预算）上证明：在相同准确率下显著降低真实延迟，并通过 error calibration / OOD stress 排除 proxy hacking。若不能拿出强 baseline 和硬件实测，创新会退化为普通 dynamic computation。</p>
+<h3>机会 B：Long-Horizon Recovery after Early Commitment</h3>
+<p>把视频的“提前冻结”映射到 Agent 的“计划、记忆或工具结果被当成既定事实”。一旦提前 commit 错误，后续执行是否会级联放大？构造可回滚状态与不能回滚状态两组实验，比较：永不复查、固定周期复查、风险感知复查。报告 final pass、recovery latency、token/GPU cost 和 false-commit amplification。这个方向比“Agent 多加一个反思模块”更具体，因为它把错误传播和资源预算量化。</p>
+<h3>机会 C：Progress Reward × Realized Latency 的双目标基准</h3>
+<p>Tev 的每步 GPU-h 与视频的 FPS 提醒我们：理论上少做动作不等于墙钟时间变短。可以构建 <code>Progress per GPU-second</code>、<code>Verified Success under Cost Budget</code> 和 <code>Risk-adjusted Early-Exit Utility</code> 三个指标，在同一 GPU、同一数据、相同预算下比较终局奖励、过程奖励、静态预算、动态预算。要求报告 median / P95 latency、峰值显存、成功率和 seed 方差，避免把“少生成 tokens”误写成“服务吞吐提升”。</p>
+<h2 id="collision">Collision / Overlap｜哪些已经有人做过</h2>
+<p><strong>本期两篇彼此没有直接撞题（Strongest Collision: NONE）。</strong>但各自与既有研究有明确重合边界：Tev 与 <a href="https://arxiv.org/abs/2605.10325">Verifiable Process Rewards for Agentic Reasoning（VPR）</a> 同样强调中间过程可验证奖励；Tev 的区分点是先造完整世界、长工作流 DAG 与程序化生成任务，必须在论文写作时正面比较 VPR。Speculative Forcing 与 <a href="https://arxiv.org/abs/2607.18436">Surprise Forcing</a>、其他 adaptive denoising / feature caching 同样分配视频计算预算；它的区分点是 token-wise commit、mixed-step KV 与真实 FPS。二者均不能把“动态计算”或“密集奖励”本身当成原创概念。</p>
+<h2 id="priority">Reading / Reproduction Priority｜行动顺序</h2>
+<div class="table-scroll"><table><thead><tr><th>优先级</th><th>建议</th><th>可执行第一步</th><th>成功判据</th></tr></thead><tbody>
+<tr><td>P0 · 机制理解</td><td>先读 Tev §2–3 / Table 5</td><td>实现 10 个 seeded task + DAG progress scorer</td><td>失败组能产生非零 advantage，且提交率不下降</td></tr>
+<tr><td>P0 · 系统验证</td><td>读视频论文 §3 / Table 1–5 / Appendix A</td><td>先统计四步 latent gap 与可接受 token 比例</td><td>同质量下真实 CUDA latency 下降</td></tr>
+<tr><td>P1 · 小型新 idea</td><td>做 Agent memory 反事实贡献</td><td>100 个 paired ALFWorld rollouts</td><td>memory contribution 与后续 pass 有一致关系</td></tr>
+<tr><td>P1 · 加速新 idea</td><td>做 query-aware gap predictor</td><td>NExT-QA 300 题，固定 32 帧 teacher</td><td>Accuracy–latency Pareto 超越 uniform/top-k</td></tr>
+<tr><td>P2 · 完整复现</td><td>等待代码/数据释放</td><td>核对官方仓库实际文件与许可证</td><td>同 seed 与同硬件重现核心表格</td></tr>
+</tbody></table></div>
+</section>
+<section id="sources" class="sources">
+<h2>Sources / Links｜原始证据与状态</h2>
+<p>论文主证据以可访问的 arXiv 全文 HTML 为准；项目页与 GitHub 只用于确认代码/模型状态。报告中的量化表格均可在对应论文的 Table 1–5、Appendix Table A/B、Tev Table 11 找到；未报告指标不补猜。</p>
+<ol>
+<li><a href="https://arxiv.org/html/2610.18868">Tev — 原始论文 HTML（含 Appendix、Tables、Figures）</a>；<a href="https://arxiv.org/abs/2610.18868">arXiv 元数据</a>；<a href="https://tev-agent.github.io/">项目页面（Code soon / Data soon）</a>；<a href="https://huggingface.co/gordonhu/Tev-27B">Tev-27B 模型卡与权重</a>。</li>
+<li><a href="https://arxiv.org/html/2610.22347">Speculative Forcing — 原始论文 HTML</a>；<a href="https://arxiv.org/abs/2610.22347">arXiv 元数据</a>；<a href="https://speculative-forcing.github.io/">项目页面与视频示例</a>；<a href="https://github.com/naver-ai/speculative-forcing">GitHub（代码尚在内部审核）</a>。</li>
+<li>相关机制定位：<a href="https://arxiv.org/abs/2605.10325">Verifiable Process Rewards for Agentic Reasoning</a>（2026-05，10 月有新版本）；<a href="https://arxiv.org/abs/2607.18436">Surprise Forcing</a>（2026-07）。</li>
+</ol>
+<p class="foot">研究笔记版本：2026-10-20 · UTF-8 · Self-contained HTML · 中文精读与原创分析 · 资料日期均有原始链接。</p>
+</section>
+</main></div></body></html>
