@@ -1,0 +1,425 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Daily Top Papers Deep Dive — 2026-10-21</title><meta name="description" content="WeAct 与 SpecKCast 两篇论文完整中文深度精读，公式、实验、图表、复现、迁移与研究碰撞"><style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#1e293b;--muted:#586679;--accent:#1756a9;--line:#dce4ee;--code:#eef5ff;--hi:#0d766e;--shadow:0 8px 36px rgba(35,52,79,.06)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",Arial,sans-serif;font-size:16px;line-height:1.9;letter-spacing:.013em}a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(23,86,169,.3)}a:hover{border-bottom-color:var(--accent)}.page{max-width:1180px;margin:auto;padding:38px 22px 90px}.hero{background:linear-gradient(135deg,#122e54,#124f80 58%,#10796f);color:white;border-radius:22px;padding:42px 46px;box-shadow:var(--shadow)}.eyebrow{font-size:12px;letter-spacing:.2em;opacity:.78;font-weight:700}.hero h1{font-size:clamp(26px,4vw,45px);line-height:1.25;margin:13px 0 16px}.hero p{margin:0;opacity:.86;max-width:820px}.hero .pills{margin-top:20px;display:flex;flex-wrap:wrap;gap:9px}.pill{border:1px solid #ffffff5b;border-radius:999px;padding:4px 12px;font-size:12px}.layout{display:grid;grid-template-columns:265px minmax(0,1fr);gap:26px;align-items:start;margin-top:26px}.toc{position:sticky;top:18px;max-height:calc(100vh - 36px);overflow:auto;background:var(--card);border:1px solid var(--line);padding:22px 18px;border-radius:15px;box-shadow:var(--shadow);font-size:12px;line-height:1.5}.toc-title{font-weight:800;letter-spacing:.12em;color:var(--hi);padding-bottom:13px;border-bottom:1px solid var(--line);margin-bottom:10px}.toc a{display:block;border:0;padding:5px 7px;border-radius:7px}.toc a:hover{background:#eef5ff}.toc-h1{font-weight:750;color:#153d70;margin-top:9px}.toc-h2{padding-left:18px!important;color:#50647b}.report{min-width:0;background:var(--card);padding:44px 50px 80px;border-radius:18px;border:1px solid var(--line);box-shadow:var(--shadow)}h1,h2,h3{letter-spacing:0;line-height:1.4}h1{font-size:29px;margin:68px 0 22px;color:#12395f;padding-bottom:13px;border-bottom:2px solid #d5e5f7}h1:first-child{margin-top:0}h2{font-size:21px;margin:40px 0 13px;color:#164778}h3{font-size:18px;margin-top:26px}p{margin:12px 0 16px;text-align:justify;overflow-wrap:anywhere}strong{font-weight:750;color:#183e69}blockquote{background:#edf6f4;border-left:4px solid #168777;margin:22px 0;padding:14px 22px;border-radius:0 12px 12px 0;color:#195d57}blockquote p{margin:0}hr{border:0;border-top:1px solid var(--line);margin:36px 0}.flow{background:linear-gradient(90deg,#f0f7ff,#eafaf5);padding:18px 22px;border:1px solid #c8e4f2;border-radius:12px;color:#154b72;font-weight:700;line-height:2.1;margin:22px 0;overflow-wrap:anywhere}.formula{margin:17px 0;padding:18px 20px;background:#f0f5fb;border:1px solid #d8e6f6;border-radius:11px;font-family:"Cambria Math","Times New Roman",serif;line-height:2.1;font-size:17px;overflow-x:auto;white-space:normal}.table-wrap{width:100%;overflow-x:auto;margin:18px 0 26px;border:1px solid var(--line);border-radius:11px;box-shadow:0 3px 14px rgba(25,52,86,.03)}table{border-collapse:collapse;width:100%;min-width:650px;font-size:13px;line-height:1.6}th,td{padding:11px 13px;text-align:left;border-bottom:1px solid #e5eaf1;vertical-align:top}thead th{background:#eaf2fa;color:#163d67;font-weight:800;position:sticky;top:0}tbody tr:nth-child(even){background:#fafcff}tbody tr:hover{background:#eef7fb}code{background:#edf3fa;border-radius:5px;padding:2px 5px;font-size:.91em}ul,ol{padding-left:24px}li{margin:8px 0}.footer{margin:32px auto 0;text-align:center;color:#718095;font-size:12px}.toplink{position:fixed;right:22px;bottom:24px;background:#164e7a;color:white;border:0;padding:8px 15px;border-radius:999px;box-shadow:0 5px 20px #2348;z-index:3}.toplink:hover{color:white;background:#0e7d75}.readingnote{font-size:13px;color:#dbeaf5}.printnote{margin-top:8px;font-size:12px;color:#8495a6}@media(max-width:940px){.layout{display:block}.toc{position:static;max-height:300px;margin-bottom:20px}.report{padding:30px 25px}.page{padding:18px 12px}.hero{padding:29px 24px}}@media(max-width:580px){body{font-size:15px;line-height:1.85}.report{padding:23px 17px}h1{font-size:23px}h2{font-size:19px}.toc-h2{display:none!important}.hero h1{font-size:27px}}@media print{body{background:white}.page{max-width:none;padding:0}.hero{color:black;background:white;border-bottom:2px solid #222;box-shadow:none;border-radius:0}.layout{display:block}.toc,.toplink,.footer{display:none}.report{padding:0;border:0;box-shadow:none}.table-wrap{overflow:visible}h1,h2{break-after:avoid}table{font-size:10px;min-width:0}tr{break-inside:avoid}}
+</style></head><body><div class="page" id="top"><header class="hero"><div class="eyebrow">AI RESEARCH · DEEP DIVE · 2026 / 10 / 21</div><h1>Daily Top Papers Deep Dive</h1><p>两篇真正精读：WeAct · Agent 内部权重动作　×　SpecKCast · 频域 Kalman 预测加速</p><div class="pills"><span class="pill">2 papers · Full-text verified</span><span class="pill">Agent / Continual</span><span class="pill">Video / Efficient Inference</span><span class="pill">中文 · 自包含 HTML</span></div><div class="printnote" style="color:#c8e6f2">全文支持 Ctrl+F · 表格可横向滚动 · 点击左侧目录定位</div></header><div class="layout"><nav class="toc" aria-label="报告目录"><div class="toc-title">CONTENTS · 点击跳转</div><a class="toc-h1" href="#section-1">Daily Top Papers Deep Dive · 2026-10-21</a><a class="toc-h1" href="#section-2">Paper 1 · WeAct: Dynamic Weight Switching as Agent Actions</a><a class="toc-h2" href="#section-3">1. 人话版（先建立直觉）</a><a class="toc-h2" href="#section-4">2. Background &amp; Research Gap：为什么原方案不够</a><a class="toc-h2" href="#section-5">3. Core Insight：两种干扰必须分开</a><a class="toc-h2" href="#section-6">4. Method Deep Dive：从数据到权重动作</a><a class="toc-h2" href="#section-7">5. 核心公式与数学直觉</a><a class="toc-h2" href="#section-8">6. Toy Example：一次可复演的 Agent 轨迹</a><a class="toc-h2" href="#section-9">7. Baseline Deep Comparison：谁才是 strongest baseline</a><a class="toc-h2" href="#section-10">8. Experiment Setup：实验在证明什么</a><a class="toc-h2" href="#section-11">9. Metrics 教学式解释</a><a class="toc-h2" href="#section-12">10. Results Deep Dive：八个带对照的结果</a><a class="toc-h2" href="#section-13">11. Table / Figure Reading：读出作者没强调的地方</a><a class="toc-h2" href="#section-14">12. Ablation / Mechanistic Analysis</a><a class="toc-h2" href="#section-15">13. Claim vs Evidence</a><a class="toc-h2" href="#section-16">14. Contribution / Innovation Audit</a><a class="toc-h2" href="#section-17">15. Limitation &amp; Failure Modes</a><a class="toc-h2" href="#section-18">16. Reproduction View：先复现哪一步</a><a class="toc-h2" href="#section-19">17. Research Value：七个角度</a><a class="toc-h2" href="#section-20">18. Migration A：Agent / Multi-Agent 的能力路由与可审计性</a><a class="toc-h2" href="#section-21">19. Migration B：多模态 / Video Agent 的可切换视觉能力</a><a class="toc-h2" href="#section-22">20. Attack / Verification Lens</a><a class="toc-h2" href="#section-23">21. 如果只记住这篇（9 句话）</a><a class="toc-h1" href="#section-24">Paper 2 · SpecKCast: Spectral Kalman Forecasting for Diffusion Acceleration</a><a class="toc-h2" href="#section-25">1. 人话版</a><a class="toc-h2" href="#section-26">2. Background &amp; Research Gap</a><a class="toc-h2" href="#section-27">3. Core Insight：频带的“有效时间”不相同</a><a class="toc-h2" href="#section-28">4. Method Deep Dive：真正少算了什么</a><a class="toc-h2" href="#section-29">5. 核心公式与数学直觉</a><a class="toc-h2" href="#section-30">6. Toy Example：用 4 个频率系数预测两次跳步</a><a class="toc-h2" href="#section-31">7. Baseline Deep Comparison</a><a class="toc-h2" href="#section-32">8. Experiment Setup：哪些变量被控制</a><a class="toc-h2" href="#section-33">9. Metrics 教学式解释</a><a class="toc-h2" href="#section-34">10. Results Deep Dive：八个可核对的定量事实</a><a class="toc-h2" href="#section-35">11. Table / Figure Reading：至少五处证据</a><a class="toc-h2" href="#section-36">12. Ablation / Mechanistic Analysis</a><a class="toc-h2" href="#section-37">13. Video Acceleration 专用 Efficiency Breakdown</a><a class="toc-h2" href="#section-38">14. Inference Acceleration 专用 System Metrics</a><a class="toc-h2" href="#section-39">15. Claim vs Evidence</a><a class="toc-h2" href="#section-40">16. Contribution / Innovation Audit</a><a class="toc-h2" href="#section-41">17. Limitation &amp; Failure Modes</a><a class="toc-h2" href="#section-42">18. Reproduction View：先做最小闭环</a><a class="toc-h2" href="#section-43">19. Research Value：七个角度</a><a class="toc-h2" href="#section-44">20. Migration A：Streaming Video / World Model 的风险触发计算</a><a class="toc-h2" href="#section-45">21. Migration B：Diffusion 加速的黑盒压力测试与自校准</a><a class="toc-h2" href="#section-46">22. Attack / Verification Lens</a><a class="toc-h2" href="#section-47">23. 如果只记住这篇（9 句话）</a><a class="toc-h1" href="#section-48">Cross-Paper Synthesis · 今天两篇共同说明什么</a><a class="toc-h1" href="#section-49">Combined Research Opportunities · 可以开始做的交叉项目</a><a class="toc-h2" href="#section-50">Opportunity A · Budget-Aware Video Research Agent</a><a class="toc-h2" href="#section-51">Opportunity B · Uncertainty-Calibrated Internal Actions</a><a class="toc-h2" href="#section-52">Opportunity C · Failure-Propagation Benchmark</a><a class="toc-h1" href="#section-53">Collision / Overlap · 哪些方向容易撞车</a><a class="toc-h1" href="#section-54">Reading / Reproduction Priority</a><a class="toc-h1" href="#section-55">Sources / Links · 核验边界</a></nav><main class="report"><h1 class="section-major" id="section-1">Daily Top Papers Deep Dive · 2026-10-21</h1>
+<p><strong>独立精读 · 两篇 · 中文深度研究报告 · 原文核查于 2026-10-21（Asia/Shanghai）</strong></p>
+<p>本次只选两篇，不做 30–60 篇 Radar，也不机械凑齐四个主线。候选覆盖 RL / Agent / Video / Inference，重点从最近 72 小时的论文中选择<strong>机制清晰、定量实验可核对、附录可读、可迁移到新研究</strong>的工作。与近 7 天已精读论文清单核对后，所选两篇<strong>无已知重复</strong>；两篇都有可访问的 arXiv HTML 全文，故不标 BACKFILL。所有论文数字均以原文为准，所有新 Idea、Toy Example 和 Collision 风险均为本报告推演。</p>
+<div aria-label="可横向滚动的论文结果表格" class="table-wrap" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>排名</th>
+<th>论文</th>
+<th>方向</th>
+<th>为什么值得今天真正精读</th>
+<th>主要证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>#1</strong></td>
+<td><strong>WeAct: Dynamic Weight Switching as Agent Actions</strong></td>
+<td>Agent / Continual / LoRA</td>
+<td>将专家权重选择变成可追踪内部工具动作，解决训练干扰与静态融合错配</td>
+<td>8 基准均值 45.47 vs Full SFT 42.80；对照、检索图与模块更新实验齐全</td>
+</tr>
+<tr>
+<td><strong>#2</strong></td>
+<td><strong>SpecKCast: Spectral Kalman Forecasting for Diffusion Acceleration</strong></td>
+<td>Video Generation / Inference Acceleration</td>
+<td>频带异步演化 + SNR 时间 warp + 风险触发真实 DiT 计算，兼有理论直觉与 wall-clock</td>
+<td>Wan2.1 50-step 370s→14-NFE 105.2s；FLUX/Qwen/视频四模型和强消融</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>今日最有价值的迁移方向</strong>：面向长视频 Agent 的“可审计能力切换 + 风险驱动视觉计算预算”。<strong>最强潜在 Collision</strong>：不确定性触发计算与 Agent 内部动作验证的统一机制，但尚不是直接论文优先权冲突。<strong>阅读提示</strong>：先看每篇“人话版→Method→公式→主表→失败模式”，再决定复现哪一个最小实验。</p>
+<h1 class="section-major" id="section-2">Paper 1 · WeAct: Dynamic Weight Switching as Agent Actions</h1>
+<blockquote>
+<p><strong>定位</strong>：把“使用哪一组模型权重”从部署时固定的配置变成 Agent 在一条轨迹中可调用、可验证的内部动作；同时以能力对齐的独立 LoRA 避免不同阶段训练互相覆盖。</p>
+</blockquote>
+<p><strong>基本信息</strong>：Rui Shi、Xunjian Yin、Jiacheng Sang、Zichuan Liu、Shuyan Zhou；Carnegie Mellon University、City University of Hong Kong、Duke University、Meta MSL（依作者署名）。arXiv:2610.26847，首次提交 <strong>2026-10-19 17:59 UTC</strong>，<strong>v2 更新 2026-10-20</strong>；当前核验为 arXiv 预印本，<strong>没有从论文核实正式录用 Venue</strong>。论文 <a href="https://arxiv.org/abs/2610.26847" rel="noopener noreferrer" target="_blank">arXiv</a> · <a href="https://arxiv.org/html/2610.26847" rel="noopener noreferrer" target="_blank">完整 HTML</a> · <a href="https://arxiv.org/pdf/2610.26847" rel="noopener noreferrer" target="_blank">PDF</a>。<strong>项目页 / 官方代码：未在所核查的正文及官方记录中确认，不能视为已开源。</strong></p>
+<h2 id="section-3">1. 人话版（先建立直觉）</h2>
+<p>一个研究型 Agent 可能先拆解问题，再搜索网页、核验证据，最后写报告。常规训练把这三种本领揉进同一套参数：搜索能力增强时可能冲掉写作能力；即使分别训练三个 LoRA，简单相加或静态合并也会让它们在推理时互相干扰。WeAct 的处理不是训练一个复杂的专家门控网络，而是让 Agent 像调用搜索工具一样调用 <code>load_lora</code> 和 <code>offload_lora</code>：需要规划就启用规划权重，需要搜索就切换搜索权重，最后启用写作权重。上下文历史继续保留，改变的是下一步生成所用的参数。Qwen3-32B 的八个深度研究基准上，强制阶段切换版本平均准确率 45.47%，高于 Full SFT 的 42.80%，也高于最佳静态合并的 35.66%。但它并不是免费午餐：切换权重需要重建 KV cache，动态路由不如强制流程稳定，模块内部的持续学习遗忘仍然存在。</p>
+<h2 id="section-4">2. Background &amp; Research Gap：为什么原方案不够</h2>
+<p><strong>现实场景</strong>：用户问“某项政策如何影响三个地区的能源市场，并给出证据”。Agent 先列约束，再发多个搜索查询，检查来源，最后写一篇带引用的回答。规划要求任务分解，搜索要求外部事实对齐，写作要求长文组织；三者不仅目标不同，梯度方向还可能冲突。一个统一的 Full SFT 模型会更新同一套大参数，后续训练可能使先前能力退化。一个 Single LoRA 仍在同一低秩子空间里承载多个任务。若改为三个独立 LoRA 但先做 TIES / DARE-TIES 合并，则上线后仍是一组固定权重，搜索时写作更新也在参与每一层运算。</p>
+<p>旧方法各有合理性：Full SFT 的容量最大；Single LoRA 省参数；TIES 消除符号冲突；MoLE 等门控混合专家能按输入动态组合；ManuSearch 可以交给多个独立 Agent。然而它们没有同时解决“<strong>训练更新相互隔离</strong>”和“<strong>同一执行轨迹里随阶段改变有效权重</strong>”两个问题。WeAct 的 gap 是把能力边界、监督 mask、运行时权重选择、工具状态机串成闭环。要注意这不是把 LoRA 发明一遍，也不是首个路由器；贡献更接近 Agent harness 层的可操作组合机制。</p>
+<h2 id="section-5">3. Core Insight：两种干扰必须分开</h2>
+<p><strong>观察 A：学习干扰</strong>。共享参数上，对能力 k 做梯度下降会改变能力 j 的损失；一阶项由两种梯度内积决定。作者用六种训练顺序、同样数据和更新数对比 rank-32、rank-96 共享 LoRA、按能力分区 LoRA、随机分区 LoRA。即使把共享 rank 提到与三模块总量接近，仍不能消除能力损失；随机分区也不行。这意味着“只是参数不够”不足以解释遗忘，<strong>模块与真实能力的语义对齐</strong>很重要。</p>
+<p><strong>观察 B：执行干扰</strong>。把三个专家的低秩更新相加，虽然每个专家参数没有丢失，前向计算却会把别人的更新作用在本阶段的隐藏状态上。作者比较 Full Additive、TIES、DARE-TIES、TSPA 的局部激活残差和目标 token NLL，发现所有测试合并都出现平均退化。这里证据属于受控的经验诊断，不等于证明所有可能的 merge 都必然失败。两个观察共同支持：<strong>训练时分开，执行时按需激活原样专家</strong>。</p>
+<h2 id="section-6">4. Method Deep Dive：从数据到权重动作</h2>
+<div class="flow">历史 Agent 轨迹 → 能力阶段标注 → 保留前序上下文 / 仅监督本阶段 token → 独立训练 Plan/Search/Write LoRA → 注册 MCP 内部工具 → Agent 选择 / 卸载 LoRA → 继续同一历史中的外部工具操作 → 输出答案</div>
+<p><strong>Step 1：划分能力，而不是机械按消息切片。</strong> 作者把深度研究轨迹划为 Plan、Search、Writing：Plan 决定目标与后续动作，Search 包含证据获取、过滤和验证，Writing 负责整合。附录提到把检索和验证继续细分会造成边界标注不稳定；把检索并进规划又让规划吞下证据操作。能力定义因此是工程假设，不是自然定律。若你的任务存在“规划—检索—再规划”循环，三段线性流程未必合适。</p>
+<p><strong>Step 2：保留执行上下文，只对当前阶段算损失。</strong> 一条训练样本是前序历史 p、加载动作与返回 u、当前阶段内容 c、退出动作 v 的拼接。前序 assistant 消息、工具输出和加载结果只作为条件，不承担当前 LoRA 的 loss；本阶段 assistant 的推理、工具调用、退出调用才参与交叉熵。如此训练的 Search LoRA 不会像孤立的 QA 模型那样以为任务从零开始；它能看到 Plan 已做的工作，并学会在适当时刻交还控制。</p>
+<p><strong>Step 3：独立更新。</strong> 冻结 Qwen3-32B 主干，分别训练 Plan rank32、Search rank64、Write rank32。Search 更大不是任意美化：作者报告 rank32 试验出现重复推理、工具调用和卸载不可靠。主要适配注意力 q/k/v/o、FFN gate/up/down 和 lm_head，输入 embedding 不适配；每个模块具有独立优化参数，刷新 Writing 不会写坏 Search 的权重。</p>
+<p><strong>Step 4：把切换实现为可观察的工具状态机。</strong> <code>load_lora(lora_name)</code> 只能从无激活状态装载；<code>offload_lora(lora_name)</code> 只能卸载当前别名；从 A 到 B 需先 offload A 再 load B。非法别名、失败、重复调用不改变状态。每次调用及结果进入同一历史，后续模型知道当前启用的是哪个专家。这一点对审计尤其关键：日志可以回答“这一步的答案由哪个权重状态生成”。</p>
+<p><strong>Step 5：两种控制策略。</strong> WeAct-hard 规定 Plan→Search→Write，满足退出条件才切换，属于更可靠但不够灵活的流程；WeAct-soft 让基础模型及当前专家根据历史决定何时加载、退出、重访，附带覆盖与终止限制。二者<strong>没有额外训练的路由器</strong>。切换后 LoRA 常驻 GPU，减少权重搬运；但因为不同权重对相同历史计算出的 K/V 不兼容，必须重算历史 KV cache，这一隐藏成本不能从“LoRA 很小”推出为零。</p>
+<h2 id="section-7">5. 核心公式与数学直觉</h2>
+<div class="formula">(1) Wₖ,ℓ = W₀,ℓ + (αₖ / rₖ) Bₖ,ℓ Aₖ,ℓ；A∈ℝʳˣᵈⁱⁿ，B∈ℝᵈᵒᵘᵗˣʳ。</div>
+<p>这里 W₀ 是冻结主干，k 是能力索引，ℓ 是被适配的线性层，r 是低秩维数，α 是缩放。不同 k 拥有互不共享的 A/B；与静态 merge 把多个 ΔW 加在一起不同，WeAct 在某一时刻只使用一个 ΔWₖ。rank 越大表达力通常更强，但训练显存与参数量增加；它不是自动提升路由准确率的万能旋钮。</p>
+<div class="formula">(2) aₜ ∼ π₍θ₀₊Δθ_zₜ₎( · | hₜ )，zₜ∈{∅, Plan, Search, Write}。</div>
+<p>hₜ 是共享历史，zₜ 是当前内部状态，aₜ 可以是普通文本、外部工具调用或内部权重动作。关键在于 <strong>policy 本身随 zₜ 变化</strong>，而不是仅把专家标签写进 prompt。它不是 RL objective：主论文的能力训练是 masked SFT，内部动作的选择没有单独的 policy-gradient 奖励训练。</p>
+<div class="formula">(3) Lⱼ(ω−ηgₖ) − Lⱼ(ω) = −η gⱼᵀgₖ + O(η²)。</div>
+<p>若两能力梯度内积为负，更新 k 可能增加 j 的损失；若为正则可能有正迁移。这只是局部泰勒展开，不能把一次负内积直接当作长期遗忘的因果证明。独立 LoRA 的跨模块梯度为零，解决的是<strong>参数写入冲突</strong>；共同主干的能力依赖、错误路由和同模块内部漂移仍未解决。</p>
+<div class="formula">(4) Lₖ = − Eₛ∼Dₖ Σₙ mₖ,ₙ log πₖ(xₙ | x&lt;ₙ)，m=1 仅覆盖本阶段 assistant 目标。</div>
+<p>m 的作用比普通交叉熵更重要：若错误地让工具输出也参与 loss，模型可能学习复述网页而非选择工具；若把前序 Plan 的输出也作为 Search 目标，则又回到多能力共享监督。作者使用终止动作作为目标，让“什么时候退出”成为被学习的行为。</p>
+<h2 id="section-8">6. Toy Example：一次可复演的 Agent 轨迹</h2>
+<p>假设问题是“对比 A、B 两篇论文的真实 wall-clock 加速与质量退化”。初始状态 <code>z=∅</code>，历史只有问题。基础模型调用 <code>load_lora(plan)</code>，Plan 列出需要查原文 Table、硬件、batch、baseline、quality 指标，然后 <code>offload_lora(plan)</code>。Harness 验证状态从 Plan→∅。接着 <code>load_lora(search)</code>，Search 连续调用网页读取，提取“论文 A 3.5×/质量 80.9；论文 B 3.2×/质量 80.4”，为两条事实记录来源和设备，再卸载。最后 <code>load_lora(write)</code>，Writing 看到此前完整历史，指出若硬件不同就不能直接断言 A 更快，写成有条件的比较。若 Search 错把 3.5× 写成 5.3×，Writing 可能放大错误；WeAct 保留历史，不自动验证历史真实性。若 Search 忘记卸载，hard 模式可以在预算或无工具阈值触发强制阶段推进，soft 则可能长时间停留搜索。这个例子是<strong>解释性构造，不是论文报告的样本</strong>。</p>
+<h2 id="section-9">7. Baseline Deep Comparison：谁才是 strongest baseline</h2>
+<div aria-label="可横向滚动的论文结果表格" class="table-wrap" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>机制为何合理</th>
+<th>本文 setting 的弱点</th>
+<th>WeAct 的改变</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Full SFT</strong></td>
+<td>更新全部参数、容量最大；八基准平均 <strong>42.80</strong>，是主表<strong>最强非 WeAct 总体基线</strong></td>
+<td>多能力共享更新；MMLU-Pro/IFEval 泛化退化；训练开销高</td>
+<td>冻结主干，按能力分离 + 运行时切换</td>
+<td>机制 + harness</td>
+</tr>
+<tr>
+<td><strong>Single LoRA rank128</strong></td>
+<td>与三 LoRA 总 rank 匹配；平均 <strong>38.73</strong></td>
+<td>单个更新仍耦合规划搜索写作</td>
+<td>专家隔离且只激活所需</td>
+<td>机制</td>
+</tr>
+<tr>
+<td><strong>TIES-Merging</strong></td>
+<td>裁剪冲突符号、固定推理路径；<strong>35.66</strong>，是最强静态 merge</td>
+<td>合并后仍对每个 token 施加所有专家的混合更新</td>
+<td>不合并、按阶段调用完整专家</td>
+<td>机制</td>
+</tr>
+<tr>
+<td><strong>DARE-TIES / TSPA</strong></td>
+<td>稀疏化或对齐降低冲突；平均 <strong>35.35 / 35.15</strong></td>
+<td>固定融合不能恢复各阶段匹配激活</td>
+<td>以切换代替融合</td>
+<td>机制</td>
+</tr>
+<tr>
+<td><strong>ManuSearch</strong></td>
+<td>专门的多 Agent 分工；平均 <strong>39.49</strong></td>
+<td>多上下文与管理器交接开销；SearchAtlas 约束覆盖较低</td>
+<td>单一历史中切换权重</td>
+<td>系统设计</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest 的定义不能偷换</strong>：按八基准平均准确率，Full SFT 是最强非 WeAct 基线；按“同一能力 LoRA 库的静态组合”比较，TIES 是最强静态 merge。论文摘要所称相对静态合并 +27.5% 是 (45.47−35.66)/35.66，<strong>不是 +27.5 个百分点</strong>。</p>
+<h2 id="section-10">8. Experiment Setup：实验在证明什么</h2>
+<p>主模型 Qwen3-32B；LoRA rank 32/64/32、α=32、dropout=0、上下文上限 32k、batch8；Plan 两 epoch、Search/Write 三 epoch；各峰值学习率分别 2e−4、3e−4、2e−4。Full SFT 使用八张 NVIDIA H200、DeepSpeed ZeRO-3、FlashAttention-2、五 epoch、峰值 4e−5，训练 recipe 并不完全等算力。训练轨迹来自 MiroVerse-v0.1 与 OpenSeeker-v1-Data 衍生数据；论文报告共 <strong>6,962</strong> 条训练轨迹并做任务文本重合筛查。主基准：GAIA、2Wiki、Bamboogle、MuSiQue、WebWalkerQA、xbench-DeepSearch、BrowseComp、FRAMES。八基准均值不按样本数加权；主表每题至多三次尝试，有无合法 boxed answer 决定重试；部分任务使用 GPT-5.6 Luna 作为 judge，另有规范化精确匹配。</p>
+<p><strong>RQ1：模块化切换能否改善最终准确率？</strong> 对应 Table 1。<strong>RQ2：优势是不是来自多参数或数据分区而非能力边界？</strong> 对应 Figure 3、附录 Table 7，控制 rank、更新数与顺序。<strong>RQ3：静态融合是否破坏原专家？</strong> 对应 Figure 13/14 的局部激活与 NLL。<strong>RQ4：答案准确率是否掩盖证据使用？</strong> SearchAtlas 100 题、十方法、1000 张查询证据图。<strong>RQ5：权重切换是否在真实运行中昂贵？</strong> 历史日志 + 50 次受控 WebWalkerQA 延迟实验。<strong>RQ6：能否无 replay 扩展或刷新能力？</strong> Code 插入和 Writing 刷新。一个重要污染风险是 MuSiQue 有 <strong>63/2417（2.6%）</strong> 问题存在答案承载子问题与训练子任务重合；作者去除后排序未变，但低于词汇阈值的改写仍可能漏检。</p>
+<h2 id="section-11">9. Metrics 教学式解释</h2>
+<p><strong>Accuracy</strong>：正确任务数 / 总任务数，越高越好；但混合不同判分方式、重试预算会改变数值，且八数据集等权平均不代表真实任务频率。<strong>Nominal SE</strong>：按二项近似 √[p(1−p)/n]，表示任务抽样不确定性，不包含训练 seed、judge 偏差和系统时间波动。<strong>Target-token NLL</strong>：教师强制条件下目标 token 的平均负对数似然，越低越好；可检验合并后专家是否还能拟合原输出，但不能替代自由生成成功率。<strong>Query Utilization（QU）</strong>：实际发出的查询中能沿证据路径支持答案的比例，越高越好；可能因少发查询而虚高。<strong>Constraint Coverage（Cov）</strong>：问题约束中被答案相关查询覆盖的比例，越高越好；依赖约束抽取质量。<strong>PK→answer</strong>：被证据图归因为无检索支撑的先验知识答案比例，越低越好；并不等于错误率。<strong>Answer-ready latency</strong>：从启动到可用答案的实际时长，越低越好；需与累计 model-path time、含评审的 logged wall time 分开。<strong>EFLOPs</strong> 是估算训练浮点操作量，不是 H200 实测耗时或电费。</p>
+<h2 id="section-12">10. Results Deep Dive：八个带对照的结果</h2>
+<p><strong>① 主结果</strong>：WeAct-hard <strong>45.47</strong> vs Full SFT <strong>42.80</strong>，+<strong>2.67 个百分点</strong>、相对 +6.24%；支持多能力组合有效，但 hard 的预设顺序可能贡献部分优势，不能把增益全部归因于“自主路由”。</p>
+<p><strong>② 静态组合反例</strong>：hard <strong>45.47</strong> vs TIES <strong>35.66</strong>，+<strong>9.81 点</strong>、相对 +27.51%；而 Single LoRA <strong>38.73</strong> 也优于 TIES。说明在这组库和压缩 rank 下静态合并不可靠，不能推广为所有融合方法失败。</p>
+<p><strong>③ 最大数据集亮点之一</strong>：BrowseComp <strong>17.50</strong> vs Full SFT <strong>13.50</strong>，+<strong>4.00 点</strong>；hard 领先，但其绝对准确率依然不到五分之一，难题上的可靠性离部署要求很远。</p>
+<p><strong>④ 模型 / 数据集弱点</strong>：GAIA 上 hard <strong>40.78</strong> 低于 soft <strong>46.60</strong>，差 <strong>5.82 点</strong>，也低于 Full SFT <strong>41.75</strong>；因此 hard 不是处处最优。soft 在 Bamboogle <strong>62.40</strong> 低于 Full SFT <strong>65.60</strong>，在 FRAMES <strong>62.62</strong> 低于 Full SFT <strong>66.38</strong>；动态路由存在阶段识别损失。</p>
+<p><strong>⑤ SearchAtlas 证据链</strong>：QU hard <strong>0.570</strong> vs Full SFT <strong>0.410</strong>（+0.160），Cov <strong>0.601</strong> vs <strong>0.478</strong>（+0.123），PK <strong>0.390</strong> vs <strong>0.530</strong>（−0.140）。支持“查询更有用、证据约束更完整”，但图边归因来自 LLM judge，不是人工审计的绝对因果证据。</p>
+<p><strong>⑥ 训练效率双面性</strong>：WeAct <strong>142.8 EFLOPs</strong>，比 Full SFT 低 <strong>7.3%</strong>，却是 Single LoRA 的 <strong>1.96×</strong> 计算量；不能只说它更省算力。它省的是相对 Full SFT，不是相对一切 PEFT。</p>
+<p><strong>⑦ 运行延迟</strong>：受控 WebWalkerQA 50 次/方法，soft、hard 相对 Full SFT 平均 answer-ready latency 降 <strong>33.4% / 20.3%</strong>；adapter 控制与 cache 合计占自身运行时间 <strong>8.2% / 2.8%</strong>。但 hard/soft 对应不同切换频率，且只有一类任务的受控时延证据。</p>
+<p><strong>⑧ Continual 不是零代价</strong>：新增 Code 后 MegaScience <strong>26.5→29.0</strong>（+2.5）、DS-1000 <strong>14.0→16.0</strong>（+2.0）；刷新 Writing 后 ResearchQA hard <strong>58.33→60.72</strong>（约 +2.39），但附录旧 Writing 验证 NLL <strong>0.46→0.50</strong>，明确显示<strong>模块内部旧分布拟合下降</strong>，不应宣称完全没有遗忘。</p>
+<h2 id="section-13">11. Table / Figure Reading：读出作者没强调的地方</h2>
+<p><strong>Table 1（八基准主表）</strong>：列是 GAIA、2Wiki、Bamboogle、MuSiQue、WebWalkerQA、xbench、BrowseComp、FRAMES 和等权平均，行按 prompt、多 Agent、单模型训练、静态 merge、WeAct 分组。hard 六项第一，soft 在 GAIA/MuSiQue 第一；最重要异常是 hard 的 GAIA 不及 soft 与 Full SFT。该表能支持“这套训练和 harness 在所测任务更强”，不能隔离出权重隔离、监督 mask、阶段强制调度各自的净贡献。</p>
+<p><strong>Figure 3 + Appendix Table 7（训练顺序 / 保留）</strong>：横向比较共享 rank32/96、能力分区、随机分区，按六种能力顺序训练。共享更大 rank 仍有平均 <strong>1.67%</strong> 绝对准确率损失；随机分区约 <strong>1.12%</strong>，Writing 已获得增益丢失 <strong>49.2%</strong>。这比单纯端到端准确率更贴近“能力边界有意义”的机制假设，但六种顺序是条件不是六个独立随机种子。</p>
+<p><strong>Figure 13/14（局部残差与 NLL）</strong>：横轴层或样本，纵轴融合相对匹配专家的局部输出差或 NLL 差。Full Additive 即便没有压 rank 仍偏离，说明不只是压缩损失；但 NLL 近零或负的个别样本存在，不能推断每个输入都会被融合伤害。</p>
+<p><strong>Figure 4 / Appendix Table 8（证据图）</strong>：QU/Cov 越高越好，PK 越低越好。hard 0.570/0.601/0.390 优于 Full SFT 0.410/0.478/0.530。这里“证据被使用”由 SearchAtlas 的图构造器推断，且过滤掉含 CJK 的图，英语以外任务的外推受限。</p>
+<p><strong>Table 3 + Table 12（写作更新）</strong>：报告质量上升与历史 Writing NLL 上升同时发生，是最值得重视的反例。它说明参数隔离保证旧模块<strong>不被其他模块的更新写坏</strong>，却不保证被刷新模块自己的旧能力不退化；真正长期持续学习需要模块内 replay、约束或版本回滚。</p>
+<h2 id="section-14">12. Ablation / Mechanistic Analysis</h2>
+<p>去掉<strong>能力对齐</strong>改随机分区，仍损失 1.12%：模块边界承担的是语义职责隔离，而非仅仅多一份参数。把共享 rank 从 32 提高到 96，遗忘仍未消失：容量不是充分条件。去掉<strong>运行时切换</strong>改静态融合，目标 NLL 与任务准确率下降：匹配激活的保真度重要。把 hard 换 soft，平均准确率 <strong>45.47→43.21</strong>，但 GAIA 提升，说明灵活调度在某些任务更合适。将 Search rank 降到 32 的 pilot 出现退出失败：终止控制本身是能力的一部分。刷新 Writing 不 replay 历史数据，旧 Writing NLL 变差：参数隔离与行为保留是两回事。以上是多组相关证据和局部干预，尚缺一个完全等训练、等切换次数的析因实验来精确估计各组件因果效应。</p>
+<h2 id="section-15">13. Claim vs Evidence</h2>
+<p><strong>Authors Claim</strong>：能力对齐的独立 LoRA + 内部权重动作可提高长程研究 Agent 性能，减轻灾难性遗忘，并支持模块化持续扩展。<strong>Experiments Actually Show</strong>：在 Qwen3-32B、三种核心能力、八项深度研究基准及所给训练 recipe 下，准确率高于主要对照；局部融合诊断有正 NLL gap；新增第四模块时原三模块参数不变且已测任务未下降。<strong>What Is Not Yet Proven</strong>：几十或几百个模块的可靠路由、跨骨干与跨语言泛化、真实长期在线增量训练、极端工具错误的传播控制、同一模块的完全无遗忘、低并发高吞吐服务性能。作者也明确指出能力边界不清、库扩展和更长内部动作序列仍待研究。</p>
+<h2 id="section-16">14. Contribution / Innovation Audit</h2>
+<p><strong>Contribution 1 [New Mechanism / System]</strong>：将 adapter 激活与卸载暴露为原生工具调用，并记录到 Agent history；创新在执行接口与状态管理，不是 LoRA 本身。<strong>Contribution 2 [New Training Protocol]</strong>：能力阶段标注、保留上下文、只监督本阶段和退出动作；各组件常见，但组合使专家可接手已有轨迹。<strong>Contribution 3 [New Empirical Finding]</strong>：容量匹配与随机分区无法消除干扰、无 rank 压缩的 Full Additive 仍改变匹配激活。<strong>Contribution 4 [New Evaluation]</strong>：端到端准确率、SearchAtlas 证据图、延迟与模块刷新共同测量；不是新 benchmark 的首发。</p>
+<h2 id="section-17">15. Limitation &amp; Failure Modes</h2>
+<p><strong>Authors' Limitation</strong>：能力库扩大后的路由可辨性未知；长期频繁内部动作是否稳定未知；能力边界交叠，泛化推理能力难分割。<strong>Additional Limitation</strong>：切换后的 KV 重算随历史长度增长，长上下文、多轮频繁切换可能吞掉收益；adapter 常驻显存随模块数线性增长；hard 固定流程在交错任务可能错误强制切换；soft 容易忘记 offload 或重复调用；训练数据标注依赖人工定义；LLM-as-judge 以及 SearchAtlas 自动归因带来评估偏差；不同 recipe 的训练预算不完全等价；Code 插入只测试 K=3→4，不能说明百模块规模。更隐蔽的是<strong>权重状态本身成为可攻击的控制面</strong>：若工具别名、阶段描述被污染，Agent 可能加载不适合当前任务的专家。</p>
+<h2 id="section-18">16. Reproduction View：先复现哪一步</h2>
+<p><strong>最小可行版</strong>：不必先复现 32B。选 Qwen3-4B/8B 或相近开源可训练模型，准备 300–600 条含 Plan/Search/Write 的多轮轨迹，分别用 LoRA rank 8/16/8 训练；用原生 tool-call schema 实现 <code>load_lora</code>、<code>offload_lora</code>、状态校验、日志与 KV 重算；比较 base、Single LoRA（总 rank 匹配）、TIES merge、hard/soft。固定随机种子、工具返回、token budget 与最多三次尝试。先跑 100 条封闭知识库的多跳检索问题，记录 success、错误切换率、重复搜索次数、evidence coverage、P50/P95 时延、显存。首个验证核心 claim 的实验应是<strong>相同专家库下“静态融合 vs 按阶段激活”</strong>，这样最少混杂训练差异。然后再做阶段随机打乱、错误工具结果、超长上下文、连续插入模块。实现易错点：loss mask 不可训练 tool outputs；不能直接复用旧 LoRA 产生的 KV；offload 失败不能默默切换；alias 白名单；tokenizer chat template 必须统一。论文使用 Tinker、MiroFlow 改造、Qwen3 template，完整官方实现未核实，以下均为复现建议而非已发布配置。</p>
+<h2 id="section-19">17. Research Value：七个角度</h2>
+<p><strong>Baseline Potential：高</strong>，作为“多能力 LoRA 静态 merge 与运行时切换”对照十分清楚。<strong>Migration Potential：高</strong>，可把内部动作推广为选择视觉/工具/安全适配器。<strong>Systems Potential：高但有成本</strong>，必须专门测 KV 重算与并发。<strong>Attack Potential：高</strong>，路由别名污染、阶段诱导、错误专家激活能成为系统级攻击。<strong>Evaluation Potential：高</strong>，可把轨迹级 provenance 和证据使用与最终正确率拆开。<strong>Benchmark Potential：中高</strong>，需要交错、重访和不断新增技能的长时基准。<strong>New Paper Potential：中高</strong>，前提是突破作者未测的规模/动态边界，不能仅改 rank 再跑相同八基准。</p>
+<h2 id="section-20">18. Migration A：Agent / Multi-Agent 的能力路由与可审计性</h2>
+<p><strong>Original Problem</strong>：规划/搜索/写作共用参数导致互相覆盖。<strong>Transferable Mechanism</strong>：能力 LoRA 独立训练 + 带日志的内部动作。<strong>New Research Question</strong>：Agent 的错误来自“专家本身不会”还是“错误地加载了专家”？<strong>Method Modification</strong>：在 harness 为每次内部切换记录 <code>{time, history_hash, active_adapter, reason, tool_result, downstream_outcome}</code>，并加入可回滚的路由检查器；训练时不改变原 LoRA。<strong>Minimum Experiment</strong>：取 200 条 multi-hop 任务，每题注入 0/1/2 次伪造阶段提示，分别测试无路由检查、白名单检查、基于上下文一致性的检查；保持相同搜索结果与预算；记录错误加载、后续答案错误与恢复延迟。<strong>Model</strong>：Qwen3-8B + 三个 rank16 LoRA。<strong>Dataset</strong>：2Wiki/MuSiQue 各 100 条。<strong>Baseline</strong>：Single LoRA、WeAct-hard/soft、静态 merge。<strong>Metric</strong>：Accuracy、Wrong-Adapter Rate、Recovery@2、P95 latency、KV recompute time。<strong>Expected Contribution</strong>：一个可定位“内部能力动作失败传播”的诊断协议。<strong>Risk</strong>：攻击文本太简单，结果只反映规则匹配。<strong>Collision Risk</strong>：与工具安全和可审计 Agent 研究重叠；必须检索已有 weight-routing attacks 与 tool-call provenance 工作。</p>
+<h2 id="section-21">19. Migration B：多模态 / Video Agent 的可切换视觉能力</h2>
+<p><strong>Original Problem</strong>：视频问答同时需要运动识别、OCR、长程摘要，固定适配器易冲突。<strong>Transferable Mechanism</strong>：按任务阶段激活视觉/语言 LoRA 而不融合。<strong>New Research Question</strong>：在视频理解 Agent 中，按需切换专家能否在不损失时序推理的前提下减少总计算？<strong>Method Modification</strong>：先仅在语言侧 LoRA 做 <code>temporal-summary / object-track / answer</code> 切换，视觉塔保持冻结；用 token-cache 复用与权重切换重算做独立计时。<strong>Minimum Experiment</strong>：抽 300 条 Video-MME 或 MVBench 样本，分短/长视频；同一帧采样预算 8/32/64，比较固定单 LoRA、静态 merge、hard 切换和根据问题类型 soft 切换；额外把 10% 任务中途改写问题，检查能否恢复。<strong>Model</strong>：LLaVA-OneVision 7B 级或可用视频 VLM（具体兼容性需先验证）。<strong>Dataset</strong>：MVBench、Video-MME 子集。<strong>Baseline</strong>：原模型、Single LoRA、TIES、固定专家。<strong>Metric</strong>：QA accuracy、frame/token budget、end-to-end latency、KV rebuild overhead、peak GPU memory、reroute success。<strong>Expected Contribution</strong>：视频 Agent 的能力动作与计算预算联合评测。<strong>Risk</strong>：视觉信息在切换前已丢失，语言侧切换救不回来。<strong>Collision Risk</strong>：与 MoE VLM、动态 adapter routing 重叠；必须证明轨迹级重访优势而非单轮分类。</p>
+<h2 id="section-22">20. Attack / Verification Lens</h2>
+<p>可把“是否加载正确 adapter”视为 black-box probe 的隐变量，通过回答风格、工具轨迹、耗时推断状态；也可做 prompt-injection 诱导 <code>load_lora</code> 错误别名，测试 harness 是否拦截。定义 <strong>Routing Robustness = 1−错误切换任务比例</strong>，<strong>Provenance Completeness = 有权重状态日志的关键行动比例</strong>，<strong>Reacquisition@k = 错误切换后 k 步内恢复正确专家并完成任务的比例</strong>。对 continual 场景，把每次写作模块刷新后的旧任务性能画成 retention curve，而不是只报告其他模块哈希不变。风险：仅观察最终回答可能无法唯一反推激活专家，需要记录真实运行状态作为 gold。此类 probe 是研究建议，不是论文已经完成的攻击实验。</p>
+<h2 id="section-23">21. 如果只记住这篇（9 句话）</h2>
+<ol>
+<li>WeAct 把 LoRA 选择变成 Agent 原生内部工具动作。2. 它把训练参数隔离和执行时专家选择分成两层。3. 三个核心专家分别负责 Plan、Search、Write。4. 训练样本保留前序历史，但只对当前阶段 assistant token 监督。5. hard 按固定流程切换，soft 根据历史选择。6. 八基准平均 hard 45.47，Full SFT 42.80，最佳静态 merge 35.66。7. 合并会改变专家的局部激活，即使不压缩 rank。8. 权重切换需要重建 KV，模块刷新也可能遗忘模块自己的旧任务。9. 最值得继续研究的是可审计路由、规模化模块库和长上下文切换成本。</li>
+</ol>
+<h1 class="section-major" id="section-24">Paper 2 · SpecKCast: Spectral Kalman Forecasting for Diffusion Acceleration</h1>
+<blockquote>
+<p><strong>定位</strong>：针对图像与视频 DiT 多次去噪的重复 Transformer 计算，把“跳过下一次网络前向”从统一特征缓存变成<strong>按空间频带预测 + 噪声进度对齐 + 不确定性触发重算</strong>的闭环系统。</p>
+</blockquote>
+<p><strong>基本信息</strong>：Javad Rajabi、Hakki Can Karaimer、David B. Lindell、Babak Taati、Michael S. Brown；University of Toronto、Vector Institute、Samsung AI Center–Toronto。arXiv:2610.26837v1，<strong>2026-10-19 17:58 UTC</strong> 首次提交；截至本次核查是预印本，<strong>正式 Venue 未核实</strong>。论文 <a href="https://arxiv.org/abs/2610.26837" rel="noopener noreferrer" target="_blank">arXiv</a> · <a href="https://arxiv.org/html/2610.26837" rel="noopener noreferrer" target="_blank">完整 HTML</a> · <a href="https://arxiv.org/pdf/2610.26837" rel="noopener noreferrer" target="_blank">PDF</a>。<strong>官方项目 / 代码链接未从论文或官方记录核实；不要把其他缓存仓库误认为 SpecKCast 官方实现。</strong></p>
+<h2 id="section-25">1. 人话版</h2>
+<p>生成一段视频时，Diffusion Transformer 往往要反复运行几十次，把随机噪声一步步变成画面。最笨的加速是直接减少步数，结果可能模糊或变形；更聪明的办法是缓存前一步的特征，甚至预测下一步特征，但通常把整个特征图当成同一种时间信号。SpecKCast 观察到：图像的大轮廓等低频信息在去噪早期变化大，纹理等高频信息往往在后期才剧烈变化；同样相隔两步，对不同频带并不等于同样难预测。于是它先用二维 DCT 把网络输出分频，为每个频率系数用轻量 Kalman 滤波跟踪“当前值和变化速度”，再把噪声调度器转换成各频带自己的有效时间轴。当预测风险过高才真正调用 DiT，其他步用反变换后的预测输出推进采样。论文在 FLUX、Qwen-Image、Wan2.1-14B、HunyuanVideo 上报告最高 6× 真实延迟加速，额外显存很小；但它仍会损失部分质量，而且不是每个指标、每个设置都全面领先。</p>
+<h2 id="section-26">2. Background &amp; Research Gap</h2>
+<p><strong>现实瓶颈</strong>：一个 50-step 文生视频采样过程，最贵的操作往往不是最后把 latent 解码为帧，而是每个去噪 step 都运行一次巨大 DiT。若每次前向花 7 秒，50 次就需要数百秒。减少为 8–14 次 NFE 能省掉绝大部分前向，但直接用 8 步 Euler/Flow 更新会偏离原来 50 步轨迹，导致主体换脸、纹理漂移或物体数量变化。</p>
+<p><strong>旧范式</strong>：FORA/TeaCache/HiCache/SeaCache 通过缓存和复用中间特征跳过昂贵计算，假设邻近时间的表示足够相似；TaylorSeer 用局部 Taylor 外推，Spectrum 用 Chebyshev 对历史轨迹拟合，比“原样复用”能容忍更大时间跨度。但它们常用统一时间步或对整个特征应用同类外推，忽略空间频率分量的不同演化节律。举例：画面中一栋建筑的轮廓在早期就定型，后期主要改变窗户边缘和文字；如果对全部频率统一外推，早期对高频可能过度更新，后期对高频又可能预测不足。</p>
+<p><strong>研究缺口</strong>不是再提出一个更复杂的 DiT，而是在不训练新网络、不改扩散 sampler 目标的条件下，选择更适合预测的表示和时间坐标，再让系统依据可量化的预测不确定性分配有限 NFE。核心区别是 <strong>少算某些完整 DiT 前向</strong>，而不是压缩单次注意力的 FLOPs；因此理论 NFE 降低必须用真实 wall-clock latency 证明。</p>
+<h2 id="section-27">3. Core Insight：频带的“有效时间”不相同</h2>
+<p>作者在 Figure 2 中对 50 次 FLUX 速度场输出做 DCT、分成径向频带，再对每个频带的轨迹做 PCA 可视化。低频 B0 的点主要在前几个去噪步大幅移动，中频 B3 跨更长区间变化，高频 B6 在第 40 步以后移动显著。附录 G 又在 FLUX/Qwen-Image 不同 prompt 上补充类似观察。<strong>这是经验观察</strong>：图中的 PCA 轴按面板分别归一化，不能拿不同频带图上绝对距离直接比大小；更不能从可视化直接推出 Kalman 模型严格正确。</p>
+<p>第二个观察来自噪声调度器：raw step index 的等间距不代表 log-SNR 的等间距。低频能量通常较大，较早从噪声中显现；高频能量小，需更低噪声才显现。作者据此为每个频带定义自己的 SNR 时间 warp。第三个工程洞见是 Kalman 滤波的协方差不仅能帮助修正预测，还可以充当“是否值得花一次昂贵 DiT 前向”的调度信号。三者组合：<strong>频带分解解决预测对象，时间 warp 解决预测坐标，Kalman + risk threshold 解决何时重新观察。</strong></p>
+<h2 id="section-28">4. Method Deep Dive：真正少算了什么</h2>
+<div class="flow">Prompt + noise + 50-step schedule → 前 3 步真实 DiT 输出 → 每步 DCT 与 7 个径向频带 → 每频带 warped log-SNR 时间 → 每系数 Kalman 值/斜率预测 → 聚合协方差风险 → 风险低：IDCT 预测速度场推进 sampler / 风险高：真实 DiT 前向并校正 → 最后一步强制真实计算 → 视频或图像</div>
+<p><strong>Step 1：确定被预测的对象。</strong> 模型输出速度场 Y_j（对某些扩散参数化可视作 denoiser output），shape 是 C×H×W。每次真实调用后对每通道做正交 2D DCT，得到 Z_j。二维频率平面分为 <strong>L=7</strong> 个不重叠径向 band。每个系数独立保存估计值 m 和导数 ν，但一个 band 内的时间坐标和协方差可以共享，避免为海量系数分别存完整 2×2 协方差。DCT 是线性可逆变换，理论上没有压缩丢信息；加速来自跳过网络，而不是 DCT 本身。</p>
+<p><strong>Step 2：计算 band-specific time。</strong> 根据噪声标准差 σ_j 算全局 log-SNR，再加上该频带的信号功率 log p_l，经过 sigmoid 与线性 rescale。功率 p_l 通过 12 条 calibration prompts 的 50 步轨迹估计，选最后 25 步的 clean-latent 近似计算 DCT 能量。它不需要训练参数，但<strong>需要离线校准计算</strong>，不是完全零准备成本。高频功率低，其有效时间在更晚的物理 step 迅速变化；低频则更早。时间 warp 保持 step 的先后顺序，不是给不同频带真的执行不同的扩散过程。</p>
+<p><strong>Step 3：预测每个系数的值与趋势。</strong> 状态 h=(m,ν)，m 是当前频率系数，ν 是相对有效时间的变化率。推进一个有效时间增量 Δ 时，用 <code>m_new=m+Δν</code>；导数按 exp(−Δ/τ) 衰减，避免长跳跃时把旧趋势无限外推。若这一步实际运行 DiT，就得到观测 Z_j，按 Kalman gain 用残差修正 m/ν；若不运行，则只保留预测。每个 band 的过程噪声反映轨迹难预测程度，协方差随跳步增长。</p>
+<p><strong>Step 4：风险决定何时调用模型。</strong> 用每个 band 的值预测方差 P11 乘以系数数目 d_l，求和并乘晚期衰减因子，得到 R(j)。当 R(j)&gt;ε，重新执行完整 DiT，取得真实输出并更新滤波器；否则把预测的频域 Z 经 IDCT 得到 Y_hat，直接喂给 sampler 更新 latent。ε 越大，通常调用越少但误差越大。论文不是完全无保护地跳步：前 <strong>3</strong> 步和最后 <strong>1</strong> 步强制真实计算，最多连续跳 <strong>10</strong> 步。目标 NFE 在校准集上按平均次数调 ε，因此单条生成的 NFE 可以浮动。</p>
+<p><strong>Step 5：处理 CFG。</strong> 对使用 classifier-free guidance 的模型，真实计算步需要条件/无条件两次前向，先合成 guided velocity，再用<strong>一个</strong>滤波器预测它；跳过步两次前向都不做。这样 50 步 CFG 的 100 次 transformer passes 可以缩到 n 步的 2n 次。它不需要重新训练 DiT，也不需要访问每层 hidden state；但需要修改 sampler loop 并正确匹配速度场参数化，不能把输出误当 x0 或 ε。</p>
+<h2 id="section-29">5. 核心公式与数学直觉</h2>
+<div class="formula">(1) xⱼ₊₁ = xⱼ + (σⱼ₊₁ − σⱼ) Yⱼ；Yⱼ = vθ(xⱼ,σⱼ,c)。</div>
+<p>这里 x 是当前噪声 latent，σ 是噪声水平，c 是文本条件，Y 是昂贵 DiT 输出。普通采样每个 j 都计算 Y；SpecKCast 在跳过步用 Ŷ 代替，节省一次完整前向。若预测偏差 e=Ŷ−Y，单步 latent 误差近似 (σ_{j+1}−σ_j)e，后续又会改变模型输入，因此误差可能累积放大。</p>
+<div class="formula">(2) Zⱼ = DCT₂D(Yⱼ)，Ŷⱼ = IDCT₂D(Ẑⱼ)。</div>
+<p>DCT 系数按空间频率排列。低频对应大尺度亮度与形状，高频更敏感于边缘与细节；在 latent / velocity 空间解释不应机械等同于像素语义。对 C 通道分别变换，L=7 只是频带数量，<strong>不是只保留 7 个系数</strong>，所有系数仍被预测。</p>
+<div class="formula">(3) λⱼ = 2 log[(1−σⱼ)/σⱼ]；sₗ(j)=rescale₍₋₁,₁₎ sigmoid[(λⱼ+log pₗ)/Tᵥ]。</div>
+<p>p_l 是该频带 clean signal 的平均功率。由 SNR_l ≈ (1−σ)²p_l/σ² 得 logSNR_l=λ+log p_l；当 SNR≈1 时 sigmoid 变化最快。T_w=2 控制活跃窗口宽度，太小会让时间变化集中在很少几步，太大则退化为接近普通 log-SNR。因为每个 band 的 p 不同，等一个物理 step 对应不同 Δ_l。端点 σ 接近 0/1 时需 clamp，防止 log 无穷大。</p>
+<div class="formula">(4) [mⱼ,νⱼ]ᵀ = [[1,Δ],[0,exp(−Δ/τ)]] [mⱼ₋₁,νⱼ₋₁]ᵀ；P̄=A P Aᵀ+Q。</div>
+<p>A 负责预测均值，τ=0.1 决定趋势遗忘速度，Q 表示未建模的变化。Q 的主要形式是 q·[[Δ³/3, Δ²/2],[Δ²/2,Δ]]：跳跃越长，值的不确定性按三次项增长。真实观测到来时 K=P̄Hᵀ(HP̄Hᵀ+R_obs)⁻¹，h←h̄+K(z−Hh̄)。Kalman gain 大代表更信新观测，gain 小代表更信预测。作者采用带衰减的 A 和近似不带衰减的 Q，附录说明该选择对边缘方差偏保守，并非严格的连续阻尼系统精确离散化。</p>
+<div class="formula">(5) Risk(j)=exp[−β j/(N−1)] Σₗ dₗ P₁₁⁽ˡ⁾(j)；若 Risk(j)&gt;ε，则运行 DiT。</div>
+<p>β=0.6 抑制后期风险权重，d_l 是 band 的系数数量。这里调度用的 covariance <strong>sidecar</strong> 还按 band/时间窗口校准预测误差，不能简单把每个系数的理论 Kalman P 直接求和就声称完全复现。ε 是最敏感的速度—质量旋钮，必须在独立 calibration prompts 上标定平均 NFE；若在测试集上调参会造成泄漏。</p>
+<h2 id="section-30">6. Toy Example：用 4 个频率系数预测两次跳步</h2>
+<p>考虑一个玩具 2×2 速度场，其 DCT 产生低频系数 z_L=10 与高频 z_H=2（其余系数暂略）。在真实计算的 step 5，滤波器估计低频 <code>m_L=10, ν_L=1</code>，高频 <code>m_H=2, ν_H=−0.5</code>。到 step 6，warp 给出低频 Δ_L=0.10、高频 Δ_H=0.02；设 τ=0.1，则先预测 <code>m_L=10.10, ν_L≈0.368</code>，<code>m_H=1.99, ν_H≈−0.409</code>。如果聚合 risk=0.04 小于阈值 ε=0.08，就<strong>不调用</strong> DiT，把这些预测系数 IDCT 后用于更新 latent。到 step 7，低频 Δ_L=0.08、高频 Δ_H=0.04，预测值进一步变化；假设累计 risk=0.11 超过 ε，则运行一次真正的 DiT。若观测低频为 10.22 而预测 10.13，且 Kalman gain=0.6，则校正后低频约 10.184，误差被吸收。真实系统会同时跟踪所有 C×H×W 系数，风险与 gain 由协方差计算而不是随意指定；上述数字是<strong>教学示例，不是论文实验值</strong>。</p>
+<h2 id="section-31">7. Baseline Deep Comparison</h2>
+<div aria-label="可横向滚动的论文结果表格" class="table-wrap" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>合理之处</th>
+<th>本文 setting 的失败点</th>
+<th>SpecKCast 机制差异</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Base 直接少步采样</strong></td>
+<td>无缓存和预测开销，延迟低</td>
+<td>同 NFE 下严重偏离 50-step reference</td>
+<td>跳过前向但继续每步 sampler 更新</td>
+<td>机制</td>
+</tr>
+<tr>
+<td><strong>TeaCache</strong></td>
+<td>相邻特征相似时直接复用，显存低</td>
+<td>长 skip 时旧特征失效，结构/纹理偏差</td>
+<td>预测变化而非恒等缓存</td>
+<td>机制</td>
+</tr>
+<tr>
+<td><strong>SeaCache</strong></td>
+<td>高效特征缓存，视频部分质量指标强</td>
+<td>高速设置下某些模型出现结构错位；不是每项都弱</td>
+<td>频带预测 + 风险调度</td>
+<td>机制</td>
+</tr>
+<tr>
+<td><strong>TaylorSeer</strong></td>
+<td>局部导数外推，计算直观</td>
+<td>用统一时间尺度，长跨度外推误差大</td>
+<td>band-specific time + 衰减滤波</td>
+<td>机制</td>
+</tr>
+<tr>
+<td><strong>Spectrum</strong></td>
+<td>用历史 Chebyshev 展开，最接近的预测型竞争者；多数图像/视频设置 fidelity 很强</td>
+<td>Qwen-Image 极高加速时质量急降，历史状态/显存开销</td>
+<td>在线 Kalman + 低内存 + 风险调度</td>
+<td>机制 + 工程</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest baseline 是按 setting 定义的</strong>：对多数图像 PSNR/LPIPS，<strong>Spectrum</strong> 是最有竞争力的预测方法；HunyuanVideo 14 NFE 的质量比较，作者特别以 <strong>SeaCache</strong> 作为最强对照。不能把一个 baseline 在所有模型、所有 metric 上宣称统一最强。</p>
+<h2 id="section-32">8. Experiment Setup：哪些变量被控制</h2>
+<p>四个模型：FLUX.1-dev（1024² 图像）、Qwen-Image（1328² 图像）、Wan2.1-14B、HunyuanVideo（视频）；均以 <strong>50-step</strong> 全量采样为 reference，同 prompt/seed 比较加速输出。模型尺寸仅对论文明确给出的 Wan2.1-14B 采用 14B，不推测其他架构参数。六组对照：FORA、TeaCache、HiCache、SeaCache、TaylorSeer、Spectrum，作者使用各自官方实现。主实验 H100 GPU，L=7、τ=0.1、T_w=2、β=0.6；校准 12 prompts×50 steps，使用后 25 步估计 band power。采样 NFE 预算约 14/10/8；NFE 是真实网络评估次数，CFG 一次 NFE 可含两次网络 pass。文本图像用 DrawBench prompt 与 ImageReward/CLIP；视频用 VBench prompt 与 Quality Score。PSNR/SSIM/LPIPS 逐样本对齐 50-step 参考，不是对真实视频分布的全面评估。论文未在主表列出全部 prompt 数量和随机种子方差，因此显著性与方差解释应保守。</p>
+<p><strong>RQ1：同等 NFE 下，能否更接近 50-step 结果？</strong> Table 1/2 的 PSNR、SSIM、LPIPS。<strong>RQ2：少算的 NFE 是否变成真实加速？</strong> 同表的 latency/speedup。<strong>RQ3：视频质量是否随速度崩塌？</strong> VBench Quality 与 Figure 4/6。<strong>RQ4：频率、时间 warp、Kalman、adaptive scheduler 各自是否必要？</strong> Table 3 消融。<strong>RQ5：频带分开是否有可观察机制？</strong> Figure 2 与附录 G 的频带轨迹。<strong>RQ6：部署成本如何？</strong> 额外 GPU memory 与校准开销；注意显存增量是相对同 NFE Base，不是模型总显存。</p>
+<h2 id="section-33">9. Metrics 教学式解释</h2>
+<p><strong>NFE</strong>：真正执行 denoiser 的步数，越少通常越快，但不同模型的 CFG 与算子成本不同。<strong>Latency（秒）</strong>：端到端采样计时，越低越好；这是 wall-clock，不等于 FLOPs。<strong>Speedup</strong>：50-step reference latency / 当前 latency，越高越好；只说明相对该 reference，不能跨模型直接比倍数。<strong>PSNR（dB）</strong>：由参考与加速输出像素均方误差计算，越高越接近同 seed reference；图像语义正确但局部平移也可能被严重惩罚。<strong>SSIM</strong>：亮度、对比度、结构相似性，越高越好；对细节语义不敏感。<strong>LPIPS</strong>：深度感知特征距离，越低越好；依赖特征网络的归纳偏差。<strong>ImageReward</strong>：学习的人类偏好评分，越高越好；可能偏向某些审美分布。<strong>CLIP Score</strong>：文本与图像嵌入相似性，越高越好；高分不保证文字拼写、物理一致性。<strong>VBench Quality</strong>：聚合时间一致性、运动平滑、单帧美感等质量维度，越高越好；可能掩盖特定对象错位。<strong>Mem Δ（GiB）</strong>：比同 NFE Base 的峰值 GPU 分配多出的显存，越低越好；不是全模型峰值显存，也不是训练显存。对 video generation，本文未系统报告 FPS、throughput、FLOPs 与多并发 scaling，应标为 Not Reported。</p>
+<h2 id="section-34">10. Results Deep Dive：八个可核对的定量事实</h2>
+<p><strong>① 图像 FLUX 14 NFE</strong>：SpecKCast <strong>3.45 s / 3.38× / PSNR 24.28 / LPIPS 0.146</strong>；Spectrum <strong>3.49 s / 3.36× / 23.60 / 0.165</strong>。速度相近，PSNR +0.68 dB，LPIPS −0.019，支持频带预测提升同预算 fidelity；但 CLIP 27.32 低于 Spectrum 27.33，不能称所有指标最优。</p>
+<p><strong>② Qwen-Image 14 NFE</strong>：SpecKCast <strong>15.01 s / 3.48× / PSNR 24.16</strong>，Spectrum <strong>15.72 s / 3.32× / 23.66</strong>；PSNR +0.50 dB，真实时间减少 0.71 秒；同等 50-step reference 52.22 秒。Quality 上 ImageReward 1.22 vs Spectrum 1.21，差距小。</p>
+<p><strong>③ Qwen-Image 8 NFE</strong>：SpecKCast <strong>8.70 s / 6.00× / PSNR 20.44 / LPIPS 0.267</strong>，Spectrum <strong>10.23 s / 5.48× / 16.91 / 0.527</strong>；PSNR +3.53 dB、LPIPS 约减半，是极端跳步下最强证据。但 VLM/文本一致性并未因此得到普遍保证。</p>
+<p><strong>④ FLUX 8 NFE 的 trade-off</strong>：SpecKCast <strong>2.11 s / 5.54× / PSNR 19.81</strong>；50-step reference 11.68 秒。虽然加速显著，PSNR 相比 14 NFE 的 24.28 降 <strong>4.47 dB</strong>，不能把 5.54× 解读成无损。</p>
+<p><strong>⑤ Wan2.1-14B 14 NFE</strong>：SpecKCast <strong>105.2 s / 3.52× / PSNR 24.47 / SSIM 0.813 / VBench 80.86</strong>；Spectrum <strong>110.3 s / 3.35× / PSNR 22.93 / VBench 80.76</strong>。50-step VBench <strong>81.11</strong>，SpecKCast 仍低 <strong>0.25</strong>；说明接近而非严格等质。</p>
+<p><strong>⑥ HunyuanVideo 14 NFE</strong>：SpecKCast <strong>55.0 s / 3.33× / PSNR 29.72 / LPIPS 0.107</strong>，SeaCache <strong>71.3 s / 2.57× / PSNR 27.59 / LPIPS 0.121</strong>；快 16.3 秒、PSNR +2.13 dB。但 <strong>VBench 79.68 低于 50-step 的 80.26</strong>，也低于 TaylorSeer 的 79.98，质量维度存在明显弱项。</p>
+<p><strong>⑦ Wan2.1 8 NFE</strong>：SpecKCast <strong>65.3 s / 5.67× / PSNR 19.94 / VBench 79.20</strong>，Spectrum <strong>66.0 s / 5.61× / PSNR 17.81 / VBench 78.74</strong>；更快且更接近参考，但相对原始 VBench 81.11 下降 <strong>1.91</strong>，这是高速代价。</p>
+<p><strong>⑧ Ablation 与内存</strong>：FLUX 14 NFE 完整方法 PSNR <strong>24.28</strong>；固定调度 Kalman <strong>22.09</strong>（−2.19），raw logSNR <strong>21.03</strong>（−3.25），uniform step <strong>19.54</strong>（−4.74），去掉频率分解 <strong>21.19</strong>（−3.09）。完整方法额外内存在 FLUX 14 NFE 仅 <strong>0.005 GiB</strong>，而 Spectrum <strong>1.15 GiB</strong>；但该数字不代表整体 GPU footprint 小到 5 MiB。</p>
+<h2 id="section-35">11. Table / Figure Reading：至少五处证据</h2>
+<p><strong>Figure 2（机制观察）</strong>：横纵轴是各 band PCA 的前两个主成分，轨迹点按 50 个去噪步排列。B0 前期变化快，B6 后期变化快，B3 居中。它支持频带异步演化的经验前提；不同面板单独归一化，不能直接量化跨频带运动幅度，也没有证明该规律对所有数据集恒成立。</p>
+<p><strong>Table 1（图像速度—质量 Pareto）</strong>：按 FLUX/Qwen 两个模型、NFE 14/10/8 分组，列包括 latency、speedup、Mem Δ、PSNR/SSIM/LPIPS、ImageReward/CLIP。最重要的是同 NFE 同硬件比较，避免“更少步数当然更快”的假优势。极端 Qwen 8 NFE 中 Spectrum LPIPS 0.527 明显恶化，而 SpecKCast 0.267；但部分 CLIP/ImageReward 并非领先，视觉质量不等于文本语义全优。</p>
+<p><strong>Table 2（视频真实 wall-clock）</strong>：Wan2.1 与 HunyuanVideo 的 50-step reference、三种 NFE 和七种方法并列。Hunyuan 14 NFE 55.0 秒 vs 183 秒证明不是只减少理论 FLOPs；不过速度提升是采样场景的测量，不含编码上传、服务队列与视频播放吞吐，不能直接宣传为实时 FPS。</p>
+<p><strong>Table 3（最关键消融）</strong>：在 FLUX 14 NFE 控制 forecaster、scheduler、time variable、frequency decomposition。完整 PSNR 24.28；去掉 warp、band、adaptive 都显著下降，而不同 forecaster 在固定 schedule 下差距很小。它支持“频带 + 时间坐标 + 调度”比“换个预测多项式”更重要；但这不是完整的多因素析因设计，模块之间可能交互。</p>
+<p><strong>Figure 3/4/6（质性失败）</strong>：图像的文字招牌、视频中鸟类/猫数量、窗户与灯光，是作者强调的可视化错误。它们展示缓存误差可能从局部纹理演化为语义对象替换；但少数精挑样本不能代表分布统计，必须与同 seed 的 PSNR、VBench 和人工盲评互补。</p>
+<h2 id="section-36">12. Ablation / Mechanistic Analysis</h2>
+<p><strong>去掉频率分解</strong>：PSNR 24.28→21.19，表明一个统一频域/空间模型难以同时描述不同频率节律。<strong>改为原始 log-SNR</strong>：24.28→21.03，说明单一全局去噪进度仍不足；<strong>改为均匀 step index</strong>：24.28→19.54，说明不均匀时间推进是主要误差源之一。<strong>去掉自适应调度</strong>：24.28→22.09，说明同样平均 NFE 重新分配到高风险步骤有价值。<strong>把 Kalman 换成 Taylor</strong>：固定 schedule 下 22.09 vs 21.90，差距仅 0.19 dB；因此不要把所有收益归功于 Kalman 这个名字。<strong>Chebyshev 固定预测</strong>：21.10 dB、3.97 s，质量和开销均弱于固定 Kalman。机制可视化支持相关性，Table 3 的组件干预提供更强证据，但尚缺直接测量 risk calibration（预测方差与实际误差是否匹配）的可靠性曲线。</p>
+<h2 id="section-37">13. Video Acceleration 专用 Efficiency Breakdown</h2>
+<div aria-label="可横向滚动的论文结果表格" class="table-wrap" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align:right">Baseline（Wan2.1 50-step）</th>
+<th style="text-align:right">Proposed（Wan2.1 14 NFE）</th>
+<th>Change / 说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frames</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>不改变输出帧数的声明需以配置核验</td>
+</tr>
+<tr>
+<td>Visual Tokens</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>本方法不是 token pruning</td>
+</tr>
+<tr>
+<td>FLOPs</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>理论完整 DiT 调用约 50→14；非精确 FLOPs</td>
+</tr>
+<tr>
+<td>Latency</td>
+<td style="text-align:right"><strong>370 s</strong></td>
+<td style="text-align:right"><strong>105.2 s</strong></td>
+<td><strong>−264.8 s，3.52×</strong></td>
+</tr>
+<tr>
+<td>Throughput / FPS</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>不可用 3.52× 直接推导 FPS</td>
+</tr>
+<tr>
+<td>GPU Memory</td>
+<td style="text-align:right">总峰值 Not Reported</td>
+<td style="text-align:right"><strong>Mem Δ=0.05 GiB</strong></td>
+<td>仅相对同 NFE Base 的额外显存</td>
+</tr>
+<tr>
+<td>Accuracy / Quality</td>
+<td style="text-align:right"><strong>VBench 81.11</strong></td>
+<td style="text-align:right"><strong>VBench 80.86</strong></td>
+<td><strong>−0.25</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>加速阶段</strong>：DiT 迭代去噪时跳过若干完整 Transformer 评估；DCT/Kalman/IDCT 作为小额 sidecar 开销。<strong>Retraining</strong>：不需要训练新权重，但需离线 calibration。<strong>Long-video</strong>：论文在视频模型上有证据，但未报告任意分钟级 streaming、随视频时长增长的稳定性。<strong>Query-aware</strong>：不涉及视频理解 query，按生成 prompt 与噪声轨迹调度。<strong>Streaming/Agent workload</strong>：目前未证明可在交互式连续视频世界模型里跨 chunk 安全复用状态；那会是迁移实验而非现有结论。</p>
+<h2 id="section-38">14. Inference Acceleration 专用 System Metrics</h2>
+<div aria-label="可横向滚动的论文结果表格" class="table-wrap" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Reference</th>
+<th>SpecKCast</th>
+<th>判断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTFT / TPOT</td>
+<td>Not Reported</td>
+<td>Not Reported</td>
+<td>生成扩散模型不应套用 LLM token 延迟</td>
+</tr>
+<tr>
+<td>Tokens/s</td>
+<td>Not Reported</td>
+<td>Not Reported</td>
+<td>非自回归文本 token 指标</td>
+</tr>
+<tr>
+<td>Throughput / Batch scaling</td>
+<td>Not Reported</td>
+<td>Not Reported</td>
+<td>单卡/多并发收益未知</td>
+</tr>
+<tr>
+<td>Prefill / Decode latency</td>
+<td>Not Reported</td>
+<td>Not Reported</td>
+<td>瓶颈是多次 denoiser forward</td>
+</tr>
+<tr>
+<td>End-to-end sampling</td>
+<td>Hunyuan <strong>183 s</strong></td>
+<td><strong>55.0 s</strong></td>
+<td><strong>3.33×</strong>（14 NFE）</td>
+</tr>
+<tr>
+<td>GPU / KV Memory</td>
+<td>总峰值 / KV 不适用或未报</td>
+<td>Mem Δ <strong>0.03 GiB</strong></td>
+<td>不是 Transformer KV cache 论文</td>
+</tr>
+<tr>
+<td>FLOPs / Energy</td>
+<td>Not Reported</td>
+<td>Not Reported</td>
+<td>不要把 NFE 等同实测功耗</td>
+</tr>
+<tr>
+<td>Quality</td>
+<td>Hunyuan VBench <strong>80.26</strong></td>
+<td><strong>79.68</strong></td>
+<td>质量下降 <strong>0.58</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>与 LLM KV 压缩不同，SpecKCast 的缓存对象是<strong>去噪步之间的速度场频率状态</strong>，而非 autoregressive sequence 的 K/V。它的 hardware dependence 主要在 H100 上的 DCT 实现、DiT forward 占比和 kernel launch 开销；小模型、batch 很大或移动 GPU 可能因 sidecar 相对开销变大而收益缩水。训练权重不变，适合现有 DiT sampler 集成；迁移到 VLM/LLM 需要重新证明连续状态的可预测性，不能直接把 log-SNR 套到文本生成。</p>
+<h2 id="section-39">15. Claim vs Evidence</h2>
+<p><strong>Authors Claim</strong>：频带 Kalman 预测能以很低显存实现更好的速度—保真度折中，最高 6×。<strong>Experiments Actually Show</strong>：四个具体图像/视频模型、H100、同 prompt/seed 的 50-step reference 下，多个 NFE budget 有更低延迟和更高 PSNR/SSIM；消融支持 band/time/scheduler 的贡献；额外显存为 0.005–0.05 GiB 等量级。<strong>What Is Not Yet Proven</strong>：对所有视频类型的感知质量无损、超长连续生成无漂移、多 GPU 与高并发吞吐、校准分布外可靠性、其他 scheduler / prediction parameterization 的即插即用性、能耗收益、严格的方差/显著性结论。摘要的“up to 6×”是最佳 setting 的最大值，不能当作通用速度保证。</p>
+<h2 id="section-40">16. Contribution / Innovation Audit</h2>
+<p><strong>Contribution 1 [New Mechanism]</strong>：DCT 频带分解 + band-specific SNR 时间坐标，是最核心的机制组合；DCT、sigmoid 和 log-SNR 本身均非新发明。<strong>Contribution 2 [New System / Engineering]</strong>：用在线 Kalman 状态与低维协方差 sidecar 驱动真实前向调用，形成可调 NFE 的闭环。<strong>Contribution 3 [New Empirical Finding]</strong>：不同频带在不同 denoising 阶段活跃，统一时间外推显著较差。<strong>Contribution 4 [New Evaluation Protocol 的应用]</strong>：把同 seed fidelity、VBench、wall-clock latency、额外显存放在同表比较；使用已有 metric，并未提出新公开 benchmark。</p>
+<h2 id="section-41">17. Limitation &amp; Failure Modes</h2>
+<p><strong>Authors' Limitation（从正文与附录可确认的约束）</strong>：需要针对模型估计频带功率与阈值；固定 NFE 版本不能根据样本难度调度，自适应版的每条样本计算次数不固定；极端跳步时误差仍增加。论文没有单列系统性的 Limitations 章节，因此不应虚构作者承认的额外实验结论。<strong>Additional Limitation</strong>：不同噪声 schedule 下 p_l 和 warp 可能不稳；频带按半径划分忽略方向性运动、纹理与局部对象边界；协方差共享可能掩盖某个局部危险高频系数；DCT 是全局空间变换，对大幅运动与 scene cut 不一定友好；风险阈值只校准平均 NFE，单样本尾部延迟未知；只在 H100 上报告，设备迁移需重测；VBench Quality 可能漏掉物理合理性与 prompt 复杂约束；校准 prompts 与评测 prompts 分布不一致可能导致过度自信；视频逐帧对象一致性未必与 PSNR 同步。最强的失败模式是：<strong>预测方差低但模型存在系统性偏差</strong>，调度器会自信地跳过本该重新观察的一步。</p>
+<h2 id="section-42">18. Reproduction View：先做最小闭环</h2>
+<p><strong>第一阶段</strong>不必从 14B 视频开始。先用可运行的 FLUX.1-dev 或较小公开 DiT 实现 50-step reference，固定 12 条校准 prompt 和独立 30–100 条测试 prompt。记录每一步 <code>(σ, x, guided_velocity, seed)</code>，对 velocity 逐通道做 <code>torch.fft</code> 不可直接替代 DCT，须实现正交 DCT/IDCT 或验证等价变换；按二维半径分 7 band。校准 <code>p_l</code> 用末 25 步 clean-latent 估计，防止用测试输出校准。每系数保存 <code>m, ν</code>，每 band 保存 2×2 协方差，实施前 3 步 + 最后一步强制计算、最多连续跳 10 步、ε 二分校准目标 NFE。对照 Base、last-output cache、Taylor predictor、Kalman fixed、Kalman adaptive、去 band warp。最先看 <strong>FLUX 14 NFE 的 PSNR/SSIM 与 latency</strong>，目标是确认“band+warp+adaptive 比统一 step 有明显 fidelity 提升”，而非盲目追求 6×。复现易错点：σ 的方向（高→低）、CFG 组合顺序、DCT 归一化、warp 端点 clamp、Kalman 观测噪声、sidecar 的相对单位、CUDA 同步计时、GPU warmup、seed 对齐。论文没有核实的官方代码，所有伪代码均为复现路线建议。</p>
+<h2 id="section-43">19. Research Value：七个角度</h2>
+<p><strong>Baseline Potential：高</strong>，同 NFE/同 seed 的缓存与预测对照很清楚。<strong>Migration Potential：高</strong>，band-wise 不确定性调度可推广到视频流、视觉 token 复用与连续世界模型。<strong>Systems Potential：高</strong>，低额外显存、真实 wall-clock 已测，下一步需批处理与吞吐。<strong>Attack Potential：中高</strong>，可构造高频突变/scene cut 使 risk 低估。<strong>Evaluation Potential：高</strong>，把模型调用节省与 quality fidelity、尾延迟联合量化。<strong>Benchmark Potential：中高</strong>，缺少对场景突变、长时视频、校准 OOD 的 stress benchmark。<strong>New Paper Potential：中高</strong>，若证明风险估计的可校准性并改善长时视频的 failure mode，会比仅换滤波器更有贡献。</p>
+<h2 id="section-44">20. Migration A：Streaming Video / World Model 的风险触发计算</h2>
+<p><strong>Original Problem</strong>：离线扩散多步重复前向。<strong>Transferable Mechanism</strong>：频带分解、可预测状态、风险触发重算。<strong>New Research Question</strong>：长视频流中是否能只在运动突变/场景切换时重新运行重型视觉编码器，而保持时序问答准确率？<strong>Method Modification</strong>：把 log-SNR warp 替换为视频时间与 optical-flow/feature-change 驱动的 band activity 坐标，预测跨帧视觉特征并在 risk 超阈值时执行 encoder；缓存来源帧与时戳。<strong>Minimum Experiment</strong>：选 200 段 30–120 秒视频，固定 1 FPS、4 FPS 两档采样；比较每帧全编码、均匀隔帧、cosine feature reuse、band-Kalman adaptive；注入 20% 人工 scene cuts，记录 cut 前后前 5 帧 QA 错误。<strong>Model</strong>：Qwen2.5-VL-7B 或兼容视频 VLM + 冻结视觉编码器。<strong>Dataset</strong>：Video-MME / MVBench 可用子集。<strong>Baseline</strong>：uniform sampling、keyframe selection、feature cache。<strong>Metric</strong>：QA accuracy、encoder calls、visual tokens、P50/P95 latency、GPU memory、scene-cut miss rate。<strong>Expected Contribution</strong>：面向 streaming VLM 的校准风险—质量 Pareto。<strong>Risk</strong>：视频特征随内容而非噪声日程演化，原 band 假设不成立。<strong>Collision Risk</strong>：与动态帧选择、视频 KV cache 和自适应视觉 token 剪枝强重叠；需突出预测不确定性而非简单帧抽样。</p>
+<h2 id="section-45">21. Migration B：Diffusion 加速的黑盒压力测试与自校准</h2>
+<p><strong>Original Problem</strong>：预测跳步存在未被平均指标揭示的结构漂移。<strong>Transferable Mechanism</strong>：风险 sidecar 与实际预测误差之间的校准关系。<strong>New Research Question</strong>：能否设计无权重访问的 prompt/seed stress test，系统性找到“低预测风险却高视觉错误”的失败区域？<strong>Method Modification</strong>：对不同频率纹理、快速物体移动、文字、镜头切换构造 prompt 家族；把实际误差按 band 与 step 记录为 oracle，测 risk 的可靠性；新增 conformal threshold 或高频保守触发。<strong>Minimum Experiment</strong>：100 基础 prompt×4 类扰动×3 seeds，50-step reference 与 8/14-NFE 方法一一配对；按 prompt 家族留一类作 OOD，校准阈值仅用其余类别；输出 risk decile vs empirical PSNR drop、worst-10% VBench、实际 NFE 与时延。<strong>Model</strong>：先 FLUX.1-dev，再 Wan2.1-14B。<strong>Dataset</strong>：DrawBench + 自建可复现 stress prompts、VBench。<strong>Baseline</strong>：Base、TeaCache、Spectrum、原 SpecKCast。<strong>Metric</strong>：ECE-like risk calibration error、worst-group LPIPS、PSNR、VBench、speedup、memory。<strong>Expected Contribution</strong>：不确定性驱动加速的可验证稳健性 benchmark 与阈值修正。<strong>Risk</strong>：黑盒时未必能读到内部 Kalman risk；需通过 sampler wrapper 记录，严格区分模型黑盒与系统白盒。<strong>Collision Risk</strong>：与 EigenCache、风险自适应调度研究可能碰撞；必须强调跨 prompt 分布 shift 的外部验证。</p>
+<h2 id="section-46">22. Attack / Verification Lens</h2>
+<p>即使目标不是攻击，仍可把极端高频纹理、闪烁字幕、物体快速进入画面、镜头切换作为 <strong>efficiency stress test</strong>。对同 seed 生成记录每个 step 的真实模型输出与预测输出（离线 shadow run），计算每个频带的 squared residual、risk percentile、误判跳步率。定义 <strong>False-Safe Skip Rate</strong>：risk≤ε 但实际误差超过质量阈值的跳步比例；定义 <strong>Quality@Latency Budget</strong>：在固定 wall-clock 上限内满足 LPIPS/VBench 门槛的比例；定义 <strong>Recovery Cost</strong>：一次严重预测偏差后需要多少真实 DiT 前向才能恢复。这里“恢复”是生成轨迹误差纠正，不是 Machine Unlearning 的知识恢复。要避免把自建 prompt 过拟合成调度器专用 benchmark。</p>
+<h2 id="section-47">23. 如果只记住这篇（9 句话）</h2>
+<ol>
+<li>SpecKCast 预测的是去噪网络输出，不是语言模型 KV cache。2. DCT 把速度场分成空间频带。3. 低频通常早期活跃，高频通常后期活跃。4. 每个频带用自己的 log-SNR warp 定义有效时间。5. 每个系数的 Kalman 状态包含当前值与变化率。6. 协方差 risk 决定何时重新调用完整 DiT。7. 论文在 H100 上实测最高约 6× wall-clock speedup，而非只报告 FLOPs。8. 8 NFE 高速设置仍有质量退化，VBench 也不是全部最优。9. 最值得研究的是长视频 OOD、风险校准与 streaming 场景的失效检测。</li>
+</ol>
+<h1 class="section-major" id="section-48">Cross-Paper Synthesis · 今天两篇共同说明什么</h1>
+<p>两篇来自完全不同领域：WeAct 研究长程 Agent 的<strong>能力状态选择</strong>，SpecKCast 研究 DiT 的<strong>昂贵前向计算选择</strong>。它们的共同抽象不是“用了缓存”或“用了 LoRA”，而是把过去默认固定的系统决策变成随轨迹状态变化的<strong>显式控制动作</strong>。WeAct 依据历史决定加载哪个参数子空间；SpecKCast 依据预测协方差决定是否重新计算真实速度场。二者都把可观察的运行状态（当前 adapter、当前频带风险）放进 harness/sampler，给未来的安全审计和系统优化提供了入口。</p>
+<p><strong>机制互补</strong>：Agent 可把视频生成/理解工具作为一个外部工具，而视频工具内部运行 SpecKCast 这样的 risk-aware scheduler；上层 WeAct 的能力选择决定调用哪类工具，下层 scheduler 决定一次工具调用的算力预算。统一的执行状态可以写成 <code>(task stage, active adapter, tool state, compute risk, budget)</code>，并在每次 action 后更新。<strong>假设冲突</strong>：WeAct 的模块边界是离散且依赖人工标注的，SpecKCast 的频带时间变化是连续且依赖统计校准的；直接把离散状态机搬到频率预测会损失连续性，直接把 Kalman 方差当成 Agent 选择的置信度也没有理论依据。必须分别标定。</p>
+<p><strong>可组合实验范式</strong>：WeAct 的 capacity-matched 与 random-partition 控制可以迁移到视觉 token 分组（同样 token budget 下比较语义分组 vs 随机分组）；SpecKCast 的同 seed 50-step oracle 与风险—误差校准可以迁移到 Agent 的“预计下一步能成功”置信度测试（相同任务和工具返回，记录预估风险与真实失败）。二者都提醒我们：只看最终任务成功率，会漏掉<strong>路由错误、证据替换、预测误差、尾延迟</strong>。</p>
+<h1 class="section-major" id="section-49">Combined Research Opportunities · 可以开始做的交叉项目</h1>
+<h2 id="section-50">Opportunity A · Budget-Aware Video Research Agent</h2>
+<p>构建一个需要读长视频、检索外部证据并回答复杂问题的 Agent：上层使用 WeAct 风格 <code>plan / video-inspect / search / write</code> 权重动作，下层视频工具使用频带变化/风险调度选择需要重新编码的帧。<strong>核心假设</strong>：不必给每个阶段相同的模型参数，也不必给每个视频时刻相同的视觉算力。<strong>最小实验</strong>：200 条 Video-MME 长视频任务，4 个路由策略（固定/强制/动态/动态+校验）×3 个帧预算（8/16/32），固定总 GPU 时间，测 QA、证据覆盖、frame misses、P95 latency、显存。与普通 adaptive frame sampling 的区别必须是<strong>联合内部能力状态与外部视觉预算</strong>，而不是简单叠加两种已有模块。</p>
+<h2 id="section-51">Opportunity B · Uncertainty-Calibrated Internal Actions</h2>
+<p>让 Agent 不仅记录 <code>load_lora</code>，还预测本次切换会改善哪种能力、可能引入何种风险；以小型 probe 或历史结果校准风险，风险高时执行一次低成本“专家验证”。这对应 SpecKCast 的 risk-triggered full forward，但 Agent 里“full forward”可以是额外检索、工具回放或第二专家审阅。<strong>最小实验</strong>：在 2Wiki/MuSiQue 200 题上注入 0/1/2 个阶段误导指令，对照无验证、固定每次验证、风险触发验证，报告 success@cost、错误路由率、证据完整性、每题额外 token、P95。只有证明<strong>相同额外成本下风险调度优于固定验证</strong>，才有独立研究价值。</p>
+<h2 id="section-52">Opportunity C · Failure-Propagation Benchmark</h2>
+<p>同时收集 Agent 的 adapter 状态错误和视频 sampler 的预测错误，构造统一的“局部错误→后续放大→何时恢复”协议。记录第 t 步的错误注入、下游状态差异、最后质量与恢复成本。它可以用于系统评估和安全研究，不必强行归类为 Unlearning。首批基准用可控工具环境 + 生成模型 shadow trajectories；要防止 benchmark 只奖励某一种 harness 的特定日志格式。</p>
+<h1 class="section-major" id="section-53">Collision / Overlap · 哪些方向容易撞车</h1>
+<p><strong>WeAct 侧</strong>：它与 LoRAHub、MoLE、TIES、Adaptive Minds、Macaron-V1 共享“专家组合/调用”问题；若只把已有工具路由改成另一个 prompt 或换 LoRA rank，创新不足。真正空缺在可审计的权重动作、跨长历史 KV 重建、模块扩张时路由可靠性。<strong>SpecKCast 侧</strong>：它与 TeaCache、TaylorSeer、Spectrum、EigenCache 等共享“跳步/预测/调度”空间；若只把 Kalman 换成另一种滤波器，可能属于 incremental。值得做的是校准 OOD 风险、真实多并发吞吐、场景切换恢复与 streaming 长时稳定性。</p>
+<p><strong>Strongest Collision：风险触发计算 vs 风险触发 Agent 验证。</strong> 二者机制形式相似，但目前只是<strong>潜在可迁移重合</strong>，不是论文间直接优先权冲突：一篇的风险是频域数值预测方差，另一篇并没有提出概率路由风险模型。要形成新论文，必须给出跨系统的校准方法和受控实验，而不是画一张统一框图。</p>
+<h1 class="section-major" id="section-54">Reading / Reproduction Priority</h1>
+<p><strong>先读 WeAct</strong>：若重点是 Agent / Multi-Agent、持续学习、内部动作、权重切换，优先看 Eq.3–6、Table 1、Figure 13/14、Table 12；建议先复现三专家静态 merge vs runtime switching，再加 KV cache 计时。<strong>再读 SpecKCast</strong>：若重点是视频/推理加速，优先看 Figure 2、Eq.8–12、Table 2/3、Appendix B/D；先复现 FLUX 14 NFE 的消融，再做 Wan2.1 的 wall-clock。<strong>最适合作为 baseline</strong>：WeAct（Agent 侧）；<strong>最适合 system/acceleration idea</strong>：SpecKCast；<strong>最适合 benchmark/metric</strong>：WeAct 的路由 provenance 与 SpecKCast 的 risk calibration；<strong>最适合 attack/evaluation</strong>：两者的错误传播 stress test。优先级建议是：① 小规模 WeAct 复现；② SpecKCast 频带/时间 warp 消融；③ 联合研究前先排查已有 adaptive compute / agent routing 工作，防止概念撞车。</p>
+<h1 class="section-major" id="section-55">Sources / Links · 核验边界</h1>
+<p><strong>主来源均为 2026-10-19 UTC 首次提交、2026-10-20 中国时间可见的新论文，不是 BACKFILL</strong>。本报告独立检索并阅读了两篇 arXiv HTML 正文的 Introduction、Method、Experiments、Ablation、Appendix 关键内容。作者、数值、图表与方法来自以下原始全文；文中 Toy Example、迁移实验、攻击指标与额外局限是本报告的分析，不应误当作者报告结果。两篇<strong>官方代码状态均未核实</strong>；不得因为第三方页面显示“Code”按钮就宣称已开源。</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2610.26847" rel="noopener noreferrer" target="_blank">WeAct arXiv abstract / 版本历史</a> · <a href="https://arxiv.org/html/2610.26847" rel="noopener noreferrer" target="_blank">WeAct HTML 全文</a> · <a href="https://arxiv.org/pdf/2610.26847" rel="noopener noreferrer" target="_blank">WeAct PDF</a></li>
+<li><a href="https://arxiv.org/abs/2610.26837" rel="noopener noreferrer" target="_blank">SpecKCast arXiv abstract / 版本历史</a> · <a href="https://arxiv.org/html/2610.26837" rel="noopener noreferrer" target="_blank">SpecKCast HTML 全文</a> · <a href="https://arxiv.org/pdf/2610.26837" rel="noopener noreferrer" target="_blank">SpecKCast PDF</a></li>
+<li>同期筛选但未占用名额的高价值候选：<a href="https://arxiv.org/abs/2610.26845" rel="noopener noreferrer" target="_blank">Train An Imaginative Agent / Agima</a>（Agent + RL world model）；<a href="https://arxiv.org/abs/2610.26849" rel="noopener noreferrer" target="_blank">SARP: An On-SSD Index for KVCache</a>（Serving 恢复与前缀匹配）。未将其纳入正式精读，是因为坚持单篇深度优先；不代表它们价值低。</li>
+</ul>
+</main></div><footer class="footer">Daily Top Papers Deep Dive · 2026-10-21 · 原始数据以 arXiv HTML 正文为准 · 分析与迁移为独立研究建议</footer></div><a href="#top" class="toplink">↑ TOP</a></body></html>
