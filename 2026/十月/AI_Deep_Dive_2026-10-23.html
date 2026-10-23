@@ -1,0 +1,616 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><title>Daily Top Papers Deep Dive — 2026-10-23</title><style>
+:root{--bg:#f5f7fb;--ink:#17263c;--sub:#4d5c70;--blue:#145f79;--teal:#147d80;--line:#dbe4ec;--panel:#fff;--soft:#eaf3f7;--gold:#c0872c}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.9}
+main{max-width:1080px;margin:0 auto;background:var(--panel);padding:40px 65px 90px;box-shadow:0 10px 50px rgba(26,54,82,.08)}
+.hero{padding:35px 38px;border-radius:20px;background:linear-gradient(135deg,#11283f 0%,#184d62 75%,#186b70 100%);color:#fff;margin:0 0 25px}.hero h1{color:#fff;font-size:2.1rem;line-height:1.38;letter-spacing:-.035em;margin:14px 0 20px}.hero p{color:#e6f0f5;font-size:1rem;margin:0}.eyebrow{font-size:.76rem;letter-spacing:.16em;font-weight:750;color:#a9dce3}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.chips span{font-size:.78rem;border:1px solid #77a9b8;color:#edf8fb;border-radius:30px;padding:2px 12px}
+.toc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 24px;border:1px solid var(--line);border-radius:15px;padding:23px 26px;background:#f7fafc;margin-bottom:42px}.toc b{grid-column:1/-1;color:var(--blue);font-size:1rem;margin-bottom:5px}.toc a{font-size:.9rem;color:var(--blue);text-decoration:none;padding:4px 0}.toc a:hover{text-decoration:underline}
+h1,h2,h3,h4{line-height:1.45;letter-spacing:-.025em}h2{font-size:1.65rem;margin:64px 0 28px;padding:0 0 15px;border-bottom:3px solid #b5dce2;color:#173c52;scroll-margin-top:18px}h3{font-size:1.15rem;margin:37px 0 14px;color:#14677c;border-left:4px solid #61b3bd;padding-left:12px}h4{font-size:1.05rem;color:var(--blue)}p{margin:12px 0 17px}strong{color:#113f56}a{color:#0c6d93;overflow-wrap:anywhere}a:hover{color:#044e69}blockquote{border-left:4px solid #78b3bf;padding:8px 20px;background:#f2f8fa;color:var(--sub)}hr{border:0;border-top:1px solid var(--line);margin:50px 0}.flow{padding:18px 22px;margin:20px 0;border:1px solid #acd6dd;border-radius:11px;background:linear-gradient(90deg,#f0fbfb,#eef6fa);color:#0c5666;font-weight:650;line-height:2.0}.eq{background:#f3f7fa;border-left:4px solid #228a94;padding:16px 20px;margin:22px 0;border-radius:0 10px 10px 0;overflow-x:auto;white-space:normal;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Consolas,"Noto Sans CJK SC",monospace;font-size:.91rem;line-height:2.05}.eq b{color:#0b6471;font-family:inherit}.table-scroll{overflow-x:auto;width:100%;margin:20px 0 28px;border:1px solid #dce7ed;border-radius:10px}table{border-collapse:collapse;min-width:700px;width:100%;font-size:.87rem;line-height:1.65}th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid #e3eaf0}th{background:#eaf4f7;color:#174c60;font-weight:750;white-space:nowrap}tr:nth-child(even) td{background:#fbfdff}tr:hover td{background:#f1f8fa}code{font-family:ui-monospace,Consolas,"SFMono-Regular",monospace;font-size:.88em;background:#edf2f6;border-radius:4px;padding:2px 5px;overflow-wrap:anywhere}pre{background:#142638;color:#e9f3f7;border-radius:9px;padding:18px;overflow-x:auto}pre code{background:transparent;color:inherit;padding:0}.note{border:1px solid #e7d1a5;background:#fffaf0;border-radius:10px;padding:20px 24px;margin-top:35px;color:#5e4a28}.note b{color:#865a16}ol{padding-left:26px}li{padding-left:4px;margin-bottom:7px}li::marker{color:#167989}.footer{font-size:.8rem;color:#748397;text-align:center;border-top:1px solid var(--line);padding-top:28px;margin-top:45px}
+@media(max-width:780px){main{padding:18px 18px 55px}.hero{padding:24px 20px}.hero h1{font-size:1.58rem}.toc{grid-template-columns:1fr;padding:16px 20px}h2{font-size:1.37rem;margin-top:48px}h3{font-size:1.06rem}body{font-size:15px}table{font-size:.83rem;min-width:620px}}
+@media print{body{background:#fff}main{box-shadow:none;max-width:none;padding:20px}.hero{background:#123c51!important;color:white!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}a{color:#0a597c}.toc{page-break-after:always}h2,h3{break-after:avoid}.table-scroll{overflow:visible}table{font-size:9px;min-width:0}}
+</style></head><body><main><div class="hero">
+<div class="eyebrow">DAILY TOP PAPERS DEEP DIVE · 2026-10-23 · 中文研究精读</div>
+<h1>从“整条轨迹的分布漂移”到“可追溯的跨会话记忆”</h1>
+<p>本期独立检索 2026-10-20 至 10-22 的 arXiv 新稿，最终选择两篇 2026-10-21 UTC 首次提交、可访问完整正文与附录的研究。第一篇解决离策略 LLM RL 的 prefix trust region；第二篇解决多模态 Agent 的实体演化与证据溯源。两篇均非 BACKFILL。为保证方法、公式、实验与迁移的完整度，本期不增加第三篇。</p>
+<div class="chips"><span>2 篇正式精读</span><span>RL · Agent / Multimodal Memory</span><span>全文核查 + 附录</span><span>定量结果与失败点</span></div>
+</div>
+<nav class="toc"><b>目录 / Table of Contents</b><a href="#selection">01 选题与候选比较</a><a href="#paper1">02 Paper 1 — EPIC（完整精读）</a><a href="#paper2">03 Paper 2 — MHG-Mem（完整精读）</a><a href="#synthesis">04 Cross-Paper Synthesis</a><a href="#opportunities">05 Combined Research Opportunities</a><a href="#collision">06 Collision / Overlap</a><a href="#priority">07 阅读与复现优先级</a><a href="#sources">08 Sources / Links</a></nav>
+
+<h2 id="selection">01 · Today's Deep Dive Selection</h2>
+
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>排名</th>
+  <th>论文 / 主线</th>
+  <th>为什么入选</th>
+  <th>核心证据</th>
+  <th>主要保留意见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>#1</td>
+  <td><strong>EPIC</strong> · RL / Reasoning</td>
+  <td>将 autoregressive policy 的 trust region 从 token / sequence 改成 prefix，给出精确分布变换与可实现 loss</td>
+  <td>四项数学基准均值 <strong>39.34%</strong>，strongest non-replay baseline DAPO <strong>35.45%</strong></td>
+  <td>只验证一个 MoE 模型与数学任务；理论单调性不直接等于实用 loss 保证</td>
+</tr>
+<tr>
+  <td>#2</td>
+  <td><strong>MHG-Mem</strong> · Agent / Multimodal</td>
+  <td>用 entity occurrence、evolution、evidence 三种关系把跨会话事实变成可验证状态历史</td>
+  <td>三 backbone 的 Judge 均值领先 <strong>8.20 / 9.89 / 9.98 个百分点</strong></td>
+  <td>约 <strong>2× tokens</strong>；部分 factual recall 和时间推理子任务仍落后</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>选择逻辑。</strong> 同期也核查了 <em>Attn-Forcing</em>（arXiv:2610.30036，Video Generation）、<em>HAWK</em>（2610.29873，GPU–NPU 推理）与 <em>UlaCache</em>（2610.29820，KV Serving）的摘要和正文可用性。它们与四条主线相关，但本期 EPIC 的理论—实现—消融证据链和 MHG-Mem 的多骨干—三基准—代价分析更适合高密度精读。此处并不意味着其他论文不重要；<strong>未对其做正式 Deep Dive，不作性能横向排名</strong>。最近七天的论文级冷却记录未能完整取得；本期选择 10 月 21 日首次提交的新稿，降低重复概率，但不声称已完成全量历史去重。</p>
+<hr />
+<h2 id="paper1">02 · Paper 1 Full Deep Dive — EPIC</h2>
+
+<h3>2.1 基本信息 / 一句话定位</h3>
+<p><strong>Title:</strong> <em>EPIC: Rethinking Trust Regions for Autoregressive LLM Policies via Exact-KL Prefix Importance-Ratio Clipping</em><br />
+<strong>Authors:</strong> Chengxi Li, Hanlin Wu, Zhicheng Cai, Huan-ang Gao, Wei-Ying Ma, Jingjing Liu, Hao Zhou<br />
+<strong>Affiliation:</strong> SIA-Lab of Tsinghua AIR and ByteDance Seed；清华大学 AIR / 计算机系（按论文署名）<br />
+<strong>Date:</strong> 2026-10-21 UTC 首次提交，arXiv v1；<strong>Venue/Status:</strong> arXiv preprint，未见正式会议录用声明。<br />
+<strong>Paper:</strong> <a href="https://arxiv.org/abs/2610.29999">arXiv abstract</a> · <a href="https://arxiv.org/html/2610.29999v1">Full HTML</a> · <a href="https://arxiv.org/pdf/2610.29999">PDF</a><br />
+<strong>Code:</strong> <a href="https://github.com/LiChengxi666/EPIC">作者公布的 EPIC GitHub</a>；<strong>Project:</strong> Not Reported。<br />
+<strong>一句话定位：</strong> 它不是再造一个 reward，而是修正离策略自回归 RL 中“<strong>用哪个分布上的概率比率来约束策略更新</strong>”这一基础问题。</p>
+<h3>2.2 人话版（先建立直觉）</h3>
+<p>想象你让一个数学推理模型写 10,000 个 token。它写到第 8000 个 token 时，当前策略和采样时的旧策略可能已经在前 7999 个 token 上累积了很大的分歧。传统 PPO / GRPO 往往只看第 8000 个 token 的条件概率比率；GSPO 则把整条答案压成一个比率。前者看不见前文漂移，后者可能因为后半段不可靠而把前半段有价值的学习信号一并抑制。EPIC 的做法是：<strong>每走一步，就计算截至这一步的累计 prefix ratio；再依据一个与 reverse KL 精确关联的凸函数，为这个 prefix 设置自适应裁剪区间。</strong> 为避免长序列数值爆炸，它把累计比率转换成几何平均，并用 straight-through 让梯度仍只从当前 token 回传。作者在 Qwen3-30B-A3B-Base 上做数学 RL，四基准均值达到 39.34%，超过最强非 replay baseline DAPO 的 35.45%。它重要的地方不只是多出几分，而是提供了可迁移到 Agent action trajectory 的“<strong>前缀级离策略纠偏</strong>”思路。</p>
+<h3>2.3 Background &amp; Research Gap：旧方法究竟错位在哪里？</h3>
+<p>RLVR（Reinforcement Learning with Verifiable Rewards）常用题目最终答案是否正确来给 0/1 reward，再以一组 rollout 的相对奖励估计 advantage，优化 token 生成概率。状态不是抽象的“第 t 步”，而是 <code>s_t=(prompt, y_&lt;t)</code>；动作是当前 token。<strong>状态本身由前面的动作生成</strong>。因此策略更新改变了前缀的概率，也改变了后续 token 所处状态的访问频率。只校正当前条件概率并不能自动校正“走到这里”的概率。</p>
+<p>具体例子：一条旧轨迹有 8 个决策，每步当前策略相对旧策略的比率都是 1.1。每个 token 的比率 1.1 看起来温和，但整条 prefix 的比率已是 1.1⁸≈2.14；旧策略中常见的整条路径在新策略下可能变得超过两倍常见。GRPO 的 token clipping 可能每步都放行。GSPO 用整个 response 的归一化比率处理所有位置，则可能因为最后几个 token 的异常，把早期合理步骤也压掉。离策略训练时 rollout 由滞后的策略产生，MoE 专家路由还可能在 rollout 和训练端不同，放大分布错配。</p>
+<p>历史基线解决的是不同子问题：PPO/GRPO 提供廉价的一阶裁剪，DAPO 改进训练稳定性与采样，GSPO 改用 sequence ratio，CTPO/RIPO 关注累计或位置相关比率，R2/R3 通过重放专家路由减少 MoE 不一致。EPIC 要补的是<strong>prefix distribution 作为统计对象</strong>：不能只用 token-level 局部比率，也不应只在完整答案结束后才做全局判决。</p>
+<h3>2.4 Core Insight：从 performance-difference identity 推导，而非拍脑袋换 loss</h3>
+<p><strong>观察性质：理论恒等式 + 工程观察。</strong> 在有限 horizon 自回归 MDP 中，旧策略 μ 的精确 advantage 满足望远镜求和：沿新策略 π 的轨迹，所有 step advantage 之和的期望，等于新旧策略的期望回报差。把期望从 π 的 prefix 分布换成 μ 的 prefix 分布时，严格的 Radon–Nikodym 权重正是 <code>π(y₁:ₜ|x)/μ(y₁:ₜ|x)</code>，而不是仅当前 token 的 ratio，也不需要额外乘未来 suffix 的 ratio。</p>
+<p>第二个洞见是 <strong>KL 不必近似成局部二次函数</strong>。定义 φ(r)=r−1−log r，在 μ 的 prefix 分布下取期望，利用 Eμ[r]=1，可得到精确的 D_KL(μ_prefix∥π_prefix)。这允许以真实的非对称 KL 几何来求两侧裁剪边界。第三个是实现层面的折中：直接乘长 prefix 的 ratio 容易出现长度依赖与梯度尖峰，于是采用几何平均作为 forward weight，并保留 current-token-only 的梯度路径。请注意：理论恒等式与实际 surrogate 并非同一个对象；作者的 clipping、近似 advantage 和 stop-gradient 是实用设计，<strong>不继承无条件单调提升保证</strong>。</p>
+<h3>2.5 Method Deep Dive：Input → Output</h3>
+<div class="flow">Prompt + old policy μ → G 条 rollout → rule-based reward / group advantage → 每个 token 的 logπ−logμ → prefix cumsum → exact-KL coordinate 的两侧 root → 几何平均区间 + straight-through → sign-aware clipping → 优化 πθ → 下一轮 rollout</div>
+
+<p><strong>Step 1 · 收集行为轨迹。</strong> 对一个 prompt 采样 G=8 条答案，记录每个 token 在行为策略 μ 下的 log-probability。训练端的当前策略 πθ 在后续多次更新中不断变化，但 μ 是这批样本的生成分布。若把“当前训练模型输出的 logp”错当成旧 logp，prefix correction 立即失去意义。</p>
+<p><strong>Step 2 · 计算稀疏 reward 与组相对 advantage。</strong> 用规则验证器检查归一化最终答案，正确为 1、错误为 0；同题八条答案形成相对好坏。优势 Âᵢ 在该响应内按 token 共享。这里没有 step-level verifier，因此<strong>不能声称 EPIC 解决了真实过程奖励的 credit assignment</strong>；它只是重新分配离策略样本在每个 prefix 的梯度权重。</p>
+<p><strong>Step 3 · 从局部差异累计到 prefix。</strong> 令 Δₖ=logπθ(yₖ|x,y&lt;ₖ)−logμ(yₖ|x,y&lt;ₖ)，则 log r_pre,t=Σₖ≤t Δₖ。代码使用 masked cumsum，复杂度 O(T)，无需增加模型 forward。EOS / padding 的 mask 必须正确，否则末尾虚假 token 会污染累计比率。</p>
+<p><strong>Step 4 · 构造 KL 预算。</strong> 对每个样本 prefix，计算旧策略 prefix 概率的几何平均 p̄_old,t=exp[(Σ logμ)/t]；设置 κ⁻=tδ⁻/p̄，κ⁺=tδ⁺/p̄，再分别解 φ(ℓ)=κ⁻、φ(u)=κ⁺，得到 ℓ≤1≤u。因为 φ 在 1 两侧单调方向相反，数值求根必须分别处理上下支；不能拿一侧根复制到另一侧。</p>
+<p><strong>Step 5 · 归一化与局部梯度。</strong> 令 g=(r_pre,t)^(1/t)，裁剪区间相应为 [ℓ^(1/t),u^(1/t)]。直接对 g 求导会使第 t 个 loss 对前 t 个 token 全部回传。作者采用 straight-through：前向仍是 g，反向只通过当前 token logp。这是稳定性和工程可用性折中，<strong>不是对原始精确目标的严格梯度</strong>。</p>
+<p><strong>Step 6 · sign-aware clipping 并更新。</strong> 对正 advantage，限制向上增长的收益；对负 advantage，限制权重两侧并额外做上侧保护。每条回答先平均有效 token，再平均同组响应，避免长答案凭 token 数量主导 batch loss。参数更新后，重复新的 rollout。典型失败包括：logp 溢出、root 不收敛、mask 错误、policy lag 过大、奖励验证器错误、MoE routing 引入额外分布差。</p>
+<h3>2.6 核心公式与数学直觉</h3>
+<div class="eq"><b>Eq. (8)/(10) · Prefix importance weight</b><br>rₜᵖʳᵉ = π(y₁:ₜ | x) / μ(y₁:ₜ | x) = ∏ₖ₌₁ᵗ π(yₖ | x,y&lt;ₖ) / μ(yₖ | x,y&lt;ₖ)<br>Jₓ(π) − Jₓ(μ) = Eᵧ~μ [ Σₜ rₜᵖʳᵉ Aᵘ(sₜ,aₜ) ]</div>
+
+<p>π 是待训练策略，μ 是产生 rollout 的旧策略，Aᵘ 是“在 μ 下继续执行”的优势。最大化加权优势，理论上推动新策略回报超过旧策略；但实际估计优势不精确，且样本有限。这里的 r_pre 负责校正<strong>到达当前 prefix + 选择当前动作</strong>的联合概率，不能用单个 token ratio 代替。若动作改为 Agent tool call，完全相同的概率乘积形式可在离散动作 MDP 中成立，但 tool 反馈改变环境动态时必须重新验证假设。</p>
+<div class="eq"><b>Eq. (17) · Exact reverse-KL coordinate</b><br>φ(r)=r−1−log r； Eμ[φ(rₜᵖʳᵉ)] = D_KL( μ(y₁:ₜ|x) ∥ π(y₁:ₜ|x) )<br>φ′(r)=1−1/r；φ″(r)=1/r²&gt;0</div>
+
+<p>φ 的最小值在 r=1，两侧严格凸；r→0 或 r→∞ 都会产生大惩罚。相比常见的 (log r)²/2，φ 是全局精确坐标，保留上下方向的非对称性。注意“精确”修饰<strong>分布期望等式</strong>，不代表对一个 sampled prefix 的 φ 就等于全分布 KL，也不意味着按样本裁剪就严格满足总体 KL 约束。</p>
+<div class="eq"><b>Eq. (18)–(22) · Calibrated clipping</b><br>κₜ⁻ = tδ⁻ / μ(y₁:ₜ|x)^(1/t)；κₜ⁺ = tδ⁺ / μ(y₁:ₜ|x)^(1/t)<br>φ(ℓₜ)=κₜ⁻，φ(uₜ)=κₜ⁺；gₜ=(rₜᵖʳᵉ)^(1/t)<br>maximize J_EPIC = E[ (1/G) Σᵢ (1/Tᵢ) Σₜ C(g̃ᵢₜ, Âᵢ; ℓᵢₜ^(1/t),uᵢₜ^(1/t)) ]</div>
+
+<p>δ⁻、δ⁺ 越大，允许的下/上侧偏离越大，裁剪越松，潜在学习速度与不稳定风险都增加。论文默认 δ⁻=5×10⁻⁴、δ⁺=2×10⁻³，上侧预算较大，反映非对称容忍。<code>C</code> 为符号敏感裁剪：A≥0 时 A·min(g̃,u)，A&lt;0 时 A·clip(g̃,ℓ,u)。实用训练最小化的是 −J_EPIC。KL loss coefficient 10⁻³ 是额外训练配置，<strong>不可与 φ 的两侧预算混为一谈</strong>。</p>
+<h3>2.7 Toy Example：一条三 token 轨迹从输入走到更新</h3>
+<p>设行为策略对三个已采样 token 的条件概率依次为 (0.40, 0.50, 0.20)，新策略给相同 token 的概率为 (0.48, 0.60, 0.14)。局部比率是 (1.20, 1.20, 0.70)。于是累计 prefix 比率依次是 (1.20, 1.44, 1.008)，几何平均 g≈(1.20,1.20,1.0027)。第二个 token 自己的 ratio 只有 1.20，但它所在 prefix 已经偏到 1.44；第三个 token 局部 ratio 只有 0.70，却把整段累计 ratio 拉回约 1.008。<strong>token clipping 与 prefix clipping 可能做出不同决策</strong>。假设为了教学临时设置 prefix 上界 1.30，第二个位置会被 prefix 约束而第一个不会；实际论文上界须通过 φ 和 δ 数值求根，不能固定写 1.30。若整条答案正确，Â&gt;0，裁剪防止过度提高第二段；若答案错误，Â&lt;0，则负优势分支抑制错误路径。Toy 数值是教学构造，不是论文实验数据。</p>
+<h3>2.8 Baseline Deep Comparison（3–5 个关键对象）</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Baseline</th>
+  <th>原理与合理性</th>
+  <th>在本 setting 的局限</th>
+  <th>EPIC 改动 / 差异性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>DAPO — strongest non-replay baseline</strong></td>
+  <td>改进 GRPO 训练细节与 clipping，强数学 RL 经验基线；四基准均值 <strong>35.45</strong></td>
+  <td>未明确以完整 prefix 分布的精确 KL 构造 trust region</td>
+  <td>EPIC <strong>39.34</strong>，+3.89 pp；机制性目标改变，非仅调参</td>
+</tr>
+<tr>
+  <td>GRPO</td>
+  <td>对 token conditional ratio 裁剪，低成本、实现成熟；<strong>28.65</strong></td>
+  <td>无法看见到达该 token 的 prefix probability drift</td>
+  <td>以 prefix ratio 与精确 KL coordinate 替代局部视角</td>
+</tr>
+<tr>
+  <td>GSPO</td>
+  <td>用 response-level 比率共享裁剪，能考虑整体路径；<strong>32.84</strong></td>
+  <td>后缀异常可抑制早期有效信号，缺少每个位置独立 prefix 预算</td>
+  <td>EPIC +6.50 pp；裁剪粒度由整条序列变为逐 prefix</td>
+</tr>
+<tr>
+  <td>CTPO / RIPO</td>
+  <td>已关注累计或位置相关 clipping；<strong>33.98 / 32.98</strong></td>
+  <td>局部近似 / 校准方式不同，位置上的 clip 活跃度不均</td>
+  <td>φ 精确坐标 + 几何校准 + ST；部分为机制、部分为工程</td>
+</tr>
+<tr>
+  <td>R2 / R3 routing replay</td>
+  <td>重放 MoE 专家选择，减少 rollout/训练路由不一致；在 MoE 上合理</td>
+  <td>保存每层专家索引，额外 CPU / shared-memory 与系统复杂度</td>
+  <td>EPIC 不保存 routing state；比较的是不同路线，不能直接断言更优于所有 replay 实现</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2.9 Experiment Setup：每组实验想回答什么？</h3>
+<p><strong>主实验 RQ1：prefix clipping 能否在高离策略、长输出、稀疏 MoE 上提高数学正确率？</strong> Qwen3-30B-A3B-Base；训练集为处理后的 DAPO-Math-17K，<strong>17,917</strong> 条；四测试基准共 <strong>130</strong> 个不同 prompt：AIME24 30、AIME25 30、AMC23 40、HMMT Feb25 30。每题验证采样 8 个答案，二元正确率。作者用 verl + Megatron 训练、vLLM rollout，<strong>32 张 NVIDIA A100</strong>。模型的 30B/A3B 名称指 MoE 总规模/激活规模，本文未做跨模型尺寸泛化实验。</p>
+<p><strong>训练控制：</strong> 每轮 64 个 prompt × 8 response = 512 条；minibatch 8 个 prompt；一次 PPO epoch、update depth 8；最多 prompt 2048 token、response 16384 token；训练 300 global steps；学习率 1e−6、warmup 10、grad norm cap 1.0；KL-loss coefficient 1e−3；entropy bonus 0。训练温度 1.0、top-p 1.0；验证温度 1.0、top-p 0.7。各方法共用设置，但各自 clipping 超参数按定义设定，不能把 δ 和 ε 当作同尺度数字直接比较。</p>
+<p><strong>RQ2：改进是否来自位置更均衡的 clipping？</strong> Figure 3 对比不同位置 clip fraction 和 CV；Appendix Figure 8 分离 raw prefix probability 与几何校准、原始累计 ratio 与几何 ratio。<strong>RQ3：不用 routing replay 是否仍稳定？</strong> Figure 4 对比 replay 系统的准确率与 driver-process CPU RSS，Appendix Table 4 估算 routing tensor 大小。<strong>RQ4：精确 KL 是否必要？</strong> Figure 7 检查观测到的 log-prefix ratio 偏离是否超出局部二次近似有效范围。</p>
+<p><strong>选择 checkpoint 的注意事项：</strong> 每 5 global steps 验证一次，每个 seed 按四基准均值挑单一最佳 checkpoint，再对三 seed 取均值；这避免了“每个基准各挑一个最优模型”，但仍使用同一组 benchmark 做选择与最终报告，存在 validation/test reuse 的乐观偏差。没有独立未参与选点的最终测试集。</p>
+<h3>2.10 Metrics 教学式解释</h3>
+<p><strong>mean@8</strong>：对每题独立采样 8 条响应，统计八条中正确的比例，再对题目求平均；越高越好。它不是“8 条里至少一条对”的 pass@8，不能互换。<strong>Four-benchmark Average</strong>：先各自计算 mean@8，再四套题等权平均，尽管题量 30/30/40/30 不等；它衡量跨 benchmark 的平均能力，却会掩盖单个困难集合的极端退化。<strong>Clip Fraction</strong>：有多少位置触发裁剪；过低可能约束失效，过高可能学习被抑制，不能简单认为越大越好。<strong>Position-wise CV</strong>：各位置裁剪率的标准差/均值，越低表示位置更均衡，但不表示裁剪强度合理。<strong>Entropy</strong>：输出分布不确定性，过低可能模式塌缩，过高可能乱采样。<strong>Train–rollout logp gap</strong>：训练引擎与 rollout 引擎的对数概率差；越小通常越一致，但不等于最终泛化。<strong>CPU RSS</strong>：驱动进程常驻内存，越低越省内存，<strong>不等于 GPU memory 或集群总内存</strong>。</p>
+<h3>2.11 Results Deep Dive：八个可以核对的定量结论</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>数字 / 现象</th>
+  <th>对比与差距</th>
+  <th>支持的 Claim / 替代解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td><strong>39.34%</strong> 四基准均值</td>
+  <td>DAPO <strong>35.45%</strong>，<strong>+3.89 pp</strong></td>
+  <td>最强非 replay 基线之上；但仅单模型、数学题</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><strong>AIME24 38.06%</strong></td>
+  <td>DAPO <strong>31.67%</strong>，<strong>+6.39 pp</strong></td>
+  <td>对困难数学题提升显著；选点效应仍需独立集</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><strong>AIME25 25.28%</strong></td>
+  <td>DAPO <strong>24.03%</strong>，<strong>+1.25 pp</strong></td>
+  <td>本文优势较弱的集合；并非所有任务都大幅提高</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><strong>AMC23 77.92%</strong></td>
+  <td>DAPO <strong>76.25%</strong>，<strong>+1.67 pp</strong></td>
+  <td>较易题上收益有限；可能接近该设置上限</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><strong>HMMT25 16.11%</strong></td>
+  <td>DAPO <strong>9.86%</strong>，<strong>+6.25 pp</strong></td>
+  <td>相对提升明显，绝对准确率仍很低，属关键 failure boundary</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><strong>GSPO 32.84 → EPIC 39.34</strong></td>
+  <td><strong>+6.50 pp</strong></td>
+  <td>支持逐 prefix 优于整序列统一裁剪的动机，但并非纯单因素因果实验</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td>clip fraction 位置 CV <strong>0.054</strong></td>
+  <td>CTPO <strong>0.085</strong>、RIPO <strong>0.126</strong></td>
+  <td>位置分布更均衡；不能独立证明高准确率因果来自均衡</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td>Figure 8 最终 AIME24：Raw-prob <strong>≈27.1</strong>、Cumulative-ratio <strong>≈31.3</strong>、EPIC <strong>≈33.3</strong></td>
+  <td>EPIC 较 Raw-prob <strong>≈+6.2 pp</strong>；梯度峰值 <strong>≈1.73 vs 3.98</strong></td>
+  <td>几何校准与归一化有作用；这是附录特定消融曲线，不等于主表 38.06</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最强结果：</strong> 主表在 HMMT25 对 DAPO +6.25 pp、对 GSPO +8.75 pp；系统侧对 replay 的 driver RSS 中位数分别下降 <strong>77.5%（R2）/93.0%（R3）</strong>，但不能换算为 GPU 加速或总训练成本下降。<strong>最弱结果：</strong> AIME25 对 DAPO 只 +1.25 pp，HMMT 绝对正确率 16.11%，并且没有跨架构和工具使用环境验证。<strong>Trade-off：</strong> EPIC 不增加 rollout，但仍需长序列 logp 与 32×A100 训练；不能由 O(T) ratio 计算推出训练 wall-clock 加速。</p>
+<h3>2.12 Table / Figure Reading：五张最值得打开的图表</h3>
+<p><strong>Table 1（主实验）。</strong> 行是六种 loss，列是 AIME24/AIME25/AMC23/HMMT25 与均值。先横看 EPIC 是否每列领先，再竖看 DAPO 是否才是真正最强 baseline。作者强调相对 GSPO +6.50，但与 strongest DAPO 只有 +3.89；这两种比较都应保留。HMMT 的 16.11 是领先同时也说明模型仍解决不了多数难题。</p>
+<p><strong>Figure 1（机制示意 + 内存）。</strong> (a) 画 token / sequence / prefix ratio 作用范围，(b) 正优势裁剪区域，(c) 进程内存对比。它是“为什么该方法有可能更好”的示意，不是因果证明；(c) 纵轴是对数刻度，且仅 driver RSS，容易被误读为 GPU memory savings。</p>
+<p><strong>Figure 2（训练曲线）。</strong> (a) 四基准平均验证表现，(b) 训练 reward，横轴训练 step。EPIC 后期优势更明显且 reward 高，表明并非单次 checkpoint 偶然；但 reward 与真正泛化能力仍可能分离，需要未见任务验证。注意曲线对齐训练 step，不是对齐耗时或训练 FLOPs。</p>
+<p><strong>Figure 3（位置行为）。</strong> (a) response 相对位置上的 clip 比例，(b) CV 随训练变化，(c) raw vs geometric calibration。0.054 对 0.085/0.126 表明更均匀，约 0.20–0.23 的绝对 clip fraction 表明裁剪仍活跃；如果只报 CV，均匀但全部为零也会“看起来很好”。</p>
+<p><strong>Figure 7 / Figure 8（附录机制证据）。</strong> Figure 7 观测 log-prefix-ratio 的 step-level 绝对均值中位数 <strong>0.697</strong>、90 分位 <strong>0.926</strong>、最大 <strong>1.255</strong>；在中位参考点，局部二次近似对正侧 φ 低估 <strong>21.8%</strong>、负侧高估 <strong>24.5%</strong>。这些是代表点的解析误差，不是逐 token 实测平均误差。Figure 8 用两种消融拆解“概率校准”和“优化权重几何平均”，Raw-prob 梯度尖峰 <strong>≈3.98</strong> vs EPIC <strong>≈1.73</strong>，支持实现设计但仍可能受超参数影响。</p>
+<h3>2.13 Ablation / Mechanistic Analysis</h3>
+<p>去掉<strong>几何平均的旧概率校准</strong> → raw prefix probability 随长度指数衰减，后期位置裁剪近乎失活 → AIME24 末次约 27.1、梯度尖峰约 3.98，说明校准主要承担位置均衡与数值稳定。保留校准但把优化权重改为<strong>原始累计 ratio</strong> → 末次 AIME24 约 31.3、梯度峰值约 2.00 → 表明 weight normalization 仍有独立贡献。完整 EPIC → 约 33.3、梯度峰值约 1.73。上述实验是<strong>消融相关性证据</strong>；要严格分离 φ 精确性与 ST 近似的因果贡献，还应在同预算下加上 quadratic-coordinate、full-prefix-gradient 等受控版本。</p>
+<h3>2.14 Claim vs Evidence</h3>
+<p><strong>Authors Claim：</strong> Prefix ratio 是正确的逐步 change-of-measure 权重；φ 的行为策略期望是精确 reverse KL；实际 clipping 可以稳定离策略 MoE RL，并减少 replay 额外内存。<strong>Experiments Actually Show：</strong> 在 Qwen3-30B-A3B-Base + 17,917 数学训练样本 + 130 测试题的统一协议下，EPIC 三 seed 平均优于五个 clipping baseline；消融展示位置校准与梯度控制；对 R2/R3 driver RSS 显著更低。<strong>What Is Not Yet Proven：</strong> 实际训练 loss 的全程单调提升；对 dense LLM、Agent、VLM、不同 verifier 的泛化；在等 wall-clock / 等 GPU-hour 下仍占优；更大训练数据或更严格独立测试集上的统计显著性。</p>
+<h3>2.15 Contribution（创新类型与已有组件）</h3>
+<p><strong>C1 [New Mechanism / Theoretical Finding]</strong> 将自回归 performance difference 明确写成 prefix 分布上的精确重要性权重；数学恒等式依赖已有重要性采样与 MDP 工具，<strong>创新是针对 LLM prefix trust-region 的系统化构造</strong>。<strong>C2 [New Objective]</strong> 用 φ(r)=r−1−log r 反解非对称边界，并把 per-prefix trust region 落地到 PPO-style loss；φ/KL 关系不是新发现，新的部分是组合与校准。<strong>C3 [New Engineering]</strong> 几何平均与 current-token-only ST、无 replay 集成；这些算子本身非首创，但在该问题上有有效消融。<strong>C4 [New Empirical Finding]</strong> 在强 off-policy MoE 数学 RL 下，prefix 校准比 token / sequence 粒度更稳，并减少 replay 进程内存；不是新 benchmark。</p>
+<h3>2.16 Limitation &amp; Failure Modes</h3>
+<p><strong>Authors' limitation / 论文证据边界：</strong> 实验集中在一个稀疏 MoE 模型、四个数学基准；单调性命题假设 exact advantage、共同支持集、精确优化，实践使用 group advantage、clipped surrogate 与 ST。理论层面的“精确”不可误解为实证保证。<strong>Additional limitation：</strong> (1) 三 seed 仍不足以刻画稀有崩溃；(2) 130 prompt 选点与报告共用；(3) 0/1 最终奖励可能被格式技巧利用，不能保证 reasoning faithfulness；(4) 对极长 horizon，prefix logp cumsum 的尾部数值和梯度路径敏感；(5) 对 tool-use RL，动作可能不是单 token，环境观测与工具副作用改变 state distribution；(6) routing replay 比较使用特定版本/索引 dtype，不能直接外推所有系统；(7) 训练 reward 变高不等于 reward hacking 被消除；(8) 没有报告等质量所需 rollout、GPU-hour 或端到端训练吞吐提升。</p>
+<h3>2.17 Reproduction View：可执行的最小复现路线</h3>
+<p><strong>关键模块：</strong> 先做一个独立 PyTorch loss 函数，输入形状 [B,T] 的 <code>logp, old_logp, advantage, mask</code>；先实现 <code>cumsum(logp-old_logp)</code>、几何平均、φ 两侧 root（在 log-space 做 Newton / 分支近似）、ST、sign-aware clipping；再接 verl 的 policy loss 插件。先在 CPU 上用 3-token toy 验证数值，再在 1–2 张卡的小模型跑 smoke test，最后才考虑 32×A100 的原文规模。</p>
+<p><strong>先跑哪项？</strong> 先做“固定 rollout buffer、同一 batch 的 GRPO vs EPIC 更新”测试：记录每位置 clip fraction、CV、grad norm、logp gap，验证 loss 没有 NaN、mask 位置梯度为零、ST 只让当前 token 的 logp 接受梯度。之后在 Qwen 1.5B/3B 级别的小数学训练集跑 200–500 step 的<strong>迁移性预实验</strong>，不是论文复现；最终要对齐 Qwen3-30B-A3B-Base、DAPO-Math-17K、八采样、四基准、三 seed、300 step 才能称主结果复现。</p>
+<p><strong>最敏感超参：</strong> δ⁻/δ⁺、policy lag、update depth、每题 rollout G、response length、KL loss、reward verifier。优先网格 δ 取默认的 0.5×/1×/2×，固定 seed 与采样预算；记录所有训练/验证 prompt hash，避免泄漏。<strong>首个最能证伪 Claim 的实验：</strong> 在相同采样轨迹上，若 EPIC 无法比 GRPO/GSPO 更均衡地控制后段 clipping，或准确率收益仅在选点集合存在，则核心论证需重新审视。官方代码链接已给出，实际 commit / 环境可用性仍需复现时核验。</p>
+<h3>2.18 Research Value（七维）</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>维度</th>
+  <th>判断与理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Baseline Potential</td>
+  <td><strong>高</strong>：GRPO/GSPO/DAPO 对照明确，loss 层可插拔；可做 action-level RL baseline</td>
+</tr>
+<tr>
+  <td>Migration Potential</td>
+  <td><strong>高</strong>：prefix ratio 可用于工具调用轨迹、长推理、multi-agent action history，但需重写行为概率语义</td>
+</tr>
+<tr>
+  <td>Systems Potential</td>
+  <td><strong>中</strong>：无额外模型 pass，省 routing-state CPU 内存；尚未证实 wall-clock 加速</td>
+</tr>
+<tr>
+  <td>Attack Potential</td>
+  <td><strong>中高</strong>：可针对 prefix ratio 漂移、policy lag、reward exploit 构造压力测试</td>
+</tr>
+<tr>
+  <td>Evaluation Potential</td>
+  <td><strong>高</strong>：位置 CV、prefix KL、train–rollout gap 构成稳定性指标组</td>
+</tr>
+<tr>
+  <td>Benchmark Potential</td>
+  <td><strong>中高</strong>：可设计“长轨迹 off-policy stress suite”，以长度、延迟、路由不一致分层</td>
+</tr>
+<tr>
+  <td>New Paper Potential</td>
+  <td><strong>中高</strong>：最有潜力的是 action-level off-policy Agent RL + prefix-aware verification，而非简单换 loss</td>
+</tr>
+</tbody>
+</table></div>
+<h3>2.19 Migration Analysis：两条可以开始写脚本的方向</h3>
+<p><strong>Migration A — Agent RL 的 Action-Prefix Trust Region（优先）。</strong> <strong>Original Problem：</strong> token prefix 的离策略漂移。<strong>Transferable Mechanism：</strong> 累计行为概率比率 + exact-KL coordinate + 分步裁剪。<strong>New Research Question：</strong> 在工具反馈随机、行为策略滞后 0/2/4 轮时，按 <em>tool action prefix</em> 而非 token 裁剪，能否改善长时程成功率并减少崩溃？<strong>Method Modification：</strong> 将每次工具调用（工具名+参数）定义为高层动作，保存行为策略的 action logp；工具返回值只作为 state observation，不纳入 action probability；对每个高层动作累计 ratio，奖励按任务成功或可验证子目标赋值；同 token 版本与 action 版本都做。<strong>Minimum Experiment：</strong> 使用 WebShop 与 ALFWorld 各抽 200 train/100 test episodes，固定环境种子；Qwen3-4B（可换同级开源 instruct），LoRA r=16，batch 16 episodes、每任务 4 rollout、最长 20 tool steps、3 seed；lag ∈{0,2,4}，δ 比例 ∈{0.5,1,2}，记录每 step logp 与 tool outcome，先跑 100 update smoke，再 1000 update 主实验。<strong>Model：</strong> Qwen3-4B；<strong>Dataset：</strong> WebShop/ALFWorld；<strong>Baseline：</strong> action-level PPO/GRPO、token-level EPIC、GSPO。<strong>Metric：</strong> success rate、action prefix KL、clip CV、reward hacking incidents、GPU-hour、rollout count。<strong>Expected Contribution：</strong> 将序列分布纠偏从 token 推到 agent action，提供长时程实证。<strong>Risk：</strong> action 参数的 logp 定义与工具返回随机性、不同 action 长度造成偏差。<strong>Collision Risk：</strong> 与已有 trajectory-level IS / off-policy agent RL 接近；须明确“prefix calibrated trust region + tool-state dynamics”的新意。</p>
+<p><strong>Migration B — 低成本视频问答中的 Query-Conditioned Frame Policy RL。</strong> <strong>Original Problem：</strong> 长序列采样策略改变使后续决策分布漂移。<strong>Transferable Mechanism：</strong> 对逐帧选择 policy 的 prefix trajectory 进行 importance correction。<strong>New Research Question：</strong> 以固定视觉 token 预算选择关键帧时，是否能比 REINFORCE / PPO 更稳定地学到 query-aware selection？<strong>Method Modification：</strong> 每个时间步的动作是 select/skip，状态包含问题、已选帧摘要、剩余预算；reward=答案正确 − λ·已用帧数，保留离策略旧选择概率；prefix ratio 用于 clip，加入“必须保留答案证据帧”的反事实评估。<strong>Minimum Experiment：</strong> 在 NExT-QA 和 EgoSchema 各抽 500 个训练视频、200 个验证视频（若许可/划分允许，按官方 split 替换），每视频统一采样 32 帧，预算 B∈{4,8,16}；视觉编码器冻结，Qwen2.5-VL-7B 做回答；策略先用两层 MLP 读取帧特征，batch 16、3 seed、1000 updates；比较 Uniform、CLIP similarity、PPO、EPIC-style。<strong>Model/Dataset：</strong> Qwen2.5-VL-7B + NExT-QA/EgoSchema。<strong>Metric：</strong> accuracy、frames、visual tokens、prefill wall-clock latency、FPS、峰值显存、每步 clip CV。<strong>Expected Contribution：</strong> quality–budget–stability 三维 Pareto 与 frame-policy prefix correction。<strong>Risk：</strong> 视频解码与视觉编码耗时可能吞掉减少 token 的收益。<strong>Collision Risk：</strong> 与既有 adaptive frame selection / RL video sampling 交叠，必须突出 off-policy stability 与真实系统延迟。</p>
+<h3>2.20 RL 专用分析：Formulation / Reward / Training Efficiency</h3>
+<p><strong>State：</strong> (x, y&lt;t)，即 prompt 与已生成 prefix；<strong>Action：</strong> 下一个 token；<strong>Policy：</strong> πθ(yₜ|x,y&lt;t)；<strong>Trajectory：</strong> 整条生成答案；<strong>Reward：</strong> 最终规则核验的 0/1 correctness，稀疏 outcome reward；<strong>Advantage：</strong> 同题八条回答的 group-relative estimator，非训练好的 PRM；<strong>Objective：</strong> 最大化经 prefix correction 和 sign-aware clipping 的 surrogate；<strong>KL：</strong> φ 对应的 prefix reverse-KL 几何 + 配置中的额外 KL loss；<strong>Entropy：</strong> entropy bonus=0，仍监控熵变化；<strong>Credit Assignment：</strong> 同一答案优势传播到 token，prefix ratio 调整权重，未产生真正 dense process credit。</p>
+<p><strong>Reward hacking 风险：</strong> 验证器只检查标准化答案是否匹配，模型可能学到格式与答案猜测，而非可验证的每步推理。可加入步骤扰动、答案替换、过程一致性检测；若正确率上升而轨迹因果性下降，则属于能力代理指标错配。<strong>训练效率：</strong> 8 rollout/题、512 responses/rollout batch、300 global steps、32×A100 是论文报告的主要计算设置；没有足够证据得出“sample efficiency 提升 X%”或“wall-clock 加速 Y×”。不需要额外模型 forward 是实现优点，不等于完整训练成本下降。</p>
+<h3>2.21 Attack / Verification Lens</h3>
+<p><strong>Black-box probe：</strong> 对同一道题生成长度分层（短、中、长）的题目与固定答案，比较不同 policy lag 下正确率与答案自洽率；<strong>Robustness：</strong> 对早期推理 token 注入局部替换，测试后续 prefix drift 是否导致脆弱性；<strong>Efficiency stress：</strong> 将输出上限从 2k→4k→8k→16k，记录 wall-clock、GPU memory 与 clip CV；<strong>Recovery：</strong> 中断训练、切换行为策略快照后继续更新，测恢复步数；<strong>New metric：</strong> Prefix Drift–Accuracy Curve (PDAC)：以 E[|log r_pre,t|] 分位数为横轴、正确率为纵轴，按长度分桶，防止只看平均 reward。以上均是本报告的研究建议，<strong>不是论文已验证的结果</strong>。</p>
+<h3>2.22 如果只记住 EPIC（九句话）</h3>
+<ol>
+<li>自回归 RL 的“状态”就是生成前缀，旧策略和新策略到达同一状态的概率会变。</li>
+<li>单 token ratio 无法校正 prefix 访问概率，完整 response ratio 又可能裁掉有价值的早期信号。</li>
+<li>精确逐步 change-of-measure 权重是截至当前 token 的累计 prefix ratio。</li>
+<li>φ(r)=r−1−log r 的旧策略期望等于 prefix reverse KL，保留非对称几何。</li>
+<li>EPIC 对每个 prefix 解上下裁剪界，按几何平均归一化长序列。</li>
+<li>Straight-through 让前向利用 prefix，反向仍只通过当前 token，这是一项工程折中。</li>
+<li>Qwen3-30B-A3B-Base 四数学基准均值 39.34%，最强非 replay 基线 DAPO 35.45%。</li>
+<li>论文没有证明实用 clipped loss 必然单调提升，也没有证明训练 wall-clock 更快。</li>
+<li>最值得迁移的是 Agent 的 action-prefix off-policy RL，并用真正的任务成功率验证。</li>
+</ol>
+<hr />
+<h2 id="paper2">03 · Paper 2 Full Deep Dive — MHG-Mem</h2>
+
+<h3>3.1 基本信息 / 一句话定位</h3>
+<p><strong>Title:</strong> <em>Remembering Through Change: Provenance-Preserving Hypergraph Memory for Multimodal Agents</em><br />
+<strong>Authors:</strong> Jielong Tang, Ling-An Zeng, Xujie Yuan, Xiao Dong, Zhiqian Xia, Qingfeng Li, Shixiong Kai, Kaichao Liang, Rong Yao, Jian Yin<br />
+<strong>Affiliation:</strong> Sun Yat-sen University；Huawei Technologies / Noah’s Ark Lab；Shandong Normal University；Southeast University（按论文署名）。<br />
+<strong>Date:</strong> 2026-10-21 UTC 首次提交，arXiv v1；<strong>Venue/Status:</strong> arXiv preprint，未见正式会议录用声明。<br />
+<strong>Paper:</strong> <a href="https://arxiv.org/abs/2610.29995">arXiv abstract</a> · <a href="https://arxiv.org/html/2610.29995v1">Full HTML</a> · <a href="https://arxiv.org/pdf/2610.29995">PDF</a><br />
+<strong>Code / Project:</strong> 论文当前正文未提供可核验的官方代码仓库或独立项目页，<strong>Not Reported</strong>；附录公开了 schema、工具接口和 prompt 模板的说明，不能据此声称代码开源。<br />
+<strong>一句话定位：</strong> 它将多模态 Agent 的长期记忆从“找相似的片段”提升为“<strong>追踪同一实体如何变化，并能从每条状态回到原始图片/对话证据</strong>”。</p>
+<h3>3.2 人话版（250–400 字）</h3>
+<p>假设你用一个购物 Agent 连续几周看同一款背包：第一天看到黑色款 120 元有货，第二天在另一家店看到外观相似的背包 99 元但缺货，第三天你又问“之前那款更便宜而且有货吗？拉链到底是什么颜色？”普通文本记忆可能只留下“买过背包”，丢失拉链图像细节；普通多模态 RAG 虽然保留照片，却不知道不同页面是不是同一款，也未必知道价格与库存如何变化。MHG-Mem 把原始事实、每次出现的实体、跨时间变化的状态拆成三层节点，用三类超边记录“同一个对象”“状态怎样演化”“这项结论来自哪张图/哪段话”。检索时，Agent 可以先找实体、再沿状态历史走、最后回看原图验证，而不是只向量召回一次。论文在 MemEye、Mem-Gallery、WorldMemArena-S 上用三种 backbone 测试，平均 Judge 指标比各自最强 baseline 高 8.20、9.89、9.98 个百分点；但代价是约两倍 token 消耗。其研究价值是：<strong>长期记忆的可靠性不仅由压缩质量决定，还取决于身份一致性、时间版本与可验证来源能否一起保留。</strong></p>
+<h3>3.3 Background &amp; Research Gap：为何“存图片”仍不够？</h3>
+<p>传统 Agent memory 常做两件事：把历史交互总结成文本摘要，或者把对话/图片存入向量库。前者省 token，能高效回答“用户喜欢什么”，但当问题是“那款背包主拉链是斜的还是直的”时，摘要可能没记录细节；后者保留像素，可检索“相似背包”，但两张不同角度照片、不同网页布局与跨会话的别名会让系统难以确定是否是同一物体。即使正确找到两张图，系统还必须知道“99 元”的库存状态属于哪一天，而不是把不同时间的价格和库存错误拼接。</p>
+<p>旧范式的 gap 有三层。<strong>Identity gap：</strong> 多次观察的同一实体没有稳定 referent；<strong>Evolution gap：</strong> “变成什么”常被简单最新摘要覆盖，失去过去版本；<strong>Provenance gap：</strong> 推导出的状态没有可追溯到原始观察的证据。MHG-Mem 将这三者视为互相依赖：如果 identity 错了，后续时间序列就会混入别的物体；如果状态合成没有 source ID，即使结论正确也不能被核查；如果检索不按问题类型选择入口，再好的记忆图也可能检索不到。</p>
+<p>与文字型 A-Mem、MemoryOS、SimpleMem 相比，它强调原始视觉证据；与多模态 SRAG、UniversalRAG 相比，它强调跨会话身份和状态历史；与已有 HyperMem 相比，创新不在“第一次使用超图”，而在<strong>类型化多模态 occurrence/evolution/evidence 关系的联动及查询驱动的源证据检查</strong>。它不是端到端可训练的记忆神经网络，而是以现有 VLM/LLM、embedding 和工具调用构建的系统。</p>
+<h3>3.4 Core Insight：将“记忆内容”与“记忆为何可信”一起存储</h3>
+<p><strong>观察性质：系统设计假设 + benchmark 经验验证。</strong> 作者发现两类方法各缺一半：文本抽象能表达变化但遗失图像细节，像素保存能回看细节却不自带跨会话身份绑定。于是设计三个可独立访问的层次：FactNode 保留原子事实及来源，EntityNode 保留每次具体提及及图像区域，EvolutionNode 表示某个属性跨时间的状态变化。三个层次不是简单父子树：一次事件可以涉及多个实体和多个事实，所以使用能同时连接多个节点的 <strong>n-ary hyperedge</strong>。</p>
+<p>Occurrence hyperedge 连接同一 referent 的多次出现与事实；Evolutionary hyperedge 连接状态变化与主体、共同参与者；Evidential hyperedge 把状态变化连接回用于推导的事实。这样，“最近库存缺货”是一个可读状态，“库存从有货变成缺货”是一条演化，“这个结论来自第 2 天商品页面”是一条证据链。更关键的是 Agent 不被迫每次读全部层：细节问题直接找原图，时间问题先找 evolution，再沿证据边回溯。这一 insight 的实证支持来自三基准与消融；<strong>没有证明超图结构本身在所有场景优于等价的关系数据库 schema</strong>。</p>
+<h3>3.5 Method Deep Dive：从历史到证据链</h3>
+<div class="flow">多轮 (文本 + 图像 + 日期) → Fact extraction → Entity mentions → Occurrence linking (UPDATE/ADD/SKIP) → Evolution synthesis → Evidential hyperedges → 分层索引 → Query-aware agentic search → Source inspection → Evidence assembly → QA answer</div>
+
+<p><strong>Step 1 · 保存每轮原始观察并抽取原子事实。</strong> 输入 dₜ=(xₜ, Iₜ, δₜ)，包含文本、图片和记录日期。VLM 从当前轮与同会话最多前三轮上下文抽取独立事实，例如“背包 A 在店铺 X 的标价 120 元”。每个 FactNode 绑定图像 ID、会话轮次、来源与时间，原始图片不因抽象而删除。风险是 VLM 把图上看不清的库存标记误识别为“有货”，之后所有结构化推导都会继承错误。</p>
+<p><strong>Step 2 · 抽取 EntityNode 与 identity linking。</strong> VLM 提取文字/视觉实体 mention，视觉 mention 可绑定图像区域。候选同一 referent 的 occurrence hyperedge 通过文本 cosine 与视觉 cosine 各取最大相似度，加权排序，默认 w_text=w_image=0.5、top-K=3。模型选择 <strong>UPDATE</strong>（并入已有 referent）、<strong>ADD</strong>（新 referent）或 <strong>SKIP</strong>（无效提及）。保留每个 mention 独立节点，不能为了省空间把不同会话的证据覆盖成一个实体摘要。若误 UPDATE，会把两只相似背包合并；误 ADD 会让同一背包的历史断裂。</p>
+<p><strong>Step 3 · 将事实附着到实体组。</strong> 论文用 mention-name 的词法匹配，把事实关联到对应 occurrence hyperedge。这一步实现简单，但“黑色背包 / 型号 ZX-3 / 那个包”别名、同名不同物、OCR 错误都可能导致关联遗漏或误连；这也是最值得改进的可迁移模块之一。单靠更强的视觉 embedding 不一定解决实体同一性，需要时间与上下文约束。</p>
+<p><strong>Step 4 · 合成 EvolutionNode。</strong> 对某个 referent 关联的事实按观察顺序排序，让 LLM 找到同一属性/关系的不同取值，生成 evolution summary、更新类型（replacement/update/addition）与一串 (value, fact_id) 配对。默认仅保留至少两个事实、来自至少两个 session 的变化。比如 price: 120→99，stock: in→out。注意这是“观测顺序”，不总等于真实事件发生时间；迟到的消息或回填数据可能产生错误演化。系统还把共同参与的实体放入 evolutionary hyperedge，支持“是谁把物体移动了”的跨实体问题。</p>
+<p><strong>Step 5 · 保存 evidential hyperedge。</strong> 每个 evolution 与实际支撑它的 FactNode 建立边，并在状态序列中保留 value→fact 的逐项映射。之后若事实被更新，系统可按来源重建演化，不必直接信任一个不可追溯的摘要。这里的形式化命题是<strong>可恢复已记录来源</strong>，而不是证明原始观察为真或摘要没有幻觉。</p>
+<p><strong>Step 6 · 运行查询驱动 Agent 搜索。</strong> 给定问题 q，LLM controller 逐步选择工具：<code>resolve_facts</code>、<code>resolve_entity</code>、<code>resolve_evolution</code>、<code>search_image</code>、<code>get_raw_verbatim</code>、<code>submit_evidence</code>。默认最多 16 次工具步、最多向模型展示 10 张不同图片；实体检索最多 3 组、演化最多 3 个方面、事实最多 30 条。搜索动作改变 Agent 的当前检索历史 hₖ；后续动作依赖之前看到的候选与原始证据。</p>
+<p><strong>Step 7 · 组装与回答。</strong> 检索 Agent 将 fact ID、image ID 与可选说明提交为证据链 E_q；系统验证引用的标识符确实已检索且图片属于对应来源轮次，然后交给 QA backbone 生成答案。重要细节：引用 ID 的合法性检查<strong>不验证文本总结的语义真伪</strong>；一个引用格式正确的错误结论仍可能通过。失败传播链为：错误抽取→错误身份链接→错误演化→检索到错误证据→答案错误。若缺少原始图片，Source Inspection 无法弥补前端遗漏。</p>
+<h3>3.6 核心公式、超图与概率直觉</h3>
+<div class="eq"><b>Eq. (1)/(2) · Query conditioned retrieval + typed hypergraph</b><br>E_q = S(q, M_T)， ŷ ~ pθ(· | q,E_q)<br>H=(V,E,ι,τV,τE)；V=F ⊔ U ⊔ Z；E=E_occ ⊔ E_evo ⊔ E_evd；ι(e)⊆V</div>
+
+<p>M_T 是从历史构建的持久记忆，S 是搜索器；F/U/Z 分别是 Fact/Entity/Evolution，⊔ 表示互不混淆的类型化集合，ι(e) 返回超边所连接的<strong>节点集合</strong>。普通图一条边连接两个节点，超图可将“这次商品页面出现的背包 mention、价格事实、库存事实”作为一个关系组。它并没有优化可微 loss，优化目标是通过结构与检索策略提高回答正确率；超图是<strong>数据模型</strong>，不是神经网络注意力矩阵。</p>
+<div class="eq"><b>Eq. (4)/(5) · Occurrence linking</b><br>s(u,e_occ,r)=w_T · maxᵥ∈Uᵣ cos(text(u),text(v)) + w_I · maxᵥ∈Uᵣ,visual cos(img(u),img(v))<br>F_r ← F_r ∪ { f : A(f,e_occ,r)=1 }</div>
+
+<p>u 是当前 mention，r 是候选实体组；两个 max 分别选最相似的历史文字 mention 与视觉 mention，默认 w_T=w_I=0.5。高分表示更像同一实体，<strong>不保证身份相同</strong>。第二式 A 是词法命中指示器，容易受别名影响。提高 top-K 会扩大候选覆盖，但增加 VLM 判别成本和误匹配风险；论文 K=1→3 的均值从 71.65→73.28，K=5 为 73.33，收益明显递减。</p>
+<div class="eq"><b>Eq. (6)/(7) · Evolution as grounded state sequence</b><br>Ẑ_r = LLM_evo( Order(F_r) )<br>S_z = ((v₁,f₁),...,(v_m,f_m))，F_z={f_j}⊆F_r；保留至少两个不同状态值</div>
+
+<p>这里 v_j 是属性取值、f_j 是支持它的事实。不同于只存一个最新摘要，S_z 保留可回溯的变化序列。EvolutionNode 可能有多个 coactor；如果事实排序错或“两个值”其实是同一天不同店铺报价，模型可能误判为状态变化。应当把 event-time 与 observation-time 分开并显式记录来源冲突。</p>
+<div class="eq"><b>Eq. (8)–(11) · Agentic search + cross-layer traversal</b><br>a_k ~ πθ(·|q,h_k)；o_k = Execute(a_k,M_T)<br>s_F=λ_T s_text-text + λ_TI s_text-image + λ_II s_image-image<br>Traverse(v,E′,V′)=⋃_{e∈E′, v∈ι(e)} (ι(e)∩V′)</div>
+
+<p>controller πθ 不是本论文训练的 RL policy；此处仅表示 LLM 按当前检索历史选择工具。s_F 三项是跨模态检索的线性加权相似度；图像缺失时相关项记零而不重归一化，可能对纯文本 query 造成系统性分数差。Traverse 是“从某个节点沿指定类型超边扩展到目标层”的集合运算，若 occurrence 误连，扩展会把错误事实一次性引入证据集合。</p>
+<div class="eq"><b>Appendix Proposition 1 · Source recoverability ≠ Truth</b><br>z → e_evd → f_j → ρ(f_j) → original observation<br>Src(z) = {ρ(f_j)}；合法更新后来源集合仍可恢复</div>
+
+<p>ρ(f) 是事实的来源标识符，原始归档必须仍可访问。该命题证明的是记录链条不会因为规范化的插入/替换操作而丢失引用，<strong>不证明 f_j 的内容正确，也不证明 LLM_evo 生成的 summary 合理</strong>。这是全文最需要区分的“形式化保证”和“语义可信度”。</p>
+<h3>3.7 Toy Example：从三次购物观察到可验证答案</h3>
+<p><strong>Input：</strong> Session 1：用户看见“ZX-3 背包，黑色，¥120，现货”，保存页面图 img01，抽取 f1=price(120)、f2=stock(in)、f3=zipper(black)。Session 2：另一网页“ZX-3，¥99，缺货”，img02，抽取 f4=price(99)、f5=stock(out)。Session 3：侧面图 img03，mention 叫“这只包”，实体抽取与 img01 视觉特征相近。这里假设它们确实是同款；如果不同款，应当 ADD 而不是 UPDATE。</p>
+<p><strong>Graph construction：</strong> u1/u2/u3 三个 mention 经 UPDATE 并入 referent r_ZX3；Occurrence hyperedge 包含 u1,u2,u3 与 f1…f5。LLM_evo 生成 z_price 的状态序列 [(120,f1),(99,f4)]，z_stock=[(in,f2),(out,f5)]；两条 evidential hyperedge 分别连回对应事实及 img01/img02。原图 img03 仍可用于核对拉链，不因为“背包价格”摘要而删除。</p>
+<p><strong>Query：</strong> “以前有没有比 120 元更便宜而且有货的报价？拉链颜色是什么？” Controller 先 <code>resolve_entity(ZX-3)</code>，再 <code>resolve_evolution(price)</code> 和 <code>resolve_evolution(stock)</code>，发现 99 元与 out 同源 Session 2，因此不能把 99 元和 Session 1 的 in 拼成一个虚假好价；随后 <code>get_raw_verbatim(img01)</code> 核查拉链。<strong>Output：</strong> “记录中没有同时满足低于 120 元且有货的报价；第一天图片显示拉链为黑色”，并附对应事实与图片来源。若图片无法辨色，可靠系统应回答“无法确认”，而不是根据背包主体颜色猜测。该例是本报告构造的可执行演示，非论文原始数据。</p>
+<h3>3.8 Baseline Deep Comparison（5 个重点）</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Baseline</th>
+  <th>怎么做 / 为什么合理</th>
+  <th>在本文 setting 的失败模式</th>
+  <th>本文改变了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>UniversalRAG — Qwen3.8-27B / GPT-4.1-mini 的 strongest Avg. Judge baseline</strong></td>
+  <td>按模态和粒度路由不同证据库，成本较低；Qwen3.8 <strong>63.30</strong></td>
+  <td>相关片段被召回也未必具备同一实体的跨时间绑定</td>
+  <td>增加实体 occurrence、evolution、provenance；机制+额外计算</td>
+</tr>
+<tr>
+  <td><strong>SRAG — Qwen3-VL-8B 的 strongest Avg. Judge baseline</strong></td>
+  <td>多模态相似度检索并保留图片，均值 <strong>49.78</strong></td>
+  <td>检索的图片孤立，不能可靠合成跨会话状态</td>
+  <td>用超边和演化状态把证据组织成可导航链</td>
+</tr>
+<tr>
+  <td>HyperMem</td>
+  <td>已有超图、topic/episode/fact 层级，证明“超图本身”不是新概念</td>
+  <td>主要文本历史与主题聚合，缺少图像区域/实体演化证据绑定</td>
+  <td>新在 typed multimodal evolution/evidence schema，而非超图数学</td>
+</tr>
+<tr>
+  <td>M2A</td>
+  <td>原始消息库 + 语义库，保留源证据，方向合理</td>
+  <td>原始来源与语义记录的存在，不等于自动建立跨会话身份/属性演化</td>
+  <td>将 source link 进一步组织成有类型、可遍历的状态链</td>
+</tr>
+<tr>
+  <td>MMA</td>
+  <td>可靠性估计、时间衰减与冲突共识，适合处理过期信息</td>
+  <td>能判断某记录可信，不保证找到跨页面同一实体的全部演化</td>
+  <td>以 identity 与 provenance 组织历史；二者其实可互补</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest baseline 不是固定一篇。</strong> 按 Table 1 的 Avg. Judge，Qwen3-VL-8B 最强对照为 SRAG <strong>49.78</strong>；GPT-4.1-mini 为 UniversalRAG <strong>58.06</strong>；Qwen3.8-27B 为 UniversalRAG <strong>63.30</strong>。作者给出的 +8.20 / +9.89 / +9.98 是<strong>百分点</strong>，不是相对百分比。各单项指标的 strongest baseline 还可能不同，不能把一个方法称为所有列的冠军。</p>
+<h3>3.9 Experiment Setup：实验究竟在测什么？</h3>
+<p><strong>RQ1：身份、演化、来源三者结合能否提高跨会话问答？</strong> 三个 benchmark：<strong>MemEye</strong> 8 个生活场景、371 个问题（配选择题与开放题）；<strong>Mem-Gallery</strong> 20 场景、240 sessions、3962 对话轮、1490 张图、1711 个开放问题；<strong>WorldMemArena-S</strong> 为发布的 150-sample 子集，含 <strong>7906 个问题</strong>，覆盖 GUI/embodied/personal/project 历史中的 11 类能力。后者不是完整 WorldMemArena，泛化时不能省略 “-S”。系统按 QA checkpoint 的可见历史构建 memory，避免读到未来会话。</p>
+<p><strong>RQ2：提升是否跨 backbone 成立？</strong> Qwen3-VL-8B、GPT-4.1-mini、Qwen3.8-27B 三种 backbone；作者用同一 backbone 做 memory construction、agentic retrieval 与回答。Qwen3-VL-8B / Qwen3.8-27B 通过 vLLM 部署于 <strong>4×NVIDIA A800</strong>，GPT-4.1-mini 用官方 API；max tokens 65,536、temperature 0，三次运行取平均。文本 embedding 是 all-MiniLM-L6-v2，视觉/跨模态是 SigLIP2 base patch16 384。Judge 使用 GPT-5.4-mini；这一独立评判器也引入闭源依赖与主观评分风险。</p>
+<p><strong>RQ3：哪类结构或工具真正有用？</strong> Table 2 从 fact-only 逐步增加 Entity、Occurrence、Evolution、Evidence；Table 3 分别去掉 Agentic Search、Inspection、Cross-layer Traversal、Visual Tool。<strong>RQ4：成本与预算如何折中？</strong> Figure 6 记录构建+检索+QA 的总 token；Table 6 改 top-K、tool step budget 与 image budget。<strong>RQ5：真的能找回来源吗？</strong> Figure 4 的家庭装修示例和附录 Figure 9/10 逐步展示工具与原图证据。</p>
+<p><strong>数据与推理设置：</strong> 构建时最多看同 session 前三轮、当前轮最多 8 张图；实体链接 top-K=3、文字/图像权重各 0.5；演化需至少两个事实和两个 session；检索最多 16 tool steps、10 张图，实体最多 3 组、演化 3 条、事实 30 条。<strong>Training：</strong> 本文不报告训练一个新的 backbone，核心是固定模型上的 memory construction / search 系统；不存在与 RL 论文相同意义的训练 epoch 或 loss。</p>
+<h3>3.10 Metrics 教学式解释</h3>
+<p><strong>EM (Exact Match)</strong>：MemEye 选择题正确率，选项轮换后取均值；越高越好，易受猜测与选项格式影响。<strong>Token F1</strong>：把开放回答分词并归一化，precision 与 recall 的调和均值；越高越好，可能把语义等价但用词不同的正确回答判低。<strong>BLEU-1</strong>：一元词匹配精度加长度惩罚；越高越好，尤其不擅长衡量复杂语义与视觉证据真实性。<strong>Judge</strong>：MemEye/Mem-Gallery 参考答案打 0、0.5、1 分；WorldMemArena-S 使用 QA-C，统计被评为正确的有效问题比例；越高越好，但三基准的 Judge 规则并不完全一致，取简单均值需谨慎。<strong>Avg. J.</strong>：三基准 Judge 等权平均，不按问题数加权。<strong>Memory Recall</strong>：重要性加权的 gold memory point 覆盖率；高好，但不保证内容无误。<strong>Memory Correctness</strong>：已存条目中被判断正确的比例；高好，但可通过少存东西虚高，因此需结合 recall。<strong>Retrieval Coverage</strong>：检索证据覆盖 gold evidence 的程度；高好，但不保证最终答案正确。<strong>Update Handling</strong>：最新/同时保留新旧/仍过期分别按 1/0.5/0 计分；高好。<strong>Token Cost</strong>：包含构建、检索、QA 的输入输出 token 与视觉 token；低成本好，但不是 wall-clock latency 或真实费用的同义词。</p>
+<h3>3.11 Results Deep Dive：九个定量观察与反例</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>数字 / 现象</th>
+  <th>比较与差距</th>
+  <th>Claim 的支持程度 / 替代解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td>Qwen3-VL-8B Avg. Judge <strong>57.98</strong></td>
+  <td>SRAG <strong>49.78</strong>，<strong>+8.20 pp</strong></td>
+  <td>小型视觉 backbone 上有明显优势；额外 token 也可能贡献性能</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>GPT-4.1-mini Avg. Judge <strong>67.95</strong></td>
+  <td>UniversalRAG <strong>58.06</strong>，<strong>+9.89 pp</strong></td>
+  <td>闭源模型上仍有效；judge/模型家族差异需注意</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>Qwen3.8-27B Avg. Judge <strong>73.28</strong></td>
+  <td>UniversalRAG <strong>63.30</strong>，<strong>+9.98 pp</strong></td>
+  <td>最强综合结果；只覆盖三种 backbone</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>Qwen3.8 MemEye EM <strong>78.76</strong></td>
+  <td>UniversalRAG <strong>67.85</strong>，<strong>+10.91 pp</strong></td>
+  <td>视觉实体关联确实有帮助；不等于所有细节问题完美</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td>Qwen3.8 Mem-Gallery Judge <strong>87.85</strong></td>
+  <td>UniversalRAG <strong>76.18</strong>，<strong>+11.67 pp</strong></td>
+  <td>长会话优势显著；需要排除额外上下文预算差异</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td>Qwen3.8 WMA-S Judge <strong>66.05</strong></td>
+  <td>SRAG <strong>59.69</strong>，<strong>+6.36 pp</strong></td>
+  <td>三任务中较弱的 Judge 优势；动态数据更难</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td>WMA-S Temporal Reasoning <strong>48→87</strong>（Figure 3 类别）</td>
+  <td><strong>+39 pp</strong></td>
+  <td>很强的特定子任务证据；不代表整体 WMA-S 都提升 39</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td>memory-only fact <strong>62.87→73.28</strong></td>
+  <td><strong>+10.41 pp</strong>；去 Agentic Search <strong>−5.10 pp</strong></td>
+  <td>结构与检索均有贡献；逐步加模块不完全排除交互项</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td>约 <strong>2× token</strong> 成本；GPT-4.1-mini Mem-Gallery TR <strong>比最强 baseline 低 6 pp</strong></td>
+  <td>质量—成本与子任务弱项</td>
+  <td>直接反驳“所有能力都更好/免费提升”的泛化说法</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最强结果：</strong> Qwen3.8-27B 的综合 Judge +9.98 pp、Mem-Gallery +11.67 pp，及 WorldMemArena-S 时间推理类别 +39 pp。<strong>最弱结果：</strong> GPT-4.1-mini 上 Mem-Gallery TR 比最强 baseline 低 6 pp；作者附录还承认两个较小 backbone 的 factual recall 不是最强。<strong>系统 trade-off：</strong> Agentic Search 带来额外工具回合，完整 MHG-Mem 约两倍 token 消耗；若实际应用重视延迟/成本，不能只看 Judge。</p>
+<h3>3.12 Table / Figure Reading：五个关键证据</h3>
+<p><strong>Figure 1（动机对照）。</strong> (a) 跨会话背包场景：同物不同照片、价格库存更新；(b) 文本摘要 vs 保留图片 vs MHG-Mem。它清楚说明三种信息缺口，但属于概念性示例，不是定量评估。最值得问的反例是：两个外观几乎一样、但实际不同款的背包被 UPDATE 合并后怎么办？</p>
+<p><strong>Figure 2（方法架构）。</strong> (a) 从 fact extraction 到 identity linking 再到 evolution synthesis；(b) F/U/Z 三层节点和三种超边；(c) agentic search 的工具循环。读图时应特别注意“事实层来源→原图”并没有被 evolution 摘要替代；这是可验证性的根基。图中工具越多也意味着更高 token / 延迟成本。</p>
+<p><strong>Table 1（3 backbone × 3 benchmark）。</strong> 行为 8 baselines + ours，列按 MemEye、Mem-Gallery、WMA-S 分别给 EM/F1、BLEU-1、Judge。Qwen3.8 的 Avg. Judge <strong>73.28 vs 63.30</strong> 很突出，但 WMA-S F1 <strong>30.48</strong> 仅比 SRAG <strong>28.78</strong> 高 1.70，某些 baseline 的 lexical metric 也不一定全面落后；必须按列而非只看加粗平均数。</p>
+<p><strong>Table 2 / Table 3（结构与检索消融）。</strong> Table 2 按模块累加：Fact <strong>62.87</strong> → 加 Entity <strong>63.57</strong> → 加 Occurrence <strong>68.35</strong> → 加 Evolution <strong>71.72</strong> → 加 Evidence <strong>73.28</strong>。最明显跳升是 occurrence <strong>+4.78</strong>，提示“同一实体”比“增加一层摘要”更重要。Table 3 从 Full <strong>73.28</strong> 分别删 Agentic Search <strong>68.18</strong>、Inspection <strong>69.84</strong>、Cross-layer <strong>70.19</strong>、Visual Tool <strong>71.91</strong>；最大单项下降是 Agentic Search <strong>−5.10</strong>，不是图像工具 <strong>−1.37</strong>。</p>
+<p><strong>Figure 3 / Figure 6 / Table 6（细粒度能力与成本）。</strong> Figure 3 对时间推理、视觉推理和动态更新有大幅提升；但类别样本量不一定相同，不宜将某个类别 +39 当总体收益。Figure 6 显示约 2× token 代价，揭示工程弱项。Table 6 预算 (4 steps,4 images) 均值 <strong>67.29</strong>、force-submit <strong>37.3%</strong>；(16,8) <strong>72.48</strong>、<strong>17.9%</strong>；(24,16) <strong>73.45</strong>、<strong>13.5%</strong>。额外检索预算存在边际收益递减；附录 (16,10) 行报告 <strong>73.21</strong>，与主表 Full <strong>73.28</strong> 略有差别，应保留原表数值而非强行合并。</p>
+<h3>3.13 Ablation / Mechanistic Analysis</h3>
+<p><strong>去掉 Occurrence linking：</strong> Fact+Entity 仅 63.57，加入 occurrence 到 68.35，<strong>+4.78 pp</strong>，说明把跨会话 mention 合并到稳定 referent 是核心模块。<strong>去掉 Evolution：</strong> 从含 occurrence 的 68.35 到完整 evolution 的 71.72，<strong>+3.37 pp</strong>，支持时间状态摘要的作用。<strong>去掉 Evidence hyperedge：</strong> 71.72→73.28，<strong>+1.56 pp</strong>，来源链接在总体上有增益但小于 identity；并不意味着来源不重要，因为它承担可审计性。<strong>去掉 Inspection Tool：</strong> 73.28→69.84，<strong>−3.44 pp</strong>，说明仅有结构化事实不足以替代原始图片/对话。<strong>去掉 Cross-layer Traversal：</strong> <strong>−3.09 pp</strong>；<strong>去掉 Visual Tool：</strong> <strong>−1.37 pp</strong>；<strong>去掉 Agentic Search：</strong> <strong>−5.10 pp</strong>。这些都是<strong>模块去除的性能差异</strong>，不是证明“超图语义结构对最终答案具有严格因果性”的随机干预；组件间交互与不同 token 预算仍可能混淆。</p>
+<h3>3.14 Claim vs Evidence：作者说的与真正证明的</h3>
+<p><strong>Authors Claim：</strong> 三层超图统一身份、演化与来源，Agentic Search 能根据问题找到正确证据，三 benchmark / 三 backbone 上明显优于既有 memory。<strong>Experiments Actually Show：</strong> 在论文规定的三数据集、三模型、相同运行环境下，Judge 均值领先 8.20–9.98 pp；结构和工具消融显示 identity / evolution / inspection 有可分辨的贡献；附录有成本、预算与失败子任务。<strong>What Is Not Yet Proven：</strong> 原始事实抽取在真实开放世界长期稳定；跨数千次更新的身份误合并率；语义证据的真实性；同质量下的端到端 wall-clock/美元成本优势；超图优于实现相同 schema 的关系数据库；在 streaming video 实时限制下仍可部署。形式化 Source Recoverability 只保证“找回<strong>记录的</strong>来源”，不保证来源正确。</p>
+<h3>3.15 Contribution：真创新还是组件组合？</h3>
+<p><strong>C1 [New System / Engineering]</strong> 三层多模态 typed hypergraph：Fact、Entity、Evolution 及 occurrence/evolution/evidence 超边联合表示；超图和 provenance link 早已存在，创新是围绕跨会话状态的<strong>具体 schema 与集成</strong>。<strong>C2 [New Mechanism]</strong> 结合文本与视觉的 identity linking、按属性的 state evolution、证据逐项绑定；不是全新 embedding 或 LLM objective。<strong>C3 [New Evaluation Protocol / Empirical Finding]</strong> 在 MemEye/Mem-Gallery/WMA-S 上用多 backbone、分层 ablation、成本与检索预算系统验证；数据集不是作者新建。<strong>C4 [New Formal Property]</strong> 证明合规更新下 source reference 可恢复；命题是数据结构不变量，不是语义正确性定理。<strong>C5 [Agent Tool System]</strong> 六工具 query-adaptive search，把 retrieval policy 显式暴露为可优化的行为链；这给 RL 与 cost-aware agent 提供了可迁移接口。</p>
+<h3>3.16 Limitation &amp; Failure Modes：从错误传播看风险</h3>
+<p><strong>Authors' limitation / 实验承认的弱点：</strong> 约两倍 token 消耗；低预算下 forced submit 率高；部分 factual recall 不如 strongest baseline；GPT-4.1-mini 上 Mem-Gallery temporal reasoning 低 6 pp。<strong>Additional limitation：</strong> (1) 词法匹配附着事实容易漏别名、OCR 变体与跨语言名词；(2) entity UPDATE 错误会污染多个 session，后续 Evolution 看似自洽但全错；(3) 当前视觉输入上限 8 张图/轮，视频帧流必须另行设计；(4) 原始图片长期存储有隐私、合规与存储成本；(5) 时间顺序使用 observation order，迟到事件、纠错与时间戳冲突处理不足；(6) Judge 是闭源模型，存在 LLM-as-judge bias；(7) 16 次工具步可能使在线延迟过高；(8) 仅三 benchmark，开放网页、代码仓库、实时视觉与多 Agent 并发修改缺少直接实验；(9) 代码状态未报告，复现需要重新实现 schema 与工具；(10) 如果检索的原始来源本身被 prompt injection 污染，provenance 只让攻击内容“有出处”，不自动变安全。</p>
+<h3>3.17 Reproduction View：先复现结构贡献，再复现昂贵 Agent 搜索</h3>
+<p><strong>最小代码结构：</strong> <code>archive.py</code> 保存原始轮次与图片哈希；<code>fact_extractor.py</code> 抽取事实与 source IDs；<code>entity_linker.py</code> 使用 MiniLM+SigLIP2 top-K 与 UPDATE/ADD/SKIP；<code>evolution.py</code> 生成 (value,fact_id) 序列并验证至少两会话；<code>hypergraph_store.py</code> 管理 F/U/Z 与三类超边（最初可用 SQLite 三表+incidence 表，不必上专门图库）；<code>tools.py</code> 实现六个工具；<code>eval.py</code> 计算 EM/F1/Judge 与 token cost。</p>
+<p><strong>第一轮最小复现：</strong> 先在 30 个手工标注的多轮“物体颜色/价格/位置变化”样例上固定事实抽取，测试 identity linking 的 pairwise precision/recall、状态序列正确率、Source Recoverability 100%（结构性）。再在 MemEye 的公开样本上用 Qwen3-VL-8B、top-K=3、temperature=0 对比 Fact-only、Fact+Occurrence、Full without agentic、Full。确认各阶段有稳定增益后，再加入 16-step Agentic Search，记录每个工具调用、引用 ID、耗费 token 与真实延迟。</p>
+<p><strong>最终对齐：</strong> 按官方 benchmark checkpoint 控制可见历史，避免未来信息泄漏；模型 4×A800 的硬件只是原文部署，不是最小复现必需；重做三次运行并使用一致 judge。<strong>最敏感超参：</strong> top-K、w_text/w_image、图像 crop 粒度、事实提取 prompt、最大 tool steps、image budget、演化最少支持事实数。<strong>先证伪什么？</strong> 在 identity label 错误率高于某阈值时，Full 是否反而劣于 SRAG？若会，就说明这套系统对链接误差敏感，需要 confidence-aware split/merge 与可逆更新。官方未提供可核验代码仓库，复现属于独立实现，不应假装运行了原作者代码。</p>
+<h3>3.18 Research Value（七维）</h3>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>维度</th>
+  <th>判断与具体理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Baseline Potential</td>
+  <td><strong>高</strong>：多模态长期记忆强基线，含 Fact-only/无 Agentic 消融；但完整系统成本高</td>
+</tr>
+<tr>
+  <td>Migration Potential</td>
+  <td><strong>很高</strong>：可迁移到 Agent tool history、视频时序事件、跨 Agent provenance、会话管理</td>
+</tr>
+<tr>
+  <td>Systems Potential</td>
+  <td><strong>高</strong>：结构化存储+可审计查询接口，但必须补缓存、增量更新、延迟与并发控制</td>
+</tr>
+<tr>
+  <td>Attack Potential</td>
+  <td><strong>高</strong>：错误实体合并、伪造来源、时间冲突、污染检索均可构造可测攻击</td>
+</tr>
+<tr>
+  <td>Evaluation Potential</td>
+  <td><strong>很高</strong>：将 identity、evolution、source faithfulness 拆成可诊断指标</td>
+</tr>
+<tr>
+  <td>Benchmark Potential</td>
+  <td><strong>很高</strong>：构造跨会话同名实体、图像近似、版本冲突、证据撤销基准</td>
+</tr>
+<tr>
+  <td>New Paper Potential</td>
+  <td><strong>很高</strong>：证据置信度传播 / 纠错可逆超图 / budget-aware retrieval RL 都是具体研究空缺</td>
+</tr>
+</tbody>
+</table></div>
+<h3>3.19 Migration Analysis：两条可写脚本的研究方案</h3>
+<p><strong>Migration A — Agent Memory 的 Provenance-Aware Recovery &amp; Poisoning Benchmark。</strong> <strong>Original Problem：</strong> 跨会话多模态实体和状态来源丢失。<strong>Transferable Mechanism：</strong> Fact–Entity–Evolution typed hypergraph + source recoverability。<strong>New Research Question：</strong> 当攻击者仅能污染一轮工具输出或伪造一张图时，错误 identity merge 会如何沿记忆演化传播？系统能否追溯并撤销污染？<strong>Method Modification：</strong> 每个 fact 加 source_hash、trust_score、version；occurrence linking 增加置信阈值与可逆 merge log；evolution 每个状态存完整 evidence set 与 conflicting evidence；设计回滚工具 <code>retract_source</code>。<strong>Minimum Experiment：</strong> 以 MemEye 371 问题与自建 100 条三会话实体序列为基础，注入 0/1/2 条同名不同物、错误库存或错误图像描述；四种策略：Text RAG、SRAG、MHG-Mem-like、MHG+confidence+rollback；每条样例执行构建→注入→问答→撤销→再问答，3 seed；记录 source ID、引用链、错误传播范围。<strong>Model：</strong> Qwen3-VL-8B；<strong>Dataset：</strong> MemEye + 合成跨会话扰动集（明确合成）。<strong>Baseline：</strong> SRAG、Fact-only、MHG-no-rollback。<strong>Metric：</strong> QA EM、entity pairwise F1、poisoning success、source precision、rollback recovery rate、token cost。<strong>Expected Contribution：</strong> 由单一 QA 准确率扩展到“来源污染—错误传播—可恢复性”协议。<strong>Risk：</strong> 合成污染不代表真实攻击；LLM 判断链接可能不稳定。<strong>Collision Risk：</strong> 与 memory poisoning / RAG attribution 工作接近，需以跨会话 state-evolution 可逆性形成差异。</p>
+<p><strong>Migration B — Streaming Video Agent 的 Evidence-Preserving Temporal Memory。</strong> <strong>Original Problem：</strong> 历史视频帧既要压缩，又要回答“物体何时变化、证据在哪一帧”。<strong>Transferable Mechanism：</strong> occurrence identity + aspect evolution + evidential frame links。<strong>New Research Question：</strong> 在固定 frame/token budget 下，保留事件状态与 source frame 的图结构，能否比 uniform sampling 或纯向量视频 RAG 更准确回答时序变化？<strong>Method Modification：</strong> 每 2 秒采样候选帧，轻量视觉跟踪形成 object track ID，按视觉变化阈值触发 fact/evolution 更新；每个状态绑定 frame timestamp、crop ID；query 时先检索 evolution，再仅解码证据帧，支持预算控制。<strong>Minimum Experiment：</strong> 从 NExT-QA 选 300 个含时序问答的视频（按官方划分，人工标 50 个关键证据时间戳）；每视频候选 32 帧、回答预算 B∈{4,8,16}；冻结 Qwen2.5-VL-7B 与 SigLIP2；比较 Uniform、CLIP top-B、video RAG、MHG-style evidence memory，重复 3 seed；用 <code>torch.cuda.Event</code> + wall-clock 计时，包含解码、检索、prefill、decode。<strong>Model：</strong> Qwen2.5-VL-7B。<strong>Dataset：</strong> NExT-QA + 50 个人工证据标注。<strong>Baseline：</strong> Uniform、CLIP、plain video RAG。<strong>Metric：</strong> QA accuracy、temporal evidence recall@B、frames、visual tokens、FLOPs estimate、end-to-end latency、GPU peak memory。<strong>Expected Contribution：</strong> quality–latency–provenance Pareto 与时间证据保真机制。<strong>Risk：</strong> 视觉跟踪错误与图构建耗时可能抵消推理节省；<strong>Collision Risk：</strong> 与 query-aware video frame pruning / temporal graph RAG 重叠，必须用来源可追溯和真实延迟构成独特贡献。</p>
+<h3>3.20 Agent 专用分析：Memory → Planning → Tool → Environment → Feedback → Learning</h3>
+<p><strong>Architecture：</strong> User Query → Search Controller → typed Memory (F/U/Z) → resolve/inspect 工具 → 原始观察归档 → Evidence Assembly → QA model。与经典 Agent 的闭环相比，本文主要研究的是 <strong>Memory→Tool→Evidence→Answer</strong>；没有通过在线 RL 或梯度更新把 feedback 写回模型参数，所谓“Learning”主要是新会话到来时的结构化记忆更新。<strong>Agent State：</strong> 包含已保存事实、实体 referent、evolution、source archive、当前检索历史 hₖ、工具预算；trajectory 是一次搜索的工具调用序列。<strong>Long Horizon：</strong> 跨多 session 的状态更新被测试，但“持续运行几个月/上百万事件”及增量索引成本没有充分量化。<strong>Failure Propagation：</strong> 一次误 merge 可能同时污染价格、位置、库存等多个 evolution；随后 resolve_evolution 会反复检索错误状态，甚至以合法 source ID 包装错误回答。<strong>Multi-Agent 延伸：</strong> 如果多个 Agent 并发写同一 referent，必须引入写入者身份、版本冲突、时间戳、可回滚日志与一致性规则；论文未解决分布式一致性。</p>
+<h3>3.21 Attack / Verification Lens</h3>
+<p><strong>Attack：</strong> 制作两张高度相似却不同款的商品图，诱导 UPDATE 合并；或让网页工具返回带伪造时间戳的旧库存。<strong>Black-box probe：</strong> 只观察最终回答与引用来源，不看内部图，检测是否出现“不同会话的属性拼接”。<strong>Robustness：</strong> 同义实体名、遮挡 crop、图像噪声、乱序 session、重复/冲突事实。<strong>Recovery：</strong> 删除污染来源后，要求旧状态不再被引用并保留未污染历史；评估撤销正确率。<strong>Efficiency stress：</strong> 随 session 数 10→100→1000、图片数 100→1000→10000，测构建耗时、检索延迟、总 token 与峰值存储。<strong>新 Metric：</strong> Evidence-Correct Answer Rate (ECAR) = 正确回答且引用包含有效支持证据的比例；与普通 Judge 并列报告。上述攻击与指标是本报告提出的验证路线，<strong>不是原论文结果</strong>。</p>
+<h3>3.22 如果只记住 MHG-Mem（九句话）</h3>
+<ol>
+<li>多模态长期记忆不能只压成文字，也不能只把图片放进向量库。</li>
+<li>真正难的是跨会话同一实体、状态随时间变化、以及每个状态的原始证据三者同时保留。</li>
+<li>MHG-Mem 使用 Fact、Entity、Evolution 三类节点与三类类型化超边。</li>
+<li>Occurrence hyperedge 将不同观察中的同一实体关联起来，是重要增益来源。</li>
+<li>EvolutionNode 记录 (value,fact_id) 序列，Evidential hyperedge 让状态能回溯到原图。</li>
+<li>Agentic Search 根据问题选择事实、实体、演化、图片与原始来源工具。</li>
+<li>三 backbone 的平均 Judge 领先 8.20、9.89、9.98 个百分点，但约耗费两倍 token。</li>
+<li>Source Recoverability 证明的是来源可找回，不是事实必然正确；错误身份合并仍是重大风险。</li>
+<li>最值得迁移的是 Agent memory poisoning/recovery benchmark 与证据保留的视频时序记忆。</li>
+</ol>
+<hr />
+<h2 id="synthesis">04 · Cross-Paper Synthesis：两篇共同说明什么？</h2>
+
+<p><strong>共同趋势：模型性能越来越依赖“历史的分布与证据结构”，而非仅当前一步的局部打分。</strong> EPIC 告诉我们，当前 token 看似合理不代表到达该 token 的 prefix 分布仍可信；MHG-Mem 告诉我们，当前检索的图片看似相关不代表它属于同一个实体或正确时间版本。二者都反对把历史压缩成一个无上下文的标量：EPIC 不满足于单 token ratio 或整句统一 ratio，MHG-Mem 不满足于单次 embedding similarity 或最新摘要。</p>
+<p><strong>机制互补：</strong> EPIC 提供“<strong>策略分布偏离</strong>”的数学约束，MHG-Mem 提供“<strong>记忆事实与证据的谱系</strong>”的结构约束。把二者放在 Agent 中，一个解决训练更新时行为策略与当前策略的偏差，另一个解决检索行动所见的历史事实是否正确。可以构建 <code>state=(query, retrieved-evidence, tool-history)</code>、<code>action=memory/tool call</code>、<code>reward=correct answer with valid citation − tool cost</code> 的任务；对 action prefix 做 trust-region 校准，对 evidence source 做一致性校验。</p>
+<p><strong>假设冲突：</strong> EPIC 的精确 performance difference 要求可定义行为策略 μ 对动作轨迹的概率、共同支持集和固定的环境动态；MHG-Mem 的搜索动作会改变后续检索历史，而外部记忆可能在两次调用之间被其他 Agent 更新。若 memory store 不固定，环境转移核 P(s'|s,a) 也会变，直接照搬 EPIC 的保证不成立。研究必须显式记录 memory snapshot/version，将 source update 纳入状态或做环境漂移校正。</p>
+<p><strong>可组合的实验范式：</strong> 从 EPIC 借用固定 rollout buffer、prefix log-ratio、clip fraction by position、policy lag sweep；从 MHG-Mem 借用 Fact-only→Identity→Evolution→Evidence 的模块递增消融、source inspection 去除实验、token cost 和工具预算扫描。<strong>联合报告</strong>至少应有：任务成功率、证据正确率、工具调用数、总 token、TTFT/TPOT、wall-clock、prefix drift、source-recovery rate。只报单一准确率或 FLOPs 无法证明“更智能且更高效”。</p>
+<p><strong>跨方向位置：</strong> EPIC 更适合做 RL baseline；MHG-Mem 更适合做 Agent memory baseline、可审计检索系统和新的 benchmark。视频加速方面，最直接的组合是“事件驱动的 evidence frame memory + 预算约束的选择策略”，而不是把视频帧当纯文本 token 硬套。推理加速方面，源证据复用可借鉴 prefix cache/feature cache，但 <strong>Agent semantic memory ≠ Transformer KV cache</strong>：前者持久且语义可审计，后者是特定模型、特定位置编码与上下文的运行时状态，不可随意跨模型复用。</p>
+<h2 id="opportunities">05 · Combined Research Opportunities：从明天就能开始的三条路线</h2>
+
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>优先级</th>
+  <th>Idea</th>
+  <th>最小实验</th>
+  <th>新颖性必须落在哪里</th>
+  <th>关键失败风险</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>P0</strong></td>
+  <td><strong>Provenance-Conditioned Action-Prefix RL</strong></td>
+  <td>WebShop 200/100 episodes；Qwen3-4B；比较 GRPO、EPIC-token、EPIC-action；lag 0/2/4；工具反馈记录 snapshot ID</td>
+  <td>训练约束考虑 action-prefix 漂移，奖励同时验证任务完成与证据合法性</td>
+  <td>off-policy 比率方差、工具环境非平稳、reward hacking</td>
+</tr>
+<tr>
+  <td><strong>P0</strong></td>
+  <td><strong>Recoverable Memory Benchmark</strong></td>
+  <td>MemEye + 100 合成跨会话序列；注入同名实体误合并、错误时间戳、恶意工具输出；比较 SRAG、MHG、MHG+rollback</td>
+  <td>不仅评最终 QA，还评污染传播深度、来源回滚正确率</td>
+  <td>合成样本不够真实、judge 对证据偏置</td>
+</tr>
+<tr>
+  <td><strong>P1</strong></td>
+  <td><strong>Evidence-Preserving Video Token Budgeting</strong></td>
+  <td>NExT-QA 300/200；32 候选帧→预算 4/8/16；比较 Uniform、CLIP、temporal memory；端到端计时</td>
+  <td>时间证据定位、正确率与真实 wall-clock 同时改善</td>
+  <td>图构建/检索开销抵消 token 节省</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>建议先做的 48 小时工作：</strong> 第一阶段把 EPIC 的 prefix loss 做成独立单元测试并输出逐位置 clip 图；同时实现一个 SQLite 的 Fact/Entity/Evolution/Incidence 原型，用 10 条手工场景检查 source trace 不变量。第二阶段把这两个原型接到一个最小 WebShop 工具轨迹上：固定记忆快照，记录 action logp、retrieval source、reward；先做 evaluation-only 的行为漂移诊断，再考虑训练。这样可以在投入大规模 GPU 之前检验核心假设，避免直接追逐论文主表数字。</p>
+<h2 id="collision">06 · Collision / Overlap：最强交汇与风险</h2>
+
+<p><strong>Strongest Collision：Action-Prefix Trust Region × Provenance-Aware Agent Memory。</strong> 两篇在“历史不应该被无条件当作正确当前上下文”这一点相遇：EPIC 用累计概率比率衡量历史生成分布偏离，MHG-Mem 用 source lineage 衡量历史事实可追溯性。潜在统一框架可以同时给每个 Agent action 附加 (behavior logp, memory snapshot ID, source provenance)，在训练时用 prefix clipping，在执行时用 evidence validation。<strong>这是一条由本报告提出的跨论文研究交汇，不是作者之间已公开的直接冲突或已验证的统一方法。</strong></p>
+<p><strong>现有工作重叠风险：</strong> EPIC 与 PPO/TRPO/sequence-level IS、CTPO/RIPO 的差别必须落实到精确 KL 几何、前缀裁剪和 ST 设计；MHG-Mem 与 HyperMem/M2A/UniversalRAG 的差别必须落实到“多模态实体身份 + 演化 + 来源 + 查询工具”的联合消融。若新工作只把两个已有模块串起来，容易被认为是 engineering assembly；必须有一个新的可检验机制或 benchmark，例如“在固定成本下，prefix trust region 是否显著减少来源污染后的错误放大”。</p>
+<p><strong>不应强行形成 Collision 的地方：</strong> EPIC 的 KL 是策略分布上的信息几何，不等于 MHG-Mem 的视觉 cosine；MHG-Mem 的 source recoverability 不是因果 attribution；prefix KV cache 的节省也不是 MHG-Mem 的 token cost 减少。术语相似不能替代严格问题定义。要证明新方法优于独立使用两篇方法，需要 2×2 factorial ablation：无 prefix/无 provenance、仅 prefix、仅 provenance、两者都用，并在相同模型、相同工具预算、相同数据和多 seed 下比较。</p>
+<h2 id="priority">07 · Reading / Reproduction Priority</h2>
+
+<p><strong>第一阅读：EPIC，先读正文 §3.1–3.3、Eq. (8)/(10)/(17)/(22)、Table 1、Figure 3 与 Appendix §8 / Figure 8。</strong> 这些内容足以决定是否能将 loss 移植到 Agent。若只做一项复现，先复现 prefix ratio + ST 的单元测试，而不是直接训练 30B MoE。作者公开了代码，但需在真正运行前确认版本、依赖与硬件要求。</p>
+<p><strong>第二阅读：MHG-Mem，先读 Figure 2、§3.2–3.4、Table 1–3、Appendix B.4 与 D.2。</strong> 这些内容足以决定 memory schema、查询工具与成本结构。若只做一项复现，先建立 30 个实体变化 toy histories，检验 source ID 可追溯与错误 merge 的传播；论文未提供可核验官方代码，不应以“已复现原项目”表述独立实现。</p>
+<p><strong>方向分工：</strong> RL baseline → EPIC；Agent/multimodal memory baseline → MHG-Mem；系统/推理加速 idea → 在 MHG-Mem 之上增加 budget-aware retrieval 与真实 latency profiler；Benchmark/Metric → provenance-correct answer 与 prefix drift；Attack/Evaluation → source poisoning、identity merge、policy lag、recovery。<strong>下一步研究优先级 P0：</strong> 将证据可追溯的 memory retrieval 作为 Agent 的可观察状态，研究 action-prefix off-policy RL 的稳定性与污染鲁棒性。</p>
+<h2 id="sources">08 · Sources / Links / 核查说明</h2>
+
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>来源</th>
+  <th>用途与可访问状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="https://arxiv.org/abs/2610.29999">EPIC arXiv 2610.29999</a></td>
+  <td>元数据、2026-10-21 UTC 首次提交；已核对</td>
+</tr>
+<tr>
+  <td><a href="https://arxiv.org/html/2610.29999v1">EPIC Full HTML</a> / <a href="https://arxiv.org/pdf/2610.29999">PDF</a></td>
+  <td>正文、理论推导、Table 1、Figures 1–8、附录配置和参考实现；已阅读</td>
+</tr>
+<tr>
+  <td><a href="https://github.com/LiChengxi666/EPIC">EPIC 官方代码链接</a></td>
+  <td>论文正文给出；未在本次运行中执行代码</td>
+</tr>
+<tr>
+  <td><a href="https://arxiv.org/abs/2610.29995">MHG-Mem arXiv 2610.29995</a></td>
+  <td>元数据、2026-10-21 UTC 首次提交；已核对</td>
+</tr>
+<tr>
+  <td><a href="https://arxiv.org/html/2610.29995v1">MHG-Mem Full HTML</a> / <a href="https://arxiv.org/pdf/2610.29995">PDF</a></td>
+  <td>正文、Table 1–3、Figures 1–10、附录方法、指标、代价与超参；已阅读</td>
+</tr>
+<tr>
+  <td><a href="https://arxiv.org/abs/2610.30036">Attn-Forcing</a> · <a href="https://arxiv.org/abs/2610.29873">HAWK</a> · <a href="https://arxiv.org/abs/2610.29820">UlaCache</a></td>
+  <td>选题阶段的同期候选；本期不作正式全文精读或性能比较</td>
+</tr>
+</tbody>
+</table></div>
+<div class="note"><b>证据纪律：</b>所有论文实验数值与方法设置按 arXiv v1 正文/附录记录；本报告构造的 Toy、Migration、Attack 与新 benchmark 都明确属于研究提案而非原论文已验证结论。未提供的代码、独立项目页、额外硬件速度指标不猜测。对定量结果优先使用百分点（pp），避免混淆相对百分比；对约数明确使用“≈ / 约”。</div>
+
+<div class="footer">Daily Top Papers Deep Dive · 2026-10-23 · 本地自包含 HTML · 无外部 CSS/JS 依赖 · Ctrl+F 可全文检索</div></main></body></html>
