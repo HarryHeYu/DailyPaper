@@ -1,0 +1,511 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><title>Daily Top Papers Deep Dive — 2026-10-26</title><meta name="description" content="2026-10-26 两篇论文完整精读：AOPD 与 Rate-Controlled Refresh，公式、结果、局限、复现与科研迁移。"><style>
+:root{--ink:#16263a;--muted:#53677c;--line:#dce5ed;--blue:#2b62a3;--teal:#128575;--paper:#fff;--bg:#f4f7fb;--warm:#fff9ed}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif;font-size:16px;line-height:1.93;-webkit-font-smoothing:antialiased}
+a{color:#185f9b;text-decoration:none;border-bottom:1px solid rgba(24,95,155,.24)}a:hover{color:#0a927f;border-bottom-color:#0a927f}
+.topbar{background:linear-gradient(115deg,#101e36,#173a5a 65%,#17646d);color:white;padding:24px 6vw 20px;box-shadow:0 4px 20px #102d4820}.topbar .eyebrow{letter-spacing:.17em;text-transform:uppercase;font-size:12px;opacity:.78;font-weight:700}.topbar .name{font-size:23px;line-height:1.4;font-weight:800;letter-spacing:.02em;margin:6px 0}.topbar .sub{font-size:13px;opacity:.82}
+.layout{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:285px minmax(0,1fr);gap:34px;padding:34px 38px 70px}
+.toc{position:sticky;top:20px;max-height:calc(100vh - 40px);overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 16px;box-shadow:0 7px 25px #1b3d5b0b;align-self:start}.toc-title{font-weight:800;font-size:18px;padding:0 9px 12px;border-bottom:1px solid var(--line);margin-bottom:8px}.toc-title span{font-size:10px;letter-spacing:.1em;color:#8b9aab;margin-left:8px}.toc-chapter{display:block;padding:11px 9px;font-size:13px;font-weight:750;line-height:1.5;border:0;border-radius:8px;color:#203b58}.toc-chapter:hover{background:#eef6fb}.toc-details{padding:0 8px 8px 18px}.toc-details summary{font-size:12px;color:var(--teal);cursor:pointer;margin-bottom:5px}.toc-sub{display:block;font-size:12px;line-height:1.5;padding:5px 3px;color:#6b7e90;border:0}.toc-sub:hover{color:#0b7d72}
+main{background:var(--paper);border:1px solid var(--line);box-shadow:0 8px 40px #1b3d5b0c;border-radius:18px;padding:46px clamp(24px,4.1vw,68px) 70px;min-width:0}
+.chapter-title{font-size:clamp(25px,2.6vw,36px);line-height:1.45;letter-spacing:-.025em;color:#132b47;margin:64px 0 21px;padding:0 0 14px;border-bottom:3px solid #e4edf5;scroll-margin-top:20px}.chapter-title:first-child{margin-top:0}.section-title{font-size:23px;line-height:1.55;color:#153f67;margin:42px 0 14px;padding-left:14px;border-left:4px solid #208c9c;scroll-margin-top:18px}.subsection-title{font-size:18px;color:#205b70;margin:28px 0 12px;scroll-margin-top:18px}
+p{margin:13px 0 19px;text-align:justify;overflow-wrap:anywhere}strong{color:#193d5c}li{margin:8px 0}ol,ul{padding-left:1.6em}.lead{font-size:17px;background:linear-gradient(120deg,#eaf5f7,#f2f7ff);padding:23px 26px;border-left:5px solid #238a92;border-radius:9px;margin:16px 0 28px;line-height:1.95}.badges{display:flex;gap:9px;flex-wrap:wrap;margin:4px 0 18px}.badge{background:#eaf3ff;color:#1c5b94;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:750;line-height:1.5}.badge.warn{background:#fff0d6;color:#8a5717}
+.table-scroll{width:100%;overflow-x:auto;margin:20px 0 28px;border:1px solid var(--line);border-radius:10px;box-shadow:0 4px 15px #133b5510}table{border-collapse:collapse;width:100%;min-width:680px;font-size:13px;line-height:1.7}thead th{background:#eaf1f8;color:#1c4568;font-weight:800;text-align:left}td,th{border:1px solid #e1e8ef;padding:10px 12px;vertical-align:top;overflow-wrap:anywhere}tbody tr:nth-child(even){background:#f8fbfd}tbody tr:hover{background:#eef7fb}
+.flow{background:#e9f8f5;border:1px solid #b9e3d8;color:#11635d;border-radius:10px;padding:17px 19px;margin:18px 0 22px;font-size:14px;line-height:2;font-weight:700;overflow-wrap:anywhere}.equation{background:#17283c;color:#f4f9ff;padding:17px 21px;border-radius:10px;margin:19px 0 22px;line-height:2.1;overflow-x:auto;font-family:"DejaVu Sans Mono","Menlo","Consolas",monospace;font-size:13px;white-space:normal}.equation b{font-family:inherit;color:#7fdfd0;font-size:13px;letter-spacing:.02em}.equation sub,.equation sup{font-size:10px}
+code{background:#eef3f8;color:#2b5273;border-radius:4px;padding:1px 5px;font-size:.91em}blockquote{border-left:3px solid #2d98a0;background:#f4fafb;padding:6px 20px;margin:20px 0}.footer-note{background:#fff8e8;border:1px solid #f1ddb3;border-radius:10px;padding:18px 22px;color:#6c512b;font-size:14px;margin-top:28px}
+hr{border:0;border-top:1px solid var(--line);margin:32px 0}::selection{background:#b5e8df;color:#13283a}
+@media(max-width:1100px){.layout{grid-template-columns:220px minmax(0,1fr);gap:20px;padding:20px}.toc{padding:12px 10px}main{padding:32px 30px}}
+@media(max-width:790px){.layout{display:block;padding:12px}.toc{position:relative;top:0;max-height:none;margin-bottom:16px}.toc-details{display:none}main{padding:23px 18px;border-radius:13px}.topbar{padding:19px 23px}.chapter-title{font-size:25px;margin-top:40px}.section-title{font-size:21px}body{font-size:15px;line-height:1.86}.equation{font-size:12px}}
+@media print{body{background:white;color:black}.topbar{background:white;color:black;box-shadow:none}.layout{display:block;padding:0}.toc{display:none}main{border:0;box-shadow:none;padding:12px}.chapter-title{break-before:page}.table-scroll{overflow:visible}a{color:inherit}}
+</style></head><body><header class="topbar"><div class="eyebrow">AI RESEARCH · DEEP DIVE / 2026.10.26</div><div class="name">Daily Top Papers Deep Dive</div><div class="sub">2 PAPERS · RL / DISTILLATION · EFFICIENT MULTIMODAL INFERENCE · FULL-TEXT AUDITED</div></header><div class="layout"><nav class="toc" aria-label="文章目录"><div class="toc-title">阅读目录 <span>CONTENTS</span></div>
+<a class="toc-chapter" href="#section-00">Daily Top Papers Deep Dive</a>
+<a class="toc-chapter" href="#section-03">Paper 1 · When to Follow the Teacher: Advantage-Based On-Policy Distillation</a>
+<details class="toc-details"><summary>展开本篇章节</summary>
+<a class="toc-sub" href="#section-04">1.1 基本信息与一句话定位</a>
+<a class="toc-sub" href="#section-05">1.2 人话版（问题、方法、结果、意义）</a>
+<a class="toc-sub" href="#section-06">1.3 Background &amp; Research Gap：旧范式为什么会失效</a>
+<a class="toc-sub" href="#section-07">1.4 Core Insight：把教师动作视为一次干预</a>
+<a class="toc-sub" href="#section-08">1.5 Method Deep Dive：从输入到参数更新</a>
+<a class="toc-sub" href="#section-09">1.6 核心公式与数学直觉</a>
+<a class="toc-sub" href="#section-10">1.7 Toy Example：教师强，但教师的第一步不适合学生</a>
+<a class="toc-sub" href="#section-11">1.8 Baseline Deep Comparison（机制而非排行榜）</a>
+<a class="toc-sub" href="#section-12">1.9 Experiment Setup &amp; Metrics 教学式解释</a>
+<a class="toc-sub" href="#section-13">1.10 Results Deep Dive：9 个具体结果与反证</a>
+<a class="toc-sub" href="#section-14">1.11 Table / Figure Reading：看图表到底证明什么</a>
+<a class="toc-sub" href="#section-15">1.12 Ablation / Mechanistic Analysis</a>
+<a class="toc-sub" href="#section-16">1.13 Claim vs Evidence</a>
+<a class="toc-sub" href="#section-17">1.14 Contribution、Limitation &amp; Failure Modes</a>
+<a class="toc-sub" href="#section-18">1.15 Reproduction View：最小复现从哪里开始</a>
+<a class="toc-sub" href="#section-19">1.16 Research Value（逐项）</a>
+<a class="toc-sub" href="#section-20">1.17 Migration Analysis：两个可以开工的实验</a>
+<a class="toc-sub" href="#section-23">1.18 Attack / Verification Lens</a>
+<a class="toc-sub" href="#section-24">1.19 如果只记住这篇论文（9 句话）</a>
+</details>
+<a class="toc-chapter" href="#section-25">Paper 2 · Drift Says When, Budget Says How Much: Rate-Controlled KV Re-selection for Long-Form Multimodal Generation</a>
+<details class="toc-details"><summary>展开本篇章节</summary>
+<a class="toc-sub" href="#section-26">2.1 基本信息与一句话定位</a>
+<a class="toc-sub" href="#section-27">2.2 人话版（250–400 字）</a>
+<a class="toc-sub" href="#section-28">2.3 Background &amp; Research Gap：省什么、为什么旧方法不够</a>
+<a class="toc-sub" href="#section-29">2.4 Core Insight：重要性分数与预算不是一回事</a>
+<a class="toc-sub" href="#section-30">2.5 Method Deep Dive：完整数据流</a>
+<a class="toc-sub" href="#section-31">2.6 核心公式、SVD 与系统成本</a>
+<a class="toc-sub" href="#section-32">2.7 Toy Example：8 个视觉 token 如何被重新召回</a>
+<a class="toc-sub" href="#section-33">2.8 Baseline Deep Comparison：最强对手是谁</a>
+<a class="toc-sub" href="#section-34">2.9 Experiment Setup &amp; Metrics：评估到底测了什么</a>
+<a class="toc-sub" href="#section-35">2.10 Results Deep Dive：至少 9 组数字与反证</a>
+<a class="toc-sub" href="#section-36">2.11 Table / Figure Reading：六个最值得盯的证据</a>
+<a class="toc-sub" href="#section-37">2.12 Ablation / Mechanistic Analysis</a>
+<a class="toc-sub" href="#section-38">2.13 Inference / Video Efficiency Breakdown：不能把 FLOPs 当加速</a>
+<a class="toc-sub" href="#section-39">2.14 Claim vs Evidence</a>
+<a class="toc-sub" href="#section-40">2.15 Contribution、Limitation &amp; Failure Modes</a>
+<a class="toc-sub" href="#section-41">2.16 Reproduction View：先复现 fidelity，再碰真实系统</a>
+<a class="toc-sub" href="#section-42">2.17 Research Value（逐项）</a>
+<a class="toc-sub" href="#section-43">2.18 Migration Analysis：两个不同研究方向</a>
+<a class="toc-sub" href="#section-46">2.19 Attack / Verification Lens</a>
+<a class="toc-sub" href="#section-47">2.20 如果只记住这篇论文（9 句话）</a>
+</details>
+<a class="toc-chapter" href="#section-48">Cross-Paper Synthesis · 两篇论文放在一起看</a>
+<a class="toc-chapter" href="#section-56">Sources / Links · 原始来源与核验范围</a></nav><main id="report"><h1 class="chapter-title" id="section-00">Daily Top Papers Deep Dive</h1>
+<p><strong>2026-10-26 · 北京时间 · 独立检索 · 两篇精读</strong></p>
+<div class="lead">今天选择一篇解决 <b>RL/蒸馏监督究竟对谁有益</b> 的方法论文，以及一篇解决 <b>多模态推理时旧证据何时值得重新取回</b> 的系统机制论文。它们共同指向：<b>proxy score ≠ downstream utility</b>。本报告只精读两篇，不为覆盖面牺牲方法、公式、反例与复现细节。</div>
+<h2 class="section-title" id="section-01">Today's Deep Dive Selection</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>论文</th>
+<th>方向</th>
+<th>主要新机制</th>
+<th>证据亮点</th>
+<th>最大保留意见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>#1</strong></td>
+<td><a href="https://arxiv.org/abs/2610.31563" rel="noopener noreferrer" target="_blank">When to Follow the Teacher: Advantage-Based On-Policy Distillation</a></td>
+<td>RL / Reasoning / Distillation</td>
+<td>Student-relative advantage + 无额外反事实 rollout 估计</td>
+<td>Qwen3-8B 自蒸馏 AIME24 52.1 vs OPSD 41.7；KL-proximal 理论</td>
+<td>部分模型/任务负迁移；真实训练算力比较不完整</td>
+</tr>
+<tr>
+<td><strong>#2</strong></td>
+<td><a href="https://arxiv.org/abs/2610.31433" rel="noopener noreferrer" target="_blank">Drift Says When, Budget Says How Much</a></td>
+<td>Efficient Inference / Video VLM</td>
+<td>Per-sample rate controller + drift timing + 低秩 KV 重选</td>
+<td>5/6 图像设置显著优于 InfiniGen；相同刷新率随机触发差 5.0 pp</td>
+<td>没有真实 offload wall-clock；视频对固定阈值不占优</td>
+</tr>
+</tbody>
+</table></div>
+<h2 class="section-title" id="section-02">为什么今天选这两篇</h2>
+<p><strong>新鲜度</strong>：两篇均为 2026-10-22 UTC 提交、在 2026-10-23 的 arXiv 新论文列表中出现，距 2026-10-26 北京早间约三天；不是从更久的工作中补位，因此不标记 BACKFILL。<strong>完整性</strong>：两篇均可访问 arXiv HTML 全文、关键附录和定量表格。<strong>七天冷却</strong>：本次可见的 10 月 24 日已读 TWICE、BeNice! 与 10 月 25 日已读 MoEZip、CAVC 均未重复。<strong>方向选择</strong>：AOPD 具新 objective、估计器与理论反例；RCR 具明确失败诊断、控制消融、跨视频反例与部署缺口。没有强制凑齐 RL/Agent/Video/Inference 四条线。</p>
+<p><strong>未入选但值得留意</strong>：<a href="https://arxiv.org/html/2610.31483" rel="noopener noreferrer" target="_blank">Training Small Language Models for Transferable Tool Selection</a>（2026-10-22 UTC，Agent+RL，正文可访问）有跨工具库泛化价值，但今天更优先把 AOPD 的信用分配与 RCR 的动态预算讲透。它不计入正式 Deep Dive，也不在此展开未经充分核对的实验数字。</p>
+<p><strong>证据标记说明</strong>：正文将“论文实测”“论文理论”“基于论文的推论”“本文提出的迁移实验”区分叙述；自造 Toy Example 不冒充论文实验；所有未报告的系统指标明确写 <strong>Not Reported</strong>。在速度论文中，尤其不把 FLOPs、估算数据流量或 GPU 模拟加速等同真实 end-to-end speedup。</p>
+<h1 class="chapter-title" id="section-03">Paper 1 · When to Follow the Teacher: Advantage-Based On-Policy Distillation</h1>
+<div class="badges"><span class="badge">RL / Reasoning</span><span class="badge">New Objective + Theory</span><span class="badge">2026-10-22 UTC · 最新论文</span><span class="badge">代码已核验</span></div>
+<h2 class="section-title" id="section-04">1.1 基本信息与一句话定位</h2>
+<p><strong>作者</strong>：Mahdi Sabbaghi、George Pappas、Hamed Hassani、Adel Javanmard。<strong>机构</strong>：University of Pennsylvania、University of Southern California。<strong>日期</strong>：2026-10-22（arXiv v1）；<strong>Venue / Status</strong>：arXiv 预印本，未核实正式会议接收。<strong>正文</strong>：<a href="https://arxiv.org/html/2610.31563" rel="noopener noreferrer" target="_blank">arXiv HTML</a> · <a href="https://arxiv.org/pdf/2610.31563" rel="noopener noreferrer" target="_blank">PDF</a> · <strong>官方代码</strong>：<a href="https://github.com/Helloworld10011/AOPD" rel="noopener noreferrer" target="_blank">AOPD GitHub</a>。无单独项目主页的已核实证据。</p>
+<p><strong>一句话定位</strong>：它把 On-Policy Distillation 的学习目标从“尽量像教师”改成“只强化对当前学生完成任务真正有帮助的教师动作”，并用现成学生 rollout 的终局 reward 构造无需反事实 rollout 的估计器。</p>
+<h2 class="section-title" id="section-05">1.2 人话版（问题、方法、结果、意义）</h2>
+<p>假设老师能解一道难题，学生只能解简单题。老师推荐“先引入一个复杂定理”，老师自己接下来能把证明做完，但学生采用这个开头后很可能卡住。传统知识蒸馏只看“老师认为哪个 token 好”，于是强迫学生走老师的路；哪怕学生原来有一条笨但能走通的路线，也可能被压制。AOPD 反过来问：<strong>假设学生在这里采用老师建议的动作，随后仍由学生自己完成，最终成功率究竟增加还是减少？</strong> 它用学生自己的终局成败、教师与学生的 token 概率比，以及一个减去基线的校正项，估计这种“对学生有用”的优势信号。论文在数学、代码、生物与医疗问答上比较 GRPO、常规蒸馏和自蒸馏；例如 Qwen3-8B 自蒸馏的 AIME24 为 52.1%，常规 OPSD 为 41.7%。关键价值不是简单再加一个 reward，而是指出<strong>教师偏好与学生可实现的成功并非同一目标</strong>，并给出一个理论上可分析、训练上可实现的修正。</p>
+<h2 class="section-title" id="section-06">1.3 Background &amp; Research Gap：旧范式为什么会失效</h2>
+<p><strong>SFT</strong> 用固定教师答案训练，训练输入与学生真实推理时访问的历史不同，容易产生 exposure bias。<strong>On-Policy Distillation（OPD）</strong> 让学生先自己采样，再请教师在学生实际走到的历史上给出 token 分布；这修复了“状态分布不匹配”，却没有修复“目标不匹配”。<strong>GRPO</strong> 直接用终局 reward 训练学生，但当正确答案很少出现时，奖励稀疏、组内方差小，训练信号弱。<strong>KDRL</strong> 把 OPD 与 RL 项相加，看似兼得教师知识与任务奖励，然而两个梯度仍可能互相冲突。</p>
+<p>一个具体例子：学生在证明题中有 80% 概率沿初等路线走到正确答案；老师有能力走抽象代数路线，因而在分叉处强烈推荐抽象路线。老师的<strong>完整策略</strong>比学生更强，不代表“老师第一步 + 学生后续”更强。常规 OPD 提升老师首选 token 的概率，可能降低学生的成功率。论文填补的 gap 正是<strong>以学生当前 continuation 能力定义教师指导价值</strong>，而不是用教师概率、熵或局部相似度充当价值。</p>
+<p>这也解释了为什么只把训练数据换成 on-policy 不够：训练数据分布对齐是“在哪些状态学习”的问题，优势加权是“这些状态下应该学习哪些动作”的问题。二者正交。论文的贡献依赖可计算终局 reward 与教师 log-prob，并不声称在完全不可验证的开放式任务中也同样有效。</p>
+<h2 class="section-title" id="section-07">1.4 Core Insight：把教师动作视为一次干预</h2>
+<p>作者的核心观察来自两个层次。<strong>机制层</strong>：教师在历史 h 上认为动作 a 概率高，只说明教师愿意这样做；若把 a 插入学生轨迹，学生后续完成任务的概率可能降低。<strong>实证层</strong>：512 条数学学生轨迹的单 token 干预中，在教师/学生 KL 最大的位置替换成教师最可能 token，9.6% 的案例从失败变成功，9.8% 却从成功变失败；这不是“教师总有帮助”的分布。这个观察是干预实验的经验事实，而不是直接证明所有训练步都有负作用。</p>
+<p>由此定义 student-relative advantage：<code>A^S(h,a)=Q^S(h,a)−V^S(h)</code>。其中 Q 是“强制采取动作 a，后续交还给当前学生”的期望终局 reward；V 是学生照常行动的期望 reward。<strong>正优势</strong>意味着老师的动作有益，<strong>负优势</strong>意味着老师的动作对当前学生有害。优势随学生能力改变：学生学会后续步骤之后，同一个复杂动作可能从负变正。这是一种动态、学生条件化的教师筛选，不是固定教师质量评分。</p>
+<p>困难在于直接算 Q 需要每个 token、每个教师备选动作都生成多条后续轨迹，成本爆炸。作者用重要性采样恒等式把“教师动作的期望”改写为“学生已采样动作的期望”，再用 baseline 校正去掉 V。它是有明确推导的估计器；在满足 support、独立 baseline 和未截断条件下，对<strong>目标函数及其梯度</strong>无偏。注意“无额外 rollout”不等于“无额外算力”：仍需教师在学生历史上计算分布，并做全词表或近似的监督计算。</p>
+<h2 class="section-title" id="section-08">1.5 Method Deep Dive：从输入到参数更新</h2>
+<div class="flow">Prompt / 可验证任务 → 冻结当前学生 S → 每题采样 G 条学生轨迹 → 计算终局 reward → 教师评估每个访问过的历史 → importance ratio + leave-one-out baseline → 构造 AOPD loss → LoRA 更新 Sθ → 下一批重新采样</div>
+<p><strong>Step 1｜输入与轨迹。</strong> 输入是 prompt x、学生策略 S、教师策略 T 和可执行 reward R(x,y)。在一次训练迭代开始时冻结 rollout 策略 S，生成 <code>y=(a₀,…,aH−1)</code>。历史 <code>h_t=(x,a₀,…,a_{t−1})</code> 来自学生而非教师，避免教师生成历史与学生部署历史脱节。若学生从未采样到某类必要动作，后续重要性估计会变得高方差；因此 support 与探索分布很重要。</p>
+<p><strong>Step 2｜任务结果。</strong> 数学按最终答案是否正确给二值 reward；代码按 5 个测试用例的通过情况给部分 reward。组内 G 条响应共享题目但结局不同，计算 <code>b_i=mean(R_j, j≠i)</code>，得到 <code>R_i−b_i</code>。Leave-one-out 避免 baseline 依赖当前被评分轨迹，从而保持论文证明需要的条件。全错组的中心化 reward 为零，会出现学习停滞，官方代码还提供 <code>mu</code> 机制补救，属于工程细节，不能与纯理论目标混为一谈。</p>
+<p><strong>Step 3｜教师打分。</strong> 在学生每个历史 h_t 上获得教师的 <code>T(a|h_t)</code>，并读取冻结学生的 <code>S(a|h_t)</code>。关键比值 <code>w_t=T(a_t|h_t)/S(a_t|h_t)</code>：当学生偶尔采到教师很看好的动作时，这个样本可以代表更大的教师概率质量；若 S(a) 接近零则方差可能极大。AOPD 关闭 top-k/top-p 截断，使用温度 0.8 来保证理论所需的动作 support。</p>
+<p><strong>Step 4｜双项校正。</strong> 第一项让带有 reward 的学生采样动作按教师比值加权；第二项对教师完整分布的 log-prob 做校正，相当于减去该历史的 student value。只保留第一项就不再是 student advantage，而更接近带权终局 reward；<strong>两项同时存在</strong>是本方法区别于普通重要性加权模仿的关键。</p>
+<p><strong>Step 5｜截断与优化。</strong> 令 <code>w̃=min(w,c)</code>，论文使用 c=4，并对第二项中的教师质量同样采用 <code>T̃(a)=min(T(a),cS(a))</code>。它降低高比值方差，但严格来说截断后优化的是截断目标，不再是原始未截断目标的无偏估计。优化时只对 Sθ 求梯度，S 与 T 停止梯度。官方实现还有对截断残余概率质量的 sigmoid 修正，以及可选的全错组 KL；复现必须记录这些开关，否则“论文公式”和“开源代码”可能不是同一实验条件。</p>
+<p><strong>Step 6｜迭代反馈。</strong> 更新后的学生重新生成下一批轨迹；随着学生 continuation 变强，Q、V、A 的含义发生变化，原先不值得模仿的教师动作可能变得有益。潜在失败点包括 teacher/student tokenizer 不兼容、teacher logits 不完整、reward 噪声、importance ratio 尖峰、组内奖励全同、教师动作没有 student support。</p>
+<h2 class="section-title" id="section-09">1.6 核心公式与数学直觉</h2>
+<div class="equation"><b>价值与优势 · Eq. (3.4)</b><br/>Q<sup>S</sup>(h,a) = E<sub>student continuation</sub>[R | h,a]<br/>V<sup>S</sup>(h) = E<sub>a∼S</sub>[Q<sup>S</sup>(h,a)]<br/>A<sup>S</sup>(h,a) = Q<sup>S</sup>(h,a) − V<sup>S</sup>(h)</div>
+<p>Q 不是老师做完整道题的成功率，而是“学生执行老师给出的这一步，<strong>学生自己</strong>完成剩余部分”的成功率。V 是学生自己从该历史出发的平均水平，A 是超额收益。A 大于 0 才有强化的依据。由于这里是 token-level action，信用分配的基本单位是 token；它不自动解决工具调用等长跨度动作的 credit assignment。</p>
+<div class="equation"><b>FKL 与 AOPD · Eq. (3.3)/(3.5)</b><br/>J<sub>FKL</sub> = E<sub>h∼S,a∼T</sub>[log S<sub>θ</sub>(a|h)]<br/>J<sub>AOPD</sub> = E<sub>h∼S,a∼T</sub>[A<sup>S</sup>(h,a) · log S<sub>θ</sub>(a|h)]</div>
+<p>两式均最大化；FKL 对所有教师动作施加同向模仿压力，AOPD 则按优势的正负改变梯度方向。它与 GRPO 的差异也很明确：GRPO 用同组终局 reward 直接加权学生采样 token，AOPD 进一步用教师分布对“该信号是否值得模仿”进行过滤与校正。<strong>Strongest baseline 不是固定唯一的</strong>：外部教师数学 AIME24 上 OPD-RKL 最强（32.6），代码 pass@10 上 GRPO 最强（87.9）；自蒸馏 Qwen3-8B AIME24 上 OPSD 是最强模仿基线（41.7）。</p>
+<div class="equation"><b>无需反事实 rollout 的估计 · Eq. (3.6)</b><br/>Ĵ = (R−b)/H · Σ<sub>t</sub>{ [T(a<sub>t</sub>|h<sub>t</sub>)/S(a<sub>t</sub>|h<sub>t</sub>)] log S<sub>θ</sub>(a<sub>t</sub>|h<sub>t</sub>) − E<sub>a∼T</sub>[log S<sub>θ</sub>(a|h<sub>t</sub>)] }</div>
+<p>证明要点：对学生采样动作求期望，<code>S(a)·T(a)/S(a)</code> 消去 S，第一项产生 <code>T(a)(Q(a)−b)</code>；第二项产生 <code>T(a)(V−b)</code>；相减恰为 <code>T(a)(Q−V)</code>。因此不是神奇地“知道”反事实，而是用随机样本的期望恒等式估计它。代价是方差；clipping c 从 4 增大时偏差趋小但不稳定风险上升，c 过小时可能过度抑制教师支持动作。</p>
+<div class="equation"><b>局部保证 · Eq. (5.3)</b><br/>E<sub>a∼S⁺</sub>[A<sup>S</sup>(h,a)] = η E<sub>a∼T</sub>[A<sup>S</sup>(h,a)²] / (1 + η E<sub>a∼T</sub>[A<sup>S</sup>(h,a)]) ≥ 0</div>
+<p>分子是<strong>平方优势</strong>，所以非负；在足够小的 KL-proximal 步长 η 下可推出单次理想化策略更新的期望 reward 不下降。这里 KL 是 <code>KL(S||π)</code>，约束更新不能离原学生太远；它并不保证实际有限 batch、LoRA、SGD、近似 logits 和 noisy reward 的每一步都单调提升。论文还给出二步反例：<strong>即使教师完整策略更强，FKL+RL 的混合梯度仍可能让学生退步</strong>。这是该论文最重要的理论边界与亮点。</p>
+<h2 class="section-title" id="section-10">1.7 Toy Example：教师强，但教师的第一步不适合学生</h2>
+<p>设题目有“稳妥路线 safe”与“困难路线 difficult”。学生 <code>S(safe)=0.8, S(difficult)=0.2</code>；学生继续完成时 <code>Q^S(safe)=0.9, Q^S(difficult)=0.3</code>。于是 <code>V^S=0.8×0.9+0.2×0.3=0.78</code>，<code>A^S(safe)=+0.12</code>，<code>A^S(difficult)=−0.48</code>。教师却更喜欢困难路线：<code>T(safe)=0.3, T(difficult)=0.7</code>。若教师亲自继续，两条路线成功率可为 0.95/0.98，教师完整策略成功率 <code>0.3×0.95+0.7×0.98=0.971</code>，确实强于学生。</p>
+<p>传统 FKL 会把学生的 difficult 概率往 0.7 推；AOPD 的教师加权贡献则是 safe 的 <code>0.3×(+0.12)=+0.036</code>、difficult 的 <code>0.7×(−0.48)=−0.336</code>，抑制困难路线。实际训练并不直接获得上述 Q。若某条学生采样轨迹走 safe 且成功、同组 leave-one-out baseline 为 0.5，则 <code>R−b=+0.5</code>、<code>w=T(safe)/S(safe)=0.375</code>；它把这条成功轨迹和教师全分布送入 Eq. (3.6)，在多次采样的<strong>期望</strong>中恢复优势方向。这个 toy 是解释公式的自造案例，不是论文数据。</p>
+<h2 class="section-title" id="section-11">1.8 Baseline Deep Comparison（机制而非排行榜）</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>怎么做、为何合理</th>
+<th>本文 setting 的弱点</th>
+<th>AOPD 改动与性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SFT</td>
+<td>固定示范做交叉熵，便宜稳定</td>
+<td>学生推理历史偏离教师示范，无法根据终局结果纠错</td>
+<td>用学生 on-policy 历史 + outcome，机制性</td>
+</tr>
+<tr>
+<td>OPD-FKL</td>
+<td>在学生历史上最小化 KL(T‖S)，dense 监督</td>
+<td>无条件强化教师偏好，可能奖励负优势动作</td>
+<td>在教师监督内直接乘 student advantage，<strong>核心机制创新</strong></td>
+</tr>
+<tr>
+<td>OPD-RKL / OPSD</td>
+<td>反向 KL 偏模式、自蒸馏用带答案特权的自己</td>
+<td>仍可能让学生模仿当前不可完成的推理分支</td>
+<td>同一 student-relative 筛选；自蒸馏也适用</td>
+</tr>
+<tr>
+<td>GRPO</td>
+<td>组内终局 reward 的 policy gradient，直接对齐成功</td>
+<td>稀疏成功导致有效正样本不足，缺少教师 dense signal</td>
+<td>用教师概率筛选成功/失败 token；并非无成本替代</td>
+</tr>
+<tr>
+<td>KDRL（OPD+RL）</td>
+<td>模仿与 reward 两种 loss 相加</td>
+<td>教师负优势梯度仍存在，理论反例可导致退步</td>
+<td>把 reward 引入<strong>模仿项本身</strong>，不是并联相加</td>
+</tr>
+</tbody>
+</table></div>
+<h2 class="section-title" id="section-12">1.9 Experiment Setup &amp; Metrics 教学式解释</h2>
+<p><strong>Research Question A（外部教师）</strong>：教师更大时，AOPD 是否比 OPD、GRPO 更好？学生 Qwen3-1.7B；数学教师 Qwen3-4B-Instruct-2507，代码教师 Qwen3-8B。Open-Thoughts 数学训练 450 steps，TACO verified 代码训练 350 steps。<strong>Research Question B（自蒸馏）</strong>：同一模型在获得 ground-truth privileged context 后充当教师，是否仍有负迁移？数学用 Qwen3-1.7B/8B 400 steps；医学 300 steps；生物和代码 400 steps。医学训练 MedMCQA、评估 MedQA 与 held-out MedMCQA；生物训练 SciKnowEval、评估其 held-out 与 MMLU-Pro；代码评估 HumanEval+ 与 MultiPL-E。</p>
+<p><strong>训练控制</strong>：论文在各组比较中固定 batch=32、LoRA r=64/α=128；AOPD G=4，GRPO/KDRL G=8；数学训练最长 8192 tokens，评估可达 16192；Qwen3 为 non-thinking mode。AOPD 采样 temperature 0.8、top-p=1、top-k 关闭，数学与代码学习率 <code>2e−5</code>；其他任务与方法有各自配置。<strong>Compute</strong>：官方脚本默认 8 GPU、BF16；论文没有给可跨硬件比较的总 GPU-hours / 训练成本，不应编造。外部代码 reward 需要可执行测试环境，仓库提供 SandboxFusion 配置。不同方法 G 与 sampling 不完全相同，故实验更接近“各方法合理调参”而非完全相同采样预算。</p>
+<p><strong>pass@1</strong>：每题一次生成成功的比例，越高越好；最贴近单次部署成功率，但受 decoding 与题目难度影响。<strong>pass@10</strong>：10 次生成至少一次通过的估计概率，越高越好；衡量候选多样性和搜索潜力，可能与 pass@1 排名相反。<strong>HumanEval / HumanEval+</strong>：代码执行测试正确率，HE+ 的额外测试更严格；并不等价于真实软件工程能力。<strong>MultiPL-E</strong>：跨七种语言的代码生成平均表现；可揭示 Python 训练迁移不足。<strong>AIME24/AMC/HMMT</strong>：不同难度的数学竞赛评估，都是 pass@1，但小测试集会放大波动。<strong>SciKnowEval/MMLU-Pro/MedQA/MedMCQA</strong>：领域 QA accuracy，越高越好；医学答案正确不等于临床可靠性。<strong>Training reward</strong>：训练集/验证集上的 reward 曲线，不能代替跨 benchmark 泛化。<strong>KL(T‖S)</strong>：教师相对学生的分布差异，越大只说明分歧越大，不说明哪方更正确。</p>
+<h2 class="section-title" id="section-13">1.10 Results Deep Dive：9 个具体结果与反证</h2>
+<ol>
+<li><strong>外部教师数学主结果</strong>：Open-Thoughts pass@1，AOPD 78.4 对 OPD-FKL 73.2，<strong>+5.2 pp</strong>；GRPO 为 71.8。说明 dense teacher signal 与 outcome 结合有效，但不是证明更长推理任务都受益。</li>
+<li><strong>AIME24</strong>：35.0 对最强 OPD-RKL 32.6，<strong>+2.4 pp</strong>；比 GRPO 22.3 高 12.7 pp。支持数学迁移，不过样本量较小，单次成绩需谨慎解读。</li>
+<li><strong>AMC</strong>：65.1 对 OPD-FKL 61.8，<strong>+3.3 pp</strong>；相对 GRPO 51.4 更高 13.7 pp。跨题型一致性比单独 AIME 更有说服力。</li>
+<li><strong>HMMT 反例</strong>：AOPD 15.8，OPD-FKL 16.0，<strong>−0.2 pp</strong>；并非所有数学 benchmark 最好。高难度任务上可能仍受 rollout 成功稀缺限制。</li>
+<li><strong>代码 pass@1 与 pass@10 分离</strong>：HumanEval AOPD 74.4，GRPO 71.8，<strong>+2.6 pp</strong>；但 HumanEval pass@10 为 86.5，GRPO 87.9，<strong>−1.4 pp</strong>。提高单次成功可能牺牲候选覆盖。</li>
+<li><strong>跨语言代码弱项</strong>：MultiPL-E AOPD 32.5，OPD-FKL 33.3，<strong>−0.8 pp</strong>；说明奖励对齐不能自动保证语言迁移。</li>
+<li><strong>自蒸馏强结果</strong>：Qwen3-8B AIME24 AOPD 52.1、OPSD 41.7，<strong>+10.4 pp</strong>；GRPO 30.6。更大模型的自蒸馏仍受“教师建议并非总有益”影响。</li>
+<li><strong>生物模型依赖的明显失败</strong>：Qwen2.5-7B SciKnowEval AOPD 54.0、GRPO 42.0，<strong>+12.0 pp</strong>；但 Qwen3-4B 同指标 AOPD 32.0、OPSD 44.0，<strong>−12.0 pp</strong>。这是不能用“跨域全面领先”掩盖的模型特异弱点。</li>
+<li><strong>单 token 因果探针</strong>：外部教师在最大 KL 分歧处干预：helpful 9.6%、harmful 9.8%、unchanged 80.6%。它直接否定“老师更强所以每步都值得模仿”，但多数样本未变，也说明单 token 因果效应很稀疏。</li>
+</ol>
+<p><strong>Strongest result</strong> 可选 Qwen3-8B 自蒸馏 AIME24 的 +10.4 pp（相对 OPSD）及 Qwen2.5-7B 生物 +12.0 pp（相对 GRPO），前者机制对应更直接。<strong>Weakest result</strong> 是 Qwen3-4B 生物 −12.0 pp，且 HumanEval pass@10、MultiPL-E 都没有全面领先。<strong>Trade-off</strong>：更密集教师评估、全词表概率计算和可能的探索分布差异，换取更好的 outcome alignment；论文没有给吞吐或 GPU-hours，不能宣称训练绝对更省算力。</p>
+<h2 class="section-title" id="section-14">1.11 Table / Figure Reading：看图表到底证明什么</h2>
+<p><strong>Figure 1</strong>：左图示意“教师动作可有害”，中图是 Qwen3-8B 自蒸馏 Open-Thoughts reward 曲线，右图是 Qwen3-4B-Instruct 在 TACO 上的代码训练曲线。它把动机与训练轨迹并置，能看出 AOPD 的后期提升；但图像曲线本身不能说明是哪个 token 的因果优势起作用。<strong>Figure 2</strong>：外部教师 Qwen3-1.7B 的 Open-Thoughts reward、AIME24 与 TACO reward；OPD 初期快后期平台、GRPO 更慢，AOPD 后期继续提升。曲线支持训练动力学差异，不证明算力预算相同。</p>
+<p><strong>Table 1</strong>：行是 Base/SFT/GRPO/KDRL/OPD-FKL/OPD-RKL/AOPD，列为四个数学 pass@1 与 HumanEval/HE+/pass@10/MultiPL-E。应横向读“不同评价目标的胜负”：AOPD 在数学和 HE 单次表现强，但 HMMT、pass@10、跨语言并非冠军。<strong>Table 2</strong>：两个学生规模的自蒸馏数学对比；Qwen3-8B 的 AIME24 52.1 vs OPSD 41.7 与 Qwen3-1.7B 的 35.0 vs OPSD 15.6 共同显示传统自蒸馏并非稳定有效。<strong>Table 3</strong>：领域任务与模型交叉矩阵；最重要的是 Qwen3-4B SciKnowEval 32.0 vs OPSD 44.0 这一负例，提醒读者不要把“总体较好”误读成“任意模型都更好”。<strong>Table 4</strong>：512 轨迹的 intervention helpful/unchanged/harmful，是真正触及动机的因果操作，但不是对 AOPD 训练权重的逐 token 验证。</p>
+<h2 class="section-title" id="section-15">1.12 Ablation / Mechanistic Analysis</h2>
+<p><strong>去掉 advantage、只做 OPSD/OPD</strong>：Table 2 的 Qwen3-8B AIME24 从 AOPD 52.1 降至 OPSD 41.7，表明结果条件化的监督确有作用；但两方法的 loss、采样温度和其他训练细节也不同，不能把 10.4 pp 全部归因于某一行公式。<strong>不做 clipping</strong>：Appendix Figure 5 报告更大的训练波动；论文没有提供该图的精确纵轴表格值，因此不能捏造具体下降幅度。<strong>改变组大小 G</strong>：Appendix Figure 4 显示增大 G 对 AOPD reward 改善很小，且不一定转化为 benchmark 增益；这是 sample efficiency 的积极信号，但没有逐 GPU-hour 的成本比较。</p>
+<p><strong>最高 KL 分歧位置的教师替换</strong>：Table 4 中改善 9.6% 与损害 9.8% 几乎相当，说明“教师/学生不一致”不是充分的监督门控规则。它是局部干预证据，不等于训练中的 advantage 估计无偏性已被实验验证。<strong>理论机制</strong>：Theorem 5.1 的平方优势非负与二步反例一起说明“按 student advantage 加权”为什么比“RL loss + imitation loss”更有针对性；证明在理想 policy-space proximal 更新上成立，不自动推广到有限参数神经网络训练。</p>
+<h2 class="section-title" id="section-16">1.13 Claim vs Evidence</h2>
+<p><strong>Authors Claim</strong>：教师指导应按对学生任务结果的优势筛选；可不额外 rollout 估计；理想化 AOPD 更新具 reward-improvement 保证；跨数学、代码与 QA 提升。</p>
+<p><strong>Experiments Actually Show</strong>：在给定 Qwen 模型、LoRA、数据与可验证 reward 下，多数 benchmark AOPD 比主要对照更好；干预实验确实出现教师有害动作；开源代码能落地该训练流程。理论证明的是满足 support 与精确 proximal 条件的局部策略更新，不是实测每步 monotonicity。</p>
+<p><strong>What Is Not Yet Proven</strong>：在完全开放式 Agent 工具链、没有正确答案的长程任务、噪声 judge reward、闭源教师仅返回文本、tokenizer 不同、跨 70B+ 模型的效果；是否在相同训练 FLOPs/teacher compute 下仍领先；是否在所有领域都优于 OPSD（生物 Qwen3-4B 已反例）。</p>
+<h2 class="section-title" id="section-17">1.14 Contribution、Limitation &amp; Failure Modes</h2>
+<p><strong>Contribution 1 — New Objective / New Mechanism</strong>：定义 teacher action 的 student-relative advantage 并嵌入 on-policy 蒸馏，是主要概念创新。<strong>Contribution 2 — New Estimator</strong>：用已有 student rollouts 的 reward 和重要性比估计该目标，避免为每个教师动作做反事实续写；重要性采样本身是已有工具，新的在于双项抵消后对应的目标。<strong>Contribution 3 — New Theory</strong>：给出 KL-proximal 单步改善与 FKL+RL 反例，属于明确理论贡献。<strong>Contribution 4 — New Empirical Finding</strong>：单 token 干预中教师帮助与损害并存；不是新 benchmark。代码在已有 TRL/vLLM/LoRA 组件上构建，属于可复用工程组合。</p>
+<p><strong>Authors' Limitation（论文可见范围）</strong>：方法需要教师 token 概率和可验证 reward；采样分布需要足够 support；实验聚焦 Qwen、数学/代码/QA。<strong>Additional Limitation</strong>：极低学生概率造成权重爆炸，clip 引入目标改变；全错组的 advantage 近零；偏好 reward 或 LLM-as-judge 可能产生 reward hacking；对长工具轨迹使用 token 级优势会误把偶然终局成败归因于早期动作；教师与学生 tokenizer 不同会破坏比值；代码 <code>mu</code> 和 residual correction 使“纯 AOPD”复现边界复杂。数据污染、测试集泄漏、不同方法 temperature/G 与训练 compute 差异也需独立审计。</p>
+<h2 class="section-title" id="section-18">1.15 Reproduction View：最小复现从哪里开始</h2>
+<p>官方仓库已可访问，包含 <code>training/external_teacher/aopd_trainer.py</code>、<code>training/self_distillation/aopd_trainer.py</code>、<code>scripts/</code>、<code>data/</code>、<code>eval/</code>。README 将外部教师与自蒸馏分成两个 Python 3.11 环境，分别使用不同 TRL/vLLM 与 flash-attn 版本；脚本默认 <strong>8 GPU、BF16、LoRA r64/α128</strong>。外部数学最适合作为首个可核对实验：<code>bash scripts/run_external_math.sh Qwen/Qwen3-1.7B</code>；官方完整复现较贵，先在小规模 200 道数学题、G=4、max_new_tokens=1024、100 steps 做 loss/权重 sanity check，不应把小规模成绩冒充论文数字。</p>
+<p>必须检查的代码位置：教师与学生 log-prob 是否同 token 对齐；是否真正冻结 rollout S；<code>w=T/S</code> 的数值稳定与 clip；第二项是否使用同样截断的教师概率且不重归一化；leave-one-out baseline 是否排除当前样本；全错组 <code>mu</code> 是否启用；residual sigmoid correction 是否开启；reward parsing 是否严格；group-size 与 temperature 是否一致。先跑 <strong>AOPD vs OPD-FKL vs GRPO</strong> 同训练样本预算；最能验证 Claim 的不是单个 AIME 分数，而是“教师干预收益按 student-relative advantage 分桶时，正桶有更高实际成功提升”，再辅以 AIME/AMC 的最终成绩。官方仓库还提供 Docker SandboxFusion 代码评测环境；首次复现建议先避开代码沙箱复杂度。</p>
+<h2 class="section-title" id="section-19">1.16 Research Value（逐项）</h2>
+<p><strong>Baseline Potential：高</strong>，现成代码与标准 GRPO/OPD 比较，可作为 RL/蒸馏类论文的强对照。<strong>Migration Potential：高</strong>，student-relative value 可以作用于 tool choice、memory retrieval、multi-agent message。<strong>Systems Potential：中</strong>，rollout 数不增加，但 teacher full logits 和 token 级校正可能昂贵，值得研究稀疏 teacher query。<strong>Attack Potential：高</strong>，可寻找“教师很自信但学生执行后失败”的 adversarial guidance。<strong>Evaluation Potential：高</strong>，定义 Teacher Action Help/Harm Rate，比仅看 KL agreement 更贴近结果。<strong>Benchmark Potential：中高</strong>，可构建分叉轨迹与反事实续写数据。<strong>New Paper Potential：中高</strong>，若能在长程 Agent 中做因果信用分配并控制额外评估成本，研究空间明显；但与已有 trajectory validation / selective distillation 工作存在 Collision 风险。</p>
+<h2 class="section-title" id="section-20">1.17 Migration Analysis：两个可以开工的实验</h2>
+<h3 class="subsection-title" id="section-21">Migration A · Agent Tool-Choice Advantage Distillation</h3>
+<p><strong>Original Problem</strong>：教师的 token 建议未必提高学生终局成功。<strong>Transferable Mechanism</strong>：student-relative advantage + on-policy importance correction。<strong>New Research Question</strong>：教师建议某工具时，学生后续工具链是否真的更可能成功？<strong>Method Modification</strong>：把 token action 换成离散工具 ID；工具调用历史为 h，教师在 top-20 候选工具上输出归一化概率，学生在同一候选集采样，使用终局任务 reward 的 AOPD 两项估计；可额外引入错误工具调用惩罚，但必须与原始 reward 单独消融。</p>
+<p><strong>Minimum Experiment</strong>：先构造 200 条可重放、确定性工具链任务，每条需要 2–5 次工具选择；工具库含 30 个函数（查找、计算、文件查询、数据库模拟），每个状态提供 10 个候选；80/20 训练测试划分。学生 Qwen3-1.7B LoRA r16、教师 Qwen3-8B，<code>G=4, batch=16, lr=2e−5, steps=200, temp=0.8, clip=4, seed=[42,43,44]</code>。每条轨迹记录 <code>state, candidates, action, logp_student, logp_teacher, reward, next_state</code>，训练 AOPD/OPD-FKL/GRPO/纯规则。<strong>Model</strong>：Qwen3-1.7B / Qwen3-8B。<strong>Dataset</strong>：先合成可验证工具任务，再用 ToolBench 子集做外推。<strong>Baseline</strong>：SFT、OPD-FKL、GRPO、无教师 RL。<strong>Metric</strong>：end-to-end task success、tool recall@k、平均调用次数、teacher-query tokens、help/harm intervention rate。<strong>Expected Contribution</strong>：把 outcome-aligned distillation 扩展到工具级 credit assignment。<strong>Risk</strong>：teacher/student 工具 action support、环境非确定性、reward 稀疏。<strong>Collision Risk</strong>：与 tool-use RL、trajectory-level teacher validation、counterfactual tool planning 现有研究高度相关；创新必须是无额外 rollout 的可验证工具级优势估计。</p>
+<h3 class="subsection-title" id="section-22">Migration B · Outcome-Aligned Video Frame Policy</h3>
+<p><strong>Original Problem</strong>：教师认为重要的帧不一定是当前 Video VLM 真能用来回答问题的帧。<strong>Transferable Mechanism</strong>：student-relative advantage 对教师帧选择建议做筛选。<strong>New Research Question</strong>：在固定视觉 token 预算下，是否能用 QA 成败而非视觉相似度训练 query-aware 帧选择器？<strong>Method Modification</strong>：把帧选择视作多步离散 policy；teacher 是全帧 VLM 的帧重要性分布，student 是仅能看 8 帧的轻量选择器；终局 reward 为 QA correctness，额外记录 latency 但初版不混进 reward，防止优化目标不清。</p>
+<p><strong>Minimum Experiment</strong>：LongVideoBench 先抽 500 个有标准答案的样本；每视频统一解码 1 fps、最多 128 候选帧；选择器按 8 次 action 不放回选帧；冻结 Qwen2-VL-7B 答题模型，训练小选择器（Qwen3-1.7B LoRA 或 2-layer MLP over CLIP features），<code>G=4, 3 seeds, 200 updates, clip=4</code>。<strong>Model</strong>：Qwen2-VL-7B + 轻量选择器。<strong>Dataset</strong>：LongVideoBench 500 样本开发，另留 200 独立测试。<strong>Baseline</strong>：Uniform-8、CLIP-query top8、teacher top8、GRPO、OPD。<strong>Metric</strong>：QA accuracy、帧数、visual tokens、TTFT、总延迟、跨视频长度泛化。<strong>Expected Contribution</strong>：把帧选择从 proxy score 转向 student downstream value。<strong>Risk</strong>：高成本全帧 teacher、选择动作依赖、视频 benchmark 答案偏差。<strong>Collision Risk</strong>：与 query-aware frame selection / RL frame sampling 已有工作碰撞，必须突出优势估计与零额外反事实 rollout。</p>
+<h2 class="section-title" id="section-23">1.18 Attack / Verification Lens</h2>
+<p>可做 <strong>black-box teacher-harm probe</strong>：从学生正确轨迹选一处替换为教师推荐动作，再测最终是否失败，定义 <code>Harm@1</code> 与 <code>Net Intervention Gain=Help−Harm</code>；可进一步按 KL、teacher confidence、trajectory depth 分桶。<strong>Robustness</strong>：把 reward verifier 故意注入 5–10% 错标，观察 AOPD 是否比 GRPO 更易 reward hacking；<strong>Recovery</strong>：学生掌握复杂后续后，同一 teacher action 的优势是否从负转正；<strong>Efficiency stress</strong>：增大词表、group size、序列长度记录 teacher forward FLOPs 与 tokens/s。注意上述均为研究建议，非论文已有结果。</p>
+<h2 class="section-title" id="section-24">1.19 如果只记住这篇论文（9 句话）</h2>
+<ol>
+<li>On-policy 解决学生访问什么状态，但不解决教师动作是否对学生有益。 2. 教师完整策略更强，不代表教师的某一步适合当前学生继续完成。 3. AOPD 用 <code>Q^S−V^S</code> 定义 teacher action 的学生相对优势。 4. 它把优势乘进教师蒸馏目标，而不是额外拼一个 RL loss。 5. 重要性比值与减去教师期望项，使现成学生 rollout 的终局 reward 足以无偏估计未截断目标。 6. Clip=4 控制方差，但改变原目标；理论保证针对精确 KL-proximal 更新。 7. Qwen3-8B 自蒸馏 AIME24 52.1 对 OPSD 41.7 是强证据。 8. Qwen3-4B 生物 32.0 对 OPSD 44.0、以及代码 pass@10 弱项，说明它不是全场景赢家。 9. 最值得迁移的是把“老师推荐”变成“对学生未来结果有净增益”的工具/记忆/帧选择判断。</li>
+</ol>
+<h1 class="chapter-title" id="section-25">Paper 2 · Drift Says When, Budget Says How Much: Rate-Controlled KV Re-selection for Long-Form Multimodal Generation</h1>
+<div class="badges"><span class="badge">Inference Acceleration / Multimodal</span><span class="badge">Video Transfer Test</span><span class="badge">2026-10-22 UTC · 最新论文</span><span class="badge warn">代码尚未发布</span></div>
+<h2 class="section-title" id="section-26">2.1 基本信息与一句话定位</h2>
+<p><strong>作者</strong>：Bin Hu、Yingbo Xiao。<strong>机构</strong>：Tsinghua University、The Chinese University of Hong Kong, Shenzhen。<strong>日期</strong>：2026-10-22（arXiv v1）；<strong>Venue / Status</strong>：arXiv 预印本，未核实正式会议接收。<strong>正文</strong>：<a href="https://arxiv.org/html/2610.31433" rel="noopener noreferrer" target="_blank">arXiv HTML</a> · <a href="https://arxiv.org/pdf/2610.31433" rel="noopener noreferrer" target="_blank">PDF</a>。<strong>代码</strong>：论文 Appendix M 写明“Code, logs and registration files will be released”，截至本次检索<strong>没有核验到已公开的官方仓库</strong>；不得把未来承诺写成 Code Available。</p>
+<p><strong>一句话定位</strong>：它把多模态 KV cache 的更新拆成两个问题——<strong>用 attention drift 决定何时/何处更新，用每样本速率控制决定更新多少次</strong>——修复一次性视觉 KV 选择在长文本生成中的证据过时问题。</p>
+<h2 class="section-title" id="section-27">2.2 人话版（250–400 字）</h2>
+<p>让视觉语言模型看一张复杂照片并写几百字描述，开头它可能关注人物，中间关注滑板坡道，后面才描述角落垃圾桶。为了省显存，常见方法在 Prefill 时选出少数“重要视觉 token”，其余丢掉或放在 CPU。问题是重要性会随生成内容移动：开头不重要的垃圾桶，写到后面可能正是关键证据。RCR 不再指望一次选择永远正确，而是保留完整前缀 KV 的可恢复副本，让 GPU 上的小 cache 按需替换。作者发现，直接设固定“漂移超过 0.03 就更新”仍会饿死某些样本，因为不同图像的漂移数值不可比较。RCR 让每个样本维护一个自适应阈值，使大约 40% 的层-步执行刷新，同时用 8 维低秩探测器和候选重排控制数据搬运。六组图像任务中，它有五组显著优于 InfiniGen；但最重要的警告是：<strong>论文只测了模拟卸载的流量，没有证明端到端 wall-clock 加速</strong>，而且在视频上相对固定阈值的优势消失。</p>
+<h2 class="section-title" id="section-28">2.3 Background &amp; Research Gap：省什么、为什么旧方法不够</h2>
+<p>Transformer 解码时，每个历史 token 的 Key/Value 需要缓存，以免每生成一个新 token 都重新计算前缀。多模态输入的视觉前缀可能包含数百到数千 token；论文的图像任务前缀约 640–2300 tokens，视频任务 32 帧、约 2205–2342 tokens。<strong>One-shot eviction</strong>（SnapKV、PyramidKV、BACON）在 Prefill 后选择 c 个重要 prefix token，GPU 只保留小集合；它省 GPU KV memory，但一旦被删掉的证据无法再读，后续生成会遗漏细节。</p>
+<p><strong>Per-step retrieval</strong>（Quest、ArkVale、InfiniGen）把完整 KV 放在可访问的外存/CPU，解码每一步从中取当前需要的 token；它改善证据新鲜度，但每一步都搬运数据，且近似选取会错。<strong>Periodic refresh</strong> 每 T 步重新选一次，省决策复杂度却不看语义转折；<strong>fixed drift threshold</strong> 只在被丢弃 token 的 attention mass 大时刷新，已经比固定周期更聪明，但其阈值在不同图像/模型/生成位置间不校准。</p>
+<p>具体例子：同一图片，模型先说“一个人站在滑板旁”，再说“坡道上方的标识”，最后说“远处垃圾桶”。如果 Prefill 只留下人和滑板相关的 token，第三段就缺乏视觉依据。作者甚至用<strong>完整答案的 attention</strong> 作为离线 oracle 去做一次性选取，在 DetailCaps 上 ROUGE-L fidelity 也只有 0.44–0.52；这是“更聪明的一次选择”解决不了的结构性问题。注意这个 oracle 是用于诊断的非部署基线，不能实际在线使用。</p>
+<h2 class="section-title" id="section-29">2.4 Core Insight：重要性分数与预算不是一回事</h2>
+<p>作者的第一个 observation 是 <strong>attention evidence shifts</strong>：相邻生成步最受关注的前缀位置保持不变的比例，在不同模型上只有 41%–80%；某些新关注区域远离旧区域。第二个 observation 更有价值：<strong>drift 绝对值不能跨样本比较</strong>。固定阈值在 Qwen2-VL DetailCaps 的高漂移样本中刷新 35% 的层-步，已接近精确每步重选；低漂移样本却只刷新 1%，而这些样本恰好从 BACON 0.462 到 exact 0.763，有高达 30.1 个百分点的潜在 fidelity 收益。直觉上“漂移小”似乎不需要更新，实则小的 attention mass 也可能对应极重要的视觉细节。</p>
+<p>第三个 observation 是<strong>时间漂移</strong>：随着生成文本变长，新文本 token 分走 attention，视觉前缀上被丢弃部分的绝对 mass 会自然下降。固定阈值于是前期频繁刷新、后期几乎停止。RCR 的关键并非另造一个更准的静态分数，而是<strong>用漂移排序决定局部时机，用反馈控制器调节每个样本的触发率</strong>。这属于“经验诊断 + 控制工程 + 低秩近似”的组合：漂移和 SVD 都不是新概念，创新在于将 score calibration 与 budget allocation 解耦并以实验证实其必要性。</p>
+<h2 class="section-title" id="section-30">2.5 Method Deep Dive：完整数据流</h2>
+<div class="flow">图像/视频 + 文本 prompt → Prefill 得到完整 prefix KV → BACON 选 GPU 小 cache → SVD 生成低秩检测器 → 每个 decode layer-step 估计 evicted attention drift → per-sample 阈值反馈控制 → 触发时粗选 4c 候选、精排 c → 掩码更新 GPU KV → 继续生成</div>
+<p><strong>Step 1｜两层 cache 布局。</strong> 每层、每 KV head 有完整视觉前缀 <code>K,V</code>，前缀长度 Np。GPU 实际用于 attention 的 cache 布局是 <code>[c 个被选 prefix KV | W 个窗口 KV | 已生成文本 KV]</code>。论文主设置总预算 64 prefix entries/head，<code>c=32, W=32</code>。完整前缀在部署设想中留在 CPU，以便被“重新召回”；但论文实验为了模拟卸载，把完整前缀<strong>仍放在 GPU</strong>。因此论文的 memory/latency 结果必须按“模拟系统”解释，而不是已上线 CPU-offload 系统。</p>
+<p><strong>Step 2｜Prefill 与初选。</strong> 先用 BACON 根据 Prefill 的 attention 选出首批 token。它是强 one-shot baseline，也是所有动态方法共同起点。选错并非致命，只要完整 KV 副本还在，后续可以恢复；但副本占用 CPU 内存，不能把方法描述成“完整 KV 被永久删除”。</p>
+<p><strong>Step 3｜构造廉价 drift detector。</strong> 对每层、每 KV head 的前缀 key 矩阵 <code>K∈R^(Np×128)</code> 做 SVD，取前 <code>R=8</code> 个右奇异向量组成 <code>P_R∈R^(128×8)</code>，在 GPU 保留 <code>K P_R</code>。当前 query q 也投影为 <code>qP_R</code>；两者点积近似原 <code>qKᵀ</code>，能估计<strong>被逐出 token</strong>的 attention mass 和粗略 token 排序。对仍在 cache 的 token 使用精确 logits。8 维并非理论保证足够，只是论文选定的速度/精度折中；当重要信息位于低能量子空间时，探测器可能漏报。</p>
+<p><strong>Step 4｜计算 drift。</strong> 对每个 KV head h，求估计 attention 分布落在未保留 prefix token 上的总质量 <code>d̂_{l,h}(t)</code>，再对该层所有 KV heads 求均值。超过当前样本阈值 τ 则触发该层刷新。<strong>漂移是触发信号，不是直接的任务 reward，也不是语义重要性真值</strong>；其失真会导致误触发或漏触发。</p>
+<p><strong>Step 5｜每样本 rate controller。</strong> 每张图像/视频单独维护一个 τ，初始化 0.03；每完成一次 layer-step 检查，令 m=1 表示刷新、m=0 表示不刷新，执行 <code>τ←τ·exp(η(m−ρ))</code>，论文 <code>η=0.05, ρ=0.4</code>。若刷新太频繁，阈值自动升高；若刷新太少，阈值自动下降。一个样本的低 drift 不会永远得不到刷新；不同层共享阈值，层间相对 drift 高低仍能影响哪个层更常刷新。</p>
+<p><strong>Step 6｜候选粗选与精排。</strong> 一旦触发，先用 8 维 detector 选 top <code>4c</code> 候选（c=32 时是 128 个）；从完整 KV 取这些候选的<strong>原始 key</strong>，用当前 query 做精确打分，再选 top c，取对应的 value。每次刷新理论上读 <code>4c</code> 个 key + <code>c</code> 个 value，共 <code>5c</code> 个 128 维向量；相比扫描全部 Np prefix 大幅减少搬运。失败模式是 detector 把真正重要 token 排除在 top 4c 外，后续精排也无法挽回。</p>
+<p><strong>Step 7｜GPU-side decision。</strong> 朴素 Python <code>if</code> 需要把 GPU 上的触发标量传到 CPU，每层每步同步会严重阻塞。作者改成始终在 GPU 计算候选，再用 <code>torch.where</code> / mask 决定写入新旧 cache；非触发层保持旧值。它在<strong>当前 GPU 模拟实现</strong>中可避免 host sync；但真正 CPU offload 还需要 GPU 掩码条件化 host read，否则每步都取 5c 就失去节流意义。这一尚未实现的系统环节，是论文从算法到真实加速的最大缺口。</p>
+<h2 class="section-title" id="section-31">2.6 核心公式、SVD 与系统成本</h2>
+<div class="equation"><b>Evicted attention drift · Eq. (1)</b><br/>d<sub>l,h</sub>(t)=Σ<sub>j∉S<sub>l,h</sub></sub> a<sub>t,j</sub><br/>d<sub>l</sub>(t)=(1/H<sub>kv</sub>) Σ<sub>h</sub> d<sub>l,h</sub>(t)</div>
+<p><code>S_{l,h}</code> 是当前缓存的 c 个 prefix token 下标；<code>a_{t,j}</code> 是当前生成步 t 对前缀 token j 的 attention 权重（对 GQA 共享 KV head 的多个 query heads 做平均，并按完整上下文归一化）。<code>d=0.02</code> 不代表只有 2% 的<strong>任务价值</strong>丢失，只代表注意力概率质量约 2%。一旦小质量对应决定性对象，质量损失仍可能很大。故 drift 的<strong>相对排序</strong>比绝对数值可靠。</p>
+<div class="equation"><b>Rate controller · Eq. (2)</b><br/>τ<sub>next</sub> = τ · exp[η(m−ρ)]<br/>log τ<sub>next</sub> − log τ = η(m−ρ)</div>
+<p>这是对目标刷新率 ρ 的反馈：若 m=1 且 ρ=.4，<code>logτ</code> 增加 0.03；若 m=0，减少 0.02。它近似追踪 drift 的 <code>(1−ρ)</code> 分位点，避免手工为每个模型调 τ。η 大会更快适应突变但阈值振荡更强；η 小更稳却追不上长输出中的分布变化；ρ 大改善 fidelity 但增加搬运与候选计算。对短输出（12–29 步）控制器尚未收敛，实际刷新率 41–48% 高于目标 40%。</p>
+<div class="equation"><b>Low-rank detector · Section 5</b><br/>K ∈ R<sup>Np×128</sup>, P<sub>R</sub> ∈ R<sup>128×8</sup><br/>ApproxLogit(q,k) = (qP<sub>R</sub>)(kP<sub>R</sub>)ᵀ<br/>ExactLogit(q,k) = qkᵀ</div>
+<p>SVD 选择最大能量方向，低秩投影减少探测器的存储与每步点积。<strong>8 个通道</strong>相对于 InfiniGen 的 32 通道使 GPU-resident detector 约小 4 倍；但这里的 4× 是<strong>探测器体积</strong>，不是整机显存减少 4 倍。论文对每次刷新候选精排用完整 key，避免把 8 维近似直接当最终 attention。SVD 还会带来 Prefill 末端的一次性开销，论文未提供端到端 TTFT 测量。</p>
+<div class="equation"><b>Data movement model · Section 5</b><br/>RCR ≈ 5cρ = 5×32×0.4 = 64 vectors / step / KV head<br/>InfiniGen ≈ 2c = 64 vectors / step / KV head<br/>Fixed full scan ≈ ρ(Np+2c) vectors / step / KV head</div>
+<p>它优化的主要是<strong>期望 CPU→GPU 数据搬运</strong>与 cache 质量，而非声称 Transformer FLOPs 全面降低。RCR 检测器还要每步扫描低秩 prefix、触发时计算候选、做 SVD；是否更快取决于 PCIe、host memory、GPU kernel、batching 与同步。论文估算 Qwen2-VL fp16 约 1.8 MB/token 的条件搬运，在 25 GB/s 理想带宽下约 75 μs；这只是数据传输下界的量级估算，不能当真实 TPOT。</p>
+<h2 class="section-title" id="section-32">2.7 Toy Example：8 个视觉 token 如何被重新召回</h2>
+<p>假设图片前缀有 8 个 token：<code>[人物1,人物2,滑板1,滑板2,坡道1,坡道2,垃圾桶1,垃圾桶2]</code>，GPU 只保留 c=2 个被选 token（为演示忽略窗口）。初选保留人物1与滑板1；完整 8 个 KV 在 CPU 可恢复。生成第一句“一个人拿着滑板”时，低秩估计未保留 token 的 attention mass 为 0.01，小于 τ=0.03，因此 <code>m=0</code>，更新阈值 <code>0.03·exp(0.05×(0−0.4))≈0.02941</code>，不刷新。</p>
+<p>写到“他走上坡道”时，未保留 token 的估计 drift 变成 0.07，大于 0.02941，触发刷新，<code>m=1</code>，阈值变为 <code>0.02941·exp(0.05×0.6)≈0.03030</code>。探测器粗选候选，再用完整 128 维 key 精排，GPU 两个 prefix 槽换成坡道1、坡道2。继续写“角落有垃圾桶”时，若 drift 再升高，垃圾桶 token 可被重新召回。这个例子说明<strong>保留可恢复副本</strong>是必要条件；如果原 token 真被永久丢弃，控制器再聪明也不能重建证据。</p>
+<p>实际论文用 c=32、候选 4c=128、检测器 R=8、ρ=.4；这里 c=2 仅用于手算。若 c=2，平均数据搬运 <code>5×2×.4=4</code> 向量/步，恰好等于每步取 <code>2c=4</code> 的方案；但按 drift 选时机可能在相同平均搬运下更忠实。这个 toy 不是论文测量结果。</p>
+<h2 class="section-title" id="section-33">2.8 Baseline Deep Comparison：最强对手是谁</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>怎么做、合理性</th>
+<th>哪里失败 / 强项</th>
+<th>RCR 的机制差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BACON</td>
+<td>Prefill 选一次重要视觉 KV，显存低、无需持续读取</td>
+<td>长描述证据随文本移动，丢掉的对象回不来</td>
+<td>保留完整副本并动态 re-select；<strong>机制变化</strong></td>
+</tr>
+<tr>
+<td>Prefill Oracle</td>
+<td>用完整答案 attention 选一次 token，诊断评分上限</td>
+<td>仍只有 0.44–0.52 fidelity，说明一次选择结构性不足</td>
+<td>不依赖更好的单次评分，而是更新时序</td>
+</tr>
+<tr>
+<td>Periodic Refresh</td>
+<td>每 T 步重选，简单可预测</td>
+<td>在语义转折前后不对齐，可能浪费预算</td>
+<td>用 drift 触发；相同/更低 rate 有更高 fidelity</td>
+</tr>
+<tr>
+<td>Fixed Drift Threshold</td>
+<td>drift 大于 τ 时重选，能追踪局部变化</td>
+<td>低 drift 样本、长输出后期被“饿死”，τ 不可迁移</td>
+<td>per-sample rate controller；<strong>核心新组合</strong></td>
+</tr>
+<tr>
+<td>InfiniGen</td>
+<td>每步用低维 key/前一层 proxy 预测需要的 KV，持续检索</td>
+<td>100% 步骤搬运、proxy 排名有误</td>
+<td>只刷新约 40% 层-步，候选精排；<strong>strongest practical baseline</strong></td>
+</tr>
+<tr>
+<td>Exact Every Step</td>
+<td>每步用真实 query 对完整前缀重选</td>
+<td>fidelity 很强但代价高，不是严格理论上界</td>
+<td>RCR 在多数 setting 接近它，但不声称严格超越上界</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest baseline</strong>：若关注实际近似检索方法与相近估算流量，InfiniGen 是最强、最有意义的对手；若关注“当前 query 精确重选的质量参考”，Exact Every Step 更强，但成本不匹配，且不是数学意义的绝对上界。不要把“RCR 在 LLaVA DetailCaps 0.485 略高于 Exact 0.478”解读为打破某个不可能上界。</p>
+<h2 class="section-title" id="section-34">2.9 Experiment Setup &amp; Metrics：评估到底测了什么</h2>
+<p><strong>Research Question A：一次性选择是不是结构性失败？</strong> 用 Qwen2-VL-7B、LLaVA-NeXT-7B、Qwen3-VL-8B 在 DetailCaps 做 one-shot oracle 与动态重选对比。<strong>Research Question B：动态触发比固定频率好多少？</strong> 控制候选检测器、预算与刷新率，只替换 random/periodic/drift trigger。<strong>Research Question C：跨模型、跨任务能否同一组参数？</strong> 三模型 × DetailCaps/TextCaps 六个 setting，主参数固定 <code>ρ=.4, η=.05, τ0=.03, R=8, c=W=32, candidates=4c</code>。<strong>Research Question D：诊断是否可迁移到视频？</strong> 在 300 个 ActivityNet VideoDetailCaption 视频（每段 32 帧）比较 Qwen2-VL/Qwen3-VL；不为了视频重新调 RCR。</p>
+<p><strong>数据与协议</strong>：DetailCaps 从 4870 图像中均匀取 300 个测试样本；TextCaps 取前 500 张验证图像；Qwen2-VL DetailCaps 的 100 张开发图像与 300 张测试图像<strong>有 2 张重合</strong>，不是绝对零重合。作者在开发集比较 14 个变体，再在六个设置下按预先登记的决策规则确认，另有 post-hoc ρ/budget 扫描。DetailCaps 最多生成 512 tokens，TextCaps 输出较短；视频也是最多 512 tokens、greedy decoding。Qwen2-VL 与 LLaVA 用 fp16，Qwen3-VL 用 bf16。所有动态 baseline 都在同一套 Transformers attention patch 模拟环境中实现，不是逐个官方系统原样部署。</p>
+<p><strong>Fidelity / ROUGE-L to full output</strong>：把压缩方法输出与同模型<strong>未压缩输出</strong>比较最长公共子序列相似度，越高代表更像 full-cache 输出；但 full-cache 可能幻觉，fidelity 高不等于事实更正确。<strong>Reference ROUGE-L/CIDEr</strong>：与人工参考描述比较，越高通常越好，但详细描述的表达多样性大，可能无法区分方法；论文发现动态方法之间差异很小。<strong>CAPTURE</strong>：通过 scene graph 解析对象/属性/关系，与人工参考比较，越高越好；依赖自动解析器，会误判同义词或遗漏。<strong>Object Precision/Recall/F1</strong>：把方法输出中的对象与 full-cache 输出中的对象比对，precision 高表示额外编造的对象少，recall 高表示漏掉的对象少，F1 是调和平均；它仍以 full-cache 输出为参照，不能证明真实物体存在。<strong>Refresh Rate</strong>：触发更新的 layer-step 比例，越低搬运通常越少，但质量可能差。<strong>Traffic</strong>：每步每 KV head 读多少 128 维向量，是成本模型，不是实测延迟。<strong>95% bootstrap CI</strong>：对配对差异重采样得到不确定区间，若包含 0 就不应声称显著领先；作者也指出多重比较未完全校正。</p>
+<h2 class="section-title" id="section-35">2.10 Results Deep Dive：至少 9 组数字与反证</h2>
+<ol>
+<li><strong>one-shot oracle 的结构性失败</strong>：Qwen2-VL DetailCaps Prefill Oracle 0.516，Exact Every Step 0.613，<strong>差 9.7 pp</strong>；LLaVA 0.440 vs 0.478，差 3.8 pp。说明仅提升 Prefill 评分仍留缺口，但不是所有模型缺口一样大。</li>
+<li><strong>Qwen2-VL DetailCaps 主结果</strong>：RCR 0.598 vs InfiniGen 0.570，<strong>+2.8 pp，95% CI [0.8,4.8]</strong>；vs BACON 0.388，<strong>+21.0 pp</strong>。这是对长描述质量最强的直接证据之一。</li>
+<li><strong>Qwen2-VL TextCaps</strong>：RCR 0.816 vs InfiniGen 0.779，<strong>+3.7 pp，[2.1,5.4]</strong>；实际 refresh 48%，比目标 40% 高，短输出收敛不足。</li>
+<li><strong>LLaVA-NeXT DetailCaps</strong>：0.485 vs InfiniGen 0.451，<strong>+3.4 pp，[2.1,4.8]</strong>；甚至高于 Exact 0.478，说明 Exact 当前-query 重选也不是 fidelity 严格上界。</li>
+<li><strong>LLaVA TextCaps</strong>：0.811 vs 0.773，<strong>+3.8 pp，[1.8,5.9]</strong>，是六组中对 InfiniGen 的最大提升；但与 Exact 0.822 仍有 1.1 pp 差距。</li>
+<li><strong>Qwen3-VL DetailCaps 弱项</strong>：RCR 0.565 vs InfiniGen 0.560，<strong>+0.5 pp，CI [−1.1,2.1] 包含 0</strong>。因此“六组全部显著更好”是错误说法。</li>
+<li><strong>同预算 timing 因果消融</strong>：Qwen2-VL 40% 随机刷新 0.548、40% RCR 0.598，<strong>+5.0 pp</strong>；50% 周期刷新 0.578 仍低于 40% RCR <strong>2.0 pp</strong>。这是证明“何时更新”有价值的关键控制实验。</li>
+<li><strong>预算增大优势减弱</strong>：Qwen2-VL DetailCaps budget 128 时 RCR 0.785 vs InfiniGen 0.758，<strong>+2.7 pp</strong>；budget 256 时 0.861 vs 0.849，<strong>+1.2 pp，CI [−0.1,2.4]</strong>。预算越充足，重选机制越不重要。</li>
+<li><strong>视频迁移的关键反例</strong>：Qwen2-VL VideoDetailCaption RCR 0.452 vs InfiniGen 0.442，<strong>+0.9 pp，CI [−0.6,2.4]</strong>；同一视频固定阈值 τ=.05 可达 0.461（35% refresh），比 RCR 0.452 更高。Qwen3-VL 视频 RCR 0.412 vs InfiniGen 0.392，<strong>+2.0 pp</strong>，但接近的固定阈值 0.417（39%）仍不弱。视频没有复现“rate control 优于 fixed threshold”的结论。</li>
+<li><strong>对象级质量更细致</strong>：LLaVA 的 full-output object F1，RCR 0.758 vs InfiniGen 0.733，<strong>+2.5 pp</strong>，主要来自 object recall <strong>+4.8 pp</strong>；但相对人工参考的 object precision <strong>−2.2 pp</strong>，意味着可能保留更多 full-output 对象的同时也引入更多非参考对象。</li>
+</ol>
+<p><strong>Strongest result</strong>：同 detector/候选条件下 RCR 40% vs Random 40% 的 +5.0 pp，直接支持触发机制；<strong>weakest result</strong>：Qwen3-VL 图像 +0.5 pp 不显著，以及视频相对 fixed threshold 不占优；<strong>系统 trade-off</strong>：RCR 约 63–77 个向量/步/head 的估计搬运，接近 InfiniGen 64，探测器 4× 更小，但它在触发层的 fetch 位于 critical path，真实延迟未知。</p>
+<h2 class="section-title" id="section-36">2.11 Table / Figure Reading：六个最值得盯的证据</h2>
+<p><strong>Figure 1（示意图）</strong>：滑板者→坡道→垃圾桶，解释 evidence shift 与动态 KV 重选；它不是测量结果，不能用图示证明 speedup。<strong>Figure 2（按漂移三分组）</strong>：横向比较低/中/高 drift 样本的 fixed threshold、InfiniGen、Exact、RCR；低 drift 样本 fixed threshold 仅 1% 刷新、BACON 0.462 vs Exact 0.763；RCR 将低组 fidelity 从 0.548 提升到 0.718。这比总体平均更能定位失败原因。<strong>Table 1（one-shot 上限）</strong>：行是 BACON、SnapKV、Prefill Oracle、Exact，列是三模型 DetailCaps；最关键不是“Oracle 最好”，而是 Oracle 0.44–0.52 仍远低于动态 Exact。</p>
+<p><strong>Table 2（主表）</strong>：六个模型-任务组合，方法行包括 BACON、Quest、InfiniGen、Fixed、RCR、Exact；括号是 refresh rate，方括号是 paired bootstrap CI。读法必须同时看 fidelity 和成本：RCR 的 0.598（40%）不是“比 0.570（100%）少 60% 总计算”，只表示刷新层-步少 60%，且估计搬运接近。<strong>Table 3（组件消融）</strong>：从 fixed page-mean 15%/0.498，到 low-rank 28%/0.548，再到 RCR 40%/0.584；这些变体的刷新率不完全相同，不能把所有改善都归于 SVD。<strong>Table 4（trigger 控制）</strong>：随机 40% 为 0.548、周期 50% 为 0.578、drift 40% 为 0.598，最直接排除“只因刷新更频繁”。</p>
+<p><strong>Figure 6/7（时间与层分布）</strong>：固定阈值在生成前 10% 的层-步约 70% 刷新，最后 10% 仅约 3%；RCR 各十分位约 39–43%，且与 fixed threshold 的跨层刷新偏好 Spearman 0.93。它说明控制器主要改变<strong>样本/时间预算</strong>，而不是抹掉层差异。<strong>Table 11（视频）</strong>：32 帧 ActivityNet、两模型；RCR 对 InfiniGen 在 Qwen3-VL 有增益，但与匹配 rate 的 fixed threshold 没有显著差别，强烈限制“普适最优控制器”这一潜在过度宣称。</p>
+<h2 class="section-title" id="section-37">2.12 Ablation / Mechanistic Analysis</h2>
+<p><strong>去掉 rate controller</strong>：改成固定 τ，低 drift 样本和长输出后期被饿死；Qwen2-VL DetailCaps Table 2 的 fixed 0.551（25%） vs RCR 0.598（40%），但刷新率不同，不能直接归因；应优先看 Figure 2 的分组诊断和相近 rate 扫描。<strong>去掉 drift 触发、换随机</strong>：Table 4 同 40% rate 下 0.598→0.548，下降 5.0 pp，是更干净的因果消融。<strong>去掉 low-rank detector、改 page-mean</strong>：开发集相近 rate 的比较提示低秩更好，但有 rate 混杂；关键价值是可做 token-level 排名与 top-4c 候选。</p>
+<p><strong>去掉 candidate-restricted re-selection</strong>：每次刷新要扫描全部 Np prefix，成本从 <code>5c</code> 上升到 <code>Np+2c</code>，在 Np≈1000–2300 时昂贵；它主要承担工程可行性，不是决定刷新时机的核心理论。<strong>去掉 GPU-side decision</strong>：Qwen3-VL 模拟环境每样本约 137 秒→40 秒（约 3.4×），但该数字来自 14 个评估进程/4 核主机的模拟同步瓶颈，<strong>绝对不能写成端到端模型推理 3.4×</strong>。<strong>ρ 扫描</strong>：Qwen2-VL DetailCaps ρ=.1/.2/.4/.6 的 fidelity 为 .538/.560/.598/.606，说明前期加预算收益更大、后期边际收益下降。<strong>视频反证</strong>：视频 drift CV 0.14–0.18，图像 Qwen CV 0.71–0.78；当样本间分数分布更同质，rate control 的独特收益不再显著。这是作者对自身机制假设较诚实的边界检验。</p>
+<h2 class="section-title" id="section-38">2.13 Inference / Video Efficiency Breakdown：不能把 FLOPs 当加速</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Baseline（InfiniGen / full）</th>
+<th>Proposed（RCR）</th>
+<th>Change / 解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frames（视频）</td>
+<td>32 输入帧</td>
+<td>32 输入帧</td>
+<td><strong>0</strong>；不是帧采样加速</td>
+</tr>
+<tr>
+<td>Visual Tokens（输入）</td>
+<td>约 2205/2342 video prefix tokens</td>
+<td>同一输入 prefix</td>
+<td><strong>0</strong>；压的是 GPU 保留 KV，不是视觉编码器 token 数</td>
+</tr>
+<tr>
+<td>GPU Prefix KV</td>
+<td>主设置 64 entries/head 的检索预算</td>
+<td>64 entries/head（c=32,W=32）</td>
+<td>预算匹配；完整前缀副本在模拟中仍在 GPU</td>
+</tr>
+<tr>
+<td>FLOPs</td>
+<td>Not Reported</td>
+<td>Not Reported</td>
+<td>有低秩检测与候选精排开销，不能推断 FLOPs 减少</td>
+</tr>
+<tr>
+<td>Decode latency / TPOT</td>
+<td>Not Reported</td>
+<td>Not Reported</td>
+<td><strong>未实测真实 offload wall-clock</strong></td>
+</tr>
+<tr>
+<td>TTFT / Prefill latency</td>
+<td>Not Reported</td>
+<td>Not Reported</td>
+<td>额外 SVD 可能增加 Prefill 成本</td>
+</tr>
+<tr>
+<td>Throughput / FPS</td>
+<td>Not Reported</td>
+<td>Not Reported</td>
+<td>不能宣称 FPS 提升</td>
+</tr>
+<tr>
+<td>GPU Memory</td>
+<td>detector 约 Np/4 key equivalents（InfiniGen）</td>
+<td>detector 约 Np/16 key equivalents</td>
+<td><strong>detector 4× 小</strong>，非整机显存 4×</td>
+</tr>
+<tr>
+<td>KV Memory（系统总量）</td>
+<td>完整前缀需保存/可检索</td>
+<td>完整前缀仍需保存/可检索</td>
+<td>CPU/offload 副本仍占空间</td>
+</tr>
+<tr>
+<td>Estimated transfer</td>
+<td>约 64 vectors/step/head（InfiniGen）</td>
+<td>约 63–77；理论 5cρ≈64</td>
+<td><strong>接近</strong>，不是搬运量 4× 降低</td>
+</tr>
+<tr>
+<td>Accuracy/Quality（视频）</td>
+<td>Qwen2 .442 / Qwen3 .392</td>
+<td>Qwen2 .452 / Qwen3 .412</td>
+<td>+0.9（不显著） / +2.0 pp（显著）fidelity</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Bottleneck</strong>：长视觉前缀的 KV 存储、CPU↔GPU 搬运与 decode 阶段视觉证据过时。<strong>少算/少搬什么</strong>：RCR 在约 60% layer-step 不做完整候选 KV 更新，减少不必要的刷新；但每步仍做 detector 和可能的候选计算，且期望搬运量与 InfiniGen 接近。<strong>是否 retraining</strong>：不需要模型参数再训练，属于 inference-time cache policy。<strong>硬件相关</strong>：真实收益高度依赖 GPU/CPU 内存、PCIe/UVA、kernel 和 batch。<strong>Batch scaling</strong>：论文未报告；多请求 batch 中每样本不同触发掩码可能降低访存合并效率。<strong>Long-context</strong>：图像与 32 帧视频有证据，更长 streaming video 尚无。<strong>理论 vs wall-clock</strong>：仅给数据移动成本模型和 GPU-side simulation 优化，<strong>尚不能认定真实端到端加速</strong>。</p>
+<h2 class="section-title" id="section-39">2.14 Claim vs Evidence</h2>
+<p><strong>Authors Claim</strong>：一次性视觉 KV 选择对长描述有结构性不足；固定 drift 阈值跨样本不校准；按样本速率控制 + 低秩检测 + 候选精排在相近估算流量下提高 fidelity；视频漂移更同质时该优势会减弱。</p>
+<p><strong>Experiments Actually Show</strong>：图像六设置中五组 RCR 相比 InfiniGen 的 paired CI 不含 0；控制 trigger 的实验在同 rate 下支持“刷新时机重要”；低 drift 三分组和时间轨迹支持固定阈值饿死样本的诊断；视频上的 fixed threshold 反例与诊断相符。<strong>What Is Not Yet Proven</strong>：真实 CPU-offload 系统的 TTFT/TPOT/throughput/energy；在不同 batch size、长 streaming、多图/多轮 Agent 场景仍有优势；fidelity 的提升一定带来人类感知的事实正确率提升；RCR 与未实现的 DSTP 等触发策略相比的优势。</p>
+<h2 class="section-title" id="section-40">2.15 Contribution、Limitation &amp; Failure Modes</h2>
+<p><strong>Contribution 1 — New Empirical Finding</strong>：one-shot oracle 在长描述仍严重失真，揭示证据时变性；这一诊断比小幅榜单提升更可迁移。<strong>Contribution 2 — New Mechanism / Engineering</strong>：将漂移排名与每样本 rate control 分离，控制器实现自适应分位点。<strong>Contribution 3 — New System / Engineering</strong>：8 维 SVD detector + top-4c coarse-to-fine + GPU-side mask；均借用成熟数值/系统组件，创新主要在组合与适配。<strong>Contribution 4 — New Evaluation Protocol</strong>：开发-确认分离、paired bootstrap、对象级质量、视频异质性反证；并非新数据集。</p>
+<p><strong>Authors' Limitation</strong>：只评估三款 7–8B 模型的图像 caption、两款模型的视频 caption，budget 64 为主；budget 256 的提升不显著；视频不优于匹配 rate 的 fixed threshold；参考指标差异小；没有人类评测；开发/测试存在 2 张重合；对比均为统一模拟重实现；未测真实 offload latency。<strong>Additional Limitation</strong>：CPU 副本可恢复性与带宽容量依赖；SVD 初始化可能拖慢 TTFT；GPU-side mask 仍可能执行无效候选计算；低秩 detector 遗漏低能量但关键的细节；自动 scene-graph parser 的错误；当压缩诱发幻觉时“接近 full output”不等于正确；动态缓存跨 batch/跨请求的调度复杂度、cache consistency、并发 offload 尚未验证。</p>
+<h2 class="section-title" id="section-41">2.16 Reproduction View：先复现 fidelity，再碰真实系统</h2>
+<p><strong>代码状态</strong>：作者仅承诺将发布代码/日志/预注册文件；当前没有核验到官方仓库。复现可从 Hugging Face Transformers 的 <code>Qwen2VLAttention</code> / 相关 attention forward hook 入手，先不要实现真实 CPU offload。第一阶段固定 <strong>Qwen2-VL-7B + DetailCaps 100 张开发图</strong>，先复现 BACON one-shot、exact every-step、固定 τ 与 RCR 四条曲线；<code>budget=64, c=W=32, rho=.4, eta=.05, tau0=.03, rank=8, candidates=128, max_new_tokens=512, greedy=True</code>。记录每个 layer-step 的 <code>drift, tau, trigger, selected_token_ids, top_candidate_ids, exact_attention, generated_token</code>。</p>
+<p>最容易踩坑：GQA 中 query heads 与 KV heads 的 attention 归并；RoPE 已应用的 key 不可二次旋转；低秩矩阵维度与每头 SVD；<code>torch.where</code> mask 写回不应污染未触发头；完整前缀与窗口/生成 token 的位置索引；attention softmax 的归一化范围；数值 dtype（fp16/bf16）；评估要与未压缩输出使用<strong>相同 decoding 配置</strong>。最先验证的机制 Claim 是<strong>相同 40% refresh rate 下 drift timing 是否优于 random timing</strong>，再验证低 drift tercile 的恢复；此阶段不需要 GPU-offload 内核。第二阶段才实现 host-pinned KV 与按 mask 的异步条件 fetch，报告 p50/p95 TPOT、TTFT、tokens/s、PCIe bytes、峰值显存，并在 batch=1/4/16 与 32/128 帧下压测。若只有模拟 fidelity，不应称为系统复现完成。</p>
+<h2 class="section-title" id="section-42">2.17 Research Value（逐项）</h2>
+<p><strong>Baseline Potential：高</strong>，适合与 BACON/InfiniGen/fixed threshold 构成 cache-policy 基线，但代码尚未发布增加复现成本。<strong>Migration Potential：高</strong>，score 排序与预算分配解耦可用于 Agent memory、视频帧/片段回取、长期上下文。<strong>Systems Potential：极高但尚待验证</strong>，真正的条件 host fetch 与 batch-aware kernel 可形成独立系统论文。<strong>Attack Potential：中高</strong>，可以构造 low-drift-but-critical visual evidence 让 fixed threshold 漏检。<strong>Evaluation Potential：高</strong>，定义 drift heterogeneity、refresh starvation、late-stage object recall、latency-fidelity Pareto。<strong>Benchmark Potential：高</strong>，设计细节晚出现的视频描述、长文多对象追踪。<strong>New Paper Potential：中高</strong>，若把动态 rate controller 从“固定比例”升级为“可预测下游错误/恢复收益”，并在真实硬件给出 speedup，有明确缺口；但要避开与 dynamic KV retrieval / DSTP 的现有机制重复。</p>
+<h2 class="section-title" id="section-43">2.18 Migration Analysis：两个不同研究方向</h2>
+<h3 class="subsection-title" id="section-44">Migration A · Streaming Video 的可恢复时序记忆</h3>
+<p><strong>Original Problem</strong>：长输出时图像证据发生漂移，固定阈值可能错过关键细节。<strong>Transferable Mechanism</strong>：drift-trigger + per-stream budget controller + recoverable KV。<strong>New Research Question</strong>：在连续流视频中，事件发生后若干秒才被问及，能否用低成本的动态证据回取降低遗忘和延迟？<strong>Method Modification</strong>：把视觉前缀按时间段 chunk；缓存每段压缩 token 的轻量索引，GPU 只留近端窗口与少数关键段；将 RCR 的样本级 τ 扩展成按事件突变与 query 变化自适应的双时间尺度控制器，允许“高风险事件临时借预算”，事后归还。</p>
+<p><strong>Minimum Experiment</strong>：先从 ActivityNet/VideoDetailCaption 取 200 个视频，统一 1 fps 生成 32/64/128 帧版本；冻结 Qwen2-VL-7B；GPU 视觉 KV 预算设 64/128 entries/head；每 8 帧设一 chunk，事件查询在视频末尾和延迟 30/60 秒触发。配置 <code>rho=.2/.4, eta=.05, rank=8, candidates=4c, batch=1/4, seeds=3</code>；同时保留原始全帧 baseline 和 fixed threshold。<strong>Model</strong>：Qwen2-VL-7B。<strong>Dataset</strong>：ActivityNet/VideoDetailCaption + 人工合成“早期对象晚期问答”子集。<strong>Baseline</strong>：Uniform frame sampling、BACON、InfiniGen、fixed τ、原 RCR。<strong>Metric</strong>：event QA accuracy、object recall、F1、TTFT/TPOT、FPS、PCIe bytes、峰值 GPU memory、长视频长度分桶。<strong>Expected Contribution</strong>：将证据可恢复性与流式时序预算结合。<strong>Risk</strong>：真实条件 offload 复杂、帧数增加导致视觉 encoder 成本主导。<strong>Collision Risk</strong>：与 streaming memory、adaptive frame selection、dynamic KV eviction 大量相近工作重合；新意必须是延迟事件回取的实测收益和机制分析。</p>
+<h3 class="subsection-title" id="section-45">Migration B · Agent Memory Rehydration with Outcome-Aware Rate Control</h3>
+<p><strong>Original Problem</strong>：长生成中的视觉 KV 可能因注意力迁移而过时。<strong>Transferable Mechanism</strong>：低成本“是否需要恢复旧证据”检测 + 每 episode 自适应访问预算。<strong>New Research Question</strong>：Agent 在多轮工具调用后，何时应把旧 trajectory/skill/tool result 重新放回工作上下文？<strong>Method Modification</strong>：把 KV token 替换成语义记忆块；当前 plan/query 对已缓存摘要的相似度下降作为 drift proxy；每个任务维护 log-threshold controller，目标检索率 ρ；触发时在外部 memory index 中粗排 top 4c，再用小 reranker 精排 c 条；另测恢复某条记忆对任务成功的真实增益，避免把相似度误当 usefulness。</p>
+<p><strong>Minimum Experiment</strong>：用 100 个可重放的仓库问答/工具链任务，每题人为加入 20 条历史工具输出和 5 条关键依赖；把关键事实放在早期轮次，要求最后 2–4 步才能使用。冻结 Qwen3-4B-Instruct，记忆库 100–500 chunks；<code>c=8, candidates=32, rho=.2/.4, eta=.05, 3 seeds</code>；记录每轮是否检索、检索到的证据 ID、最终执行是否正确。<strong>Model</strong>：Qwen3-4B-Instruct + BM25/embedding retriever。<strong>Dataset</strong>：合成可验证 repository QA，随后迁移到 SWE-bench Lite 的可控子集。<strong>Baseline</strong>：always retrieve、never retrieve、periodic、fixed similarity threshold、top-k retrieval。<strong>Metric</strong>：task success、critical-evidence recall、memory tokens、检索调用数、p95 latency、token cost、错误传播长度。<strong>Expected Contribution</strong>：把 budgeted refresh 从 KV cache 推向可追踪的 Agent 语义记忆。<strong>Risk</strong>：embedding drift 不等于 causal usefulness，历史文本可能被恶意污染。<strong>Collision Risk</strong>：与 agent memory retrieval、context compression、cache management 研究交叉；需引入真正的 outcome-conditioned 检验而非只换术语。</p>
+<h2 class="section-title" id="section-46">2.19 Attack / Verification Lens</h2>
+<p><strong>Black-box probe</strong>：构造“关键视觉对象只占少量 attention，但决定答案”的图片/视频，比较固定阈值与 rate controller 的漏检概率。<strong>Efficiency stress test</strong>：逐步增加帧数 32→128→512、batch 1→16，测真实 PCIe bytes、TTFT、TPOT、p95 latency；让视频在后段才出现新对象，观察 refresh 是否及时。<strong>Robustness</strong>：用视觉遮挡、相似对象、文字噪声、镜头切换改变 drift 分布，检查 rate 控制是否失稳。<strong>Recovery / reacquisition</strong>：定义 <code>Recovery@k</code>——某关键 token 被驱逐后 k 个生成步内是否被重新选回；并与最终对象 recall 对齐。<strong>新 metric</strong>：<code>Starvation Rate = share(samples with refresh&lt;5%)</code>，加上 <code>Critical Evidence Miss Rate</code>。这些都是建议的验证方案，不是论文已经报告的 attack 结果。</p>
+<h2 class="section-title" id="section-47">2.20 如果只记住这篇论文（9 句话）</h2>
+<ol>
+<li>多模态 KV 压缩的关键问题不只是保留多少 token，还包括什么时候重新选择。 2. 长描述的关注对象会移动，一次性 Prefill Oracle 也只能达到约 0.44–0.52 fidelity。 3. Drift 是落在已驱逐视觉 token 上的 attention mass。 4. 固定 drift 阈值会饿死低 drift 样本，且生成后期会因视觉 attention mass 衰减而停止刷新。 5. RCR 用 drift 决定时机，用每样本 ρ=.4 的反馈控制决定刷新频率。 6. 8 维 SVD detector 和 4c 候选精排让刷新更省数据搬运。 7. 图像六设置有五组显著优于 InfiniGen，随机 40% timing 比 RCR 差 5.0 pp 是关键机制证据。 8. 视频上相对固定阈值的优势不再显著，预算增大后增益也缩小。 9. <strong>没有真实 offload wall-clock speedup</strong> 是必须记住的系统限制，真正值得做的是 outcome-aware budget 与真实条件访存内核。</li>
+</ol>
+<h1 class="chapter-title" id="section-48">Cross-Paper Synthesis · 两篇论文放在一起看</h1>
+<h2 class="section-title" id="section-49">共同趋势：从“分数高”转向“真正有用”</h2>
+<p>AOPD 说：教师在某个 token 上给高概率，不代表学生跟着做能成功。RCR 说：某些视觉 token 的 evicted attention mass 很小，不代表恢复它们对长描述不重要。前者研究 <strong>行为建议的结果价值</strong>，后者研究 <strong>信息恢复的预算价值</strong>；两者都警惕用局部 proxy score 代替最终 utility。这不是两篇论文互相引用或已完成的联合方法，而是我们从两篇工作抽象出的<strong>潜在研究交叉点</strong>。</p>
+<p>共同方法论有三点。第一，必须定义真正的 downstream 目标：AOPD 用终局 reward，RCR 以 full-output fidelity 与 object F1 评估质量；但 RCR 的 full-output fidelity 本身仍是 proxy，尚未等于事实正确性。第二，必须做<strong>对照干预</strong>而非只看相关性：AOPD 的教师 token 替换有帮助/损害统计，RCR 的随机/周期/漂移触发同预算消融能隔离 timing 的作用。第三，必须有<strong>可调预算</strong>：AOPD 通过重要性比与 clipping 限制方差、group size 控制 rollout；RCR 用 ρ 直接限制刷新比例、候选粗精排限制搬运。</p>
+<h2 class="section-title" id="section-50">哪些机制可以组合，哪些假设冲突</h2>
+<p><strong>互补机制</strong>：RCR 的 drift 是廉价、在线的“可能需要恢复”信号；AOPD 的 student-relative advantage 是昂贵但更接近结果的“恢复是否有益”目标。可以让一个轻量 selector 用 drift 产生候选，再用离线成功/失败轨迹训练 outcome-conditioned gate，并在运行时用 rate controller 限制重取预算。这样既避免每一步完整反事实评估，也避免仅凭 attention mass 判定价值。</p>
+<p><strong>关键冲突</strong>：AOPD 的理论无偏性依赖 action support、可评估 reward 和冻结 rollout；RCR 的缓存选择发生在高维、连续、强状态依赖的 decode 内部，token 选择的组合动作空间巨大。把 AOPD 公式直接套到每个 KV token 上，会遭遇动作支持集与 credit assignment 的严重困难。正确做法可能是<strong>chunk/segment 级离散动作</strong>，而不是对每个 KV entry 做 RL。</p>
+<p><strong>Collision / Overlap</strong>：两篇并非方法重复；与已有工作的实质重叠风险分别是 AOPD 对 selective teacher guidance、trajectory validation 的延伸，以及 RCR 对 dynamic KV retrieval、DSTP/fixed-threshold trigger 的延伸。新 Idea 必须在实验中证明“结果条件化价值”比相似度/attention proxy 更强，同时给出真实成本，否则容易变成已有方法简单拼接。</p>
+<h2 class="section-title" id="section-51">Combined Research Opportunities · 优先尝试的三个方向</h2>
+<h3 class="subsection-title" id="section-52">Opportunity 1 — Outcome-Aware Budgeted Memory Refresh（优先级最高）</h3>
+<p><strong>问题</strong>：Agent 在长任务里需要回取旧 tool output、skill、memory，但相似度检索会把“看起来相关”当成“能提高成功率”。<strong>统一机制</strong>：RCR 式每 episode 检索率控制 + AOPD 式 outcome-conditioned teacher gate。<strong>最小设计</strong>：在 200 个确定性多步工具任务上，每轮有 10 个可选 memory chunk，gate action 为 retrieve/skip/replace；学生 Qwen3-1.7B、教师 Qwen3-8B；终局成功 reward=1/0，先离线用 AOPD 学 gate，在线用 <code>τ←τexp(η(m−ρ))</code> 控制检索比例；<code>ρ=.2/.4</code>。<strong>对照</strong>：always retrieve、fixed similarity threshold、rate-only、AOPD-only、joint。<strong>指标</strong>：success、critical-evidence recall、tokens/call、p95 latency、teacher-query cost、错误传播深度。<strong>新意门槛</strong>：联合方法必须在<strong>相同预算</strong>下改善 end-to-end success，并用 intervention 证明是恢复了关键证据，而不是仅增加了上下文。</p>
+<h3 class="subsection-title" id="section-53">Opportunity 2 — Video Evidence Reacquisition under Latency SLO</h3>
+<p><strong>问题</strong>：长视频的关键帧可能被早期压缩丢掉，而问题在晚期才出现。<strong>统一机制</strong>：RCR 的可恢复 KV + AOPD 的结果优势校正，将 frame/chunk 回取动作按最终 VideoQA 正确性训练。<strong>最小设计</strong>：Qwen2-VL-7B、ActivityNet/LongVideoBench 子集 300 条，32/64/128 帧，固定视觉预算 64/128 KV entries/head；训练 2-action gate（refresh/skip）和 8-way chunk selector，三随机种子。<strong>对照</strong>：Uniform、BACON、InfiniGen、RCR、RL-only、AOPD-gate。<strong>指标</strong>：QA accuracy、event recall、TTFT、TPOT、PCIe bytes、显存与真实 wall-clock。<strong>新意门槛</strong>：必须实现条件 host fetch；如果只提升 fidelity 而没有实测 latency/throughput，仍只是算法层论文。</p>
+<h3 class="subsection-title" id="section-54">Opportunity 3 — Proxy–Outcome Mismatch Benchmark</h3>
+<p><strong>问题</strong>：教师概率、KL、attention drift、retrieval similarity 是否会系统性误导资源分配？<strong>数据生成</strong>：对同一状态收集 proxy score 与有限预算的真实 intervention outcome；在 RL 记录 teacher-token help/harm，在视频记录 evicted chunk reacquisition 后的 QA/factuality 改善，在 Agent 记录 memory retrieval 的成功变化。<strong>Metric</strong>：proxy-outcome Spearman、top-k utility recall、Budgeted Intervention Gain、Starvation Rate、Outcome per 1k extra tokens。<strong>风险</strong>：反事实评估昂贵，环境随机性可能导致假因果；用同种子 replay、多次 rollout 置信区间、held-out 任务解决。这个 benchmark 比再造一个相似度评分器更容易构成清晰研究贡献。</p>
+<h2 class="section-title" id="section-55">Reading / Reproduction Priority</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>先做什么</th>
+<th>预计最先能验证的结论</th>
+<th>阻塞项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>P0：先读 AOPD §3、§5、Table 4</strong></td>
+<td>手推 Eq. 3.6 的双项消去，再跑教师单 token 干预</td>
+<td>教师动作确有正负 student advantage；理论与代码目标的差异</td>
+<td>教师 logits、reward/verifier、group sampling</td>
+</tr>
+<tr>
+<td><strong>P1：复现 RCR 的 timing 消融</strong></td>
+<td>同一 detector/候选，固定 40% rate，对比 random 与 drift</td>
+<td>不是“刷新次数更多”，而是“刷新时机更好”</td>
+<td>官方代码未公开，需 attention patch</td>
+</tr>
+<tr>
+<td><strong>P2：跑 AOPD 官方小规模训练</strong></td>
+<td>Qwen3-1.7B 外部数学 200 题、3 seeds</td>
+<td>估计器与 clipping 稳定性，正/负优势门控</td>
+<td>训练/teacher compute、all-wrong groups</td>
+</tr>
+<tr>
+<td><strong>P3：真正系统化 RCR</strong></td>
+<td>实现 mask-conditioned CPU KV fetch；batch=1/4/16</td>
+<td>估算流量是否转化为真实 TPOT/throughput 改善</td>
+<td>UVA/pinned memory、GPU kernel、异步调度</td>
+</tr>
+<tr>
+<td><strong>P4：联合 Agent memory gate</strong></td>
+<td>200 条可重放工具轨迹，2×2 ablation</td>
+<td>结果价值 + 预算控制是否互补</td>
+<td>长程 reward、工具动作 support、污染数据</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最适合做 baseline</strong>：AOPD（官方代码与多任务表格较完整）。<strong>最适合形成 system / acceleration idea</strong>：RCR（但必须补真实 offload）。<strong>最适合做 benchmark/metric</strong>：两篇共同启发的 Proxy–Outcome Mismatch。<strong>最适合做 attack/evaluation</strong>：AOPD 的 teacher-harm intervention 与 RCR 的 low-drift-critical-evidence stress test。<strong>最有潜力的新论文缺口</strong>：在固定预算下证明“恢复旧信息的结果价值”优于仅按相似度或注意力更新。</p>
+<h1 class="chapter-title" id="section-56">Sources / Links · 原始来源与核验范围</h1>
+<ol>
+<li><strong>AOPD</strong> — <a href="https://arxiv.org/abs/2610.31563" rel="noopener noreferrer" target="_blank">arXiv record / v1 日期</a> · <a href="https://arxiv.org/html/2610.31563" rel="noopener noreferrer" target="_blank">全文 HTML（方法、Table 1–4、Appendix、理论）</a> · <a href="https://arxiv.org/pdf/2610.31563" rel="noopener noreferrer" target="_blank">PDF</a> · <a href="https://github.com/Helloworld10011/AOPD" rel="noopener noreferrer" target="_blank">官方 GitHub（代码/README/训练脚本）</a>。作者/机构与公式均来自原文；官方仓库中可见 <code>mu</code>、residual correction 与默认 8 GPU 配置。</li>
+<li><strong>RCR</strong> — <a href="https://arxiv.org/abs/2610.31433" rel="noopener noreferrer" target="_blank">arXiv record / v1 日期</a> · <a href="https://arxiv.org/html/2610.31433" rel="noopener noreferrer" target="_blank">全文 HTML（Table 1–13、Figure 1–7、Appendix M）</a> · <a href="https://arxiv.org/pdf/2610.31433" rel="noopener noreferrer" target="_blank">PDF</a>。截至本次检索未核验到官方代码，原文只承诺将发布；成本为估算流量与模拟，不是部署 wall-clock。</li>
+<li><strong>候选检索记录</strong> — <a href="https://arxiv.org/list/cs.LG/recent" rel="noopener noreferrer" target="_blank">arXiv cs.LG 2026-10-23 列表</a> · <a href="https://arxiv.org/list/cs.AI/recent" rel="noopener noreferrer" target="_blank">arXiv cs.AI 近期列表</a> · <a href="https://arxiv.org/list/cs.CV/recent" rel="noopener noreferrer" target="_blank">arXiv cs.CV 近期列表</a> · <a href="https://arxiv.org/html/2610.31483" rel="noopener noreferrer" target="_blank">未入选的 Tool Selection 正文</a>。本次独立搜索未使用另一个 Radar 的输出。</li>
+</ol>
+<div class="footer-note">本报告为研究解读与实验构想；所有 Toy Example 和 Migration 为分析者构造，不能视作论文已验证的结果。论文数值按原文对应表格记录；pp 表示百分点；CI 包含 0 时不作显著性宣称。</div>
+</main></div></body></html>

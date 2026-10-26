@@ -1,0 +1,632 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Daily AI Research Radar — 2026-10-24</title><style>
+:root{--bg:#f4f6fb;--paper:#fff;--ink:#182336;--muted:#64748b;--line:#e3e8f2;--brand:#2643b5;--accent:#0f766e;--s:#b42318;--a:#98570b;--b:#2762a8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",Arial,sans-serif;font-size:15.6px;line-height:1.88;overflow-wrap:anywhere}a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}.shell{max-width:1180px;margin:auto;padding:0 24px 90px}.hero{margin:26px 0 20px;border-radius:20px;padding:42px 46px;background:linear-gradient(125deg,#172554,#243b84 56%,#087f80);color:white;box-shadow:0 12px 32px #1e3a8a22}.hero h1{font-size:34px;line-height:1.35;margin:5px 0 14px}.hero p{opacity:.9;margin:8px 0}.hero .eyebrow{font-size:13px;letter-spacing:.18em;font-weight:800}.hero .subtitle{font-size:17px}.card,section.section{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:28px 32px;margin:18px 0;box-shadow:0 3px 12px #17255409}.toc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px 14px;padding:0;list-style:none}.toc a{display:block;border-bottom:1px dashed var(--line);padding:5px 3px}.section>h2{font-size:24px;line-height:1.4;margin:0 0 20px;padding-bottom:11px;border-bottom:2px solid #e8edfa;color:#1d357a}.section>h3{margin-top:26px}.section p{margin:11px 0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}.stat{border:1px solid #e3e8f2;background:#f8faff;padding:12px 16px;border-radius:12px}.stat .num{font-size:26px;font-weight:850;color:#243b84;line-height:1.2}.stat .lab{font-size:12px;color:var(--muted)}.paper{border:1px solid var(--line);border-radius:13px;padding:24px 26px;margin:18px 0;background:white;box-shadow:0 3px 10px #1725540a}.paper h3{font-size:20px;line-height:1.45;margin:8px 0}.paper h4{font-size:17px;margin:26px 0 8px;color:#24448a;border-left:4px solid #9db3ec;padding-left:11px}.paper p,.paper li{line-height:1.95}.paper strong{color:#142c62}.paper-head{display:flex;gap:7px;flex-wrap:wrap}.pill{border-radius:99px;padding:3px 10px;font-size:12px;font-weight:800;display:inline-block}.pill.s{background:#fee4e2;color:var(--s)}.pill.a{background:#fff0d8;color:var(--a)}.pill.b{background:#e6f2ff;color:var(--b)}.pill.neutral{background:#f0f3f9;color:#475569}.links{font-size:13px;color:var(--muted)}details.paper{padding:0}details.paper>summary{cursor:pointer;padding:18px 22px;list-style:none;display:flex;flex-direction:column;gap:3px}details.paper>summary::-webkit-details-marker{display:none}details.paper>summary:before{content:'＋';float:right;color:#2b4ac1}details.paper[open]>summary:before{content:'－'}details.paper>summary small{color:var(--muted);font-size:12px}details.paper>.inside{padding:4px 26px 24px;border-top:1px solid var(--line)}table{width:100%;border-collapse:collapse;font-size:13.4px;margin:14px 0 22px;display:block;overflow-x:auto}th,td{border:1px solid #dce4f0;padding:8px 10px;text-align:left;min-width:90px;vertical-align:top}th{background:#eaf0ff;color:#18326b}tr:nth-child(even) td{background:#fafcff}blockquote{border-left:4px solid #9cb7ec;padding:7px 17px;background:#f7f9ff;color:#34435b;margin:15px 0}code{background:#edf2ff;padding:1px 4px;border-radius:4px;font-size:.9em}ul,ol{padding-left:25px}.note{padding:12px 18px;border-left:4px solid #eab308;background:#fffbee;border-radius:7px}.warn{border-left-color:#dc2626;background:#fff4f4}.mini{font-size:13px;color:var(--muted)}.rank{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.rank .r{background:#f7f9ff;border:1px solid #e1e7f4;padding:17px;border-radius:12px}.rank .r strong{font-size:18px}.watch{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.watch .item{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fcfdff}.watch .item p{font-size:13px;line-height:1.7;margin:7px 0}.watch .item .cat{font-size:11px;font-weight:700;color:#64748b}.idea{border:1px solid #c8dfd7;background:#f7fdfa;padding:21px;border-radius:13px;margin:14px 0}.idea h3{color:#0b655d;margin-top:0}.footer{font-size:12px;color:var(--muted);margin:20px 4px} @media(max-width:780px){.shell{padding:0 10px 50px}.hero{padding:24px 18px;border-radius:12px}.hero h1{font-size:26px}.card,section.section{padding:19px 16px}.stats{grid-template-columns:repeat(2,1fr)}.toc,.rank,.watch{grid-template-columns:1fr}.paper{padding:15px}.paper h3{font-size:18px}details.paper>.inside{padding:4px 16px 20px}}@media print{body{background:white}.hero{color:#111;background:white;border:1px solid #ddd;box-shadow:none}.section{box-shadow:none;break-inside:auto}a{color:#153b93}details.paper{display:block}details.paper>.inside{display:block!important}}
+</style></head><body><main class="shell">
+<header class="hero"><div class="eyebrow">DAILY AI RESEARCH RADAR · IDEA MINER</div><h1>AI Research Radar · 2026-10-24</h1><p class="subtitle">RL × Agent / Multi-Agent × Video Acceleration</p><p>北京时间 2026-10-24 · 论文窗口重点：2026-10-22 / 23 新上架与交叉列表 · 机制证据优先于热度</p></header>
+<div class="card"><h2>目录 · Contents</h2><ul class="toc"><li><a href="#executive">Executive Summary / 今日总览</a></li><li><a href="#important">Today's Most Important Paper</a></li><li><a href="#top3">Top 3 必读</a></li><li><a href="#top5">Top 5</a></li><li><a href="#rl">RL Highlights</a></li><li><a href="#agent">Agent / Multi-Agent Highlights</a></li><li><a href="#video">Video Acceleration Highlights</a></li><li><a href="#tiers">Tier S 深度分析</a></li><li><a href="#tiera">Tier A 机制分析</a></li><li><a href="#tierb">Tier B 重点跟踪</a></li><li><a href="#ideas">Idea Mining</a></li><li><a href="#collision">Collision Detection</a></li><li><a href="#reading">Reading Priority</a></li><li><a href="#watchlist">Candidate Watchlist</a></li><li><a href="#stats">今日统计 / Depth Audit</a></li><li><a href="#sources">Sources / Links</a></li></ul><p class="mini">Tier S 全文默认展开；Tier A/B 点击标题展开；浏览器 Ctrl+F 可搜索所有当前可见文本（部分浏览器需先展开折叠内容）。全部链接直接指向 arXiv 官方原文。</p></div>
+<section class="section" id="executive"><h2>01 · Executive Summary</h2>
+<div class="stats"><div class="stat"><div class="num">53</div><div class="lab">Candidate Pool</div></div><div class="stat"><div class="num">10</div><div class="lab">Formal Papers</div></div><div class="stat"><div class="num">3</div><div class="lab">RL</div></div><div class="stat"><div class="num">4</div><div class="lab">Agent / Multi-Agent</div></div><div class="stat"><div class="num">2</div><div class="lab">Video Acceleration</div></div><div class="stat"><div class="num">0</div><div class="lab">Unlearning</div></div><div class="stat"><div class="num">1</div><div class="lab">Other</div></div><div class="stat"><div class="num">3 / 2 / 5</div><div class="lab">Tier S / A / B</div></div></div>
+<p><strong>今天三条主线分别发生了什么：</strong> RL 出现值得优先精读的共享随机性反事实 credit（TWICE），以及 advantage-weighted distillation 与奖励模型评价偏差；Agent 方向突出 action-conditioned memory verification、真实用户对记忆使用的偏好、GUI subgoal memory 和缺失证据安全评测；Video 方向一篇强调<strong>四步视频生成的单阶段训练</strong>，另一篇强调<strong>音视频异构分支的可恢复性缓存</strong>。其中 Direct Forcing 的训练更新数显著减少，但同类四步模型的推理 FPS 没变；CAVC 的真实加速只有 1.10–1.35×，不能用理论节省代替实测。</p>
+<p><strong>检索与证据口径：</strong> 已浏览 arXiv 2026-10-23 的 cs.AI / cs.LG / cs.CV / cs.CL / cs.MA 最新条目，建立 53 篇去重候选（其中 3 篇 Unlearning 为 BACKFILL）后统一筛选。论文的 arXiv 首版时间多为 <strong>2026-10-22 UTC</strong>（于 10-23 的列表展示）；不把“列表出现日期”冒充论文提交日期。Tier S 三篇均核验可访问 Method 与 Experiments 正文；Tier B 有几篇仅核验摘要，已显式标注。未找到足以竞争高 Tier 的新 Unlearning 机制，故正式收录 <strong>0 篇</strong>，而不是机械配额。所有分类互斥统计，跨领域交叉在正文单独讨论。</p>
+<p><strong>七日冷却核验：</strong> 参考已有 10/17–10/23 日报，避开了最近 Tier S 的 Self-Credit（2610.28388）、Cache Locally（2610.29229）、ToM2Vec（2610.29934）、KnowGPO、Speculative Forcing 等；本期 Tier S 三篇未在已检查日报中重复。</p>
+
+</section>
+<section class="section" id="important"><h2>02 · Today’s Most Important Paper</h2>
+<div class="note"><strong><a href="https://arxiv.org/abs/2610.31544" target="_blank" rel="noopener">Same Luck, Different Choice: Twin-World Credit Assignment for Agentic Reinforcement Learning</a></strong><br>为什么第一：它不是把奖励拆成更多启发式分数，而是通过共享噪声降低反事实 credit 的估计方差，既有理论也有 1,036 个决策的 oracle 审计。<br><strong>最值得看：</strong>Method §4.1–4.4、Table 2（wrong-sign 21.7%→6.9%）、Table 3（去掉共享噪声会怎样）、Figure 1/2。<br><strong>研究迁移：</strong>从 turn credit 延伸到 memory / skill / tool attribution，前提是可重放环境与合理的干预定义。</div></section>
+<section class="section" id="top3"><h2>03 · Top 3 必读</h2><div class="rank">
+<div class="r"><strong>#1 · <a href="https://arxiv.org/abs/2610.31544" target="_blank" rel="noopener">Same Luck, Different Choice: Twin-World Credit Assignment for Agentic Reinforcement Learning</a></strong><p>共享噪声反事实是直接可复用的 credit 估计机制，且有真实消融。</p><p><b>优先读：</b>§4 / Table 2–3 / Figure 1</p></div>
+<div class="r"><strong>#2 · <a href="https://arxiv.org/abs/2610.31446" target="_blank" rel="noopener">When Is a Memory Safe Enough to Act On? Action-Conditioned Verification for Long-Lived Agents</a></strong><p>把 Agent Memory 的可靠性与具体动作后果绑定，可用于长期系统的执行前防护。</p><p><b>优先读：</b>§3 / Table 1–3 / RQ5</p></div>
+<div class="r"><strong>#3 · <a href="https://arxiv.org/abs/2610.30861" target="_blank" rel="noopener">Direct Forcing: A Single-Stage Training Recipe for Few-Step Autoregressive Text-to-Video Generation</a></strong><p>从单阶段联合目标学四步视频生成，训练流程缩短；需辨认推理速度并无同类优势。</p><p><b>优先读：</b>§3 / Table 1–4 / Figure 4</p></div>
+</div></section>
+<section class="section" id="top5"><h2>04 · Top 5</h2><ol>
+<li><a href="https://arxiv.org/abs/2610.31544" target="_blank" rel="noopener">Same Luck, Different Choice: Twin-World Credit Assignment for Agentic Reinforcement Learning</a> <span class="mini">· RL · S</span></li>
+<li><a href="https://arxiv.org/abs/2610.31446" target="_blank" rel="noopener">When Is a Memory Safe Enough to Act On? Action-Conditioned Verification for Long-Lived Agents</a> <span class="mini">· Agent · S</span></li>
+<li><a href="https://arxiv.org/abs/2610.30861" target="_blank" rel="noopener">Direct Forcing: A Single-Stage Training Recipe for Few-Step Autoregressive Text-to-Video Generation</a> <span class="mini">· Video · S</span></li>
+<li><a href="https://arxiv.org/abs/2610.30854" target="_blank" rel="noopener">CAVC: Convergence-Adaptive Audio-Visual Cache for Modality-Asymmetric Diffusion Generation</a> <span class="mini">· Video · A</span></li>
+<li><a href="https://arxiv.org/abs/2610.31272" target="_blank" rel="noopener">Memory-Aware Reward Modeling: Learning Human Preferences for LLM Memory Use</a> <span class="mini">· Agent · A</span></li>
+</ol><p class="mini">Top 5 是综合机制/证据/迁移价值排序，不由 Tier 自动决定。</p></section>
+<section class="section" id="rl"><h2>05 · RL Highlights</h2><p><strong>重点变化：Credit 估计从“多采样”走向“控制反事实噪声”。</strong> TWICE 使用共享 Gumbel noise 在相同后续随机性下比较动作；AOPD 尝试用现有 student rollout 估计 teacher action advantage，避免额外反事实 rollout；Generative Reward Models 的实验提醒：静态 judge accuracy 更高不保证优化出的 policy 更强。</p>
+<p><strong>必须追踪的 RL 链条：</strong> <code>Trajectory → terminal reward → turn-level counterfactual credit → advantage-weighted update</code>。本期已明确 TWICE 的 sparse exact-match reward、组内优势与 twin advantage；AOPD 和 GenRM 的训练效率数字尚未从正文核验，不能写成已验证加速。下一步应比较同等 rollout tokens 下的最终成功率、credit sign error、KL、训练稳定性和 reward hacking。</p>
+</section>
+<section class="section" id="agent"><h2>06 · Agent / Multi-Agent Highlights</h2><p><strong>重点变化：Memory 的目标从“记得住”走向“该不该用、用了有什么后果”。</strong> AMV-Guard 把 memory premise、行动后果和 VOI 放在同一个决策门；Memory-Aware Reward Modeling 用真实用户偏好否定“记忆越多越好”；Subgoal-aware Memory Graph 把 GUI 经验组织到可复用的意图层；EpiSEM-Bench 测试工具漏掉关键事实后的危险执行。</p>
+<p><strong>信息流与长时稳定性：</strong> Muffin（异步共享 buffer）和 Herding/Cascades（群体从众）值得做 related work，但仅有消息共享不等于信息贡献可归因。10/100/1000-step 的稳定性与跨 Agent 传播错误，本期绝大多数工作尚未充分证明，不能把短任务成功率外推到长期系统。</p>
+</section>
+<section class="section" id="video"><h2>07 · Video Acceleration Highlights</h2><p><strong>两个不同的“快”：</strong> Direct Forcing 让<strong>训练流程</strong>从继承数千次初始化更新变成 250 次联合更新，推理仍是四步；CAVC 是<strong>推理执行</strong>中的 training-free 分支缓存，实测 1.10–1.35×。两者不应混成一个 speedup 数字。Direct Forcing 的 20.63 FPS 与其他四步模型相同；CAVC 缺少完整 FLOPs/峰值显存绝对数值，已按 Not Reported 处理。</p>
+<p><strong>值得扩展的技术线：</strong> 长视频 Query-aware 选择、可恢复性驱动缓存、跨帧 KV reuse、事件级压缩、少步生成与 chunk continuity。优先做真实 GPU latency、显存、token/帧数与质量的同配置对照；对生成任务同时看 VBench Total、Semantic 与时序断裂，不允许用单一平均分掩盖质量损失。</p>
+</section>
+<section class="section" id="tiers"><h2>08 · Tier S · 3 篇 · 默认展开</h2><p class="mini">均已访问 arXiv HTML 正文中的 Method 与 Experiments。以下数字来自各论文自身表格；不同论文间不可直接横比。</p>
+<article class="paper" id="p-2610-31544"><div class="paper-head"><span class="pill s">Tier S</span><span class="pill neutral">RL</span><span class="pill neutral">2026-10-22 v1 · arXiv</span></div><h3><a href="https://arxiv.org/abs/2610.31544" target="_blank" rel="noopener">Same Luck, Different Choice: Twin-World Credit Assignment for Agentic Reinforcement Learning</a></h3><p class="links"><a href="https://arxiv.org/html/2610.31544">论文正文 HTML</a> · <a href="https://arxiv.org/pdf/2610.31544">PDF</a> · <span>Code：未核实，勿视为已开源</span></p><h3>Basic Information / 人话版</h3>
+<p><strong>作者与机构</strong>：Zeropy Surio（University of Sheffield）、Tobias Engel（Carnegie Mellon University）、Mei-Lin Chou（University of Michigan）、Anika Raman（University of Michigan）、Samuel Okafor（Carnegie Mellon University）。<strong>日期</strong>：2026-10-22 首版；<strong>Venue</strong>：未核实会议录用，按 arXiv preprint 处理；<strong>Project / Code</strong>：未核实。</p>
+<p>Agent 做一连串搜索时，通常只知道最后答案对不对，却不知道哪一步查询真正帮了忙。传统反事实方法会换掉其中一步，再让后续模型重新随机生成；这样得到的成绩差异既包括“换动作”的影响，也包括“后来运气不同”的影响。TWICE 的想法是：<strong>换动作，但尽可能让两个世界后续使用同一份随机性</strong>。它用按轮次、行号和 token 位置索引的 Gumbel 噪声，构造配对轨迹，用终局奖励之差估计该步优势。Qwen2.5-3B 的七任务平均 Exact Match 从 GRPO 的 37.4 升到 42.7；7B 从 42.0 升到 46.5。最重要的不是再加一个奖励，而是把 credit 的统计方差真正降下来。</p>
+<h3>Background &amp; Research Gap：把动作效果与随机运气分开</h3>
+<p>设搜索 Agent 先决定“搜论文标题”还是“搜作者主页”，之后继续搜索并作答。GRPO 给整条成功轨迹同一优势，容易奖励无效步骤；PPO 的价值网络面对长工具历史也难准确估计。VinePPO、CRR 和 tree-based 方法通过补充 rollout 细分信用，但<strong>后续随机采样不一致</strong>。假设同一查询动作本来只提高 5% 的成功概率，重新采样后续回答的波动可能比这 5% 更大，单次比较容易把正贡献判为负贡献。论文将其明确化为方差问题，而不是再设计一个启发式过程奖励。</p>
+<h3>Core Insight 与 Method Deep Dive</h3>
+<p><strong>Input → 采样事实轨迹 → 在某轮选择替代动作 → 固定后续噪声运行 twin → 计算配对 outcome 差 → 按成本选取值得分叉的轮次 → 更新 actor → Output。</strong></p>
+<p><strong>第一步：可复现但仍正确采样。</strong> 事实轨迹中每个 token 通过 <code>argmax_v(logit_v/temperature + Gumbel_v)</code> 采样。随机数不依赖全局 token 计数，而用 <code>(episode, turn, line, position)</code> 作 key。这样替代查询比原查询多写几个字，也不会把下一轮的随机流全部错位。论文报告 keyed sampler 增加约 2% 生成时间。它不把两个世界强行生成成相同文本，只是让“相同随机冲击”进入不同策略分布。</p>
+<p><strong>第二步：配对反事实优势。</strong> 对访问过的状态 <code>s_t</code> 和动作 <code>y_t</code>，重新从旧策略抽一个替代动作 <code>y'_t</code>，后续复用事实轨迹的噪声 key，得到 <code>U'_t</code>。定义 <code>D_t=U-U'_t</code>，其条件期望等于该动作相对于策略平均动作的 advantage。若两个动作完全相同，直接得到零差值；若检索到相同证据，则可少跑一部分后续步骤并作概率重加权。这是减少辅助 token 的工程关键。</p>
+<p><strong>第三步：把分叉预算用在有信息的步骤。</strong> 分叉概率为 <code>q_t=clip(λ√(η̂_t/c_t),q_min,1)</code>，其中 <code>η̂_t</code> 是预测 twin 结果不同的概率，<code>c_t</code> 是补充 rollout 的 token 成本。使用逆概率加权修正选择偏差。直觉是：不要在明显无影响或极昂贵的步骤上反复试错，而要优先看“便宜且可能改变结果”的节点。</p>
+<p><strong>第四步：不更换主体训练器。</strong> 每轮 token 的优势由 GRPO 的 trajectory advantage 与标准化 twin advantage 组合；PPO/GRPO 的 clipping、KL 和工具返回 token masking 保留。twin 只用于训练估计，部署仍是单 actor。Reward 是终局 exact match（稀疏、规则型），并未依赖人工逐步打分；credit 是对动作的反事实贡献，而非奖励模型生成的过程分数。</p>
+<h3>公式 / Toy Example / RL Formulation</h3>
+<p>公式核心是 <code>E[D_t | s_t,y_t]=Aπ(s_t,y_t)</code>；配对方差 <code>Var(D_t)=(1-ρ_t)Var(D_ind)</code>，ρ 越高，同等样本数下噪声越低。<strong>Toy example（示意，非论文实验）</strong>：事实世界先搜 A 后搜 B，答对得 1；替代世界把第一步改搜 C，在后续随机性相同的条件下答错得 0，则 A 相对 C 的一次配对信用为 +1。若两个世界都答对，则差为 0，避免把偶然成功误当动作贡献。</p>
+<p>RL 定义：<strong>State</strong> 为问题与搜索历史；<strong>Action</strong> 为模型写出的推理与检索/回答；<strong>Policy</strong> 为 Qwen2.5 actor；<strong>Trajectory</strong> 为多轮工具交互；<strong>Reward</strong> 为最终 Exact Match；<strong>Advantage</strong> 为组内轨迹优势加 twin turn advantage；<strong>Objective</strong> 为原 PPO/GRPO clipped surrogate；<strong>KL/Entropy</strong> 沿用基线配置；<strong>Exploration</strong> 通过采样替代动作；<strong>Credit</strong> 用共享噪声配对差分。可能的 reward hacking 来自检索证据污染或 grader 只检查最终字符串；论文没有证明真实网页变化下的同样收益。</p>
+<h3>Experiment Setup / Research Questions</h3>
+<p>作者在 Qwen2.5-3B、7B 上测试七个 QA benchmark：NQ、TriviaQA、PopQA、HotpotQA、2Wiki、MuSiQue、Bamboogle；主指标 Exact Match，报告三种随机种子平均。比较 PPO、GRPO、GRPO×2、IGPO、GiGPO、Tree-GRPO、AT²PO、VinePPO、CRR。<strong>RQ1</strong>：是否提高最终正确率？<strong>RQ2</strong>：是否真正改善每轮 credit 的符号与相关性？<strong>RQ3</strong>：共享噪声、行级重新同步、预算分配分别有多大贡献？<strong>RQ4</strong>：额外生成成本是否抵消收益？</p>
+<h3>Results / Baseline Comparison</h3>
+<table>
+<thead>
+<tr>
+  <th>对比（Table 1–3）</th>
+  <th style="text-align:right">Baseline</th>
+  <th style="text-align:right">TWICE</th>
+  <th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>3B 七任务平均 EM</td>
+  <td style="text-align:right">GRPO 37.4</td>
+  <td style="text-align:right"><strong>42.7</strong></td>
+  <td>+5.3 个百分点</td>
+</tr>
+<tr>
+  <td>7B 七任务平均 EM</td>
+  <td style="text-align:right">GRPO 42.0</td>
+  <td style="text-align:right"><strong>46.5</strong></td>
+  <td>+4.5 个百分点</td>
+</tr>
+<tr>
+  <td>3B 最强同类平均 EM</td>
+  <td style="text-align:right">AT²PO 41.0</td>
+  <td style="text-align:right"><strong>42.7</strong></td>
+  <td>+1.7；不只击败弱基线</td>
+</tr>
+<tr>
+  <td>错符号 credit 比例</td>
+  <td style="text-align:right">CRR 21.7%</td>
+  <td style="text-align:right"><strong>6.9%</strong></td>
+  <td>下降 14.8 个百分点</td>
+</tr>
+<tr>
+  <td>Credit 与 oracle 相关系数</td>
+  <td style="text-align:right">VinePPO 0.51</td>
+  <td style="text-align:right"><strong>0.72</strong></td>
+  <td>方向更接近高成本 oracle</td>
+</tr>
+<tr>
+  <td>每更新生成 token</td>
+  <td style="text-align:right">VinePPO 3.20×</td>
+  <td style="text-align:right"><strong>1.70×</strong></td>
+  <td>相比 VinePPO 辅助成本更低</td>
+</tr>
+<tr>
+  <td>每步耗时（8×H100，3B）</td>
+  <td style="text-align:right">GRPO 96s</td>
+  <td style="text-align:right"><strong>152s</strong></td>
+  <td>效果更好，但不是无成本加速</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 1</strong> 证明真实任务收益，且多跳任务更明显；<strong>Table 2</strong> 的 1,036 个决策、每个 128 次 oracle rollout 是最有价值的机制验证；<strong>Table 3</strong> 显示独立噪声替代使平均 EM 从 42.7 降到 41.2、错误符号升到 20.4%；均匀分叉使平均 EM 降到 41.9。<strong>Figure 1/2</strong> 分别说明 variance scaling 和 twin 构造；<strong>Figure 4</strong> 显示训练效率与预算随难度变化。最弱处是 1.70× token 与 152s/step 的训练额外开销，部署开销不应与训练开销混淆。</p>
+<h3>Claim vs Evidence / Ablation / Limitation</h3>
+<p><strong>Authors Claim</strong>：共享噪声使反事实 credit 低方差、无偏，改善长轨迹训练。<strong>Experiments Actually Show</strong>：在确定性/缓存检索环境及两种 Qwen 规模上，credit 审计和 QA EM 同向改善；独立 twin、单一 episode seed、均匀分叉都明显变差。<strong>What Is Not Yet Proven</strong>：真实浏览器、非确定性工具、多人同时操作和开放世界 Agent 是否保留高 ρ；多任务训练总 wall-clock 是否优于所有强对手；该 credit 是否真能追溯长期 memory 写入。论文明确依赖可重放工具和噪声对齐，分叉成本也随 horizon 增长。</p>
+<h3>Contribution / Research Value / Migration</h3>
+<p><strong>Contribution 1 — New Mechanism</strong>：token 级可重放随机性形成 twin-world 对照；<strong>2 — New Objective/Estimator</strong>：无偏 turn-level advantage 与预算重要性修正；<strong>3 — New Empirical Finding</strong>：错误 credit 符号可从 21.7% 降至 6.9%。<strong>Baseline Potential</strong> 很高：可与既有 GRPO/Search-R1 系统对接。<strong>System Value</strong> 在可复现工具环境高，在开放网页环境需先做 tool snapshot。<strong>Benchmark/Attack Value</strong>：可将“某步是否真改变结果”做成因果归因评估。<strong>New Paper Potential</strong>：跨 session 的记忆/技能写入 credit 仍是明显空白。</p>
+<p><strong>Original Problem → Transferable Mechanism → New Research Question → Method Modification → Minimum Experiment → Model → Dataset → Baseline → Metric → Expected Contribution → Risk</strong>：多轮搜索 credit → shared-noise counterfactual → “哪条记忆导致后续成功？” → 将 memory retrieval/write 视为可替换动作并固定后续工具快照 → 对相同 Agent 状态做记忆有/无配对运行 → Qwen2.5-3B → AppWorld/可复现工具任务 → GRPO、Self-Credit、静态 memory → task success、credit sign、token cost → memory causal attribution → memory 改变状态后难以保持相同下游噪声，且干预有偏。</p>
+<p><strong>五句话总结</strong>：这不是一个新的奖励函数，而是更干净的反事实比较。它把动作效果与采样运气分离。最可信的证据是 credit audit，不只是最终 EM。训练辅助成本仍不可忽略。最值得迁移到 Agent Memory/Skill 的因果归因，但要认真处理环境不可重放问题。</p>
+</article>
+<article class="paper" id="p-2610-31446"><div class="paper-head"><span class="pill s">Tier S</span><span class="pill neutral">Agent</span><span class="pill neutral">2026-10-22 v1 · arXiv</span></div><h3><a href="https://arxiv.org/abs/2610.31446" target="_blank" rel="noopener">When Is a Memory Safe Enough to Act On? Action-Conditioned Verification for Long-Lived Agents</a></h3><p class="links"><a href="https://arxiv.org/html/2610.31446">论文正文 HTML</a> · <a href="https://arxiv.org/pdf/2610.31446">PDF</a> · <span>Code：未核实，勿视为已开源</span></p><h3>Basic Information / 人话版</h3>
+<p><strong>作者</strong>：Yiqi Wang、Yifei Wang、Jiaqi Zhang、Zhangkai Wu、Yiqun Duan、Taotao Cai、Mingkai Zheng；<strong>机构</strong>：未从已核验页面完整确认；<strong>日期</strong>：2026-10-22 v1；<strong>Venue</strong>：arXiv preprint，未核实录用；<strong>Code/Project</strong>：未核实。</p>
+<p>一个 Agent 记得某个收件地址，不代表它应该直接把高价值包裹寄过去。<strong>同一条记忆，能否使用取决于下一步行动的后果。</strong> 这篇论文把长期记忆的使用从“检索到了就用”改成“先看该动作依赖哪些记忆前提，再决定继续、核验、重规划还是拒绝”。AMV-Guard 用价值信息（VOI）选择最值得核查的前提。在 ToolSandbox，和同输入静态策略相比，验证成本从 1.843 降至 1.219，安全放行召回维持 100%，Gate harmful 维持 0%，可放行覆盖率从 38.83% 提升到 44.17%。但 AppWorld 的迁移并非全面胜利：成本下降的同时成功率也下降。</p>
+<h3>Background &amp; Gap：记忆正确性不等于行动安全</h3>
+<p>传统 Agent Memory 主要研究怎么写、压缩、检索、更新、去冲突。即使一条旧地址有 90% 可信度，寄一份普通宣传册与寄一份昂贵证件的风险容忍度也不同。<strong>错误概率是 memory 的属性；可接受的风险是 action 的属性。</strong> 只做 memory freshness 排序无法回答“现在是否需要再问用户一次”；全部核验又可能耗尽工具调用预算。作者把问题提升为带后果成本的序贯停止决策。</p>
+<h3>Core Insight / Method Deep Dive</h3>
+<p><strong>Input：候选行动与相关记忆 → 抽取行动前提 → 为每个前提估计可信度和依赖关系 → 计算执行风险与核验 VOI → 选择核验/继续/拒绝/重规划 → Output。</strong></p>
+<p><strong>Step 1：Premise extraction。</strong> 从行动的前置条件抽取可核验的事实，例如“账户仍有效”“地址未变更”“收件人授权”。这些前提可能是 AND/OR 依赖，不能把整段记忆压成一个平均 confidence。作者使用 LLM+Graph、反事实过滤等构造依赖结构；在未知 schema 下，前提抽取误差是关键风险来源。</p>
+<p><strong>Step 2：Consequence-aware risk。</strong> 对候选行动 <code>a</code>、前提后验 <code>b</code>，计算预期损失 <code>R(b,a)=E[L(Proceed(a),z)]</code> 和损失超过阈值 δ 的概率 <code>Hδ(b,a)</code>。只有当风险屏障满足阈值、且执行成本不超过 abstention cost κ，才允许放行。相同记忆在低风险动作中可直接通过，在高风险动作中需要查证，极高风险且无法验证时直接拒绝。</p>
+<p><strong>Step 3：Value of Information。</strong> 不对所有前提平均核验，而是比较“做某次检查后，最终决策预期损失能否减少”与检查费用 <code>λC(q)</code>。每次工具返回后重新更新 posterior 与 VOI。单步贪心不足时，允许受限两步前瞻，以捕获互补证据：例如单查订单或地址都不够，但两个一起查才能改变决策。若证据推翻关键前提，返回 <code>ReplanRequired</code>，而不是继续执行旧动作。</p>
+<p><strong>Step 4：Failure ownership。</strong> 把 Gate 阶段的错误放行与上游 planner 误解意图、下游工具错误分开统计。这点非常重要：0% Gate harmful 并不意味着整条 Agent 工作流零伤害。</p>
+<h3>Objective / Toy Example / Agent Architecture</h3>
+<p><code>V_stop(b,a)</code> 在安全且预期损失低时选择 Proceed 的期望损失，否则付出 κ 选择 Abstain；理想动态规划比较 <code>V_stop</code> 与 <code>λC(q)+E[V*(updated belief)]</code>，实际方法采用有限预算近似。变量 δ、ε、κ、λ、ρ 分别控制损失阈值、尾部风险、拒绝代价、核验成本权重、触发重规划的失效阈值。<strong>Toy example（示意）</strong>：Agent 从旧 session 读到“收款账户 X”，支付 5 元时可能不核验；支付 5 万元时先查询最新账户；若新工具证据显示账户已注销，则重规划或停止。重点不是更好的摘要，而是把“要不要相信它”放到动作层。</p>
+<p><strong>Agent Architecture</strong>：用户任务 → Planner 提议动作 → Memory 检索 → Premise Graph → Risk/VOI Gate → 验证工具 → Environment Feedback → Proceed / Replan / Abstain。<strong>Agent State</strong>：记忆前提、来源、可信度、工具证据、预算和动作后果。<strong>Long Horizon</strong>：论文测试的是特定 episode；10、100、1000 步后的校准稳定性仍未被证明。<strong>Failure Propagation</strong>：前提抽错会让错误记忆漏过 Gate，进入工具执行并污染后续状态；共享记忆可进一步扩散到其他 Agent。</p>
+<h3>Experiment Setup / Research Questions</h3>
+<p>ToolSandbox 使用 3 个 observation seeds × 640 个测试实例；AppWorld gate-core transfer 使用 100 个任务、每方法 200 个 clean/stale episodes。基线包括 Always Proceed、Always Verify All、EnvProbe、CTA、AMV-Static，以及信息受限 exact planner。指标区分 Safe-proceed recall、Gate harmful、verification cost、task success、raw harm、coverage。<strong>RQ1</strong> 是否改进安全-成本前沿？<strong>RQ2</strong> action consequence 与前提结构各自贡献什么？<strong>RQ3</strong> 多步核验何时有益？<strong>RQ4</strong> 迁移到不同环境是否仍有效？<strong>RQ5</strong> 伤害发生在哪个环节？</p>
+<h3>Results / Table &amp; Figure Reading</h3>
+<table>
+<thead>
+<tr>
+  <th>场景与指标</th>
+  <th style="text-align:right">静态 AMV</th>
+  <th style="text-align:right">AMV-Guard</th>
+  <th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>ToolSandbox verification cost</td>
+  <td style="text-align:right">1.843</td>
+  <td style="text-align:right"><strong>1.219</strong></td>
+  <td>约下降 33.9%</td>
+</tr>
+<tr>
+  <td>ToolSandbox Gate harmful</td>
+  <td style="text-align:right">0.00%</td>
+  <td style="text-align:right"><strong>0.00%</strong></td>
+  <td>Gate 层保持零错误放行</td>
+</tr>
+<tr>
+  <td>ToolSandbox safe recall</td>
+  <td style="text-align:right">100%</td>
+  <td style="text-align:right"><strong>100%</strong></td>
+  <td>没有通过牺牲安全可放行召回来省成本</td>
+</tr>
+<tr>
+  <td>ToolSandbox Proceed coverage</td>
+  <td style="text-align:right">38.83%</td>
+  <td style="text-align:right"><strong>44.17%</strong></td>
+  <td>增加 5.34 个百分点</td>
+</tr>
+<tr>
+  <td>ToolSandbox raw harm</td>
+  <td style="text-align:right">6.82%</td>
+  <td style="text-align:right"><strong>7.03%</strong></td>
+  <td>端到端并非零伤害，且略高</td>
+</tr>
+<tr>
+  <td>AppWorld verification cost</td>
+  <td style="text-align:right">2.655</td>
+  <td style="text-align:right"><strong>2.090</strong></td>
+  <td>降低约 21.3%</td>
+</tr>
+<tr>
+  <td>AppWorld task success</td>
+  <td style="text-align:right">30.50%</td>
+  <td style="text-align:right"><strong>28.00%</strong></td>
+  <td>下降 2.50 个百分点，真实 trade-off</td>
+</tr>
+<tr>
+  <td>AppWorld safe recall</td>
+  <td style="text-align:right">72.63%</td>
+  <td style="text-align:right"><strong>70.53%</strong></td>
+  <td>泛化损失必须明确报告</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 1</strong> 是主实验：安全边界与覆盖率必须同时看；<strong>Table 2</strong> 显示受控子集里多步核验可能提高完成率，却增加验证成本，不能声称任何环境都占优；<strong>Table 3</strong> 是最值得警惕的跨环境结果：省钱不等于成功率更高。方法的 exact planner 对照是“在给定前提图和后验下的决策参考”，不是整个真实系统的最优上界。</p>
+<h3>Ablation / Claim vs Evidence / Limitations</h3>
+<p>作者报告两步 fallback 在一个 ToolSandbox 开发配置中使 safe recall 从 17.0% 提升至 100%、coverage 从 5.31% 提升至 31.25%，代价是验证成本从 0.059 升至 1.213；这是典型成本-安全折中。<strong>Authors Claim</strong>：行动后果决定核验策略，VOI 减少无意义检查。<strong>Experiments Actually Show</strong>：ToolSandbox 强结果、AppWorld 核验成本下降但成功率和 safe recall 下降。<strong>What Is Not Yet Proven</strong>：复杂真实用户行为、动态权限、记忆 provenance 不完整和 1000-step 稳定性。附加风险：误校准的后验会让看似严格的风险阈值失效；Gate 也无法自动修复 planner 的错误目标。</p>
+<h3>Contribution / Research Value / Migration</h3>
+<p><strong>Contribution 1 — New Objective</strong>：action-conditioned memory verification；<strong>2 — New Mechanism</strong>：premise graph + bounded VOI + replan gate；<strong>3 — New Evaluation</strong>：把 Gate harm 与 raw end-to-end harm 分开。<strong>Baseline Potential</strong>：适合所有有长期记忆和外部副作用的 Agent；<strong>System Value</strong>：可作为工具调用前置中间层；<strong>Benchmark Value</strong>：safe/unsafe 配对情景很有用；<strong>Attack Value</strong>：可测试 stale memory 与工具遗漏证据；<strong>New Paper Potential</strong>：如何用 RL 学习 VOI 或跨 session 校准，而不是手工调阈值。</p>
+<p><strong>Original Problem → Transferable Mechanism → New Research Question → Method Modification → Minimum Experiment → Model → Dataset → Baseline → Metric → Expected Contribution → Risk</strong>：记忆核验 → 行动前提+VOI → “哪些历史记忆值得长期保留并在高风险动作前核验？” → 将核验决策变成可学习 policy，并用反事实贡献监督 → 用同一 Agent 轨迹替换单条 memory 前提，比较 proceed/harm → Qwen2.5-3B Agent → ToolSandbox/AppWorld → AMV-Static、Always Verify、简单记忆置信度阈值 → harmful、coverage、verification cost、success → 代价敏感 memory policy → 反事实替换会改变 planner，环境不可完全复现。</p>
+<p><strong>五句话总结</strong>：这篇把 Memory 的价值放到具体行动里。风险越高，不一定查得越多，而是查最可能改变决定的前提。ToolSandbox 的安全-成本结果可信且有工程意义。AppWorld 迁移暴露明显代价。它与 RL credit 和 Multi-Agent shared memory 的结合值得做，但前提抽取可靠性是第一瓶颈。</p>
+</article>
+<article class="paper" id="p-2610-30861"><div class="paper-head"><span class="pill s">Tier S</span><span class="pill neutral">Video</span><span class="pill neutral">2026-10-22 v1 · arXiv</span></div><h3><a href="https://arxiv.org/abs/2610.30861" target="_blank" rel="noopener">Direct Forcing: A Single-Stage Training Recipe for Few-Step Autoregressive Text-to-Video Generation</a></h3><p class="links"><a href="https://arxiv.org/html/2610.30861">论文正文 HTML</a> · <a href="https://arxiv.org/pdf/2610.30861">PDF</a> · <span>Code：未核实，勿视为已开源</span></p><h3>Basic Information / 人话版</h3>
+<p><strong>作者</strong>：Haojun Xu、Jie Huang、Xin Lu、Mingchen Zhong、Zihao Fan、Linjiang Huang、Si Liu；<strong>机构</strong>：Beihang University / JD Future Academy（按论文 HTML 标注）；<strong>日期</strong>：2026-10-22 v1；<strong>Venue</strong>：arXiv preprint，未核实录用；<strong>Project/Code</strong>：未核实。</p>
+<p>流式视频生成想做到低延迟，通常要把双向扩散模型改成逐段生成、每段仅去噪几步。旧训练流程常先花大量更新做 ODE 初始化，再用分布匹配或蒸馏修正生成质量。Direct Forcing 发现：<strong>一段真实视频既提供“给定历史应该接什么”的配对监督，也提供“生成视频整体应该像什么”的分布监督</strong>，没必要把两件事分两阶段训练。它将 Causal Continuation Alignment（CCA）与 Rollout Distribution Matching（RDM）联合优化，并动态平衡梯度，从 Wan2.1-1.3B 出发只用 250 次更新训练四步自回归生成器。VBench Total 84.63、Quality 86.01；但同类四步模型的推理速度相同，论文最强证据是<strong>训练路径更短</strong>，不是同等四步下 wall-clock 更快。</p>
+<h3>Background &amp; Gap / 具体例子</h3>
+<p>例如让模型连续生成一个人从厨房走到客厅的 10 秒视频。只看某一段的静态质量，可能在两个 chunk 边界突然换了衣服；只做 teacher-forcing 的连续性监督，模型在真实 rollout 中又会逐渐积累误差。Self Forcing / Causal Forcing 使用 ODE 初始化再 DMD；ViRDM / Elastic Forcing 虽然转向 MMD，标准流程仍继承初始化阶段。作者的问题不是“如何再减少一个 diffusion step”，而是“<strong>能否跳过冗长初始化，直接联合学习因果连续性与生成分布</strong>”。</p>
+<h3>Core Insight / Method Deep Dive</h3>
+<p><strong>Input：双向预训练 Wan2.1 + 视频-文本训练集 → 构造 reference-history CCA 分支 → 构造 self-rollout RDM 分支 → 用冻结表征计算 paired loss 与 population loss → Dynamic Gradient Balancing → 共同更新 causal generator → Output：四步流式生成器。</strong></p>
+<p><strong>CCA 分支：</strong> 把参考视频切成时间块。当前 noisy chunk 只允许看之前的 clean reference chunks 与自己的 noisy tokens，使用块因果 attention mask；预测 clean endpoint 后，在冻结 VideoMAE 特征空间与对应真实 chunk 做逐位置 cosine 对齐。公式 <code>L_CCA = E[(1/P) Σ_p (1-〈f_p,f*_p〉)]</code>。它解决“在给定正确历史下，下一段是否接得对”，而非自由生成时的分布漂移。</p>
+<p><strong>RDM 分支：</strong> 模型按自身生成的历史逐块 rollout，用 KV cache 保存前面块的条件；在四个去噪评估位置中采样一个训练 exit，对完整生成视频提取冻结 VideoMAE/DiT 表征。以文本嵌入为条件构造核函数，用 <code>MMD²(P_generated,Q_reference)</code> 对齐生成样本与参考样本的联合视频-文本分布。这里的监督来自真实视频的统计分布，不需要在线 diffusion-score teacher。只做 RDM 会出现边界不连续，因此 CCA 不能完全去掉。</p>
+<p><strong>Dynamic Gradient Balancing：</strong> 两个损失的数值尺度不代表对参数更新的贡献。先将 CCA 梯度 norm 与 RDM 梯度对齐，再按 CCA 当前拟合残差缩放它的贡献：<code>r_t=r_min+(1-r_min)min(ℓ_t/ℓ_1,1)</code>，<code>g_t=g_RDM+r_t·ḡ_CCA</code>，其中 <code>r_min=0.1</code>。早期重视连续性，后期逐渐把优化能力分配给自由 rollout 的分布质量。这是可迁移到 Video RL / Agent World Model 的机制。</p>
+<h3>Toy Example / Efficiency Breakdown</h3>
+<p><strong>Toy example（示意）</strong>：一个 3-chunk 视频，CCA 监督第 2 段与真实第 1 段的衔接，RDM 则检查模型从第 1 段自己生成到第 3 段的整体视频是否像真实样本集合。只用 CCA 可能三段各自连贯却缺少动态变化；只用 RDM 可能全局看着像视频却在块边界跳变。联合目标约束两种不同失败模式。</p>
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th style="text-align:right">Baseline</th>
+  <th style="text-align:right">Proposed</th>
+  <th>Change / 备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Frames</td>
+  <td style="text-align:right">Wan2.1 对照生成 81 帧</td>
+  <td style="text-align:right">81 帧</td>
+  <td>相同生成长度；不是 frame pruning</td>
+</tr>
+<tr>
+  <td>Visual Tokens</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>未声称 token 削减</td>
+</tr>
+<tr>
+  <td>FLOPs</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>不可把 step 数当 FLOPs 实测</td>
+</tr>
+<tr>
+  <td>Latency（首帧，Table 2）</td>
+  <td style="text-align:right">Wan2.1 103s；同类四步 0.25s</td>
+  <td style="text-align:right"><strong>0.25s</strong></td>
+  <td>与四步基线<strong>持平</strong>；对原始多步模型非隔离对照</td>
+</tr>
+<tr>
+  <td>Throughput（B200，四步）</td>
+  <td style="text-align:right">Self Forcing / Elastic 20.63 FPS</td>
+  <td style="text-align:right"><strong>20.63 FPS</strong></td>
+  <td>与同类持平</td>
+</tr>
+<tr>
+  <td>GPU Memory</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>不可猜测</td>
+</tr>
+<tr>
+  <td>Quality（VBench）</td>
+  <td style="text-align:right">Elastic Total 84.25 / Quality 85.06</td>
+  <td style="text-align:right"><strong>84.63 / 86.01</strong></td>
+  <td>+0.38 / +0.95</td>
+</tr>
+<tr>
+  <td>Semantic（VBench）</td>
+  <td style="text-align:right">Elastic 80.99</td>
+  <td style="text-align:right"><strong>79.08</strong></td>
+  <td><strong>−1.91</strong>，不可忽略</td>
+</tr>
+<tr>
+  <td>训练更新数（Table 1）</td>
+  <td style="text-align:right">Elastic 3,150</td>
+  <td style="text-align:right"><strong>250</strong></td>
+  <td>约 12.6× 更少 updates；不等于 12.6× wall-clock</td>
+</tr>
+</tbody>
+</table>
+<h3>Experiment Setup / Baselines / Research Questions</h3>
+<p><strong>Model</strong>：Wan2.1-T2V-1.3B；<strong>训练</strong>：6,505 对参考视频-文本、8×NVIDIA B200、250 joint updates、每次 RDM 128 个生成视频与 CCA 32 对参考；<strong>生成</strong>：81 帧、832×480、每 chunk 三个 latent frames、四步去噪；<strong>评估</strong>：944 个 VBench 扩展 prompts，每 prompt 五个视频，共 4,720 条，16 FPS。冻结 VideoMAE v2、DiT 与 SigLIP2 提供表征；同类四步模型吞吐和首帧延迟在单 B200 上测量，其他 timing 取已发表报告。<strong>RQ1</strong>：单阶段能否追平两阶段？<strong>RQ2</strong>：CCA/RDM 是否互补？<strong>RQ3</strong>：动态梯度平衡是否必要？<strong>RQ4</strong>：表征层、batch 与长视频扩展影响什么？</p>
+<h3>Results / Table &amp; Figure Reading</h3>
+<p><strong>Table 1</strong>：Self Forcing 3,750 updates、ViRDM 3,020、Elastic Forcing 3,150、Direct Forcing 250；注意计数包含前者继承的初始化，排除 backbone pretraining 与离线特征准备。<strong>Table 2</strong>：Total 84.63、Quality 86.01 在列出的四步模型中最高，但 Semantic 79.08 低于 Elastic 80.99；20.63 FPS 与 0.25s 首帧不比同类快。<strong>Table 3</strong>：CCA-only Dynamic 13.89，RDM-only 11.11，联合训练 54.72；顺序训练 Dynamic 74.44 更高，却牺牲其他指标，不能说联合训练全面统治。<strong>Table 4</strong>：固定权重 Total 80.43 → 梯度 norm 匹配 81.23 → 加残差权重 82.40；Dynamic 31.11 → 37.22 → 54.72。<strong>Figure 2</strong> 直观展示纯 MMD 的 chunk 边界断裂；<strong>Figure 3</strong> 展示双分支与梯度合并；<strong>Figure 4</strong> 说明 CCA 梯度早期约为 RDM 的 15.9 倍，是需要动态平衡的直接观察。</p>
+<h3>Ablation / Claim vs Evidence / Limitation</h3>
+<p><strong>Authors Claim</strong>：单阶段联合训练可在很少更新内得到高质量四步因果生成器。<strong>Experiments Actually Show</strong>：在一个主要 backbone、固定数据与 B200 设置下，训练更新明显更少、Total/Quality 更高，Semantic 更低，推理吞吐不变。<strong>What Is Not Yet Proven</strong>：跨模型规模与分辨率、真实训练 GPU-hours、能耗和长时序稳定性是否有同样优势。附加局限是冻结大模型特征的离线准备成本未计入更新数；VBench 汇总指标可能掩盖运动错误或语义失败；缺乏系统 FLOPs 与峰值显存对照。</p>
+<h3>Contribution / Research Value / Migration</h3>
+<p><strong>Contribution 1 — New Training Framework</strong>：从双向模型直接联合因果适配与分布匹配；<strong>2 — New Optimization Mechanism</strong>：按梯度规模与残差动态分配监督；<strong>3 — New Empirical Finding</strong>：不同深度表征分别适合 paired continuation 与 population matching。<strong>Baseline Potential</strong>：视频生成和 world-model 训练很高；<strong>System Value</strong>：减少训练流程复杂度，但非新的 inference kernel；<strong>Benchmark Value</strong>：chunk-boundary continuity 应独立测；<strong>Attack/Evaluation Value</strong>：可以测长时错误累积；<strong>New Paper Potential</strong>：用 Agent 的下游决策质量替代单纯视频相似度，做 task-aware world model。</p>
+<p><strong>Original Problem → Transferable Mechanism → New Research Question → Method Modification → Minimum Experiment → Model → Dataset → Baseline → Metric → Expected Contribution → Risk</strong>：四步视频生成 → paired continuation + rollout population matching → “世界模型应优化视频像素还是 Agent 决策可用性？” → 在 RDM 表征加入下游 policy success / state transition 表征 → 训练短轨迹 world model，对相同规划任务评估预测误差与策略成功率 → Wan2.1-1.3B / 小型视频模型 → 视频交互或模拟器任务 → CCA-only、RDM-only、Direct Forcing → VBench、chunk continuity、downstream success、GPU-hours → task-aware causal video world model → 奖励稀疏、训练成本高、与 DRILL 等工作可能撞题。</p>
+<p><strong>五句话总结</strong>：这篇最重要的是训练范式简化，不是相同四步下推理更快。CCA 管局部衔接，RDM 管自由生成分布。梯度平衡有明确消融证据。Semantic 下降和缺少总 GPU-hours 是必须保留的负面信息。它适合作为视频生成与 Agent World Model 交叉研究的起点。</p>
+</article>
+</section>
+<section class="section" id="tiera"><h2>09 · Tier A · 2 篇 · 点击展开</h2><p class="mini">优先保证可验证实验而非凑足篇数；不足以完成多数字对照的候选已下调 Tier B。</p>
+<details class="paper" id="p-2610-30854"><summary><strong>CAVC: Convergence-Adaptive Audio-Visual Cache for Modality-Asymmetric Diffusion Generation</strong><small>Tier A · Video · 点击展开全文</small></summary><div class="inside"><div class="paper-head"><span class="pill a">Tier A</span><span class="pill neutral">Video</span><span class="pill neutral">2026-10-22 v1 · arXiv</span></div><h3><a href="https://arxiv.org/abs/2610.30854" target="_blank" rel="noopener">CAVC: Convergence-Adaptive Audio-Visual Cache for Modality-Asymmetric Diffusion Generation</a></h3><p class="links"><a href="https://arxiv.org/html/2610.30854">论文正文 HTML</a> · <a href="https://arxiv.org/pdf/2610.30854">PDF</a> · <span>Code：未核实，勿视为已开源</span></p><h3>人话版（机制与结果）</h3>
+<p>视频与音频一起扩散生成时，每个去噪步骤都算音频分支、视频分支和跨模态注意力。CAVC 的核心观察是<strong>两种模态对中途近似的可恢复性不同</strong>：音频分支中途缓存产生的误差，最后补几步联合去噪可能修回来；视频分支若提前冻结，运动细节往往不可逆。于是它保留视频完整去噪，只在音频输出进入稳定区间后缓存音频计算，中间阶段跳过部分音频及跨模态计算，末尾重新耦合。该方法 training-free，在 LTX-2.3-22B-dev 上报告 1.10–1.35× 实际 wall-clock 加速。它的价值是把“算力预算”按可恢复性而非模态平均分配。</p>
+<h3>Background &amp; Research Gap / Core Insight</h3>
+<p>TeaCache、Cache-DiT 等通常以统一阈值决定哪些计算可重用；对音视频双流而言，这可能错误地把运动细节与可补偿的音频误差视为等价。论文先做冻结分支对照：只冻结视频虽可达 2.84×，却使动态质量受损；只冻结音频约 1.19×，视觉动态更稳定。这个观察支持非对称缓存，不等于音频总是可以安全忽略。</p>
+<h3>Method：Input → Output</h3>
+<p><strong>Input：文本条件、音视频 latents、完整双流扩散模型 → Phase A：正常联合去噪并监测音频输出变化 → Phase B：音频输出变化进入阈值时缓存音频预测，视频继续完整更新 → Phase C：末尾恢复联合音视频去噪与跨模态同步 → Output：视频+音频。</strong> 模型的完整分支分别为 <code>f_v(v_t,a_t,c,σ_t)</code> 与 <code>f_a(v_t,a_t,c,σ_t)</code>，缓存只改变可复用音频侧的计算，不重新训练模型。默认触发阈值 θ=0.30、窗口 W=3；参数决定什么时候切入缓存以及多少末尾步骤用来修复偏差。训练方式：<strong>training-free</strong>，但依赖具体模型的双流结构。</p>
+<h3>Experiment Setup / RQ / Results</h3>
+<p><strong>Model</strong>：LTX-2.3-22B-dev + 官方 distilled LoRA；<strong>GPU</strong>：单 NVIDIA H20；<strong>Datasets</strong>：AVGen-Bench、VABench T2AV、General-80；<strong>Baselines</strong>：Full AV、TeaCache、Cache-DiT；<strong>Metrics</strong>：VBench 视觉质量、DNSMOS/CLAP、AV Sync、AV-F1、物理与低层时间统计。<strong>RQ1</strong>：是否真的更快？<strong>RQ2</strong>：视觉与音频误差是否对称？<strong>RQ3</strong>：末尾联合修复是否必要？</p>
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th style="text-align:right">Baseline</th>
+  <th style="text-align:right">CAVC</th>
+  <th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Frames</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>未做帧采样</td>
+</tr>
+<tr>
+  <td>Visual Tokens</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>非 token pruning</td>
+</tr>
+<tr>
+  <td>FLOPs</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>不可推断理论加速</td>
+</tr>
+<tr>
+  <td>Wall-clock speedup</td>
+  <td style="text-align:right">Full AV 1.00×</td>
+  <td style="text-align:right"><strong>1.10–1.35×</strong></td>
+  <td>真实测量，依 benchmark 变化</td>
+</tr>
+<tr>
+  <td>Latency（绝对秒数）</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>只报告倍速</td>
+</tr>
+<tr>
+  <td>Throughput / FPS</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>未提供统一 FPS</td>
+</tr>
+<tr>
+  <td>GPU Memory</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>不可声称显存下降</td>
+</tr>
+<tr>
+  <td>AVGen Motion Smoothness</td>
+  <td style="text-align:right">0.9200</td>
+  <td style="text-align:right"><strong>0.991</strong></td>
+  <td>提升；但部分音频指标下降</td>
+</tr>
+<tr>
+  <td>AVGen AV Sync</td>
+  <td style="text-align:right">0.561</td>
+  <td style="text-align:right"><strong>0.525</strong></td>
+  <td><strong>下降</strong>，是关键 trade-off</td>
+</tr>
+<tr>
+  <td>General-80 Dynamic Degree</td>
+  <td style="text-align:right">0.3800</td>
+  <td style="text-align:right"><strong>0.512</strong></td>
+  <td>上升；不同指标不可直接合成“质量全面提升”</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 1</strong> 展示视觉与时间统计，<strong>Table 2</strong> 展示音频、同步与物理评价，<strong>Table 3</strong> 消融冻结策略、三阶段与阈值。TeaCache/Cache-DiT 在该双流实现中有时低于 1×，不能据此推广它们在所有模型都慢。理论省掉音频子分支部分计算，<strong>实际总加速仅 10%–35%</strong>，因为视频主分支与末尾联合修复仍是固定成本；这恰恰是需要重视 wall-clock 而不是宣称巨大 FLOPs 节约的原因。</p>
+<h3>Contribution / Limitation / Research Value / Migration</h3>
+<p><strong>贡献</strong>：New Mechanism（按模态可恢复性分配计算）、New System（sandwich cache schedule）、New Empirical Finding（视频与音频冻结误差不对称）。<strong>限制</strong>：单个主要双流模型与 GPU；绝对 latency、FLOPs、显存未完整报告；AV Sync 在 AVGen 上下降，提示缓存阈值不能只看单模态输出变化。<strong>研究价值</strong>：可以迁移到 Video VLM 的帧/视觉 token 与语言推理 token 的异构预算分配，但这属于待验证假设。</p>
+<p><strong>迁移 / Minimum Experiment</strong>：Original Problem=双流视频生成缓存 → Mechanism=可恢复性驱动的非对称预算 → New Question=长视频问答中，哪些帧的压缩误差可由后续事件记忆补偿？ → Modification=查询条件下的事件恢复误差预测器 → Experiment=固定总 token budget 下比较均匀抽帧、相似度缓存、query-aware cache → Model=开源 Video VLM → Dataset=LongVideoBench / Video-MME → Metric=QA、wall-clock、显存、token、恢复失败率 → Expected Contribution=task-aware cache policy → Risk=查询改变后缓存失效。</p>
+<p><strong>Worth Deep Reading：YES。</strong> 优先读 Method 3.2、Table 2 的 AV Sync 负面结果、Table 3 的冻结分支消融。</p>
+</div></details>
+<details class="paper" id="p-2610-31272"><summary><strong>Memory-Aware Reward Modeling: Learning Human Preferences for LLM Memory Use</strong><small>Tier A · Agent · 点击展开全文</small></summary><div class="inside"><div class="paper-head"><span class="pill a">Tier A</span><span class="pill neutral">Agent</span><span class="pill neutral">2026-10-22 v1 · arXiv</span></div><h3><a href="https://arxiv.org/abs/2610.31272" target="_blank" rel="noopener">Memory-Aware Reward Modeling: Learning Human Preferences for LLM Memory Use</a></h3><p class="links"><a href="https://arxiv.org/html/2610.31272">论文正文 HTML</a> · <a href="https://arxiv.org/pdf/2610.31272">PDF</a> · <span>Code：未核实，勿视为已开源</span></p><h3>人话版（用户真实偏好 vs 记忆使用）</h3>
+<p>Agent 记得用户的很多事情，并不代表用户希望每次回答都用这些记忆。论文收集 87 名参与者的约 1,000 个真实成对偏好判断，比较使用个人记忆与不使用记忆的回答，发现“更个性化”并不稳定地更受欢迎。现成自动评测器也比真人更偏爱带记忆的回答。作者因此训练 memory-aware reward model，报告偏好预测准确率 <strong>72.8%</strong>。它把 Memory 评价从“能否记住/检索到”推进到“使用这条记忆是否真正符合用户偏好”，对于 Agent Memory RL 和长期交互非常关键。</p>
+<h3>Background &amp; Gap / Core Insight</h3>
+<p>现有 memory benchmark 往往测 recall、QA 或 personalization score，但这不等于用户效用。例如用户问一道数学题，系统突然提到过去的个人生活细节，虽然记忆准确，却可能是明显的负体验。作者强调 memory access、memory appropriateness、response quality 是不同维度。核心观察来自<strong>真人对照偏好</strong>与自动 evaluator 的系统性差异，而不是从论文标题推测。</p>
+<h3>Method：Input → Output</h3>
+<p><strong>Input：用户原始问题、可用个人记忆、两条候选回答 → 真人成对偏好标注 → 记忆适当性与回答属性的 rubric/特征 → 学习 rubric 权重与偏好映射 → 输出偏好概率或 reward。</strong> 数据收集包含个人上下文、成对回答构造、偏好标注、一致性分析；方法比较 off-the-shelf judge、rubric-based evaluator 与学习型组合。论文正文设有专门的 feature ablation、不同 generator 对照和高置信子集分析。这里的 reward 是<strong>人类偏好监督</strong>，不是终局任务成功率，也不是 RL 训练已经证明成功；将其用于 RL 仍是未来工作。</p>
+<h3>Experiment Setup / Results / Evidence</h3>
+<p><strong>Participants</strong>：87；<strong>Judgments</strong>：约 1,000 对；<strong>任务</strong>：参与者自己的查询与记忆；<strong>主要指标</strong>：偏好预测准确率与评价器/用户一致性。<strong>RQ1</strong>：记忆是否必然提高用户偏好？结果：否，部分用户明确偏好无记忆回答。<strong>RQ2</strong>：自动评价是否可靠？结果：自动评价器比用户更频繁偏爱 memory-conditioned 回答，存在评测偏差。<strong>RQ3</strong>：能否学到更贴近用户的 reward？结果：memory-aware 模型达到 <strong>72.8%</strong> 偏好预测准确率，并优于论文中的基线。注意：约 1,000 是标注规模、87 是参与人数，不能伪装成三项模型性能数字；完整 baseline 逐项分数未在本次核验材料中提取，因此不编造。</p>
+<p><strong>关键图表阅读指引</strong>：正文 Results 6.1 比较 memory/no-memory 的真人偏好；6.2 研究 evaluator disagreement；6.3 分析 learned rubric weights 与 feature ablation。建议读者重点检查按人划分的 train/test split、生成器之间的偏好迁移和高置信度子集，避免同一用户信息跨 split 泄漏导致高估。</p>
+<h3>Contribution / Limitation / Research Value</h3>
+<p><strong>Contribution 1 — New Evaluation</strong>：把用户偏好而非检索成功作为 memory 使用目标；<strong>2 — New Dataset</strong>：真实用户的成对记忆使用判断；<strong>3 — New Reward Modeling</strong>：可学习 memory appropriateness 与回答属性的权重。<strong>限制</strong>：参与者数量相对有限；私人记忆高度异质，可能有隐私与选择偏差；72.8% 是偏好预测，不是 Agent 端到端任务成功；用户偏好会随场景和时间变化。<strong>研究价值</strong>：RL 可以把“是否调用某条记忆”作为 action，以用户偏好 reward 训练 policy；Agent 可做 memory selection、over-personalization 抑制与长期偏好稳定性研究。</p>
+<h3>Migration / Minimum Experiment</h3>
+<p>Original Problem=记忆使用偏好 → Mechanism=memory-aware reward → New Question=Agent 能否学会在“需要帮助”与“不应提及”之间动态选择记忆？ → Modification=为 memory retrieval 增加 abstain action 与风险约束 → Experiment=同一组任务做 no-memory、always-memory、learned-memory 三臂对照 → Model=开源小型 LLM Agent → Dataset=公开个性化任务或经许可匿名样本 → Baseline=always retrieve、similarity threshold、rubric judge → Metric=用户偏好、task success、敏感记忆误用、token cost → Contribution=用户效用导向的 memory policy → Risk=隐私、标注偏差、奖励投机。</p>
+<p><strong>Worth Deep Reading：YES。</strong> 优先读 Data Collection、Results 6.1–6.3、Feature Ablation；尤其区分 reward predictor 与 RL policy 的实际证据。</p>
+</div></details>
+</section>
+<section class="section" id="tierb"><h2>10 · Tier B · 5 篇 · 点击展开</h2><p class="mini">对仅核验摘要的论文明确标注，未补造训练设置或实验分数。</p>
+<details class="paper" id="p-2610-31563"><summary><strong>When to Follow the Teacher: Advantage-Based On-Policy Distillation</strong><small>Tier B · RL · 点击展开全文</small></summary><div class="inside"><div class="paper-head"><span class="pill b">Tier B</span><span class="pill neutral">RL</span><span class="pill neutral">2026-10-22 v1 · arXiv</span></div><h3><a href="https://arxiv.org/abs/2610.31563" target="_blank" rel="noopener">When to Follow the Teacher: Advantage-Based On-Policy Distillation</a></h3><p class="links"><a href="https://arxiv.org/html/2610.31563">论文正文 HTML</a> · <a href="https://arxiv.org/pdf/2610.31563">PDF</a> · <span>Code：未核实，勿视为已开源</span></p><h3>人话版</h3>
+<p>Online Policy Distillation（OPD）让学生模型在自己采样到的状态上模仿老师，通常比单纯离线 SFT 更贴近真实部署分布。但老师偏好的动作不一定对当前学生有帮助：老师可能在学生暂时处理不了的状态下给出过难策略。AOPD 不盲目模仿，而按“老师动作相对于学生自身策略能提高多少预期回报”加权。论文给出的关键机制是用学生 rollout 的终局奖励与教师 importance weight 构造优势监督，避免每一步额外试多个老师动作并重新 rollout。</p>
+<h3>Background / Method</h3>
+<p><strong>Input：student 采样的 trajectory、teacher 对这些动作的概率、终局 reward → 计算 importance-weighted advantage signal → 加权蒸馏 loss → 更新 student。</strong> 它不是直接将 teacher score 当 reward；它把 teacher 选择与 student 能否从该选择获益分开。对 RL for Agent 的意义在于：可把工具策略、技能建议、memory 写入建议视为“teacher actions”，只在它们确实改善学生回报时才学习。</p>
+<h3>Experiment / Main Finding</h3>
+<p><strong>仅根据 Abstract / 可获取信息总结</strong>：摘要明确提出无额外 rollout 或 reward evaluation 的无偏估计器，但本次没有核验完整实验表格、模型、数据集和量化收益，不能写“优于 GRPO X 点”。值得检查正文理论条件：importance ratio 的方差是否在长轨迹放大？teacher 与 student support 不重叠时是否仍可用？是否存在 reward hacking？</p>
+<h3>Contribution / Limitation / Connection</h3>
+<p><strong>贡献</strong>：New Objective（优势加权 on-policy distillation）和 New Estimator（仅用学生 rollout 估计）。<strong>局限</strong>：重要性权重可能高方差，且没有本次核验的端到端数值。<strong>Potential Use</strong>：在可复现搜索 Agent 上比较 OPD、SFT、AOPD 的最终正确率、rollout token、训练稳定性；与 TWICE 结合可测试更低方差的教师动作优势，但需警惕撞题。<strong>建议：READ THIS WEEK；先查 Method/理论证明与 Experiments。</strong></p>
+</div></details>
+<details class="paper" id="p-2610-31307"><summary><strong>Subgoal-aware Memory Graph for GUI Agent</strong><small>Tier B · Agent · 点击展开全文</small></summary><div class="inside"><div class="paper-head"><span class="pill b">Tier B</span><span class="pill neutral">Agent</span><span class="pill neutral">2026-10-22 v1 · arXiv</span></div><h3><a href="https://arxiv.org/abs/2610.31307" target="_blank" rel="noopener">Subgoal-aware Memory Graph for GUI Agent</a></h3><p class="links"><a href="https://arxiv.org/html/2610.31307">论文正文 HTML</a> · <a href="https://arxiv.org/pdf/2610.31307">PDF</a> · <span>Code：未核实，勿视为已开源</span></p><h3>人话版</h3>
+<p>GUI Agent 记忆常有两个极端：存单个点击动作，太碎；存整个任务轨迹，太粗。论文将连续执行同一意图的一段动作定义为 subgoal，例如“打开设置并定位到蓝牙页面”，再把这些片段存成可合并、扩展、检索的图结构。相比直接保存整条轨迹，子目标节点更容易跨任务重用。作者在 SPA-Bench 报告相对基线成功率提升 <strong>11.11%</strong>，但摘要未提供绝对成功率，不能把相对提升误写成百分点。</p>
+<h3>Background / Method / Experiment</h3>
+<p><strong>Input：历史 GUI trajectory → 根据共同意图分割 subgoals → 将子目标经验合并到 memory graph → 根据当前屏幕/环境状态检索节点 → 指导后续动作。</strong> 研究核心是记忆粒度：单动作成功不代表任务进展，而整条轨迹又不利于局部复用。<strong>仅根据 Abstract / 可获取信息总结</strong>：实验确认使用 SPA-Bench 和 11.11% 的改进，但具体模型、图构建消融、token 成本与失败例没有本次核验，不编造。</p>
+<h3>Contribution / Limitation / Connection</h3>
+<p><strong>贡献</strong>：New Memory Representation（subgoal graph）与可复用经验组织方式。<strong>限制</strong>：子目标切分错误会污染多个未来任务；图合并可能把表面相似但环境前提不同的经验混为一谈；100-step 以后记忆冲突与长期漂移尚需独立验证。<strong>Potential Use</strong>：和 TWICE 的 turn credit 结合，估计“哪一个子目标经验真正提升后续成功”；与 AMV-Guard 结合，在高后果 GUI 操作前核验旧子目标前提。最小实验：SPA-Bench 中对比 action memory、full-trajectory memory、subgoal graph，在相同 token/检索预算下测 success、错误复用、latency。</p>
+</div></details>
+<details class="paper" id="p-2610-30765"><summary><strong>Scaling Laws for Generative Reward Models</strong><small>Tier B · RL · 点击展开全文</small></summary><div class="inside"><div class="paper-head"><span class="pill b">Tier B</span><span class="pill neutral">RL</span><span class="pill neutral">2026-10-22 v1 · arXiv</span></div><h3><a href="https://arxiv.org/abs/2610.30765" target="_blank" rel="noopener">Scaling Laws for Generative Reward Models</a></h3><p class="links"><a href="https://arxiv.org/html/2610.30765">论文正文 HTML</a> · <a href="https://arxiv.org/pdf/2610.30765">PDF</a> · <span>Code：未核实，勿视为已开源</span></p><h3>人话版</h3>
+<p>奖励模型在静态偏好测试中准确率高，是否就能训练出更好的策略？这篇给出一个重要反例：Qwen3 0.6B–14B 的 generative reward model 中，使用 GRPO 训练的 Thinking judges 在固定 Gold-label 上更准确，但拿它们驱动 online DPO 时，SFT 的 Answer-Only judges 在 <strong>8 组匹配设置中的 7 组</strong>获得更高的峰值和 Top-5 平均 policy Elo。说明“会判断”不等于“作为训练信号能引导 policy 进步”。</p>
+<h3>Background / Method / Experiment</h3>
+<p>作者比较不同 rewarder size、policy size、训练时长和 DPO regularization，采用固定学习型 32B Gold evaluator 评价 policy，并使用 evaluator-specific Elo arena 与重采样区间。<strong>仅根据 Abstract / 可获取信息总结</strong>：7/8 是策略优化效果的统计，不是 judge 静态 accuracy；32B 是评价器规模，0.6B–14B 是 rewarder 范围。摘要没有给出各模型 Elo 数值，因此不填充。</p>
+<h3>Contribution / Limitation / Connection</h3>
+<p><strong>贡献</strong>：New Empirical Finding——静态 judge accuracy 与 downstream reward utility 存在 evaluator–rewarder gap。<strong>局限</strong>：目前主要针对创意写作与 online DPO，不能自动推广到数学 RLVR 或 Agent 长轨迹。<strong>Potential Use</strong>：Agent Memory 的 reward model 不应只测“记忆是否恰当”的静态分类，还要测由它优化出的 memory policy 是否改善真实任务。最小实验：保持 rewarder 的 held-out accuracy 相近，比较不同 rewarder 训练后的 task success、reward hacking、KL、样本效率。</p>
+</div></details>
+<details class="paper" id="p-2610-31650"><summary><strong>EpiSEM-Bench: Evaluating Safety and Evidence Recovery in LLM Agents under Missing Evidence</strong><small>Tier B · Agent · 点击展开全文</small></summary><div class="inside"><div class="paper-head"><span class="pill b">Tier B</span><span class="pill neutral">Agent</span><span class="pill neutral">2026-10-22 v1 · arXiv</span></div><h3><a href="https://arxiv.org/abs/2610.31650" target="_blank" rel="noopener">EpiSEM-Bench: Evaluating Safety and Evidence Recovery in LLM Agents under Missing Evidence</a></h3><p class="links"><a href="https://arxiv.org/html/2610.31650">论文正文 HTML</a> · <a href="https://arxiv.org/pdf/2610.31650">PDF</a> · <span>Code：未核实，勿视为已开源</span></p><h3>人话版</h3>
+<p>Agent 的安全问题不一定来自恶意指令：工具返回的每句话都是真的，但<strong>少返回一条关键事实</strong>，也可能让 Agent 错误执行禁止动作。EpiSEM-Bench 把这个现象做成可执行测试，覆盖六个领域的 <strong>300 对</strong>匹配安全/不安全任务，系统地隐藏关键事实，观察 Agent 是否主动找回证据、停止危险动作并继续完成允许任务。它直接挑战“没有检测到恶意文本就安全”的评测假设。</p>
+<h3>Background / Method / Experiment</h3>
+<p><strong>Input：匹配的 safe/unsafe 环境任务 → 删除安全关键证据 → Agent 与工具交互 → 独立审计证据恢复与执行结果。</strong> 作者在十个模型上研究 omission robustness、证据获取与适当执行。<strong>仅根据 Abstract / 可获取信息总结</strong>：恢复入口对十个模型都减少了不安全执行，但模型间“主动获取并使用缺失证据”的能力差异明显。摘要未给出十个模型的逐项错误率，不能编造排名。</p>
+<h3>Contribution / Limitation / Connection</h3>
+<p><strong>贡献</strong>：New Benchmark 与 New Evaluation（critical-evidence omission、evidence recovery、safe completion）。<strong>限制</strong>：合成的缺失证据模式与真实工具错误分布可能不同；安全边界也依赖审计器正确性。<strong>Potential Use</strong>：与 AMV-Guard 做直接碰撞评估——记忆前提核验能否弥补工具遗漏信息？最小实验：在相同工具调用预算下对比不核验、全核验、VOI 核验，测 unsafe execution、safe task completion、verification cost。</p>
+</div></details>
+<details class="paper" id="p-2610-30824"><summary><strong>Loop to Look Better: Learning Adaptive Depth for Question-Guided Perception in Vision-Language Models</strong><small>Tier B · Other · 点击展开全文</small></summary><div class="inside"><div class="paper-head"><span class="pill b">Tier B</span><span class="pill neutral">Other</span><span class="pill neutral">2026-10-22 v1 · arXiv</span></div><h3><a href="https://arxiv.org/abs/2610.30824" target="_blank" rel="noopener">Loop to Look Better: Learning Adaptive Depth for Question-Guided Perception in Vision-Language Models</a></h3><p class="links"><a href="https://arxiv.org/html/2610.30824">论文正文 HTML</a> · <a href="https://arxiv.org/pdf/2610.30824">PDF</a> · <span>Code：未核实，勿视为已开源</span></p><h3>人话版</h3>
+<p>VLM 经常对同一张图只编码一次，后面语言模型再怎么长链推理，视觉证据仍是固定的。LoopLook 允许视觉编码器在问题引导下重复处理部分中后层，逐次细化视觉 token，并用学习到的 stopping policy 决定什么时候停止；token-wise Mixture-of-Looks 把不同迭代深度的表征组合起来。论文在四种 backbone、八个 benchmark 上报告最高 <strong>MMStar +8.6%</strong>、<strong>HallusionBench +8.1%</strong> 的改善（按作者摘要措辞，不擅自解释为百分点）。</p>
+<h3>Background / Method / Experiment</h3>
+<p><strong>Input：图像+问题 → 注入 question representation → 重复视觉 encoder 的部分层 → 自适应停止 → token-wise MoL 融合 → VLM 回答。</strong> 这是 adaptive visual compute，而不是视频加速论文：如果循环次数增加，实际延迟可能增加。<strong>仅根据 Abstract / 可获取信息总结</strong>：具体 FLOPs、wall-clock、峰值显存与精度-预算曲线本次未核验，不能把“adaptive”直接称作“faster”。</p>
+<h3>Contribution / Limitation / Connection</h3>
+<p><strong>贡献</strong>：New Architecture（query-conditioned recurrent perception）与 adaptive depth policy。<strong>限制</strong>：高收益不保证低时延；复杂问题可能多次循环，系统收益取决于停止器和批处理。<strong>Potential Use</strong>：迁移到视频理解时，将逐帧重复编码改为对少数关键帧动态加深视觉处理；对比均匀帧数/深度、query-aware depth、固定 token budget，在 Video-MME 测准确率、latency、FLOPs 与显存。先检查 stopping policy 是否真的学会“少算容易样本”。</p>
+</div></details>
+</section>
+<section class="section" id="ideas"><h2>11 · Idea Mining · 3 个可实验方向</h2><p>排序依据：机制独立性、最小实验可控性、已有工作碰撞风险。星级为研究判断而非实测指标；Compute Cost 星越多表示成本越高。</p>
+<div class="idea" id="I1"><h3>I1 · 风险约束的反事实记忆归因：让 Agent 知道“哪条记忆值得核验、保留或删除”</h3><p><strong>Inspiration</strong>：TWICE 证明共享噪声可减少决策 credit 方差；AMV-Guard 证明记忆核验必须依赖行动后果；Memory-Aware Reward Modeling 证明记忆被使用不等于用户喜欢。<strong>Research Gap</strong>：现有系统通常分开决定 memory retrieval、memory verification 和 memory update，缺少“这条记忆在特定风险动作中造成了什么后果”的统一信用信号。</p>
+<p><strong>Hypothesis</strong>：对同一可复现 Agent 状态，固定工具快照与采样噪声，分别注入/不注入某条 memory premise，可以更稳定地估计其对 task success、harm 和 verification cost 的边际贡献；用这一贡献训练 retrieval/verify/abstain policy，优于单纯 similarity/置信度阈值。</p>
+<p><strong>Proposed Method</strong>：构建 memory premise graph；对高后果动作选择小量配对 twin；以 <code>reward = success − α·harm − β·verification_cost</code> 定义任务效用；用风险约束与置信区间选择核验动作；对跨 session 写入和删除使用延迟 credit。<strong>Minimum Viable Experiment</strong>：固定 100–300 个可重放任务，每个任务 2–4 条可替换记忆，比较 paired vs independent rollout 的 credit 方差及策略收益。<strong>Model</strong>：Qwen2.5-3B 或同级可复现开源模型。<strong>Dataset</strong>：ToolSandbox、AppWorld 的可控 stale-memory 扩展。<strong>Baseline</strong>：Always-memory、AMV-Static、AMV-Guard、独立反事实、TWICE credit-only。<strong>Metric</strong>：success、unsafe pass、coverage、verification calls、tokens、credit sign accuracy、wall-clock。</p>
+<p><strong>Expected Contribution</strong>：New Memory Credit Estimator + Cost-sensitive Memory Policy + Counterfactual Benchmark。<strong>Novelty</strong>：★★★★☆；<strong>Feasibility</strong>：★★★★☆；<strong>Compute Cost</strong>：★★★☆☆（星越多成本越高）。<strong>Risk</strong>：环境无法严格重放、memory 替换造成状态分布变化、reward hacking。<strong>Collision Risk</strong>：中高；TWICE 已解决动作级 twin，AMV 已解决 VOI 核验，创新必须落在<strong>跨 session memory causal credit + risk-aware policy 的联合验证</strong>。<strong>Best Venue</strong>：ICLR / NeurIPS / ACL。</p>
+</div>
+<div class="idea" id="I2"><h3>I2 · Query-conditioned 可恢复性缓存：让 Streaming Video Agent 按“证据损失”而非相似度省算力</h3><p><strong>Inspiration</strong>：CAVC 的模态不对称可恢复性；LoopLook 的 query-conditioned 视觉深度；既有 Cache Locally, Recompute Selectively for Streaming Video Understanding（2610.29229）。<strong>Gap</strong>：很多视频缓存依赖帧相似度，未直接估计丢失某段视觉证据后，最终问答是否能通过后续帧或事件记忆恢复。</p>
+<p><strong>Hypothesis</strong>：在固定 token 与时延预算下，预测“若跳过当前帧，未来是否能补回答案相关证据”，比均匀抽帧或纯相似度缓存更好。<strong>Method</strong>：用低成本特征检测事件变化；查询驱动地估计 evidence recoverability；可恢复时重用 cache，不可恢复时触发完整编码；为不同 query 维护缓存 provenance。<strong>Minimum Experiment</strong>：在 Video-MME / LongVideoBench 选短/长视频分组，控制帧数和 token budget，比较 Uniform、similarity cache、query-aware pruning 与 proposed。<strong>Model</strong>：公开 Video VLM。<strong>Metric</strong>：QA accuracy、帧数、tokens、FLOPs、真实 latency、peak memory、事件遗漏率。</p>
+<p><strong>Expected Contribution</strong>：Task-aware temporal cache policy + recoverability benchmark。<strong>Novelty</strong>：★★★☆☆；<strong>Feasibility</strong>：★★★★☆；<strong>Compute Cost</strong>：★★☆☆☆。<strong>Risk</strong>：在线 query 变动、特征提取 overhead、缓存失效。<strong>Collision Risk</strong>：高；需和 2610.29229、CAVC、视觉 token pruning 做精确对照，不能只说“query-aware cache”。<strong>Best Venue</strong>：CVPR / ICCV / NeurIPS Datasets &amp; Benchmarks。</p>
+</div>
+<div class="idea" id="I3"><h3>I3 · 异步 Multi-Agent 信息流的反事实 Credit：从“谁说了什么”到“谁真正改变团队决策”</h3><p><strong>Inspiration</strong>：Muffin 的异步共享缓冲区、LLM Multi-Agent Herding 的群体级联、TWICE 的低方差反事实 credit。<strong>Gap</strong>：共享 memory 中的消息有 provenance，却未必知道它对最终团队 outcome 的正负作用；简单消息点赞或注意力权重容易奖励从众与错误传播。</p>
+<p><strong>Hypothesis</strong>：在固定共享消息时间戳和外部环境下，对单条消息做替换/延迟/隐藏干预，估计团队 outcome 差异，比按发言频率或 self-reported usefulness 分配 credit 更稳定。<strong>Method</strong>：事件溯源 shared buffer + message-level intervention + 可复现调度 + 团队/个人混合 reward；训练 communication routing policy。<strong>Minimum Experiment</strong>：2–4 个协作 Agent 在可复现编码或检索任务中运行 100–200 个实例，记录消息 DAG，比较无干预、随机屏蔽、Shapley 近似、paired credit。<strong>Model</strong>：小型开源 LLM agents。<strong>Dataset</strong>：MultiAgentBench 或自建可重放任务。<strong>Metric</strong>：team success、消息量、错误级联深度、credit variance、wall-clock。</p>
+<p><strong>Expected Contribution</strong>：Message-level causal credit + anti-herding communication policy。<strong>Novelty</strong>：★★★★☆；<strong>Feasibility</strong>：★★★☆☆；<strong>Compute Cost</strong>：★★★☆☆。<strong>Risk</strong>：调度非确定性、强交互效应、反事实组合爆炸。<strong>Collision Risk</strong>：中高；必须先检索 COMA / difference reward / ToM2Vec 与相关消息归因。<strong>Best Venue</strong>：AAMAS / NeurIPS / ICLR。</p>
+</div>
+</section>
+<section class="section" id="collision"><h2>12 · Collision Detection</h2><div class="note warn"><strong>⚠️ Collision Warning — YES</strong><br>以下是明确的方法重叠与差异化建议，不代表已完成穷尽式专利/论文查新。</div>
+<p><strong>Collision 1：I1 vs TWICE / AMV-Guard / Memory-Aware Reward Modeling。</strong> TWICE 已解决动作级共享噪声 counterfactual credit；AMV 已解决动作后果条件下的 memory premise 核验；Memory-Aware RM 已解决部分偏好监督。<strong>重合</strong>：反事实贡献、记忆选择与核验。<strong>剩余 Gap</strong>：跨 session 的记忆写入/删除是否造成长期效用变化，如何同时优化风险与用户偏好。<strong>差异化</strong>：必须提供 memory intervention benchmark、credit variance 审计与真实 policy improvement 三件证据；若只是“TWICE + AMV 两个模块串联”，不值得单独投稿。</p>
+<p><strong>Collision 2：I2 vs Cache Locally, Recompute Selectively for Streaming Video Understanding（arXiv:2610.29229）/ CAVC / 视觉 token pruning。</strong> 已有 streaming cache、选择性重算、异构可恢复性。<strong>剩余 Gap</strong>：查询改变、长时事件证据不可恢复的条件下，是否仍有可证明的 accuracy–latency 前沿。<strong>差异化</strong>：固定实际 GPU wall-clock 和峰值显存，加入 evidence-loss oracle 与 query shift stress test；只报告 token 降低会被认为重做旧工作。</p>
+<p><strong>Collision 3：I3 vs Muffin / Herding / 既有 MARL difference reward。</strong> 异步消息交换和多智能体 credit 本身均不是新问题。<strong>剩余 Gap</strong>：在可复现事件调度下对单条消息做因果干预，并将信息贡献直接反馈给通信 policy。<strong>差异化</strong>：构建消息级 oracle、反从众对照与 100+ step 的错误级联评价；没有这些证据建议只作为系统 feature。</p>
+<p><strong>额外风险：Direct Forcing × DRILL（2610.30814）</strong>：若新 Idea 声称“训练世界模型以提高下游 policy”，必须先核实 DRILL 已解决的任务级目标；仅将 VBench loss 替换为 policy loss 不够新。</p>
+
+</section>
+<section class="section" id="reading"><h2>13 · Reading Priority</h2><p><strong>READ NOW</strong>：</p>
+<ul>
+<li><strong>TWICE</strong>：Method §4.1–4.4、Table 2（credit oracle）、Table 3（共享噪声消融）。</li>
+<li><strong>AMV-Guard</strong>：§3 VOI stopping、Table 1（安全与成本）、Table 3（迁移损失）。</li>
+<li><strong>Direct Forcing</strong>：Method §3、Table 1（训练路径）、Table 2（同类 FPS 不变）、Table 4（梯度平衡）。</li>
+</ul>
+<p><strong>READ THIS WEEK</strong>：CAVC（音视频可恢复性与 AV Sync trade-off）、Memory-Aware Reward Modeling（真人偏好与 reward model）、AOPD（无额外 rollout 的 estimator 证明）、EpiSEM-Bench（缺失证据安全测试）。</p>
+<p><strong>SAVE</strong>：Subgoal-aware Memory Graph、Scaling Laws for Generative Reward Models、LoopLook、Muffin、BeNice!、Adaptive Skill Granularity、Herding/Cascades。它们有明确机制连接，但本次没有全部完成正文数字核验。</p>
+<p><strong>SKIP（暂不深读）</strong>：与三条主线关联较弱的图像专用编辑、通用模型部署和单任务 benchmark；不代表论文质量低，只是今天的研究时间预算应先留给可复用的 credit / memory / video efficiency 机制。</p>
+</section>
+<section class="section" id="watchlist"><h2>14 · Candidate Watchlist · 43 篇</h2><p class="mini">候选在筛选后保留，未进入正式分析。以下是阅读价值与待核验问题，不是对未读正文实验的断言。每篇均可直接点击 arXiv。</p><div class="watch">
+<div class="item"><div class="cat">Agent · arXiv:2610.31355 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31355" target="_blank" rel="noopener">Muffin - A Shared Memory Buffer for Asynchronous AI Agents</a></strong><p>异步共享缓冲区试图避免同步 debate 的高通信成本；需检查是否报告真实 wall-clock、共享写冲突与私有推理泄露。与跨 Agent 信息传播和长期 memory provenance 直接相关。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.31633 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31633" target="_blank" rel="noopener">BeNice! Closing Looping&#x27;s Inference-Memory Gap via KV-Sharing</a></strong><p>研究循环 Transformer 的跨 recurrence KV 共享及其训练条件；与 Video VLM 的跨帧 cache 是可迁移但并非同一问题。需核实 KV 节省比例和质量-显存曲线。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.31461 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31461" target="_blank" rel="noopener">Adaptive Skill Granularity for Coding Agents: Runtime Routing and Macro-to-Micro Recovery</a></strong><p>把 coding skill 的 macro/micro 粒度变成运行时路由和失败恢复问题；值得与 Skill credit attribution 结合。需看真实仓库任务而非只看确定性测试协议。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.30769 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30769" target="_blank" rel="noopener">LLM Multi-Agent Systems Are Vulnerable to Herding and Runaway Cascades</a></strong><p>用多 Agent 群体推荐实验研究 herding 和 runaway cascade；对共享记忆与信息污染非常有启发。需辨别模拟推荐场景能否迁移到协作编码或研究 Agent。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.31376 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31376" target="_blank" rel="noopener">Certified Execution Harness for Agentic AI: Safe and Least-Intrusive Petri-Net Supervisory Control Between Reasoning and Action</a></strong><p>将工具执行边界建模为 Petri-net 监督控制，强调最小侵入式拒绝不安全动作。适合作为 Agent Memory/Tool 安全执行层候选。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.31551 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31551" target="_blank" rel="noopener">Fine-Grained Analysis of Catastrophic Forgetting in Continual Learning via Algorithmic Stability</a></strong><p>从算法稳定性角度分析 continual learning 的 forgetting；是理解长期记忆更新稳定性的理论背景。需要核实假设是否覆盖现代 LLM 微调。</p></div>
+<div class="item"><div class="cat">RL · arXiv:2610.31667 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31667" target="_blank" rel="noopener">Direct Pass@$k$ Optimization for Thought Pruning: Balancing Quality and Diversity in Test-Time Reasoning</a></strong><p>直接针对 test-time thought pruning 的 pass@k 优化，涉及质量与多样性平衡。优先查预算固定时的真实 token/latency 对照。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.31436 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31436" target="_blank" rel="noopener">Conservative Meta-Agent Search: Architecture Adaptation under Non-Stationarity</a></strong><p>用 common random numbers 与 paired shadow replay 比较 Agent 架构更新，和 TWICE 的方差控制高度相似。要检查真实环境非平稳与 rollback 成本。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.31511 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31511" target="_blank" rel="noopener">DuoCook: An Overcooked-Inspired Benchmark for Visual Planning and Coordination</a></strong><p>双人视觉协作环境提供 Multi-Agent planning 和共享资源测试；值得关注角色分配与视觉状态追踪。需核验是否支持长轨迹和独立双 Agent。</p></div>
+<div class="item"><div class="cat">RL · arXiv:2610.31656 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31656" target="_blank" rel="noopener">METTA: Memory-Enhanced Test-Time Adaptation for Meta-Reinforcement Learning</a></strong><p>Meta-RL 的 memory-enhanced test-time adaptation 可能为 memory+RL 交叉提供可复用机制。优先查存储复杂度与任务迁移实验。</p></div>
+<div class="item"><div class="cat">RL · arXiv:2610.31624 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31624" target="_blank" rel="noopener">Questioning Instrumental Convergence in RLVR: Checkpoint Evidence from OLMo-3</a></strong><p>使用 OLMo-3 checkpoint 研究 RLVR 与工具性行为的关系，具有安全评估意义。需避免把相关性解读成因果证据。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.31314 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31314" target="_blank" rel="noopener">When LLMs Forget What They Believe: Characterizing State Integrity Collapse in Long-Horizon Dialogues</a></strong><p>把长对话中的“记得规则却不执行”与普通遗忘分开；对 Agent Memory 评价很重要。摘要报告 88.6% 的观察失败属于行为漂移，值得检查定义与审计方法。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.30485 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30485" target="_blank" rel="noopener">Why Bother Me Again? Benchmarking Personal Agent Memory for Interaction Preferences</a></strong><p>专门评价个人 Agent 对交互偏好的记忆，而不是事实回忆。适合与 memory-aware reward 建立偏好/任务负担双指标。</p></div>
+<div class="item"><div class="cat">Video · arXiv:2610.31429 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31429" target="_blank" rel="noopener">PhysTrace: Interpretable Temporal Evaluation of Physical Consistency in Video Generative Models</a></strong><p>评估视频生成的物理与时间一致性，可能补充 VBench 不敏感的失败。需看评价器与人类判断的一致性。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.31372 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31372" target="_blank" rel="noopener">RIDAR: Safeguarding Research Integrity in Autonomous Research Agents via Automated Detection and Runtime Intervention</a></strong><p>自动研究 Agent 的运行时干预与科研诚信检查；对 research agent 的安全治理有意义。需核实误报与工具开销。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.31338 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31338" target="_blank" rel="noopener">ValuSpec: Plug-and-Play Candidate Valuation before Target Verification for Tree-Based Speculative Decoding</a></strong><p>树状 speculative decoding 中先估计候选价值再验证；可能减少无效验证。需要看 GPU wall-clock 而不只是接受率。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.31521 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31521" target="_blank" rel="noopener">Jev-DLC: Decision-Level Continual Learning from Typed Feedback</a></strong><p>从 typed feedback 进行 decision-level continual learning，可能支持 Agent 的逐步反馈更新。需核验任务与遗忘指标。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.31438 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31438" target="_blank" rel="noopener">DIAL: Steerable Language Models with Distilled Instruction-Adherence Levels</a></strong><p>将 instruction adherence 变成可控级别，适用于工具 Agent 服从约束的研究。需看多约束冲突时的表现。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.31553 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31553" target="_blank" rel="noopener">Contestable Agents for Data Governance: Recording Human Stewardship of AI-Generated Metadata Across Structured and Unstructured Systems</a></strong><p>Agent 生成元数据的治理与人工追溯，关注 provenance。适合作为长期记忆来源审计的系统背景。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.31062 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31062" target="_blank" rel="noopener">SCOPE: Compiling Natural-Language Policies into Neurosymbolic Predicate Programs</a></strong><p>把自然语言规则编译成神经符号谓词程序，可作为 Agent 执行前约束层。需核实规则覆盖与维护成本。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.30790 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30790" target="_blank" rel="noopener">Agentic Knowledge-Model Co-Evolution via Consistency Regularization</a></strong><p>知识与模型协同演化的 Agent 框架，涉及持续更新与一致性正则。需确认是否真正跨 session 学习。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.30779 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30779" target="_blank" rel="noopener">ProQuant: Preserving Expert Quality over Quantity in Ultra-Low-Bit Quantization of Mixture-of-Experts Models</a></strong><p>MoE 极低比特量化关注 expert 质量，属于高效推理方向。需核实真实吞吐、显存与能力退化。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.30760 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30760" target="_blank" rel="noopener">AgentDP: Towards Automated Model Deployment for Heterogeneous Embedded AI Applications</a></strong><p>异构嵌入式模型部署自动化，对 edge video agent 有工程迁移价值。需看真实端侧 latency。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.30499 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30499" target="_blank" rel="noopener">Can LLMs Improve Their Own Harness? A Controlled Study on ARC-AGI-3</a></strong><p>直接研究 Agent 能否自我改进 harness，并用 ARC-AGI-3 做控制实验。对自动 Agent 架构进化有高碰撞价值。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.30495 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30495" target="_blank" rel="noopener">From Prose to Properties: Testing Research Claims with ARATest for Agent-Native Science</a></strong><p>把研究主张变成可执行性质测试，适合 Research Agent 的证据验证。需区分形式正确与科学结论正确。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.30491 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30491" target="_blank" rel="noopener">What the Trace Shows and What the Label Says: Auditing Behavioral Detectors in Agent Evaluation</a></strong><p>对 Agent 行为检测标签与真实 trace 的一致性做审计。适合构建不依赖最终成功率的轨迹评价。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.30488 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30488" target="_blank" rel="noopener">From Single-Actor Environments to Multi-Actor Event Worlds: Can LLMs Be Event World Models?</a></strong><p>探索多行为体事件世界模型，可迁移到 Multi-Agent planning。需要看长时状态漂移和行动一致性。</p></div>
+<div class="item"><div class="cat">Agent · arXiv:2610.30851 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30851" target="_blank" rel="noopener">ADAPT for Science: A Multi-Agent System for Self-Evolving Scientific Optimization</a></strong><p>多 Agent 自演化科研优化系统；需核实外部任务基准与反事实消融。与 research agent 自我改进主线相关。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.30834 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30834" target="_blank" rel="noopener">RECAP: Looking Once Is Not Enough for Vision-Language Reasoning</a></strong><p>视觉推理中的多次查看机制，可能与 LoopLook 的 query-aware evidence acquisition 形成比较。需看是否增加 token/latency。</p></div>
+<div class="item"><div class="cat">RL · arXiv:2610.30814 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30814" target="_blank" rel="noopener">DRILL: Training World Models to Improve Policies, Not Predict Pixels</a></strong><p>世界模型直接面向 policy 效用而非像素预测，与 Direct Forcing 的迁移 Idea 有直接碰撞。必须优先核验任务设置。</p></div>
+<div class="item"><div class="cat">Video · arXiv:2610.30827 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30827" target="_blank" rel="noopener">One Evaluation Is Enough: Inversion-Free Image Editing with Trajectory Correction</a></strong><p>以轨迹修正降低图像编辑的反演/评估开销，属于生成加速旁支。需确认与视频场景的迁移条件。</p></div>
+<div class="item"><div class="cat">Video · arXiv:2610.30926 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30926" target="_blank" rel="noopener">Making MLLM Latents Matter: Factor-Aware Predictive Learning for Cinematic Video Generation</a></strong><p>多模态 LLM 潜变量参与电影视频生成，关注视频表征而非直接加速。需查实际推理成本。</p></div>
+<div class="item"><div class="cat">Video · arXiv:2610.30866 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.30866" target="_blank" rel="noopener">Verus-Insight: Towards Explainable Artifact Detection in AI-Generated Videos</a></strong><p>解释 AI 视频伪影检测，有助于质量评价而非加速本身。需核验时序异常是否被覆盖。</p></div>
+<div class="item"><div class="cat">Video · arXiv:2610.31668 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31668" target="_blank" rel="noopener">Reading, Writing, Sharing, and Interacting with the World through Video</a></strong><p>视频读写共享交互的大范围综述/框架性工作，适合补背景。不是单个加速方法，暂不占正式机制名额。</p></div>
+<div class="item"><div class="cat">Video · arXiv:2610.31640 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31640" target="_blank" rel="noopener">WorldForge V2: Eliciting Camera-Trajectory Alignment in Video Diffusion Models</a></strong><p>视频扩散中相机轨迹对齐，可能与长时一致性相关。不是明确加速论文，需核验机制与实测成本。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.31616 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31616" target="_blank" rel="noopener">OP-Print: Tracing Membership Imprints in On-Policy Self-Distillation</a></strong><p>研究 on-policy self-distillation 的成员印记，属于 privacy auditing。对 RL 训练数据归因和隐私攻击值得关注。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.31639 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31639" target="_blank" rel="noopener">Causal Chain of Thought: Mitigating Attention Leakage via Context Isolation</a></strong><p>讨论 CoT 中注意力泄漏及上下文隔离，对推理因果性评价有启发。需核验实际控制实验。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.31574 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31574" target="_blank" rel="noopener">Rethinking Sequence Compression with Test-time Regression</a></strong><p>test-time regression 的序列压缩，可能迁移到长视频 token/Agent history。需查是否有真实 wall-clock 数据。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.31558 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31558" target="_blank" rel="noopener">Diffusion Language Models for Perplexity-Aware Black-Box Attacks</a></strong><p>扩散语言模型用于 perplexity-aware black-box attacks，属于安全评估。需核实攻击成本和跨模型迁移。</p></div>
+<div class="item"><div class="cat">Other · arXiv:2610.31549 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.31549" target="_blank" rel="noopener">Shift-aware score transport for privacy auditing without retraining</a></strong><p>不重训的 privacy auditing score transport，可能与在线审计交叉。需核验 shift 假设与鲁棒性。</p></div>
+<div class="item"><div class="cat">Unlearning · arXiv:2610.27490 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.27490" target="_blank" rel="noopener">Orthogonal Boundary Unlearning for Dual-Use Concepts in Large Language Models</a></strong><p>BACKFILL（较早稿）：研究双用途概念的边界式 Unlearning。需核实边界定义、retain 代价与攻击鲁棒性，当前不凭标题提级。</p></div>
+<div class="item"><div class="cat">Unlearning · arXiv:2610.25447 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.25447" target="_blank" rel="noopener">Enhanced Masked Diffusion Unlearning</a></strong><p>BACKFILL（较早稿）：Masked Diffusion Unlearning 方向，需核实新机制是否超越已有损失改造及实际 forget-retain trade-off。</p></div>
+<div class="item"><div class="cat">Unlearning · arXiv:2610.21720 · WATCHLIST</div><strong><a href="https://arxiv.org/abs/2610.21720" target="_blank" rel="noopener">FIRM: Fisher-Informed Retention Merging for Federated LLM Unlearning</a></strong><p>BACKFILL（较早稿）：联邦 LLM Unlearning 中 Fisher 信息与保留合并，可能与影响估计交叉。需核验真实攻击/验证协议。</p></div>
+</div></section>
+<section class="section" id="stats"><h2>15 · 今日统计 / Depth Audit</h2>
+<table>
+<thead>
+<tr>
+  <th>指标</th>
+  <th style="text-align:right">本期结果</th>
+  <th>审计口径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Candidate Pool</td>
+  <td style="text-align:right">53</td>
+  <td>50 篇新列表 + 3 篇 Unlearning BACKFILL，按 arXiv ID 去重</td>
+</tr>
+<tr>
+  <td>Formal Papers</td>
+  <td style="text-align:right">10</td>
+  <td>3 S + 2 A + 5 B</td>
+</tr>
+<tr>
+  <td>RL / Agent / Video / Other</td>
+  <td style="text-align:right">3 / 4 / 2 / 1</td>
+  <td>主类互斥；交叉关系在 highlights 说明</td>
+</tr>
+<tr>
+  <td>Machine Unlearning</td>
+  <td style="text-align:right">0</td>
+  <td>无因领域偏好而强行提升 Tier</td>
+</tr>
+<tr>
+  <td>Tier S 正文可访问</td>
+  <td style="text-align:right">3 / 3</td>
+  <td>TWICE、AMV-Guard、Direct Forcing</td>
+</tr>
+<tr>
+  <td>Tier S 具体结果</td>
+  <td style="text-align:right">均 ≥5 个</td>
+  <td>含最强/较弱结果与成本 trade-off</td>
+</tr>
+<tr>
+  <td>Tier A 完整数值</td>
+  <td style="text-align:right">CAVC 充分；Memory-Aware 部分</td>
+  <td>缺失数字明确不猜测</td>
+</tr>
+<tr>
+  <td>Tier B 摘要限定</td>
+  <td style="text-align:right">5 篇中多篇</td>
+  <td>已写“仅根据 Abstract / 可获取信息总结”</td>
+</tr>
+<tr>
+  <td>Idea Mining</td>
+  <td style="text-align:right">3</td>
+  <td>均有 MVP、baseline、metric 与 collision risk</td>
+</tr>
+<tr>
+  <td>7 日 Tier S 冷却</td>
+  <td style="text-align:right">已检查已有日报</td>
+  <td>避开最近重复 S，未做完全跨系统记录核验</td>
+</tr>
+</tbody>
+</table>
+
+<div class="note">**阅读诚信声明**：日期、模型、数据集、Venue、代码可用性与实验数字只写已核验信息。没有从正文提取的值一律标注 Not Reported / 未核实。特别是 AOPD 等 Tier B 的摘要型分析，是研究线索，不是已经完成的论文精读。</div></section>
+<section class="section" id="sources"><h2>16 · Sources / Links</h2><p>官方列表与 53 篇原文。论文详情优先使用 arXiv 的 Abstract + HTML/PDF；所有链接可点击，无需外部脚本。</p>
+<p><a href="https://arxiv.org/list/cs.AI/recent">arXiv cs.AI recent</a> · <a href="https://arxiv.org/list/cs.LG/recent">cs.LG recent</a> · <a href="https://arxiv.org/list/cs.CV/recent">cs.CV recent</a> · <a href="https://arxiv.org/list/cs.CL/recent">cs.CL recent</a> · <a href="https://arxiv.org/list/cs.MA/recent">cs.MA recent</a></p>
+<div class="watch">
+<div class="item"><span class="cat">RL · S · 2610.31544</span><br><a href="https://arxiv.org/abs/2610.31544" target="_blank" rel="noopener">Same Luck, Different Choice: Twin-World Credit Assignment for Agentic Reinforcement Learning</a></div>
+<div class="item"><span class="cat">Agent · S · 2610.31446</span><br><a href="https://arxiv.org/abs/2610.31446" target="_blank" rel="noopener">When Is a Memory Safe Enough to Act On? Action-Conditioned Verification for Long-Lived Agents</a></div>
+<div class="item"><span class="cat">Video · S · 2610.30861</span><br><a href="https://arxiv.org/abs/2610.30861" target="_blank" rel="noopener">Direct Forcing: A Single-Stage Training Recipe for Few-Step Autoregressive Text-to-Video Generation</a></div>
+<div class="item"><span class="cat">Video · A · 2610.30854</span><br><a href="https://arxiv.org/abs/2610.30854" target="_blank" rel="noopener">CAVC: Convergence-Adaptive Audio-Visual Cache for Modality-Asymmetric Diffusion Generation</a></div>
+<div class="item"><span class="cat">Agent · A · 2610.31272</span><br><a href="https://arxiv.org/abs/2610.31272" target="_blank" rel="noopener">Memory-Aware Reward Modeling: Learning Human Preferences for LLM Memory Use</a></div>
+<div class="item"><span class="cat">RL · B · 2610.31563</span><br><a href="https://arxiv.org/abs/2610.31563" target="_blank" rel="noopener">When to Follow the Teacher: Advantage-Based On-Policy Distillation</a></div>
+<div class="item"><span class="cat">Agent · B · 2610.31307</span><br><a href="https://arxiv.org/abs/2610.31307" target="_blank" rel="noopener">Subgoal-aware Memory Graph for GUI Agent</a></div>
+<div class="item"><span class="cat">RL · B · 2610.30765</span><br><a href="https://arxiv.org/abs/2610.30765" target="_blank" rel="noopener">Scaling Laws for Generative Reward Models</a></div>
+<div class="item"><span class="cat">Agent · B · 2610.31650</span><br><a href="https://arxiv.org/abs/2610.31650" target="_blank" rel="noopener">EpiSEM-Bench: Evaluating Safety and Evidence Recovery in LLM Agents under Missing Evidence</a></div>
+<div class="item"><span class="cat">Other · B · 2610.30824</span><br><a href="https://arxiv.org/abs/2610.30824" target="_blank" rel="noopener">Loop to Look Better: Learning Adaptive Depth for Question-Guided Perception in Vision-Language Models</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.31355</span><br><a href="https://arxiv.org/abs/2610.31355" target="_blank" rel="noopener">Muffin - A Shared Memory Buffer for Asynchronous AI Agents</a></div>
+<div class="item"><span class="cat">Other · W · 2610.31633</span><br><a href="https://arxiv.org/abs/2610.31633" target="_blank" rel="noopener">BeNice! Closing Looping&#x27;s Inference-Memory Gap via KV-Sharing</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.31461</span><br><a href="https://arxiv.org/abs/2610.31461" target="_blank" rel="noopener">Adaptive Skill Granularity for Coding Agents: Runtime Routing and Macro-to-Micro Recovery</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.30769</span><br><a href="https://arxiv.org/abs/2610.30769" target="_blank" rel="noopener">LLM Multi-Agent Systems Are Vulnerable to Herding and Runaway Cascades</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.31376</span><br><a href="https://arxiv.org/abs/2610.31376" target="_blank" rel="noopener">Certified Execution Harness for Agentic AI: Safe and Least-Intrusive Petri-Net Supervisory Control Between Reasoning and Action</a></div>
+<div class="item"><span class="cat">Other · W · 2610.31551</span><br><a href="https://arxiv.org/abs/2610.31551" target="_blank" rel="noopener">Fine-Grained Analysis of Catastrophic Forgetting in Continual Learning via Algorithmic Stability</a></div>
+<div class="item"><span class="cat">RL · W · 2610.31667</span><br><a href="https://arxiv.org/abs/2610.31667" target="_blank" rel="noopener">Direct Pass@$k$ Optimization for Thought Pruning: Balancing Quality and Diversity in Test-Time Reasoning</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.31436</span><br><a href="https://arxiv.org/abs/2610.31436" target="_blank" rel="noopener">Conservative Meta-Agent Search: Architecture Adaptation under Non-Stationarity</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.31511</span><br><a href="https://arxiv.org/abs/2610.31511" target="_blank" rel="noopener">DuoCook: An Overcooked-Inspired Benchmark for Visual Planning and Coordination</a></div>
+<div class="item"><span class="cat">RL · W · 2610.31656</span><br><a href="https://arxiv.org/abs/2610.31656" target="_blank" rel="noopener">METTA: Memory-Enhanced Test-Time Adaptation for Meta-Reinforcement Learning</a></div>
+<div class="item"><span class="cat">RL · W · 2610.31624</span><br><a href="https://arxiv.org/abs/2610.31624" target="_blank" rel="noopener">Questioning Instrumental Convergence in RLVR: Checkpoint Evidence from OLMo-3</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.31314</span><br><a href="https://arxiv.org/abs/2610.31314" target="_blank" rel="noopener">When LLMs Forget What They Believe: Characterizing State Integrity Collapse in Long-Horizon Dialogues</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.30485</span><br><a href="https://arxiv.org/abs/2610.30485" target="_blank" rel="noopener">Why Bother Me Again? Benchmarking Personal Agent Memory for Interaction Preferences</a></div>
+<div class="item"><span class="cat">Video · W · 2610.31429</span><br><a href="https://arxiv.org/abs/2610.31429" target="_blank" rel="noopener">PhysTrace: Interpretable Temporal Evaluation of Physical Consistency in Video Generative Models</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.31372</span><br><a href="https://arxiv.org/abs/2610.31372" target="_blank" rel="noopener">RIDAR: Safeguarding Research Integrity in Autonomous Research Agents via Automated Detection and Runtime Intervention</a></div>
+<div class="item"><span class="cat">Other · W · 2610.31338</span><br><a href="https://arxiv.org/abs/2610.31338" target="_blank" rel="noopener">ValuSpec: Plug-and-Play Candidate Valuation before Target Verification for Tree-Based Speculative Decoding</a></div>
+<div class="item"><span class="cat">Other · W · 2610.31521</span><br><a href="https://arxiv.org/abs/2610.31521" target="_blank" rel="noopener">Jev-DLC: Decision-Level Continual Learning from Typed Feedback</a></div>
+<div class="item"><span class="cat">Other · W · 2610.31438</span><br><a href="https://arxiv.org/abs/2610.31438" target="_blank" rel="noopener">DIAL: Steerable Language Models with Distilled Instruction-Adherence Levels</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.31553</span><br><a href="https://arxiv.org/abs/2610.31553" target="_blank" rel="noopener">Contestable Agents for Data Governance: Recording Human Stewardship of AI-Generated Metadata Across Structured and Unstructured Systems</a></div>
+<div class="item"><span class="cat">Other · W · 2610.31062</span><br><a href="https://arxiv.org/abs/2610.31062" target="_blank" rel="noopener">SCOPE: Compiling Natural-Language Policies into Neurosymbolic Predicate Programs</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.30790</span><br><a href="https://arxiv.org/abs/2610.30790" target="_blank" rel="noopener">Agentic Knowledge-Model Co-Evolution via Consistency Regularization</a></div>
+<div class="item"><span class="cat">Other · W · 2610.30779</span><br><a href="https://arxiv.org/abs/2610.30779" target="_blank" rel="noopener">ProQuant: Preserving Expert Quality over Quantity in Ultra-Low-Bit Quantization of Mixture-of-Experts Models</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.30760</span><br><a href="https://arxiv.org/abs/2610.30760" target="_blank" rel="noopener">AgentDP: Towards Automated Model Deployment for Heterogeneous Embedded AI Applications</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.30499</span><br><a href="https://arxiv.org/abs/2610.30499" target="_blank" rel="noopener">Can LLMs Improve Their Own Harness? A Controlled Study on ARC-AGI-3</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.30495</span><br><a href="https://arxiv.org/abs/2610.30495" target="_blank" rel="noopener">From Prose to Properties: Testing Research Claims with ARATest for Agent-Native Science</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.30491</span><br><a href="https://arxiv.org/abs/2610.30491" target="_blank" rel="noopener">What the Trace Shows and What the Label Says: Auditing Behavioral Detectors in Agent Evaluation</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.30488</span><br><a href="https://arxiv.org/abs/2610.30488" target="_blank" rel="noopener">From Single-Actor Environments to Multi-Actor Event Worlds: Can LLMs Be Event World Models?</a></div>
+<div class="item"><span class="cat">Agent · W · 2610.30851</span><br><a href="https://arxiv.org/abs/2610.30851" target="_blank" rel="noopener">ADAPT for Science: A Multi-Agent System for Self-Evolving Scientific Optimization</a></div>
+<div class="item"><span class="cat">Other · W · 2610.30834</span><br><a href="https://arxiv.org/abs/2610.30834" target="_blank" rel="noopener">RECAP: Looking Once Is Not Enough for Vision-Language Reasoning</a></div>
+<div class="item"><span class="cat">RL · W · 2610.30814</span><br><a href="https://arxiv.org/abs/2610.30814" target="_blank" rel="noopener">DRILL: Training World Models to Improve Policies, Not Predict Pixels</a></div>
+<div class="item"><span class="cat">Video · W · 2610.30827</span><br><a href="https://arxiv.org/abs/2610.30827" target="_blank" rel="noopener">One Evaluation Is Enough: Inversion-Free Image Editing with Trajectory Correction</a></div>
+<div class="item"><span class="cat">Video · W · 2610.30926</span><br><a href="https://arxiv.org/abs/2610.30926" target="_blank" rel="noopener">Making MLLM Latents Matter: Factor-Aware Predictive Learning for Cinematic Video Generation</a></div>
+<div class="item"><span class="cat">Video · W · 2610.30866</span><br><a href="https://arxiv.org/abs/2610.30866" target="_blank" rel="noopener">Verus-Insight: Towards Explainable Artifact Detection in AI-Generated Videos</a></div>
+<div class="item"><span class="cat">Video · W · 2610.31668</span><br><a href="https://arxiv.org/abs/2610.31668" target="_blank" rel="noopener">Reading, Writing, Sharing, and Interacting with the World through Video</a></div>
+<div class="item"><span class="cat">Video · W · 2610.31640</span><br><a href="https://arxiv.org/abs/2610.31640" target="_blank" rel="noopener">WorldForge V2: Eliciting Camera-Trajectory Alignment in Video Diffusion Models</a></div>
+<div class="item"><span class="cat">Other · W · 2610.31616</span><br><a href="https://arxiv.org/abs/2610.31616" target="_blank" rel="noopener">OP-Print: Tracing Membership Imprints in On-Policy Self-Distillation</a></div>
+<div class="item"><span class="cat">Other · W · 2610.31639</span><br><a href="https://arxiv.org/abs/2610.31639" target="_blank" rel="noopener">Causal Chain of Thought: Mitigating Attention Leakage via Context Isolation</a></div>
+<div class="item"><span class="cat">Other · W · 2610.31574</span><br><a href="https://arxiv.org/abs/2610.31574" target="_blank" rel="noopener">Rethinking Sequence Compression with Test-time Regression</a></div>
+<div class="item"><span class="cat">Other · W · 2610.31558</span><br><a href="https://arxiv.org/abs/2610.31558" target="_blank" rel="noopener">Diffusion Language Models for Perplexity-Aware Black-Box Attacks</a></div>
+<div class="item"><span class="cat">Other · W · 2610.31549</span><br><a href="https://arxiv.org/abs/2610.31549" target="_blank" rel="noopener">Shift-aware score transport for privacy auditing without retraining</a></div>
+<div class="item"><span class="cat">Unlearning · W · 2610.27490</span><br><a href="https://arxiv.org/abs/2610.27490" target="_blank" rel="noopener">Orthogonal Boundary Unlearning for Dual-Use Concepts in Large Language Models</a></div>
+<div class="item"><span class="cat">Unlearning · W · 2610.25447</span><br><a href="https://arxiv.org/abs/2610.25447" target="_blank" rel="noopener">Enhanced Masked Diffusion Unlearning</a></div>
+<div class="item"><span class="cat">Unlearning · W · 2610.21720</span><br><a href="https://arxiv.org/abs/2610.21720" target="_blank" rel="noopener">FIRM: Fisher-Informed Retention Merging for Federated LLM Unlearning</a></div>
+</div></section>
+<p class="footer">Daily AI Research Radar & Idea Miner · 2026-10-24 · 本报告为研究辅助材料，不等于同行评审结论。研究想法与预期贡献为分析建议，不是论文已报告的发现。UTF-8 · Standalone HTML · Inline CSS · No external JavaScript.</p></main></body></html>

@@ -1,0 +1,671 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Daily Top Papers Deep Dive — 2026-10-25</title><style>
+:root{--bg:#f6f7fa;--ink:#192336;--muted:#59677d;--accent:#315bd7;--accent2:#0b7774;--border:#dce3ed;--paper:#fff;--soft:#f0f5ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;font-size:16px;line-height:1.93}
+a{color:#2556bc;text-underline-offset:3px}a:hover{color:#0c3b91}.hero{background:linear-gradient(120deg,#101e3b,#263d74 62%,#176d7a);color:white;padding:54px max(5vw,24px) 45px}.hero .eyebrow{font-size:13px;letter-spacing:.2em;color:#afcfef;text-transform:uppercase}.hero h1{font-size:clamp(28px,3.8vw,49px);line-height:1.28;margin:14px 0}.hero p{max-width:970px;color:#e0e8f8;font-size:17px}.hero .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.chip{display:inline-block;border:1px solid #91abc6;border-radius:100px;padding:4px 12px;font-size:12px;color:#f1f8ff}.shell{display:grid;grid-template-columns:270px minmax(0,1fr);max-width:1600px;margin:auto;gap:28px;padding:30px 30px 80px}.toc{position:sticky;top:18px;align-self:start;max-height:calc(100vh - 36px);overflow:auto;background:white;border:1px solid var(--border);border-radius:14px;padding:19px 13px;box-shadow:0 8px 30px #172b4d09}.toc h2{font-size:15px;padding:0 10px;margin:0 0 14px}.toc a{display:block;text-decoration:none;color:#52637e;line-height:1.45;padding:6px 9px;border-radius:6px;font-size:12px}.toc a.h1{font-size:13px;font-weight:700;color:#18375f;margin-top:12px}.toc a:hover{background:var(--soft);color:var(--accent)}main{min-width:0}.intro,.paper{background:var(--paper);border:1px solid var(--border);border-radius:16px;box-shadow:0 7px 30px #14213a0a;margin-bottom:24px;padding:clamp(22px,3.6vw,55px)}.intro{border-left:5px solid var(--accent2)}.intro h2{margin:0 0 10px}.paper h1{font-size:clamp(25px,2.5vw,35px);color:#112c58;line-height:1.42;margin:0 0 24px;padding-bottom:20px;border-bottom:3px solid #dce8ff}.paper h2{font-size:21px;color:#204b7e;margin:45px 0 14px;border-left:4px solid var(--accent);padding-left:13px;line-height:1.5}.paper h3{font-size:18px;color:#20535a;margin:26px 0 12px}p{margin:14px 0}blockquote{background:#f1f6ff;border-left:4px solid #5785d4;margin:18px 0;padding:12px 20px;color:#344e72;border-radius:0 9px 9px 0}blockquote p{margin:5px 0}.flow{background:#e9f7f5;color:#165c58;padding:15px 19px;border:1px solid #b9dcd7;border-radius:11px;line-height:2;font-weight:600;margin:20px 0}.formula{background:#101d36;color:#e8f5ff;border-radius:12px;border-left:4px solid #5bd0c2;font-family:Georgia,"Times New Roman",serif;letter-spacing:.015em;padding:20px 22px;line-height:2.15;overflow:auto;white-space:nowrap;margin:22px 0;font-size:16px}.table-scroll{overflow-x:auto;max-width:100%;border:1px solid var(--border);border-radius:11px;margin:20px 0;background:white}table{border-collapse:collapse;min-width:700px;width:100%;font-size:13.5px;line-height:1.67}th{background:#eaf1ff;color:#183b70;font-weight:700;white-space:normal}td,th{padding:12px 14px;border-bottom:1px solid #e4e9f2;border-right:1px solid #eef2f8;vertical-align:top}tr:nth-child(even) td{background:#f9fbff}tr:hover td{background:#f1f7ff}code{background:#f0f2f7;border-radius:4px;padding:2px 5px;color:#ad3657;font-size:.92em}strong{color:#153f79}ol,ul{padding-left:24px}li{margin:6px 0}hr{border:0;border-top:1px solid var(--border)}.footer{text-align:center;color:#687891;font-size:12px;padding:16px 10px}.backtop{position:fixed;right:23px;bottom:25px;background:#193e7a;color:white;border-radius:50%;height:44px;width:44px;display:grid;place-items:center;text-decoration:none;box-shadow:0 6px 15px #0b2e5d55}.backtop:hover{color:white;background:#0d7775}.audit{display:inline-block;padding:4px 12px;background:#e5f7ef;color:#146f50;border-radius:20px;font-size:12px}
+@media(max-width:1050px){.shell{grid-template-columns:1fr;padding:18px}.toc{position:relative;max-height:240px}.paper{padding:25px}.hero{padding:34px 20px}}@media print{.toc,.backtop{display:none}.shell{display:block}.paper{break-inside:avoid;box-shadow:none;border:0}.hero{color:black;background:white}body{font-size:12px}.table-scroll{overflow:visible}table{font-size:10px}}
+</style></head><body id="top"><header class="hero"><div class="eyebrow">Independent Scientific Paper Deep Dive · 2026-10-25</div><h1>Daily Top Papers Deep Dive<br>两篇论文，两个 Cache 机制</h1><p>MoEZip：KV 压缩为什么会改变 MoE 专家路径？　｜　CAVC：音视频扩散为什么应该缓存“能在最后修回来”的分支？</p><div class="chips"><span class="chip">2026-10-25 · Asia/Shanghai</span><span class="chip">2 Papers</span><span class="chip">Inference Acceleration</span><span class="chip">Efficient Video Generation</span><span class="chip">独立检索 · 正文与附录核验</span><span class="chip">MoEZip · BACKFILL</span></div></header><div class="shell"><aside class="toc"><h2>目录 · Ctrl+F 可检索</h2><a class="h1" href="#s1-1">Paper 1｜MoEZip：把“路由稳定性”纳入 KV 缓存压缩</a>
+<a class="h2" href="#s1-2">1. 人话版：为什么这篇值得读</a>
+<a class="h2" href="#s1-3">2. Background &amp; Research Gap：旧方法为何不够</a>
+<a class="h2" href="#s1-4">3. Core Insight：平均方向上的路由脆弱性</a>
+<a class="h2" href="#s1-5">4. Method Deep Dive：从输入到输出</a>
+<a class="h2" href="#s1-6">5. 核心公式与数学直觉</a>
+<a class="h2" href="#s1-7">6. Toy Example：4 个历史位置如何决定保留谁</a>
+<a class="h2" href="#s1-8">7. Baseline Deep Comparison：谁才是最强对手</a>
+<a class="h2" href="#s1-9">8. Experiment Setup：实验分别要证明什么</a>
+<a class="h2" href="#s1-10">9. Metrics 教学式解释：读数前先弄懂量尺</a>
+<a class="h2" href="#s1-11">10. Results Deep Dive：8 条证据与反证</a>
+<a class="h2" href="#s1-12">11. Figure / Table 精读：不要只看“最高分”</a>
+<a class="h2" href="#s1-13">12. Ablation / Mechanistic Analysis：因果证据有多强</a>
+<a class="h2" href="#s1-14">13. Claim vs Evidence 与 Contribution</a>
+<a class="h2" href="#s1-15">14. Limitation &amp; Failure Modes</a>
+<a class="h2" href="#s1-16">15. Reproduction View：先做什么才最划算</a>
+<a class="h2" href="#s1-17">16. Research Value：七种价值各有什么条件</a>
+<a class="h2" href="#s1-18">17. Migration A：Video-MoE 的 query-aware frame/KV 保留</a>
+<a class="h2" href="#s1-19">18. Migration B：Agent memory 的因果敏感性与黑盒探针</a>
+<a class="h2" href="#s1-20">19. Attack / Verification Lens</a>
+<a class="h2" href="#s1-21">20. 如果只记住这篇：九句话</a>
+<a class="h1" href="#s2-1">Paper 2｜CAVC：视频生成的“可恢复性”决定缓存哪条分支</a>
+<a class="h2" href="#s2-2">1. 人话版：这篇真正讲了什么</a>
+<a class="h2" href="#s2-3">2. Background &amp; Research Gap：为什么普通 cache 不够</a>
+<a class="h2" href="#s2-4">3. Core Insight：缓存应按“未来能否修复”分配</a>
+<a class="h2" href="#s2-5">4. Method Deep Dive：三段式“夹心”调度</a>
+<a class="h2" href="#s2-6">5. 核心公式：缓存的是预测，预算节省来自分支</a>
+<a class="h2" href="#s2-7">6. Toy Example：30 步“猫扑球”如何加速</a>
+<a class="h2" href="#s2-8">7. Baseline Deep Comparison：最强 baseline 是谁</a>
+<a class="h2" href="#s2-9">8. Experiment Setup：模型、数据、协议与研究问题</a>
+<a class="h2" href="#s2-10">9. Metrics 教学式解释：不要把 FPS、Dynamic Degree、Sync 混淆</a>
+<a class="h2" href="#s2-11">10. Efficiency Breakdown：实际少算了什么</a>
+<a class="h2" href="#s2-12">11. Results Deep Dive：九条可复核结果</a>
+<a class="h2" href="#s2-13">12. Table / Figure 读图：五处关键证据</a>
+<a class="h2" href="#s2-14">13. Ablation / Mechanistic Analysis：去掉模块会怎样</a>
+<a class="h2" href="#s2-15">14. Claim vs Evidence 与 Contribution</a>
+<a class="h2" href="#s2-16">15. Limitation &amp; Failure Modes</a>
+<a class="h2" href="#s2-17">16. Reproduction View：从最小 ablation 开始</a>
+<a class="h2" href="#s2-18">17. Research Value：七个维度</a>
+<a class="h2" href="#s2-19">18. Migration A：长视频理解的“可恢复信息”驱动 token pruning</a>
+<a class="h2" href="#s2-20">19. Migration B：多模态 Agent 的阶段性缓存与错误恢复</a>
+<a class="h2" href="#s2-21">20. Attack / Verification Lens</a>
+<a class="h2" href="#s2-22">21. 如果只记住这篇：九句话</a>
+<a class="h1" href="#s3-1">Cross-Paper Synthesis｜同一个 Cache 问题，两种互补视角</a>
+<a class="h2" href="#s3-2">Combined Research Opportunities｜可以形成什么新研究</a>
+<a class="h2" href="#s3-3">Collision / Overlap｜哪些是“相撞”，哪些只是类比</a>
+<a class="h2" href="#s3-4">Reading / Reproduction Priority｜怎么安排时间</a>
+<a class="h2" href="#s3-5">Depth Audit｜交付前核对</a>
+<a class="h2" href="#s3-6">Sources / Links｜核验入口</a></aside><main><section class="intro"><h2>Today's Deep Dive Selection</h2><p><strong>#1 MoEZip</strong>（2026-10-21，BACKFILL）从 Fisher 信息与 expert routing 的角度重新定义 KV 压缩重要性；在 10% KV 预算下显著改善长上下文任务质量，但缺完整端到端吞吐证据。</p><p><strong>#2 CAVC</strong>（2026-10-22）用 audio/video 不对称恢复性决定跳过哪条 diffusion 分支；有真实 1.10–1.35× wall-clock speedup，也有不可忽视的自然度/同步退化。</p><p><strong>为什么选这两篇：</strong>同属缓存加速，但一个研究“删除会改变哪条计算路径”，一个研究“跳过之后还能不能恢复”；机制可迁移、证据链完整、可形成统一的风险-恢复-成本预算思想。为保证单篇深度，本期不凑第三篇。此前 7 天内已精读的 EPIC、MHG-Mem、TWICE、BeNice! 均不重复。</p><span class="audit">已完成逐篇 Depth Audit · 所有未报告指标明确标识</span></section><article class="paper"><h1 id="s1-1">Paper 1｜MoEZip：把“路由稳定性”纳入 KV 缓存压缩</h1>
+<blockquote>
+<p><strong>基本信息</strong>　<strong>MoEZip: Routing-Aware KV Cache Compression for Sparse Mixture-of-Experts LLMs</strong>；Minsang Kim、Seungjun Baek；Korea University / SK Telecom；arXiv v1 <strong>2026-10-21</strong>；作者标注 <strong>NeurIPS 2026 Accepted</strong>；本期标记 <strong>BACKFILL（距本次运行约四天，超出严格 72 小时）</strong>。 <a href="https://arxiv.org/html/2610.30206" rel="noopener noreferrer" target="_blank">论文 HTML</a> · <a href="https://arxiv.org/pdf/2610.30206" rel="noopener noreferrer" target="_blank">PDF</a> · <a href="https://github.com/kmswin1/MoEZip" rel="noopener noreferrer" target="_blank">官方仓库</a> · <a href="https://openreview.net/pdf?id=R8hTibgKBX" rel="noopener noreferrer" target="_blank">OpenReview</a>。<strong>代码核验：</strong>官方 GitHub 页面目前只列 README.md 与 LICENSE，README 的 <code>run_example.sh</code> 不在可见文件列表，故“仓库存在”不等于“可直接运行的完整代码已公开”。</p>
+</blockquote>
+<p><strong>一句话定位：</strong>传统 KV eviction 保护“被注意到的信息”，MoEZip 进一步保护“删掉后会改变 MoE 专家选择的信息”，把缓存压缩从 attention preservation 推进到 computation-path preservation。</p>
+<h2 id="s1-2">1. 人话版：为什么这篇值得读</h2>
+<p>长上下文模型需要存储每层每个注意力头过去 token 的 Key、Value；上下文越长，显存越吃紧。通常我们看哪些旧 token 获得的 attention 高，就保留哪些，剩下丢弃。对普通稠密 Transformer，丢掉一个 token 主要改变注意力聚合值；对 MoE 模型，改变注意力输出还会改变路由器选择哪几个 expert，相当于“本来让数学专家处理，结果换成了另一个专家”。MoEZip 抓住这个放大效应：先在当前 instruction token 上读取路由分布，利用 Fisher information trace 估计哪些位置处在“路由容易被扰动”的状态，再沿 attention 把脆弱性映射回历史上下文位置，优先保留一批 anchor，剩余预算仍交给 KVZip/SnapKV 等已有压缩器。它不需要重新训练 MoE 权重，保留 KV 数量也不增加。Qwen3-30B-A3B 上，在只保留 10% KV 时，12 项 LongBench 宏平均由 KVZip 的 19.51 提高到 44.89；但论文没有证明真实端到端 tokens/s 必然提高，且压缩选择本身有额外时间。其最大价值是揭示：<strong>缓存重要性不只由信息内容决定，还取决于它会把后续计算送到哪里。</strong></p>
+<h2 id="s1-3">2. Background &amp; Research Gap：旧方法为何不够</h2>
+<p>以一个 16K token 的工具调用历史为例，模型接到“找出客户取消订单的唯一证据”时，历史中有一句罕见的例外规则。SnapKV 观察最近查询对历史 token 的注意力；PyramidKV 根据层间注意力集中程度分配预算；KVZip 通过上下文重建评估 token 的重要性，以便一份压缩缓存复用于多个查询。这些思路都合理，因为 attention 常常对应信息读取需求。但 MoE 的前馈部分不是固定的一个 FFN，而是 <code>router → top-k experts → combine</code>：缓存删除造成微小隐藏状态变化，就可能让两个得分接近的专家名次互换，后续整条解码路径发生离散改变。即便保留下来的文字片段看似足够，计算路径仍可能不稳定。</p>
+<p>这不是“MoE 的 KV 比 dense 更大”的论断：KV 大小主要由注意力架构、层数、KV heads 和精度决定；本文真正指出的是<strong>同样比例的 KV 删除在 MoE 可能额外触发专家翻转</strong>。作者用同一串 instruction 与 teacher-forced reference answer，在完整 KV 和压缩 KV 条件下比较每个 MoE 层的专家分配，避免自由生成不同答案带来的 token 对齐混淆。Figure 1 展示压缩越激进，路由翻转越多、任务质量越差；但仅有相关性不能排除“attention 信息丢失”和“专家变化”共同由 KV 删除引起，所以后面设计固定缓存的路由干预实验。这条从 observation 到 intervention 的证据链，是论文比普通“新打分函数”更值得读的原因。</p>
+<h2 id="s1-4">3. Core Insight：平均方向上的路由脆弱性</h2>
+<p><strong>观察 A（经验）：</strong> instruction 位置的 expert flip rate 与随后 answer 位置的 flip rate 同步变化。未来答案尚未生成，无法直接计算未来路由风险；但当前 instruction 已知，可以用作可部署的代理。<strong>观察 B（局部数学）：</strong>当 router logits 有小扰动时，两个路由概率分布之间的 KL 散度的二阶项由 Fisher 信息矩阵控制。其迹 trace 衡量在各向同性扰动假设下，对所有扰动方向平均的敏感程度。<strong>观察 C（系统设计）：</strong>一个历史位置即使没有最高的通用 saliency，只要被“脆弱路由状态”的 instruction 强烈读取，就可能值得保护。故使用 <code>Fisher × attention</code> 评分，先占用有限 anchor 预算，再让通用 scorer 补齐。</p>
+<p>关键边界：<code>trace(F)</code> <strong>不是</strong>实际删除某个 KV 后的精确影响；真实扰动方向不是各向同性，而且 expert top-k 的硬切换与平滑概率分布 KL 也不等价。论文的 Fisher 是便宜、可计算的风险代理，而不是“理论证明任何高分 token 都会导致 expert flip”。它之所以可信，主要靠后面的 correlation、ablation 和 oracle intervention 共同支撑。</p>
+<h2 id="s1-5">4. Method Deep Dive：从输入到输出</h2>
+<div class="flow">长上下文 C + 下游指令 I + 预训练 MoE → 读取 instruction attention / router logits → 计算 Fisher trace → 反向归因到历史位置 r(i) → 自适应决定 anchor 数量 → anchor + base scorer 补足预算 → 构建压缩 KV → 原模型正常 decode</div>
+<p><strong>Step 1｜获得预压缩观测。</strong>在可访问 router 与 attention 的白盒 MoE 上，以完整历史和当前指令运行前向，取得每个 MoE 层、每个 instruction token 的专家门控分布 <code>g_{t,l}</code>，以及 instruction 对历史第 i 个位置的 attention <code>α_{t,l,h,i}</code>。输入对象是 KV、router logits 与 attention；输出是两个统计张量。风险是 flash attention 或 serving runtime 不暴露完整 attention matrix，提取统计可能破坏原本高效的 kernel 路径。</p>
+<p><strong>Step 2｜量化“脆弱”而非“注意力大”。</strong> softmax router 的 Fisher trace 为 <code>1−Σg_e²</code>；分布接近均匀时更大，接近 one-hot 时更小。sigmoid 独立门控对应 <code>Σg_e(1−g_e)</code>。它表示对小 logit 扰动的概率分布敏感性，而不是 expert 实际已经翻转。输出是每个 instruction token × MoE 层一个标量 <code>f_{t,l}</code>；若路由高度饱和，该值会小，但一个极接近 top-k 决策边界的稀疏路由仍可能产生不同于 Fisher 的风险，属于代理失配。</p>
+<p><strong>Step 3｜将风险映射回历史 token。</strong>先对 head 做 <code>max_h α</code>，而非 mean，保留某个头特别依赖某位置的尖峰；再对 instruction token 与 MoE 层累加 <code>attention × Fisher</code>，得到每个历史位置的 <code>r(i)</code>。它不是梯度归因、也不是对每个 KV 做反事实删除，而是基于前向统计的启发式 attribution。一个位置只有在“被脆弱状态读取”时才高分；高 Fisher 但没有读到它，不会自动进入 anchor。</p>
+<p><strong>Step 4｜决定多少位置需要特殊保护。</strong>作者对 Fisher 值按理论上限的 85% 设置阈值，计算超过阈值的状态比例 Γ；将 Γ 映射到 anchor 占预算比例 <code>ρ_min + (ρ_max−ρ_min)Γ</code>。默认 <code>ρ_min=0.05</code>、<code>ρ_max=0.25</code>，同时用 <code>B_min=32</code>、<code>B_max=128</code> 对 anchor 数量裁剪。若 B 很小，最小 anchor 数还需受总预算约束，实际实现必须防止 <code>B_f&gt;B</code>。此处决定“多少位置由路由评分保护”，不是“总共保留多少 KV”。</p>
+<p><strong>Step 5｜预算内拼接。</strong>先按 <code>r(i)</code> 取 top-B_f anchor，再把剩余 B−B_f 交给 KVZip（默认）或 SnapKV，去重后填满。每个 layer/head 的总 KV budget 与 baseline 相同，区别只是组成。这个组合有助于防止过度追求路由稳定而忘记普通内容检索。随后照常 autoregressive decode，不修改模型参数、expert 结构或生成目标。<strong>MoEZip-Recon</strong> 用 KVZip 原有的固定重建 query 替代真实下游指令，因此压缩缓存可跨请求复用；代价是少了 query-aware 信号。</p>
+<h2 id="s1-6">5. 核心公式与数学直觉</h2>
+<div class="formula">α<sub>t,ℓ,h,i</sub> = softmax<sub>i</sub>(q<sub>t,ℓ,h</sub> · k<sub>ℓ,h,i</sub> / √d)<br/>z<sub>t,ℓ</sub> = R<sub>ℓ</sub> u<sub>t,ℓ</sub>　→　g = softmax(z) 或 sigmoid(z)</div>
+<p>其中 <code>u</code> 是 attention 聚合后的隐藏状态，<code>R</code> 是 router 线性映射。删除第 i 个 KV 不只是让 α 重归一化，还会改变 u、z 和 expert assignment；这就是缓存压缩与 MoE 路由之间的因果链候选。</p>
+<div class="formula">D<sub>KL</sub>(p(z) ∥ p(z+δz)) ≈ ½ δzᵀF(z)δz<br/>E<sub>δz∼(0,σ²I)</sub>[D<sub>KL</sub>] ≈ (σ²/2) tr F(z)</div>
+<p>KL 衡量两个路由分布差异，越大说明 logit 小扰动导致概率变化越大。<code>F</code> 是 Fisher 信息矩阵；其特征值刻画不同方向的敏感程度，迹是特征值之和。对于 softmax，<code>F=diag(g)−ggᵀ</code>，故 <code>tr F=1−Σg_e²</code>；对于独立 sigmoid，<code>F</code> 对角元素是 <code>g_e(1−g_e)</code>。这一推导只在小扰动与所设协方差下成立；它不包含真实删除位置引起的 δz 方向，也不能把高 trace 直接解释成“路由必翻转”。</p>
+<div class="formula">r(i) = Σ<sub>ℓ∈MoE</sub> Σ<sub>t∈Instruction</sub> [ max<sub>h</sub> α<sub>t,ℓ,h,i</sub> · tr F(z<sub>t,ℓ</sub>) ]<br/>Γ = mean 1[f<sub>t,ℓ</sub> &gt; τ]；B<sub>f</sub> = clip(⌊B·ρ(Γ)⌋,32,128)</div>
+<p>这不是一个需要梯度下降的 objective，而是<strong>受 KV 预算约束的贪心排序/选择规则</strong>。最重要的超参数不是学习率，而是 keep ratio、<code>τ</code>、<code>ρ_min/max</code>、anchor clip 和 query-conditioned/reconstruction 两种模式。增加 ρ 会多保护路由位置，但减少 base scorer 的普通内容位；减少 ρ 反之。strongest baseline KVZip 的目标是重建上下文重要性，MoEZip 在相同预算下额外显式加入“计算路径是否会变化”。</p>
+<h2 id="s1-7">6. Toy Example：4 个历史位置如何决定保留谁</h2>
+<p>设一个 MoE 层、两个 instruction token、四个历史位置 <code>A=客户名、B=例外规则、C=订单金额、D=日志尾部</code>。只保留 B=2 个位置。两个 instruction 状态的 Fisher trace 分别为 <code>0.48</code> 与 <code>0.08</code>。为了演示，设其 max-head attention 对 A/B/C/D 分别为 <code>[0.1,0.7,0.1,0.1]</code> 和 <code>[0.1,0.1,0.7,0.1]</code>。于是 <code>r(A)=0.056</code>、<code>r(B)=0.344</code>、<code>r(C)=0.104</code>、<code>r(D)=0.056</code>。如果 routing anchor 占 1 个位置，选 B；另一个位置由 KVZip 选，例如 C。得到 <code>{B,C}</code>。纯 KVZip 可能选 <code>{A,C}</code>，漏掉“例外规则”。当 B 被删除时，instruction 隐藏状态改变、router top-2 expert 可能变成另一组；保留 B 不保证答案正确，但更有机会保持原来的计算路径。这里的数字<strong>完全是教学构造，不是论文实验数据</strong>；实际默认 anchor 最小数量为 32，toy 中将预算规则缩放演示。</p>
+<h2 id="s1-8">7. Baseline Deep Comparison：谁才是最强对手</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>怎么做、为什么合理</th>
+<th>在 MoE setting 的局限</th>
+<th>MoEZip 改了什么、差异类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>KVZip（主要 strongest baseline）</strong></td>
+<td>用上下文重建信号估计保留价值，可复用缓存；论文多组强对照的基线</td>
+<td>没有显式保护 expert routing；10% keep 在 Qwen3-30B 12-task macro 仅 19.51</td>
+<td>在 KVZip 基础上插入 routing anchors；机制性新增 + 工程组合</td>
+</tr>
+<tr>
+<td>SnapKV</td>
+<td>用最近观察窗口 attention 预测未来重要 KV；成本相对直观</td>
+<td>单靠 attention 可能漏掉高路由敏感位置</td>
+<td>同一预算先占 routing anchors，余量 SnapKV；可组合性实证</td>
+</tr>
+<tr>
+<td>PyramidKV</td>
+<td>利用层间 KV 重要性差异分配预算</td>
+<td>层级预算不等于路由稳定性</td>
+<td>保护影响路由的历史位置；机制互补</td>
+</tr>
+<tr>
+<td>Attention-only anchors</td>
+<td>instruction attention 高分直接保留，能检验“只是 query-aware”吗</td>
+<td>只知道被看见，不知道哪个 instruction 的 router 脆弱</td>
+<td>Fisher × attention；235B 四任务 macro 35.5 vs 24.1</td>
+</tr>
+<tr>
+<td>Full KV（质量上界）</td>
+<td>不删除历史，通常保留最强信息与路由一致性</td>
+<td>KV 显存随长度线性增加，不满足低预算部署</td>
+<td>不应将 MoEZip 宣称超过 Full KV；目标是更好 Pareto 曲线</td>
+</tr>
+</tbody>
+</table></div>
+<p>“strongest”需按 setting 指定：<strong>本论文最严格、最常用的匹配预算对手是 KVZip</strong>，而不是声称它在所有数据集、所有保留比例上始终是第二名。论文也展示在某些极端 keep ratio，SnapKV/PyramidKV 可能优于 KVZip；不能从一个宏平均推出全局排序。</p>
+<h2 id="s1-9">8. Experiment Setup：实验分别要证明什么</h2>
+<p><strong>Models：</strong>Qwen3-30B-A3B-Instruct-2507（softmax routing）、GLM-4.7-Flash（sigmoid routing）；附录扩展 Qwen3-235B-A22B-Instruct-2507。<strong>Data：</strong>LongBench 12 tasks，RULER 13 tasks，NIAH，4K–32K 上下文，keep ratio 0.1–0.9；任务涵盖 QA、摘要、few-shot、合成检索和代码补全。<strong>Fairness：</strong>相同模型、模板、预算、decode 设置；SnapKV/PyramidKV 用最后 64 token 观察窗口，作者说明模板化 instruction 完全落在其中，但嵌入原始 question field 的任务内容不一定落入。<strong>Compute：</strong>通常 2×A100 80GB；235B 用 8×A100 80GB；作者估计报告实验总量 15,000–16,000 A100 GPU-hours（不含探索性失败运行），不代表复现一个小表格也需要这么多。</p>
+<p><strong>RQ1：同样只留 10% KV，任务性能是否更稳？</strong>看 Figure 3/5/6 的不同 keep ratio 曲线和 LongBench/RULER 平均。<strong>RQ2：能否定位 needle，还是只保住摘要？</strong>看 Figure 4 的 context length × needle depth 热力图。<strong>RQ3：Fisher 是否真有增量信息？</strong>看 Figure 7(a) 与 attention-only 对照。<strong>RQ4：提升是否只是 query conditioning？</strong>看 Table 1 的 MoEZip-Recon。<strong>RQ5：路由变化是否实际影响输出？</strong>看固定 retained KV 的 oracle routing intervention（Table 2 及干预段）。<strong>RQ6：更大模型、不同 router、INT8 是否仍成立？</strong>看 Figure 6 与 Appendix E.9/E.10。所有 RQ 都要和“压缩率相同”同时检查。</p>
+<h2 id="s1-10">9. Metrics 教学式解释：读数前先弄懂量尺</h2>
+<p><strong>Keep ratio</strong> = 保留历史 KV 数 / 原始历史 KV 数；越低越省缓存，通常质量风险越大；10% 不等于整个模型显存减少 90%，因为模型权重、当前 token、运行时缓存仍在。<strong>LongBench macro</strong> 是对不同任务官方指标求宏平均：QA 用 F1，摘要用 ROUGE-L，分类/少样本用 accuracy，代码用 edit similarity。越高越好，但跨任务量尺混合，平均 +24 不等于“24% 真实用户任务提升”。<strong>RULER score</strong> 是 13 项长上下文任务平均，越高越好；合成检索强，不等于真实代理稳定。<strong>NIAH ROUGE-L F1</strong> 测输出与针目标文本的最长公共子序列重合，越高越好；它测文本抽取而不是因果推理。</p>
+<p><strong>Expert flip rate</strong> = 在相同 token 序列、相同层位置下，压缩与完整 KV 选择专家不一致的比例，越低越接近原路由，但“接近”不保证正确。<strong>NLL</strong> = reference answer 的平均负对数似然，越低越好；是 teacher forcing 指标，可能与自由生成任务分数不完全一致。<strong>Spearman ρ</strong> 衡量排序相关，越接近 +1 越单调一致；相关并不证明原因。<strong>Jaccard</strong> = 两组 anchors 交集 / 并集，越高说明选择更一致，但高一致性本身不是任务质量。<strong>Selection overhead</strong> 需要加在真实 prefill/decoding 之外，不能把缓存节省直接当作端到端加速。</p>
+<h2 id="s1-11">10. Results Deep Dive：8 条证据与反证</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>结果 / 现象（原文位置）</th>
+<th>对比与差值</th>
+<th>支持什么？另一种解释 / 弱项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>① 10% keep，12-task macro：44.89 vs 19.51</strong>（Table 1）</td>
+<td>MoEZip 比 KVZip <strong>+25.38</strong>；约 2.30×</td>
+<td>极端压缩最强结果之一；但主要集中在特定 MoE + benchmark，且不代表系统加速倍数</td>
+</tr>
+<tr>
+<td><strong>② 20% keep：49.59 vs 29.25</strong>（Table 1）</td>
+<td><strong>+20.34</strong></td>
+<td>并非只在 10% 特例成立；仍需对照 50%、90% 时收益是否缩小</td>
+</tr>
+<tr>
+<td><strong>③ Recon 10%：41.95 vs 19.51</strong>（Table 1）</td>
+<td><strong>+22.44</strong>；可跨 query 复用</td>
+<td>排除了“纯粹因看到了下游问题”这一单一解释；与 query-conditioned 的 44.89 仍差 2.94</td>
+</tr>
+<tr>
+<td><strong>④ Oracle routing 干预：KVZip 19.5→29.7</strong>（Sec 4.4）</td>
+<td><strong>+10.2</strong>；MoEZip 44.9→46.2，仅 +1.3</td>
+<td>固定 KV 集合下修正专家能改善输出，较强因果证据；但 KVZip 距 full 53.7 仍有大缺口，说明并非全部错误来自路由</td>
+</tr>
+<tr>
+<td><strong>⑤ NLL：KVZip 5.67→4.97</strong>（Table 2）</td>
+<td><strong>−0.70</strong>；full KV 为 4.22</td>
+<td>对 routing effect 的 teacher-forced 证据；不能直接等价为用户满意度</td>
+</tr>
+<tr>
+<td><strong>⑥ 235B 10-task macro：27.6→44.7</strong>（Table 15）</td>
+<td><strong>+17.1</strong>；PsgRet 4.0→61.5，+57.5</td>
+<td>大规模扩展强；但 QMSUM 在四任务子集只 16.8→17.3，改善极弱，显示任务特异性</td>
+</tr>
+<tr>
+<td><strong>⑦ Qasper Spearman：0.41→0.82</strong>（Table 4）</td>
+<td>keep 从 0.7 降至 0.1 时 Fisher/flip 相关增强</td>
+<td>支持高压缩时 proxy 更有用；相关随压缩强度变化也可能反映共同的非线性崩溃</td>
+</tr>
+<tr>
+<td><strong>⑧ Scoring 9.36s→10.24s</strong>（Table 8）</td>
+<td><strong>+0.88s</strong>，约 +9.4% selection time</td>
+<td>显示“压缩质量”不免费；论文未给充分统一的端到端 TTFT/TPOT/tokens/s 证明加速</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最强结果</strong>：10% KV 下质量保留与 235B 检索任务改善。<strong>最弱结果</strong>：235B QMSUM 仅 +0.5，以及 proxy 在 QMSUM 对下游 flip 的 ρ 仅 0.103（非显著）。<strong>failure mode</strong>：跨层分布式摘要、真实线上 query 无法提前获取、提取 attention/router 增加 overhead。<strong>Trade-off</strong>：高路由保真 ↔ 通用内容位置数量、query-aware 最佳质量 ↔ reusable cache、质量 ↔ scoring latency。</p>
+<h2 id="s1-12">11. Figure / Table 精读：不要只看“最高分”</h2>
+<p><strong>Figure 1（router instability）</strong>：横向改变 KV keep ratio，观察 instruction/answer 的 flip rate 与相对任务性能。作者想证明“路由翻转与质量崩溃同增”；它实际先证明相关性，而不是独立的因果。更严谨的因果来自 Sec 4.4 的路由干预。<strong>Figure 3（12 LongBench 任务 × keep ratio）</strong>：看低预算区 MoEZip 曲线与 KVZip/SnapKV/PyramidKV 的间隔；高 keep 逐渐接近，说明收益是压缩压力驱动。图中不同任务的绝对分数不可不加区分地平均解释。</p>
+<p><strong>Figure 4（NIAH heatmap）</strong>：横轴可理解为 needle 在文档中的位置/深度，纵轴为上下文长度，分不同 keep ratio 和算法；重点不是“绿色面积大”，而是深位置、长上下文是否同时保持。热力图可验证检索鲁棒性，但 NIAH 仍是合成任务。<strong>Figure 7(a–d)（消融）</strong>：分别去 Fisher、改静态 anchor 数、max→mean、换 SnapKV scorer；四项一起检验方法是否只是“堆组件”。论文多数消融是曲线而非给每点精确数值，不能从图片凭空制造提升点数。</p>
+<p><strong>Table 1（可复用性）</strong>：10% 时 KVZip 19.51，MoEZip-Recon 41.95，MoEZip 44.89。这个表特别重要，因为它证明了 routing signal 与下游 query conditioning 可部分解耦。<strong>Table 2（路由干预）</strong>：完整 KV LongBench 53.7，KVZip compressed 19.5，oracle routing 29.7；虽然 +10.2，仍差 24.0，明确推翻“所有 KV 损失都只是路由问题”的强表述。<strong>Table 15（235B）</strong>：10 个任务逐项给数，PsgRet +57.5 与 QMSUM +0.5 的巨大异质性提示：后续工作要按 retrieval / summarization / multi-hop 分桶报告，而非只报宏平均。</p>
+<h2 id="s1-13">12. Ablation / Mechanistic Analysis：因果证据有多强</h2>
+<p><strong>去 Fisher trace</strong>：Figure 7(a) 低 keep 表现下降，说明单纯 attention 不够；但若未控制额外提取信号的成本，不能说性能收益是“零代价”。<strong>静态替换自适应 Γ</strong>：Figure 7(b) 下降，说明不同样本需要不同保护预算；需要进一步检验更简单的 entropy / top-k margin 是否同样有效。<strong>max-head 改 mean-head</strong>：Figure 7(c) 下降，提示“单头关键依赖”可能被平均抹掉；但 max 对异常 head 的噪声更敏感。<strong>替换 base scorer</strong>：Figure 7(d) 的 SnapKV 变体仍有提升，证明不是只对 KVZip 的特例修补。</p>
+<p>更强的机制验证是<strong>固定保留 KV 集合，直接替换路由 assignment</strong>：这排除了“因为恢复了被删除的 KV 才提升”的解释。进一步把纠正站点从 0% 提到 25/50/75/100%，NLL 从 5.670 依次到 5.503、5.273、5.107、4.970；归一化恢复 23.8/56.7/80.5/100%，显示剂量响应。不过实验仍使用 full-KV oracle assignments、并不属于真实部署可用的干预；专家输入激活也没有恢复，故残差是合理的。附录 Fisher 的 sample-level correlation 与 235B 2.5× 高低分位 flip 比例支持 proxy，但<strong>尚未证明该代理是最优风险估计器</strong>。</p>
+<h2 id="s1-14">13. Claim vs Evidence 与 Contribution</h2>
+<p><strong>Authors Claim：</strong>MoE KV 删除引入特有的 routing instability；Fisher-aware anchors 能在固定 KV 预算下显著提升保留质量；适用于不同 router 和更大规模模型。<strong>Experiments Actually Show：</strong>在 Qwen3-30B/235B 与 GLM-4.7-Flash、LongBench/RULER/NIAH 等给定 setting，性能显著改善；固定 KV 的 oracle routing correction 明确表明专家分配本身对输出有贡献；INT8 实验显示六任务 macro 从 BF16 26.4 降到 25.8，方法相对 KVZip 的优势大体保留。<strong>What Is Not Yet Proven：</strong>通用 online serving 的 TTFT/TPOT 降低、所有 MoE router 类型的稳定性、黑盒适用性、真实 agent 多轮 KV 复用下的收益、Fisher 比所有更便宜 margin 指标都更好。</p>
+<p><strong>Contribution 1｜New Empirical Finding：</strong>压缩引发 MoE routing flip，并与生成质量损失相关；有干预加强因果解释，属实质机制发现。<strong>Contribution 2｜New Metric/Mechanism：</strong>用 router Fisher trace 量化局部 fragility，再 attention 传播为 KV 重要性，属于有数学动机的组合创新，不是首次提出 Fisher 或 attention。<strong>Contribution 3｜New System/Engineering：</strong>自适应 anchor 与已有 KVZip/SnapKV 组合，且不增保留预算；实用性依赖系统能低成本导出统计。<strong>Contribution 4｜New Evaluation Protocol：</strong>固定 retained KV 的 routing oracle 和渐进纠正值得复用；其原创性是针对该问题的实验范式，而非通用 causal inference 的发明。</p>
+<h2 id="s1-15">14. Limitation &amp; Failure Modes</h2>
+<p><strong>Authors' Limitation：</strong>需白盒 router outputs 与 instruction-to-context attention；黑盒 API 不适用。<strong>Additional Limitation 1｜selection cost</strong>：每次 query 都重选 anchors 可能吞掉 decode 省时，尤其短输出、短上下文。<strong>2｜路由 proxy</strong>：各向同性 Fisher trace 对真实 KV 删除的定向扰动不一定准确；hard top-k 边界与 softmax 平滑敏感性不完全一致。<strong>3｜语义丢失</strong>：保护 expert assignment 不能恢复丢失的具体证据，Table 2 oracle correction 后仍远逊 full KV。<strong>4｜评估</strong>：LongBench 宏平均跨任务异质；需要 AgentBench、tool-use、长会话和并发 serving。<strong>5｜规模</strong>：235B 仍属 Qwen 同一家族，不能等同跨架构充分验证。<strong>6｜开源</strong>：截至本次检查，公开仓库可见 README/LICENSE，无实际代码文件；论文宣称的可复现性尚不能按 README 直接验证。<strong>7｜显存与性能</strong>：只保留 10% prefix KV 不是 10% 总 GPU memory，也不是 10× speedup。</p>
+<h2 id="s1-16">15. Reproduction View：先做什么才最划算</h2>
+<p><strong>关键模块：</strong><code>collect_router_logits.py</code>（prefill 指令位置 hook）、<code>collect_attention.py</code>（需要兼容 GQA/FlashAttention 的统计获取）、<code>fisher_score.py</code>（softmax/sigmoid 分支）、<code>anchor_budget.py</code>、<code>kv_select.py</code>、<code>evaluate.py</code>、<code>routing_intervene.py</code>。<strong>最容易踩坑：</strong>缓存位置索引与 RoPE/position IDs 对齐；grouped-query head 映射；是否从同一 full-cache 前向读取 router；top-k 多专家 assignment 的定义；避免把“解码后重新选”当作真实 pre-generation 方法。建议把 score 采集与原模型 logits 校验写成单测。</p>
+<p><strong>最小复现：</strong>先在一个可 hook 的开源 MoE（论文的 Qwen3-30B-A3B 若资源允许）上取 LongBench Qasper/HotpotQA 各 50 条，seed=42，context 4K、keep 0.1/0.2/0.5；实现 Full KV、KVZip、KVZip+attention-only、MoEZip 四组。固定 prompt、generation max tokens、precision、batch=1；报告 QA F1、answer NLL、instruction/answer flip、selection wall-clock、decode tokens/s、peak KV bytes。先跑 Qasper 0.1 keep，最能快速验证机制。默认参数 <code>ρ=[0.05,0.25]</code>、<code>B_min/max=[32,128]</code>、<code>τ=0.85</code>×理论 Fisher 上限。<strong>可验证 claim：</strong>相同 KV budget 下 Fisher 组较 attention-only 同时降低 flip 并提高 QA，而不是仅提高其中之一。</p>
+<h2 id="s1-17">16. Research Value：七种价值各有什么条件</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>判断与理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline Potential</td>
+<td><strong>高</strong>：极端 KV keep ratio 的 MoE 长上下文压缩强基线；但公开仓库源码不完整时先自实现简版</td>
+</tr>
+<tr>
+<td>Migration Potential</td>
+<td><strong>高</strong>：将“计算路径脆弱性”迁移到视频 MoE、agent 工具路由、动态模型选择</td>
+</tr>
+<tr>
+<td>Systems Potential</td>
+<td><strong>中高</strong>：与 cache reuse/INT8 兼容；必须补全端到端 TTFT/TPOT/吞吐测试</td>
+</tr>
+<tr>
+<td>Attack Potential</td>
+<td><strong>中高</strong>：构造低 attention、高 routing impact 的诱饵历史片段，诱发压缩后专家切换</td>
+</tr>
+<tr>
+<td>Evaluation Potential</td>
+<td><strong>高</strong>：固定 KV 的路由干预比单纯相关性更接近机制因果验证</td>
+</tr>
+<tr>
+<td>Benchmark Potential</td>
+<td><strong>高</strong>：可做 RouterFlipBench，按任务类型、长度、预算、top-k margin 分桶</td>
+</tr>
+<tr>
+<td>New Paper Potential</td>
+<td><strong>中高</strong>：若提出比 Fisher trace 更准确且更低开销的方向敏感因果预算，并在真实 serving 证实收益</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s1-18">17. Migration A：Video-MoE 的 query-aware frame/KV 保留</h2>
+<p><strong>Original Problem →</strong>长上下文 MoE 语言模型的 KV 删除扰动 expert routing。<strong>Transferable Mechanism →</strong>保留“会影响后续路由”的输入，而不是仅保留 attention-heavy 输入。<strong>New Research Question →</strong>视频 MoE/VLM 的稀疏帧选择是否会让后续 token 的 expert 选择不稳定，尤其动作顺序题？<strong>Method Modification →</strong>将 <code>r(i)</code> 的位置粒度从文本 token 聚合到 <code>frame_id</code>，对一个 frame 内 patch/token 的 Fisher×attention 取 top-k/求和，再按固定帧预算选择；在无 MoE 的 Video VLM 上先以 layer-gate/MLP branch margin 作为替代，不应假装原模型存在 router。</p>
+<p><strong>Minimum Experiment →</strong>建立 <code>sample_frames.py --mode uniform|clip|fisher --budget 8|16 --seed 42</code>；对 100 个 NExT-QA temporal 样本抽 32 帧作为 reference，比较 8/16 帧的 Uniform、CLIP query score、routing-aware（需选实际带 MoE router 的 VLM）；先记录 frame→visual tokens、QA accuracy、router flip、peak KV MB、TTFT、wall-clock；对每个视频复用同一问题。<strong>Model →</strong>优先真正带 MoE 的开源视频 VLM，若无稳定 checkpoint 则先在 Qwen3 MoE + 预提取视觉描述的简化流水线上做 proof-of-concept，并明确它不是原生视频模型。<strong>Dataset →</strong>NExT-QA temporal 子集 / MVBench；<strong>Baseline →</strong>uniform、CLIP、attention-only；<strong>Metric →</strong>QA accuracy、temporal consistency、flip、ms/sample、VRAM；<strong>Expected Contribution →</strong>路由稳定性驱动的跨模态信息保留；<strong>Risk →</strong>视频编码器压缩造成的信息损失比 router flip 更重要；<strong>Collision Risk →</strong>与 query-aware frame selection / visual token pruning 及本论文的 routing-aware KV 直接重合，必须引入视频时序约束和真实 speedup 才有新意。</p>
+<h2 id="s1-19">18. Migration B：Agent memory 的因果敏感性与黑盒探针</h2>
+<p><strong>Original Problem →</strong>历史上下文压缩造成下游计算路径改变。<strong>Transferable Mechanism →</strong>在删除前评估记忆片段对后续决策的敏感性，并给高风险片段保护预算。<strong>New Research Question →</strong>Agent 的 memory summarization 是否会把“看似不重要却改变 tool choice”的证据删掉？<strong>Method Modification →</strong>白盒用 router/attention；黑盒用 paired ablation：同一任务分别带/不带一条 memory，比较 tool-call distribution、行动序列与任务成功率；建立近似 <code>Δ_tool(m)</code> 代替 Fisher，避免宣称黑盒能访问真实 router。</p>
+<p><strong>Minimum Experiment →</strong><code>memory_probe.py --tasks 100 --budget_tokens 1024 --seed 42</code>，从 100 条工具交互 trajectory 中逐条提取 5–20 条 memory，构造 Full / BM25 / recency / paired-impact 四组；每个 task 固定工具环境快照，温度 0，记录首次 tool-call 一致率、成功率、tokens、TTFT、攻击成功率（向 memory 注入一条低相关高决策影响的伪规则）。<strong>Model →</strong>Qwen3-8B（黑盒决策实验）+ Qwen3-30B-A3B（白盒补充）；<strong>Dataset →</strong>WebShop/ALFWorld 公开任务，先各 50 条；<strong>Baseline →</strong>recency、BM25、summary、random eviction；<strong>Metric →</strong>action flip、task success、cost、false-anchor rate；<strong>Expected Contribution →</strong>memory causal sensitivity benchmark；<strong>Risk →</strong>环境随机性与模型采样混淆因果，需要配对同种子；<strong>Collision Risk →</strong>agent memory attribution 与 influence function 已有工作很多，创新必须来自可重复的因果干预与预算-性能曲线。</p>
+<h2 id="s1-20">19. Attack / Verification Lens</h2>
+<p><strong>Attack：</strong>构造 attention 很低、但路由边界附近可放大 expert flip 的历史片段，测试 KVZip 与 MoEZip 在相同预算下是否易受扰动；不把“让模型输出错误”与“实际安全漏洞”混同。<strong>Black-box probe：</strong>对同一问题在不同历史裁剪策略下重复询问，记录工具选择/答案翻转，只能观察行为，不能反推具体 expert ID。<strong>Robustness：</strong>把相关证据移到上下文不同深度，加入重复/干扰文档；画 keep ratio × depth × task 类别。<strong>Efficiency stress：</strong>短回答、高并发、cache 多次复用，记录 selection amortization；<strong>Recovery：</strong>逐步恢复被删 token，看恢复曲线是否平滑；<strong>Metric：</strong>Quality-Adjusted Cache Cost 与 <code>ΔNLL / corrected router site</code>；<strong>Benchmark：</strong>发布含完整 KV oracle、压缩日志、路由干预记录的可审计评估协议。</p>
+<h2 id="s1-21">20. 如果只记住这篇：九句话</h2>
+<ol>
+<li>MoE 的 KV 压缩不仅丢信息，还可能改变选中的 expert。2. 作者先证明 expert flip 与任务质量损失关联，再做固定 KV 的路由干预。3. 未来 answer 的路由不可提前观测，因此用当前 instruction 的路由统计做代理。4. Fisher trace 给出局部平均扰动方向下的概率敏感性。5. 用 instruction-to-context attention 把这种脆弱性映射到历史位置。6. 自适应 anchors 与 KVZip/SnapKV 共享同一保留预算。7. 10% KV 时 Qwen3-30B LongBench 宏平均由 19.51 到 44.89，但不能把它说成 2.3× 推理加速。8. 路由纠正只恢复部分质量，说明语义丢失仍是独立问题。9. 真正值得迁移的是“保护不可恢复的计算路径变化”，同时必须把选择开销计入系统指标。</li>
+</ol>
+</article><article class="paper"><h1 id="s2-1">Paper 2｜CAVC：视频生成的“可恢复性”决定缓存哪条分支</h1>
+<blockquote>
+<p><strong>基本信息</strong>　<strong>CAVC: Convergence-Adaptive Audio-Visual Cache for Modality-Asymmetric Diffusion Generation</strong>；Lifan Jiang、Yibo Zhao、Senlin Cheng、Bolei Xu、Xiaobo Li、Can Ye、Dehai Zhao、Deng Cai、Boxi Wu；Zhejiang University（State Key Lab of CAD&amp;CG）/ Ant Group；arXiv v1 <strong>2026-10-22</strong>；<strong>PREPRINT，未核实正式录用 venue</strong>；<a href="https://arxiv.org/html/2610.30854" rel="noopener noreferrer" target="_blank">论文 HTML</a> · <a href="https://arxiv.org/pdf/2610.30854" rel="noopener noreferrer" target="_blank">PDF</a>。<strong>Code：</strong>正文提及匿名 code artifact 和 manifest，但未在可核验的 arXiv 页面提供公开 GitHub 仓库地址，标记 <strong>Not Publicly Verified</strong>，不能把“论文写了 artifact”说成“代码已开源”。</p>
+</blockquote>
+<p><strong>一句话定位：</strong>联合音视频扩散推理不必每步同等计算所有模态；CAVC 通过“哪些误差能在最后几步修回来”决定中途缓存音频、保留视频计算，以较小但真实测得的 wall-clock speedup 换取较稳的生成质量。</p>
+<h2 id="s2-2">1. 人话版：这篇真正讲了什么</h2>
+<p>一个模型同时生成画面和声音，比如“院子里猫扑球，碰撞时发出清脆声音”。传统联合扩散模型每一步都要更新视频 latent、音频 latent，还要让两条分支通过 cross-attention 交换信息。即使画面动作需要不断精修，声音分支可能已进入一个阶段：暂时复用它刚算出的去噪预测，最后再做几次完整的音视频联合去噪，也能恢复不少声音语义和同步。作者不是说“音频永远比视频先收敛”，而是提出更谨慎的 <strong>modality-asymmetric recoverability</strong>：音频缓存导致的偏差较容易通过尾部 joint refinement 修复，视频中途冻结导致的动作损失却不容易补回来。CAVC 因此先完整联合预热，观察音频预测变化连续变小后，缓存音频 denoiser 的输出、跳过中段音频网络和跨模态注意力，视频网络仍逐步完整计算；最后 3 步恢复 joint denoising。基于 LTX-2.3-22B-dev、单张 H20 96GB，三个 benchmark 报告 <strong>1.10–1.35× 实测端到端加速</strong>。这是系统机制工作，而非只在 FLOPs 纸面上画漂亮曲线；但提升幅度有限，部分音画同步和自然度指标确实下降。</p>
+<h2 id="s2-3">2. Background &amp; Research Gap：为什么普通 cache 不够</h2>
+<p>联合 audio-video diffusion 可以抽象成两个状态 <code>v_t</code>（视频）和 <code>a_t</code>（音频），每个去噪步同时调用 <code>f_v(v_t,a_t,c,σ_t)</code> 与 <code>f_a(v_t,a_t,c,σ_t)</code>，其中 c 是文字 prompt，A2V/V2A cross-attention 让“看到球碰撞”和“听到碰撞声”对齐。以 30 个 denoising step 为例，如果每一步都执行两个大分支与跨模态 attention，成本很高。减少总 step 数、蒸馏少步模型可以加速，但往往需要训练或损伤时序细节；DeepCache、TeaCache、Cache-DiT 一类方法复用旧层/旧 step 的结果，但直接用于双模态模型时，不知道哪个分支的误差更致命。</p>
+<p>想象把画面生成的第 8–22 步全部冻结：球的运动轨迹没有持续被修正，最后 3 步很难凭空补出自然的运动连续性。反过来，若中途音频分支只沿 scheduler 更新 latent、复用一个稳定的 audio prediction，最后恢复 3 次联合处理，碰撞声的语义和节奏有机会回来。作者通过<strong>branch freezing</strong>和<strong>terminal recovery</strong>实验证实这两种干预不对称。这里的 gap 不是“从未有人缓存 diffusion 特征”，而是<strong>缓存策略忽略了不同分支的误差可恢复性、误差修复成本和跨模态耦合阶段</strong>。</p>
+<h2 id="s2-4">3. Core Insight：缓存应按“未来能否修复”分配</h2>
+<p><strong>经验观察 1：</strong>音频输出预测在某个阶段的逐步变化变小，可作为进入 cache-tolerant regime 的在线信号；注意它并不等价于“音频比视频数值收敛更快”。<strong>经验观察 2：</strong>如果缓存音频分支，中间的偏差可由少量 terminal joint steps 大幅缩小；如果缓存视频，动作动态的损伤很难靠尾部重算恢复。<strong>工程推论：</strong>把可近似计算集中到 audio branch，把“必须持续迭代”的视频 branch 留下来。<strong>进一步推论：</strong>中段跳过跨模态 attention 不一定只有坏处，它可能减弱已经稳定的音频特征对视频动态的过度约束，因此某些视频 motion 指标反而提高。</p>
+<p>证据类型要分清：上述 recoverability 是<strong>特定 LTX 双流模型与 benchmark 的经验现象</strong>；论文理论部分给出在局部 Lipschitz 和有界误差条件下的输出偏差上界，不能证明“最后 3 步必然恢复质量”。如果把方法迁移到 speech-dominant talking-head、实时音乐或多事件视频，音频可能是不可牺牲的一侧，策略需要重新测量。</p>
+<h2 id="s2-5">4. Method Deep Dive：三段式“夹心”调度</h2>
+<div class="flow">文本 prompt c + 初始噪声 (v<sub>T</sub>,a<sub>T</sub>) → Phase A 联合预热 → 连续 W 步音频变化小于 θ → Phase B 缓存 audio prediction / 跳过 AV attention / 视频照常细化 → Phase C 恢复 3 步联合去噪 → 视频帧 + 同步音频</div>
+<p><strong>Step 1｜Phase A，完整预热。</strong>从大噪声到较低噪声的初始步骤，照常执行音频、视频及双向 cross-attention。其作用是建立画面场景、声音类别、文字条件和粗粒度同步。不能一开始就 cache：如果猫扑球与音效还没有建立语义绑定，最后短短 3 步未必能补上。输入是 <code>v_t,a_t,c,σ_t</code>，输出是两路 denoiser prediction 和 scheduler 更新后的 latent。</p>
+<p><strong>Step 2｜Trigger，在线检测。</strong>每步计算相邻两次<strong>音频 denoiser 输出</strong>的平均绝对差 <code>Δ_a^t=mean|ŷ_a^t−ŷ_a^{t+1}|</code>，而不是比较两次音频 latent 是否相同。当 <code>Δ_a^t&lt;θ</code> 连续 W 步成立，触发缓存，存下当前音频预测 <code>ŷ_a*</code>。默认 <code>θ=0.30</code>、<code>W=3</code>。阈值越严格，通常触发越晚、质量更稳但加速少；窗口越短越早触发、容易把偶然小变化误判成可缓存。此处的 <code>τ</code> 是倒数的 diffusion timestep，论文另用正向递增执行序号 k 描述触发时间；混淆二者会导致复现时把“早触发”理解反。</p>
+<p><strong>Step 3｜Phase B，真正省计算。</strong>触发后不再运行音频 denoiser，而是在每个剩余中段 timestep 使用同一个 <code>ŷ_a*</code> 输入原来的 audio scheduler，得到新的 <code>a_{t−1}</code>。这与<strong>冻结音频 latent</strong>不同：音频状态仍沿噪声时间表演化，只是更新方向来自缓存预测。视频分支继续完整计算 spatial/temporal self-attention 与 text conditioning，但 A2V/V2A cross-attention 以 residual skip 方式旁路。这里省的是<strong>音频网络前向 + 跨模态 attention</strong>，并非整个 DiT 前向、并非帧数/视频 tokens 的删除。可能失败：多次新声音事件出现时，复用旧音频预测无法及时适配，声音与画面脱节。</p>
+<p><strong>Step 4｜Phase C，尾部恢复。</strong>最后 <code>t_ref=3</code> 步恢复音频网络、视频网络和 cross-attention，重新让两种 latent 互相修正，再 decode 输出。这三步主要修补声音语义、音画同步偏移与跨模态 drift，而不是重建被中途跳过的视频细节——所以作者从一开始就没有跳过视频 refinement。注意论文 Table 4 显示恢复步数 1、3、5 并非所有指标单调上升，更多联合步骤可能改变某项评估器的判断。</p>
+<p><strong>Step 5｜部署层面。</strong>必须改推理 loop：在 Phase B 使用 cached audio prediction，保证 scheduler 每步仍运行，确保 cross-attention 的 bypass 不错误删除视频 self-attention、文本条件或 residual scale。原模型权重冻结，不做额外训练；但需要访问模型内部双流分支和采样 scheduler，不是任何闭源视频 API 都能即插即用。</p>
+<h2 id="s2-6">5. 核心公式：缓存的是预测，预算节省来自分支</h2>
+<div class="formula">ŷ<sub>v</sub><sup>t</sup>=f<sub>v</sub>(v<sub>t</sub>,a<sub>t</sub>,c,σ<sub>t</sub>)；ŷ<sub>a</sub><sup>t</sup>=f<sub>a</sub>(v<sub>t</sub>,a<sub>t</sub>,c,σ<sub>t</sub>)<br/>v<sub>t−1</sub>=S<sub>t</sub><sup>v</sup>(v<sub>t</sub>,ŷ<sub>v</sub><sup>t</sup>)；a<sub>t−1</sub>=S<sub>t</sub><sup>a</sup>(a<sub>t</sub>,ŷ<sub>a</sub><sup>t</sup>)</div>
+<p><code>f</code> 是去噪预测网络，<code>S</code> 是扩散/flow scheduler，<code>σ_t</code> 是噪声级别。CAVC 在 Phase B 把音频 <code>f_a</code> 替换成常量输出 <code>ŷ_a*</code>，但 <code>S_t^a</code> 仍依赖当前音频 latent 和时间步，因此不能简单说“声音被静止”。视频改为 <code>g_v(v_t,c,σ_t)</code>，即无跨模态 attention 的视频 denoiser，保留视频自己的时间建模。</p>
+<div class="formula">Δ<sub>a</sub><sup>t</sup> = mean(|ŷ<sub>a</sub><sup>t</sup>−ŷ<sub>a</sub><sup>t+1</sup>|)；连续 W 次 Δ &lt; θ ⇒ cache<br/>ã<sub>t−1</sub>=S<sub>t</sub><sup>a</sup>(ã<sub>t</sub>,ŷ<sub>a</sub>*)；ṽ<sub>t−1</sub>=S<sub>t</sub><sup>v</sup>(ṽ<sub>t</sub>,g<sub>v</sub>(ṽ<sub>t</sub>,c,σ<sub>t</sub>))</div>
+<p><strong>理论偏差：</strong>设音频缓存预测误差上界为 <code>ε_a</code>，删除 AV attention 后的视频预测残差上界为 <code>ε_v</code>；scheduler 对 latent、prediction 的局部 Lipschitz 系数分别为 <code>α_t,β_t</code>。论文推导 <code>e_a^{t−1}≤α_t e_a^t+β_t ε_a</code>，视频则是 <code>e_v^{t−1}≤(α_t+β_t L_g)e_v^t+β_t ε_v</code>。连续展开得到多步误差的加权和；尾部联合处理再乘一组局部 Lipschitz 系数的积 <code>K_C</code>，得到输出标量质量函数的条件性偏差上界。<strong>直觉：</strong>缓存越久、单步残差越大、传播因子越大，最终偏差风险越大。<strong>不能推出：</strong><code>K_C&lt;1</code>、误差必收缩、或者任意主观视频质量都满足这个上界；作者明确把它当 perturbation characterization 而非无条件保证。</p>
+<p><strong>系统成本模型：</strong>Full AV 的每步成本约为 <code>C_v+C_a+C_av</code>；CAVC 的中段仅支付 <code>C_v</code>，触发检测还要支付 <code>C_d</code>，最后 joint steps 与 decode/I/O 都保留。若视频计算占大头，最多也只能节省音频和跨模态部分，因此端到端 speedup 远小于“被跳过的音频前向次数”所暗示的倍数。相较 TeaCache/Cache-DiT 的通用特征重用，CAVC 的关键 objective 不是直接最小化 FLOPs，而是<strong>在视频动作质量可接受的前提下，最小化不可恢复的分支近似误差与总 wall-clock cost</strong>；这一表述是对设计原则的归纳，非作者实际训练的损失函数。</p>
+<h2 id="s2-7">6. Toy Example：30 步“猫扑球”如何加速</h2>
+<p>构造一个<strong>教学示例（非论文逐步 trace）</strong>：原本 30 步均执行音频 A、视频 V、跨模态 X，每步成本假设 A=2、V=5、X=1 单位，总 240 单位。前 6 步完整计算，音频预测变化依次从 0.7、0.5、0.28、0.20、0.18 下降；在阈值 θ=0.30、连续 W=3 的假设下，第 6 步触发缓存。随后第 7–27 步音频沿 scheduler 用第 6 步的 <code>ŷ_a*</code> 更新，视频照常计算但跳过 X；最后 28–30 步重新执行 A+V+X。总成本约 <code>9×8 + 21×5 =177</code>，理论示意 speedup <code>240/177≈1.36×</code>，实际还需加触发检测、kernel 调度、CPU offload、decode 和 I/O，真实速度会更低。若中途发生第二次突然碰撞，缓存的旧音频方向可能不适用；这时应延迟触发或考虑重启联合计算。此例解释“省掉哪些运算”，不应误当论文报告的 1.35× 所对应的真实 profiling。</p>
+<h2 id="s2-8">7. Baseline Deep Comparison：最强 baseline 是谁</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>合理之处</th>
+<th>本 setting 的失败/限制</th>
+<th>CAVC 差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Full AV（质量最重要的 strongest reference）</strong></td>
+<td>每步完整 joint denoising，保证原生路径</td>
+<td>计算昂贵，speedup 定义为 1.00×</td>
+<td>中段只跳过可恢复的音频与 AV attention；系统调度机制</td>
+</tr>
+<tr>
+<td><strong>TeaCache</strong></td>
+<td>根据中间特征变化决定何时重算，训练自由</td>
+<td>移植双流 LTX-2.3 后本论文 0.39–0.64×，比 Full AV 还慢</td>
+<td>显式分支选择 + 音频专属触发；工程机制不同</td>
+</tr>
+<tr>
+<td><strong>Cache-DiT</strong></td>
+<td>通用 DiT feature/cache 复用，部署生态成熟</td>
+<td>在此设置 0.20–0.35×，缓存管理与状态更新开销高</td>
+<td>避免无差别 cache 视频与音频；性能对照受具体适配影响</td>
+</tr>
+<tr>
+<td>Fixed 20% / 80%</td>
+<td>预先指定缓存触发比例，简单、可控</td>
+<td>太早伤语义绑定，太晚省时有限；分别 1.09× / 1.01×</td>
+<td>在线检测每个 prompt 的 cacheability</td>
+</tr>
+<tr>
+<td>Video-only / both-branch freezing</td>
+<td>可以大幅省时，作为可恢复性反事实对照</td>
+<td>2.84× / 3.01× 但 Dyn. 仅 0.460 / 0.440</td>
+<td>视频不可轻易省，优先保障视频时序质量</td>
+</tr>
+</tbody>
+</table></div>
+<p>这里不能把 TeaCache 与 Cache-DiT 解释为“方法本身普遍比不缓存更慢”：作者使用官方/移植的 LTX 双流实现、单 H20、CPU offload、特定参数；这组配置下的负 speedup 有价值，但需独立 profile kernel launch、cache lookup、offload 传输才能说明机制的普遍性。若比较“最高生成质量”，Full AV 是自然的最强基准；若比较“训练自由缓存系统”，TeaCache/Cache-DiT 是实际可替换的工程对手。</p>
+<h2 id="s2-9">8. Experiment Setup：模型、数据、协议与研究问题</h2>
+<p><strong>Model：</strong>LTX-2.3-22B-dev，官方 <code>ltx-2.3-22b-distilled-lora-384-1.1</code>（strength 0.8），<code>ltx-2.3-spatial-upscaler-x2-1.1</code>；<strong>Inference：</strong>30 denoising steps，seed=100，BF16，batch=1、concurrency=1，视频 CFG=3、音频 CFG=7，STG block=28。<strong>Video shape：</strong>AVGen-Bench 与 VABench T2AV 为 1280×704、241 frames、24 FPS；General-80 为 1536×1024、121 frames、24 FPS。<strong>Hardware：</strong>每个样本一张 NVIDIA H20 96GB，四种方法都开启 CPU offload；这是设备容量，不是实测 peak VRAM。<strong>Datasets：</strong>AVGen-Bench、VABench T2AV，以及自组 General-80（General-40 + 8 类 AV-hard 各 5 条）。<strong>Baselines：</strong>Full AV、TeaCache、Cache-DiT；附录有 freeze、fixed schedule、trigger 和 Phase C 消融。</p>
+<p><strong>RQ1：真实运行快多少？</strong>比较三个数据集的 wall-clock speedup，不接受只报理论 FLOPs。<strong>RQ2：加速会不会破坏动作？</strong>看 VBench Dynamic Degree、Motion Smoothness、Flicker、Naturalness。<strong>RQ3：声音与画面还对齐吗？</strong>看 CLAP、DNSMOS、AV-F1、SyncFormer AV Sync。<strong>RQ4：为何只 cache audio？</strong>看 Table 3(a) branch freeze 和 Table 4 的 terminal recovery。<strong>RQ5：在线触发优于固定日程吗？</strong>看 Table 3(b,d) 以及 Figure 3/5。<strong>RQ6：结论能否推广到不同硬件/并发？</strong>论文未完成；这是复现时最重要的系统外推问题。</p>
+<h2 id="s2-10">9. Metrics 教学式解释：不要把 FPS、Dynamic Degree、Sync 混淆</h2>
+<p><strong>Speedup</strong> = Full AV 的实际生成时间 / 当前方法实际生成时间，越大越快；小于 1 说明变慢。<strong>Latency</strong> 是生成一个样本所花的 wall-clock 秒数，越低越好；<strong>24 FPS</strong> 是生成视频的播放帧率，不等于模型每秒生成 24 帧。<strong>Dynamic Degree</strong> 基于 RAFT 光流统计达到运动阈值的视频比例，越高表示更容易出现运动，但不能保证物理合理性。<strong>Subject/Background Consistency</strong> 使用 DINO/CLIP 特征比较帧间语义稳定，越高越好，但画面静止也可能高。<strong>Motion Smoothness</strong> 使用插帧模型 AMT-S 判断相邻运动是否平滑，越高越好，不能替代人工运动质量判断。</p>
+<p><strong>Flicker</strong> 是帧均值亮度变化的二阶差分统计，越低越好；可能把有意的闪光误判为缺陷。<strong>Naturalness</strong> 是像素亮度/梯度峰度接近参考统计的程度，越高越好，可能和主观真实感不一致。<strong>DNSMOS</strong> 是无参考语音/音频质量预测，越高越好，不等于声音语义正确。<strong>CLAP</strong> = 音频 embedding 与音频文本提示的余弦相似度，越高越符合文字，但可能无法精确测同步。<strong>AV-F1</strong> 将视频变化峰与音频谱通量峰在 ±3 视频帧内配对，算 precision/recall 的 F1；越高越好，但同步“出现一个声响”与“声响来自正确物体”不同。<strong>AV Sync</strong> 将 SyncFormer 预测的绝对时间偏移 <code>|offset|</code> 转为 <code>max(0,1−|offset|/0.5s)</code>，越高越好；超过 0.5s 的偏移都压成 0。<strong>Qwen2.5-Omni-7B 的 Audio/Visual Reality、Expressiveness</strong> 是 1–5 的模型评审分，可能有评审偏差。<strong>Lo-Phy/VideoPhy2</strong> 测局部物理合理性，越高越好；不等于全局物理一致。</p>
+<h2 id="s2-11">10. Efficiency Breakdown：实际少算了什么</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align:right">Full AV</th>
+<th style="text-align:right">CAVC</th>
+<th>Change / 证据边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frames（AVGen/VABench）</td>
+<td style="text-align:right">241</td>
+<td style="text-align:right">241</td>
+<td><strong>不删帧</strong>；输出 24 FPS</td>
+</tr>
+<tr>
+<td>Frames（General-80）</td>
+<td style="text-align:right">121</td>
+<td style="text-align:right">121</td>
+<td><strong>不删帧</strong></td>
+</tr>
+<tr>
+<td>Visual Tokens</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>视频分支保留；未给 token 数</td>
+</tr>
+<tr>
+<td>FLOPs</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>跳过 audio forward 与 AV attention；未报告总 FLOPs</td>
+</tr>
+<tr>
+<td>Latency（AVGen）</td>
+<td style="text-align:right">Not Reported（表中未直接列）</td>
+<td style="text-align:right">329.69 s</td>
+<td>Appendix D；对应约 1.10×</td>
+</tr>
+<tr>
+<td>Latency（VABench）</td>
+<td style="text-align:right">Not Reported（表中未直接列）</td>
+<td style="text-align:right">392.73 s</td>
+<td>Appendix D；对应约 1.35×</td>
+</tr>
+<tr>
+<td>Latency（General-80 消融）</td>
+<td style="text-align:right">217.2±0.7 s</td>
+<td style="text-align:right">184.8±2.9 s</td>
+<td>Table 3(d)，约 1.18×；与主表 1.20×属不同统计口径</td>
+</tr>
+<tr>
+<td>Throughput / generated FPS</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td><strong>播放 FPS 不是生成吞吐</strong></td>
+</tr>
+<tr>
+<td>Peak GPU Memory</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>H20 96GB 是设备容量，不是峰值显存</td>
+</tr>
+<tr>
+<td>Audio-Visual quality</td>
+<td style="text-align:right">见 Tables 1/2</td>
+<td style="text-align:right">见 Tables 1/2</td>
+<td>有升有降，不可只报动态度</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论：</strong>论文的 1.10–1.35× 是<strong>实际 wall-clock</strong>，比“FLOPs 减少 50% 所以加速 2×”更可信；但没有给跨 batch、跨 GPU、不同 offload 的系统可迁移性，也没有提供 tokens/s（生成任务不适用）、TTFT/TPOT（LLM 解码指标，不适用）或实测峰值 VRAM。CAVC 的主加速发生在 denoising 中段，不是 VAE decode、视频 token 压缩或 prefill。</p>
+<h2 id="s2-12">11. Results Deep Dive：九条可复核结果</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>数字 / 现象</th>
+<th>对比、差值</th>
+<th>证据支持与替代解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>① AVGen speedup 1.10×</strong>（Table 1/2）</td>
+<td>比 Full AV 快约 10%（作者标注）</td>
+<td>是真实加速，但幅度最小；不同视频长度/硬件可能不同</td>
+</tr>
+<tr>
+<td><strong>② VABench speedup 1.35×</strong></td>
+<td>相比 Full AV 快约 34.7%（作者标注）</td>
+<td>三 benchmark 最强速度结果；CPU offload 与分支开销比例可能影响收益</td>
+</tr>
+<tr>
+<td><strong>③ General-80 speedup 1.20×</strong></td>
+<td>Full AV 1.00×</td>
+<td>中等加速；消融独立时间 217.2→184.8 s 为 1.18×，不能混写成同一批次</td>
+</tr>
+<tr>
+<td><strong>④ General-80 Dynamic Degree 0.380→0.512</strong></td>
+<td><strong>+0.132，约 +34.7%</strong></td>
+<td>支持视频运动增强；更多运动不等于更真实</td>
+</tr>
+<tr>
+<td><strong>⑤ AVGen Flicker 0.3346→0.2800</strong></td>
+<td><strong>−0.0546，约 −16.3%</strong></td>
+<td>支持部分低层时序稳定；但 VABench Flicker 0.1608→0.176 反而变差</td>
+</tr>
+<tr>
+<td><strong>⑥ General-80 Naturalness 0.6349→0.490</strong></td>
+<td><strong>−0.1449，约 −22.8%</strong></td>
+<td>关键弱项：视频动态增强可能伴随像素自然度下降；正文没有把它当主结果强调</td>
+</tr>
+<tr>
+<td><strong>⑦ AVGen AV Sync 0.561→0.525</strong></td>
+<td><strong>−0.036，约 −6.4%</strong></td>
+<td>音画同步仍有代价；不能只用 AV-F1 改善宣布“完全保持同步”</td>
+</tr>
+<tr>
+<td><strong>⑧ General-80 AV-F1 0.5381→0.644</strong></td>
+<td><strong>+0.1059，约 +19.7%</strong></td>
+<td>音视频事件时间对齐诊断改善；与 SyncFormer 可能给出不同结论</td>
+</tr>
+<tr>
+<td><strong>⑨ Table 4 音频 CLAP 恢复 81.5–91.3%</strong></td>
+<td>1/3/5 terminal steps；视频 Dyn 恢复 −16.7% 到 0%</td>
+<td>是 asymmetry 最核心证据；但结果来自有限模型/设置，且不同指标并非完全单调</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>strongest result：</strong>VABench 1.35× 实测加速和 General-80 动态度 +34.7%；<strong>weakest result：</strong>General-80 Naturalness 明显下降、AVGen Sync 下降、VABench Flicker 反向变化。<strong>failure case：</strong>快速多事件声源、频繁声画耦合、低质量或过早触发。<strong>trade-off：</strong>越早缓存越快但风险越高；更多 terminal steps 更稳但省时少；保留视频质量限制最大 speedup。</p>
+<h2 id="s2-13">12. Table / Figure 读图：五处关键证据</h2>
+<p><strong>Figure 1（整体直觉与质量-效率位置）</strong>：包含示例画面/音频、General-80 质量-速度对照及“音频可恢复、视频不可恢复”的概念图。作者想让读者直观相信缓存音频更合理；实际的因果证据需要 Table 4，而不是概念图本身。<strong>Figure 2（方法流程）</strong>：横向是从高噪声到低噪声的去噪过程，Phase A 两分支都跑，Phase B 音频预测复用且 cross-attention bypass，Phase C 最后联合修复。看图时特别注意 audio latent 仍在 scheduler 中更新，避免误读为完全冻结声音。</p>
+<p><strong>Figure 3 / Appendix Figure 5（残差和触发曲线）</strong>：横轴是正向执行序号 k，不是递减 timestep t；纵轴分别是 audio cache residual 与 video-only residual。不同 θ 对应不同 trigger 位置，展示在线触发的可操作性；但“平均残差较稳”不代表最难的多事件 prompt 也安全。<strong>Tables 1/2（主结果）</strong>：每个 benchmark 四种方法，既列 speedup 又列视频质量、音频与同步；读表要逐列看反例：General-80 Naturalness 0.6349→0.490、AVGen AV Sync 0.561→0.525、VABench Flicker 0.1608→0.176 都不应被“整体质量提升”掩盖。</p>
+<p><strong>Table 3(a–d)（机制消融）</strong>：3(a) 视频冻结的速度虽高，Dyn 却显著差；3(b) dynamic trigger 优于固定 20%/80%；3(c) Phase C 增加完整联合精修后 motion alignment 上升；3(d) <code>θ=0.15,W=3</code> 触发晚（k≈14.9）速度 1.13×，<code>θ=0.30,W=3</code> 触发 k≈5.5、速度 1.18×，给出了直接调参曲线。<strong>Table 4（恢复性因果对照）</strong>：把 cached branch 和 terminal steps 交叉排列；audio cache 的 CLAP 从 −0.005 到 0.235/0.247，而 video cache 的 Dynamics 0.360 即使 5 步也未恢复。它比“音频看起来更稳定”更接近真正的设计根据，但仍需跨模型复验。</p>
+<h2 id="s2-14">13. Ablation / Mechanistic Analysis：去掉模块会怎样</h2>
+<p><strong>缓存视频而非音频：</strong>2.84× 或 3.01× 的更大速度数字看似诱人，但动态度仅 0.460/0.440；这说明省算的位置比省算的总量重要。<strong>改成固定触发：</strong>Fixed 20% 只有 1.09×、Fixed 80% 只有 1.01×，dynamic 为 1.19×；说明 prompt-specific cacheability 有实用价值。<strong>只保留 Phase B，不做 Phase C：</strong>论文 Table 3(c) Stage 1 的 Dyn 从 0.540→0.580，加入 full stages 后到 0.620；说明尾部 joint refinement 在实验中贡献额外收益，但它也可能通过其他未隔离的状态变化提升质量，不能把每个差值都解释成单纯“同步修复”。</p>
+<p><strong>改变 θ 与 W：</strong>θ=0.15 更保守，触发晚，1.13×；θ=0.30,W=3 是默认，约 1.18×；θ=0.80,W=1 约 1.20×，更快但论文并未给出所有 prompt 的置信区间来证明质量无损。<strong>改变 terminal step 数：</strong>音频 CLAP 从无修复的 −0.005 到 1/3/5 步的 0.220/0.235/0.247；视频缓存的 Dyn 在 0.320–0.360 徘徊。这个<strong>不对称恢复曲线</strong>支持核心机制，而不是某个任意缓存阈值碰巧有效。仍需做“相同被跳过 FLOPs 的公平对照”和“不同 prompt 类别的置信区间”，否则不能断言最优调度策略已找到。</p>
+<h2 id="s2-15">14. Claim vs Evidence 与 Contribution</h2>
+<p><strong>Authors Claim：</strong>联合音视频扩散存在模态不对称可恢复性；在线音频缓存加末端 joint refinement 能训练自由加速并保持/改善若干质量指标。<strong>Experiments Actually Show：</strong>在 LTX-2.3-22B-dev + 官方 distilled LoRA、H20、batch1、CPU offload 条件下，三 benchmark 1.10–1.35× wall-clock；branch freezing 与 terminal step 消融显示 audio/visual 的恢复曲线明显不同；部分动态度和同步诊断改善。<strong>What Is Not Yet Proven：</strong>所有双流扩散模型都有相同恢复方向、所有音画同步指标都无损、不同硬件与高并发下同样加速、跨模态 attention 在中段对语义永远多余、理论上界能预测主观质量。</p>
+<p><strong>Contribution 1｜New Empirical Finding：</strong>通过 branch-specific perturbation 与 recovery 曲线提出“按模态可恢复性分配计算”，机制观察比单纯发现重复特征更有价值。<strong>Contribution 2｜New System/Engineering：</strong>三阶段 warm-up/cache/recouple 与 audio-only cache，属训练自由系统调度创新；cache、threshold、residual bypass 单独并非新发明。<strong>Contribution 3｜New Metric/Protocol：</strong>用 CLAP gap closure 和 Dynamics gap closure 对比不同模态恢复程度，提供可迁移的“recoverability curve”实验范式。<strong>Contribution 4｜New Theory/Analysis：</strong>局部 Lipschitz 误差传播界有解释作用，但属于条件性上界，不是强收敛保证。没有新训练 objective，也没有声称新数据集作为核心创新。</p>
+<h2 id="s2-16">15. Limitation &amp; Failure Modes</h2>
+<p><strong>Authors' Limitation：</strong>保留完整视频分支导致速度上限被视频计算绑定；声音事件持续变化会推迟 trigger、速度趋近 Full AV；快速多事件可能仍有同步偏差，需要增加 Phase C 步数。<strong>Additional 1｜泛化：</strong>只在一个 LTX 双流主模型和单 H20 评估，迁移到别的 DiT、不同音视频比例、音频更重要的任务需重新验证。<strong>2｜质量指标冲突：</strong>Naturalness、Flicker、AV Sync 在部分数据集下降，不能以 Dynamic Degree 单指标替代感知质量。<strong>3｜评估器偏差：</strong>Qwen2.5-Omni 评分可能偏向更活跃的画面；AV-F1 的 ±3 帧阈值可能容忍肉眼明显错位。<strong>4｜硬件：</strong>CPU offload + batch1 可能让缓存收益受到传输、内存带宽和调度开销主导。<strong>5｜未报告：</strong>峰值显存、每步分支 FLOPs、真实生成吞吐、batch scaling、不同分辨率长视频的系统曲线。<strong>6｜复现：</strong>未核验到公开代码仓库，匿名 artifact 的可获得性需要独立确认。<strong>7｜理论：</strong>有界残差/Lipschitz 假设不保证 terminal refinement 是收缩映射，不能证明对所有质量函数有效。</p>
+<h2 id="s2-17">16. Reproduction View：从最小 ablation 开始</h2>
+<p><strong>关键模块：</strong><code>av_denoise_loop.py</code>、<code>audio_delta_monitor.py</code>、<code>cache_audio_prediction.py</code>、<code>skip_av_attention.py</code>、<code>terminal_recouple.py</code>、<code>profile_steps.py</code>、<code>eval_avsync.py</code>。<strong>数据预处理：</strong>先固定 General-80 中 8–16 个公开/自拟 prompt（猫扑球、关门、拍手、打鼓、流水、多人说话），同一 seed 100、同一音视频长度与分辨率；视频质量和声音质量评估需保证生成与评估所用 FPS/音频采样率一致。</p>
+<p><strong>最小实验：</strong>如果拿不到 H20/22B，先在可公开运行的双流音视频扩散模型上做机制验证，不声称数值可与论文直接比较。保持 30 步（若模型原生 step 不同则固定它的官方配置），实现 Full、Audio-cache、Video-cache、Audio-cache+3-step recovery、Fixed-20%、Dynamic(θ=.30,W=3) 六组。每个 prompt 至少 3 个种子；记录每步 <code>Δ_a</code>、cache 命中次数、audio/video/AV attention CUDA event 时间、总 latency、peak allocated VRAM、CLAP、AV-F1、Dynamic Degree 和主观 A/B 评分。<strong>最先跑的实验：</strong>同一视频只改“缓存 audio vs 缓存 video”，观察终端 0/1/3/5 步对 CLAP/Dyn 的 gap closure；这比一开始追求 1.35× 更能验证论文机制。</p>
+<p><strong>容易踩坑：</strong>把 cache 的 <code>ŷ_a*</code> 当成 audio latent、没有运行 scheduler；跳过 cross-attention 时连视频 text conditioning 一起误删；<code>t</code> 与 <code>k</code> 索引相反；开启 CPU offload 后 profiler 只统计 GPU kernel 不统计 H2D/D2H；不同 prompt 使用不同分辨率却直接平均 latency；只报视频 Dynamic Degree 忽略 Naturalness/AV Sync。<strong>最敏感超参数：</strong>θ、W、terminal steps、audio/visual CFG、分辨率、是否使用 distilled LoRA、CPU offload。<strong>最关键 Claim 的判据：</strong>在相同跳过步骤数下 audio-cache 经 terminal recovery 的质量恢复显著高于 video-cache，且 wall-clock 确实小于 Full AV。</p>
+<h2 id="s2-18">17. Research Value：七个维度</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>判断与理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline Potential</td>
+<td><strong>中高</strong>：双流音视频 diffusion 的训练自由缓存基线；需要公开可运行实现才能高效复现</td>
+</tr>
+<tr>
+<td>Migration Potential</td>
+<td><strong>高</strong>：将“可恢复性”从音频/视频分支迁移到时间段、token 组、工具观察、推理阶段</td>
+</tr>
+<tr>
+<td>Systems Potential</td>
+<td><strong>高</strong>：直接减少 denoiser 与 cross-attention 调用，且有 wall-clock 证据；需补 profiling/并发/显存</td>
+</tr>
+<tr>
+<td>Attack Potential</td>
+<td><strong>中</strong>：构造多声源突变 prompt，使 Δ 小但未来事件复杂，诱发过早 cache 与错位</td>
+</tr>
+<tr>
+<td>Evaluation Potential</td>
+<td><strong>高</strong>：不同 branch 的 recovery curve 比单一 final score 更能区分误差可修复性</td>
+</tr>
+<tr>
+<td>Benchmark Potential</td>
+<td><strong>中高</strong>：AV-hard 按音频事件密度、视频运动强度、可恢复性分桶很自然</td>
+</tr>
+<tr>
+<td>New Paper Potential</td>
+<td><strong>中高</strong>：若能做可预测的 recoverability-aware compute allocator，并在多模型/硬件证明 Pareto 优势</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s2-19">18. Migration A：长视频理解的“可恢复信息”驱动 token pruning</h2>
+<p><strong>Original Problem →</strong>联合音视频生成的各模态对缓存误差的可恢复性不同。<strong>Transferable Mechanism →</strong>不是直接按注意力/冗余删 token，而是估计删除后下游能否从保留信息中恢复关键证据。<strong>New Research Question →</strong>长视频 QA 中，哪些帧信息可以靠相邻帧或模型记忆重建，哪些动作转折一旦丢失就不可恢复？<strong>Method Modification →</strong>为每个 frame segment 构造轻量 reconstruction probe：屏蔽该 segment 后，用相邻帧特征/短期记忆预测事件标签；低恢复率的片段保留，高恢复率片段合并/压缩。再用 query-aware temporal saliency 对转折事件加权。</p>
+<p><strong>Minimum Experiment →</strong><code>build_segments.py --fps 1 --segments 16 --seed 42</code>；对 NExT-QA temporal 100 个问题、MVBench 100 个视频各抽最多 32 帧；在 8/16 帧预算下比较 uniform、CLIP similarity、motion-based、recoverability-aware；以 32 帧结果作 teacher，遮掉每个 2-frame segment 计算事件答案变化和 feature reconstruction error。先不训练新模型，只实现 score 与选择；<code>eval.py</code> 记录 QA accuracy、temporal question accuracy、frames、visual tokens、prefill ms、peak VRAM。<strong>Model →</strong>Qwen2.5-VL-7B / 可运行 Video VLM；<strong>Dataset →</strong>NExT-QA、MVBench；<strong>Baseline →</strong>uniform、query-aware、motion；<strong>Metric →</strong>QA、token/latency、critical-event recall；<strong>Expected Contribution →</strong>可恢复性约束的视频 token 预算分配；<strong>Risk →</strong>“feature 可重建”不等于“因果事件可回答”；<strong>Collision Risk →</strong>与 adaptive frame selection、video token pruning、temporal memory 方法重合，必须加入可验证的反事实删除-恢复曲线和真实 wall-clock 才能形成新贡献。</p>
+<h2 id="s2-20">19. Migration B：多模态 Agent 的阶段性缓存与错误恢复</h2>
+<p><strong>Original Problem →</strong>音视频 joint denoising 的中段计算存在可省的分支。<strong>Transferable Mechanism →</strong>根据状态变化和恢复成本，把高频执行拆成完整预热→安全复用→关键时刻重新同步。<strong>New Research Question →</strong>Agent 在连续 GUI/视频观察中，能否缓存变化缓慢的环境表征，而对不可恢复的关键动作/状态转换保留全量感知？<strong>Method Modification →</strong>以视觉 embedding 变化率与 tool-state diff 共同触发缓存；连续 W 次变化小则重用 observation summary /视觉特征，但对 click、submit、error、navigation、new speaker 等事件强制重新观测；每 N 步或任务结束前执行 full refresh。相当于将 Phase C 改成“关键决策前恢复完整感知”。</p>
+<p><strong>Minimum Experiment →</strong>在固定的 BrowserGym/WebArena-like 本地任务环境录制 100 条轨迹，每步保存 screenshot、DOM、tool action、reward；实现 <code>agent_cache.py --theta 0.1 --window 3 --refresh_before submit,click_navigation --seed 42</code>。对 Full observation、fixed-interval refresh、embedding-threshold cache、event-aware cache 四组离线回放/在线重跑；对每条轨迹记录观察调用次数、视觉 token 数、工具选择一致率、任务成功率、错误累积长度、TTFT 和 end-to-end latency。<strong>Model →</strong>Qwen2.5-VL-7B / 可用 GUI Agent；<strong>Dataset →</strong>BrowserGym mini tasks、可复现的本地 GUI 流程；<strong>Baseline →</strong>no cache、every-3-step、cosine-threshold；<strong>Metric →</strong>success、wall-clock、stale-state action rate、recovery latency；<strong>Expected Contribution →</strong>带风险约束的 agent perceptual cache；<strong>Risk →</strong>细小按钮状态变化在 embedding 空间不可见，导致灾难性误点击；<strong>Collision Risk →</strong>agent observation compression、screen differencing、memory refresh 已有研究，需要证明 recoverability-conditioned refresh 优于普通阈值并可跨任务泛化。</p>
+<h2 id="s2-21">20. Attack / Verification Lens</h2>
+<p><strong>Attack：</strong>构造“前 5 步声音变化小、第 6 步突然爆发多事件”的 prompt 或音频轨迹，使阈值提前触发，测音画错位、CLAP/AV Sync 降幅；这是 robustness stress test，不是系统安全漏洞声明。<strong>Black-box probe：</strong>闭源生成器若支持可控 seed 与缓存开关，可做同 prompt paired outputs；无法访问分支时不能宣称测得内部 cacheability。<strong>Robustness：</strong>事件密度、声音类型、视频速度、分辨率、生成长度、seed 逐轴扫描。<strong>Efficiency stress：</strong>CPU offload on/off、H20 vs A100/4090、batch1/4、不同分辨率、不同末端 steps。<strong>Recovery：</strong>用 <code>Recovery(m,k)=(Quality(cache+m steps)−Quality(cache+0))/(Quality(full)−Quality(cache+0))</code> 测恢复比例，注意分母接近零时需排除/单独报告。<strong>Metric：</strong>Recoverability-Adjusted Compute Saving（节省 wall-clock × 质量恢复比例），同时报最差 10% prompt 的 AV Sync。<strong>Benchmark：</strong>按可恢复性标签构建音画双流缓存压力测试，而非只平均 80 个 prompt。</p>
+<h2 id="s2-22">21. 如果只记住这篇：九句话</h2>
+<ol>
+<li>CAVC 的目标是音视频联合生成加速，不是视频理解 token pruning。2. 它的关键发现是音频缓存误差较容易由末端 joint denoising 修复，而视频动作损失难以补救。3. 这种结论是特定模型上的经验发现，不能泛化成“音频天生比视频先收敛”。4. 方法分成联合预热、音频缓存/视频独立精修、末端重新联合三阶段。5. 缓存的是 audio denoiser prediction，不是直接冻结 audio latent。6. 中段真正少算的是音频分支和 AV cross-attention，视频 branch 仍完整运行。7. 单 H20、batch1 的三个 benchmark 有 1.10–1.35× wall-clock speedup，说明是实测而非 FLOPs 猜测。8. General-80 Naturalness 与部分 AV Sync/Flicker 指标下降，不能宣称无损。9. 最值得迁移的是“先测错误可恢复性，再决定省掉哪段计算”，而不是机械复用 audio-only 规则。</li>
+</ol>
+</article><article class="paper"><h1 id="s3-1">Cross-Paper Synthesis｜同一个 Cache 问题，两种互补视角</h1>
+<p>两篇论文恰好从<strong>“删掉/跳过某些计算之后会发生什么”</strong>切入，但优化对象不同：MoEZip 在 LLM <strong>prefill 后保留哪些历史 KV</strong>，保护的是后续 MoE expert routing；CAVC 在视频生成的<strong>迭代去噪过程中哪些分支可以不重复执行</strong>，保护的是不可轻易恢复的视频时序细节。前者研究的是<strong>压缩诱发的计算路径脆弱性</strong>，后者研究的是<strong>近似误差的末端可恢复性</strong>。它们都说明：只看 attention mass、特征相似度或理论 FLOPs 不够，必须知道近似如何沿未来计算传播，以及它是否能被纠正。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>对比轴</th>
+<th>MoEZip</th>
+<th>CAVC</th>
+<th>统一启发</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资源瓶颈</td>
+<td>长上下文 KV 占用</td>
+<td>多步双流 DiT 重复计算</td>
+<td>缓存/跳算策略须先明确真正瓶颈</td>
+</tr>
+<tr>
+<td>保护对象</td>
+<td>影响 router 的历史 KV anchor</td>
+<td>必须持续精修的视频 branch</td>
+<td>保护高影响且难恢复的状态</td>
+</tr>
+<tr>
+<td>近似对象</td>
+<td>删除低分 KV</td>
+<td>重用 audio prediction、跳过 AV attention</td>
+<td>不是“全部等比例压缩”</td>
+</tr>
+<tr>
+<td>风险代理</td>
+<td>Fisher trace × instruction attention</td>
+<td>音频预测变化阈值 + 恢复曲线</td>
+<td>代理要用干预实验验证</td>
+</tr>
+<tr>
+<td>实验证据</td>
+<td>固定 KV 的 oracle routing intervention</td>
+<td>audio/video branch freeze + terminal recovery</td>
+<td>需要能排除共同原因的对照</td>
+</tr>
+<tr>
+<td>系统证据</td>
+<td>有 selection overhead；缺统一 end-to-end tokens/s</td>
+<td>有 1.10–1.35× wall-clock；缺跨硬件/并发</td>
+<td>质量与实际延迟必须一起报</td>
+</tr>
+<tr>
+<td>开源状态</td>
+<td>官方仓库存在，但可见文件仅 README/LICENSE</td>
+<td>正文提匿名 artifact，未核实公开仓库</td>
+<td>复现优先级要受代码可获得性影响</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s3-2">Combined Research Opportunities｜可以形成什么新研究</h2>
+<p><strong>机会 A｜Recoverability-Conditioned Cache Budgeting（最值得先试）。</strong>将 MoEZip 的“受扰动敏感性”与 CAVC 的“未来能否修复”结合，对每个 cache 单元 j 定义三个可观测量：<code>S_j</code> = 删除/跳算引起的下游任务或路由变化；<code>R_j</code> = 允许有限额外计算后恢复的质量比例；<code>C_j</code> = 保留该单元的 wall-clock 成本。一个可探索的<strong>新启发式（不是两篇论文现成公式）</strong>是 <code>priority_j = S_j · (1−R_j) / (C_j+ε)</code>：影响大、难恢复、成本相对低的单元优先保留；容易恢复的单元允许更大胆缓存。若 S 或 R 难测，可用 offline perturbation lookup table 训练轻量 predictor，再在在线推理用 predictor 选预算。</p>
+<p><strong>最小实验配置：</strong>在同一 MoE 模型、Qasper/HotpotQA 各 50 条、keep 10%/20%，以 32-token 为 cache block 做逐块反事实删除；先测 answer NLL / expert flip 作为 S，删除后允许追加 0/1/2 个“恢复”操作（例如 retrieval refresh 或局部重读）测 R，记录每次额外 ms 为 C。比较 KVZip、MoEZip、仅 S、仅 R、S×(1−R)/C；先离线验证“高 priority block 被删除时伤害更大”，再做在线预算器。<strong>关键风险：</strong>恢复操作本身可能读取原文，产生额外成本或违反固定 KV budget；因此要同时报告 total bytes read 与 total latency，避免作弊式恢复。</p>
+<p><strong>机会 B｜视频 Agent 的可恢复事件记忆。</strong>长视频/GUI Agent 有两类状态：缓慢变化、可以从附近帧重建的背景；瞬间变化、错过就无法恢复的按钮点击结果、遮挡事件、声源切换。先在视频 QA 或 BrowserGym 轨迹上做 masked-segment recovery，测删掉某帧后最终 action / QA 是否改变，再根据 event irreversibility 选择高分辨率帧或重新调用视觉工具。它借用 CAVC 的恢复曲线和 MoEZip 的决策路径敏感性，但<strong>不能把没有 MoE router 的模型硬说成路由压缩</strong>；应把路径变化定义为 tool/action flip。</p>
+<p><strong>机会 C｜Efficiency Failure Benchmark。</strong>建立统一表格：压缩比例、被跳过的实际 kernel 时间、selection/trigger overhead、peak VRAM、quality、最差 10% 样本、恢复所需额外 compute、是否出现路由/动作翻转。对比只看平均分和只看 FLOPs 的旧评估。这个 benchmark 在 Agent + Video + Inference 三条主线之间有自然的迁移价值。</p>
+<h2 id="s3-3">Collision / Overlap｜哪些是“相撞”，哪些只是类比</h2>
+<p><strong>最强的机制交叉（不是已有论文间已证实的同题竞争）：</strong><code>Routing Fragility × Error Recoverability</code>。MoEZip 说“某些 token 删除会使路由变化，所以要保护”；CAVC 说“某些分支即使近似了也能在最后修复，所以可以省”。统一问题是：<strong>在给定计算/显存预算下，怎样保护对未来行为影响大且不可恢复的状态？</strong>它们没有在同一模型、同一任务上比较，不能宣称一篇直接推翻另一篇。最需要警惕的真实文献重合是已有的 KV importance/attention eviction、query-aware frame pruning、dynamic diffusion caching、agent memory attribution；新工作要靠反事实干预、跨模型泛化和真实 wall-clock 形成差异。</p>
+<p><strong>与近两日 Deep Dive 的冷却检查：</strong>本期没有重复选择 2026-10-23 的 EPIC / MHG-Mem，也没有重复 2026-10-24 的 TWICE / BeNice!。今日两篇均首次纳入本系列。与 BeNice! 的“KV-sharing”方向存在缓存系统层面的潜在交集，但本期没有对该论文重新做全文核验，因此不把这种概念相似称作已证实的技术 Collision。</p>
+<h2 id="s3-4">Reading / Reproduction Priority｜怎么安排时间</h2>
+<p><strong>第一优先：MoEZip 的 Section 3、Section 4.4、Table 1/2、Appendix E.9。</strong>研究新机制最值得看 Fisher proxy 与 oracle routing correction 的证据链；但开源仓库当前未见实现源码，复现需要先解决 hook 和 baseline 的工程问题。<strong>第二优先：CAVC 的 Section 3、Tables 1–4、Appendix A/C。</strong>研究加速系统时，重点看它如何绕过音频分支、保留 scheduler 与视频计算，以及为什么部分同步指标反而下降；复现成本更受 22B 模型、H20 和匿名代码可用性约束。<strong>最适合作为 baseline：</strong>MoEZip（MoE KV 压缩质量）；<strong>最适合作为 systems idea：</strong>CAVC（branch-specific cache）；<strong>最适合作为 benchmark/metric：</strong>两者联合的扰动-恢复曲线；<strong>最适合作为 attack/evaluation：</strong>MoEZip 的固定 KV 路由干预与 CAVC 的多事件同步压力测试。</p>
+<h2 id="s3-5">Depth Audit｜交付前核对</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>MoEZip</th>
+<th>CAVC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全文/附录可访问</td>
+<td>是，arXiv HTML</td>
+<td>是，arXiv HTML</td>
+</tr>
+<tr>
+<td>基本信息、日期、status、代码状态</td>
+<td>已核实</td>
+<td>已核实</td>
+</tr>
+<tr>
+<td>Background、Core Insight、分步骤 Method</td>
+<td>已覆盖</td>
+<td>已覆盖</td>
+</tr>
+<tr>
+<td>关键公式 + 变量 + Toy Example</td>
+<td>已覆盖</td>
+<td>已覆盖</td>
+</tr>
+<tr>
+<td>3–5 baselines 与 strongest reference</td>
+<td>已覆盖</td>
+<td>已覆盖</td>
+</tr>
+<tr>
+<td>Setup、Metric 教学、≥5 具体结果</td>
+<td>已覆盖（8）</td>
+<td>已覆盖（9）</td>
+</tr>
+<tr>
+<td>≥3 Table/Figure、消融、机制验证</td>
+<td>已覆盖</td>
+<td>已覆盖</td>
+</tr>
+<tr>
+<td>Claim/Evidence、贡献、局限</td>
+<td>已覆盖</td>
+<td>已覆盖</td>
+</tr>
+<tr>
+<td>复现步骤、研究价值、2 条迁移</td>
+<td>已覆盖</td>
+<td>已覆盖</td>
+</tr>
+<tr>
+<td>方向专用效率指标、Attack Lens</td>
+<td>已覆盖</td>
+<td>已覆盖</td>
+</tr>
+<tr>
+<td>未报告指标明确标识</td>
+<td>是</td>
+<td>是</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="s3-6">Sources / Links｜核验入口</h2>
+<ol>
+<li><strong>MoEZip</strong>：<a href="https://arxiv.org/abs/2610.30206" rel="noopener noreferrer" target="_blank">arXiv abstract</a> · <a href="https://arxiv.org/html/2610.30206" rel="noopener noreferrer" target="_blank">全文 HTML</a> · <a href="https://arxiv.org/pdf/2610.30206" rel="noopener noreferrer" target="_blank">PDF</a> · <a href="https://github.com/kmswin1/MoEZip" rel="noopener noreferrer" target="_blank">官方 GitHub</a> · <a href="https://openreview.net/pdf?id=R8hTibgKBX" rel="noopener noreferrer" target="_blank">OpenReview PDF</a>。论文 v1 提交 <strong>2026-10-21 13:06 UTC</strong>；NeurIPS 2026 Accepted 为作者与仓库明确标注。</li>
+<li><strong>CAVC</strong>：<a href="https://arxiv.org/abs/2610.30854" rel="noopener noreferrer" target="_blank">arXiv abstract</a> · <a href="https://arxiv.org/html/2610.30854" rel="noopener noreferrer" target="_blank">全文 HTML</a> · <a href="https://arxiv.org/pdf/2610.30854" rel="noopener noreferrer" target="_blank">PDF</a>。论文 v1 提交 <strong>2026-10-22 07:30 UTC</strong>；目前按预印本处理。</li>
+<li><strong>检索基准</strong>：<a href="https://arxiv.org/list/cs.LG/new" rel="noopener noreferrer" target="_blank">arXiv cs.LG new</a> · <a href="https://arxiv.org/list/cs.CV/new" rel="noopener noreferrer" target="_blank">arXiv cs.CV new</a> · <a href="https://arxiv.org/list/cs.AI/new" rel="noopener noreferrer" target="_blank">arXiv cs.AI new</a>。本次基于 2026-10-23 最新工作日列表独立发现，未依赖另一项 Radar 输出。</li>
+</ol>
+<blockquote>
+<p><strong>方法学说明：</strong>表格中所有标注为论文结果的数字均来自以上论文正文/附录；Toy Example 和 Migration 是独立推演/拟议实验，不是作者报告的实验。所有未见报告的系统指标保留 Not Reported，避免把理论复杂度推断成实测速度。</p>
+</blockquote>
+</article><div class="footer">AI Deep Dive · 2026-10-25 · 所有教学示例和迁移方案均为独立推演；论文数据请按文中来源复核。</div></main></div><a class="backtop" href="#top" aria-label="回到顶部">↑</a></body></html>
