@@ -1,0 +1,272 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Daily Top Papers Deep Dive — 2026-10-27</title><style>
+:root{color-scheme:light;--ink:#233248;--muted:#607188;--accent:#1956a0;--line:#dbe4ed;--paper:#fff;--bg:#f5f7fa;--soft:#edf3fa}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.9 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}main{max-width:1000px;margin:0 auto;padding:32px 22px 100px}header{padding:36px 38px;background:linear-gradient(125deg,#112b4b,#215a90);color:white;border-radius:18px}header h1{font-size:2rem;line-height:1.35;margin:0 0 10px}header p{margin:5px 0;color:#e2eefa}article,section.panel,nav{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:26px 34px;margin-top:24px}nav a{display:block;margin:6px 0}h2{font-size:1.48rem;line-height:1.45;margin:36px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line)}h3{font-size:1.12rem;color:#163f70;margin:26px 0 8px}p{margin:11px 0 17px;text-align:justify}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}.meta{color:var(--muted);font-size:.94rem}.pill{display:inline-block;border:1px solid #bad0e9;border-radius:999px;padding:2px 12px;font-size:.8rem;color:#1a538c;background:#edf5ff;margin-right:8px}.tablewrap{overflow-x:auto;margin:15px 0 23px;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;min-width:630px;font-size:.91rem}th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{background:#eff4fa;color:#274363}tr:nth-child(even){background:#fafcfe}.formula{background:#f1f5fa;border-left:4px solid #3d6ca0;padding:16px 18px;margin:16px 0;overflow-x:auto;font-family:ui-monospace,Consolas,monospace;white-space:nowrap;font-size:.95rem}.note{background:#f5f8fc;border:1px solid #d7e2ee;border-radius:10px;padding:15px 18px;margin:18px 0}.kicker{font-size:.84rem;letter-spacing:.1em;color:#557fa9;font-weight:700}.callout{border-left:4px solid #326ea7;padding:10px 18px;background:var(--soft)}li{margin:7px 0}code{background:#eff3f7;padding:1px 5px;border-radius:4px;font-size:.9em}pre{background:#18283a;color:#f2f7fd;padding:20px;border-radius:9px;overflow-x:auto;line-height:1.55}.back{display:block;text-align:right;margin-top:24px;font-size:.88rem}@media(max-width:640px){main{padding:12px 9px 45px}header,article,section.panel,nav{padding:21px 17px}header h1{font-size:1.5rem}h2{font-size:1.3rem}body{font-size:15px}}
+</style></head><body><main><header id="top"><div class="kicker" style="color:#b7d5f5">INDEPENDENT PAPER RESEARCH · 2026-10-27</div><h1>Daily Top Papers Deep Dive</h1><p>RL 训练推理加速 × Agent Harness 决策复用｜2 篇完整精读｜中文研究版</p><p>核验日期：2026-10-27（北京时间）。论文均于 2026-10-23 首发、2026-10-26 出现在 arXiv 最近提交列表；标记 BACKFILL（超出严格 72 小时窗口）。</p></header>
+<nav><h2 style="margin-top:0">目录 · Contents</h2><a href="#selection">01 · 今日选题与证据边界</a><a href="#paper1">02 · NgramRL：Rollout-Aware Speculative Decoding</a><a href="#paper2">03 · HarnessMM：Guarded Decision Reuse</a><a href="#synthesis">04 · Cross-Paper Synthesis</a><a href="#ideas">05 · Combined Research Opportunities</a><a href="#collision">06 · Collision / Overlap</a><a href="#priority">07 · Reading / Reproduction Priority</a><a href="#sources">08 · Sources / Links</a></nav>
+<section class="panel" id="selection"><h2 style="margin-top:0">Today’s Deep Dive Selection</h2>
+<div class="tablewrap"><table><thead><tr><th>序号</th><th>论文 / 方向</th><th>选择理由</th><th>源状态</th></tr></thead><tbody>
+<tr><td>#1</td><td>NgramRL · RL + Inference Acceleration</td><td>同 prompt 历史 rollout 作为 drafter；含真实 CPU–GPU wall-clock profiling、窗口/预算消融</td><td>2026-10-23 v1 · BACKFILL</td></tr>
+<tr><td>#2</td><td>HarnessMM · Agent / Coding Harness</td><td>把已决策工具调用变成带守卫的可执行图；直接评估 Codex 与 DeepSeek Harness，含负面消融</td><td>2026-10-23 v1 · BACKFILL</td></tr>
+</tbody></table></div>
+<p>两篇并非为了四条主线均匀覆盖而拼凑：一篇解决“同样的生成为什么要逐 token 重算”，另一篇解决“同样的行动决定为什么要再次让模型思考”。它们都从已付出的计算中提取可复用状态，但复用的正确性条件完全不同。这种“节省计算—保持行为”张力比简单新 loss 更值得研究。2026-10-26 的 arXiv cs.AI 最近提交列表同时列出两篇。</p>
+<p>证据边界：全文采用作者公开的 arXiv HTML 正文、实验表格与附录；数字均尽量注明实验子集和比较对象。未找到可核验的官方代码仓库，因此不把复现脚本当作作者已发布实现。以下标记“研究设想 / toy”均是本报告推导而非作者结果。近七天本对话已出现的 MoEZip、CAVC、AOPD、RCR 未重复选入。</p>
+</section><article id="paper1"><span class="pill">PAPER 1</span><span class="pill">RL + INFERENCE</span><span class="pill">BACKFILL</span><h2 style="margin-top:12px">NgramRL: Accelerating RL Post-Training for Structured Generation via Rollout-Aware N-gram Speculative Decoding</h2>
+<p><strong>作者：</strong>Nilesh Prasad Pandey、Jangseon Park、Jason Kong、Onat Gungor、Tajana Rosing。<strong>机构：</strong>UC San Diego、West Virginia University。<strong>时间：</strong>arXiv v1 2026-10-23；<strong>Venue：</strong>未核实正式录用；<strong>状态：</strong>预印本。<strong>Paper：</strong><a href="https://arxiv.org/abs/2610.32881" target="_blank" rel="noopener">摘要</a> / <a href="https://arxiv.org/html/2610.32881" target="_blank" rel="noopener">全文 HTML</a> / <a href="https://arxiv.org/pdf/2610.32881" target="_blank" rel="noopener">PDF</a>；<strong>Project/Code：</strong>未核验到作者官方仓库，不编造链接。</p>
+<h3>一句话定位</h3>
+<p>NgramRL 把 RL 后训练中“同一个 prompt 的旧 rollout”当作随策略同步更新的无模型 speculative drafter，并用预测验证结果的 CPU–GPU 预取把接受长度优势转换成实际执行时间收益。</p>
+<h3>人话版（约 300 字）</h3>
+<p>假设你在用 GRPO 训练一个会写 SQL 的模型。为了得到奖励和 advantage，同一道题每个 epoch 可能让模型生成多个答案；这些 SQL 往往只在少数列名、别名或条件上变化。普通自回归推理依然每次一个 token 地算，即使昨天已经生成过几乎相同的答案。NgramRL 不训练另一个小模型，而是在 CPU 内存为每道题保存最近几轮输出的 n-gram 续写；再次遇到相同题目时，先草拟一串 token，再由正在训练的目标策略一次验证。它用标准 speculative sampling 校正，因此理论上不改变目标采样分布。真正难点在于 CPU 查缓存会让 GPU 等待：作者进一步在 GPU 验证当前草稿时，提前准备不同“接受长度＋下一个 token”分支。实验里，Spider 上 Qwen3-8B 的稳定期每次目标 forward 可提交 7.77 token；预取相对同步版的测得 rollout throughput 为 1.38 倍。注意：7.77 token/forward 绝不等于 7.77 倍实际吞吐；训练总耗时的加速也没有直接证明。</p>
+<h2 id="">1. Background & Research Gap</h2>
+<p>GRPO 后训练的计算图可拆成 rollout、reward、policy update。训练前先针对 prompt p 采样 G 条 trajectory，奖励函数给每条一个标量，再在组内归一化形成 advantage，最后对策略参数做更新。对于需要长思维链的任务，rollout 逐 token 采样使 GPU 反复进入 decode 阶段；作者引述既有研究称它可能超过训练 step 时间的 70%，但这个百分比不是其全部工作负载的统一实测。</p>
+<p>旧范式一是额外 draft model（如 EAGLE / Medusa 一类），以更便宜的模型提出候选，目标模型并行核验；在推理服务里合理，但训练 GPU 同时放参数、梯度、优化器、KV cache，额外常驻模型很贵。旧范式二是 prompt lookup，从当前 prompt 或本次上下文里复制 token；自由生成的 reasoning trace 与问题本身不一定共享长串。旧范式三是固定 datastore / global suffix tree，能重用其他请求的字符串，但并未按“相同训练题目随 epoch 反复出现”这个时间结构建索引。</p>
+<p>具体例子：题目要求统计某公司行业，epoch 1 输出 <code>SELECT COUNT(*) FROM Companies WHERE Industry IN (...)</code>，epoch 2 可能改成 OR 条件，epoch 10 可能和上一轮完全相同。用全局 SQL 模板库会找到很多无关表名，用 prompt 原文查找又找不到 SQL；同一题的最近 rollout 才是信息密度最高的候选源。研究 gap 不是“还没人做 n-gram”，而是“非平稳 RL 策略中如何获得持续对齐的草稿，并避免 CPU cache 变成新的同步瓶颈”。</p>
+<h2 id="">2. Core Insight：时间局部性不是静态语料重复</h2>
+<p>Figure 2 给出三个相邻 epoch 的 Spider 示例：早期两条 SQL 重合约 50%，中期约 81%，后期可达 100%。作者还报告同 prompt 的跨 epoch 轨迹可共享 48%–96% 内容，重复片段长 7–23 token。它是经验观察，不是任何 GRPO 算法都保证的数学定理：若 prompt 从不重复、采样温度很高、策略每步剧烈变化，这个规律会弱化。</p>
+<p>第二个观察是系统层面的：把缓存放在 host 虽然不抢 GPU 显存，但同步验证结果、CPU 查找、重新调度 kernel 的链条会造成约 29% 的 decode iteration GPU idle；lookup 本身并非主要耗时。因此只提高 n-gram 命中率不够，必须把验证后才知道的下一个上下文提前分叉准备。论文的机制创新可以分为“同 prompt 历史条件化”与“结果条件化的异步预取”，前者是算法/数据结构选择，后者是 CPU–GPU 调度创新。</p>
+<h2 id="">3. Method Deep Dive</h2>
+<div class="formula">Input: prompt p, current policy πθ, recent rollouts R<sub>p</sub> → per-prompt cache C<sub>p</sub> → draft k tokens → exact target verification → outcome (j,b) → async prefetched next draft / fallback → committed rollout → update cache</div>
+<h3>Step 1 · 以 prompt 身份组织历史，而不是把所有输出混在一起</h3>
+<p>每个训练题目 p 持有自己的 C_p。对历史输出遍历 n_min 至 n_max 的连续 token 片段，把前 n−1 个 token 作为 context key、后一个 token 作为 continuation，记录频次与最近 step。与纯字符串匹配相比，频次能在多个可能续写之间给出经验 q(x|c)，最近时间用于淘汰过期记录。作者描述了按 step 窗口 W 淘汰，同时实验表格用最近出现次数 w 进行窗口消融；复现时要明确这两种计数单位不能混淆。</p>
+<h3>Step 2 · 草拟一串 token，真正提交仍由 πθ 决定</h3>
+<p>解码到上下文 c 时优先查最长匹配 n-gram，沿缓存建议继续扩展最多 k 个 token；缺失则回退标准 decode。目标模型一次 forward 评估草稿各位置的目标分布 p=πθ，按 speculative sampling 逐个接受或拒绝，并从残差分布补采样。关键不是“过去答案一定正确”，而是“过去答案只是 proposal”；目标策略始终拥有最终决定权。这使训练的采样分布理论上不因缓存变化而改变。</p>
+<h3>Step 3 · 预测尚未发生的验证分支</h3>
+<p>当前 k 个草稿中，目标模型可能接受 j 个，并在下一位置输出 bonus token b；j 的取值 0…k，而 b 来自词表，下一轮 cache key 依赖两者。若等 GPU 结束才知道 (j,b)，CPU 的查找与 launch 会串行暴露。预取器因此在 GPU 忙时，根据近期的 j 直方图与候选 bonus 频次，选择少量最可能的 (j,b)，提前准备下一轮 draft，并把查找表送到 GPU。命中时直接 O(1) 取出；未覆盖时只对该请求退回同步查找，不改动已经提交的 token。</p>
+<h3>Step 4 · 有限预算 N 的分配与状态更新</h3>
+<p>对每个 j 分配 f_j 个 bonus 候选，预算 N=Σf_j。贪心每次把名额给“新增一个候选带来的预期 coverage 最大”的分支；这是一个离散资源分配问题，不是学一个额外 RL policy。当前 step 的采样轨迹完成后写回缓存，旧项按窗口淘汰。训练仍由 verl 的 GRPO 执行，作者强调 reward model、optimizer 和 policy architecture 不必改动。实现层要特别注意不同 rollout worker 的 prompt ID 稳定性与异步更新顺序。</p>
+<h2 id="">4. 公式与数学直觉</h2>
+<div class="formula">p<sub>accept</sub>(x|c) = min(1, π<sub>θ</sub>(x|c) / q(x|c))</div>
+<p>q 是缓存提议分布，πθ 是当前策略。若草稿 x 在 q 中比目标策略更常见，则接受率低于 1；拒绝后从 [πθ−q] 的正部归一化分布重新采样。单 token 层面，这个校正保证最后输出遵循 πθ 而非 q。若只用“匹配就直接复制”，训练分布会偏向旧答案，可能导致策略过度自我模仿甚至 reward hacking；严格校正避免这种采样偏差，但不自动证明不同并行随机数实现会得到逐 bit 相同的训练轨迹。</p>
+<div class="formula">max Σ<sub>j</sub> P̂(j)·ĉ<sub>j</sub>(f<sub>j</sub>)，s.t. Σ<sub>j</sub> f<sub>j</sub>=N</div>
+<p>P̂(j) 表示近期接受 j 个 token 的概率，ĉ_j(f_j) 表示在这个分支只预取前 f_j 个 bonus 候选时的覆盖率。目标是最大化“真正发生的分支已经被预取”的概率。增大 N 通常提高 coverage，却增加 CPU 工作；在 GPU forward 时间无法覆盖 CPU 预取时，反而失去重叠优势。作者发现全接受分支的 bonus 往往高度可预测，给一个候选就可能足够。</p>
+<div class="formula">Speedup(c) = (T<sub>gpu</sub> + T<sub>cpu</sub>) / (T<sub>gpu</sub> + (1−c)·T<sub>cpu</sub>)</div>
+<p>这是作者的重叠模型：c 为预取命中率，T_gpu 是设备忙时，T_cpu 是同步链暴露的主机时间。c=0 无收益，c=1 的上限为 1+T_cpu/T_gpu。模型隐含预取能被 GPU 计算完全掩盖，且未覆盖分支的回退不引入额外拥塞。真实部署必须同时测 GPU utilization、CPU 调度、PCIe 传输和批处理尾延迟，不能拿公式直接当测量。</p>
+<h2 id="">5. Toy Example：从 SQL 轨迹到精确采样</h2>
+<p>设同一 prompt 的最近两个答案都含 <code>SELECT COUNT(*) FROM orders WHERE status =</code>。缓存对上下文 <code>WHERE status</code> 给出下一个 token 的经验概率 q(“=”) = 0.8、q(“IN”) = 0.2，而目标策略当前概率 p(“=”) = 0.6、p(“IN”) = 0.4。草稿提出“=”时接受概率 0.6/0.8=0.75；提出“IN”时接受概率 min(1,0.4/0.2)=1。于是直接接受“=”的概率 0.8×0.75=0.6，“IN”的直接接受概率 0.2；剩余拒绝质量 0.2 全部转到“IN”，最终得到 (0.6,0.4)，恰好是目标分布。</p>
+<p>进一步设草稿长度 k=3，当前轮可能接受 j=3 后输出 bonus “;”，也可能接受 j=1 后输出 “AND”。预取器根据近期统计给这两个分支分配候选；若实际 (3,“;”) 命中，下一轮 SQL 续写已经备好。若出现从未见过的 “OR”，则正常 CPU lookup，已提交的 “OR” 不被篡改。这个 toy 说明正确性来自校正与回退，而不是缓存预测总正确。</p>
+<h2 id="">6. Baseline Deep Comparison</h2>
+<div class="tablewrap"><table><thead><tr><th>Baseline</th><th>合理性 / 工作方式</th><th>此 setting 的短板</th><th>本文改变 / 机制性质</th></tr></thead><tbody>
+<tr><td>PLD</td><td>从当前 prompt/context 匹配 n-gram，零训练参数</td><td>SQL 输出不在 prompt 中；跨 epoch 的答案重复不可见</td><td>改为同 prompt 历史输出；机制性数据来源变化</td></tr>
+<tr><td>REST</td><td>固定外部 datastore 查找 token continuation</td><td>非平稳策略逐渐偏离静态语料</td><td>最近 rollout 自更新；机制性时间对齐</td></tr>
+<tr><td>SuffixDecoding ★</td><td>CPU global suffix tree，最近 10k 响应；本文模型无关基线中最强</td><td>不同题目混桶，同题身份信息丢失</td><td>per-prompt key + bounded window；机制性索引，工程上仍依赖 CPU</td></tr>
+<tr><td>EAGLE / Medusa（相关工作，非同表量化）</td><td>训练额外 drafter/head，常可提供强候选</td><td>GPU 常驻开销，策略 drift 后可能需更新</td><td>无模型 drafter；没有同条件数值对比，不宣称全面超过</td></tr>
+</tbody></table></div>
+<p>★ strongest baseline 是表 1 中的 SuffixDecoding：六个模型×数据集组合里它普遍明显超过 PLD 和 REST，因此用它评估 NgramRL 的增量最公平。对比 EAGLE 时不能引用表 1 的倍数，因为论文没有把它作为匹配预算的实验基线。</p>
+<h2 id="">7. Experiment Setup & Metrics 教学</h2>
+<p><strong>RQ1：</strong>同 prompt 历史是否提高 target forward 的有效提交 token？<strong>RQ2：</strong>收益是否随训练 epoch、模型与输出结构变化？<strong>RQ3：</strong>per-prompt 与短窗口是否比单纯加大缓存更重要？<strong>RQ4：</strong>预取覆盖率能否转化为真实 wall-clock 吞吐？</p>
+<p>训练：verl + GRPO，2×A100 80GB；Qwen3-8B 与 DeepSeek-LLM-7B；每 step 64 个 prompt、每个采样 5 个 completion、15 epoch；任务 GSM8K（数学）、Spider 1.0（text-to-SQL）、CodeContests（代码）。比较 PLD、REST、SuffixDecoding，统一 k=16；采用 verl 默认 GRPO 超参数，论文未在主文逐项列出学习率、KL 系数、reward rule、数据拆分的完整可复制清单，复现时必须查配置并固定随机种子。</p>
+<p>独立 profiling：Qwen3-8B bf16、batch 64、k=16、RTX PRO 6000 96GB、32 核 AMD Threadripper 9970X；Nsight Systems / CUPTI 分离 device-busy 和 exposed host。这个硬件与训练的 2×A100 不同，因此不能把 1.38× 自动乘到 A100 全训练时间。</p>
+<div class="tablewrap"><table><thead><tr><th>Metric</th><th>定义 / 方向</th><th>适用性与陷阱</th></tr></thead><tbody>
+<tr><td>TPS（论文中的 tokens per decoding step）</td><td>每次目标 forward 提交的 token 数，越高越好；不是 tokens/s</td><td>反映 speculative acceptance，不包含 forward 变贵、CPU 等待或 batching 变化</td></tr>
+<tr><td>Coverage c</td><td>实际 (j,b) 被预取表命中的比例，越高越好</td><td>高 coverage 不等于高总体吞吐；若 T_cpu 很小，收益上限很低</td></tr>
+<tr><td>Rollout throughput speedup</td><td>同硬件、同请求设置下 tokens/s 比值，越高越好</td><td>应区分相对同步 NgramRL 和相对普通 autoregressive 的基线</td></tr>
+<tr><td>Cache MB</td><td>CPU 侧 n-gram 占用，越低越省内存</td><td>不代表 GPU KV memory；大量 prompt 可引发主机内存/索引压力</td></tr>
+<tr><td>Training accuracy / convergence</td><td>任务最终准确率、reward 曲线和训练稳定性</td><td>作者依赖分布不变的理论，不等于逐项展示全量训练收敛曲线</td></tr>
+</tbody></table></div>
+<h2 id="">8. Results Deep Dive：数字 → 证据 → 反解释</h2>
+<div class="tablewrap"><table><thead><tr><th>结果 / 场景</th><th>对比与差异</th><th>判断</th></tr></thead><tbody>
+<tr><td>Qwen3-8B · Spider 稳定期 7.77 TPS</td><td>SuffixDecoding 4.15；+3.62，约 1.87×</td><td>强结果：同题 SQL 模板复用显著</td></tr>
+<tr><td>DeepSeek-7B · Spider 稳定期 7.71</td><td>SuffixDecoding 3.88；约 1.99×</td><td>跨模型复现强，但仍是 token/forward</td></tr>
+<tr><td>Qwen3-8B · GSM8K 稳定期 4.36</td><td>SuffixDecoding 2.32；约 1.88×</td><td>非 SQL 数学也有收益，未证明任意自由文本</td></tr>
+<tr><td>Qwen3-8B · CodeContests 稳定期 3.60</td><td>SuffixDecoding 2.96；仅 1.22×</td><td>最弱模型/任务组合之一；跨题模板使 global cache 有竞争力</td></tr>
+<tr><td>DeepSeek-7B · CodeContests 稳定期 6.19</td><td>SuffixDecoding 3.99；约 1.55×</td><td>模型特定差异明显，不能用单一倍数概括</td></tr>
+<tr><td>Global bucket plateau 2.41 vs per-prompt 3.05</td><td>+0.64 accepted/step；SuffixDecoding 2.43</td><td>支持 prompt 身份重要，胜过盲目增大 global 缓存</td></tr>
+<tr><td>Qwen GSM8K w=16: 3.38 / 3181 MB</td><td>w=∞: 3.34 / 3634 MB</td><td>更多历史反而略降：策略漂移导致过期草稿</td></tr>
+<tr><td>Spider 预取 Qwen c=96.6%，1.38×</td><td>理论 overlap ceiling 1.40×</td><td>测得 wall-clock 相对同步版接近上限；非整体训练 1.38×</td></tr>
+<tr><td>GSM8K / CodeContests 预取 1.05–1.06×</td><td>上限分别 1.10× / 1.14×</td><td>弱项：bonus token 熵较高，coverage 有天花板</td></tr>
+</tbody></table></div>
+<p>特别要注意：论文中 “up to 7.0× over PLD” 指的是 7.77/1.11 这种 tokens/forward 比值，不是相同硬件端到端训练加速七倍。作者真正报告的预取 wall-clock 最大值是 1.38×，比较对象为同步 NgramRL。若想回答“GRPO 训练总时长缩短多少”，还必须实测 rollout 占比、policy update 与 reward scoring；这仍是开放问题。</p>
+<h2 id="">9. Table / Figure Reading（五个关键证据）</h2>
+<p><strong>Figure 2：</strong>同题 SQL 的早、中、晚跨 epoch 示例，50%→81%→100% 重合；作者想证明 temporal locality。实际只展示示例轨迹，不构成全任务概率保证。应进一步画每个 prompt 的重合分布、reward 与重复度相关性，避免“高重复=模型停滞”的另一种解释。</p>
+<p><strong>Table 1：</strong>行是 PLD / REST / SuffixDecoding / NgramRL，列是三个数据集、分两个模型；每格是 full-run / 最后 30% TPS。最强 Qwen Spider 7.77，最弱 Qwen CodeContests 3.60。最后 30% 不能代替完整训练均值，冷启动期 Qwen Spider 只有 5.94 full-run。</p>
+<p><strong>Figure 4：</strong>横轴 GRPO training step，纵轴 TPS，三种任务多条方法曲线。NgramRL 第一轮缓存冷，后续爬升；Spider 中段达到峰值又下降。反例是 policy drift / SQL 多样化会让旧轨迹不再适用，意味着窗口需要动态调整。</p>
+<p><strong>Figure 6 与 Table 3：</strong>n_max 增大时接受长度先增后饱和，内存却快速上涨；k=16 接近膝点。Table 3 的 Qwen GSM8K 从 w=4 的 2.81 / 1878MB 到 w=16 的 3.38 / 3181MB，额外 1303MB 只换 0.57 TPS。对于主机内存紧张的多任务训练，w=4 可能更实用。</p>
+<p><strong>Figure 7：</strong>左图 coverage 随预取预算 N 增长，Spider N=8 已达约 0.95，N=16 约 0.97；GSM8K 与 CodeContests 即使 N=32 也只有约 0.65 / 0.49。右图 Qwen Spider 1.38× 接近 1.40× 上限。曲线证据支持“分支可预测时异步有效”，不支持所有任务都近乎无 CPU stall。</p>
+<h2 id="">10. Ablation / Mechanistic Analysis</h2>
+<p>去掉 per-prompt key 改 global bucket：plateau 3.05→2.41，说明主要信息不是 n-gram 数据结构本身，而是 prompt 条件化。把 SuffixDecoding 从 10k 增到 40k responses 只升至 2.65，进一步削弱“纯容量不足”解释。减小历史窗口 w：显著省内存但降低部分 TPS；无限窗口不一定更好，验证新旧策略漂移是机制变量。去掉异步 prefetch 回到同步：相同草稿接受能力下，暴露 host chain，Spider 1.38× 的额外 wall-clock 收益消失。</p>
+<p>这些属于受控系统消融，能够支持组件贡献；但尚未证明“历史重复来自 reward 学到的能力而非模板坍缩”，因为该因果问题需要联合 reward、正确率、轨迹熵和 prompt 多样性做干预。</p>
+<h2 id="">11. Claim vs Evidence</h2>
+<p><strong>Authors Claim：</strong>同 prompt 旧 rollout 是自更新 drafter；标准校正保留 target 分布；CPU–GPU 预取能接近 host-overlap 上限。<strong>Experiments Actually Show：</strong>两个 7–8B 模型、三类任务上的 TPS 增益；一个特定 profiling rig 上 Spider 的实测 1.38×；per-prompt 与窗口消融有支持。<strong>What Is Not Yet Proven：</strong>跨 32B/70B、极大 batch、分布不断变化的 online RL、无重复 prompt 的任务、全训练总 GPU-hours 与能耗的收益。exact sampling 是算法层面的性质，实际实现还需检查随机数、数值精度和并行调度。</p>
+<h2 id="">12. Contribution、Limitations 与 Failure Modes</h2>
+<ul><li>Contribution 1 · <strong>New Empirical Finding</strong>：同题跨 epoch 48%–96% 重复、7–23 token 片段；是可迁移的观察而非数学保证。</li><li>Contribution 2 · <strong>New System / Engineering + Mechanism</strong>：per-prompt bounded n-gram drafter；n-gram 与 speculative correction 是已有组件，创新在 RL 历史条件化与组合。</li><li>Contribution 3 · <strong>New System / Engineering</strong>：按 (j,b) 预取和预算分配，避开 CPU 同步链；优化目标与 CPU–GPU 执行模型对应。</li></ul>
+<p><strong>Authors / paper-observable limitations：</strong>需要 prompt 重复与近期相似输出；高熵任务 coverage 较低；缓存随 n_max / w 扩张；N 太大 CPU 预取可能超过 GPU 隐藏窗口。<strong>Additional limitations：</strong>缓存可能携带训练样本敏感输出，需要隔离与清理；多机 rollout 的 prompt ID 及跨 worker 一致性难；大 batch 下 GPU 更忙，隐藏 CPU 的相对收益变小；未展示全训练 GPU-hours、能耗和不同奖励设置的收敛轨迹。模型在错误 SQL 上高度重复时，系统仍能加速“反复生成错误”，不代表 reasoning 能力提升。</p>
+<h2 id="">13. Reproduction View（最小可执行设计）</h2>
+<p>先做算法层，再做系统层：在 verl 的 vLLM rollout worker 旁增加 <code>prompt_id → deque[recent_rollouts]</code>，使用 token ID 构建 2–6 gram successor counter，窗口 w∈{1,4,16}，draft k∈{4,8,16}。给每次 target verification 加标准 acceptance/rejection 和 residual sampler；首轮可不做 GPU 预取，只检查输出分布与 TPS。缓存只从先前完成的 rollout 更新，避免把当前目标 token 偷看进 draft。</p>
+<p>第一实验用 Qwen3-8B、Spider 1.0，固定 64 prompts/step、5 completions、15 epochs、GRPO；先跑 vanilla decode、PLD、global suffix、per-prompt cache 四组，记录 full-run TPS、末 30% TPS、cache MB、accept-length histogram、SQL exact match / execution accuracy。第二实验固定缓存，加入同步 vs 异步预取，N∈{4,8,16,32}，记录 CUDA timeline、device busy、exposed host、tokens/s、TTFT/TPOT（若服务接口能测）、GPU/CPU 内存。最先应复现 Table 2 的 global→per-prompt 2.41→3.05 方向；如果连方向都不成立，先检查 prompt ID、缓存冷启动、tokenizer 与 rollout 对齐。</p>
+<p>易踩坑：不同模型 tokenization 不可共用缓存；prefix 命中必须是 token ID 而非字符；q 的采样分布必须与 correction 完全一致；vLLM continuous batching 会改变每轮 forward 的成本；benchmark 的训练/验证分割要防止通过旧输出“泄露”评测答案；CUDA 异步测时必须同步和用 profiler。作者官方代码未确认，以上是研究复现方案，不是已验证脚本。</p>
+<h2 id="">14. RL / Inference 专用分析</h2>
+<p><strong>RL Formulation：</strong>state 可看作 prompt、已生成 prefix、训练时的 policy 参数与外部环境状态；action 是下一个 token；policy 为 πθ；trajectory 是整段 completion；reward 是任务评分；advantage 来自 GRPO 组内相对 reward；目标是策略期望回报并受 GRPO 的 clipping / KL 等训练实现约束。本文没有提出新 reward、advantage 或 credit assignment；speculative drafter 只替代采样计算路径。reward 是 learned 还是 rule-based、具体权重与 KL 系数，正文没有足够完整的逐任务设置，不能擅自指定。</p>
+<p><strong>Reward Analysis：</strong>由于目标分布不变，理论上不会因 speculative correction 引入额外 reward hacking；但如果原 reward 可被模板化 SQL 利用，模型本身仍可能 hack reward。<strong>Training Efficiency：</strong>每 step 64×5=320 条 completion 的配置有报告；15 epochs；训练 2×A100；总 rollout tokens、总 GPU-hours、最终 reward 提升和收敛速率的完整可比数值未报告。</p>
+<div class="tablewrap"><table><thead><tr><th>系统指标</th><th>Baseline</th><th>Proposed</th><th>Change / 注释</th></tr></thead><tbody>
+<tr><td>TTFT</td><td>Not Reported</td><td>Not Reported</td><td>无法推断</td></tr>
+<tr><td>TPOT</td><td>Not Reported</td><td>Not Reported</td><td>无法推断</td></tr>
+<tr><td>Tokens/forward · Qwen Spider stable</td><td>4.15（Suffix）</td><td>7.77</td><td>1.87×，非 wall-clock</td></tr>
+<tr><td>Rollout throughput · Qwen Spider</td><td>1.00×（同步 NgramRL）</td><td>1.38×</td><td>实测，RTX PRO 6000</td></tr>
+<tr><td>Throughput · GSM8K/CodeContests</td><td>1.00×（同步）</td><td>1.05–1.06×</td><td>实测弱项</td></tr>
+<tr><td>GPU Memory</td><td>Not Reported</td><td>无常驻辅助 drafter</td><td>不等于总显存为零</td></tr>
+<tr><td>KV Memory</td><td>Not Reported</td><td>Not Reported</td><td>未单独拆分</td></tr>
+<tr><td>CPU cache · Qwen GSM8K w=16</td><td>Not Reported</td><td>3181 MB</td><td>不是 GPU memory</td></tr>
+<tr><td>FLOPs / Energy</td><td>Not Reported</td><td>Not Reported</td><td>不能从 TPS 直接换算</td></tr>
+<tr><td>Accuracy / Quality</td><td>理论目标分布 πθ</td><td>理论目标分布 πθ</td><td>没有完整最终准确率数表</td></tr>
+</tbody></table></div>
+<h2 id="">15. Attack / Verification Lens</h2>
+<p>可做 black-box probe：同一 prompt 重复多次，对比输出重复度、TPS 与训练进度，识别模型是否陷入模板化；可做 stress test：高熵随机字段、prompt paraphrase、跨模型 tokenizer、在线数据漂移、cache poisoning 和多租户隔离。建议定义 <code>accepted_tokens_per_MB</code>、<code>quality-conditioned_speedup</code> 与 <code>drift_recovery_steps</code>，同时监测 SQL execution accuracy，避免把加速错误答案当成系统成功。</p>
+<h2 id="">16. Research Value 与两条迁移</h2>
+<p><strong>Baseline Potential：</strong>SuffixDecoding + per-prompt 是很强的训练 rollout 加速对照。<strong>Migration Potential：</strong>Agent tool call、视频帧 token 序列和长推理都具有局部重复。<strong>Systems Potential：</strong>CPU–GPU overlap 有真实测量依据。<strong>Attack Potential：</strong>旧轨迹缓存可成为污染和隐私泄漏面。<strong>Evaluation Potential：</strong>TPS 与 wall-clock 脱钩值得标准化。<strong>Benchmark Potential：</strong>重复度×熵×策略漂移的二维/三维压力测试。<strong>New Paper Potential：</strong>以 downstream quality 为条件的动态缓存预算，需避免仅改一个启发式。</p>
+<h3>Migration A · RL Agent Tool Trajectory Speculation</h3>
+<p><strong>Original Problem：</strong>同 prompt 的旧生成可加速 RL rollout。<strong>Transferable Mechanism：</strong>per-task trajectory prefix cache + exact verification。<strong>New Research Question：</strong>工具调用 Agent 在重复环境状态下能否复用已生成的 tool-call JSON token，同时不改变 action policy？<strong>Method Modification：</strong>缓存键由 prompt ID 改为 (task_id, tool_schema_hash, observation_signature)，工具输出变化时强制失效；仅 speculative 生成 action token，不跳过真实工具调用。<strong>Minimum Experiment：</strong>用 200 个固定 ALFWorld 任务、每任务 5 条轨迹、三轮重放，k={4,8,16}、w={1,4,16}；对比普通 decode、global suffix、per-task cache；逐 step 记录 accepted tokens、tokens/s、task success、错误工具调用率。<strong>Model：</strong>Qwen3-8B。<strong>Dataset：</strong>ALFWorld（研究建议，不是本文原实验）。<strong>Baseline：</strong>PLD、SuffixDecoding。<strong>Metric：</strong>TPS、wall-clock、success、tool validity。<strong>Expected Contribution：</strong>环境状态条件化的 lossless action drafting。<strong>Risk：</strong>观测签名不稳、重复度低。<strong>Collision Risk：</strong>与 action-level program cache / HarnessMM 的“跳过推理”重叠，但前者 token 级 exact sampling，后者执行级 guard。</p>
+<h3>Migration B · Query-Aware Video Token / Frame Cache</h3>
+<p><strong>Original Problem：</strong>rollout 中跨次重复片段的草稿复用。<strong>Transferable Mechanism：</strong>短窗口时序局部性与预算分配。<strong>New Research Question：</strong>重复问同一段视频不同问题时，能否按 query 和时间戳复用视觉 token 或 KV 而不牺牲时序问答？<strong>Method Modification：</strong>缓存键为 (video_hash, frame_interval, encoder_version, query_cluster)，把 n-gram 精确 token 匹配换成 feature similarity + verification fallback；严格标记该迁移不再享有原论文 exact sampling 保证。<strong>Minimum Experiment：</strong>在 Video-MME 选 200 个有时间定位的问题，固定 1 FPS 与 2 FPS、帧预算 {16,32,64}，比较无缓存、全局 frame cache、query-aware cache；记录视觉 token、prefill latency、GPU memory、答案 accuracy 和时间定位错误率。<strong>Model：</strong>Qwen2.5-VL-7B（拟用）。<strong>Dataset：</strong>Video-MME。<strong>Baseline：</strong>uniform sampling + no-cache。<strong>Metric：</strong>accuracy/latency Pareto、token、显存。<strong>Expected Contribution：</strong>query-aware reuse 与真实性验证协议。<strong>Risk：</strong>视觉特征相似不代表事件相同。<strong>Collision Risk：</strong>已有 video KV cache、token pruning 文献，需要新评测或机制证明。</p>
+<h2 id="">17. 如果只记住这篇论文（9 句话）</h2>
+<ul><li>它研究的是 RL 后训练 rollout 的推理成本，不是一个新的 RL loss。</li><li>同一个 prompt 在不同 epoch 的答案具有可利用的时间局部性。</li><li>每个 prompt 建立最近 rollout 的 n-gram 缓存，比全局混桶更有效。</li><li>旧答案只是 drafter，真正的采样仍由目标 πθ 验证和校正。</li><li>CPU 缓存虽然省显存，却会暴露同步与调度等待。</li><li>按 (接受长度 j，bonus token b) 分支预取可以掩盖 host 链。</li><li>Spider 稳定期 Qwen3-8B 达到 7.77 tokens/forward。</li><li>测得 1.38× 是预取相对同步 NgramRL 的 rollout 吞吐，不是训练总加速。</li><li>最值得扩展的是质量约束下的历史复用预算与 drift 检测。</li></ul>
+<a class="back" href="#top">返回顶部 ↑</a></article>
+<article id="paper2"><span class="pill">PAPER 2</span><span class="pill">AGENT / HARNESS</span><span class="pill">BACKFILL</span><h2 style="margin-top:12px">HarnessMM: Recursive Self-Improvement for Harness Token Efficiency</h2>
+<p><strong>作者：</strong>Yuhua Jiang、Chang Xu、Feifei Gao、Li Zhao。<strong>机构：</strong>Tsinghua University / Microsoft Research Asia（论文署名）。<strong>时间：</strong>arXiv v1 2026-10-23；<strong>Venue：</strong>未核实正式发表；<strong>状态：</strong>预印本。<strong>Paper：</strong><a href="https://arxiv.org/abs/2610.32813" target="_blank" rel="noopener">摘要</a> / <a href="https://arxiv.org/html/2610.32813" target="_blank" rel="noopener">HTML 全文</a> / <a href="https://arxiv.org/pdf/2610.32813" target="_blank" rel="noopener">PDF</a>。<strong>Project/Code：</strong>未核验到作者公开的独立实现仓库；论文引用的 Codex、DeepSeek Harness 不等于 HarnessMM 官方代码。</p>
+<h3>一句话定位</h3>
+<p>HarnessMM 把 Agent 已经推理完成的后续工具动作编译成带因果依赖与公共状态守卫的可执行图，在工具反馈后满足条件时直接执行，从而减少不必要的再次调用大模型，并对每次省掉的回调提供可审计证据。</p>
+<h3>人话版（约 300 字）</h3>
+<p>一个 Coding Agent 已经决定“写文件→编译→测试”。传统 ReAct 风格 harness 往往写完文件后又问模型“接下来做什么”，编译成功后再问“接下来做什么”，即使这些步骤在第一次规划时就已经确定。HarnessMM 的做法不是压缩每次 prompt，而是让第一次慢推理同时产出一张 Executable Decision Graph（EDG）：每个节点包含完整工具参数、前驱节点和只依赖可观察回执的守卫。执行时，Guarded Decision Reuse（GDR）检查“前一步真的成功了吗”“参数是否早已确定”；满足才允许复用。Certified Callback Substitution（CCS）通过原工具接口执行，并记录它实际绕过了哪次慢模型回调。遇到新语义判断、模糊条件或异常则回到原模型。论文在 HumanEval 上报告 Codex 成功率保持 90.82%，每任务 token 从 66.72k 降到 47.02k；DeepSeek Harness 从 96.28k 降到 11.62k，成功率还提高。重要的是，这些大幅下降属于整套 harness 的集成结果，不能全部归因于 EDG；作者另用 MBPP 消融隔离 GDR 与 CCS。</p>
+<h2 id="">1. Background & Research Gap</h2>
+<p>Agent 的常见循环是“LLM 思考→发起工具调用→读取工具反馈→再问 LLM”。这个循环适合开放环境：工具返回错误时，确实需要重新推理。但很多工具反馈只告诉你一个预期事件是否完成。例如模型已经生成完整 patch，并决定在 patch 成功后运行 <code>pytest tests/test_parser.py</code>；文件写入成功的回执只是触发条件，不应强迫模型重新生成 pytest 命令。重复推理消耗输入历史、输出思考 token，还可能引入新的不一致决策。</p>
+<p>已有三类办法：LLMLingua / history compression 缩短每次模型输入；fast–slow routing 把部分决策交给便宜模型；Voyager-style skills 或 ReWOO / LLMCompiler 保存可执行程序与依赖。它们都合理，但缩短调用不等于取消调用；跨任务 skill 也不等于本次 episode 已完全确定的字面动作。HarnessMM 填补的是“某个工具反馈是否只改变执行就绪状态，而没有改变决策语义”的边界。</p>
+<p>具体例子：Agent 已写好 <code>cmake --build build</code> 和 <code>ctest --test-dir build</code> 两个动作。编译成功后直接执行测试是安全的候选；但如果编译报错，需要根据错误内容改代码，原先的测试动作即使参数完整也不再语义适用。只检查参数是字符串远远不够，还必须有前驱成功与失败时回退。</p>
+<h2 id="">2. Core Insight：把“决定是什么”与“何时执行”拆开</h2>
+<p>作者提出“Substitution Paradox”：想省掉模型调用，通常又需要模型判断是否能省，容易把节省的 token 重新花掉。它将决策分成两层：慢模型负责先把未来动作的语义和字面参数确定下来；执行时只读取公共工具回执，使用简单守卫和候选 ID 选择器决定是否可以执行。图中的节点不是一般自然语言建议，而是具备原生 tool name、exact args、predecessor、guard 的 commitment。</p>
+<p>这属于执行架构上的机制设计，不是从训练数据推导出的理论最优策略。关键的“语义闭包”是作者主动承认的假设：参数已经写死，不代表动作在未来状态一定正确；守卫检查通过只证明它定义的公共条件成立。论文附录 D.2 明确区分 literal closure 与 semantic closure，这一点比 headline 的大幅 token saving 更值得认真读。</p>
+<p>另一条洞察是审计：过去许多 Agent 加速论文只报告总 token 减少，但难回答“究竟哪次推理真的没发生”。CCS 把 graph hash、节点 ID、前驱回执、原始参数、工具回执和被绕过的 callback ID 绑定为证书。它证明的是执行路线发生了替换，不是证明被省掉的那次模型调用本来一定会输出同样动作。</p>
+<h2 id="">3. Method Deep Dive：逐节点解释</h2>
+<div class="formula">Input: task + public state → slow actor authors EDG → validate literal args/dependencies → tool receipt → GDR eligibility → selector ID / abstain → CCS native dispatch or slow fallback → receipt ledger → next boundary / terminal score</div>
+<h3>Step 1 · 原 harness 的慢推理先决定当前动作和可预见后续动作</h3>
+<p>固定 actor 权重 θ、原工具接口和 benchmark scorer。慢模型在某个 decision boundary 输出当前 tool action，同时可附带一个有界有向无环图 G_i=(V_i,E_i)。每个 future decision d_j=(a_j,arg_j,pred_j,g_j)：a 是原生工具类型，arg 是完全确定的字面参数，pred 是必须先完成的前驱，g 是从公共状态到布尔值的守卫。图必须无环；缺参数、非法依赖、未支持工具都不能进入可执行队列。</p>
+<h3>Step 2 · 接收真实工具回执，更新运行时状态而不是改写已决定的动作</h3>
+<p>执行完节点后，将工具的 exit code、stdout/stderr 摘要、文件状态或 UI 截图等纳入 public state。图的内容本身不变；只更新哪个前驱完成、哪些 guard 为 true、哪些节点仍未执行。这样可以追踪信息流：一条工具回执只应该改变执行许可，不应该悄悄生成新的命令行参数。若命令需要引用未来才知道的文件路径，就不符合 literal closure，应交还慢模型。</p>
+<h3>Step 3 · GDR 选择已决策动作，必要时 abstain</h3>
+<p>对于每个未执行节点，必须同时满足：前驱完成、守卫通过、参数闭合。若唯一 eligible 节点可直接选择；多个节点时使用类型受限 selector，仅输出候选 ID 或 abstain，不能改写参数。无候选、观测不足或 abstain 时回到原 actor。作者在论文中强调 selector 的 token 也要计费；若每次选择都要花长推理，所谓加速便会失效。</p>
+<h3>Step 4 · CCS 真正替换回调，并生成证据链</h3>
+<p>如果选择节点 d_j，就直接通过原生 tool dispatcher 执行先前保存的字面参数；不调用本应出现的 slow reasoning callback。之后把 graph_hash、decision_id、predecessor_receipt、exact_args、tool_receipt、bypassed_callback_id 记录为证书，并对照物理请求账本核验原回调确实没有发生。这个“证书”不是密码学上对工具环境真实性的普适证明，前提是日志、适配器与回执可信。</p>
+<h3>Step 5 · RSI 是离线配置优化，不是任务内随意自改权重</h3>
+<p>HarnessMM 还让外层训练反馈提出 harness 指令、上下文设置、适配器规则等候选修改，使用不重叠的 validation 选择，测试前冻结。MiniWoB++ 展示了八轮 training-guided RSI；它不是“模型权重在线更新”，也不能把同一训练集上逐轮上升直接当成 held-out generalization。论文把 EDG/GDR/CCS 核心执行机制与 instruction-only 等 companion configuration 分开做证据归因，这个分离对复现至关重要。</p>
+<h2 id="">4. 关键公式与数学直觉</h2>
+<div class="formula">min<sub>π</sub> C(π)，subject to R<sub>b</sub>(π) = Q<sub>b</sub>(h<sub>0</sub>) − Q<sub>b</sub>(h<sub>π</sub>) ≤ ε<sub>b</sub></div>
+<p>C(π) 是在执行策略 π 下，完整任务实际支付的模型 token 期望；Q_b 是 benchmark b 的官方质量分数；R_b 是相对原 harness 的能力损失。目标不是盲目最少 token，而是在可接受成功率下降 ε_b 以内节省调用。若 ε=0，理想情况下不允许平均质量退步；若允许小幅回退，必须报告 Pareto front，而不能只挑最省 token 的点。</p>
+<div class="formula">eligible(d,s) = 1[pred completed] · 1[g(s)=true] · 1[args closed]</div>
+<p>三个指示函数相乘表示任何一项失败都不得直接执行。pred 保证因果顺序，g(s) 将真实回执映射为执行许可，args closed 保证没有需要 LLM 填的未知参数。它不保证动作一定有利于任务：比如 <code>pytest</code> 虽然在 build success 后可执行，但任务要求先更新依赖版本时仍可能不合适。作者附录把这个差距表述为“eligible⇒valid”额外依赖守卫质量的假设。</p>
+<div class="formula">κ = (graph_hash, decision_id, predecessor_receipt, exact_args, tool_receipt, bypassed_callback_id)</div>
+<p>κ 是结构性归因证据。它允许你重放：哪张图提出哪个动作、为什么此时有资格执行、实际调用了什么、原先哪个 callback 被跳过。它不包含反事实模型输出，因此不能单凭证书给每次 bypass 分配“省了 800 token”这种不存在的精确值；论文使用同任务集的完整账单比较总成本。</p>
+<div class="formula">C<sub>episode</sub> = Σ<sub>physical calls c</sub>(input_tokens<sub>c</sub>+output_tokens<sub>c</sub>)； C̄<sub>N</sub> = C<sub>dev</sub>/N + E[C<sub>episode</sub>]</div>
+<p>第一式避免“只统计成功调用”或“忽略 graph authoring”导致虚高收益。第二式说明部署规模 N 越大，离线规则开发成本越容易摊销；短期小规模任务可能因开发成本不划算。这里的成本单位是 token，不是 wall-clock、美元或能源；不同 provider 的 cache accounting 与 token 定价可能改变经济结论。</p>
+<h2 id="">5. Toy Example：从一次构建到两次真实工具执行</h2>
+<p>假设 Coding Agent 收到“修复 parser 并运行测试”，第一次慢调用确定动作 A：写入 <code>src/parser.py</code>，后续动作 B：<code>python -m compileall src/parser.py</code>，动作 C：<code>pytest -q tests/test_parser.py</code>。图中 B 的 pred=A，guard 为“文件写入回执成功”；C 的 pred=B，guard 为“编译 exit_code==0”；B/C 参数在 author 时都已确定，不需要用未来日志拼接字符串。</p>
+<p>A 执行成功后，GDR 检查 B 三项全真，CCS 调用原生 terminal 执行 B 并生成 κ_B。若编译成功，C 再次满足 guard，CCS 直接执行 C 并生成 κ_C；这两个边界都省掉了“下一步干嘛”的慢回调。若 B 失败，C 的 guard=false，系统回到慢模型分析报错，重新写 patch 和新的图。若作者只给了 <code>pytest tests/{unknown}</code>，参数未闭合，绝不能猜一个文件名后执行。</p>
+<p>这个例子也展示安全问题：如果工具回执被恶意修改为 exit_code=0，系统会执行错误的后续动作；如果前一步成功但环境发生外部变更，guard 也可能过时。因此要加 receipt provenance、状态版本、工具副作用白名单和失效检查。上述代码路径是说明用的 toy，不是论文实际实验命令。</p>
+<h2 id="">6. Baseline Deep Comparison</h2>
+<div class="tablewrap"><table><thead><tr><th>Baseline</th><th>工作方式 / 合理性</th><th>本文 setting 的短板</th><th>本文改动 / 证据</th></tr></thead><tbody>
+<tr><td>原始 Codex / DeepSeek Harness</td><td>工具后由模型重新判断；灵活，适应异常</td><td>已确定动作也再次支付慢调用</td><td>EDG+GDR+CCS 与配套配置；集成结果，非纯组件因果</td></tr>
+<tr><td>CoT-only</td><td>优化 prompt/决策表达，不做执行级替换</td><td>即使输出短仍有重复 reasoning callback</td><td>MBPP CoT-only 93.39% / 15.04k；Full 集成 91.83% / 10.61k，质量存在反向差异</td></tr>
+<tr><td>W/o GDR · single-use EDG</td><td>图能执行一次，减少重复复用风险</td><td>后续边界无法继续消费同一图</td><td>MBPP Full 13.17k vs 18.03k，26.91% 节省；最直接机制消融</td></tr>
+<tr><td>W/o CCS · retain callback</td><td>保留慢回调，更保守</td><td>即使有图也继续付模型调用成本</td><td>Full 13.17k vs 16.37k，19.52% 节省</td></tr>
+<tr><td>W/o EDG execution ★</td><td>只保留 graph authoring，不执行图；质量上更保守</td><td>无执行替代收益</td><td>95.33% / 16.19k，成功率最高；Full 93.77% / 13.17k，存在明确质量成本 trade-off</td></tr>
+</tbody></table></div>
+<p>★ “strongest baseline” 要按目标定义：在最直接 MBPP 机制消融中，W/o EDG execution 的成功率 95.33% 最高，是<strong>质量最强</strong>的对照；W/o GDR 与 W/o CCS 是<strong>机制归因最关键</strong>的对照。论文不能用 Full 更省 token 就说它在所有目标上全面胜过 strongest baseline。</p>
+<h2 id="">7. Experiment Setup & Metrics 教学</h2>
+<p><strong>RQ1：</strong>能否在不改模型权重、原工具和 scorer 的前提下减少真实慢回调？<strong>RQ2：</strong>集成 harness 在 Codex 和 DeepSeek Harness 上能否保留成功率？<strong>RQ3：</strong>GDR 持续复用与 CCS 取消回调各贡献多少？<strong>RQ4：</strong>离线 RSI 改 harness 配置是否有持续质量成本收益？</p>
+<p>编码评估采用 20/20/60 的自定义 TRAIN / validation / TEST 分割：HumanEval 33/33/98，MBPP-sanitized 85/85/257；测试使用固定任务 ID、同 backbone、同原生工具和评分器。论文还报告 Qwen3.5-9B 上的 ALFWorld 2133 tasks / SearchQA / LiveMath，以及 Qwen3.8-27B 上的 AIME、GAIA2 等 companion studies；这些实验并非都在检验同一 EDG 机制，不能把所有柱状图混成单一算法胜利。模型侧包括 DeepSeek-flash、MiMo-v2.6-pro 的不同 harness pair；对照必须在同 backbone 内进行。</p>
+<p>完整 token 账单包括作者图生成、selector、fallback、失败调用、最终回答；官方 benchmark 成功率单独统计。附录报告任务配对区间、McNemar 检验；MiniWoB++ 八轮 RSI 使用同 32 个训练任务，每轮两臂同截图与行动上限，不能作为独立 held-out 曲线。论文没有把所有硬件、工具 wall-clock 与美元成本放在一张统一系统指标表里。</p>
+<div class="tablewrap"><table><thead><tr><th>Metric</th><th>定义 / 高低</th><th>容易误导的地方</th></tr></thead><tbody>
+<tr><td>Pass / Success (%)</td><td>官方 scorer 判定任务成功的比例，越高越好</td><td>小数据集一两个任务即可产生数个百分点波动；须 paired 统计</td></tr>
+<tr><td>Tokens/task (k)</td><td>完整物理模型调用输入+输出 token 除任务数与 1000，越低越好</td><td>不等于美元、GPU 能耗、执行时间；provider 缓存计费规则不同</td></tr>
+<tr><td>Calls/task</td><td>平均每任务真实模型请求数，越低通常越省</td><td>调用长短不同，少一次不等于省固定 token</td></tr>
+<tr><td>Certified bypasses</td><td>证书证明的原回调省略次数，越多说明机制真实触发</td><td>无法证明被省调用的反事实内容或其成本</td></tr>
+<tr><td>Capability regret</td><td>原 harness 质量减新 harness 质量，越小越好</td><td>允许负值表示新 harness 更好；不同 benchmark 不可直接平均</td></tr>
+<tr><td>Paired CI / McNemar p</td><td>相同任务两方法结果的差异不确定性</td><td>显著性不等于效果大，也不能代替外部泛化</td></tr>
+</tbody></table></div>
+<h2 id="">8. Results Deep Dive：九个关键现象</h2>
+<div class="tablewrap"><table><thead><tr><th>实验数字</th><th>比较与差异</th><th>严格解释</th></tr></thead><tbody>
+<tr><td>HumanEval Codex 90.82% → 90.82%</td><td>66.72k → 47.02k，−29.54%</td><td>成功率持平、成本下降；98 任务集上仍有 5 进步与 5 退步抵消</td></tr>
+<tr><td>HumanEval DeepSeek 71.43% → 85.71%</td><td>96.28k → 11.62k，−87.93%；+14.28pp</td><td>最强集成结果；22 改进/8 回退，McNemar p=0.0161</td></tr>
+<tr><td>HumanEval DeepSeek paid calls 954 → 415</td><td>147 certified bypasses</td><td>调用总差 539 大于 bypass 147；说明还存在其他配置效应</td></tr>
+<tr><td>MBPP DeepSeek 90.27% → 91.83%</td><td>53.98k → 10.61k，−80.35%</td><td>集成大幅节省，但 CoT-only 质量更高 93.39%</td></tr>
+<tr><td>MBPP Codex 91.83% → 90.66%</td><td>129.55k → 49.22k，成功率 −1.17pp</td><td>典型 weakest/failure：省成本伴随质量下降</td></tr>
+<tr><td>MBPP Full vs W/o GDR</td><td>93.77%/13.17k vs 93.00%/18.03k</td><td>26.91% 成本优势；支持持续复用价值</td></tr>
+<tr><td>MBPP Full vs W/o CCS</td><td>93.77%/13.17k vs 93.39%/16.37k</td><td>19.52% 成本优势；支持跳过慢回调的直接作用</td></tr>
+<tr><td>MBPP W/o EDG execution</td><td>95.33%/16.19k vs Full 93.77%/13.17k</td><td>Full 少解 4 个任务；不能说无质量损失</td></tr>
+<tr><td>GAIA2 43.96% / 639.64k</td><td>No Skill 42.71% / 730.22k；SkillOpt 46.88%</td><td>成本低，但比 SkillOpt 低 2.92pp，且 fast action 只占 1.40%</td></tr>
+<tr><td>MiniWoB++ RSI 第 1→8 轮</td><td>34.38%→90.63%；3.26k→1.06k</td><td>同训练任务的配置开发曲线，不是独立 test 增益</td></tr>
+</tbody></table></div>
+<p>结果解释必须拆两层：HumanEval/MBPP 的原生 harness pair 显示“整套系统上线”的潜力，但还混入 context management、finalization 等配套配置；MBPP 的四条件消融才更接近回答“持久图与回调替代有没有作用”。另一个值得关注的反例是 GAIA2：输入历史占 token 成本的 99.47%，快速执行仅占 action attempts 的 1.40%，此时压缩历史可能比复用动作更重要。</p>
+<h2 id="">9. Table / Figure Reading（五个关键证据）</h2>
+<p><strong>Figure 1：</strong>上半是 RSI 在训练反馈下迭代配置，下半是 EDG→GDR→CCS 的任务内执行。它是架构图，不是性能证明。重要的是图里“新语义决定”必须走 slow fallback；如果工程实现为了追求 bypass rate 绕开 fallback，就已经偏离论文方法。</p>
+<p><strong>Table 1（主文）：</strong>HumanEval 与 MBPP 两个 test population，行分别为 Codex、+HarnessMM、DeepSeek、+HarnessMM，列是 Pass、Tokens/task、Calls/task、Bypasses。最重要的异常是 DeepSeek 954→415 calls 但只有 147 bypasses，不能把所有 539 次差异归因于 CCS；也不能忽视 MBPP Codex 质量下降。</p>
+<p><strong>Figure 3：</strong>不同 backbone 的原始 harness 与集成 HarnessMM 质量成本散点/柱图；Qwen 与 MiMo 结果分面。MiMo HumanEval DeepSeek 96.94%→97.96%、11.62k→4.40k；它支持不同模型下可能有益，但绝不允许把 Qwen 的 96.28k 与 MiMo 的 4.40k 跨 backbone 相除得出新加速比。</p>
+<p><strong>Figure 4：</strong>上方 ALFWorld 六个 instruction condition，平均三 seed；下方 MBPP 四个机制消融。最重要的是下方 W/o EDG execution 成功率 95.33% 反而高于 Full 93.77%，揭示错误复用风险。上方的“family-only 62.01% / 28.69k”比 Full instruction 65.70% / 31.44k 更省 token，却低 3.69pp，说明最省 token 不等于最佳选择。</p>
+<p><strong>Figure 5 与 Appendix A Table 2：</strong>MiniWoB++ 32 个训练任务八轮迭代，第一轮 34.38%/3.26k，第三轮 90.63%/1.10k，第八轮 90.63%/1.06k；中间第 4 轮成功率下降到 84.38%、成本升到 1.71k，曲线并非单调。第八轮与 single-use EDG 同为 29/32 成功，成本 1.51k→1.06k；证明同配置下 persistence 省 token，但不证明自动优化永远单调变好。</p>
+<h2 id="">10. Ablation / Mechanistic Analysis</h2>
+<p>W/o GDR：图只允许一次未来执行，成本 18.03k；Full 保留图，13.17k，差 4.86k（26.91%）。这更直接支持“同一张图跨工具反馈重复使用”的价值。W/o CCS：保留慢回调，16.37k；Full 13.17k，差 3.20k（19.52%），说明真正省掉模型请求是收益的一部分。W/o EDG execution：作者仍生成图但不执行，16.19k，成功率 95.33%；Full 13.17k，成功率 93.77%，揭示 EDG 在某些状态下做了不理想的语义替代。</p>
+<p>附录给出 407 次 certified substitutions，其中 201 张图发生第二次及以后 bypass。这个计数证明机制在运行时确实发生；它并不说明每一次 bypass 都因果性提高质量。想要真正机制归因，还应对同一个 episode 做 counterfactual replay：保持工具环境快照，分别用 GDR 与慢回调决策，比较动作一致率、错误回退率和后续任务成功率。</p>
+<h2 id="">11. Claim vs Evidence</h2>
+<p><strong>Authors Claim：</strong>重复 reasoning 可由已决定的动作替代；guarded graph 能跨反馈复用；证书能审计替换；RSI 可改进 harness。<strong>Experiments Actually Show：</strong>98 HumanEval 与 257 MBPP 的原生集成对照、MBPP 四条件消融、多个 benchmark 的配套配置研究、MiniWoB++ 同训练任务的 RSI 迭代。<strong>What Is Not Yet Proven：</strong>通用 semantic closure 的安全性、跨真实长期生产 Agent 的稳定性、工具被污染时的鲁棒性、跨模型与硬件的 wall-clock 优势、与 ActionEngine / LLMCompiler / ReWOO 的全面实证优越性，以及 RSI 在新任务分布上自动持续改善。</p>
+<h2 id="">12. Contribution、Limitation 与 Failure Modes</h2>
+<ul><li>Contribution 1 · <strong>New Mechanism / System</strong>：episode-specific Executable Decision Graph，记录 exact action、dependency、guard；与已有程序规划相邻但边界更严格。</li><li>Contribution 2 · <strong>New System / Engineering</strong>：GDR 的可观察状态守卫与持续复用；没有发明 DAG，却改变了工具反馈后的执行控制。</li><li>Contribution 3 · <strong>New Metric / Protocol</strong>：CCS 的 callback omission 证书与完整物理 token 账本；可审计性强于只报 token saving。</li><li>Contribution 4 · <strong>New Empirical Finding</strong>：在 Codex、DeepSeek Harness 的特定任务和 backbone 上存在显著节省空间；同样存在 quality regression。</li><li>Contribution 5 · <strong>Existing Components Combination</strong>：外层 RSI 的 prompt / configuration 迭代来自已有优化思想，不能简单等同于全新自改算法。</li></ul>
+<p><strong>Authors’ Limitation：</strong>没有可复用的已决策动作时收益小；authoring、selector、fallback 可能抵消省下的调用；public-state adapter 依赖任务；小开发集令策略级质量差异不确定。<strong>Additional Limitation：</strong>公共回执可能被 prompt injection、恶意工具输出或不完整日志污染；副作用工具不能像只读查询那样安全重放；跨进程并发、状态过期、文件内容被外部修改都可能破坏 guard 语义。模型在首次 author 时写错命令，会把错误变成可执行承诺并传播到后续节点；这是 memory/skill 污染的执行版本。</p>
+<p>尤其不能把“exact args”误解为“正确 args”。字面闭包是程序验证问题，语义闭包是开放世界推理问题。证书只说明在特定边界确实执行了某个工具并跳过模型，不能证明环境状态没变、动作没有越权或结果对最终目标有利。</p>
+<h2 id="">13. Reproduction View：从最小 Hook 到完整审计</h2>
+<p>优先在开源 coding harness 的 tool-call boundary 加一个旁路 controller，不修改模型权重。定义 <code>EDGNode(id, tool, args_json, predecessor_ids, guard_spec, graph_hash)</code>；限制工具为 <code>write_file</code>、<code>shell</code>、<code>read_file</code> 等已有 native actions；禁止未声明占位符与任意 Python guard 执行。guard_spec 采用白名单谓词，如 <code>exit_code_eq(0)</code>、<code>file_exists(path)</code>、<code>stdout_contains(text)</code>。先只允许无副作用或可回滚工具，再扩大范围。</p>
+<p>实验 1：MBPP-sanitized 257 个 test task，按论文 85/85/257 split 固定训练与验证，测试时四臂共享 backbone 和温度：original、single-use EDG、persistent EDG with retained callback、Full。记录 success、每个 physical model call 的 input/output、graph authoring、bypass 数、guard reject、fallback、每次工具退出码。实验 2：为每个 bypass 写 JSONL 证书，并用独立 audit 脚本核对 graph hash、exact args、predecessor receipt、真实 tool receipt、缺失的 callback request ID。先验证 Full 与 W/o GDR 的 token 差异方向，再检查 Full 是否像论文一样存在少数质量回退。</p>
+<p>最容易踩坑：把 EDG 的 token 成本排除在外；对失败任务不计费；把模型自己生成的“成功”当工具回执；guard 允许执行任意 shell；在有多个 eligible 节点时 selector 自行修改 args；把工具执行的系统时间误算成 token saving；在同一测试任务上调规则造成泄漏。作者官方实现尚未核验，因此上述是基于方法描述的最小可行复现，而非运行过的代码。</p>
+<h2 id="">14. Agent 专用分析：State、Long-Horizon 与 Failure Propagation</h2>
+<p><strong>Architecture：</strong>Input → Slow Planner / EDG Author → Native Tool → Public Receipt → GDR Eligibility → Typed Selector → CCS Dispatch / Slow Fallback → New Receipt → Task Scorer。<strong>Agent State：</strong>EDG 是本 episode 的程序性记忆；工具回执是 episodic evidence；selector 与 guard 是轻量控制状态；并不等于跨用户的长期语义记忆库。</p>
+<p><strong>Long-Horizon：</strong>理论上图可跨多个工具边界复用，但论文最直接的编码机制实验是有限长度任务。任务越长，环境漂移、并发修改、隐藏依赖与 guard 误判概率越可能累积。应跟踪 action depth、graph age、stale receipt rate、回退次数与成功率，不能仅凭 407 次 bypass 推断千步 Agent 的可靠性。</p>
+<p><strong>Failure Propagation：</strong>首次慢模型错误 author → 错误 EDG 作为程序性记忆被保留 → guard 接收过时或恶意 receipt → 触发错误 tool → 后续节点继续执行 → 最终任务失败。与普通 Agent 不同，错误可能绕过本可纠正的中间 reasoning。安全设计应加入状态版本号、只读验证、不可逆动作强制慢审批和按任务风险调整 guard 强度。</p>
+<div class="tablewrap"><table><thead><tr><th>系统指标</th><th>Original / 对照</th><th>HarnessMM</th><th>Change / 证据边界</th></tr></thead><tbody>
+<tr><td>Tokens/task · HumanEval Codex</td><td>66.72k</td><td>47.02k</td><td>−29.54%</td></tr>
+<tr><td>Calls/task · HumanEval DeepSeek</td><td>9.73</td><td>4.23</td><td>少 5.50 calls/task，含多种配置影响</td></tr>
+<tr><td>Success · MBPP Codex</td><td>91.83%</td><td>90.66%</td><td>−1.17pp，质量回退</td></tr>
+<tr><td>TTFT / TPOT</td><td>Not Reported</td><td>Not Reported</td><td>非 LLM serving 实验</td></tr>
+<tr><td>Wall-clock latency</td><td>Not Reported</td><td>Not Reported</td><td>token 省不等于工具耗时省</td></tr>
+<tr><td>GPU Memory / KV Memory</td><td>Not Reported</td><td>Not Reported</td><td>未做系统显存评测</td></tr>
+<tr><td>FLOPs / Energy</td><td>Not Reported</td><td>Not Reported</td><td>不可从 token 推断</td></tr>
+<tr><td>Cost / token</td><td>按物理调用计数</td><td>含 author/selector/fallback</td><td>不同 provider 定价不统一</td></tr>
+</tbody></table></div>
+<h2 id="">15. Attack / Verification Lens</h2>
+<p>最值得设计的是 <strong>Guard-Validity Benchmark</strong>：在固定任务中对工具回执注入可控错误（退出码错误、stdout 缺行、文件版本被替换、超时后重试、并发修改），比较普通 ReAct、无 guard 宏、HarnessMM 风格 guarded reuse 的成功率、危险动作执行率、fallback precision 和 token cost。还可以做 black-box probe：仅观察工具日志与模型调用日志，推断是否存在“预先承诺的动作”被错误触发。</p>
+<p>建议定义 <code>unsafe_bypass_rate</code> = 语义不应执行却发生 bypass 的边界数 / 所有 bypass 边界；<code>guard_recall</code> = 安全可复用边界中成功复用的比例；<code>recovery_cost</code> = 误触发后恢复到正确状态的额外 tokens + tool time。这些是本报告提出的候选指标，不是论文官方指标。</p>
+<h2 id="">16. Research Value 与两条迁移</h2>
+<p><strong>Baseline Potential：</strong>原始 DSH / Codex、single-use EDG、W/o CCS 构成清晰对照。<strong>Migration Potential：</strong>可以进入多 Agent workflow、研究 Agent、IDE 自动化。<strong>Systems Potential：</strong>原生接口与物理账本使上线可观察。<strong>Attack Potential：</strong>guard 误判和工具回执污染是新攻击面。<strong>Evaluation Potential：</strong>callback-level causal audit 可复制到其它 harness。<strong>Benchmark Potential：</strong>可构造任务深度×状态漂移×回执真实性矩阵。<strong>New Paper Potential：</strong>“可验证决策复用”与“可恢复性”联合建模，而非仅仅提高 bypass rate。</p>
+<h3>Migration A · Multi-Agent Shared Decision Provenance</h3>
+<p><strong>Original Problem：</strong>单 Agent 已确定动作在工具反馈后被重复推理。<strong>Transferable Mechanism：</strong>EDG + receipt-bound certificate。<strong>New Research Question：</strong>多个 Agent 交接时，能否只共享带 provenance 的可执行承诺，避免接手 Agent 再次推理，同时不扩大错误传播？<strong>Method Modification：</strong>在 EDG 增加 author_agent_id、owner lease、tool permission、state_version、handoff_hash；只有接手 Agent 持有 lease 且公共状态版本一致才可执行。<strong>Minimum Experiment：</strong>构造 100 个代码修复任务，每个由 planner→editor→tester 三 Agent 执行；对比自然语言 handoff、共享摘要、共享 EDG、共享 EDG+lease+guard；每个任务运行 3 seed，记录 token、成功率、重复工具调用、非法并发动作与恢复时间。<strong>Model：</strong>Qwen3-8B 或统一 API backbone。<strong>Dataset：</strong>MBPP-sanitized 子集与自制多 Agent handoff case。<strong>Baseline：</strong>ReAct、LLMCompiler-style static plan、single-agent EDG。<strong>Metric：</strong>pass@1、tokens/task、duplicate-action-rate、unsafe-bypass-rate。<strong>Expected Contribution：</strong>跨 Agent 可审计执行语义。<strong>Risk：</strong>分布式时钟、工具副作用、责任边界。<strong>Collision Risk：</strong>与 workflow DAG / ActionEngine / shared memory 项目相近，创新须落在状态版本和错误传播实验。</p>
+<h3>Migration B · Risk-Calibrated Agent Reuse / Recovery</h3>
+<p><strong>Original Problem：</strong>固定 guard 只能二值决定是否跳过慢推理。<strong>Transferable Mechanism：</strong>能力约束的 token 优化 + 结构性回退。<strong>New Research Question：</strong>能否根据动作风险和恢复成本动态决定何时继续复用、何时重新思考？<strong>Method Modification：</strong>增加 risk score r(s,d)（工具是否可逆、receipt 新鲜度、参数影响范围），阈值 τ 控制 reuse；高风险动作必须经过 slow confirmation，低风险动作保持 fast path。<strong>Minimum Experiment：</strong>在 257 个 MBPP 测试任务中生成 4 类回执扰动（正常、错误 exit code、过期文件、部分 stdout），每类随机 20% 工具边界注入；比较 always slow、always reuse、固定 guard、risk-calibrated guard；阈值 τ∈{0.2,0.5,0.8}，记录成功率、tokens、误触发、回退时延与平均恢复成本。<strong>Model：</strong>Qwen3-8B。<strong>Dataset：</strong>MBPP + 注入的受控工具环境。<strong>Baseline：</strong>Full HarnessMM-style guard、single-use EDG。<strong>Metric：</strong>unsafe-bypass-rate、success、token、time-to-recover。<strong>Expected Contribution：</strong>可恢复性约束下的动态执行预算。<strong>Risk：</strong>risk score 自身可能被工具输出欺骗。<strong>Collision Risk：</strong>与现有 selective prediction / fast–slow routing 相近，需通过真实执行级消融体现差异。</p>
+<h2 id="">17. 如果只记住这篇论文（9 句话）</h2>
+<ul><li>它优化的是 Agent harness 的推理调用次数，而不是修改基础模型权重。</li><li>EDG 保存完整字面动作、前驱依赖与公共状态守卫。</li><li>GDR 让已经确定的动作跨工具反馈持续复用。</li><li>CCS 用原生工具执行并证明某个慢回调确实被省略。</li><li>参数闭合不代表语义正确，guard 也不保证任务成功。</li><li>HumanEval DeepSeek Harness 集成结果报告 87.93% token 节省。</li><li>MBPP 的组件消融比集成 headline 更适合判断机制贡献。</li><li>W/o EDG execution 的成功率高于 Full，明确存在质量—成本权衡。</li><li>下一步最值得做的是带状态版本、风险控制与恢复指标的 Agent 复用。</li></ul>
+<a class="back" href="#top">返回顶部 ↑</a></article>
+<section class="panel" id="synthesis"><h2 style="margin-top:0">Cross-Paper Synthesis · 共同趋势</h2>
+<p>这两篇都说明，下一代 AI 效率不一定靠更小的模型或更少的 Transformer 层，也可以靠识别“已经付过成本的计算”。NgramRL 重用旧 rollout 中的 token 候选，但必须由当前策略精确校正；HarnessMM 重用旧 reasoning 中已经确定的动作，但必须由真实工具回执和执行守卫许可。两者都是 <strong>history → candidate → verify/guard → commit → feedback</strong>，差别在验证对象：前者是概率分布，后者是环境语义。</p>
+<p>NgramRL 的分布校正有明确数学性质，但仍受系统时延约束；HarnessMM 的守卫可审计，却没有一般性的语义正确性证明。这形成研究上的关键互补：把 speculative token drafting 用于尚未完全闭合的 Agent 决策，把 EDG 直接执行只用于已闭合且可验证的工具动作。它们可以组成一个分层 Agent 执行器：先判断是否能直接执行已决策动作；不能时再调用模型，而模型内部用历史轨迹做 lossless drafting。</p>
+<div class="tablewrap"><table><thead><tr><th>维度</th><th>NgramRL</th><th>HarnessMM</th><th>可组合方向</th></tr></thead><tbody>
+<tr><td>复用单位</td><td>token continuation</td><td>tool action / decision graph</td><td>token-level + action-level 双层复用</td></tr>
+<tr><td>正确性边界</td><td>target πθ exact verification</td><td>public guard + literal closure</td><td>概率正确性与语义许可分层</td></tr>
+<tr><td>时间局部性</td><td>同 prompt 跨 epoch</td><td>同 episode 跨工具反馈</td><td>trajectory / memory 的复用年龄</td></tr>
+<tr><td>失败处理</td><td>cache miss → synchronous decode</td><td>guard fail / abstain → slow actor</td><td>统一 fallback 与 recovery budget</td></tr>
+<tr><td>主要成本</td><td>GPU decode + CPU sync</td><td>actor input/output tokens</td><td>共同测量 latency / cost / quality</td></tr>
+<tr><td>弱项</td><td>高熵、prompt 不重复</td><td>新语义、过期回执</td><td>风险感知预算与漂移检测</td></tr>
+</tbody></table></div>
+</section><section class="panel" id="ideas"><h2 style="margin-top:0">Combined Research Opportunities</h2>
+<h3>Idea 1 · Verified Reuse Controller（优先）</h3>
+<p>建立统一决策器，输入状态包括 cache age、重复度、guard validity、action reversibility、模型预测熵；输出三种路线：直接执行已闭合动作、speculative 生成并 exact verify、完全 slow reasoning。最小验证：同一批 coding Agent 任务在不同工具回执扰动率下测 quality–tokens–latency 三维 Pareto；固定 backbone 与执行环境，比较单独 NgramRL、单独 EDG、两者串联、风险控制串联。真正的新意必须是“何时可以安全跳过哪一层计算”的形式化协议，而不是简单拼接两份代码。</p>
+<h3>Idea 2 · Recovery-Aware Cache / Memory Budget</h3>
+<p>NgramRL 用历史重复度决定 n-gram 价值，HarnessMM 用守卫决定动作是否复用；二者都没有直接把错误恢复成本放进预算。可以估计每次复用的 expected net value = saved compute − expected recovery cost，并用任务完成率约束优化。第一版不需要学习新模型：从日志统计 miss、fallback、tool failure、后续重试次数，按阈值做预算；随后才尝试 contextual bandit 或 offline RL。</p>
+<h3>Idea 3 · Benchmark：Reusable Yet Unsafe</h3>
+<p>创建同一任务多轮重复、输出结构可控、工具状态可变的压力测试。两个轴分别是 token-level entropy 与 action-level environment drift；评价 quality-conditioned speedup、unsafe bypass、fallback recall、recovery tokens。它能区分“文本相似但动作错误”和“动作相同但环境不再允许”，更可能形成可复用 benchmark 而非单点启发式论文。</p>
+</section><section class="panel" id="collision"><h2 style="margin-top:0">Collision / Overlap</h2>
+<p><strong>Strongest Collision（潜在研究交叉，而非已确认同题论文）：</strong> NgramRL 的“预测分支命中”与 HarnessMM 的“守卫许可执行”都在决定是否跳过昂贵计算。若简单把旧 Agent 轨迹缓存后直接执行，会与已有 executable planning、ActionEngine、LLMCompiler、ReWOO 等方向重叠，而且可能牺牲正确性；若仅把 EDG 转为 token cache，又丢失其语义许可边界。真正值得检验的 gap 是 <strong>verified action reuse + exact token drafting + recovery-aware budget</strong> 的联合质量约束。</p>
+<p>特别声明：这是基于两篇方法的潜在机制 Collision，不是声称已有文献已经证明相互冲突。HarnessMM 自身附录也明确指出尚未对所有可执行 planner 做直接实证比较。</p>
+</section><section class="panel" id="priority"><h2 style="margin-top:0">Reading / Reproduction Priority</h2>
+<div class="tablewrap"><table><thead><tr><th>优先级</th><th>行动</th><th>最低验收标准</th></tr></thead><tbody>
+<tr><td>P0 · 读原文</td><td>NgramRL §3–4；HarnessMM §4–5 + Appendix D/E</td><td>能解释 exact sampling 与 semantic closure 的不同保证</td></tr>
+<tr><td>P1 · 复现</td><td>先 NgramRL per-prompt vs global；再 HarnessMM W/o GDR vs Full</td><td>分别复现趋势，不要求立即复现绝对数值</td></tr>
+<tr><td>P2 · 机制压力测试</td><td>增加 policy drift / stale tool receipt / fallback</td><td>画 quality–cost Pareto 与失败案例分布</td></tr>
+<tr><td>P3 · 新论文验证</td><td>联合 token drafting + guarded action reuse</td><td>证明在相同质量约束下优于各自单独方法</td></tr>
+</tbody></table></div>
+<p>推荐首先复现 NgramRL 的缓存结构消融：变量少、目标指标清楚；若研究目标是 Agent system / 多 Agent，则 HarnessMM 的 receipt-bound execution audit 更适合转成长期项目。系统加速思路首选 NgramRL；benchmark / attack 首选 HarnessMM 的 guard failure。</p>
+</section><section class="panel" id="sources"><h2 style="margin-top:0">Sources / Links · 可追溯材料</h2>
+<ul><li>论文 1：<a href="https://arxiv.org/abs/2610.32881" target="_blank" rel="noopener">NgramRL arXiv metadata</a>、<a href="https://arxiv.org/html/2610.32881" target="_blank" rel="noopener">完整正文</a>、<a href="https://arxiv.org/pdf/2610.32881" target="_blank" rel="noopener">PDF</a>；表 1–3，图 2–7，正文 §3–5。</li><li>论文 2：<a href="https://arxiv.org/abs/2610.32813" target="_blank" rel="noopener">HarnessMM arXiv metadata</a>、<a href="https://arxiv.org/html/2610.32813" target="_blank" rel="noopener">完整正文及附录</a>、<a href="https://arxiv.org/pdf/2610.32813" target="_blank" rel="noopener">PDF</a>；主文表 1、图 1–5，附录 A、D、E、I、L。</li><li>新论文时间核对：<a href="https://arxiv.org/list/cs.AI/recent" target="_blank" rel="noopener">arXiv cs.AI recent（2026-10-26 批次）</a>；两篇的 arXiv submission history 均为 2026-10-23 v1。</li><li>与机制相关的历史工作：<a href="https://arxiv.org/abs/2305.16291" target="_blank" rel="noopener">Voyager</a>、<a href="https://arxiv.org/abs/2602.20502" target="_blank" rel="noopener">ActionEngine</a>、<a href="https://arxiv.org/abs/2401.15077" target="_blank" rel="noopener">EAGLE</a>、<a href="https://arxiv.org/abs/2402.03300" target="_blank" rel="noopener">DeepSeekMath / GRPO</a>。</li></ul>
+<p>文中所有论文实验数字以作者预印本为准，尚非独立复现实测；本报告的 Toy Example、Migration、Benchmark 与部分风险分析是明确的研究性推演。官方项目/代码状态截至本次检索未核实，故不提供猜测 URL。HTML 自包含，不调用在线 JS、字体或样式服务；点击原文链接时才需联网。</p>
+</section></main></body></html>

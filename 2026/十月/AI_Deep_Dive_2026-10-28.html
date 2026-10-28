@@ -1,0 +1,448 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AI Deep Dive — 2026-10-28</title><style>
+:root{--bg:#f7f9fc;--ink:#172435;--muted:#5c6b7d;--accent:#174d89;--line:#dce4ed;--card:#fff;--soft:#eff5fb;--code:#10243b}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.9 -apple-system,BlinkMacSystemFont,"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif}header{background:linear-gradient(135deg,#112a48,#1b5279);color:#fff;padding:48px max(5%,calc((100vw - 1240px)/2));}header h1{font-size:32px;line-height:1.35;margin:0 0 8px}header p{margin:0;color:#cbdcf0}main{display:grid;grid-template-columns:260px minmax(0,1fr);gap:28px;max-width:1440px;margin:0 auto;padding:28px 28px 90px}nav{align-self:start;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;border:1px solid var(--line);border-radius:16px;background:#fff;padding:18px 12px}nav strong{display:block;padding:0 10px 10px;color:var(--muted);font-size:14px;letter-spacing:.08em}nav a{display:block;text-decoration:none;color:#315371;padding:5px 10px;font-size:13px;line-height:1.5;border-radius:7px}nav a:hover{background:var(--soft);color:#103f74}.nav-l1{font-weight:750;color:#0b3e71;margin-top:12px}.nav-l2{padding-left:16px}section.content{min-width:0}.paper{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:36px 46px;margin-bottom:24px;box-shadow:0 5px 20px #14345a08}.paper h1{font-size:28px;line-height:1.45;color:#123f6d;border-bottom:2px solid #d6e5f3;padding-bottom:16px}.paper h2{font-size:21px;color:#164b78;line-height:1.5;margin:42px 0 16px;border-left:4px solid #4381b6;padding-left:13px}.paper h3{font-size:18px;color:#164b78;margin:28px 0 12px}.paper p{margin:12px 0;text-align:justify;overflow-wrap:anywhere}.paper strong{color:#123e6c}.paper a{color:#1268a8;text-decoration:none;border-bottom:1px solid #8dbce0}.paper a:hover{color:#084779}.paper ul,.paper ol{padding-left:1.6em}.paper li{padding-left:.2em;margin:8px 0}.paper code{background:#edf3f8;color:#153d61;border-radius:5px;padding:2px 5px;font-size:.91em}.formula{background:#f0f6fd;border-left:4px solid #397bb1;border-radius:0 10px 10px 0;padding:18px 22px;overflow-x:auto;white-space:nowrap;font:16px/2.3 ui-monospace,SFMono-Regular,Consolas,monospace;color:#173f69;margin:20px 0}.table-scroll{overflow-x:auto;margin:18px 0 24px;border:1px solid var(--line);border-radius:10px}.table-scroll table{border-collapse:collapse;min-width:740px;width:100%;font-size:14px;line-height:1.65}.table-scroll th{background:#eaf2f9;color:#153e64;text-align:left}.table-scroll td,.table-scroll th{border-bottom:1px solid var(--line);padding:11px 13px;vertical-align:top}.table-scroll tr:nth-child(even) td{background:#fafcfe}.paper blockquote{background:#f2f7fc;border-left:4px solid #8fb6d7;margin:20px 0;padding:8px 22px;color:#42566a}.foot{color:#6b7c8d;font-size:13px;text-align:center;padding:12px 0 30px}@media(max-width:1050px){main{display:block;padding:16px}nav{position:relative;max-height:280px;margin-bottom:20px}.paper{padding:24px 20px}.paper h1{font-size:24px}.paper h2{font-size:20px}}@media print{nav{display:none}main{display:block;padding:0}.paper{border:none;box-shadow:none;break-after:page}body{background:#fff}a{color:#000}}</style></head><body><header><h1>Daily Top Papers Deep Dive · 2026-10-28</h1><p>FOCUS × Triage｜独立检索 · 原文/Appendix 核对 · 定量证据 · 复现与迁移</p></header><main><nav><strong>目录 / CONTENTS</strong><a class="nav-l1" href="#overview-1">Daily Top Papers Deep Dive · 2026-10-28</a>
+<a class="nav-l2" href="#overview-2">Today&#x27;s Deep Dive Selection</a>
+<a class="nav-l2" href="#overview-3">为什么今天只选两篇</a>
+<a class="nav-l1" href="#p1-1">Paper 1 · FOCUS: Active Critic Learning for Long-Horizon Language Model Agents</a>
+<a class="nav-l2" href="#p1-2">1. 人话版（先读这一段）</a>
+<a class="nav-l2" href="#p1-3">2. Background &amp; Research Gap：为什么需要“主动修 critic”</a>
+<a class="nav-l2" href="#p1-4">3. Core Insight：最值得采样的不是最不确定的节点</a>
+<a class="nav-l2" href="#p1-5">4. Method Deep Dive：从状态树到 Actor 更新</a>
+<a class="nav-l2" href="#p1-6">5. 核心公式与数学直觉</a>
+<a class="nav-l2" href="#p1-7">6. Toy Example：一次失败如何分配采样</a>
+<a class="nav-l2" href="#p1-8">7. Baseline Deep Comparison（谁是 strongest）</a>
+<a class="nav-l2" href="#p1-9">8. Experiment Setup 与 Metrics</a>
+<a class="nav-l2" href="#p1-10">9. Results Deep Dive：8 个必须记住的证据点</a>
+<a class="nav-l2" href="#p1-11">10. Table / Figure Reading：别只看粗体</a>
+<a class="nav-l2" href="#p1-12">11. Ablation / Mechanistic Analysis</a>
+<a class="nav-l2" href="#p1-13">12. Claim vs Evidence；Contribution</a>
+<a class="nav-l2" href="#p1-14">13. Limitations &amp; Failure Modes</a>
+<a class="nav-l2" href="#p1-15">14. Reproduction View：最小可执行版本</a>
+<a class="nav-l2" href="#p1-16">15. Research Value 与迁移（两个可开工方向）</a>
+<a class="nav-l2" href="#p1-19">16. 方向专用：RL / Agent / Verification</a>
+<a class="nav-l2" href="#p1-20">17. 如果只记住这篇：9 句话</a>
+<a class="nav-l1" href="#p2-1">Paper 2 · Triage: Skip, Skim, or Refine Attention Tiles in Video Diffusion Transformers</a>
+<a class="nav-l2" href="#p2-2">1. 人话版（先读这一段）</a>
+<a class="nav-l2" href="#p2-3">2. Background &amp; Research Gap：为何光做 sparsity 不够</a>
+<a class="nav-l2" href="#p2-4">3. Core Insight：边际误差减少 / 边际算力</a>
+<a class="nav-l2" href="#p2-5">4. Method Deep Dive：Planning 与 Execution 两阶段</a>
+<a class="nav-l2" href="#p2-6">5. 公式：Router 的误差—计算优化</a>
+<a class="nav-l2" href="#p2-7">6. Toy Example：8 个 tile 如何选三档</a>
+<a class="nav-l2" href="#p2-8">7. Baseline Deep Comparison：strongest 不是唯一一个</a>
+<a class="nav-l2" href="#p2-9">8. Experiment Setup 与 Metrics 教学</a>
+<a class="nav-l2" href="#p2-10">9. Results Deep Dive：8 个数字与反例</a>
+<a class="nav-l2" href="#p2-11">10. Efficiency Breakdown：把速度层级说清楚</a>
+<a class="nav-l2" href="#p2-12">11. Table / Figure Reading（5 组）</a>
+<a class="nav-l2" href="#p2-13">12. Ablation / Mechanistic Analysis</a>
+<a class="nav-l2" href="#p2-14">13. Claim vs Evidence；Contribution</a>
+<a class="nav-l2" href="#p2-15">14. Limitations &amp; Failure Modes</a>
+<a class="nav-l2" href="#p2-16">15. Reproduction View：从 Python 模拟到 CUDA</a>
+<a class="nav-l2" href="#p2-17">16. Research Value 与迁移（两个可开工方向）</a>
+<a class="nav-l2" href="#p2-20">17. 方向专用：Video / Inference / Attack</a>
+<a class="nav-l2" href="#p2-21">18. 如果只记住这篇：9 句话</a>
+<a class="nav-l1" href="#synthesis-1">Cross-Paper Synthesis · 从“算得更多”转向“计算预算应该给谁”</a>
+<a class="nav-l2" href="#synthesis-2">1. 今天两篇共同说明的趋势</a>
+<a class="nav-l2" href="#synthesis-3">2. 机制互补、假设冲突与可组合框架</a>
+<a class="nav-l2" href="#synthesis-4">3. Combined Research Opportunities：优先做哪一个</a>
+<a class="nav-l2" href="#synthesis-5">4. Collision / Overlap：需要提前规避什么</a>
+<a class="nav-l2" href="#synthesis-6">5. Reading / Reproduction Priority</a>
+<a class="nav-l2" href="#synthesis-7">6. 本次选择与冷却审计</a>
+<a class="nav-l2" href="#synthesis-8">7. Sources / Links 与证据透明度</a></nav><section class="content"><article class="paper" id="overview"><h1 id="overview-1">Daily Top Papers Deep Dive · 2026-10-28</h1>
+<p><strong>两篇真正精读｜RL / Agent × Video Generation Acceleration</strong></p>
+<p>本次优先选择最近 24–72 小时内可直接阅读正文与 Appendix、机制新颖且有强定量证据的论文。完整长文只保留在此 HTML；所有“研究迁移”与 Toy Example 都是独立推导，已与作者原始实验结论区分。</p>
+<h2 id="overview-2">Today's Deep Dive Selection</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>论文</th>
+<th>主线</th>
+<th>一句话为什么选</th>
+<th>主要可验证结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#1</td>
+<td><strong>FOCUS: Active Critic Learning for Long-Horizon Language Model Agents</strong></td>
+<td>RL / Agent</td>
+<td>将 rollout budget 变成主动 critic 学习与逐段 credit assignment</td>
+<td>BrowseComp-Plus 9B：55.4 vs GRPO 48.2（+7.2 pp）</td>
+</tr>
+<tr>
+<td>#2</td>
+<td><strong>Triage: Skip, Skim, or Refine Attention Tiles in Video Diffusion Transformers</strong></td>
+<td>Video Acceleration / Inference</td>
+<td>tile 级误差—算力路由 + Blackwell FP4 单 pass kernel</td>
+<td>Hunyuan 540p：916s → 394s，2.32× E2E</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="overview-3">为什么今天只选两篇</h2>
+<p>两篇分别覆盖<strong>训练时算力应该用于哪里</strong>与<strong>推理时精度应该用于哪里</strong>，各自具备公式、主表、消融、Appendix 和复现线索。相比再加一篇新 RL 方法，深入验证二者的 proxy objective、真实成本与失败边界更有价值。未把过去关注的 Machine Unlearning 作为默认优先项，也未重复前两天已经精读的论文。FOCUS 代码地址当前返回 404，Triage 未核实作者代码；这些不确定性在正文明确披露。</p>
+</article><article class="paper" id="p1"><h1 id="p1-1">Paper 1 · FOCUS: Active Critic Learning for Long-Horizon Language Model Agents</h1>
+<p><strong>研究定位：</strong> 把长程 Agent RL 的“从哪里多采一条后续轨迹”变成主动学习问题：有限 rollout 不再平均撒给所有状态，而是优先修正最值得修正的 critic 估计。<strong>类别：RL × Agent；2026-10-26 首发，非 BACKFILL。</strong></p>
+<p><strong>基本信息。</strong> Zhengping Jiang、William Jurayj、Liaoyaqi Wang、Chunsheng Zuo、Anqi Liu、Benjamin Van Durme；Johns Hopkins University；arXiv:2610.35801v1，2026-10-26 提交。<strong>Status：arXiv preprint；Venue：未核实正式录用。</strong> <a href="https://arxiv.org/abs/2610.35801">Paper</a> · <a href="https://arxiv.org/html/2610.35801">全文 HTML</a> · <a href="https://arxiv.org/pdf/2610.35801">PDF</a> · <a href="https://github.com/zipJiang/FOCUS">作者声明的代码地址</a>。<strong>代码状态提示：</strong> 论文正文明确给出仓库地址，但本次访问返回 404；不能认定当前已公开可下载，复现需先检查。</p>
+<h2 id="p1-2">1. 人话版（先读这一段）</h2>
+<p>想象一个需要连续搜索网页、打开文档、整理证据、最后提交答案的 Agent。任务成功才给 1 分，失败给 0 分；如果它在第 15 步犯错，却在第 60 步失败，直接把 0 分分摊到全部步骤，根本分不清哪一步坏了。一个思路是从中途状态反复重新执行后半段，看看这个状态究竟有多大机会成功；但每次续跑都很贵。FOCUS 的做法是训练一个预测“从当前状态最终成功概率”的 critic，观察其预测与已经采样到的结局是否矛盾，再把额外的 rollout 预算分配给预计能最大幅度减少价值估计误差的状态。新增证据既修正当前的逐段 advantage，也用来训练下一轮 critic。作者在 Qwen3.5-9B 上报告 BrowseComp-Plus 55.4%，GRPO 为 48.2%；DeonticBench 总分 56.5%，GRPO 为 52.4%。它真正值得关注的不是再发明一种 PPO，而是将<strong>采样位置、价值估计、credit assignment、上下文压缩边界</strong>组织成一个可迁移的训练控制器。</p>
+<h2 id="p1-3">2. Background &amp; Research Gap：为什么需要“主动修 critic”</h2>
+<p><strong>现实问题。</strong> Agent 的动作不是一段静态答案，而是“查资料—调用工具—观察反馈—再决定”。终局奖励只回答“最后是否成功”，却不回答“哪次工具调用导致成功”。比如代码定位任务，前 20 次 grep 可能找到正确模块，第 21 次错误地忽略测试，第 40 次提交错误文件；对全部 token 广播同一个失败 advantage 会惩罚前面的正确搜索。长程任务还经常需要 context compaction：把几万 token 的历史压成短笔记继续执行，原始上下文与环境状态必须能恢复，否则无法公平地从中途分叉。</p>
+<p><strong>旧范式一：GRPO。</strong> 对同一题采多条完整轨迹，按组内终局 reward 计算相对 advantage，再广播到各步。它省去 critic，训练简单，但中途“正确探索”和“过早提交”可能被同一轨迹分数捆绑。<strong>旧范式二：PPO+critic。</strong> 学一个 V(s)，对每步算 TD/GAE；代价是 critic 在稀疏奖励、分布不断变化时不准。<strong>旧范式三：VinePPO/树形 rollout。</strong> 从中间节点重新采样 suffix，近似局部成功率；然而每个节点都续跑 k 次，长 Agent 的工具开销会迅速膨胀。本文填的 gap 并不是“能不能分叉”，而是<strong>在有限预算下应该优先分叉哪里、如何把分叉收益写回一个可复用的 critic</strong>。</p>
+<h2 id="p1-4">3. Core Insight：最值得采样的不是最不确定的节点</h2>
+<p>作者观察到：critic 的错误与续跑结局的随机性不同。某个节点预测成功率 0.9，实际多次续跑只有 0.1，它既存在系统性偏差又值得修正；另一个节点预测 0.5，结局一半成功一半失败，采样更多也许只能缓慢降低方差。只按熵、单次残差或平均分叉会把这两类混在一起。FOCUS 用 Beta 近似后验与一个 MSE 边际下降代理函数 g(s)，兼顾当前预测偏差、结局方差、已采样数量和先验强度。g 高才值得追加 rollout。这个观察是<strong>统计建模加工程经验</strong>，不是证明了对所有非平稳 RL 环境全局最优。论文在固定审计树、常数 critic 和随机 critic 上检验了优先级排序的效果，但这种离线诊断不等于在线训练每一步都满足独立同分布假设。</p>
+<p>另一个关键观察是 <strong>compaction 边界天然适合做可恢复状态</strong>：一次压缩之前的动作可以合成一条 edge，压缩后是新的 node。它减少“每 token 分叉”的状态爆炸，但也意味着训练信号分辨率由 compaction 频率决定。作者强调分叉条件与压缩触发器在实现上可解耦，这点对于已有 Agent harness 很重要。</p>
+<h2 id="p1-5">4. Method Deep Dive：从状态树到 Actor 更新</h2>
+<p><strong>Input → 固定当前 actor/critic → 采种子轨迹并保存可恢复快照 → 为每个节点估计 V 与观察到的结局 → 计算 g(s) → 选最大 g 的节点追加 suffix → 更新统计并循环 → 自底向上备份价值 → 训练 critic → 按逐段 advantage 训练 actor → Output：下一轮策略与价值网络。</strong></p>
+<p><strong>Step 1：建树。</strong> 每个问题 x 对应一棵 T_x；节点不是一句文本，而是可恢复的 <code>(context, environment snapshot)</code>。边是从一个分叉点到下一分叉点的一段工具交互，包含策略生成 token、工具结果、奖励、耗费的 task turns。节点可复现性是方法的先决条件：如果浏览器页面或外部 API 状态变化，续跑就不再是“同一个 s 的条件分布”。论文实验主要用固定检索语料和可控环境来缓解这一问题。</p>
+<p><strong>Step 2：采样并计数。</strong> 每个候选节点保存 critic 值 v、直接子节点数 n、完成的 suffix 结局数 N、结局均值 G_obs。<strong>n 和 N 不相同</strong>：从后代再次分叉不应反向给所有祖先虚增一个独立观测；作者在 Appendix E 特别区分它们。把两者混淆会让深层重复采样的证据被祖先重复计数。</p>
+<p><strong>Step 3：计算采样收益。</strong> 把 V_phi(s) 看成强度为 κ 的先验均值，观察到 N 个二元结局后更新后验均值 μ_obs；用估计的 squared critic error 与 Bernoulli 方差构造 g(s)。每轮选 g 最大且可恢复的状态，从这里续跑到终局。它不是选择“成功率最高”的状态，而是选择“多花一次预算预计最能改善估计”的状态。实现允许异步并发，单节点最多两个在途 continuation，并在排序时用 N_eff=N+pending 防止多个 worker 同时涌向一个节点。</p>
+<p><strong>Step 4：递归价值修正。</strong> 收集完后按树的逆拓扑顺序，把每条边的中间 reward 加上下一节点的折扣价值，得到直接子分支平均 backup G_bar。然后用 κ 与 n 混合旧 critic 和 backup 得到 V_tilde。<strong>为什么不直接平均所有后代的最终 reward？</strong> 因为分叉位置是主动挑选的，后代样本并非从祖先状态按原始策略独立抽样；粗暴平均会产生由选择策略引入的偏差。单层 backup 并不自动消除所有偏差，但更清楚地隔离了直接子分支。</p>
+<p><strong>Step 5：critic 与 actor 联合学习。</strong> critic 用 <code>(V_phi-G_bar)^2</code> 回归，actor 则将边级 TD residual 分配给该边中策略生成的任务 token 和 compaction token；工具返回文本与条件文本不反向更新。作者使用 PPO-style clipped ratio，限制单轮策略更新幅度。Critic 的当前迭代监督与下一迭代采样决策构成闭环：<strong>Memory/Context → Action/Tool → Outcome → Value Evidence → Credit → Policy Update</strong>。</p>
+<h2 id="p1-6">5. 核心公式与数学直觉</h2>
+<div class="formula">Ḡ(s) = (1/n(s)) Σ<sub>s′∈children(s)</sub> [ R(s→s′) + γ<sup>d</sup> Ṽ(s′) ]<br/>Ṽ(s) = [κ V<sub>φ</sub>(s) + n(s) Ḡ(s)] / [κ+n(s)]</div>
+<p><code>γ</code> 是折扣率，<code>d</code> 是边内跨越的 task transitions，<code>κ</code> 是 critic 相当于多少条“伪观测”。κ 越大越信 critic；κ 越小越信续跑。n=0 时保留原 critic，终点价值为零。论文主要配置 <code>γ=1, λ=0, κ=1</code>，因此不是一般意义上大量 GAE(λ) 混合的实验。critic loss 是 <code>Σ_s (Vφ(s)-Ḡ(s))²</code>，注意回归目标是 <strong>Ḡ 而不是 Ṽ</strong>。</p>
+<div class="formula">μ = (κv + N Ḡ<sub>obs</sub>)/(κ+N)<br/>ê² = (v−μ)² + μ(1−μ)/(κ+N+1)<br/>g(s) = [2κ² ê² + (N−κ) μ(1−μ)]/(κ+N)³</div>
+<p>这里 <code>v=Vφ(s)</code>，<code>N</code> 是该节点观察到的完整 suffix 数。分母是三次方，所以重复采样某节点后，其边际收益通常快速下降；但在某些小 N 或极端估计下 g 可不为正，算法只从 g&gt;0 的可恢复节点挑选。<strong>重要限定：</strong> 这是二元终局 reward、Beta 近似、冻结 actor/critic 下的启发式 acquisition score，不能把它误写成严格的策略性能增益。它优化的是 critic MSE 代理，不是直接最大化最终任务成功率。</p>
+<div class="formula">Â<sub>i</sub> = R<sub>i</sub> + γ<sup>dᵢ</sup> Ṽ(s<sub>i</sub>) − Ṽ(s<sub>i−1</sub>)<br/>L<sub>actor</sub> = −E Σ<sub>i,t∈edgeᵢ</sub> min(ρ<sub>t</sub>Â<sub>i</sub>, clip(ρ<sub>t</sub>,1−ε,1+ε)Â<sub>i</sub>)</div>
+<p><code>ρ=πθ(token|prefix)/πold(token|prefix)</code>；正 advantage 增加该段生成概率，负 advantage 降低它；clip ε 防止一次更新把策略推得太远。Appendix 的实际优化配置有 <code>PPO clip=0.2、KL coefficient=0.01、entropy bonus=0</code>。KL 惩罚约束与参考策略的分布偏离，系数大可能保守、系数小可能不稳定；主文公式未展开全部实现项，复现必须参考配置而非仅抄 Eq.(5)。<strong>与 GRPO 最本质差别</strong>：GRPO 的 advantage 来源是同题终局 reward 的组内相对排序；FOCUS 用经过分叉证据修正的节点价值形成逐段 TD 信号。</p>
+<h2 id="p1-7">6. Toy Example：一次失败如何分配采样</h2>
+<p>假设一个 Agent 查找漏洞根因，完成 3 个阶段：S0 读 issue，S1 查日志，S2 定位文件，终点提交。当前 critic 预测 <code>V(S0)=0.55, V(S1)=0.85, V(S2)=0.40</code>。已观察到 S1 的两次 suffix 都失败，而 S2 的两次 suffix 一成一败。取 κ=1，S1 的后验均值 <code>(0.85+0+0)/3≈0.283</code>，S2 的后验均值 <code>(0.40+1+0)/3≈0.467</code>。S1 的“预测与证据冲突”更大；按 g 计算时还会考虑两者方差，不能仅凭这个差值断言 S1 必然排第一。若分配器选 S1，再续跑得到失败，则它的 N 变 3，G_obs 仍为 0；下一轮 g 更新，可能转而采 S2。最终从各直接分支 backup，假设 <code>Ṽ(S1)=0.30</code>，<code>Ṽ(S2)=0.65</code>，且这两段即时 reward 都为 0，则 S1→S2 的 advantage <code>+0.35</code>，S0→S1 的 advantage <code>−0.25</code>。于是模型鼓励“正确定位”那段，抑制“错误日志判断”那段。<strong>数值是教学构造，不是论文实验数据</strong>；真实方法的树备份与选择 score 应按公式计算。</p>
+<h2 id="p1-8">7. Baseline Deep Comparison（谁是 strongest）</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>怎么做、为何合理</th>
+<th>在此 setting 的不足</th>
+<th>FOCUS 的机制差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GRPO（整体最强、本文主要参照）</strong></td>
+<td>同题完整轨迹组内标准化终局 reward；不需 critic，成本结构清晰</td>
+<td>早期正确动作与后期错误动作同分；训练后期出现 compaction 后过早提交</td>
+<td>用分叉后的段级 TD，不再广播整条轨迹的同一信号</td>
+</tr>
+<tr>
+<td>VinePPO（最直接的结构性对手）</td>
+<td>从中间状态额外续跑，估计 suffix 的相对价值</td>
+<td>固定采样位置和次数可能浪费预算，且无可持续学习的 critic</td>
+<td>按 g 主动分配预算并训练 critic</td>
+</tr>
+<tr>
+<td>PPO + learned critic</td>
+<td>Actor–critic 直接预测中间价值，经典且低采样开销</td>
+<td>稀疏结局使 critic 容易偏，预测误差会污染 advantage</td>
+<td>用实际续跑证据校正 critic</td>
+</tr>
+<tr>
+<td>随机/均匀分叉</td>
+<td>无需复杂 acquisition，便于控制变量</td>
+<td>同样预算下不优先修复偏差大的状态</td>
+<td>以预期 MSE 降低选点</td>
+</tr>
+<tr>
+<td>Critic-only（无 refinement）</td>
+<td>只训练价值网络，去掉续跑费用</td>
+<td>BrowseComp-Plus 学得更慢，尤其训练早期</td>
+<td>额外分叉带来局部监督与校正</td>
+</tr>
+</tbody>
+</table></div>
+<p>“strongest”要分任务理解：主表 Qwen3.5-9B 的 GRPO 在 DeonticBench、BrowseComp-Plus、LocBench 的整体数字都优于 VinePPO；但在 27B DeonticBench，VinePPO 的 74.9 高于 GRPO 的 74.3。本文主文的 <code>Δ vs GRPO</code> 是合理的统一主参照，不应宣称 GRPO 在所有子集都最强。</p>
+<h2 id="p1-9">8. Experiment Setup 与 Metrics</h2>
+<p><strong>Research Question A：</strong> 在相同每步生成预算下，主动 critic 是否提高长程任务成功率？作者用 Qwen3.5-9B 全参数训练比较三方法，三个 benchmark 都训练 1 epoch；另用 Qwen3.5-27B + LoRA 在 DeonticBench 检验规模迁移。<strong>DeonticBench</strong> 共 6232 道规则推理任务，论文选 Airline、SARA numeric/binary 子集并做等规模 train/held-out 分层划分；<strong>BrowseComp-Plus</strong> 固定检索语料的 830 题，分 498/83/249 训练/验证/held-out；<strong>LocBench</strong> 560 个真实 GitHub issue，按仓库与 issue 类别分层对半划分。三者分别考查规则应用、深度搜索、代码定位，不是同一类技能的三次重复。</p>
+<p><strong>Research Question B：</strong> critic 的价值估计是否更准？固定审计树，对常数或随机初始化 critic，比较 MSE 随额外 continuation 预算的下降；LocBench 以 8 条 trace、每节点 16 次额外续跑的估计作为参照，测 Spearman 排序相关。<strong>Research Question C：</strong> 增益是否仅来自 compaction 形式或额外计算？分别替换压缩机制、去掉 refinement rollout、使用结构化压缩笔记，观察 held-out 曲线。</p>
+<p><strong>预算与实现：</strong> BrowseComp-Plus 的 FOCUS 9B actor + 9B critic；<code>B_seed=64 turns/prompt</code>，每更新 6 题；<code>actor lr=critic lr=1e−6</code>，<code>temperature=1</code>，<code>PPO clip=.2</code>，<code>KL=.01</code>；compaction 在 prompt 14,336 tokens 或 18 次工具调用后触发，最大 80 turns，context 98,304 tokens。论文列出训练 2×H200、rollout 4–6×H100、critic refinement 1×H100；这说明有额外 critic 硬件，<strong>matched per-step generation budget 不等于 matched 总 GPU-hours</strong>。DeonticBench 9B 的 critic lr 是 <code>5e−6</code>，不要错误套用 BrowseComp 配置。27B 使用 LoRA <code>(r=16, α=32, dropout=0)</code>。</p>
+<p><strong>指标教学。</strong> Held-out accuracy 是未训练样本的正确率，高好，但受 checkpoint 选择与样本分布影响；BrowseComp-Plus 的答案等价性由 Qwen3-32B 判断，存在 judge 偏差。LocBench File@1/@5 要求所有 gold 文件都在前 k 个中，高好，@5 高不代表实际补丁正确。Critic MSE 是估值与高采样参考的平方误差，低好，但“16 次续跑平均”也不是无噪声真值。Spearman ρ 衡量价值排序一致性，高好，不代表概率校准准确。平均工具调用数不是越少越好：过少可能意味着高效，也可能是“放弃任务”。KL 衡量策略偏离程度，过大可能导致能力漂移，过小也可能表示根本没学到。</p>
+<h2 id="p1-10">9. Results Deep Dive：8 个必须记住的证据点</h2>
+<ol>
+<li><strong>BrowseComp-Plus：55.4 vs 48.2（+7.2 pp）</strong>。Qwen3.5-9B 对 GRPO；90% paired bootstrap CI 约 <code>[+2.41,+12.05]</code>，为最强且区间为正的主结果。它支持“深搜索中有用”，但不能直接归因于 g 公式，因 critic、树结构与训练动态同时改变。</li>
+<li><strong>DeonticBench Overall：56.5 vs 52.4（+4.1 pp）</strong>，CI <code>[+0.59,+7.69]</code>；对 VinePPO 49.4 则 +7.1。规则推理也受益，但 SARA-N 子集 FOCUS 52.0 <strong>低于</strong> GRPO 56.0（−4.0），不能声称每个细分任务都更强。</li>
+<li><strong>DeonticBench Airline：21.3 vs 14.0（+7.3 pp）</strong>；SARA-B：96.4 vs 92.8（+3.6 pp），Hard：26.8 vs 28.2（−1.4 pp）。这是同一总体分数下存在显著异质性的证据，hard 子集尤其需要检查错误类型。</li>
+<li><strong>LocBench File@1：72.4 vs 70.1（+2.3 pp）</strong>；File@5：81.6 vs 80.5（+1.1 pp）。方向一致但区间触及零，属于较弱结果，不能说代码定位已获得稳健大幅提升。</li>
+<li><strong>27B DeonticBench：76.3 vs 74.3（+2.0 pp）</strong>，对 VinePPO 74.9 只 +1.4；基础模型未训练已 73.4，规模增大后空间缩小。这是 model-specific weakness，论文没有展示 27B 深搜索或代码定位。</li>
+<li><strong>MATH Level 4–5：第 32 次更新，FOCUS 2782 tokens/题，GRPO 5747，PPO 7207</strong>。相较 GRPO 输出长度约少 51.6%；但该点 FOCUS 正确题数比 GRPO 少一题，不能将 token 缩短无条件等价为“推理能力更强”。</li>
+<li><strong>采样 score g 随训练从第 1 到 32 次更新下降约 50%</strong>，与 critic 变好一致；也可能部分来自节点分布、已观测次数变化。作者另用固定审计树 MSE 与 Spearman 排序提供更直接的支持。</li>
+<li><strong>GRPO 训练后期工具调用数明显坍缩</strong>，常在 compaction 后立即提交；FOCUS 与 VinePPO 较稳定。它是行为级 failure case，支持“轨迹级信用分配会强化投机性提前结束”的假说，但没有随机化干预直接证明因果。</li>
+</ol>
+<h2 id="p1-11">10. Table / Figure Reading：别只看粗体</h2>
+<p><strong>Table 1（主结果）</strong> 横向是 DeonticBench 细分、BrowseComp-Plus、LocBench；纵向是未训练模型与三种训练法。最强证据是 9B BrowseComp +7.2 pp；反例是 SARA-N −4.0、Hard −1.4；27B 的区间多数跨零。它证明了跨任务平均优势，但不证明对每种 reasoning 子技能都占优。</p>
+<p><strong>Figure 2（MATH 预实验）</strong> 三栏是 accuracy、平均生成 tokens、g 的更新轨迹；第 32 步更短但少一道正确题，说明“更省 token”与“最高精度”存在权衡。图中的 ±1 SD 是 score 分布，不是测试准确率的置信区间。</p>
+<p><strong>Figure 3（训练动态）</strong> 三列分别是规则推理、深搜索、代码定位；纵向依次 reward、held-out 结果、平均工具调用。GRPO 工具调用下降可能是奖励投机；但如果某任务确实可早停，工具减少不一定是坏事，需联合 held-out success 判断。</p>
+<p><strong>Figure 4（critic 校准）</strong> (a) 固定审计树的 MSE–预算曲线，(b) critic 与 16 次 suffix 估计的 Spearman。常数与随机 critic 起点都见收益，说明不是依赖“好 critic 才能启动”；但审计参考仍是有限 Monte Carlo，不是解析真值。</p>
+<p><strong>Figure 5（消融）</strong> (a) 换 compaction operator，性能接近；(b) 去 refinement，BrowseComp 训练明显变慢；(c) free-form 压缩峰值高、structured 压缩更平稳。最有说服力的是 (b)，因为它直接检验新增 suffix 证据的必要性；其他两项提示工程接口重要，但不是证明任何 memory 格式都无差别。</p>
+<h2 id="p1-12">11. Ablation / Mechanistic Analysis</h2>
+<p><strong>去 refinement →</strong> 早期 BrowseComp 学习速度下降：说明 critic 单独给 TD 信号不够，实际 continuation evidence 承担纠偏职责。<strong>随机/残差优先级替代 g →</strong> 固定树 MSE 下降更慢：说明采样策略确实重要，但只在固定树、指定估计误差定义下成立。<strong>换 in-context compaction 为 in-memory workspace →</strong> DeonticBench 接近：说明采样控制器不绑死压缩实现。<strong>换结构化笔记 →</strong> LocBench 曲线更稳但峰值较低：提示记忆结构可能改变可恢复性和探索。严格说这些是干预组件后的性能变化，不能直接识别“哪一个具体 token 的影响”或证明价值估计误差是唯一中介变量。</p>
+<h2 id="p1-13">12. Claim vs Evidence；Contribution</h2>
+<p><strong>Authors Claim：</strong> 主动分配 suffix 预算可改善 critic 估计和长程 Agent RL。<strong>Experiments Actually Show：</strong> 9B 三类任务总体优于 GRPO/VinePPO；固定树估计误差更低；去 refinement 的性能下降；后期工具使用更稳定。<strong>What Is Not Yet Proven：</strong> 同等总 GPU-hours、跨动态外部网页环境、非二元奖励、超长轨迹、不同基础模型家族上的稳健优势；更不等于“所有 compaction 均可完美恢复”。</p>
+<p><strong>Contribution 1 [New Mechanism]：</strong> 用 critic MSE 边际收益驱动 rollout 分配；创新在预算控制准则，不在树搜索本身。<strong>Contribution 2 [New Objective / Training Integration]：</strong> 以递归备份监督 critic、以修正价值形成逐段 PPO advantage；属于已有 Actor–Critic、树备份、主动学习的有针对性组合。<strong>Contribution 3 [New System / Engineering]：</strong> compaction / fork / environment snapshot 与训练解耦，支持异步分叉。<strong>Contribution 4 [New Empirical Finding]：</strong> 轨迹级 GRPO 的工具调用坍缩与主动校准的稳定性差异，值得独立复验。</p>
+<h2 id="p1-14">13. Limitations &amp; Failure Modes</h2>
+<p><strong>Authors' Limitation / Future Work：</strong> 论文明确提出更大模型、更长预算、更强不确定性估计、compaction 质量与稳定性的关联仍待研究。<strong>Additional Limitation：</strong> (i) 需要可复现 fork；在线网页、数据库写入、时效 API 会破坏条件分布；(ii) critic 本身可能过拟合，Beta–Bernoulli 对连续 reward 或多目标回报不自然；(iii) 追加 rollout 的真实成本按长度变化，g 只近似单位样本收益，长 suffix 可能“收益高但太贵”；(iv) 训练算力增加额外 critic GPU，不能直接声称总成本更低；(v) 某些子集负增益与 27B 缩小的收益说明可迁移性有限；(vi) 评测等价判断由 LLM 执行，可能带来判分误差；(vii) 早停 collapse 与 context compaction 的因果关系尚未隔离。<strong>失败传播路径：</strong> 错误压缩笔记 → fork 状态丢失证据 → critic 学到偏差 → g 继续采错位置 → actor 误奖励某段工具行为。</p>
+<h2 id="p1-15">14. Reproduction View：最小可执行版本</h2>
+<p>最小复现不必先搭 9B + 多机环境。建议在 <strong>Qwen3.5-4B + MATH Level 4–5</strong> 复现 Figure 2 的采样与 credit 机制：固定训练 512 题（Level 4:226，Level 5:286）、验证 256 题（123/133），固定 32 updates；GRPO 每步 16 题、group=6；FOCUS 每步 16 题、每题 edge budget=64、edge cap=256 tokens；每 8 updates 保存 checkpoint。先比较准确率、生成 tokens、g 分布，再扩展到有状态的工具任务。<strong>核心模块</strong>：<code>snapshot/fork</code>、<code>rollout_tree</code>、<code>value_head</code>、<code>outcome_stats</code>、<code>acquisition_g</code>、<code>backup</code>、<code>segment_ppo</code>、<code>evaluation</code>。伪代码逻辑是 <code>while budget: node=argmax(g); suffix=continue(node); update_obs(node,suffix); refresh(g)</code>，之后逆拓扑 backup 和 actor/critic 更新。</p>
+<p><strong>先跑的判别性消融</strong>：在相同 edge budget 下比较 <code>uniform</code>、<code>highest entropy</code>、<code>raw |v−G_obs|</code>、<code>FOCUS g</code>，记录固定审计集 MSE 和 held-out 成功率；再做 <code>critic only</code> 与 <code>g+refinement</code>。必须对所有方案统一模型、温度、随机种子、工具环境、每轮 task turns、checkpoint 选择规则。<strong>踩坑：</strong> 不能把子孙分叉的 outcome 当成祖先的独立 suffix；不能让不同策略的 fork 恢复不同上下文；不要在训练和验证上共用同一问题；<code>g</code> 的 N_eff 只用于调度，在后验均值中仍用完成的 N。若作者仓库尚不可访问，按论文 Algorithm 1 和 Appendix F 重建即可。</p>
+<h2 id="p1-16">15. Research Value 与迁移（两个可开工方向）</h2>
+<p><strong>Baseline Potential：高</strong>，GRPO/VinePPO/critic-only 构成清晰梯度；<strong>Migration Potential：高</strong>，预算分配适用于 tool、memory、video agent；<strong>Systems Potential：中高</strong>，异步分叉与 checkpoint 成本可优化；<strong>Attack Potential：中</strong>，可构造诱导 critic 过度自信的状态；<strong>Evaluation Potential：高</strong>，可定义 calibration × rollout-cost 曲线；<strong>Benchmark Potential：中高</strong>，可设计带状态恢复、延迟回报、可注入错误的 Agent 任务；<strong>New Paper Potential：中高</strong>，但必须跨越现有 uncertainty-guided branching 与 TRACE/Tree-GRPO 的重叠。</p>
+<h3 id="p1-17">Migration A：Cost-Normalized Credit Acquisition（Agent RL / Systems）</h3>
+<p><strong>Original Problem →</strong> 每个状态的 suffix 长短不同，g 最大不一定最划算。<strong>Transferable Mechanism →</strong> 预测边际 MSE 收益并主动选点。<strong>New Research Question →</strong> 按“每 GPU 秒的价值校准收益”分配预算，能否在相同 wall-clock 下超过 FOCUS？<strong>Method Modification →</strong> 学一个 suffix cost predictor <code>ĉ(s)</code>，用 <code>g(s)/(ĉ(s)+ε)</code> 排序；加入 critic 校准置信区间与超时惩罚。<strong>Minimum Experiment →</strong> 从 FOCUS 的固定审计树缓存状态，分别用 <code>g</code>、<code>g/cost</code>、<code>random</code> 选 16/32/64 次续跑；以 CUDA events 或服务端实际 token latency 计费，画 MSE–GPU 秒、success–GPU 秒 Pareto 曲线。<strong>Model →</strong> Qwen3.5-4B，进阶 9B。<strong>Dataset →</strong> MATH L4–5、BrowseComp-Plus 小规模子集。<strong>Baseline →</strong> FOCUS、uniform、VinePPO。<strong>Metric →</strong> critic MSE、held-out accuracy、wall-clock、tokens、工具调用数。<strong>Expected Contribution →</strong> 真正 cost-aware 的 RL 数据采集准则。<strong>Risk →</strong> cost predictor 漂移、过度偏向短任务。<strong>Collision Risk →</strong> 高：需要对比已有 cost-aware active learning / rollout allocation，不能仅把 g 除以成本就宣称新机制。</p>
+<h3 id="p1-18">Migration B：Memory-Intervention Credit Graph（Multi-Agent / Security）</h3>
+<p><strong>Original Problem →</strong> FOCUS 的节点只评价整体上下文，无法知道压缩笔记中哪条事实改变了后续行为。<strong>Transferable Mechanism →</strong> 从可恢复中间状态反事实分叉、用终局回报校准价值。<strong>New Research Question →</strong> 能否量化一条 memory / tool observation 对最终成功和错误传播的因果贡献？<strong>Method Modification →</strong> 每次 fork 固定环境，仅对某条记忆做 <code>keep/delete/replace-with-verified</code>，对同一随机种子做配对 suffix，估计 <code>ΔV=E[R|do(memory=keep)]−E[R|do(memory=drop)]</code>；把差值作为 provenance graph 边权。<strong>Minimum Experiment →</strong> 构造 100 个带 3–5 条检索事实的长程搜索任务，随机注入 1 条错误记忆；每个状态 8 对配对 rollout；评估因果排序与纠错成功率。<strong>Model →</strong> Qwen3.5-4B/9B Agent。<strong>Dataset →</strong> BrowseComp-Plus 固定语料子集 + 自建可控污染版本。<strong>Baseline →</strong> attention attribution、leave-one-out 不重跑、random memory deletion、FOCUS node value。<strong>Metric →</strong> paired Δsuccess、rank correlation、attack success、额外 token/GPU 时间。<strong>Expected Contribution →</strong> 从节点价值转向可验证的记忆级 credit / safety benchmark。<strong>Risk →</strong> 删除记忆会改变 prompt 分布，环境恢复不严格。<strong>Collision Risk →</strong> 中高：需系统检索 causal memory attribution、Agent influence tracing 文献。</p>
+<h2 id="p1-19">16. 方向专用：RL / Agent / Verification</h2>
+<p><strong>RL Formulation：</strong> State = context+环境快照；Action = Agent 生成的工具调用/文本及 compaction；Policy = πθ；Trajectory = 树上的根到叶路径；Reward = 终局可验证 outcome（主要稀疏、二元）；Critic = Vφ；Advantage = 边级 TD；Objective = clipped PPO + 实际配置 KL；Entropy bonus=0；Credit assignment = segment。Reward 多为规则/任务答案检查，但 BrowseComp-Plus 使用模型等价判分，<strong>并非完全无主观性</strong>。Reward hacking 风险包括过早提交、格式钻空子、利用验证器等。Sample efficiency 不能只看每步 accuracy，要与 rollout token、GPU-hours 同时报告。</p>
+<p><strong>Agent Architecture：</strong> <code>Input → Context/Compaction → Planner/Actor → Tool → Environment → Snapshot → Critic/Outcome → Rollout Controller → Policy Update</code>。Memory 是可恢复压缩上下文，不是单独的长期知识库；trajectory 是树边；skill library 不是本文模块。Long horizon 成立的前提是 compaction 后仍能恢复关键事实。<strong>Attack / Verification Lens：</strong> 设计假高价值状态、伪造工具反馈或污染压缩笔记，测 critic calibration degradation、误采样预算、下游成功率；做 black-box probe 时可用成对任务重试频率近似节点价值，但无法直接观察内部 g。还可以测 recovery/reacquisition：错误笔记被修复后模型是否恢复正常探索。</p>
+<h2 id="p1-20">17. 如果只记住这篇：9 句话</h2>
+<p>FOCUS 解决的是长程 Agent RL 的“续跑预算分给谁”。它保留 critic，但不盲信 critic。它把中间可恢复状态组成一棵树。它用 Beta 近似下的 MSE 边际收益 g 选择下一处分叉。它把续跑证据自底向上混入 critic 预测。它以段级 TD 而非整条轨迹同一 reward 更新 actor。BrowseComp-Plus 9B 从 48.2 提升到 55.4，是最有力的主结果。SARA-N、Hard 子集以及 27B 的较小增益提醒我们它不是全能方法。最值得迁移的是“带成本、可验证、可反事实干预的主动信用分配”。</p>
+</article><article class="paper" id="p2"><h1 id="p2-1">Paper 2 · Triage: Skip, Skim, or Refine Attention Tiles in Video Diffusion Transformers</h1>
+<p><strong>研究定位：</strong> 视频生成中的 attention 不是简单“保留或删除 token”，而是按每个 query–key tile 的预期误差收益，动态分配 skip、NVFP4 skim、NVFP4 residual refine 三档计算精度。<strong>类别：Video Generation Acceleration × Inference Systems；2026-10-26 首发，非 BACKFILL。</strong></p>
+<p><strong>基本信息。</strong> Yeonjae Kim、Omin Kwon、Seong Hoon Seo、Jae W. Lee；Seoul National University，Department of Computer Science and Engineering；arXiv:2610.35706v1，2026-10-26 提交。<strong>Status：arXiv preprint；Venue：未确认（正文存在 ICML 样式检查提示，不能据此宣称已录用）。</strong> <a href="https://arxiv.org/abs/2610.35706">Paper</a> · <a href="https://arxiv.org/html/2610.35706">全文 HTML</a> · <a href="https://arxiv.org/pdf/2610.35706">PDF</a>。<strong>Project/Code：正文未给出可核实的作者仓库；状态为 Not Verified，不要误把 NVIDIA CUTLASS 的引用仓库当作 Triage 官方代码。</strong></p>
+<h2 id="p2-2">1. 人话版（先读这一段）</h2>
+<p>视频扩散模型生成一段长视频时，每一步去噪都要让大量视觉 token 相互注意；几十万 token 的全注意力会非常昂贵。已有加速通常二选一：删掉部分 attention tile，或者把所有 tile 都用 4/8-bit 计算；混合方案也往往给所有留下的 tile 相同精度。Triage 发现这不划算：有些 tile 轻到用聚类均值代替即可，有些 tile 用 FP4 就够，少数重要 tile 即使 FP4 仍有较大误差，值得额外算残差。它先用块统计量预测每个 tile 的误差，再用一个“计算价格”决定升档，最后把三档执行融合进同一个 Blackwell FP4 kernel。作者在五个视频生成 setting 中报告端到端 1.38–2.32 倍的最快配置加速，并且某些更高保真配置同时比所有 baseline 更快、更接近 dense 输出。真正的研究价值是<strong>误差收益驱动的动态计算精度</strong>，而不是单纯“再稀疏一点”。</p>
+<h2 id="p2-3">2. Background &amp; Research Gap：为何光做 sparsity 不够</h2>
+<p>视频 DiT 的每次去噪迭代包含空间和时间上的视觉 token，3D full attention 使一个帧的 patch 可以关联其它帧。序列长度 N 增大时，QKᵀ 与 PV 的计算量随 N² 增长。以 119K token 的 HunyuanVideo 720p 为例，理论上全连接的 token pair 数量巨大，不能简单把单张图片的稀疏窗口照搬到视频：运动、物体一致性、远帧依赖会使某些跨时空连接非常重要。<strong>具体例子：</strong> 一只狗在床上叼拖鞋，背景帧之间大量重复；背景区域可近似，狗嘴与拖鞋交互区域的注意力却需要精确，否则会出现局部形变或闪烁。</p>
+<p><strong>Sparse Attention</strong> 选少数高 mass tile 用 BF16 计算，其余跳过；对“sharp row”（注意力集中少数块）很有效，但 diffuse row 会损失大量分散信息。<strong>Low-bit Attention</strong> 如 SageAttention3 把全部 tile 用 NVFP4 算，适合 diffuse row，却把算力花在很多不重要的块上，重要块还可能受到量化误差。<strong>Sparse+Low-bit</strong> 如 SpargeAttn 结合两者，但保留块的精度通常固定，仍不能区分“中等重要”和“必须高精度”。<strong>Research Gap：</strong> 能否在不重新训练 DiT、也不运行多个昂贵 kernel 的条件下，对每个 tile 同时决定是否算以及算多精确？</p>
+<h2 id="p2-4">3. Core Insight：边际误差减少 / 边际算力</h2>
+<p>作者先在 Wan2.2-TI2V-5B 和 HunyuanVideo 的 dense Q/K/V 上分析不同近似。将三种方案都压到模型化的 BF16 成本 25% 后，发现注意力熵低的 row 更适合 sparsity、熵高的 row 更适合 low-bit、中间更适合混合。进一步，<strong>单独近似某 tile 的输出误差大致随 tile 的 attention mass 增大</strong>；NVFP4 误差约为均值替代误差的 1/5–1/4。这意味着只根据 mass 决定 keep/drop 不够：两个 mass 相同的 tile，内部 key/value 方差不同，均值近似误差也可能相差很大。</p>
+<p>因此真正可迁移的准则是：对每个 tile，比较 <code>skip→skim</code>、<code>skim→refine</code> 的<strong>预期误差下降 / 额外计算</strong>，只在收益超过统一价格 π 时升级。这是有一阶近似推导的工程优化目标，不是对最终视频感知质量的严格最优性证明。其系统配套同样关键：如果升档要另起 BF16 kernel、重读 QKV、额外 merge，即使算术量少了也可能变慢。Triage 用 FP4 高低位残差分解把高精度路径也留在一个 kernel 中，减少启动与搬运开销。</p>
+<h2 id="p2-5">4. Method Deep Dive：Planning 与 Execution 两阶段</h2>
+<p><strong>Input：每个 DiT attention 层的 Q/K/V → Step 1 以主方向划分 query/key clusters → Step 2 统计 mean、variance、KV covariance、head energy → Step 3 估计 tile mass 与 skip error → Step 4 用 π 路由到 skip/skim/refine → Step 5 生成 virtual mean tiles 与 NVFP4 hi/lo operands → Step 6 fused online-softmax attention → Output：近似 attention output，继续后续 DiT 层与去噪步骤。</strong></p>
+<p><strong>Step 1：Tile-aligned clustering。</strong> 普通 k-means 会得到大小不等的簇，GPU 需要 padding 或重新切块。作者使用 Principal Direction Divisive Partitioning：在每个节点估计主方向，按投影排序，并在 128 或 64 token 的倍数处二分，直到每个叶簇固定大小。query cluster=128 token，key cluster=64 token，两组 key cluster 组成一个 128-key tile；kernel 处理 128×128 tile。树每五个 sparse steps 重建一次，不是每步从零聚类。好处是簇内差异变小，均值更可信；代价是聚类和索引重排本身有开销。</p>
+<p><strong>Step 2：估计误差。</strong> 每个 tile 的 mass <code>m_t</code> 是该 query block 的注意力概率落在 tile 上的比例，行内各 tile mass 之和为 1。作者用两条近似路径估计：一条用平均 query 对所有 key 打分，补偿 query variance；另一条用所有 query 对平均 key 打分，再校正均值替代损失。两条平均得 <code>m̃_t</code>。用 key 协方差的 trace 估计均值替代后 softmax 权重丢失 <code>J_t</code>，用 key–value covariance 与 mean value 估计值向量偏移 <code>R_t</code>；上一轮 attention 的 head 输出能量提供 <code>w_h</code>。最终评分 <code>Ẽ_t=m̃_t(J_t+R_t)√w_h</code>，比单纯按 mass 排序多考虑了块内结构和 head 重要性。</p>
+<p><strong>Step 3：Tier router。</strong> 对每个 tile，skip 的成本记 0、skim 成本 1、refine 成本 3。skimming 的预测误差设为 skip 的 <code>α=0.22</code> 倍，refine 在路由代理中近似视为 0；π 是用户可以调整的计算价格。高 π 更节约算力，低 π 更保真。这里的“0 成本 skip”仅是相对 tile 主矩阵乘法的模型化成本；真实执行仍需统计、virtual tile 与 softmax 操作，不能理解为完全不消耗时间。</p>
+<p><strong>Step 4：Skip 的 virtual tiles。</strong> 直接丢掉 tile 会损失 softmax 分母，也会让被跳过区域完全没有信息。作者用两个 key cluster 的平均 key/value 代表整个 tile：每个均值相当于 n 个相同 key，所以在 softmax logit 上加 <code>ln n</code>，使它在分母中的总权重等价于 n 个重复均值。若真实 tile 已保留，对应 virtual tile 的 logit 设为负无穷，避免重复计数。它保留的是<strong>均值近似贡献</strong>，不是精确保留所有原始 token 信息。</p>
+<p><strong>Step 5：Skim 与 Refine。</strong> Skim 用 NVFP4 进行 QKᵀ、PV；Refine 先把每个操作数拆成 FP4 的 high 与 residual low，再做 <code>hi×hi + low×hi + hi×low</code> 三项，省略二阶 <code>low×low</code>。这样仍在 Blackwell FP4 Tensor Core 上执行，精度接近 BF16，但没有 BF16 kernel 的低吞吐和多 pass merge。作者还复用了 smoothing correction，保留 FP32 累积与 online softmax。<strong>失败模式：</strong> 当低位残差很大或二阶项不可忽略时，refine 不等于精确 BF16；当聚类错误或路由评分失准时，重要 tile 可能被跳过。</p>
+<p><strong>Step 6：单 pass kernel 与调度。</strong> CuTe DSL/CUTLASS 实现面向 sm_120；producer warp 通过 TMA 载入保留 tile，MMA warps 做矩阵乘，所有 tier 在同一 online softmax 中归并。不同 query row 的保留/精修块数不同，persistent kernel 采用近似按成本排序的 snake order 分配 CTA，避免部分 SM 提前空闲。系统意义在于减少多次 launch、QKV 反复搬运和额外输出合并，而不仅是减少理论乘法。</p>
+<h2 id="p2-6">5. 公式：Router 的误差—计算优化</h2>
+<div class="formula">m<sub>t</sub> = (1/|I|) Σ<sub>i∈I</sub> Σ<sub>j∈Jₜ</sub> softmax(QKᵀ/√D)<sub>ij</sub><br/>min<sub>{kₜ}</sub> Σ<sub>t</sub> [ E<sub>t</sub>(k<sub>t</sub>) + π · c(k<sub>t</sub>)/N<sub>tiles</sub> ]</div>
+<p><code>I</code> 是 128-query block，<code>J_t</code> 是某 128-key tile，<code>D</code> 是 head dimension；<code>E_t</code> 是只近似该 tile 时的相对输出误差，<code>c(skip,skim,refine)=(0,1,3)</code>。除以 <code>N_tiles</code> 让 π 在不同长度下可比较。最小化目标时，如果多花一次算力能带来的误差下降大于价格 π，就值得升级；否则留在便宜档。这里<strong>没有模型重新训练</strong>，π 是 inference-time 控制变量。</p>
+<div class="formula">E<sub>skip,t</sub> ≈ m<sub>t</sub>(J<sub>t</sub>+R<sub>t</sub>)<br/>E<sub>skim,t</sub> ≈ αE<sub>skip,t</sub>，E<sub>refine,t</sub> ≈ 0，α=0.22<br/>Ẽ<sub>t</sub>=m̃<sub>t</sub>(J<sub>t</sub>+R<sub>t</sub>)√w<sub>h</sub></div>
+<p><code>J_t</code> 衡量用 mean key 替代后由于指数函数凸性造成的 softmax mass 损失；<code>R_t</code> 衡量 key 与 value 的相关变化使加权 value 偏离简单均值；<code>w_h</code> 是上一 attention 调用的 head 输出能量相对权重。<code>Σ_K</code>、<code>Σ_KV</code> 通过 block moments 计算，公式中包含协方差 trace 与 Frobenius norm；这不是显式计算完整 dense attention 再做路由，否则加速目的就消失。Appendix B 的推导依赖近似高斯分数、随机方向及一阶扰动，<strong>多 tile 共同近似时共享 softmax 分母，误差不严格可加</strong>。</p>
+<div class="formula">refine if α N<sub>tiles</sub> Ẽ<sub>t</sub> /(3−1) ≥ π；<br/>else skim if (1−α)N<sub>tiles</sub>Ẽ<sub>t</sub> ≥ π；else skip</div>
+<p>这两个阈值对应从 skim 到 refine、从 skip 到 skim 的边际收益。<code>π↑</code> 会降低密度与精修比例，通常更快但 PSNR 下降；<code>α↑</code> 代表低精度更不准，更多重要块需要 refine；<code>c_refine↑</code> 会让 refine 更少。最强 baseline SpargeAttn 主要通过固定 top-k 稀疏 + INT8/FP8 降低计算；Triage 不是另一个固定 top-k，而是依据<strong>预测误差的边际收益</strong>在三档间选择。</p>
+<div class="formula">X ≈ g(X<sub>hi</sub>+X<sub>lo</sub>)<br/>QKᵀ ≈ g<sub>Q</sub>g<sub>K</sub>[Q<sub>hi</sub>K<sub>hi</sub>ᵀ + Q<sub>lo</sub>K<sub>hi</sub>ᵀ + Q<sub>hi</sub>K<sub>lo</sub>ᵀ]</div>
+<p><code>g</code> 是 2 的整数幂共享缩放，<code>hi</code> 是 NVFP4 主分量，<code>lo</code> 是再量化残差；PV 同样展开三项。省略 <code>lo×lo</code> 是误差来源，也是节省计算的关键。硬件 FP4 峰值性能优势是实现该方案的前提，不可将“3 次 FP4 比 1 次 BF16 快”机械外推到所有 GPU。</p>
+<h2 id="p2-7">6. Toy Example：8 个 tile 如何选三档</h2>
+<p>设某 query row 有 8 个 tile，估计 <code>Ẽ=[0.40,0.20,0.12,0.08,0.06,0.05,0.04,0.05]</code>（仅用于教学，未归一化的误差 score），<code>α=.22、N_tiles=8、π=.30</code>。skip→skim 的阈值是 <code>(1−.22)×8×Ẽ ≥ .30</code>，即 <code>Ẽ ≥ .0481</code>；skim→refine 的阈值是 <code>.22×8×Ẽ/2 ≥ .30</code>，即 <code>Ẽ ≥ .3409</code>。所以第 1 个 tile 进入 refine，第 2–6 和第 8 个进入 skim，第 7 个 skip。第 7 个不是真的“完全没有贡献”，它的两个 key clusters 由均值 virtual tile 代替；第 1 个用 3 次 FP4 乘积修复量化误差。若把 π 提高到 <code>.60</code>，更多 tile 会降档，速度可能增加但输出误差通常上升。<strong>这组数字是自造的公式演示，不是论文中任何 Table 的测量。</strong></p>
+<h2 id="p2-8">7. Baseline Deep Comparison：strongest 不是唯一一个</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>怎么做 / 合理性</th>
+<th>主要失败点</th>
+<th>Triage 变化性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SpargeAttn（速度—误差最强的综合参照）</strong></td>
+<td>选部分 tile，再以 INT8/FP8 计算；在 Hunyuan 540p 有 2.04× E2E</td>
+<td>固定精度使重 tile 精度不足、轻 tile 浪费计算</td>
+<td>机制：三档误差路由；工程：单 pass FP4 kernel</td>
+</tr>
+<tr>
+<td><strong>SVG-EAR（通常是最高 PSNR baseline）</strong></td>
+<td>聚类选 tile，以 BF16 计算</td>
+<td>聚类和 BF16 成本大；高保真但 wall-clock 较慢</td>
+<td>按 tile 精修而非所有 kept tile 都 BF16</td>
+</tr>
+<tr>
+<td>Sol-Attn</td>
+<td>动态 block sparsity，保留重要块</td>
+<td>在一些 setting PSNR 明显偏低，跳过信息损失</td>
+<td>skip 不等于丢弃，使用 virtual mean tile</td>
+</tr>
+<tr>
+<td>SageAttention3</td>
+<td>所有 tile 都用 NVFP4，吞吐高</td>
+<td>不利用 sparsity；高 mass tile 的 FP4 误差可能显著</td>
+<td>路由 + residual refinement</td>
+</tr>
+<tr>
+<td>Dense FlashAttention-2</td>
+<td>完整 BF16 注意力，作为保真参考</td>
+<td>视频长序列 N² 代价大</td>
+<td>牺牲部分数值精确性换实际延迟</td>
+</tr>
+</tbody>
+</table></div>
+<p>“strongest”按指标分开：SpargeAttn 在 replay 的 speed–error 比较中被作者明确称为 strongest baseline；SVG-EAR 常是最高保真 baseline；在不同硬件/模型下 Sol-Attn 也可能是最快的某个 baseline。只拿一条 PSNR 或一条 speedup 排名，都会误判 Pareto frontier。</p>
+<h2 id="p2-9">8. Experiment Setup 与 Metrics 教学</h2>
+<p><strong>Research Question A：</strong> 三档 tile 精度能否带来真实视频生成加速，而非仅 FLOPs 下降？在单卡 RTX 5090 32GB 或 RTX PRO 6000 96GB 上测试 Wan2.2-TI2V-5B（720p、121 帧、27K tokens）、HunyuanVideo FP8（540p、129 帧、67K）、Wan2.2-T2V-A14B（720p、81 帧、76K）、HunyuanVideo BF16（720p、129 帧、119K）、LTX-2.5 I2V（1088p、721 帧、stage-2 186K tokens）。<strong>注意：32GB/96GB 是设备容量，不是论文测出的峰值 GPU memory usage。</strong></p>
+<p><strong>Research Question B：</strong> 性能来自路由还是 kernel 技巧？固定 dense QKV 调用（Wan 160 次、Hunyuan 240 次）比较相同相对 L2 误差下的 attention speedup；消融 refine、clustering、score 三因子；对照“两 pass BF16 refine”。<strong>Research Question C：</strong> 质量与速度的 trade-off 是否稳定？同一模型对 50 条 prompt/图文输入固定 seed，比较 PSNR、SSIM、LPIPS、VBench 与 E2E 时间，并扫描 π。text-to-video 使用 Penguin Video Benchmark 50 prompts，LTX-2.5 使用 VBench 50 image–prompt pairs。Wan/Hunyuan 主要 50 denoising steps，Wan A14B 为 40，LTX 分 8 个 stage-1 + 3 个 stage-2 steps。全部在 SGLang Diffusion 0.5.20、PyTorch 2.13、CUDA 13.0、Ubuntu 24.04；仅替换视觉 self-attention。所有方法前 20% 步骤（LTX 为 stage 1）及首个 transformer block 使用 dense attention。</p>
+<p><strong>Metrics：</strong> <code>PSNR=10log10(MAX²/MSE_pixels)</code>，相对 dense 视频越高越接近原输出，但<strong>不是人类主观质量绝对分数</strong>；<code>SSIM</code> 评估结构相似度，高好；<code>LPIPS</code> 用感知网络特征距离，低好，可能受模型偏好影响；<code>VBench</code> 是多个视频质量维度的组合，论文平均 subject consistency、background consistency、motion smoothness、aesthetic quality、imaging quality 五项，高好，但小变化不等于所有场景无损；<code>Relative L2</code> 是 attention 输出相对误差，低好，不能直接推断生成视频语义一致性；<code>E2E speedup=T_dense/T_method</code>，大于 1 才是实际加速；<code>Density</code> 是实际计算的 tile 比例，refined 比例是<strong>所有</strong> tile 中精修占比，不是保留块中的比例。论文未提供通用的 FLOPs、吞吐 FPS、GPU 峰值显存或能耗数据，必须标为 Not Reported。</p>
+<h2 id="p2-10">9. Results Deep Dive：8 个数字与反例</h2>
+<ol>
+<li><strong>HunyuanVideo 540p：dense 916s → Triage(π=.3) 394s，2.32×</strong>；SpargeAttn 450s，2.04×。Triage 还保留 PSNR 34.46 dB，SpargeAttn 30.23 dB。最强 wall-clock 结果，说明不是只有理论 FLOPs 优势。</li>
+<li><strong>同一 540p setting，π=.15：415s、2.21×、PSNR 36.37 dB</strong>；SVG-EAR 569s、1.61×、33.35 dB。更低价格牺牲 21s 换约 +1.91 dB（相对 π=.3），展示可控保真—速度权衡。</li>
+<li><strong>Wan2.2-TI2V-5B：dense 292s → Triage(π=.15) 217s，1.35×</strong>；SpargeAttn 220s，1.33×，差仅 3s。它的 29.35 dB 高于 SVG-EAR 28.51，但速度优势很小，属于 dataset/model-specific weak case。</li>
+<li><strong>Wan2.2-T2V-A14B：dense 1477s → Triage(π=.3) 约 807s、1.83×</strong>（以 Table 1 报告的倍数为准）；π=.15 是 1.72×、24.40 dB，π=.3 是 1.83×、22.98 dB。高价格更快却降低保真；不要把两个 π 设置的最佳数字拼成同一实验配置。</li>
+<li><strong>HunyuanVideo 720p：Triage(π=.3) 2.28×、PSNR 36.03</strong>；SVG-EAR 1.60×、35.73。即使 attention token 119K，动态分档仍有效；但硬件是 PRO 6000，不能和 5090 结果当作严格同硬件 scaling 曲线。</li>
+<li><strong>LTX-2.5：dense 389s → Triage 211s，1.84×、34.12 dB</strong>；SVG-EAR 346s、1.12×、33.30 dB。虽然序列 186K，收益受 stage-1 必须 dense、只有 stage-2 三步可稀疏的限制，说明“更长 token 必然更高 E2E speedup”不成立。</li>
+<li><strong>Attention replay：在 Wan/Hunyuan 相对 L2 误差 4.5%/4.0% 时，包含 preprocessing 的加速分别为 5.7×/6.8×</strong>；SpargeAttn 同误差下耗时为 Triage 的 1.8×/2.0×。这是 kernel 级机制最直接的证据，但不能与端到端 2.32×混为一谈。</li>
+<li><strong>Ablation：去 refine 后最低误差停在 9.6%/6.9%，完整方法可降至 2.0%/1.3%；去掉 <code>J+R</code> 误差几何均值上升 18%</strong>。它们分别支持“高精度尾部修正”和“不能只看 attention mass”两项设计假设。</li>
+</ol>
+<h2 id="p2-11">10. Efficiency Breakdown：把速度层级说清楚</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align:right">Dense / Baseline</th>
+<th style="text-align:right">Triage（代表设置）</th>
+<th>Change / 判读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frames</td>
+<td style="text-align:right">Hunyuan 540p：129</td>
+<td style="text-align:right">129</td>
+<td>不减少帧数；加速不来自 frame sampling</td>
+</tr>
+<tr>
+<td>Visual Tokens</td>
+<td style="text-align:right">Hunyuan 540p：67K</td>
+<td style="text-align:right">67K 输入 token</td>
+<td>token 数不变；改变 attention tile 的计算密度</td>
+</tr>
+<tr>
+<td>Computed Tiles</td>
+<td style="text-align:right">Dense 100%</td>
+<td style="text-align:right">18.9%（π=.3，4.7% refined）</td>
+<td>稀疏主矩阵乘法；skip 仍有均值贡献</td>
+</tr>
+<tr>
+<td>FLOPs</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>不可从 density 直接换算总 FLOPs</td>
+</tr>
+<tr>
+<td>Attention latency</td>
+<td style="text-align:right">Hunyuan 540p dense sparse-step attention 15.09s</td>
+<td style="text-align:right">2.00s（π=.3）</td>
+<td>7.55×，包含首个 dense block 的该阶段时间</td>
+</tr>
+<tr>
+<td>E2E latency</td>
+<td style="text-align:right">916s</td>
+<td style="text-align:right">394s</td>
+<td><strong>2.32× 真正 wall-clock speedup</strong></td>
+</tr>
+<tr>
+<td>Throughput / FPS</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>未给生成吞吐，不要把输出视频帧率当生成 FPS</td>
+</tr>
+<tr>
+<td>GPU Memory usage</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>RTX 5090 的 32GB 只是卡容量</td>
+</tr>
+<tr>
+<td>Fidelity / Quality</td>
+<td style="text-align:right">Dense VBench 0.826</td>
+<td style="text-align:right">0.826；PSNR 34.46 dB vs dense</td>
+<td>VBench 接近；PSNR 反映与 dense 输出差异</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>理论 vs 实际：</strong> 核心理论收益来自减少真实 tile 乘法、让部分 tile 只用 1 次 FP4、少量 tile 用 3 次 FP4；实际 kernel 仍支付 clustering、统计、TMA、softmax、其它 DiT 模块。Figure 8 报 preprocessing/clustering 相当于 dense FlashAttention 时间的 4.0–7.4%，在短调用中可占优化后 attention 调用的 23–46%；因此 kernel 9.73× 不能直接推导为 E2E 9.73×。这正是论文较强的系统证据链。</p>
+<h2 id="p2-12">11. Table / Figure Reading（5 组）</h2>
+<p><strong>Figure 1 + Figure 3（机制观察）。</strong> Figure 1 用 sharp/intermediate/diffuse row 展示 S、L、S+L、T 的不同选择；Figure 3 横轴为 row entropy，纵轴为同预算相对 L2 误差，说明不存在统一最优的“保留比例 + 固定精度”。异常点是 high-entropy row 中稀疏可能严重失真，low-entropy row 中全量 FP4 则白白计算很多低 mass tile。图是受控 dense QKV 的近似实验，不是最终视频质量曲线。</p>
+<p><strong>Figure 5 + Figure 6（方法）。</strong> Figure 5 的 Planning 输出统计和 tier map，Execution 在同一 kernel 完成三档；Figure 6 用 error–compute 曲线说明一个 π 如何决定档位。图中的单 tile 可分解目标依赖一阶近似；真实 softmax 共享分母，不能把图当作严格全局最优证明。</p>
+<p><strong>Table 1（端到端主表）。</strong> 行按 GPU、模型、baseline 与 π 分组；列有 PSNR/SSIM/LPIPS/VBench/density/E2E。Hunyuan 540p 2.32× 是 strongest；Wan 5B 1.35× 与 baseline 1.33× 很接近是 weak case。表里 π=.15 与 π=.3 必须分别比较，不能同时声称 2.32× 和 36.37 dB 属于同一行。</p>
+<p><strong>Figure 7 + Figure 9（Pareto 曲线）。</strong> Figure 7 横轴 speedup、纵轴 PSNR，扫各方法参数；Figure 9 横轴 attention speedup、纵轴相对 L2 error。前者更贴近用户体验，后者更适合检验 router/kernel。作者承认在 Wan2.2 的 SVG-EAR 原始聚类数配置可达到更高保真，但比所有 Triage 设置慢，说明“严格支配所有 baseline 点”存在例外。</p>
+<p><strong>Table 2 + Table 3（消融与 kernel）。</strong> Table 2 去 <code>J+R</code> 导致整体误差 1.18×、去 head weight 1.07×、去 mass correction 1.03×；重要性次序明确。Table 3 的 Wan attention kernel：FlashAttn 41.7ms，Triage(π=.15) 4.3ms，另起 BF16 refine 6.1ms，误差 4.5% vs 4.4%。这证明 FP4 residual 不只是数学可行，也能避免多 pass 带来的真实开销；但该表<strong>不含 preprocessing</strong>，不能拿 9.73×当完整调用加速。</p>
+<h2 id="p2-13">12. Ablation / Mechanistic Analysis</h2>
+<p><strong>去 refine →</strong> Wan 最低误差从 2.0% 退化到 9.6%，Hunyuan 从 1.3% 到 6.9%；说明少量重要 tile 的高精度修正不是装饰。<strong>去 clustering tree →</strong> 在无 refine 版本上 Wan 最低误差 9.6→12.9%，Hunyuan 6.9→7.3%，Hunyuan 同误差慢 1.2–1.3×；说明相似 token 分块提升均值代表性。<strong>去 J+R →</strong> 误差整体 +18%，95% 的 replay 调用更差；仅按 mass 排序不够。<strong>去 head weight →</strong> +7%，说明跨 head 分配误差预算有意义。<strong>去 mass correction →</strong> +3%，属于稳定但较小增益。<strong>改用两 pass BF16 refine →</strong> 近似同误差，kernel 慢 34–43%，支持“融合是 wall-clock 的必要条件”。这些干预支持组件有效，但没有证明每个 router 预测值是无偏的真实 output error；更没有证明视觉语义失败一定由 attention 层误差导致。</p>
+<h2 id="p2-14">13. Claim vs Evidence；Contribution</h2>
+<p><strong>Authors Claim：</strong> training-free、tile 级三档注意力可以更快且更保真。<strong>Experiments Actually Show：</strong> 五个特定 DiT setting、两张 Blackwell GPU、50 prompts/setting 的 E2E 和 attention replay Pareto 改善；router 与 refine 的消融确实解释了相当部分收益。<strong>What Is Not Yet Proven：</strong> 在 A100/H100、其它注意力布局、实时 streaming video、生成式世界模型长期 rollout、不同 seed 大规模分布、跨视频语义事件上的等效效果；VBench 接近也不意味着绝对无损。</p>
+<p><strong>Contribution 1 [New Mechanism]：</strong> 将 tile 的 sparsity 与 precision 统一成 error-per-compute 分档，真正新意是 router 选择目标。<strong>Contribution 2 [New System / Engineering]：</strong> virtual mean tile + FP4 residual refine + 单 kernel online softmax 的系统整合。<strong>Contribution 3 [New Empirical Finding]：</strong> row entropy、tile mass、近似误差的关系，解释为何固定精度无法覆盖所有分布。<strong>Contribution 4 [New Protocol]：</strong> 同时测 kernel replay、含预处理 attention、完整视频 E2E 与多指标质量的分层评测范式；这是一套扎实的评测组合，不等于作者新发明 PSNR/VBench。</p>
+<h2 id="p2-15">14. Limitations &amp; Failure Modes</h2>
+<p><strong>Authors' scope / Limitation：</strong> 工作聚焦训练免改、3D full attention、Blackwell FP4 tensor core；不同模型仍需选择 π，长视频的 E2E 收益受其它层和 dense steps 限制。<strong>Additional Limitation：</strong> (i) 依赖 sm_120/CuTe DSL/TMA，硬件移植可能推翻 3×FP4 优于 BF16 的成本模型；(ii) PDDP 聚类每五步重建，场景突变、运动剧烈或跨帧信息重排时可能过时；(iii) router 采用高斯/一阶假设，异常大 logit、极端高 entropy、复杂 KV 相关性下误差估计会偏；(iv) VBench 平均可能掩盖物体身份漂移、罕见手部动作、文字渲染和细节闪烁；(v) 只测单卡，未展示多 GPU 通信、batch-size scaling；(vi) 未给峰值 GPU memory、功耗、吞吐与理论 FLOPs；(vii) 论文未核实作者代码，复现门槛高；(viii) 真实感知质量与 dense 一致性不是同一个目标，某些近似视频可能 PSNR 低但主观更好，反之亦然。</p>
+<h2 id="p2-16">15. Reproduction View：从 Python 模拟到 CUDA</h2>
+<p><strong>第一阶段，不写 CUDA 先验证 router。</strong> 在已有 Wan2.2 模型的 4 prompts×4 steps×10 layers 抽取 QKV，固定 BF16 dense 输出为 ground truth。将 token 按 128 query / 64 key cluster 分组，先用简单聚类替代 PDDP，再实现 <code>J,R,m̃,w_h</code> 计算，按 Eq.(6) 产生三档 map。用 PyTorch 模拟 skip 的 virtual means、skim 的低精度量化、refine 的 high/low 三乘积，扫 π=<code>0.10/0.15/0.30/0.60</code>，画相对 L2–模拟成本曲线。<strong>这一步验证算法，而不是 wall-clock 加速</strong>；不能把 PyTorch 模拟的 latency 当论文系统结果。</p>
+<p><strong>第二阶段，实现 kernel。</strong> 复用 CUTLASS CuTe DSL 的 FP4 attention 参考实现，增加 <code>tier_map</code>、virtual key/value、可选 residual load、FP32 online softmax、按工作量排序的 persistent CTA。关键测试是：<code>skip=0</code>、全部 <code>skim</code>、全部 <code>refine</code> 三种极端配置的数值正确性；对比 BF16 dense，单测 softmax normalizer 与 <code>ln cluster_size</code> 是否重复计数。先复现 Table 3 的 41.7/4.3/6.1ms 类型比较，再把 preprocessing 加回，最后测完整 SGLang Diffusion E2E。</p>
+<p><strong>最敏感超参：</strong> π、α=.22、refine 相对成本 3、clustering refresh 每 5 sparse steps、tile 128×128、key cluster 64、第一 20% dense steps、首 block dense。<strong>最容易踩坑：</strong> GPU 不支持 NVFP4、量化 scale 不一致、hi/lo 计算顺序错误、TMA 对齐、ragged cluster、virtual tile 与真实 tile 双计数、异步计时未同步、baseline 使用不同 seed/不同步数。应先复现 Wan 5B 27K token 的 replay，再上 119K/186K token；若无 Blackwell，只能复现 router 数学，不应宣称复现了系统 speedup。</p>
+<h2 id="p2-17">16. Research Value 与迁移（两个可开工方向）</h2>
+<p><strong>Baseline Potential：高</strong>，可对比 SpargeAttn、SVG-EAR、SageAttention3；<strong>Migration Potential：高</strong>，边际误差/算力原则适用于 VLM、video agent、KV cache；<strong>Systems Potential：极高</strong>，真实融合 kernel + E2E 证据；<strong>Attack Potential：中高</strong>，可寻找路由误判触发的语义失真；<strong>Evaluation Potential：高</strong>，PSNR–latency 不够，还应引入任务成功率；<strong>Benchmark Potential：高</strong>，可做 streaming、长时序、突发运动 stress test；<strong>New Paper Potential：中高</strong>，需要证明跨 workload 的新 router/新目标，而非复用三档阈值。</p>
+<h3 id="p2-18">Migration A：Task-Utility-Aware Video Attention（Video Agent / VLM）</h3>
+<p><strong>Original Problem →</strong> Triage 优化的是 DiT attention 数值误差，不直接优化 Video QA 的答案质量。<strong>Transferable Mechanism →</strong> 以 tile 的边际误差收益决定计算精度。<strong>New Research Question →</strong> 若把“注意力输出误差”替换为“下游答案错误风险”，能否更省计算地保留关键帧/跨帧关系？<strong>Method Modification →</strong> 给 video VLM 的视觉 token 关联 query-aware relevance、temporal event novelty 与验证器预测风险，按 <code>ΔP(correct)/Δlatency</code> 选择 keep/low-bit/refine；保留突发事件附近的跨帧连接。<strong>Minimum Experiment →</strong> 在 100 条短视频 + 100 条长视频上离线缓存视觉特征；构建 4 档 token budget（25/50/75/100%），对比随机帧、均匀帧、attention mass pruning、Triage-style proxy router；记录问题级 accuracy、关键事件召回、prefill latency、GPU memory、tokens。<strong>Model →</strong> Qwen2.5-VL-7B 或其它明确可用的开源 video VLM（选定后冻结 checkpoint）。<strong>Dataset →</strong> Video-MME 与 LongVideoBench 可访问子集。<strong>Baseline →</strong> uniform frame sampling、top-mass token pruning、dense VLM。<strong>Metric →</strong> QA accuracy、event recall、TTFT、prefill time、GPU peak memory。<strong>Expected Contribution →</strong> 面向任务效用而非像素保真的动态视频计算。<strong>Risk →</strong> query-aware router 计算自身可能抵消收益；压缩后无法恢复已丢帧。<strong>Collision Risk →</strong> 高：必须系统对比现有 query-aware frame selection 与 video token pruning。</p>
+<h3 id="p2-19">Migration B：Temporal Router Stress Test（Video Generation / Robustness）</h3>
+<p><strong>Original Problem →</strong> 均值统计量和五步复用的 clustering tree 可能跟不上快速运动。<strong>Transferable Mechanism →</strong> Triage 的路由评分与三档精度可被直接测量和干预。<strong>New Research Question →</strong> 是否存在“mass 很低但对时序身份极关键”的 tile，导致路由器高估可跳过性？<strong>Method Modification →</strong> 构造运动突变、快速遮挡、文字出现/消失、物体身份交换的 prompt；记录每层每步 <code>m̃,J,R,w_h,tier</code>，与 dense 对照得到真实 per-tile error，加入 temporal-consistency risk 项。<strong>Minimum Experiment →</strong> 先固定 Hunyuan 540p 的 20 个基础 prompt，各生成 5 个运动强度变体；每个固定 3 seeds；跑 dense、Triage π=.15/.3、always-refine-high-motion 三组；输出按时间的 LPIPS、subject consistency、局部光流偏差、E2E 时间。<strong>Model →</strong> HunyuanVideo，Blackwell GPU。<strong>Dataset →</strong> 自建 100 prompt 运动扰动集 + Penguin 视频提示子集。<strong>Baseline →</strong> Dense FlashAttention、SpargeAttn、Triage。<strong>Metric →</strong> temporal LPIPS、identity consistency、PSNR、per-step error、wall-clock。<strong>Expected Contribution →</strong> 视频加速算法的语义失效 benchmark 与鲁棒路由。<strong>Risk →</strong> motion 评测指标本身有噪声，稀有事件难覆盖。<strong>Collision Risk →</strong> 中高：与 temporal-aware sparse attention、motion-based frame selection 有重叠，需证明是新 failure mechanism。</p>
+<h2 id="p2-20">17. 方向专用：Video / Inference / Attack</h2>
+<p><strong>加速发生在何处？</strong> 视频生成的 DiT self-attention（主要是 sparse denoising steps），不是 VAE decode、text encoder、模型权重量化或减少 diffusion steps。<strong>是否 retraining？</strong> 不需要；但需要新的 CUDA kernel 和 Blackwell。<strong>是否 query-aware？</strong> router 对当前 Q/K 的统计做动态选择，因此对输入状态敏感；它不是面向自然语言问题的 query-aware Video QA。<strong>long-video 是否有效？</strong> LTX 186K tokens 和 Hunyuan 119K 显示长序列下仍可加速，但未证明无限长 streaming 或在线 agent workload。<strong>batch-size scaling？</strong> Not Reported。<strong>KV cache / TTFT / TPOT？</strong> 此处是 diffusion 生成，不是 autoregressive LLM decode；这些指标不直接适用，不能强行填造。<strong>FLOPs vs wall-clock？</strong> 论文同时报告两层时间，且预处理开销明确计入，真实 E2E 最高 2.32×，而不是 kernel 的 9–13×。</p>
+<p><strong>Attack / Verification Lens：</strong> 可针对 router 的高斯近似构造 outlier key/value、跨帧低 mass 高语义影响 tile、聚类边界抖动等 stress test；black-box probe 可固定 seed 比较 dense/accelerated 的视频时序质量，但无法从外部准确识别哪个 tile 被 skip。可以定义 <code>Quality Drop per Saved GPU-second</code>、<code>Critical Event Miss Rate</code>、<code>Worst-5%-Prompt Temporal Drift</code> 等指标。若将它迁移到 Agent video workload，应验证模型对安全关键事件（红灯、行人突然出现）的漏检风险，而非只追求平均 PSNR。</p>
+<h2 id="p2-21">18. 如果只记住这篇：9 句话</h2>
+<p>Triage 解决的是视频 DiT attention 的计算精度分配。它不删帧，也不缩短 diffusion steps。它将每个 attention tile 分成 skip、skim、refine 三档。路由器估计的是误差减少，而非只看 attention mass。skip 用均值 virtual tile 保留近似贡献。refine 用三次 NVFP4 乘积补偿量化残差。单个融合 kernel 是理论收益转化为真实速度的关键。五个 setting 的最佳 E2E 加速是 1.38–2.32×，但未报告 FLOPs、GPU 峰值显存和吞吐。最值得迁移的是“按下游任务效用而非代理数值误差购买计算预算”。</p>
+</article><article class="paper" id="synthesis"><h1 id="synthesis-1">Cross-Paper Synthesis · 从“算得更多”转向“计算预算应该给谁”</h1>
+<h2 id="synthesis-2">1. 今天两篇共同说明的趋势</h2>
+<p>FOCUS 与 Triage 分别来自长程 Agent RL 和视频 DiT 推理，看似毫无关系，实际上共享一个优化范式：<strong>把昂贵操作拆成可选择的单元，先估计每单位额外计算的边际收益，再把预算分配给最值得处理的单元。</strong> FOCUS 的单元是可恢复 Agent 状态，额外计算是一条 suffix rollout，收益代理是 critic MSE 的预期下降；Triage 的单元是 query–key attention tile，额外计算是从 skip 升到 skim/refine，收益代理是 attention output error 的预期下降。两者都不是“对所有样本平均加算力”，而是“让控制器选择”。</p>
+<p>关键差异同样重要。FOCUS 的 reward 来自真实任务结果（尽管有 judge），但 critic 的 g 是间接代理；Triage 的 Ẽ 是更局部的数值误差代理，与视频质量之间隔着整个 DiT 去噪过程。<strong>这构成研究问题，不构成已经被证明的学术 Collision：代理误差改善是否一定带来下游任务效用改善？</strong> FOCUS 的 SARA-N/Hard 子集负增益和 Triage 的 VBench 平均值几乎不变，都提醒我们不要把代理目标与最终能力画等号。</p>
+<h2 id="synthesis-3">2. 机制互补、假设冲突与可组合框架</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>FOCUS</th>
+<th>Triage</th>
+<th>可以组合的思路</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>决策单元</td>
+<td>可恢复状态 / suffix</td>
+<td>Attention tile</td>
+<td>Agent 的记忆片段、视频片段或工具动作</td>
+</tr>
+<tr>
+<td>额外预算</td>
+<td>rollout turns / GPU tokens</td>
+<td>FP4 GEMM / memory movement</td>
+<td>统一按 GPU 秒、延迟或能耗计价</td>
+</tr>
+<tr>
+<td>代理收益</td>
+<td>价值估计 MSE 下降</td>
+<td>attention 数值误差下降</td>
+<td>用 downstream success / task utility 校准代理</td>
+</tr>
+<tr>
+<td>控制器</td>
+<td>Beta 后验 + g(s)</td>
+<td>moments + 阈值 π</td>
+<td>置信度校准的 budgeted router</td>
+</tr>
+<tr>
+<td>状态依赖</td>
+<td>依赖可复现 fork</td>
+<td>依赖 Q/K/V 局部统计</td>
+<td>需检验在线环境和分布漂移</td>
+</tr>
+<tr>
+<td>最大风险</td>
+<td>续跑成本不均、critic 偏差</td>
+<td>近似误差与感知质量脱节</td>
+<td>增加 verifier、OOD stress test、校准曲线</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>互补点：</strong> FOCUS 可以为下游任务效用提供稀疏但有语义的监督；Triage 可以把硬件成本真实地纳入决策。<strong>冲突点：</strong> FOCUS 的 MSE 降低可能不等于更高最终成功率，Triage 的 attention L2 降低可能不等于更高视频质量；两者都使用可分解/局部化代理，而实际系统有跨时间、跨 tile、跨动作的交互效应。<strong>可统一框架：</strong> <code>State/Tile → Proxy Utility Estimator → Cost Predictor → Budgeted Router → Execution → Outcome Verification → Calibration Update</code>。它是一项研究提案，不是今天两篇论文已共同实现的算法。</p>
+<h2 id="synthesis-4">3. Combined Research Opportunities：优先做哪一个</h2>
+<p><strong>Opportunity A（最优先）：Verified Marginal Utility Router。</strong> 从可控制的 Video QA 或 Computer-use Agent 开始，把 action/memory/frame 视为预算单元。训练一个轻量 surrogate 预测“再读取这个证据/再精修这个 tile/再做一次 rollout”会增加多少最终正确率，并用少量 verifier 调用校准它。目标是最大化 <code>E[Δtask_success]/ΔGPU_second</code>，与纯 entropy、纯 attention mass、FOCUS g、Triage Ẽ 对比。最低实验可用 100–300 个固定任务、四档预算、配对 seed、至少三种 proxy，报告 Accuracy–Latency Pareto、最坏 10% 样本和校准误差。新意必须落在<strong>下游效用验证与真实成本闭环</strong>，否则只是两种已有 heuristic 拼接。</p>
+<p><strong>Opportunity B：Proxy-Utility Misalignment Benchmark。</strong> 专门找“critic MSE 降了但任务成功率没升”“attention L2 降了但关键事件被漏掉”的反例。Agent 侧用污染记忆、过早提交、工具错误反馈；Video 侧用运动突变、物体遮挡、身份交换、文本细节。记录 proxy rank 与真实 outcome rank 的 Spearman、top-k 选择 regret、worst-case quality drop。它更适合作为 benchmark/attack/evaluation paper，计算门槛可能低于从零写 FP4 kernel。</p>
+<p><strong>Opportunity C：Cost-Aware Adaptive Fidelity for Streaming Agents。</strong> 将 Triage 的分档思想用在 Agent 感知：普通帧低精度/缓存复用，关键事件精修；同时让 FOCUS-style verifier 决定哪些状态值得重新感知。必须验证端到端任务成功率、TTFT/帧到决策延迟、显存峰值与工具错误传播。单纯降低视觉 tokens 不足以证明更好。</p>
+<h2 id="synthesis-5">4. Collision / Overlap：需要提前规避什么</h2>
+<p><strong>已有方向的重叠：</strong> FOCUS 本身明确讨论 TRACE、VinePPO、Tree-GRPO、PaTR、IGRPO 等预算与分叉方法；Triage 明确对比 SpargeAttn、SVG-EAR、SageAttention3、Sol-Attn。跨论文组合如果只把 FOCUS 的 g 换成 <code>g/cost</code> 或把 Triage 的 Ẽ 换成一个任务得分，创新风险很高。<strong>本日报识别的 strongest potential collision 是“proxy score vs downstream utility”</strong>：这是两篇共同暴露的潜在研究空缺，而非已有第三篇论文已被证实抢先。需要在立项前检索 task-aware sparsity、cost-aware rollout、calibrated adaptive compute 与 causal credit assignment。</p>
+<h2 id="synthesis-6">5. Reading / Reproduction Priority</h2>
+<p><strong>阅读优先级 1：FOCUS</strong>。如果近期目标是 RL/Agent 的研究问题与实验脚本，先看 Section 2 的 Eq.(1)–(7)、Algorithm 1、Table 1、Figure 4/5、Appendix A/F。先实现一个 4B + 固定环境的小型预算分配器，复现 g 的排序和 critic MSE 曲线。<strong>阅读优先级 2：Triage</strong>。如果有 Blackwell GPU 与 CUDA/CuTe 经验，再深入 Section 5/6、Table 1–3、Appendix B/C；没有该硬件，先做离线 router 与质量/计算代理的验证，不要承诺系统复现。</p>
+<p><strong>最佳 baseline：</strong> Agent RL 选 GRPO/VinePPO，视频加速选 SpargeAttn + SVG-EAR。<strong>最佳 systems idea：</strong> Triage 的单 kernel 动态分档。<strong>最佳 benchmark/metric idea：</strong> Proxy–Utility Misalignment + Cost-Normalized Regret。<strong>最佳 attack/evaluation idea：</strong> 污染 Agent compaction 与构造视频低 mass 高语义重要性事件。<strong>最值得做的新论文问题：</strong> 如何让预算控制器优化可验证的真实任务效用，而不只是优化便宜的局部 proxy。</p>
+<h2 id="synthesis-7">6. 本次选择与冷却审计</h2>
+<p>本次独立检查了 2026-10-27 arXiv 新列表（论文 v1 于 10-26 UTC 提交），候选包括 FOCUS、Triage、MiRL、Audit Where Hacks Pay、WorldPager 等。最终只选两篇，是因为 FOCUS 在长程 Agent RL 的 credit allocation 上机制清晰、Triage 在视频 DiT 的真实 wall-clock 加速上有强实验和消融；第三篇会降低逐篇精读深度。已知最近两次 Deep Dive 的 AOPD/RCR、NgramRL/HarnessMM 均未重复。<strong>来源时效：</strong> 本报告研究的是 10-26 UTC 提交、10-27 列入 recent 的论文，报告生成日期为 2026-10-28（北京时间）；不将“出现在 10-27 列表”误写为“10-27 提交”。</p>
+<h2 id="synthesis-8">7. Sources / Links 与证据透明度</h2>
+<p><strong>主要一手材料：</strong> <a href="https://arxiv.org/abs/2610.35801">FOCUS arXiv</a> · <a href="https://arxiv.org/html/2610.35801">FOCUS 全文/Appendix</a> · <a href="https://arxiv.org/pdf/2610.35801">FOCUS PDF</a> · <a href="https://github.com/zipJiang/FOCUS">FOCUS 作者声明代码（本次 404）</a>；<a href="https://arxiv.org/abs/2610.35706">Triage arXiv</a> · <a href="https://arxiv.org/html/2610.35706">Triage 全文/Appendix</a> · <a href="https://arxiv.org/pdf/2610.35706">Triage PDF</a>。<a href="https://arxiv.org/list/cs.LG/recent">arXiv cs.LG recent</a> 用于独立候选发现。实验数字均据论文主表/附表；教学 toy、迁移方案、风险判断均为本报告的分析，不应作为作者原结论引用。没有核实的 venue、代码、显存、FLOPs、FPS 均明确标注未报告或未核实。</p>
+</article><div class="foot">生成日期：2026-10-28（北京时间） · 自包含 HTML · 原始论文链接在各节与 Sources 中</div></section></main></body></html>
