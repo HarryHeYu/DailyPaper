@@ -1,0 +1,582 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Daily AI Research Radar — 2026-10-30</title><style>
+:root{--bg:#f5f6f8;--paper:#fff;--ink:#17212c;--muted:#5f6d7c;--line:#dfe5eb;--accent:#225a85;--accent2:#123e62;--warm:#a45b21;--green:#2e6b55}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;font-size:15.5px;line-height:1.86;letter-spacing:.01em}
+a{color:var(--accent);text-decoration:none;overflow-wrap:anywhere}a:hover{text-decoration:underline}main{max-width:1050px;margin:0 auto;padding:22px 25px 80px}
+.hero{background:linear-gradient(135deg,#102d47,#224f70);color:white;padding:45px 48px;border-radius:18px;margin-bottom:18px}.hero h1{font-size:31px;line-height:1.3;margin:8px 0}.hero p{color:#d7e4ee;margin:8px 0}.hero .small{font-size:13px;color:#bcd0df}
+nav{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 26px;margin-bottom:24px}nav h2{font-size:17px;margin:0 0 8px}nav .links{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:4px 18px}nav a{font-size:14px;padding:2px 0}
+.section{margin:25px 0;background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:27px 32px;box-shadow:0 1px 3px rgba(20,30,45,.03)}.section>h2{font-size:23px;line-height:1.4;color:var(--accent2);margin:0 0 18px;padding-bottom:12px;border-bottom:1px solid var(--line)}h3{font-size:19px;line-height:1.5;margin:23px 0 9px}h4{font-size:16px;margin:16px 0 5px}p{margin:9px 0 14px}ul,ol{padding-left:25px}li{margin:5px 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin:18px 0}.stat{background:#f3f7fa;border:1px solid #e2ebf1;border-radius:10px;padding:12px 15px}.stat .value{font-size:24px;font-weight:760;color:var(--accent2);line-height:1.25}.stat .label{font-size:12px;color:var(--muted)}
+.paper{border:1px solid var(--line);border-radius:12px;margin:18px 0;background:white;overflow:hidden}.paper-s{border-left:5px solid #225a85}.paper-a{border-left:5px solid #6c7d91}.paper-b{border-left:5px solid #a7b2bd}.paper-head{padding:18px 23px 10px;background:#fafcfd}.paper-head h3{margin:0 0 10px;font-size:19px}.paper-body{padding:10px 23px 25px}.paper-body h3{font-size:17px;color:#234b6b;border-bottom:1px solid #edf0f3;padding-bottom:4px;margin-top:22px}.paper-body h4{font-size:15px}.eyebrow{font-size:11px;letter-spacing:.1em;font-weight:800;color:#2d668f;margin-bottom:6px}.meta{font-size:12px;color:var(--muted);line-height:1.7}.tags{display:flex;flex-wrap:wrap;gap:7px}.pill{display:inline-block;background:#eef3f7;border-radius:5px;padding:2px 8px;font-size:11px;color:#31526d}.pill.warm{background:#fff1df;color:#9b5d1f}
+summary{cursor:pointer;padding:17px 20px;display:flex;gap:11px;align-items:center;flex-wrap:wrap;background:#f9fafb;list-style-position:inside}summary strong{flex:1;min-width:250px;font-size:15px;line-height:1.5}.tiermark{font-size:11px;letter-spacing:.06em;font-weight:800;color:#455b70}.subcat{font-size:12px;color:var(--muted)}details[open]>summary{border-bottom:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:13px;line-height:1.55;margin:14px 0 18px;display:block;overflow-x:auto}th,td{border:1px solid #dce3e9;padding:8px 9px;text-align:left;vertical-align:top;min-width:65px}th{background:#eff4f7;font-weight:700}tr:nth-child(even) td{background:#fafcfd}code{background:#edf2f5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere;font-size:.91em}pre{overflow:auto;background:#eff3f7;padding:13px;border-radius:8px}blockquote{margin:12px 0;border-left:3px solid #9ab6c8;padding:3px 14px;color:#465d6e;background:#f8fafb}
+.focus{padding:17px 20px;border-left:4px solid #3d6c8e;background:#f5f9fb;border-radius:8px;margin:12px 0}.muted{color:var(--muted)}.mini{font-size:13px;color:var(--muted)}.watch{border-bottom:1px solid var(--line);padding:12px 0}.watch:last-child{border-bottom:0}.watch h3{font-size:15px;margin:0 0 4px}.watch p{font-size:13.5px;margin:3px 0}.idea{padding:16px 0;border-bottom:1px solid var(--line)}.idea:last-child{border-bottom:0}.idea h3{margin-top:4px}.idea dl{display:grid;grid-template-columns:150px 1fr;gap:5px 12px;font-size:14px}.idea dt{font-weight:750;color:#375c76}.idea dd{margin:0}.smallnote{font-size:12px;color:var(--muted)}.priority{display:grid;grid-template-columns:130px 1fr;gap:10px 16px;padding:9px 0;border-bottom:1px solid var(--line)}.priority strong{color:#284c68}
+@media(max-width:700px){main{padding:12px 11px 50px}.hero{padding:26px 22px}.hero h1{font-size:24px}.section{padding:19px 16px}.paper-head,.paper-body{padding-left:15px;padding-right:15px}.idea dl{grid-template-columns:1fr;gap:0}.idea dd{margin-bottom:8px}.priority{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@media print{body{background:white}main{max-width:none}.section{break-inside:avoid;box-shadow:none}details{display:block}details:not([open]) .paper-body{display:block}nav{display:none}}
+</style></head><body><main><header class="hero"><div class="small">RESEARCH INTELLIGENCE · VERIFIED LINKS · CHINESE ANALYSIS</div><h1>Daily AI Research Radar<br>2026-10-30</h1><p>RL / Agent / Video Acceleration 三主线同级 · 新近 24–72h 优先 · 1–3 个月重要工作标记 BACKFILL</p><p class="small">报告基于 2026-10-30 检索；arXiv 最近公开列表主要覆盖 2026-10-28（页面分组），论文实际提交日期以各论文 arXiv Submission History 为准。部分高价值补录工作非今日新论文。</p></header><nav><h2>目录 · 点击跳转（浏览器 Ctrl+F 可检索全部文本）</h2><div class="links"><a href="#executive">Executive Summary</a><a href="#most">Today’s Most Important</a><a href="#top3">Top 3 必读</a><a href="#top5">Top 5</a><a href="#rl">RL Highlights</a><a href="#agent">Agent / Multi-Agent Highlights</a><a href="#video">Video Acceleration Highlights</a><a href="#tier-s">Tier S</a><a href="#tier-a">Tier A</a><a href="#tier-b">Tier B</a><a href="#ideas">Idea Mining</a><a href="#collision">Collision Detection</a><a href="#reading">Reading Priority</a><a href="#watch">Candidate Watchlist</a><a href="#stats">今日统计</a><a href="#sources">Sources / Links</a></div></nav><section id="executive" class="section"><h2>Executive Summary</h2><p>本期先筛选 <strong>45 篇可追溯 arXiv 候选</strong>，再选择 13 篇正式分析。论文按主方向<strong>互斥归类</strong>，交叉方向在正文单独讨论；不按 Unlearning 标题加权。昨日 Tier S 的 EnvSched、Bipartite Skill Attribution、MatAnyone-E 均未重复占用 Tier S。</p><div class="stats"><div class="stat"><div class="value">45</div><div class="label">Candidate Pool</div></div><div class="stat"><div class="value">13</div><div class="label">Formal Papers</div></div><div class="stat"><div class="value">3</div><div class="label">RL</div></div><div class="stat"><div class="value">4</div><div class="label">Agent / Multi-Agent</div></div><div class="stat"><div class="value">4</div><div class="label">Video Acceleration</div></div><div class="stat"><div class="value">1</div><div class="label">Unlearning</div></div><div class="stat"><div class="value">1</div><div class="label">Other</div></div><div class="stat"><div class="value">3 / 6 / 4</div><div class="label">Tier S / A / B</div></div></div><p><strong>三条主线今天发生了什么：</strong>RL 的关键进展不是单纯增加过程奖励，而是揭示过程奖励与终局收益的动态背离，以及 token 长度无偏与 trajectory-level 探索的互补性。Agent 方向出现可控制事实分布的 TeamGym、验证局部进展的 TAM 和纠正记忆社会证明偏差的 CrossProfile。Video Acceleration 则围绕三种计算分配方式推进：层级 KV 敏感度压缩、查询到来后的选择性 KV 修复，以及生成过程的 token-wise early acceptance。重要的共同问题是：<strong>有限预算应该分配给哪些真实影响未来结果的信息与动作？</strong></p><p class="mini">证据等级：Tier S 已访问 Method / Experiments 正文；Tier A/B 中仅从摘要取得的数值均明确标注。未报告的系统指标保持 Not Reported。BACKFILL 为历史重要工作补录，不代表新提交。</p></section><section id="most" class="section"><h2>Today’s Most Important Paper</h2><h3><a href="https://arxiv.org/abs/2610.35497" target="_blank" rel="noopener noreferrer">When Fine-Grained Credit Assignment Helps and Hurts</a></h3><p>这是今天最值得优先精读的交叉论文：同一套视频编辑 Agent 任务比较 outcome-only、固定/衰减过程奖励和 token 自蒸馏，既给出正结果（Fine Cut +45.4% relative），又给出强负结果（固定 PRM 导致 reward hacking、OPSD turn-suggestion 近乎崩溃）。它改变的是<strong>何时信任哪一级反馈</strong>，能直接迁移到 RL、长程 Agent 与多模态工具学习。</p><p><strong>优先看：</strong>Section 3 的优势公式、Table 3 的六行对照、Figure 1(c) 的过程分数与 outcome 分叉、Section 6 的 reward hacking / OPSD failure analysis。最佳研究切入点是自动检测过程奖励与终局任务偏离并动态调节 λ。</p></section><section id="top3" class="section"><h2>Top 3 必读</h2><ol><li><a href="https://arxiv.org/abs/2610.35497" target="_blank" rel="noopener noreferrer">When Fine-Grained Credit Assignment Helps and Hurts</a>：看 Table 3、Figure 1(c)、Section 6；学到“过程奖励的时间有效性”而非单纯稠密 credit。</li><li><a href="https://arxiv.org/abs/2610.37571" target="_blank" rel="noopener noreferrer">TeamGym</a>：看 Figure 1、Table 3/5 与 Section 5；学到 PIU 控制、通信 gap / retrieval gap 分解和全局奖励下的协调涌现。</li><li><a href="https://arxiv.org/abs/2610.32784" target="_blank" rel="noopener noreferrer">Video-MemComp</a>：看理论误差分解、Table 1/2/3 与 Table 4/5；学到 sensitivity-aware KV 预算以及 memory/TTFT/throughput 的真实取舍。</li></ol></section><section id="top5" class="section"><h2>Top 5 · 按研究价值重新排序</h2><p><strong>1.</strong> <a href="https://arxiv.org/abs/2610.35497" target="_blank" rel="noopener noreferrer">When Fine-Grained Credit Assignment Helps and Hurts: Multimodal Agentic Reinforcement Learning through Video Editing</a> <span class="pill">S</span> · RL</p><p><strong>2.</strong> <a href="https://arxiv.org/abs/2610.37571" target="_blank" rel="noopener noreferrer">TeamGym: A Gym for Team Decision-Making by AI Agents with Distributed Information</a> <span class="pill">S</span> · Agent</p><p><strong>3.</strong> <a href="https://arxiv.org/abs/2610.32784" target="_blank" rel="noopener noreferrer">Video-MemComp: Taylor-Guided Sensitivity-Aware Memory Management for Streaming Video Understanding</a> <span class="pill">S</span> · Video Acceleration</p><p><strong>4.</strong> <a href="https://arxiv.org/abs/2610.29229" target="_blank" rel="noopener noreferrer">Cache Locally, Recompute Selectively for Streaming Video Understanding</a> <span class="pill">A</span> · Video Acceleration</p><p><strong>5.</strong> <a href="https://arxiv.org/abs/2610.37482" target="_blank" rel="noopener noreferrer">From Interaction to Capability: Task Advancement as State and Supervision for GUI Agents</a> <span class="pill">A</span> · Agent</p></section><section id="rl" class="section"><h2>RL Highlights</h2><p><strong>核心变化：</strong>从“让每个 token 都得到更细奖励”转向“奖励是否可信、何时退出、探索多样性在哪个尺度发生”。</p><ul><li><a href="https://arxiv.org/abs/2610.35497" target="_blank" rel="noopener noreferrer">Credit Assignment Helps and Hurts</a>：过程奖励衰减改善长程多模态 Agent；固定 PRM 可能 reward hack。</li><li><a href="https://arxiv.org/abs/2610.09804" target="_blank" rel="noopener noreferrer">BoT-GRPO</a>：以 inverse-length token bag 消除长度统计偏差，避免 critic。</li><li><a href="https://arxiv.org/abs/2610.34949" target="_blank" rel="noopener noreferrer">Info-GRPO</a>：用 latent seed 保持轨迹间探索多样性，不强制所有 token 提升 entropy。</li></ul><p><strong>今日待解决的 RL 问题：</strong>Trajectory → Reward → Credit Assignment → Memory/Skill Update 仍缺可验证的中间状态因果贡献。Process reward 与最终任务收益不一致时，应该自动降低其权重。</p></section><section id="agent" class="section"><h2>Agent / Multi-Agent Highlights</h2><p><strong>核心变化：</strong>Agent 的 memory、skill 和 communication 从文本存储转向可验证的状态改变与信息流诊断。</p><ul><li><a href="https://arxiv.org/abs/2610.37571" target="_blank" rel="noopener noreferrer">TeamGym</a>：把通信损失与检索损失分离，研究全局 reward 如何影响局部信息分享。</li><li><a href="https://arxiv.org/abs/2610.37482" target="_blank" rel="noopener noreferrer">Task Advancement Memory</a>：从失败轨迹提取已验证的局部成功 skill。</li><li><a href="https://arxiv.org/abs/2610.37624" target="_blank" rel="noopener noreferrer">CrossProfile</a>：证明稀有性、相关性和多 Agent 共识都可能误导 memory selection。</li><li><a href="https://arxiv.org/abs/2610.36877" target="_blank" rel="noopener noreferrer">GUI-JEPA</a>：把动作解码改成 latent candidate scoring，用系统延迟换取一定准确率。</li></ul><p><strong>Long-horizon 审计：</strong>对每篇分别记录 10 / 100 / 1000-step 的证据是否存在；目前多数工作未给跨千步 memory drift、tool history contamination 与 skill conflict 的充分实测。</p></section><section id="video" class="section"><h2>Video Acceleration Highlights</h2><p><strong>核心变化：</strong>压缩并非只有“丢帧 / 剪 token”，还包括 KV 的层敏感度、查询触发重算和生成 token 的动态去噪步数。所有速度指标必须区分理论 FLOPs 与真实 wall-clock。</p><table><thead><tr><th>论文</th><th>节省的计算</th><th>真实系统证据</th><th>精度/质量</th><th>关键风险</th></tr></thead><tbody>
+<tr><td>Video-MemComp</td><td>KV budget ~100K→6K（部分配置）</td><td>A6000: ReKV 22.95→16.74GB; TTFT .0846→.0302s；吞吐 35.61→27.58 tok/s</td><td>Qwen2.5-VL-3B 62.3→64.1%</td><td>吞吐下降、层敏感度校准</td></tr>
+<tr><td>FrameBlend</td><td>每帧 prefill FLOPs &gt;20%↓（RVS-Ego）</td><td>总处理时间 -14% 至 -59%（特定框架）</td><td>最高 +3.9pp</td><td>query-time 重算 P99</td></tr>
+<tr><td>Speculative Forcing</td><td>4→~1.7 steps/token（LongLive）</td><td>&gt;1.5×；Lingbot 1.35×、24.5fps</td><td>作者称近似 full-step 质量</td><td>早冻结的时序误差传播</td></tr>
+<tr><td>Video VLM Survey</td><td>分类 input/encoder/projector/prefill/decode</td><td>摘要无统一绝对数字</td><td>Not Reported</td><td>局部 FLOPs 与端到端速度脱钩</td></tr></tbody></table></section><section id="tier-s" class="section"><h2>Tier S · 正文核验深度分析</h2><article id="paper-2610.35497" class="paper paper-s"><div class="paper-head"><div class="eyebrow">TIER S · FULL TEXT VERIFIED</div><h3><a href="https://arxiv.org/abs/2610.35497" target="_blank" rel="noopener noreferrer">When Fine-Grained Credit Assignment Helps and Hurts: Multimodal Agentic Reinforcement Learning through Video Editing</a></h3><div class="tags"><span class="pill">RL</span></div><p class="meta">Lei Zhao; Zongheng Cao; Xinyu Hu · 2026-10-26 · arXiv preprint<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.35497v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.35497" target="_blank" rel="noopener noreferrer">PDF</a> · <a href="https://leizhao7.github.io/videoedit/" target="_blank" rel="noopener noreferrer">Project</a> · <a href="https://github.com/leizhao7/video-editing-credit-assignment" target="_blank" rel="noopener noreferrer">Code</a></p></div><div class="paper-body"><h3>人话版：这篇论文到底干了什么？</h3>
+<p>这篇工作不是再发明一个“更细粒度的奖励”，而是问：把终局成功信号分配到每一步、每个 token，究竟什么时候值得？作者用电影预告片剪辑构造四类可执行多模态 Agent 任务，让同一个 Qwen3.5-9B 分别接受整条轨迹结果奖励、每轮过程奖励和 token 级自蒸馏。最有价值的发现是：长达几十轮的 Fine Cut 确实需要过程引导，但<strong>过程奖励长期保留反而会诱导冗余工具调用与奖励黑客行为</strong>；先用过程奖励学习，再逐渐退回结果奖励，表现最好。更细不等于更好，关键是信号何时可信。</p>
+<h3>Background &amp; Research Gap</h3>
+<p>旧式 outcome-only GRPO 把同一条轨迹的终局得分分配给全部 token。若某个剪辑任务先正确识别镜头、后面却因错误音轨失败，正确的前半程也受到负面更新；反过来，偶然成功的长轨迹中无效的工具调用也得到正向 credit。过程奖励看似能解决，但它来自不完美的 LLM judge，可能奖励“认真检查”而非“真正交付”。现有论文常在不同模型、任务和训练预算下比较不同 credit，难以区分算法效果和环境差异。本文在统一剪辑环境中做相对干净的横向对照。</p>
+<h3>Core Insight 与观察依据</h3>
+<p>作者将任务划为 Content Selection、Narrative Sequencing、Rough Cut、Fine Cut。基线平均轮次分别为 <strong>22.3 / 15.3 / 21.8 / 87.2</strong>；最后一类显著更长、更易混入质量不一致的局部动作。观察到固定过程权重的训练中，PRM 分数继续上升，任务完成率和终局得分却下降，说明局部可奖励行为与整体目标发生脱钩。因此把过程奖励当成<strong>早期探索与行为塑形的临时脚手架</strong>，而非永久目标。</p>
+<h3>Method Deep Dive：Input → Output</h3>
+<ol>
+<li><strong>构造可验证编辑任务</strong>：从 49 部电影及其公开预告片对齐镜头、生成任务简报，过滤后保留 797 个任务；按电影划分 716 train、81 validation，减少同片段泄漏。环境有 shell 与 8 个媒体工具，输出可验证的选择、排序、切点或成片。</li>
+<li><strong>终局奖励</strong>：根据任务组合确定性对齐指标、参考视频条件下的多模态评分、无参考的成片质量评分。Content Selection 与 Narrative Sequencing 使用确定性得分；后两类加入评审模型，评价的是最终交付物而不是中间动作。</li>
+<li><strong>轨迹级对照</strong>：同一 prompt 采样一组轨迹，用组内均值与标准差规范化 outcome，GRPO 将该优势施加于所有生成 token。</li>
+<li><strong>轮次级过程奖励</strong>：Gemini 3.8 Flash 对每轮行为及工具反馈评分，多次投票取平均；同一轮索引跨 rollout 规范化。比较固定权重与从第 20 次更新到第 30 次更新衰减至 0 的策略。</li>
+<li><strong>token 级 OPSD</strong>：冻结初始策略作教师，教师额外看到参考答案或逐轮建议；学生在自己的 prefix 上匹配教师分布。该分支没有 outcome 奖励，测试更密集监督是否天然优越。</li>
+<li><strong>统一评测</strong>：Qwen3.5-9B、50 次更新、81 个留出任务、每题 4 次评估；同时记录视觉检查、工具调用、思考长度与完成率。</li>
+</ol>
+<h3>关键公式 / Objective</h3>
+<p>轨迹优势 <code>A_out=(R_out-mean_group)/(std_group+ε)</code>。轮级优势 <code>A_turn=A_out+λ·(r_turn-mean_turn)/(std_turn+ε)</code>；<code>λ=0.5</code> 固定或在更新 20–30 衰减到 0。这里 <code>r_turn</code> 是过程 judge 的局部评分，<code>λ</code> 决定是否把局部偏好当成优化目标。OPSD 则最小化 <code>E[D_KL(p_teacher || p_student)]</code>，其中 teacher 额外获得 privileged context。三种方法最大的区别不是 token 数量，而是监督信号的<strong>因果可信度、时间尺度与目标一致性</strong>。</p>
+<h3>Toy Example</h3>
+<p>假设 Agent 要把三段镜头配上音乐并导出。它先调用工具预览 5 次、选对镜头，却一直循环检查音频，最后没有导出。过程 judge 可能连续奖励“检查很认真”；固定 PRM 会把这种行为强化。若早期用 PRM 学会调用媒体工具、后期只以是否导出且质量达标为准，冗余调用便不再持续受益。这是对论文机制的说明性例子，不是原论文实验样本。</p>
+<h3>Experiment Setup / Baseline Comparison</h3>
+<table>
+<thead>
+<tr>
+  <th>Method</th>
+  <th style="text-align:right">CS</th>
+  <th style="text-align:right">NS</th>
+  <th style="text-align:right">RC</th>
+  <th style="text-align:right">FC</th>
+  <th style="text-align:right">Overall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Base Qwen3.5-9B</td>
+  <td style="text-align:right">.657</td>
+  <td style="text-align:right">.303</td>
+  <td style="text-align:right">.205</td>
+  <td style="text-align:right">.152</td>
+  <td style="text-align:right">.284</td>
+</tr>
+<tr>
+  <td>Outcome-only GRPO</td>
+  <td style="text-align:right"><strong>.821</strong></td>
+  <td style="text-align:right">.500</td>
+  <td style="text-align:right"><strong>.356</strong></td>
+  <td style="text-align:right">.201</td>
+  <td style="text-align:right">.413</td>
+</tr>
+<tr>
+  <td>GRPO+PRM fixed λ</td>
+  <td style="text-align:right">.482</td>
+  <td style="text-align:right">.457</td>
+  <td style="text-align:right">.276</td>
+  <td style="text-align:right">.239</td>
+  <td style="text-align:right">.334</td>
+</tr>
+<tr>
+  <td>GRPO+PRM decayed λ</td>
+  <td style="text-align:right">.804</td>
+  <td style="text-align:right"><strong>.552</strong></td>
+  <td style="text-align:right">.348</td>
+  <td style="text-align:right"><strong>.293</strong></td>
+  <td style="text-align:right"><strong>.447</strong></td>
+</tr>
+<tr>
+  <td>OPSD reference</td>
+  <td style="text-align:right">.606</td>
+  <td style="text-align:right">.267</td>
+  <td style="text-align:right">.219</td>
+  <td style="text-align:right">.162</td>
+  <td style="text-align:right">.277</td>
+</tr>
+<tr>
+  <td>OPSD turn suggestions</td>
+  <td style="text-align:right">.129</td>
+  <td style="text-align:right">.063</td>
+  <td style="text-align:right">.032</td>
+  <td style="text-align:right">.000</td>
+  <td style="text-align:right">.044</td>
+</tr>
+</tbody>
+</table>
+<p>这是论文 <strong>Table 3</strong> 的 avg@4 任务得分，跨任务分数的物理意义不同，不能将 .293 解释成通用成功率。强基线是 outcome-only GRPO；固定 PRM 和 OPSD 则是重要负对照。</p>
+<h3>Research Questions / Results / Figures</h3>
+<p><strong>RQ1：长 horizon 是否更需要细粒度 credit？</strong> Fine Cut 从 outcome-only 的 .201 提高到 decayed PRM 的 .293，<strong>相对 +45.4%</strong>；NS 从 .500 到 .552，相对 +10.4%；CS 和 RC 反而略低。不能推出“细粒度永远更强”，应按轨迹长度与局部动作混杂度决定。</p>
+<p><strong>RQ2：奖励与最终结果何时分离？</strong> 固定 PRM 的 Overall 仅 .334，低于 outcome-only .413；尤其 CS .482 vs .821。论文 Figure 1(c) 对比过程分数与 outcome 曲线，固定权重会持续抬升局部奖励却拖累终局。衰减曲线在训练后段恢复任务导向。</p>
+<p><strong>RQ3：token 级更细是否更好？</strong> OPSD(reference) Overall .277，接近未训练 .284；OPSD(turn suggestions) 仅 .044，FC 为 0。教师-学生分布差异大并不等于提供了可执行的正确梯度；错误的 privileged information 还会系统性破坏策略。</p>
+<p><strong>图表阅读</strong>：Figure 1(a) 以任务流程和轮数解释难度差异；Figure 1(b) 直接比较不同任务上的 credit 增益；Figure 1(c) 展示固定/衰减过程奖励的动态分叉；Table 2 的训练/验证任务计数证明划分是按电影隔离，避免简单镜头记忆。</p>
+<h3>Ablation、最强与最弱结果</h3>
+<p>最强：decayed PRM 在 FC 得到 .293，且整体 .447 高于 .413。最弱：OPSD(turn suggestions) 整体 .044，几乎完全崩溃。固定 λ 对短任务的明显伤害说明局部评分不是终局目标的可靠替代；λ 衰减不是一个简单正则化小技巧，而是改变了训练后期的优化目标。论文没有证明 20–30 次更新是普适最佳切换点，也没有跨多个 backbone 验证。</p>
+<h3>Claim vs Evidence</h3>
+<p><strong>Authors Claim</strong>：细粒度 credit 在长任务可有效，但固定过程奖励会被利用，OPSD 对 privileged context 敏感。</p>
+<p><strong>Experiments Actually Show</strong>：在 Qwen3.5-9B、四种视频剪辑任务、一个训练预算下，上述现象有直接数值与行为诊断支持；独立电影划分加强了证据。</p>
+<p><strong>What Is Not Yet Proven</strong>：是否适用于 Web/Code/GUI Agent、不同 judge、1000-step 交互；也未建立过程奖励偏离最终目标的因果充分条件。LLM judge 的主观性可能引入共同偏差。</p>
+<h3>Contribution / Limitation / Research Value</h3>
+<p>贡献包括 <strong>New Benchmark</strong>（真实电影来源的可执行编辑任务）、<strong>New Empirical Finding</strong>（credit 粒度随任务结构变化）、<strong>Training Strategy</strong>（过程奖励衰减的有效性）、<strong>Evaluation</strong>（行为与得分脱钩的诊断）。局限：只有单一策略 backbone、评审模型参与 reward、任务类型与轮次同时变化，尚不能把效果纯粹归因于 horizon。作为 RL baseline，建议直接复现 outcome-only / fixed PRM / decayed PRM；作为 Agent 评测，应该同时报告完成率、有效工具调用、冗余调用；作为 Video Agent，视频剪辑工具链使结果比静态 Video QA 更贴近真实任务。安全价值在于揭示 reward hacking 的可观测早期征兆。</p>
+<h3>Migration：从论文到可实验的新问题</h3>
+<p><strong>Original Problem</strong>：多模态剪辑的稀疏终局反馈 → <strong>Transferable Mechanism</strong>：过程奖励仅在有用的训练阶段启用 → <strong>New Research Question</strong>：能否根据在线“局部奖励-终局收益背离”自动切换过程权重？ → <strong>Method Modification</strong>：对一组 rollout 估计过程分数与任务完成率、有效工具调用的关联，动态更新 λ → <strong>Minimum Experiment</strong>：在 AppWorld / WebArena 小规模任务上比较 fixed、linear decay、adaptive λ → <strong>Model</strong>：开源 7B/9B Agent → <strong>Dataset</strong>：同一训练/验证环境 → <strong>Baseline</strong>：outcome GRPO、fixed PRM、预设 decay → <strong>Metric</strong>：成功率、无效调用数、reward gap、GPU-hours → <strong>Expected Contribution</strong>：机制驱动的 reward schedule → <strong>Risk</strong>：相关性噪声使权重抖动，必须做独立 seed 与奖励攻击测试。</p>
+<h3>五句话总结</h3>
+<p>这篇论文最重要的不是一个新 loss，而是<strong>什么时候不要再相信过程奖励</strong>。长任务上的过程奖励确实能帮助探索。持续奖励“看似合理的过程”会偏离真正交付。token 级蒸馏也可能比简单终局 RL 更差。最值得迁移的是动态过程奖励退火与 reward-hacking 诊断。</p>
+</div></article><article id="paper-2610.37571" class="paper paper-s"><div class="paper-head"><div class="eyebrow">TIER S · FULL TEXT VERIFIED</div><h3><a href="https://arxiv.org/abs/2610.37571" target="_blank" rel="noopener noreferrer">TeamGym: A Gym for Team Decision-Making by AI Agents with Distributed Information</a></h3><div class="tags"><span class="pill">Agent</span></div><p class="meta">Chanwoo Park; Jaywoong Jeong; Zachary Wojtowicz; Yubin Kim; Taekyun Lee; Kaiqing Zhang; Asuman Ozdaglar · 2026-10-27 · arXiv preprint<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.37571v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.37571" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版：这篇论文到底干了什么？</h3>
+<p>很多 Multi-Agent 论文只比较“单人做题”和“多人讨论”，但多 Agent 的错误究竟来自知识没找到、消息没传出去，还是最终决策没整合？TeamGym 把问题拆开：为每道任务抽出一组缺一不可、合起来足以决定答案的 pivotal information units（PIU），然后控制这些事实分配给哪些 Agent、是否藏在长文档里、谁发言以及通信 token 预算。作者发现，分布式事实导致平均 <strong>22.9 个百分点</strong> 的决策损失，让 Agent 自己从文档检索又损失 <strong>19.9 个百分点</strong>。更重要的是，最终结果奖励能让团队学会协调，但“信息被说出来”并不等于“被正确使用”。</p>
+<h3>Background &amp; Gap（含具体例子）</h3>
+<p>设三个 Agent 共同判断一份合同是否满足条件：A 看到生效日期，B 看到例外条款，C 看到金额上限。若只让单个模型看到全部三条，任务很容易；分给三个 Agent 后，A 可能没有询问 B，B 可能把例外解释错，C 的发言可能被截断。传统 benchmark 把失败混在一个成功率里，无法定位根因。TeamGym 从法律、金融、医疗和软件工程材料构建有可验证答案的任务，并用 PIU 把“事实缺失”和“通信失败”拆成可控实验因素。</p>
+<h3>Core Insight</h3>
+<p>最小充分事实集合不仅是标注，还可以作为<strong>可干预的因果单位</strong>：保持问题、PIU 内容、模型不变，仅改变事实的拥有者或检索方式，就能识别通信 gap 与 retrieval gap。进一步地，控制 speaker selection 和 token budget 可以检测局部通信策略是否损害全局 outcome。其机制价值高于普通角色扮演式 multi-agent benchmark，因为它给出了可归因的失败维度。</p>
+<h3>Method Deep Dive：Input → Team Decision</h3>
+<ol>
+<li><strong>问题生成与 PIU 识别</strong>：从 12 个 source corpora 提取法律合同、法规、SEC 文件、医学论文和代码问题；验证一组事实的“必要性 + 联合充分性”，得到 PIU 与可计算答案。</li>
+<li><strong>事实分配</strong>：比较 Single-Agent All-PIU（单体持有全部关键事实）、Multi-Agent PIU-Only（每个参与者直接拿到局部关键事实）、Multi-Agent Full-Context（参与者拿到原始材料，必须自己找事实）。这三种条件依次隔离 communication 和 retrieval。</li>
+<li><strong>团队交互</strong>：每位 Agent 维护私有材料、私有笔记和可见公共 transcript；通过 coordinator-selected speaker、round robin、simultaneous responses 或 current-speaker selection 决定消息流。每次查询、回复都受 token budget 限制。</li>
+<li><strong>终局评估</strong>：最终 decision maker 根据对话作出有限选项、数值或文字答案；环境用问题专属效用函数评估。跟踪每条 PIU 是否被提及、被整合、是否被错误消息污染。</li>
+<li><strong>训练</strong>：在两种通信结构下训练协调者和参与者策略；奖励主要来自最终团队决策损失，而不是逐条消息人工评分，观察是否出现自发的信息收集与 speaker coordination。</li>
+</ol>
+<h3>RL Formulation / Reward / Credit</h3>
+<p>状态 <code>s_t</code> 是公共问题、角色私有观察、可见通信历史与剩余预算；动作 <code>a_t</code> 包括查询谁、发送什么消息、何时终止并提交决策；trajectory 是团队通信及最终决策；<code>U_q(d)∈[0,1]</code> 表示问题 q 对最终决策 d 的团队 payoff。<strong>Reward 是全局终局信号</strong>，不是每个参与者的局部正确性。文中训练并未证明对每条消息做了严格反事实 credit；若某个 Agent 的事实被正确使用但其他人犯错，该 Agent 仍可能受到低终局 reward。最值得研究的是从 PIU 的因果必要性推导局部贡献，而不是简单把团队奖励平摊。</p>
+<h3>Toy Example</h3>
+<p>PIU={日期在截止前、例外条款不适用、金额低于阈值}。三个 Agent 各持一条，最终决策必须合取。若 Agent B 未发言，结果失败是 communication gap；若 B 有长文档但没找到例外条款，则是 retrieval gap；若三人都说了但 coordinator 被 C 的错误推断带偏，则是 synthesis / error-uptake gap。这是方法机制示例，不是原文具体数据案例。</p>
+<h3>Experiment Setup 与 Baseline</h3>
+<p>论文比较 <strong>8 个语言模型、12 个 source corpora</strong>，跨 legal / finance / medical / software engineering，采用固定问题与 PIU 的配对对照。最重要 baseline 是 <strong>Single-Agent All-PIU</strong>（信息上限）与 <strong>Multi-Agent PIU-Only</strong>（纯通信损失）；Multi-Agent Full-Context 反映真实检索负担。还对 coordinator / round robin / simultaneous 等结构、message budget、trained vs base policies 做干预。训练子实验分别涉及 CUAD/MAUD 与 FinDVer/FinLongDocQA；不能把不同子实验的指标合并成一个平均数。</p>
+<h3>Results：数字 → 对照 → 含义</h3>
+<table>
+<thead>
+<tr>
+  <th>实验对照</th>
+  <th style="text-align:right">论文结果</th>
+  <th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>全 PIU 单体 → 分散 PIU 团队</td>
+  <td style="text-align:right"><strong>-22.9 pp</strong></td>
+  <td>同一事实分散后出现通信损失</td>
+</tr>
+<tr>
+  <td>团队直接 PIU → 团队从文档检索</td>
+  <td style="text-align:right"><strong>再 -19.9 pp</strong></td>
+  <td>信息提取与传递是两个独立瓶颈</td>
+</tr>
+<tr>
+  <td>Add correct synthesis（Qwen3-235B，自决策）</td>
+  <td style="text-align:right"><strong>+17.7 pp</strong></td>
+  <td>事实齐全仍需正确合成</td>
+</tr>
+<tr>
+  <td>移除无 PIU 参与者的有害消息（带源材料条件）</td>
+  <td style="text-align:right"><strong>21.2% → 68.9%</strong></td>
+  <td>无关参与者可能严重污染决策</td>
+</tr>
+<tr>
+  <td>消息预算 32 → 128 tokens（指定子集）</td>
+  <td style="text-align:right"><strong>55.3% → 78.6%</strong></td>
+  <td>消息长度不足会压掉关键证据</td>
+</tr>
+<tr>
+  <td>FinDVer validation，训练前后 LLM judge score</td>
+  <td style="text-align:right"><strong>21.85 → 41.08</strong></td>
+  <td>终局奖励可改善协调表现</td>
+</tr>
+</tbody>
+</table>
+<p>注意最后两行属于特定模型与数据子集，不应泛化为全部 12 corpora 的提升。论文 Table 3 的 correct synthesis 干预中，Qwen3-32B 自决策 +14.6pp；更强 final judge 也不自动解决分布式信息整合问题。</p>
+<h3>Figure / Table Reading</h3>
+<p><strong>Figure 1</strong> 画出 PIU 分配、通信、决策和训练闭环；是理解环境可控性的入口。<strong>Table 2</strong> 展示 12 个语料的构造与实际评估数量（如 CUAD 538 构造、30 评估），提示部分子集样本较小。<strong>Table 3</strong> 对完整 transcript 进行合成/错误传染干预，区分“没有说”与“说了但误导”。<strong>Table 5</strong> 把无 PIU 参与者的消息移除，21.2→68.9 的大幅变化揭示错误传播的真实风险。<strong>Table 6</strong> 显示 joint training 使每个参与者被询问比例由 80.6% 到 100%，平均查询长度 14.0→12.5 词；但行为变好不一定同步带来同幅度的结果提升。</p>
+<h3>Ablation / Failure Propagation / Long-Horizon</h3>
+<p>去掉 coordinator 原始查询后，通信结构交互项从 +15.5pp 变成 -5.4pp，说明<strong>查询内容本身</strong>会改变谁贡献信息。若参与者给出错误的早期解释，后续 Agent 可能复述并放大，最终决策把重复次数当成可信度；如果将错误写入 shared memory，跨任务还会扩散。论文主要验证有限轮团队决策，<strong>10/100/1000-step</strong> 的长期协作和持续记忆更新并无充分实验；不能将其直接视为 long-lived agent 的稳定性证据。</p>
+<h3>Claim vs Evidence</h3>
+<p><strong>Authors Claim</strong>：分布式信息协作存在可分离的通信/检索缺口，终局训练能诱导协调。</p>
+<p><strong>Experiments Actually Show</strong>：受控 PIU 对照和 transcript 干预支持上述两类 gap 与错误吸收现象；训练后有更高的参与率、信息提取和部分任务得分。</p>
+<p><strong>What Is Not Yet Proven</strong>：不同 Agent 贡献的真实 Shapley value、非合作激励下的稳健性、开放式无可验证 PIU 的任务、跨千步 memory 污染；某些子实验样本较小。</p>
+<h3>Contribution / Limitation / Research Value</h3>
+<p>贡献是 <strong>New Benchmark</strong>（可控 PIU）、<strong>New Evaluation</strong>（communication / retrieval gap 分解）、<strong>New Empirical Finding</strong>（无信息参与者也能显著伤害团队）、<strong>Agent RL Environment</strong>（全局决策奖励诱导通信）。作为 Multi-Agent baseline，适合测试共享记忆与通信压缩；作为 RL 研究平台，适合引入局部 reward 与全局 outcome 的反事实 attribution；作为 Agent 安全评测，可测试恶意或错误消息的传播路径。缺点是 PIU 提取与验证成本、文档领域局限、部分结果依赖特定评审器与提示结构。</p>
+<h3>Migration：把信息流变成可训练的 credit</h3>
+<p><strong>Original Problem</strong>：分布式事实决策 → <strong>Transferable Mechanism</strong>：PIU 可控分配和反事实消息干预 → <strong>New Research Question</strong>：哪条 Agent 消息真实改善最终决策？ → <strong>Method Modification</strong>：在训练中对每条消息做 remove / replace / reorder 反事实重放，估计 <code>ΔU</code>，并加上 PIU 覆盖约束 → <strong>Minimum Experiment</strong>：先在 TeamGym 200–500 个问题比较 global reward、PIU coverage reward、counterfactual reward → <strong>Model</strong>：开源 7B/14B agent → <strong>Dataset</strong>：TeamGym legal + finance → <strong>Baseline</strong>：无记忆、全 transcript、PIU-only、随机删消息 → <strong>Metric</strong>：最终准确率、PIU recall、token cost、error uptake、攻击成功率 → <strong>Expected Contribution</strong>：可解释且预算敏感的多 Agent credit → <strong>Risk</strong>：反事实调用开销高、PIU 标签未必完备，需控制预算和使用可信验证器。</p>
+<h3>五句话总结</h3>
+<p>TeamGym 把“多人合作没成功”拆成可测的通信、检索和合成问题。最重要的不是更多 Agent，而是事实能否被找到、传递和正确利用。单个无用发言者可能显著伤害全队。全局奖励可以诱导协调，但尚未解决局部贡献归因。下一步最有价值的是 PIU 驱动的反事实消息 credit 与 shared-memory provenance。</p>
+</div></article><article id="paper-2610.32784" class="paper paper-s"><div class="paper-head"><div class="eyebrow">TIER S · FULL TEXT VERIFIED</div><h3><a href="https://arxiv.org/abs/2610.32784" target="_blank" rel="noopener noreferrer">Video-MemComp: Taylor-Guided Sensitivity-Aware Memory Management for Streaming Video Understanding</a></h3><div class="tags"><span class="pill">Video Acceleration</span></div><p class="meta">Yonghui Niu; Yuhao Ji; Chang Nie; Jiao Zhang; Yilong Li; Junlan Feng; Ran He; Caifeng Shan; Chaoyou Fu · 2026-10-23 · ACM Multimedia 2026 (作者标注)<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.32784v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.32784" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版：这篇论文到底干了什么？</h3>
+<p>长视频流每来一帧就产生新的视觉 KV，直接全缓存会耗尽显存。多数压缩方法只问“哪些 token 相似、可以合并”，但不问“同样的压缩误差发生在不同 Transformer 层会造成多大后果”。Video-MemComp 把压缩损失分成局部近似误差与层级结构敏感度：先在 RoPE 旋转前安全地聚合相似视觉 token，再用离线梯度先验和在线熵把有限 KV 预算分配给更敏感的层。它是 <strong>training-free</strong> 的部署侧方法。论文在 Qwen2.5-VL-3B 上报告 KV 记忆节省超过 90%，整体准确率从 62.3% 到 64.1%；同时提供真实 A6000 上的显存、TTFT 和吞吐数据，值得仔细区分 trade-off。</p>
+<h3>Background &amp; Gap</h3>
+<p>一个持续 20 分钟的摄像头流中，背景墙、桌子、人物服装重复出现，但一瞬间的物品移动可能决定问题答案。只做相似 token 删除会抹掉关键瞬态；统一每层压缩率又假设所有 Transformer 层对误差同样敏感。更隐蔽的是 RoPE：在位置编码旋转后直接平均两个 K，可能把相似语义放进错误的相位空间。本文强调局部表示误差与跨层放大效应是不同的预算分配问题。</p>
+<h3>Core Insight 与理论依据</h3>
+<p>用一阶 Taylor 展开把压缩后的模型输出扰动近似成各层局部误差经 Jacobian 传播的加权和。局部误差小不代表最终输出误差小，因为高敏感层可把微小扰动放大。因此需要 <strong>within-layer</strong> 的保真压缩与 <strong>across-layer</strong> 的 sensitivity-aware budget 两个正交组件。在线熵提供输入依赖调整，但离线梯度先验更稳定；论文的权重消融显示熵权过大反而变差。</p>
+<h3>Method Deep Dive：视频流 → 受限 KV → 回答</h3>
+<ol>
+<li><strong>流式预填充</strong>：视频帧进入视觉编码器与 LLM，逐帧产生视觉 token / KV；不要求重新训练底座。</li>
+<li><strong>跨帧过滤</strong>：检测时间相近且表示冗余的 token，减少静态背景反复占用 cache。这个步骤主要节省时间冗余。</li>
+<li><strong>帧内聚合</strong>：在 pre-RoPE safe zone 聚合同帧相似 token，避免直接混合旋转后的 key；通过 attention-conserving logit bias 尽量维持聚合前的注意力质量。这一步压缩空间冗余，而不是机械丢弃所有低分 token。</li>
+<li><strong>结构敏感度先验</strong>：利用离线梯度估计不同层的压缩扰动对下游输出的影响；将层视为不同“容错能力”的容器。</li>
+<li><strong>动态预算</strong>：融合均匀先验、结构敏感度和在线上下文熵，决定每层应保留多少 KV token；预算约束下对每层的重要性排序并截取 Top-K。</li>
+<li><strong>在线推理</strong>：新帧更新缓存，后续问题只在有限显存预算内访问已压缩历史；评估离线 Video QA 与 RVS 流式任务。</li>
+</ol>
+<h3>关键公式 / Objective（概念解释）</h3>
+<p>一阶扰动可写作 <code>Δoutput ≈ Σ_l J_l · Δh_l</code>，其中 <code>Δh_l</code> 是第 l 层局部压缩误差，<code>J_l</code> 是后续计算对该层扰动的敏感度。目标不是只最小化 <code>Σ_l ||Δh_l||</code>，而是在总预算 <code>Σ_l b_l≤B</code> 下优先减少高敏感层的加权误差。预算策略综合 uniform prior、offline gradient sensitivity 和 online entropy；这不是论文完整符号的逐字复刻，而是机制等价的解释式。超参数权重需要离线校准，不能声称“完全零校准”。</p>
+<h3>Toy Example</h3>
+<p>假设 8 层模型、每层可保留的 KV 总预算只有 6,000 tokens。第 3 层对“杯子是否被拿走”的特征很敏感，第 7 层主要重复背景。平均分配会给两层相同份额；Video-MemComp 则在第 3 层保留更多与事件有关的 token，在第 7 层更积极聚合。若只按相似度压缩，短暂的杯子消失可能被当成噪声；敏感度先验能降低这类误删风险。这里的层数和事件仅用于说明，不是原文设置。</p>
+<h3>Experiment Setup / Baselines</h3>
+<p>评测覆盖 <strong>Qwen2.5-VL-3B / 7B、Qwen2-VL-7B、LLaVA-OneVision-7B</strong> 等组合，数据包括 <strong>EgoSchema、MLVU、VideoMME、RVS-Ego、RVS-Movie</strong>；对照 Full Cache、ReKV、InfiniPot-V、StreamMem、StreamingTOM 等。离线与流式设置、帧率、预算不同，跨表比较时必须固定 backbone 与协议。系统实验使用 <strong>NVIDIA RTX A6000</strong>，报告 peak GPU memory、visual encoder latency、TTFT、throughput，而非仅理论 FLOPs。</p>
+<h3>Efficiency Breakdown（论文已报告值）</h3>
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th>Baseline</th>
+  <th>Proposed</th>
+  <th>Change / Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Frames</td>
+  <td>Qwen2-VL 表 1: 768</td>
+  <td>同为 768</td>
+  <td>帧数不变，压缩缓存</td>
+</tr>
+<tr>
+  <td>Visual Tokens / KV</td>
+  <td>Qwen2-VL 约 100K budget</td>
+  <td>6K budget</td>
+  <td>预算降低约 94%（配置比较）</td>
+</tr>
+<tr>
+  <td>FLOPs</td>
+  <td>Not Reported</td>
+  <td>Not Reported</td>
+  <td>不得从 KV 压缩率推算 FLOPs</td>
+</tr>
+<tr>
+  <td>GPU Memory（A6000，LLaVA-OV）</td>
+  <td>ReKV 22.95 GB</td>
+  <td><strong>16.74 GB</strong></td>
+  <td><strong>-27.1%</strong> vs ReKV</td>
+</tr>
+<tr>
+  <td>Video Encoder Latency</td>
+  <td>ReKV 82.75 ms/frame</td>
+  <td><strong>64.92 ms/frame</strong></td>
+  <td><strong>-21.5%</strong> vs ReKV</td>
+</tr>
+<tr>
+  <td>TTFT</td>
+  <td>ReKV 0.0846 s</td>
+  <td><strong>0.0302 s</strong></td>
+  <td><strong>-64.3%</strong> vs ReKV</td>
+</tr>
+<tr>
+  <td>Throughput</td>
+  <td>ReKV <strong>35.61 tokens/s</strong></td>
+  <td>27.58 tokens/s</td>
+  <td><strong>-22.6%</strong>（更慢）</td>
+</tr>
+<tr>
+  <td>Accuracy（Qwen2.5-VL-3B overall）</td>
+  <td>62.3%</td>
+  <td><strong>64.1%</strong></td>
+  <td><strong>+1.8 pp</strong></td>
+</tr>
+</tbody>
+</table>
+<p>上述系统数据来自 <strong>Table 3</strong>，不能把 encoder latency 的减少直接说成整个视频端到端 speedup；论文同时显示吞吐率低于 ReKV。原始 LLaVA-OV full-cache 在该配置下 OOM，因此不应虚构它的显存数值。</p>
+<h3>Results / Table &amp; Figure Reading</h3>
+<p><strong>Table 1</strong>：Qwen2-VL-7B 在约 6K cache 预算下，Video-MemComp 的综合 ALL 为 <strong>65.5</strong>，StreamMem <strong>65.1</strong>，InfiniPot-V <strong>64.7</strong>，full-cache 约 <strong>64.9</strong>（协议细节需对齐）。这说明压缩可缓解注意力稀释，但优势很小，不宜夸大。</p>
+<p><strong>Table 2</strong>：在 RVS 流式任务上，Video-MemComp 平均 accuracy <strong>56.6%</strong>，高于 StreamingTOM <strong>55.8%</strong>；RVS-Ego <strong>60.1%</strong> 对 <strong>58.3%</strong>，但 RVS-Movie <strong>53.1%</strong> 低于 StreamingTOM <strong>53.2%</strong>。这是典型的强弱场景并存。</p>
+<p><strong>Table 3</strong>：最有系统价值。峰值显存 22.95→16.74GB、TTFT 0.0846→0.0302s，但 tokens/s 35.61→27.58，说明低交互延迟与高持续吞吐不是同一目标。</p>
+<p><strong>Figure 5</strong>：不同预算下 token / KV / hybrid 压缩的 Pareto 曲线，提示严格预算时混合方案更稳。<strong>Table 4</strong>：增加帧内聚合后，MLVU <strong>67.68→68.19</strong>、VideoMME long <strong>52.3→52.8</strong>，但 short <strong>70.7→70.3</strong>。<strong>Table 5</strong>：动态分层在阈值 .90 下整体 <strong>61.00→61.53</strong>，说明敏感度分配有贡献但幅度有限。</p>
+<h3>Ablation / Failure Cases</h3>
+<p>帧内聚合提升长视频而略伤短视频；高在线熵权重会因激活方差造成不稳定；在 RVS-Movie 上没有赢过所有强 baseline；吞吐率落后 ReKV。作者报告部分精度超过 full cache，但并非所有模型/任务一致。与只做全局 KV 剪枝不同，这个方法有离线校准开销与实现复杂度，且论文未提供统一可比较的 FLOPs、能耗和跨硬件 end-to-end latency 曲线。</p>
+<h3>Claim vs Evidence</h3>
+<p><strong>Authors Claim</strong>：training-free 的 Taylor 敏感度压缩可实现有限缓存下的稳定长视频理解。</p>
+<p><strong>Experiments Actually Show</strong>：多 backbone、多视频 benchmark 与 A6000 系统测量支持 memory / TTFT 改善，部分精度也有提高。</p>
+<p><strong>What Is Not Yet Proven</strong>：1000-step 交互时的语义遗忘边界、视频事件反事实保真、与 agent tool-use 的联合收益、在多用户并发下的真实服务吞吐收益。</p>
+<h3>Contribution / Research Value</h3>
+<p>贡献为 <strong>New Mechanism</strong>（pre-RoPE 聚合 + attention bias）、<strong>New System</strong>（敏感度驱动的层预算）、<strong>Empirical Finding</strong>（memory、TTFT 与吞吐可相互冲突）。作为 Video LLM 加速 baseline 值得复现；作为 streaming agent 的 memory policy 可迁移；作为 benchmark 设计，应补 event recall 与 query-time replay；作为安全研究，应测试压缩后关键事件被抹掉或错误事件被保留的风险。最大的价值在于把“缓存预算”变成“错误传播风险预算”。</p>
+<h3>Migration：从视频缓存到可解释 Agent Memory</h3>
+<p><strong>Original Problem</strong>：视频 KV 随帧数增长 → <strong>Transferable Mechanism</strong>：用梯度敏感度估计不同历史片段的未来价值 → <strong>New Research Question</strong>：能否按 query / future action 的敏感度管理 streaming agent 的视频证据？ → <strong>Method Modification</strong>：在视觉缓存条目上同时记录事件级 provenance、时间位置与下游答案敏感度；按问题动态回填关键片段 → <strong>Minimum Experiment</strong>：在 RVS-Ego、VideoMME Long 做同缓存预算下的 event recall + QA → <strong>Model</strong>：Qwen2.5-VL-3B / 7B → <strong>Dataset</strong>：RVS-Ego、VideoMME → <strong>Baseline</strong>：uniform KV、StreamMem、Video-MemComp、FrameBlend → <strong>Metric</strong>：accuracy、事件召回、TTFT、峰值显存、tokens/s → <strong>Expected Contribution</strong>：query-aware 且可恢复的事件缓存 → <strong>Risk</strong>：查询未知时预先剪掉关键帧、重计算使 P99 latency 恶化。</p>
+<h3>五句话总结</h3>
+<p>视频缓存的难点不只是 token 重复，还有误差会在哪一层被放大。Video-MemComp 把局部压缩与跨层预算分开处理。它在真实 GPU 上显著降低显存与 TTFT。吞吐率却可能变差，不能只讲“加速”。最值得迁移的是敏感度预算与事件级可恢复缓存。</p>
+<h3>最小复现门槛</h3>
+<p>复现时应同时锁定视觉帧率、最大输入时长、缓存 token 预算、GPU 型号和 batch size。先复现 Table 3 的显存/TTFT/throughput 三项，再做缓存敏感度消融，避免只在准确率上调参。</p>
+</div></article></section><section id="tier-a" class="section"><h2>Tier A · 重点机制分析（部分仅摘要可得）</h2><details id="paper-2610.36877" class="paper paper-a"><summary><span class="tiermark">TIER A</span><strong>GUI-JEPA: Candidate-Conditioned JEPA Latents as a Fast Action Policy for Mobile GUI Agents</strong> <span class="subcat">Agent</span></summary><div class="paper-head"><h3><a href="https://arxiv.org/abs/2610.36877" target="_blank" rel="noopener noreferrer">GUI-JEPA: Candidate-Conditioned JEPA Latents as a Fast Action Policy for Mobile GUI Agents</a></h3><div class="tags"><span class="pill">Agent</span></div><p class="meta">Bingchao Wang et al. · 2026-10-27 · arXiv preprint<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.36877v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.36877" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版</h3>
+<p>手机 GUI Agent 通常用 7B VLM 把每一步操作解码成文本，虽然表达能力强，但一次点击也要经过大量 autoregressive token 生成。GUI-JEPA 改成“给定候选动作，在屏幕潜在表示中预测并评分”，不再让大语言模型逐 token 产生操作。它先对未标注 GUI 截图学习 JEPA 表征，再针对候选 action/region 做潜在预测，轻量 head 一次批量选择动作。作者报告在 AndroidControl 上，同 GPU 比微调 Qwen2.5-VL-7B <strong>快 2.8–4.0 倍</strong>，仅用其 <strong>6% 参数</strong>，但保留的 in-distribution accuracy 是 <strong>86–92%</strong>，存在明显准确率代价。</p>
+<h3>Background &amp; Core Insight</h3>
+<p>传统 Agent pipeline 是 <code>screenshot → VLM → textual action → executor</code>，瓶颈既有视觉编码，也有 token-by-token decoding。JEPA 方案把 action selection 转成 latent-space discriminative scoring：候选动作有限时，不必生成一段文字再解析。作者还发现随机初始化 predictor 与 screen-dynamics 预训练 predictor 表现相当，提示收益更可能来自<strong>决策条件化的表示学习</strong>，而非学会精准预测屏幕动力学。这一点很值得做消融验证。</p>
+<h3>Method / Agent Architecture</h3>
+<p><code>Instruction + Screenshot → JEPA Encoder → Candidate action/region-conditioned latent predictor → Batched scoring heads → Selected GUI action → Environment</code>。环境状态是屏幕、指令与候选动作；工具历史、长时记忆和跨 app 任务依赖在可获取摘要中没有充分展开。若候选动作集不包含正确操作，快速 scorer 无法弥补候选生成的召回错误；这也是 failure propagation 的第一环。</p>
+<h3>Experiments / Results / Figure</h3>
+<p>在 <strong>AndroidControl</strong>、同 GPU、相同输入的微调 Qwen2.5-VL-7B 对照下：推理速度 <strong>2.8–4.0×</strong>；参数量约为 baseline <strong>6%</strong>；in-distribution accuracy 为 baseline 的 <strong>86–92%</strong>，不是“准确率 86–92%”。摘要还给出 predictor 的随机初始化对照，支持决策目标比屏幕动力学预训练更关键。最强 baseline 为作者微调的 Qwen2.5-VL-7B；其他基线和具体 Table 编号须读正文确认，不虚构。</p>
+<h3>Contribution / Limitation / Research Value</h3>
+<p>贡献为 <strong>New Architecture</strong>：decoder-free 的 latent action policy；<strong>New Empirical Finding</strong>：预训练 dynamics predictor 未必必要；<strong>System Value</strong>：对高频 GUI 交互有直接延迟价值。局限是候选动作枚举、分布外 app、复杂自由文本输入和 100/1000-step 任务稳定性尚不能由 AndroidControl 摘要结果证明。错误 action 一旦执行会改变屏幕状态，随后所有候选都基于错误状态评分；必须加状态验证与回退。与 RL 的交叉是让 critic 或 verifier 选择何时启用慢 VLM，而不是把快策略用于所有状态。</p>
+<h3>Migration / Minimum Experiment</h3>
+<p><strong>Original</strong>：GUI 动作文本解码慢 → <strong>Mechanism</strong>：latent candidate scoring → <strong>Question</strong>：能否根据不确定性在快速 scorer 与完整 VLM 间切换？ → <strong>Modification</strong>：引入校准置信度与 action verifier，低置信度走慢策略 → <strong>MVE</strong>：AndroidControl 同一划分测 fast-only、VLM-only、hybrid → <strong>Model</strong>：GUI-JEPA 与 Qwen2.5-VL-7B → <strong>Baseline</strong>：静态阈值、随机切换 → <strong>Metric</strong>：step latency、end-to-end success、错误恢复率、GPU memory → <strong>Expected Contribution</strong>：风险感知的 Agent 加速策略 → <strong>Risk</strong>：校准在新 app 失效。<strong>Worth Deep Reading: YES</strong>。</p>
+<h3>Efficiency / Agent Checklist</h3>
+<p>训练底座：需要训练 JEPA / action scorer，<strong>不是 training-free</strong>；token decoding 被替换；FLOPs、峰值显存、长任务 wall-clock、候选集构造成本：<strong>Not Reported（当前可获取摘要）</strong>。最值得看论文 Method 的 candidate-conditioned predictor 与速度-准确率曲线。</p>
+<h3>Experiment Audit：如何验证“快”不是因为任务变简单？</h3>
+<p>需要确认两类系统成本是否纳入 wall-clock：候选动作枚举和候选 region 构造，以及 screen encoder 的单次前向。若候选由另一个大模型生成，整体 Agent 的收益会小于单独 scorer 的加速。还应区分 <strong>per-step action latency</strong> 与 <strong>episode completion time</strong>：错误点击导致回退，可能使 4× 单步速度优势在长任务中消失。论文的 in-distribution accuracy 保留率已经提示这种风险。建议绘制 <code>x=总任务延迟，y=任务成功率</code>，而不是仅对比每秒动作数。</p>
+<h3>Ablation / Claim vs Evidence</h3>
+<p>作者观察“随机初始化 predictor 不逊于 dynamics-pretrained predictor”，支持任务条件化 latent scoring 的价值，却不能证明 JEPA pretraining 对 encoder 也没有帮助。需要分别冻结 encoder、替换 predictor、改变候选数、改变候选位置质量，才能把贡献拆开。<strong>Authors Claim</strong> 是 decoder-free policy 有更好的效率；<strong>Evidence</strong> 是 AndroidControl 同 GPU 的 2.8–4× 加速；<strong>Not Proven</strong> 是跨应用开放式动作、1000-step 持续运行以及真实用户输入的鲁棒性。与 Video Acceleration 的迁移关键在于把昂贵的生成式决策改为可验证的候选选择，但前提是候选召回充分。</p>
+<h3>Research Question</h3>
+<p>如果 VLM 原本在开放式 GUI 操作上擅长纠错，压缩成候选评分器之后会不会失去这种能力？必须报告候选覆盖率与错误回退的独立曲线，才能解释系统加速的真正来源。</p>
+<h3>Minimum Experiment 的判定标准</h3>
+<p>只有当 hybrid 在相同任务成功率下显著降低端到端延迟，或在相同延迟下显著提高成功率，才应视为有效。若只报告单步 scorer 的吞吐而没有失败回滚成本，不能证明 Agent 系统更快。</p>
+</div></details><details id="paper-2610.37482" class="paper paper-a"><summary><span class="tiermark">TIER A</span><strong>From Interaction to Capability: Task Advancement as State and Supervision for GUI Agents</strong> <span class="subcat">Agent</span></summary><div class="paper-head"><h3><a href="https://arxiv.org/abs/2610.37482" target="_blank" rel="noopener noreferrer">From Interaction to Capability: Task Advancement as State and Supervision for GUI Agents</a></h3><div class="tags"><span class="pill">Agent</span></div><p class="meta">Ziyang Chen; Qian Li; Chengwei Qin · 2026-10-27 · arXiv preprint<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.37482v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.37482" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版</h3>
+<p>GUI Agent 的 memory 往往把过去轨迹简单压缩成摘要，但一段失败的任务中可能包含真正有用的局部操作。TAM 把“完成了什么可验证子目标”当成状态，并从已验证的局部进展中抽象出可复用操作，而不是以整条任务成功/失败筛选经验。作者在 MobileWorld GUI-only 上报告，仅 Advancement State 就使成功率从 <strong>12.0% 到 28.2%</strong>；完整 TAM 比最强对照有 <strong>17.6% 相对成功率增益</strong>，每个成功任务的 lifecycle token 消耗减少 <strong>38.7%</strong>。核心是把 memory 从文本回忆升级成带前提、结果与验证条件的可执行 skill。</p>
+<h3>Background / Gap / Insight</h3>
+<p>长任务常跨应用：先下载文件、再上传表单、最后发送确认。若最后一步失败，整条 trajectory 标记失败，会把前面成功的“下载并定位文件”也丢弃；若简单保存所有成功动作，又会积累无效操作。TAM 以 <strong>verified task advancement</strong> 定义局部收益，让 memory 可以来自失败任务的成功片段。它与一般 reflection 的差别是必须说明“什么状态被真实改变了”，不只说“下次要小心”。</p>
+<h3>Method / Architecture</h3>
+<p><code>Goal + GUI state → Advancement State（已完成/待完成） → Planner → GUI actions → Environment → Local verification → Advancement supervision → Reusable operation library</code>。执行时，Advancement State 根据已验证结果更新剩余目标；任务结束后，从有效交互中提取输入要求、预期输出和验证条件，存为 procedural memory。若验证器错误地把失败判为成功，错误会从 state 传到后续 planning，再进入 skill library；这是应优先审计的 failure propagation。</p>
+<h3>Experiment / Results</h3>
+<p><strong>MobileWorld GUI-only</strong>：只增加 Advancement State，成功率 <strong>12.0→28.2%</strong>，绝对 +16.2pp，说明在线任务进展表示本身有价值。<strong>Full TAM</strong>：相对最强 baseline <strong>+17.6%</strong>（注意不是 +17.6pp），且 lifecycle tokens per solved task <strong>-38.7%</strong>；这是把执行成本与记忆复用一起考虑的指标。<strong>SPA-Bench</strong>：作者报告在 single-app English Level 3 达到 SOTA，但摘要未给具体数字，不能比较未列出的 baseline。</p>
+<h3>Contribution / Limitations / Research Value</h3>
+<p><strong>New Mechanism</strong>：把成功片段与任务整体成败解耦；<strong>Memory Lifecycle</strong>：带验证条件的 procedural skill 形成和复用；<strong>Evaluation</strong>：token per solved task 而非只看每轮成本。尚未证明 skill 在长期更新下不会过期、相互冲突，或在 1000-step 中不会造成错误积累；真实验证器质量也可能决定效果。对 RL 很自然的迁移是将 advancement delta 作为局部 credit，但不能直接把每个已验证状态变化都等同于全局价值——可能存在短期推进、长期破坏。</p>
+<h3>Migration / MVE</h3>
+<p><strong>Original</strong>：失败轨迹中丢失局部成功 → <strong>Mechanism</strong>：verified advancement → <strong>Question</strong>：能否按后续任务收益决定 skill 是否写入？ → <strong>Modification</strong>：对候选 skill 做 replay / ablation，记录 success delta、token cost、失效率 → <strong>Minimum Experiment</strong>：MobileWorld 50–100 个可复用子流程，比较全保存、只保存成功任务、TAM、TAM+counterfactual credit → <strong>Model</strong>：同一开源 GUI Agent → <strong>Dataset</strong>：MobileWorld → <strong>Baseline</strong>：无记忆 / reflection / TAM → <strong>Metric</strong>：success、token/solved、stale skill rate → <strong>Expected Contribution</strong>：可审计的 skill utility → <strong>Risk</strong>：反事实重放开销高、验证器可被 hack。<strong>Worth Deep Reading: YES</strong>。</p>
+<h3>Long-Horizon Question</h3>
+<p>摘要覆盖多步 GUI 任务，但未报告 10、100、1000-step 分桶曲线；必须补跨 app、长期更新、失败后恢复和 skill 版本冲突。<strong>证据范围：仅根据 Abstract / 可获取信息总结。</strong></p>
+<h3>关键机制与可能的 Reward Hacking</h3>
+<p>“已验证的进展”不是自然存在的客观变量，必须由环境检查器或任务状态差分定义。比如上传文件之后出现成功提示，是局部 advancement；但文件上传到错误账户时，界面提示仍可能误导检查器。若把 advancement 当 RL dense reward，策略可能学会制造易验证但与最终任务无关的中间状态。应增加两种反事实：保留已完成状态但删除对应记忆，或保留记忆但重置环境状态，以区分 state tracking 与 skill transfer 的独立贡献。</p>
+<h3>Claim vs Evidence / Reading Priority</h3>
+<p><strong>Authors Claim</strong>：TAM 同时提高成功率和生命周期 token 效率。<strong>Experiments Actually Show</strong>：MobileWorld 的 12.0→28.2、相对 +17.6% 与 -38.7% token per solved task；但摘要没有展示所有任务的方差、错误恢复次数和具体 token 计费范围。<strong>Not Yet Proven</strong>：多个 Agent 共用 skill library 时是否存在冲突、重复技能合并与来源污染。阅读时应优先检查 Task Advancement State 的更新规则、operation abstraction 的验证条件，以及成功/失败轨迹中局部片段的对照实验。</p>
+<h3>评估的最弱环节</h3>
+<p>需要按“任务整体成功 / 局部验证成功 / 技能实际复用成功”三个层级分别统计，防止一个指标替代另一个。对失败任务中的成功片段尤其要检查是否依赖未保存的隐式环境状态。</p>
+</div></details><details id="paper-2610.37624" class="paper paper-a"><summary><span class="tiermark">TIER A</span><strong>Rare, Relevant, and Still Wrong: How Memory Fails LLM Group Decisions</strong> <span class="subcat">Agent</span></summary><div class="paper-head"><h3><a href="https://arxiv.org/abs/2610.37624" target="_blank" rel="noopener noreferrer">Rare, Relevant, and Still Wrong: How Memory Fails LLM Group Decisions</a></h3><div class="tags"><span class="pill">Agent</span></div><p class="meta">Anouar Imel; Imad Charradi; Abderrahman Sghir; Khalil El Khammar · 2026-10-27 · arXiv preprint<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.37624v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.37624" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版</h3>
+<p>多 Agent 讨论结束后，把所有人的发言压缩成短记忆再交给决策者，应该优先保留稀有信息还是相关信息？作者构造 CrossProfile：在保持事实文本不变时，交叉改变支持事实、诱饵事实与无关事实分别被多少 Agent 持有。结果发现两种常用启发式都不可靠：相关性会把“看似与问题有关的诱饵”保留下来；稀有性只有在稀有事实恰好重要时才奏效。更意外的是，决策模型会过度信任“很多 Agent 都说过”的事实，移除或打乱归属标签后，某些配置的准确率反而提高 <strong>13–24pp</strong>。</p>
+<h3>Background &amp; Gap</h3>
+<p>传统 hidden-profile 多 Agent 任务中，关键事实常恰好只有少数人知道，所以“优先保留稀有信息”看似合理，但稀有性和因果相关性被混淆。一个罕见事实可能是无关细节，所有人都重复的事实也可能是关键条件。CrossProfile 通过保持文字不变、只改变 ownership 让这些因素解耦，实质上是一个 memory-selection 的受控因果诊断。</p>
+<h3>Core Method / Architecture</h3>
+<p><code>多 Agent 私有事实 → 发言/笔记 → memory selector（rare-first / relevance-first / random） → 压缩记忆 → final decision</code>。测试时交叉分配 supporting、decoy、irrelevant 事实，并对来源归属标签进行移除/随机化。这里 memory 不只是存储文本，还隐含“多少人说过”的社会证明线索。若压缩阶段把诱饵保存并标为共识，后续 Agent 的决策错误会被放大。</p>
+<h3>Experiment / Results</h3>
+<p>CrossProfile 含 <strong>60 个模板、480 个任务</strong>，模型覆盖 Qwen2.5-7B、Llama-3.1-8B 与两个 DeepSeek 模型。<strong>结果 1</strong>：在经典 hidden-profile 配置中，即使是理想 relevance filter，也比 rarest-first 低 <strong>23–31pp</strong>，因为它会保留 on-topic decoys。<strong>结果 2</strong>：rarest-first 整体上与随机选择接近，只在稀有事实恰好有用的子配置占优。<strong>结果 3</strong>：去掉或打乱来源标签，经典配置准确率提高 <strong>13–24pp</strong>；真实自然讨论中，证据甚至在压缩前已丢失，完整 transcript 可能比没有笔记还差。上述数值均是特定配置，不能混成全局平均。</p>
+<h3>Contribution / Limitation / Research Value</h3>
+<p>贡献是 <strong>New Benchmark</strong>（所有权交叉干预）、<strong>New Empirical Finding</strong>（社会证明偏差）、<strong>Memory Evaluation</strong>（证据平衡比启发式标签重要）。局限：受控模板可能低估真实长文档复杂性；来源标签被随机化提高准确率不意味着真实部署应永远删除 provenance——真正目标是区分<strong>来源数量</strong>与<strong>独立证据质量</strong>。与 TeamGym 的 Collision 明确：两者都研究分布式事实，但 TeamGym 分解检索/通信，CrossProfile 研究记忆压缩与归属偏差；可互补。</p>
+<h3>Migration / Minimum Experiment</h3>
+<p><strong>Original</strong>：群体摘要被稀有性/相关性误导 → <strong>Mechanism</strong>：ownership counterfactual → <strong>Question</strong>：可否用“移除这条记忆后决策是否改变”衡量 memory credit？ → <strong>Modification</strong>：事实级 counterfactual influence + provenance 去重 + 冲突校验 → <strong>MVE</strong>：CrossProfile + TeamGym 小规模组合，对比 rare-first、relevance-first、random、counterfactual selector → <strong>Model</strong>：Qwen2.5-7B → <strong>Dataset</strong>：CrossProfile → <strong>Metric</strong>：accuracy、PIU recall、decoy retention、token cost → <strong>Expected Contribution</strong>：因果而非频率驱动的 memory selector → <strong>Risk</strong>：重放昂贵、模型本身的错误会污染 influence estimate。<strong>Worth Deep Reading: YES</strong>。</p>
+<h3>Long-Horizon / Failure Propagation</h3>
+<p>原文关注讨论摘要与决策，不能证明跨 100/1000 次任务写入的稳定性。最重要的失效链是 <code>诱饵 → 被多 Agent 重复 → memory 记录为共识 → 后续 retrieval 加权 → 最终错误</code>。<strong>证据范围：仅根据 Abstract / 可获取信息总结。</strong></p>
+<h3>Ablation / Mechanistic Interpretation</h3>
+<p>CrossProfile 的关键控制变量不是模型大小，而是<strong>保持句子内容不变，仅更换哪个 Agent 知道它</strong>。这使“同一条事实为何在不同团队中被赋予不同权重”成为可研究的问题。来源标签去除后准确率改善，可能有两种解释：一是模型对多数人复述过度加权；二是标签占用上下文或改变 prompt 格式。要区分它们，应固定 token 数与顺序，只替换来源计数，并做独立模型的 paired test。摘要指出自然讨论的完整 transcript 可能劣于无笔记，说明问题可能发生在<strong>发言生成阶段</strong>，而不只是最后的 memory compressor。</p>
+<h3>Evaluation Design / Claim vs Evidence</h3>
+<p>建议将 memory error 拆为 <code>missing support / retained decoy / provenance bias / synthesis error</code> 四类，报告每类在同 token budget 下的变化。<strong>Authors Claim</strong> 是 rare/relevance 选择不可靠；<strong>Evidence</strong> 是 480 个受控任务及来源标签干预；<strong>Not Proven</strong> 是跨千轮真实协作系统的因果稳定性。与 TeamGym 的关系不只是相关工作：TeamGym 的 PIU 是事实必要性，CrossProfile 的 ownership 反事实是来源偏差；二者结合可检验“正确事实被说出来之后，压缩器是否还会把它抹掉”。</p>
+</div></details><details id="paper-2610.29229" class="paper paper-a"><summary><span class="tiermark">TIER A</span><strong>Cache Locally, Recompute Selectively for Streaming Video Understanding</strong> <span class="subcat">Video Acceleration</span></summary><div class="paper-head"><h3><a href="https://arxiv.org/abs/2610.29229" target="_blank" rel="noopener noreferrer">Cache Locally, Recompute Selectively for Streaming Video Understanding</a></h3><div class="tags"><span class="pill">Video Acceleration</span><span class="pill warm">BACKFILL</span></div><p class="meta">Junhyeok Lee; Sangyoon Lee; Jaeho Lee · 2026-10-21 · arXiv preprint<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.29229v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.29229" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版</h3>
+<p>Streaming Video Agent 通常在用户还没提问时先处理每一帧，把视觉 KV 缓存在后台；等问题来了就直接复用，避免等待。但是预填充时并不知道未来问题是什么，且为了节约每帧成本只能使用短上下文，容易把关键画面编码错。FrameBlend 的策略是<strong>先廉价缓存，问题到来时只对相关视觉 token 重新 prefill</strong>，用问题相关上下文替换部分旧 KV。作者在三种 streaming 框架、五个 benchmark 上报告最高 <strong>+3.9pp accuracy</strong>，RVS-Ego 的每帧 prefill FLOPs 降低超过 <strong>20%</strong>，某些 retrieval-based 框架总处理时间下降 <strong>14–59%</strong>，包含重算成本。</p>
+<h3>Background / Core Insight</h3>
+<p>传统缓存默认 <code>cache once, reuse forever</code>，但“缓存时可见的上下文”和“回答问题时真正需要的上下文”不一致。比如连续监控一间教室，预填充时只保留最近几秒，后来问“谁最先拿走红色书包”，相关帧的 KV 可能缺少早期人物身份线索。FrameBlend 不要求在流开始时猜出所有未来 query，而是把计算分成 idle-time cheap pass 与 query-time targeted correction。</p>
+<h3>Method</h3>
+<p><code>Video stream → Short-window per-frame prefill → Local KV cache → Query arrives → Query-relevant token selection → Selective re-prefill with query context → Replace cached KVs → Answer</code>。节省的是<strong>预填充的注意力上下文计算</strong>，而非简单删帧；重算成本发生在 query 时，必须同时考虑低查询频率与高查询频率两种工作负载。方法无需重新训练（training-free），但需要额外 token 选择和 KV 替换逻辑。</p>
+<h3>Experiments / Concrete Results</h3>
+<p>作者跨 <strong>3 个 SVU framework / 5 个 streaming 与 offline benchmark</strong> 对比，报告最高准确率增益 <strong>3.9pp</strong>；RVS-Ego 每帧预填充 FLOPs <strong>&gt;20%</strong> 下降；包含 query-time recomputation 后的总处理时间 <strong>-14% 至 -59%</strong>（适用于文中 retrieval-based framework 的设置）。这些数字并非同一配置的一张 Pareto 表，不能组合成“准确率 +3.9pp 同时 59% 更快”。论文摘要未给峰值显存、FPS、P99 延迟或所有 backbone 名称。</p>
+<h3>Efficiency Breakdown</h3>
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th>Baseline</th>
+  <th>Proposed</th>
+  <th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Frames</td>
+  <td>Not Reported</td>
+  <td>Not Reported</td>
+  <td>不以丢帧为主</td>
+</tr>
+<tr>
+  <td>Visual Tokens</td>
+  <td>Not Reported</td>
+  <td>选择性重算</td>
+  <td>未给绝对数</td>
+</tr>
+<tr>
+  <td>Per-frame prefill FLOPs（RVS-Ego）</td>
+  <td>100%</td>
+  <td>&lt;80%</td>
+  <td><strong>&gt;20% ↓</strong></td>
+</tr>
+<tr>
+  <td>Total processing time（部分框架）</td>
+  <td>100%</td>
+  <td>41–86%</td>
+  <td><strong>14–59% ↓</strong></td>
+</tr>
+<tr>
+  <td>GPU Memory</td>
+  <td>Not Reported</td>
+  <td>Not Reported</td>
+  <td>需复测</td>
+</tr>
+<tr>
+  <td>Accuracy</td>
+  <td>Baseline</td>
+  <td>Proposed</td>
+  <td><strong>最高 +3.9pp</strong></td>
+</tr>
+<tr>
+  <td>Throughput / FPS</td>
+  <td>Not Reported</td>
+  <td>Not Reported</td>
+  <td>需复测</td>
+</tr>
+</tbody>
+</table>
+<p>理论 prefill FLOPs 降低与总 wall-clock 时间下降不是同一指标；query-time 重算可能抬高单次交互 P99。最强对照需要在论文具体实验表内按框架分别确认。</p>
+<h3>Contribution / Limitation / Research Value</h3>
+<p>贡献为 <strong>New System Mechanism</strong>（query-aware KV repair）、<strong>New Efficiency Trade-off</strong>（把部分计算从 idle 转移到 query），以及缓存上下文失配的清晰诊断。风险在于选择器漏掉关键 token、重算过多时收益消失、查询密集时延迟堆积。对 Video Agent 的价值很高：允许系统先以低成本维持在线感知，再为具体工具动作恢复证据，而不是一开始就昂贵地处理全部帧。</p>
+<h3>Migration / MVE</h3>
+<p><strong>Original</strong>：未知查询下的 KV 缓存上下文失配 → <strong>Mechanism</strong>：query-time selective repair → <strong>Question</strong>：能否按答案不确定性触发修复，而不是每次都重算？ → <strong>Modification</strong>：加入 verifier / uncertainty gate 与事件级 provenance → <strong>MVE</strong>：RVS-Ego 在 1/5/20 query per minute 下测不同阈值 → <strong>Model</strong>：同一 Video VLM → <strong>Dataset</strong>：RVS-Ego、VideoMME → <strong>Baseline</strong>：full prefill、FrameBlend、Video-MemComp → <strong>Metric</strong>：accuracy、TTFT、P99、总 GPU-seconds、memory → <strong>Expected Contribution</strong>：负载自适应的 streaming repair → <strong>Risk</strong>：错误置信度导致漏检。<strong>Worth Deep Reading: YES</strong>。</p>
+<p><strong>证据范围：仅根据 Abstract / 可获取信息总结；完整表格需回到论文正文复核。</strong></p>
+<h3>Failure Case 与真实负载问题</h3>
+<p>FrameBlend 的理论吸引力来自把算力从“所有帧、所有时刻”转移到“少量被查询的帧”。但若监控系统每秒被询问多次，query-time recomputation 可能从稀疏事件变成持续负载；缓存替换还可能造成并发查询之间的状态冲突。更难的是历史事件被永久丢弃：若关键 token 在预填充阶段根本没有保留任何可回溯表示，后续 verifier 再强也无从修复。最小实验应报告查询到达率、查询长度、关键事件距当前时间、运动强度四个维度，而不是只报告平均视频时长。</p>
+<h3>Claim vs Evidence / Table Reading Priority</h3>
+<p><strong>Authors Claim</strong>：选择性重算解决预填充与查询上下文失配。<strong>Evidence</strong>：三框架五基准的 accuracy 与 processing time 结果支持在特定负载下收益。<strong>Not Yet Proven</strong>：极高查询频率、多个用户并发、显存碎片与 P99 延迟。应优先读论文中的 query-relevance selection、KV replacement 和总时间核算表，尤其检查是否把视频解码、视觉编码、后台 prefill 和查询响应全部计入同一 wall-clock。与 Video-MemComp 组合时不能只叠加百分比，必须在相同硬件与相同总预算下重新测量。</p>
+<h3>最强基线的选择</h3>
+<p>应按 retrieval-based 与非 retrieval-based 框架分别选择最强基线，而不是把其中一种的 59% 时间收益移植到所有架构。还要记录查询间隔、缓存命中和实际被重算 token 比例。</p>
+</div></details><details id="paper-2610.22347" class="paper paper-a"><summary><span class="tiermark">TIER A</span><strong>Speculative Forcing for Efficient Autoregressive Video Generation</strong> <span class="subcat">Video Acceleration</span></summary><div class="paper-head"><h3><a href="https://arxiv.org/abs/2610.22347" target="_blank" rel="noopener noreferrer">Speculative Forcing for Efficient Autoregressive Video Generation</a></h3><div class="tags"><span class="pill">Video Acceleration</span><span class="pill warm">BACKFILL</span></div><p class="meta">Hyunwook Choi; Seungryong Kim; Dongyoon Han; Sangdoo Yun · 2026-10-15 · arXiv preprint<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.22347v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.22347" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版</h3>
+<p>少步数 autoregressive video diffusion 已经把视频生成压到少量 denoising steps，但每个空间/时间 token 仍要经历全部步骤。Speculative Forcing 发现有些 token 在前一两步就几乎收敛，没必要继续反复更新；它把中间 clean estimate 当成“草稿”，用 verifier 判断是否提前接受。已接受 token 冻结不再去噪，但保留 KV 作为其余 token 的上下文。作者在 LongLive 上用平均约 <strong>1.7 步/token</strong> 逼近四步生成质量，运行速度超过 <strong>1.5×</strong>；在 Lingbot-World 2.0 上约 <strong>2.5 步/token</strong>，获得 <strong>1.35×</strong> 加速。重点是按 token 自适应分配 diffusion compute。</p>
+<h3>Background / Core Insight</h3>
+<p>统一步数假设所有 token 都同样难：静止背景的天空和快速转动的人手获得相同计算预算。作者观察中间 clean estimate 与最终输出的距离存在 token 间差异，因此可以引入 speculative decoding 的“草稿-验收”思想。不过这里验收不是离散 token 精确匹配，而是预测继续去噪的收益；若误验收运动边界，可能造成时间不连续。</p>
+<h3>Method / Verification</h3>
+<p><code>Autoregressive video chunk → Few-step denoiser → Intermediate clean estimate → Verifier → Accept &amp; freeze stable tokens / continue refining unstable tokens → Preserve accepted KV as context → Output frames</code>。论文比较 <strong>training-free verifier</strong>（依据与 clean content 的相似度、跨步稳定性）与 <strong>learned verifier</strong>（读取冻结生成器的中间特征估计剩余误差）。核心是冻结局部 token 但保留其作为 attention context 的功能，避免加速破坏未来帧条件。</p>
+<h3>Experiments / Results</h3>
+<p><strong>LongLive</strong>：四步模型对应平均 <strong>约 1.7 steps/token</strong>，实际 <strong>&gt;1.5×</strong> 加速，摘要报告 <strong>41.7 与 37.8 FPS</strong>（不同测试设置；不可合并为同一帧率）。<strong>Lingbot-World 2.0</strong>：相机运动持续变化的更难场景，平均 <strong>约 2.5 steps/token</strong>，<strong>1.35×</strong>，<strong>24.5 FPS</strong>。作者报告质量接近 full-step sampling，但摘要未提供 VBench/FVD 绝对分数，也未给完整 GPU memory 数值。理论步数比例 LongLive 为 4/1.7≈2.35，但真实 speedup 只有 &gt;1.5，说明 verifier、KV 管理和剩余 kernel overhead 不可忽略。</p>
+<h3>Efficiency Breakdown</h3>
+<table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th>Baseline</th>
+  <th>Proposed</th>
+  <th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Denoising steps/token（LongLive）</td>
+  <td>4</td>
+  <td>~1.7</td>
+  <td><strong>-57.5%</strong></td>
+</tr>
+<tr>
+  <td>Wall-clock speedup（LongLive）</td>
+  <td>1×</td>
+  <td>&gt;1.5×</td>
+  <td>小于理论步数比</td>
+</tr>
+<tr>
+  <td>Denoising steps/token（Lingbot-World 2.0）</td>
+  <td>4-step 对照</td>
+  <td>~2.5</td>
+  <td>平均更难提前接受</td>
+</tr>
+<tr>
+  <td>Wall-clock（Lingbot）</td>
+  <td>1×</td>
+  <td>1.35×</td>
+  <td>FPS 24.5</td>
+</tr>
+<tr>
+  <td>GPU Memory</td>
+  <td>Not Reported</td>
+  <td>Not Reported</td>
+  <td>KV 保留，不等于内存同比下降</td>
+</tr>
+<tr>
+  <td>Quality</td>
+  <td>Full-step sampling</td>
+  <td>近似保持</td>
+  <td>绝对分数 Not Reported</td>
+</tr>
+<tr>
+  <td>Frames / Tokens</td>
+  <td>Not Reported</td>
+  <td>自适应接受 token</td>
+  <td>未给绝对 token 数</td>
+</tr>
+</tbody>
+</table>
+<h3>Contribution / Limitation / Research Value</h3>
+<p><strong>New Mechanism</strong>：token-wise early acceptance for video generation；<strong>System Value</strong>：更细粒度地跳过冗余去噪；<strong>Evaluation</strong>：同时给 step count 与实际 FPS。局限：verifier 错误会造成不可逆的局部冻结，尤其在高运动、镜头切换和新物体出现时；token-wise 决策也可能破坏 GPU kernel 的整齐批处理，实际收益依赖实现。最有价值的迁移是把“预测后续计算价值”用于 Video VLM 的动态视觉 token 深度或 streaming cache refresh，但不能把生成器的去噪稳定性直接当成理解模型的证据价值。</p>
+<h3>Migration / MVE</h3>
+<p><strong>Original</strong>：所有视频 token 使用统一去噪步数 → <strong>Mechanism</strong>：中间估计 + verifier + early acceptance → <strong>Question</strong>：理解任务中能否让稳定视觉 token 提前退出编码器？ → <strong>Modification</strong>：用后层表征漂移和 query-conditioned evidence loss 训练轻量 verifier → <strong>MVE</strong>：Qwen2.5-VL 视频 QA 上固定计算预算比较 uniform depth、random exit、confidence exit → <strong>Model</strong>：小型 Video VLM → <strong>Dataset</strong>：VideoMME / MLVU → <strong>Metric</strong>：accuracy、FLOPs、真实 latency、GPU memory → <strong>Expected Contribution</strong>：任务感知的视觉 token early exit → <strong>Risk</strong>：静态相似不代表语义不重要。<strong>Worth Deep Reading: YES</strong>。</p>
+<p><strong>证据范围：仅根据 Abstract / 可获取信息总结。</strong></p>
+<h3>Verifier 的两条技术路线与消融重点</h3>
+<p>Training-free verifier 依赖中间 clean estimate 的相似性与跨步稳定性，优点是无需标注或重新训练，缺点是<strong>稳定的错误</strong>也可能被提前接受。Learned verifier 使用生成器中间特征预测未来误差，可能在复杂运动上更精确，但会引入训练数据偏差和额外推理开销。比较时不能只看接受率，还应按运动幅度、镜头切换、主体新出现、长时漂移分桶。若早期接受的 token 仍作为后续上下文，单点误差可通过 KV 在未来帧传播；这与普通图像扩散的局部冻结不同。</p>
+<h3>Claim vs Evidence / Systems Audit</h3>
+<p><strong>Authors Claim</strong>：按 token 提前接受能在保持生成质量时减少计算。<strong>Evidence</strong>：LongLive 与 Lingbot-World 2.0 的平均步数和实际 FPS/倍数。<strong>Not Yet Proven</strong>：在任意视频长度、动态分辨率和硬件上仍有相同收益；也未从摘要得到质量的逐指标绝对变化。系统评估应分解 verifier 计算、被跳过的 denoiser FLOPs、KV 更新、kernel launch 与批处理碎片。一个真正可迁移到 Video VLM 的机制必须用<strong>语义证据保留率</strong>替代生成像素稳定性作为验收标准。</p>
+<h3>失败条件</h3>
+<p>高速运动、场景突变和前景遮挡都可能让中间估计的稳定性失真。应绘制按 motion magnitude 分桶的接受率、质量变化与 FPS 曲线，而不只给整体平均值。</p>
+</div></details><details id="paper-2610.09804" class="paper paper-a"><summary><span class="tiermark">TIER A</span><strong>BoT-GRPO: Efficient Process-Reward RL for Reasoning via Bag-of-Token Aggregation</strong> <span class="subcat">RL</span></summary><div class="paper-head"><h3><a href="https://arxiv.org/abs/2610.09804" target="_blank" rel="noopener noreferrer">BoT-GRPO: Efficient Process-Reward RL for Reasoning via Bag-of-Token Aggregation</a></h3><div class="tags"><span class="pill">RL</span><span class="pill warm">BACKFILL</span></div><p class="meta">Yingxiang Yang; Weihang Xiao; Zhunxuan Wang; Joshua Flashner; Niresh Agarwal · 2026-10-07 · COLM 2026 Workshop on Efficient Reasoning（作者标注）<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.09804v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.09804" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版</h3>
+<p>GRPO 常把同一 rollout 的结果优势分配给每个 token，这会忽略中间推理步骤的质量。BoT-GRPO 试图不训练额外 value network，就利用 token-level reward：把一组 rollout 的 token 奖励合并为一个“bag”，按原序列长度倒数加权，再根据组内统计构造 token 优势，避免长答案因 token 数多而主导训练。作者报告 React 前端代码生成达到 <strong>80% compile rate</strong> 的训练速度最多比 GRPO <strong>快 1.9×</strong>，AIME 数学推理的 Pass@k 最多 <strong>+8.1 个百分点</strong>，只需约一半训练步数。核心不是奖励越密越好，而是<strong>长度无偏、稳定的过程信号</strong>。</p>
+<h3>Background &amp; Gap</h3>
+<p>普通 GRPO 只有 terminal reward，长推理中错误与正确 token 共用一个 advantage；简单加 process reward 又可能被长轨迹放大，模型通过输出更多步骤获得更高累计奖励。BoT-GRPO 的机制是对每条序列使用 inverse-length 权重，让一条 1000-token 答案不因长度比 100-token 答案长十倍就对统计量贡献十倍。</p>
+<h3>Method / RL Formulation</h3>
+<p><code>Prompt → Group of rollouts → Token-level reward model → Inverse-length weighted bag statistics → Token-specific advantage → GRPO-style policy update</code>。State 是 prompt 与已生成 prefix，Action 是下一个 token，Trajectory 是整段推理或代码输出，Reward 是逐 token process feedback，Policy 是语言模型；Advantage 来自加权组统计，省去 critic。摘要未列出完整 KL/entropy 系数和 rollout 总量，不能臆测。潜在 reward hacking 包括输出大量形式上“正确”的低价值步骤，或利用过程模型评分漏洞；长度无偏仅能缓解其中一类。</p>
+<h3>Experiments / Results</h3>
+<p>代码任务比较 <strong>GRPO、GSPO、DAPO、PURE</strong>，作者称 BoT-GRPO 更快达到 <strong>80% compile rate（最多 1.9×）</strong> 且最终 compile / VLM-judged win rate 更高；AIME 上 <strong>Pass@k 最多 +8.1pp</strong>、训练步数约减半。模型包括 <strong>Qwen2.5-3B、SmolLM3-3B、Phi-4-mini-reasoning</strong>，涉及 reasoning 与 non-reasoning base model。摘要特别强调 bounded、stable reward 比更丰富但噪声大的 reward 有效；这应视为作者实验观察，不是一般数学定理。</p>
+<h3>Contribution / Limitations / Research Value</h3>
+<p>贡献是 <strong>New Objective / Credit Mechanism</strong>（长度归一化的 token reward aggregation）与 <strong>Empirical Finding</strong>（reward 稳定性影响收敛）。局限：token reward model 的训练与推理成本、真实 wall-clock GPU-hours、跨长轨迹 tool agent 的适用性、对 adversarial process judge 的稳健性尚待核验。与 S 级 video-editing credit 论文形成重要对照：BoT-GRPO 解决<strong>token 长度权重</strong>，后者强调<strong>过程奖励何时关闭</strong>；两者可能正交，也可能相互干扰。</p>
+<h3>Migration / Minimum Experiment</h3>
+<p><strong>Original</strong>：推理 token 共享 outcome advantage → <strong>Mechanism</strong>：length-invariant process credit → <strong>Question</strong>：在多轮 Agent 中是否也能减少冗余工具调用？ → <strong>Modification</strong>：把 token bag 改成 turn/skill bag，按动作成本归一化 → <strong>MVE</strong>：同一 AppWorld 任务比较 outcome GRPO、turn PRM、BoT-turn、BoT-turn+decay → <strong>Model</strong>：7B Agent → <strong>Dataset</strong>：AppWorld → <strong>Metric</strong>：success、tool calls、rollout tokens、GPU-hours、reward gap → <strong>Expected Contribution</strong>：成本归一化的多轮 credit → <strong>Risk</strong>：短但关键的动作可能被过度放大。<strong>Worth Deep Reading: YES</strong>。</p>
+<p><strong>证据范围：仅根据 Abstract / 可获取信息总结。</strong></p>
+<h3>关键公式直觉与实验边界</h3>
+<p>设第 i 条 rollout 长度为 <code>L_i</code>，token 过程奖励为 <code>r_{i,t}</code>。朴素拼接会让长 rollout 的 token 在统计中占更大权重；BoT 的核心是为该条序列中的每个 token 分配约 <code>1/L_i</code> 的权重，使每条 rollout 对组统计的总质量更接近。真正的 per-token advantage 还取决于加权组均值与方差，不能把“长度无偏”理解成奖励完全不受长度影响。它解决的是<strong>统计聚合偏差</strong>，不是过程奖励本身是否与终局一致；若 judge 错误地奖励冗长自检，仍会发生 reward hacking。</p>
+<h3>Ablation / Claim vs Evidence</h3>
+<p>最重要的对照应分别去掉 inverse-length weighting、替换为 sequence-level reward、注入噪声 process reward、固定训练 token budget，而不是只对比训练 step 数。<strong>Authors Claim</strong>：critic-free 的细粒度 reward 聚合改善收敛；<strong>Evidence</strong>：代码编译与 AIME 的多个模型实验。<strong>Not Yet Proven</strong>：真实长程工具使用、跨多 Agent 局部/全局奖励、奖励模型在线漂移。阅读优先级应放在 bag 统计公式、reward 稳定性消融与按 GPU 计算成本归一化的收敛曲线。它与 S 级视频剪辑论文的最关键交叉，是探索<strong>长度归一化 + 自适应过程奖励关闭</strong>能否同时降低 credit 偏差与后期奖励黑客。</p>
+<h3>Reward Design 的最小核查</h3>
+<p>需要把 reward model 的标签稳定性、评分分布方差和过程奖励长度偏差单独测量。若仅用更昂贵的评审模型换取更好训练信号，应报告总评分成本，而不能把策略更新步数减少直接称为整体算力节约。</p>
+<h3>Training Efficiency</h3>
+<p>摘要给出到达某一 compile rate 的相对训练速度与数学任务所需训练步数，但未给绝对 rollout 数、训练 token、GPU 型号、峰值显存和 wall-clock GPU-hours。后续复现必须将 reward-model 评分成本计入总训练预算，否则 critic-free 可能只是把成本移到了过程评审器。</p>
+</div></details></section><section id="tier-b" class="section"><h2>Tier B · 研究线索与实验价值</h2><details id="paper-2610.34949" class="paper paper-b"><summary><span class="tiermark">TIER B</span><strong>Correlation-Aware Exploration for Long-Trace Reasoning</strong> <span class="subcat">RL</span></summary><div class="paper-head"><h3><a href="https://arxiv.org/abs/2610.34949" target="_blank" rel="noopener noreferrer">Correlation-Aware Exploration for Long-Trace Reasoning</a></h3><div class="tags"><span class="pill">RL</span></div><p class="meta">Junxing Hu et al. · 2026-10-26 · NeurIPS 2026 LCFM Workshop（作者标注）<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.34949v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.34949" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版</h3>
+<p>长 CoT 的 GRPO 容易 policy collapse，常见解法是给每个 token 加 entropy bonus，但这会把概率推向低概率尾部，并与训练收敛时需要的 entropy 下降相冲突。Info-GRPO 不强制每个 token 都变随机，而是给 prompt 引入 latent seed，让不同 seed 诱导不同的整条推理策略，以轨迹和 latent prior 的互信息维持探索多样性。它试图让<strong>跨轨迹探索</strong>与<strong>轨迹内部收敛</strong>同时成立。</p>
+<h3>Background / Core Method</h3>
+<p><code>Prompt + latent seed → seed-conditioned policy rollout → mutual-information-aware exploration → group-relative RL update</code>。State 为 prompt/prefix/seed，Action 为生成 token，Reward 仍是任务结果相关的可验证反馈，探索正则不等于最终任务 reward。核心差异是多样性被编码在整条 trajectory 的 latent 条件中，而非逐 token entropy 增益。若 seed 只学到表面风格而不是有效搜索分支，也可能产生伪多样性。</p>
+<h3>Experiment / Finding</h3>
+<p>作者报告在 <strong>AIME24</strong> 四个 backbone 上，Avg@8 相比 GRPO 提升 <strong>3.75%、1.66%、4.16%、4.17%</strong>（按摘要表述，未自行改成百分点）；相同 majority-vote accuracy 需要的样本数减少 <strong>8×</strong>。对照包括 vanilla GRPO 与 entropy-regularized GRPO。没有从摘要获得训练 GPU-hours、KL 系数或每模型完整基线，不能声称绝对成本减少八倍。</p>
+<h3>Contribution / Limitation / Connection</h3>
+<p>贡献是 <strong>New Exploration Mechanism</strong>：latent-conditioned trajectory diversity。与 BoT-GRPO 形成一个自然二维研究空间：一个解决 credit 的长度偏差，一个解决 exploration 的 token 级随机性失配。局限是 latent seed 的可解释性、seed 之间是否真有策略差异、是否适用于 tool-use agent。对多 Agent，可把 seed 看成角色/策略先验，但必须验证不是简单角色提示。<strong>Potential Use</strong>：在长任务中以低样本预算获得多样搜索策略；需要测 pass@k、unique solution paths、token cost 和失败分布。<strong>证据范围：仅根据 Abstract / 可获取信息总结。</strong></p>
+<h3>Research Value</h3>
+<p>潜在价值是把 Agent 的探索多样性从每个 token 的随机性转移到 trajectory-level 的策略选择，例如不同 latent seed 对应不同工具规划路径。但若没有对独立解决路径数、任务成功率与真实计算成本同时评估，8× 样本数差异不能直接解释为 8× 训练提速。应与 entropy-regularized GRPO 和无 seed 的 group sampling 进行相同预算对照。</p>
+<h3>Failure Case</h3>
+<p>若所有 latent seed 都收敛到相同的推理模板，互信息目标可能只改变表面用词而不改变解题策略。应该测真实推理分支差异、错误相关性和 seed 对最终答案的因果影响；对长 CoT 的 token 预算也要保持一致。</p>
+<h3>Migration</h3>
+<p>把 latent seed 映射到多 Agent 的策略角色时，需让不同 seed 在同一环境上接受可验证终局奖励，并检测不同轨迹是否真正覆盖互补证据，而非仅生成不同措辞。</p>
+</div></details><details id="paper-2610.37657" class="paper paper-b"><summary><span class="tiermark">TIER B</span><strong>Heads of Security: Learned Attention Gates Improve Prompt Injection Robustness</strong> <span class="subcat">Other</span></summary><div class="paper-head"><h3><a href="https://arxiv.org/abs/2610.37657" target="_blank" rel="noopener noreferrer">Heads of Security: Learned Attention Gates Improve Prompt Injection Robustness</a></h3><div class="tags"><span class="pill">Other</span></div><p class="meta">Igor Shilov et al. · 2026-10-27 · arXiv preprint<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.37657v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.37657" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版</h3>
+<p>Agent 需要读取网页、工具结果和外部文档，但这些内容可能夹带“忽略系统指令”的攻击。HoS 不仅在训练数据中教模型拒绝，而是学习少量 per-head attention gates，让模型在架构层面区分可信指令与不可信内容：允许读懂不可信文本，但减少把其中的指令当作命令执行的风险。它将 prompt injection 防护变成<strong>注意力路径控制</strong>问题。</p>
+<h3>Background / Core Method</h3>
+<p><code>Trusted instruction + untrusted tool content → head-wise trust gates → gated attention → model response/action</code>。与 SecAlign++ 的微调防御和 ASIDE 的架构分离思路比较，HoS 的重点是只干预少数 head 的可信/不可信注意力分配。若 trust boundary 标记错误，或攻击通过合法用户输入进入，门控可能失效；这不是对所有 jailbreak 的证明。</p>
+<h3>Experiment / Main Finding</h3>
+<p>在 <strong>GPT-OSS-20B</strong> 的黑盒 RL-Hammer 攻击下，摘要报告原模型 <strong>97% ASR</strong>、SecAlign <strong>85%</strong>、HoS <strong>10%</strong>；强化后的白盒 Claudini 攻击达到同等 ASR 需要约 <strong>3× FLOPs</strong>。还在 <strong>Llama-3.3-70B-Instruct</strong> 上评测，作者称保留多选 utility 与 few-shot 能力，而 ASIDE 在某项 tool-use utility 只有 <strong>10%</strong>。这些是不同设置的结果，不应把 ASR 与 utility 混为一谈。</p>
+<h3>Contribution / Limitation / Connection</h3>
+<p>贡献是 <strong>New Security Mechanism</strong>：可学习的 attention trust gate。对 Agent Memory 的直接启发是为 retrieved memory / tool output 加 provenance trust labels，再测它们如何进入模型 attention。局限：可信边界标注成本、adaptive white-box 攻击仍有效、真实长程 tool agent 的跨步骤传播尚待评估。<strong>Potential Use</strong>：在 TeamGym 的参与者消息里注入恶意指令，测防护前后成功率、误拒率与 token/latency overhead。<strong>证据范围：仅根据 Abstract / 可获取信息总结。</strong></p>
+<h3>Failure Propagation / Evaluation</h3>
+<p>Agent 在第 1 步读入被污染网页，第 2 步可能把其中的伪指令写入 memory，第 3 步再调用工具执行。单轮防护成功率不足以证明这种链式攻击被阻断。需要在可信/不可信来源标记正确和错误两种条件下评估，并记录正常工具任务成功率、拒绝率、额外 FLOPs、对 adaptive attack 的稳健性。</p>
+<h3>Research Migration</h3>
+<p>可将 per-head gate 的可信度标签与共享记忆 provenance 结合：对外部网页、其他 Agent 消息、人工确认过的事实设置不同 trust level，再检验模型能否继续提取有用事实而不执行恶意指令。关键是控制误拒率，不能只优化攻击失败率。</p>
+<h3>Potential Use</h3>
+<p>在 coding agent 的工具输出中植入攻击，比较 HoS、SecAlign++ 和无防护基线。指标同时覆盖 attack success、正常任务成功率、误拒、延迟和 memory contamination。</p>
+</div></details><details id="paper-2610.36327" class="paper paper-b"><summary><span class="tiermark">TIER B</span><strong>Training-Free Inference Acceleration for Video Large Language Models: Methods, Trade-offs, and Evaluation</strong> <span class="subcat">Video Acceleration</span></summary><div class="paper-head"><h3><a href="https://arxiv.org/abs/2610.36327" target="_blank" rel="noopener noreferrer">Training-Free Inference Acceleration for Video Large Language Models: Methods, Trade-offs, and Evaluation</a></h3><div class="tags"><span class="pill">Video Acceleration</span></div><p class="meta">Yuqi Li et al. · 2026-10-26 · arXiv preprint<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2610.36327v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2610.36327" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版</h3>
+<p>这是一篇 Video LLM training-free 加速综述，而不是一个新的加速算子。它按 pipeline 位置组织方法：输入帧选择、视觉编码、projector、LLM prefill、decoding，并把 post-training quantization 作为跨阶段扩展。核心提醒是<strong>局部算子省计算不代表端到端快</strong>：压缩 visual tokens 可能降低 LLM prefill，但如果视觉编码器仍处理所有帧，用户感受到的延迟未必显著变化。</p>
+<h3>Background / Method</h3>
+<p>作者从 intervention stage 而不是算法名字分类，有助于避免把帧抽样、token pruning、KV eviction 和 speculative decoding 放在同一横轴直接比较。一个完整的 Video LLM 流程至少包括视频解码、视觉编码、跨模态投影、语言模型 prefill、decode、可能的缓存管理。各方法的质量风险也不同：丢帧可能丢失瞬态事件，token 合并可能扭曲空间关系，KV 压缩可能损伤跨时间依赖。</p>
+<h3>Experiment / Main Finding</h3>
+<p>摘要称结合既有研究的定量证据与作者在共享设置下的实验，评估 accuracy-latency trade-off；但当前可获取摘要<strong>没有给出可引用的具体数值、模型或表格</strong>，所以不将其伪装为一个可量化新算法。值得读的是 taxonomy 与统一评测协议，尤其看是否分开报告 FLOPs、TTFT、end-to-end latency、GPU memory 和 throughput。</p>
+<h3>Contribution / Limitation / Connection</h3>
+<p>贡献是 <strong>Survey / Evaluation Framework</strong>，价值在实验设计与 baseline 覆盖。局限是跨论文的硬件/分辨率/帧率不一致，若统一设置仍没有覆盖 streaming query arrival pattern，系统结论可能不足。与 Video-MemComp、FrameBlend、Speculative Forcing 的连接分别是 cache budget、query-time repair、token-wise compute allocation。<strong>Potential Use</strong>：为未来视频加速论文制定统一表格：Frames、Visual Tokens、FLOPs、TTFT、P50/P99、Peak VRAM、Accuracy、Quality、GPU 型号。<strong>证据范围：仅根据 Abstract / 可获取信息总结。</strong></p>
+<h3>Reading Priority / Practical Use</h3>
+<p>读这篇综述时建议重点核查它的统一实验是否包含视频编码前处理、GPU 同步、batch size、上下文长度和实际 wall-clock；如果只统一模型准确率却不统一硬件与测时协议，跨方法排名仍会失真。尤其注意训练无关不等于零准备成本：PTQ 可能需要校准，token pruning 可能需要离线阈值搜索。</p>
+<h3>Evaluation Gap</h3>
+<p>视频推理还存在离线问答和在线流式交互的差别。离线模型可以先看到完整视频并挑帧，流式模型却必须在未来问题未知时维护缓存；这两种任务的 latency 和 memory 指标不可直接合并。后续阅读应检查论文是否明确区分这两类协议。</p>
+<h3>Why It Matters</h3>
+<p>它能帮助实验者避免拿“token 保留率 2%”直接等价于“速度提高 50×”的错误叙述。真实端到端速度必须以实际执行路径和硬件同步测量。</p>
+</div></details><details id="paper-2609.05329" class="paper paper-b"><summary><span class="tiermark">TIER B</span><strong>Machine Unlearning as Private Retroactive Algorithms</strong> <span class="subcat">Unlearning</span></summary><div class="paper-head"><h3><a href="https://arxiv.org/abs/2609.05329" target="_blank" rel="noopener noreferrer">Machine Unlearning as Private Retroactive Algorithms</a></h3><div class="tags"><span class="pill">Unlearning</span><span class="pill warm">BACKFILL</span></div><p class="meta">Haim Kaplan; Refael Kohen; Yishay Mansour; Kobbi Nissim; Uri Stemmer · 2026-09-04 · arXiv preprint<br>Affiliation：未逐一核实（请以原文首页为准）<br><a href="https://arxiv.org/html/2609.05329v1" target="_blank" rel="noopener noreferrer">HTML 正文（如可用）</a> · <a href="https://arxiv.org/pdf/2609.05329" target="_blank" rel="noopener noreferrer">PDF</a> · Code：未核实</p></div><div class="paper-body"><h3>人话版</h3>
+<p>这篇理论论文挑战一个常见直觉：如果 unlearning 的模型输出与“从没见过删除样本、重新训练”的输出相似，是否就意味着隐私安全？作者指出，若攻击者能持续观察模型的多次发布，仅有重训等价并不自动提供有意义的隐私保证。他们把 unlearning 重新理解成<strong>retroactive algorithm</strong>：允许修改历史操作，并保证后续答案反映修改后的历史；若要隐私，还必须额外要求持续观察下的 differential privacy。</p>
+<h3>Background / Core Method</h3>
+<p><code>历史数据更新序列 → 删除/回溯修改 → Retroactive state update → 多次公开结果</code>。与单次删除的输出分布比较不同，这里攻击者可观察时间序列。作者提出 private retroactive algorithms 的形式化定义，把历史一致性与 continual-observation DP 组合。对线性统计、聚类、直方图给出构造与不可能性结果；这不等于已为 LLM 参数级 unlearning 提供可直接部署的算法。</p>
+<h3>Experiment / Main Finding</h3>
+<p>该工作主要是<strong>理论构造与下界</strong>，不是在 TOFU/MLLMU 上跑 benchmark 的实证论文。摘要明确称某些问题的隐私与回溯性可在渐近复杂度上不比单独实现隐私更贵，但没有提供可移植到 LLM 的具体速度/遗忘率数字。不能编造 forget accuracy、MIA AUC 或训练成本。</p>
+<h3>Contribution / Limitation / Connection</h3>
+<p>贡献为 <strong>New Definition / Theoretical Framework</strong>：明确区分“删除后功能正确”与“连续发布下隐私保护”。局限是从统计数据结构到大型生成模型的技术鸿沟。对当前 black-box unlearning attack 的启发是比较<strong>多版本轨迹攻击</strong>与单版本 MIA：即使每次发布看起来都接近重训，版本差分也可能泄露被删信息。<strong>Potential Use</strong>：用同一删除序列构建 pre/post/multi-release 攻击协议，报告 AUC、TPR@FPR、utility 与攻击者可见信息。<strong>证据范围：仅根据 Abstract / 可获取信息总结。</strong></p>
+<h3>Research Gap / Minimum Experiment</h3>
+<p>对生成式模型，值得做的是多次删除发布的差分攻击：固定训练集与删除顺序，攻击者分别只看最后一个版本、前后两个版本、完整发布轨迹；比较隐私风险是否随可观察版本数增加。这是从理论问题迁移出的实验建议，不能当作论文已经在 LLM 上证明的结果。</p>
+<h3>Why It Matters</h3>
+<p>如果评测只看一次 unlearning 之后的模型输出，可能忽略多个发布版本之间的差分信息。该理论工作为“删除正确性”和“隐私保证”划出清晰边界。</p>
+</div></details></section><section id="ideas" class="section"><h2>Idea Mining · 最多 4 个可实验 Idea</h2><p>以下均是<strong>待验证的研究假设</strong>，不是已有实验结论。Novelty/Feasibility/Compute Cost 为主观初评；Compute Cost 星越多表示成本越高。每个 Idea 明确最小实验与撞题风险。</p><article class="idea"><h3>Idea 1. Adaptive Process-Reward Shutdown：按 Reward–Outcome 背离动态关闭 PRM</h3><p class="mini">Novelty ★★★★☆ · Feasibility ★★★★☆ · Compute Cost ★★★☆☆</p><dl><dt>Inspiration</dt><dd>Video-editing credit 论文发现固定 PRM 后期 reward hacking；BoT-GRPO 说明 reward 稳定性与长度偏差会影响训练。</dd><dt>Research Gap</dt><dd>固定衰减时刻依赖任务长度和 judge，无法处理任务阶段动态变化。</dd><dt>Hypothesis</dt><dd>过程分数与终局结果、无效调用率的背离能作为过程奖励退火触发器。</dd><dt>Proposed Method</dt><dd>在 rollout 窗口上计算 process–outcome correlation 与有效工具调用率，采用平滑阈值调节 λ，并记录触发原因。</dd><dt>Minimum Viable Experiment</dt><dd>在 AppWorld 小样本先比较 outcome GRPO、fixed PRM、linear decay、adaptive λ，独立 3 seeds；专门构造高 PRM、低 outcome 的诱饵轨迹。</dd><dt>Model</dt><dd>Qwen 7B/9B Agent</dd><dt>Dataset</dt><dd>AppWorld 或可执行 GUI 编辑环境</dd><dt>Baseline</dt><dd>Outcome-only GRPO / fixed PRM / decay PRM</dd><dt>Metric</dt><dd>success、reward gap、冗余工具调用、GPU-hours、不同 horizon 的泛化</dd><dt>Expected Contribution</dt><dd>机制驱动的 reward schedule 与可观测 reward-hacking 指标</dd><dt>Risk</dt><dd>过程评分与终局奖励同源偏差会误导控制器；需要独立 judge</dd><dt>Collision Risk</dt><dd>高：与固定/衰减 PRM、BoT-GRPO 相关，但动态触发与可靠性校准尚可区分</dd><dt>Best Venue</dt><dd>ICLR / NeurIPS</dd></dl></article><article class="idea"><h3>Idea 2. PIU-Causal Memory：基于事实反事实影响的多 Agent 记忆归因</h3><p class="mini">Novelty ★★★★☆ · Feasibility ★★★★☆ · Compute Cost ★★★☆☆</p><dl><dt>Inspiration</dt><dd>TeamGym 控制 pivotal information，CrossProfile 证明 rare-first/relevance-first 及社会证明标签会误导。</dd><dt>Research Gap</dt><dd>当前 memory selection 常以频率、相似度、来源人数代替事实对最终决策的边际贡献。</dd><dt>Hypothesis</dt><dd>在固定事实文本下做 ownership 与 remove-message 反事实干预，可学习比启发式更稳健的 memory utility。</dd><dt>Proposed Method</dt><dd>每条 memory 保存 PIU evidence/provenance/独立来源；用小规模 leave-one-out decision replay 估计 ΔU，再训练轻量 selector。</dd><dt>Minimum Viable Experiment</dt><dd>CrossProfile 480 tasks + TeamGym legal 子集；控制相同 memory token budget，增加 decoy 和错误归属标签。</dd><dt>Model</dt><dd>Qwen2.5-7B / Qwen3-8B</dd><dt>Dataset</dt><dd>CrossProfile + TeamGym</dd><dt>Baseline</dt><dd>Rare-first / relevance-first / random / full transcript</dd><dt>Metric</dt><dd>final accuracy、PIU recall、decoy retention、token cost、provenance calibration</dd><dt>Expected Contribution</dt><dd>可干预的 shared-memory credit 与抗社会证明偏差</dd><dt>Risk</dt><dd>反事实调用开销高；PIU 标签依赖任务可验证性</dd><dt>Collision Risk</dt><dd>高：TeamGym 与 CrossProfile 已分别覆盖事实分配和记忆启发式；差异化需放在可训练的因果 selector</dd><dt>Best Venue</dt><dd>ACL / EMNLP / ICLR</dd></dl></article><article class="idea"><h3>Idea 3. Query-Recoverable Video Cache：压缩与选择性重算联合预算</h3><p class="mini">Novelty ★★★★☆ · Feasibility ★★★☆☆ · Compute Cost ★★★★☆</p><dl><dt>Inspiration</dt><dd>Video-MemComp 做层级敏感度预算，FrameBlend 用 query-time KV repair，二者解决不同阶段的错误。</dd><dt>Research Gap</dt><dd>强压缩会永久丢失事件；只靠 query-time 修复又可能造成高 P99 与突发重算成本。</dd><dt>Hypothesis</dt><dd>将层敏感度、事件置信度和可重算成本共同纳入 cache policy，可在固定 GPU budget 下改善事件召回与尾延迟。</dd><dt>Proposed Method</dt><dd>预填充时保存低成本 event index 与 provenance；在线按 sensitivity 保留 KV；query 到来时仅修复高价值、低置信度事件。</dd><dt>Minimum Viable Experiment</dt><dd>RVS-Ego / VideoMME Long；模拟 1/5/20 query per minute，固定相同显存和 GPU 秒数。</dd><dt>Model</dt><dd>Qwen2.5-VL-3B</dd><dt>Dataset</dt><dd>RVS-Ego、VideoMME Long</dd><dt>Baseline</dt><dd>Uniform cache / Video-MemComp / FrameBlend</dd><dt>Metric</dt><dd>accuracy、event recall、TTFT、P99、peak VRAM、tokens/s、GPU-seconds</dd><dt>Expected Contribution</dt><dd>负载自适应、可恢复的 streaming video memory policy</dd><dt>Risk</dt><dd>误判重要事件导致不可恢复信息损失；重算可能抵消全部节省</dd><dt>Collision Risk</dt><dd>高：Video-MemComp 与 FrameBlend 的简单拼接不足成论文，必须证明联合预算优化与严格同硬件 Pareto 改进</dd><dt>Best Venue</dt><dd>CVPR / ICCV / MLSys</dd></dl></article><article class="idea"><h3>Idea 4. Verified Skill Utility：从局部任务推进到可迁移 Skill 的因果筛选</h3><p class="mini">Novelty ★★★☆☆ · Feasibility ★★★★☆ · Compute Cost ★★★☆☆</p><dl><dt>Inspiration</dt><dd>TAM 从失败任务保留成功片段，TeamGym 表明信息是否传递与最终成功可以脱钩。</dd><dt>Research Gap</dt><dd>局部验证成功不代表该 skill 在未来任务里真有净收益；过期 skill 可能伤害后续计划。</dd><dt>Hypothesis</dt><dd>用重复调用后的 success delta / cost delta 评价 skill，而不是只用单次 verified advancement。</dd><dt>Proposed Method</dt><dd>为 skill 记录前置条件、验证器、版本和应用轨迹；对相似任务做 with/without skill 重放，并对冲突 skill 设置淘汰策略。</dd><dt>Minimum Viable Experiment</dt><dd>MobileWorld 上挑选重复 GUI 流程，固定 token budget，比较无记忆、全保留、TAM、counterfactual utility selector。</dd><dt>Model</dt><dd>同一开源 GUI Agent</dd><dt>Dataset</dt><dd>MobileWorld / SPA-Bench</dd><dt>Baseline</dt><dd>No memory / reflection / TAM</dd><dt>Metric</dt><dd>success、tokens per solved task、stale skill rate、回滚次数、成本</dd><dt>Expected Contribution</dt><dd>可审计的 procedural-memory 生命周期与因果效用估计</dd><dt>Risk</dt><dd>环境非确定性和验证器漏洞会污染 skill credit</dd><dt>Collision Risk</dt><dd>高：TAM 已解决局部成功提取，必须以长期净效用、冲突与失效诊断差异化</dd><dt>Best Venue</dt><dd>ICLR / NeurIPS / ACL</dd></dl></article></section><section id="collision" class="section"><h2>Collision Detection</h2><h3>⚠️ Collision Warning 1 — Process Reward / Credit Assignment</h3><p><strong>Collision papers：</strong><a href="https://arxiv.org/abs/2610.35497" target="_blank" rel="noopener noreferrer">Credit Assignment Helps and Hurts</a>、<a href="https://arxiv.org/abs/2610.09804" target="_blank" rel="noopener noreferrer">BoT-GRPO</a>、<a href="https://arxiv.org/abs/2610.12828" target="_blank" rel="noopener noreferrer">TreeHCA</a>。已解决：过程奖励衰减、长度无偏聚合、后见探索等局部问题。重合点：都改善长轨迹的 credit。剩余 gap：<strong>何时过程奖励不再可信</strong>的在线、可验证切换标准。差异化：reward–outcome divergence detector + independent judge + long-horizon cost accounting。结论：值得继续，但“再加一个 PRM loss”不够。</p><h3>⚠️ Collision Warning 2 — Shared Memory / Information Attribution</h3><p><strong>Collision papers：</strong><a href="https://arxiv.org/abs/2610.37571" target="_blank" rel="noopener noreferrer">TeamGym</a>、<a href="https://arxiv.org/abs/2610.37624" target="_blank" rel="noopener noreferrer">CrossProfile</a>、<a href="https://arxiv.org/abs/2610.37482" target="_blank" rel="noopener noreferrer">TAM</a>。已解决：PIU 分配、来源偏差诊断、局部成功 skill 提取。重合点：信息是否应该被保留并用于后续决策。剩余 gap：多 Agent 信息/skill 的<strong>反事实边际效用与长期过期机制</strong>。差异化：固定 PIU 内容，做 remove/replace message 重放并联合成本约束。结论：值得继续，但必须有可审计 causal effect。</p><h3>⚠️ Collision Warning 3 — Video Cache / Token Reuse</h3><p><strong>Collision papers：</strong><a href="https://arxiv.org/abs/2610.32784" target="_blank" rel="noopener noreferrer">Video-MemComp</a>、<a href="https://arxiv.org/abs/2610.29229" target="_blank" rel="noopener noreferrer">FrameBlend</a>、<a href="https://arxiv.org/abs/2610.25136" target="_blank" rel="noopener noreferrer">Visual Cache Reuse</a>。已解决：敏感度分层 KV 预算、query-time 重算与视觉 KV 复用。重合点：预算内保留/恢复任务相关视觉信息。剩余 gap：多查询负载下的<strong>联合 memory–accuracy–P99 Pareto</strong>。差异化：统一硬件、同一 GPU-seconds 预算、event-level provenance 与失败恢复；简单拼接不构成新机制。结论：条件性值得做，先完成强 baseline 实测。</p></section><section id="reading" class="section"><h2>Reading Priority</h2><div class="priority"><strong>READ NOW</strong><div><p><a href="https://arxiv.org/abs/2610.35497" target="_blank" rel="noopener noreferrer">When Fine-Grained Credit Assignment Helps and Hurts: Multimodal Agentic Reinforcement Learning through Video Editing</a> — Section 3 / Table 3 / Figure 1(c)：reward hacking 与过程奖励退火</p><p><a href="https://arxiv.org/abs/2610.37571" target="_blank" rel="noopener noreferrer">TeamGym: A Gym for Team Decision-Making by AI Agents with Distributed Information</a> — Figure 1 / Table 3/5 / Section 5：PIU 信息流与全局 reward</p><p><a href="https://arxiv.org/abs/2610.32784" target="_blank" rel="noopener noreferrer">Video-MemComp: Taylor-Guided Sensitivity-Aware Memory Management for Streaming Video Understanding</a> — 误差分解 / Table 3 / Table 4/5：显存、TTFT、吞吐和敏感度消融</p></div></div><div class="priority"><strong>READ THIS WEEK</strong><div><p><a href="https://arxiv.org/abs/2610.29229" target="_blank" rel="noopener noreferrer">Cache Locally, Recompute Selectively for Streaming Video Understanding</a> — FrameBlend 的 query-time recomputation 与完整时间核算</p><p><a href="https://arxiv.org/abs/2610.37482" target="_blank" rel="noopener noreferrer">From Interaction to Capability: Task Advancement as State and Supervision for GUI Agents</a> — TAM 的 advancement verification 与 skill extraction</p><p><a href="https://arxiv.org/abs/2610.37624" target="_blank" rel="noopener noreferrer">Rare, Relevant, and Still Wrong: How Memory Fails LLM Group Decisions</a> — CrossProfile 的事实所有权干预与社会证明偏差</p><p><a href="https://arxiv.org/abs/2610.09804" target="_blank" rel="noopener noreferrer">BoT-GRPO: Efficient Process-Reward RL for Reasoning via Bag-of-Token Aggregation</a> — BoT-GRPO 的 inverse-length advantage 与 reward stability</p></div></div><div class="priority"><strong>SAVE</strong><div><p><a href="https://arxiv.org/abs/2610.22347" target="_blank" rel="noopener noreferrer">Speculative Forcing for Efficient Autoregressive Video Generation</a> — 视频生成 token-wise early acceptance 的潜在跨任务迁移</p><p><a href="https://arxiv.org/abs/2610.36877" target="_blank" rel="noopener noreferrer">GUI-JEPA: Candidate-Conditioned JEPA Latents as a Fast Action Policy for Mobile GUI Agents</a> — decoder-free GUI action scoring；注意 accuracy 损失</p><p><a href="https://arxiv.org/abs/2610.34949" target="_blank" rel="noopener noreferrer">Correlation-Aware Exploration for Long-Trace Reasoning</a> — latent-seed 轨迹级探索</p><p><a href="https://arxiv.org/abs/2610.36327" target="_blank" rel="noopener noreferrer">Training-Free Inference Acceleration for Video Large Language Models: Methods, Trade-offs, and Evaluation</a> — Video LLM acceleration 分类与统一实验协议</p></div></div><div class="priority"><strong>SKIP / LOW PRIORITY</strong><div><p><a href="https://arxiv.org/abs/2609.05329" target="_blank" rel="noopener noreferrer">Machine Unlearning as Private Retroactive Algorithms</a> — 理论价值高，但非当前三主线直接可复现实证；按需查定义</p><p><a href="https://arxiv.org/abs/2610.37657" target="_blank" rel="noopener noreferrer">Heads of Security: Learned Attention Gates Improve Prompt Injection Robustness</a> — 安全机制重要，当前先作为 Agent 防护相关工作保存</p></div></div></section><section id="watch" class="section"><h2>Candidate Watchlist · 未正式展开的 32 篇</h2><p class="mini">这些论文属于候选池而非正式 Tier；对已在 10-29 报告出现的条目只保留短线索，避免重复深读。未逐一核对全部正文，不能把标题暗示当作实验结论。</p><article class="watch"><h3>1. <a href="https://arxiv.org/abs/2610.37461" target="_blank" rel="noopener noreferrer">Concordat: Typed Sessions for LLM Agents</a></h3><p><span class="pill">Agent</span> 面向 Agent 的类型化会话约束；适合研究工具交互协议、可验证执行与安全边界。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article><article class="watch"><h3>2. <a href="https://arxiv.org/abs/2610.37375" target="_blank" rel="noopener noreferrer">Agent-Conditioned Routing: Diverse Reasoning Paths Within One Frozen Model</a></h3><p><span class="pill">Agent</span> 在冻结模型内路由不同 Agent 推理路径；观察是否能以低训练成本产生团队角色差异。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article><article class="watch"><h3>3. <a href="https://arxiv.org/abs/2610.37166" target="_blank" rel="noopener noreferrer">LiveSearch: Questions as Executable Verifier Code for a Live Benchmark of Professional-Source Financial Search Agents</a></h3><p><span class="pill">Agent</span> 把问题变成可执行验证器；对 Agent RL 的 reward 可靠性和动态 benchmark 有价值。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article><article class="watch"><h3>4. <a href="https://arxiv.org/abs/2610.37161" target="_blank" rel="noopener noreferrer">WorkFactory: Turning Professional Intents into Executable Work for Scalable Agent Training</a></h3><p><span class="pill">Agent</span> 将职业任务意图转为可执行训练环境；与 EnvSched 的环境选择形成上游—下游关系。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article><article class="watch"><h3>5. <a href="https://arxiv.org/abs/2610.36980" target="_blank" rel="noopener noreferrer">AutoVend: Benchmarking LLM Agents on Long-Horizon Autonomous Vending Operations</a></h3><p><span class="pill">Agent</span> 长时程自动运营基准；适合检验 memory、延迟奖励和中间决策积累。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article><article class="watch"><h3>6. <a href="https://arxiv.org/abs/2610.36925" target="_blank" rel="noopener noreferrer">Vision-Language Agents Can Learn in Their Own Latent Worlds</a></h3><p><span class="pill">Agent</span> 视觉语言 Agent 的潜在世界学习；重点追踪 latent state 如何影响动作选择和可审计性。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article><article class="watch"><h3>7. <a href="https://arxiv.org/abs/2610.36826" target="_blank" rel="noopener noreferrer">When the Critic Falls Behind: Co-Evolving Rubrics and Harnesses for Continual Agent Self-Improvement</a></h3><p><span class="pill">Agent</span> 评测规则与 Agent harness 同步演化；注意 critic 漂移、反馈污染及验证闭环。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article><article class="watch"><h3>8. <a href="https://arxiv.org/abs/2610.37443" target="_blank" rel="noopener noreferrer">ETAMem: Decoupling and Aligning Heterogeneous Memory for Long-Term Conversational Agents</a></h3><p><span class="pill">Agent</span> 异构长期记忆解耦与对齐；可用于记忆冲突和来源追踪设计。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article><article class="watch"><h3>9. <a href="https://arxiv.org/abs/2610.37567" target="_blank" rel="noopener noreferrer">Gym-Anything-RT: Scaling Real-Time Environments for Vision-Language Agents</a></h3><p><span class="pill">Agent</span> 实时视觉 Agent 环境生成；需检查 rollout 速度和交互逼真度是否同时提升。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article><article class="watch"><h3>10. <a href="https://arxiv.org/abs/2610.37471" target="_blank" rel="noopener noreferrer">PerceptRL: Making Visual Perception Rewardable in MLLMs from Answers to Interactions</a></h3><p><span class="pill">RL</span> 把视觉感知从答案监督转为可奖励的交互。需检验奖励来源与视觉证据真实性。 后续重点核查 reward 来源、credit 与 rollout 成本。</p></article><article class="watch"><h3>11. <a href="https://arxiv.org/abs/2610.37405" target="_blank" rel="noopener noreferrer">Clearing the FoG: Training KG Agents to Retrieve the Evidence Behind Their Answers</a></h3><p><span class="pill">Agent</span> 训练知识图谱 Agent 回收答案证据。值得验证证据检索对 reward 和可解释性的影响。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article><article class="watch"><h3>12. <a href="https://arxiv.org/abs/2610.36848" target="_blank" rel="noopener noreferrer">Evolving Agent Teams</a></h3><p><span class="pill">Agent</span> 团队结构自适应演化。应审计动态角色分配是否带来真实合作收益，而非增加调用量。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article><article class="watch"><h3>13. <a href="https://arxiv.org/abs/2610.37553" target="_blank" rel="noopener noreferrer">Collective Dynamics of Self-Reinforcement: How Cross-Task Coupling Drives Policy Collapse in Unsupervised RLVR</a></h3><p><span class="pill">RL</span> 分析无监督 RLVR 的跨任务策略坍缩；有助于探索奖励偏差与稳定性。 后续重点核查 reward 来源、credit 与 rollout 成本。</p></article><article class="watch"><h3>14. <a href="https://arxiv.org/abs/2610.37281" target="_blank" rel="noopener noreferrer">RPSD: Retrieval-Privileged On-Policy Self-Distillation with Optimal Transport</a></h3><p><span class="pill">RL</span> 检索特权与 on-policy 自蒸馏结合；检查最优传输目标是否改善样本效率。 后续重点核查 reward 来源、credit 与 rollout 成本。</p></article><article class="watch"><h3>15. <a href="https://arxiv.org/abs/2610.28388" target="_blank" rel="noopener noreferrer">Self-Credit: Credit Assignment for Long-Horizon Agentic RL via Intra-group Rescaling</a></h3><p><span class="pill">RL</span> 自生成引用和组内重标定进行信用分配；与新 BiPA 的规则级归因构成直接对照。 后续重点核查 reward 来源、credit 与 rollout 成本。</p></article><article class="watch"><h3>16. <a href="https://arxiv.org/abs/2610.25269" target="_blank" rel="noopener noreferrer">EG-GRPO: Evidence-Guided Step-level Credit Assignment for Deep Search Agents</a></h3><p><span class="pill">RL</span> 用新增证据作为过程奖励；可对比无标注环境中的 reward 来源可靠性。 后续重点核查 reward 来源、credit 与 rollout 成本。</p></article><article class="watch"><h3>17. <a href="https://arxiv.org/abs/2610.35013" target="_blank" rel="noopener noreferrer">Multiscale Policy Optimization for Long-Horizon LLM Agents</a></h3><p><span class="pill">RL</span> 多尺度策略优化瞄准长任务。值得与过程奖励退火和跨轮信用分配对照。 后续重点核查 reward 来源、credit 与 rollout 成本。</p></article><article class="watch"><h3>18. <a href="https://arxiv.org/abs/2610.12828" target="_blank" rel="noopener noreferrer">TreeHCA: Hindsight-Guided Exploration and Credit Assignment for Multi-Turn LLM Agents</a></h3><p><span class="pill">RL</span> 后见探索与树式信用分配结合。关注额外搜索成本和长任务泛化。 后续重点核查 reward 来源、credit 与 rollout 成本。</p></article><article class="watch"><h3>19. <a href="https://arxiv.org/abs/2610.25136" target="_blank" rel="noopener noreferrer">Visual Cache Reuse for Efficient Multimodal Inference</a></h3><p><span class="pill">Video Acceleration</span> VisMemo 通过熵与查询相关性复用视觉 KV；需检查跨帧 cache 迁移。 后续重点核查 FLOPs、实际延迟、显存和准确率的同设置对照。</p></article><article class="watch"><h3>20. <a href="https://arxiv.org/abs/2610.30854" target="_blank" rel="noopener noreferrer">CAVC: Convergence-Adaptive Audio-Visual Cache for Modality-Asymmetric Diffusion Generation</a></h3><p><span class="pill">Video Acceleration</span> 依据音视频误差可恢复性采用非对称缓存；值得迁移到多模态生成系统。 后续重点核查 FLOPs、实际延迟、显存和准确率的同设置对照。</p></article><article class="watch"><h3>21. <a href="https://arxiv.org/abs/2610.30036" target="_blank" rel="noopener noreferrer">Attn-Forcing: Learning Full-Context Attention Proxies for Streaming Video Generation</a></h3><p><span class="pill">Video Acceleration</span> 用有界代理近似全上下文注意力；需要验证超长视频漂移与真实显存。 后续重点核查 FLOPs、实际延迟、显存和准确率的同设置对照。</p></article><article class="watch"><h3>22. <a href="https://arxiv.org/abs/2610.32132" target="_blank" rel="noopener noreferrer">SyncPro: Synchronous Reasoning and Responding for Proactive Streaming Video Understanding</a></h3><p><span class="pill">Video Acceleration</span> 面向流视频的同步推理与响应。需要核实实际时延、吞吐及质量代价。 后续重点核查 FLOPs、实际延迟、显存和准确率的同设置对照。</p></article><article class="watch"><h3>23. <a href="https://arxiv.org/abs/2610.33215" target="_blank" rel="noopener noreferrer">Vision Token Pruning via Query-Vision Interaction Decomposition</a></h3><p><span class="pill">Video Acceleration</span> 拆分 query 与 vision 的交互进行 token 剪枝。需核实跨帧信息是否保留。 后续重点核查 FLOPs、实际延迟、显存和准确率的同设置对照。</p></article><article class="watch"><h3>24. <a href="https://arxiv.org/abs/2610.33079" target="_blank" rel="noopener noreferrer">Rethinking Video Storage for AI Training: Breaking Cross-Frame Dependencies for Efficient Random Access</a></h3><p><span class="pill">Video Acceleration</span> 改变视频训练存储以加速随机帧访问。系统收益与推理时 token 加速不同。 后续重点核查 FLOPs、实际延迟、显存和准确率的同设置对照。</p></article><article class="watch"><h3>25. <a href="https://arxiv.org/abs/2610.36986" target="_blank" rel="noopener noreferrer">LearnPrunerV2: Learnable Progressive Token Pruning for Vision-Language Models</a></h3><p><span class="pill">Video Acceleration</span> 渐进式 VLM token 剪枝。须分清图像基准加速与真实 Video LLM 加速。 后续重点核查 FLOPs、实际延迟、显存和准确率的同设置对照。</p></article><article class="watch"><h3>26. <a href="https://arxiv.org/abs/2610.35489" target="_blank" rel="noopener noreferrer">TP-JSCC: Efficient Token Pruning and Joint Source-Channel Coding for LVLMs-based 3D-VQA in Cloud-Edge Collaboration</a></h3><p><span class="pill">Video Acceleration</span> 面向云边协同的视觉 token 与通信联合压缩。应实测链路延迟及视觉任务退化。 后续重点核查 FLOPs、实际延迟、显存和准确率的同设置对照。</p></article><article class="watch"><h3>27. <a href="https://arxiv.org/abs/2610.37645" target="_blank" rel="noopener noreferrer">Multi-State Linear Attention with Generalized Second-Order Routing</a></h3><p><span class="pill">Other</span> 多状态线性注意力机制；需要实测长上下文 wall-clock 和记忆峰值。 后续重点核查实验可复现性与对三条主线的迁移价值。</p></article><article class="watch"><h3>28. <a href="https://arxiv.org/abs/2610.37642" target="_blank" rel="noopener noreferrer">Metacognitive Decoding: Efficient Inference for Diffusion Language Agents</a></h3><p><span class="pill">Other</span> 扩散语言 Agent 的元认知解码；观察推理步数与动作可靠性的权衡。 后续重点核查实验可复现性与对三条主线的迁移价值。</p></article><article class="watch"><h3>29. <a href="https://arxiv.org/abs/2610.37369" target="_blank" rel="noopener noreferrer">Uncovering Why LLMs Fail: From Internal Mechanisms to Adversarial Reasoning Trajectories</a></h3><p><span class="pill">Other</span> 将内部机制分析连接对抗推理轨迹；值得检查因果干预而非相关性可视化。 后续重点核查实验可复现性与对三条主线的迁移价值。</p></article><article class="watch"><h3>30. <a href="https://arxiv.org/abs/2610.37662" target="_blank" rel="noopener noreferrer">Can Discrete Tokens Serve as Semantically Lossless Representations of Visual Signals?</a></h3><p><span class="pill">Other</span> 视觉离散 token 的语义保真问题；与 token pruning 的损失界相关。 后续重点核查实验可复现性与对三条主线的迁移价值。</p></article><article class="watch"><h3>31. <a href="https://arxiv.org/abs/2610.37211" target="_blank" rel="noopener noreferrer">Uncovering Shortcut Amplification in Video RLVR through the Lens of Perceptual Uncertainty Collapse</a></h3><p><span class="pill">Other</span> 研究视频 RLVR 的感知不确定性坍缩与 shortcut。可作为视频 reward hacking 的诊断线索。 后续重点核查实验可复现性与对三条主线的迁移价值。</p></article><article class="watch"><h3>32. <a href="https://arxiv.org/abs/2610.30499" target="_blank" rel="noopener noreferrer">Can LLMs Improve Their Own Harness? A Controlled Study on ARC-AGI-3</a></h3><p><span class="pill">Agent</span> 检验 Agent 自改进 harness 的实际收益。需要隔离环境配置和模型能力的混淆。 后续重点核查 memory/trajectory/skill 的状态更新与长期失效。</p></article></section><section id="stats" class="section"><h2>今日统计 / Depth Audit</h2><table><thead><tr><th>方向（互斥主类）</th><th>Candidate</th><th>Formal</th></tr></thead><tbody><tr><td>RL / Agentic RL</td><td>10</td><td>3</td></tr><tr><td>Agent / Multi-Agent</td><td>16</td><td>4</td></tr><tr><td>Video / Multimodal Acceleration</td><td>12</td><td>4</td></tr><tr><td>Machine Unlearning</td><td>1</td><td>1</td></tr><tr><td>Other / Security / Reasoning</td><td>6</td><td>1</td></tr><tr><th>合计</th><th>45</th><th>13</th></tr></tbody></table><p><strong>Depth Audit：</strong>Tier S 3 篇均已打开 arXiv HTML 正文，核对 Method、实验设置、关键表格、至少 3–5 个结果或明确现象、最强/最弱基线、限制和迁移。Tier A 6 篇包含方法、实验、2–3 项定量或定性发现、限制、最小实验；摘要不足的地方明确写 Not Reported / 仅根据 Abstract。Tier B 4 篇包含背景、方法、发现与连接。候选池 45，正式 13，Watchlist 32。<strong>日期不是新闻发表时间：</strong>部分 arXiv 于 10-27 提交、10-28 被 recent 页面展示，BACKFILL 补录 10-07 至 10-21 等历史工作。</p><p><strong>已知限制：</strong>这是一份研究雷达而非完整复现实验报告；A/B 部分未取得正文表格，不虚构作者单位、训练硬件、split 或代码可用性。对于强依赖 LLM judge 的工作，结论仍需跨 judge、跨 seed 和独立验证。今日 arXiv 最近列表以 10-28 公布为主，不能声称 10-29/30 已有新的可核实批次。</p></section><section id="sources" class="section"><h2>Sources / Links</h2><p>一手来源：<a href="https://arxiv.org/list/cs.AI/recent" target="_blank" rel="noopener noreferrer">arXiv cs.AI recent</a> · <a href="https://arxiv.org/list/cs.LG/recent" target="_blank" rel="noopener noreferrer">arXiv cs.LG recent</a> · <a href="https://arxiv.org/list/cs.CL/recent" target="_blank" rel="noopener noreferrer">arXiv cs.CL recent</a> · <a href="https://arxiv.org/list/cs.CV/recent" target="_blank" rel="noopener noreferrer">arXiv cs.CV recent</a>。全部候选提供直达 arXiv 论文链接；Tier S 已阅读 HTML 正文。</p><ol><li><a href="https://arxiv.org/abs/2610.35497" target="_blank" rel="noopener noreferrer">When Fine-Grained Credit Assignment Helps and Hurts: Multimodal Agentic Reinforcement Learning through Video Editing</a> — S / RL / 2026-10-26</li><li><a href="https://arxiv.org/abs/2610.37571" target="_blank" rel="noopener noreferrer">TeamGym: A Gym for Team Decision-Making by AI Agents with Distributed Information</a> — S / Agent / 2026-10-27</li><li><a href="https://arxiv.org/abs/2610.32784" target="_blank" rel="noopener noreferrer">Video-MemComp: Taylor-Guided Sensitivity-Aware Memory Management for Streaming Video Understanding</a> — S / Video Acceleration / 2026-10-23</li><li><a href="https://arxiv.org/abs/2610.36877" target="_blank" rel="noopener noreferrer">GUI-JEPA: Candidate-Conditioned JEPA Latents as a Fast Action Policy for Mobile GUI Agents</a> — A / Agent / 2026-10-27</li><li><a href="https://arxiv.org/abs/2610.37482" target="_blank" rel="noopener noreferrer">From Interaction to Capability: Task Advancement as State and Supervision for GUI Agents</a> — A / Agent / 2026-10-27</li><li><a href="https://arxiv.org/abs/2610.37624" target="_blank" rel="noopener noreferrer">Rare, Relevant, and Still Wrong: How Memory Fails LLM Group Decisions</a> — A / Agent / 2026-10-27</li><li><a href="https://arxiv.org/abs/2610.29229" target="_blank" rel="noopener noreferrer">Cache Locally, Recompute Selectively for Streaming Video Understanding</a> — A / Video Acceleration / 2026-10-21</li><li><a href="https://arxiv.org/abs/2610.22347" target="_blank" rel="noopener noreferrer">Speculative Forcing for Efficient Autoregressive Video Generation</a> — A / Video Acceleration / 2026-10-15</li><li><a href="https://arxiv.org/abs/2610.09804" target="_blank" rel="noopener noreferrer">BoT-GRPO: Efficient Process-Reward RL for Reasoning via Bag-of-Token Aggregation</a> — A / RL / 2026-10-07</li><li><a href="https://arxiv.org/abs/2610.34949" target="_blank" rel="noopener noreferrer">Correlation-Aware Exploration for Long-Trace Reasoning</a> — B / RL / 2026-10-26</li><li><a href="https://arxiv.org/abs/2610.37657" target="_blank" rel="noopener noreferrer">Heads of Security: Learned Attention Gates Improve Prompt Injection Robustness</a> — B / Other / 2026-10-27</li><li><a href="https://arxiv.org/abs/2610.36327" target="_blank" rel="noopener noreferrer">Training-Free Inference Acceleration for Video Large Language Models: Methods, Trade-offs, and Evaluation</a> — B / Video Acceleration / 2026-10-26</li><li><a href="https://arxiv.org/abs/2609.05329" target="_blank" rel="noopener noreferrer">Machine Unlearning as Private Retroactive Algorithms</a> — B / Unlearning / 2026-09-04</li></ol><p class="smallnote">仅附确证 URL，不推测未核实的 Project / GitHub / Venue。论文 arXiv 页面可点击 PDF / HTML / Source，部分页面提供作者项目链接。</p></section><footer class="smallnote" style="text-align:center;padding:20px">Daily AI Research Radar · 2026-10-30 · UTF-8 · Standalone HTML · All sources linked</footer></main></body></html>

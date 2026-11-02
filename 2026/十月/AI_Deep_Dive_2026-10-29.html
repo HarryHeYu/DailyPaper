@@ -1,0 +1,596 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Deep Dive — 2026-10-29</title><style>
+:root{color-scheme:light;--bg:#f4f6f9;--paper:#fff;--ink:#182331;--muted:#607086;--line:#dce3eb;--accent:#195f96;--accent2:#1d7c72;--code:#f1f5f9}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.92 -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}.shell{max-width:1080px;margin:0 auto;padding:34px 22px 80px}.hero{padding:44px 46px;border-radius:20px;background:linear-gradient(120deg,#132d49,#164f70);color:#fff;box-shadow:0 10px 35px #17375222}.hero h1{font-size:32px;line-height:1.35;margin:0 0 14px;color:#fff}.hero p{color:#d9eaf4;margin:8px 0}.hero strong{color:#fff}.toc{margin:22px 0;background:var(--paper);padding:24px 30px;border:1px solid var(--line);border-radius:16px}.toc h2{font-size:19px;margin:0 0 12px}.toc ul{columns:2;list-style:none;padding:0;margin:0}.toc li{break-inside:avoid;margin:4px 0}.toc a{font-size:14px}.report{background:var(--paper);padding:36px 48px;border-radius:16px;border:1px solid var(--line);box-shadow:0 5px 24px #1a37530b}.report h1{font-size:29px;line-height:1.4;margin:58px 0 22px;padding-top:18px;border-top:3px solid var(--accent)}.report h1:first-child{margin-top:0;border-top:0;padding-top:0}.report h2{font-size:21px;line-height:1.5;margin:37px 0 14px;color:#164b76}.report h3{font-size:17px;margin:24px 0 10px}.report p{margin:11px 0 16px;text-align:justify}.report strong{color:#0b466e}.report blockquote{border-left:4px solid #2c8caa;background:#f0f7fa;padding:11px 19px;margin:20px 0;border-radius:0 8px 8px 0}.report blockquote p{margin:0}.table-wrap{overflow-x:auto;margin:19px 0 26px;border:1px solid var(--line);border-radius:10px}.report table{border-collapse:collapse;width:100%;min-width:680px;font-size:14px;line-height:1.7}.report th{background:#edf3f8;text-align:left;white-space:nowrap}.report th,.report td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}.report tr:nth-child(even) td{background:#fafcfe}.report tr:last-child td{border-bottom:0}.equation{display:block;overflow-x:auto;white-space:nowrap;background:#f0f5fb;border:1px solid #d9e7f4;border-radius:10px;margin:16px 0;padding:16px 18px;font:17px/1.8 'Times New Roman',serif;color:#123c62}.equation.inline{display:inline;padding:2px 7px;font-size:15px;white-space:normal}.report code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--code);border-radius:4px;padding:2px 5px;font-size:.89em}.report ul,.report ol{padding-left:25px}.report li{margin:6px 0}.footer{margin:22px 0;color:var(--muted);font-size:13px;text-align:center}.toplink{position:fixed;right:22px;bottom:24px;background:#1a577e;color:white;padding:8px 14px;border-radius:20px;font-size:13px;box-shadow:0 4px 14px #0003}@media(max-width:760px){body{font-size:15px}.shell{padding:12px 10px 40px}.hero{padding:27px 22px}.hero h1{font-size:24px}.report{padding:22px 18px}.report h1{font-size:23px}.report h2{font-size:19px}.toc ul{columns:1}.report p{text-align:left}.report table{font-size:13px}}
+@media print{body{background:#fff}.shell{max-width:none;padding:0}.hero{background:#fff;color:#000;box-shadow:none}.hero h1,.hero p{color:#000}.toc{break-after:page}.report{border:0;box-shadow:none;padding:0}.toplink{display:none}.report h1{break-before:page}.table-wrap{overflow:visible}a{color:#000}}
+</style></head><body><div class="shell"><header class="hero"><h1>Daily Top Papers Deep Dive</h1><p>2026-10-29 · RL × Agent × Efficient Learning</p><p>2 篇完整精读 · 论文原文、表格证据、公式、失败点、可复现实验与迁移方案</p></header><div class="toc" id="toc"><h2>目录 · Contents</h2><ul><li><a href="#overview">Daily Top Papers Deep Dive · 2026-10-29</a></li>
+<li><a href="#selection">今日选择与阅读路线</a></li>
+<li><a href="#paper1">Paper 1 · Scaling Laws for Tool-Use Agents via Controllable Environment Synthesis</a></li>
+<li><a href="#p1-1">1.1 一句话定位</a></li>
+<li><a href="#p1-2">1.2 人话版（先建立直觉）</a></li>
+<li><a href="#p1-3">1.3 Background &amp; Research Gap：为什么只增加 QA/轨迹不够</a></li>
+<li><a href="#p1-4">1.4 Core Insight：泛化上限与学习速度由不同旋钮控制</a></li>
+<li><a href="#p1-5">1.5 Method Deep Dive：从 app 代码到学生策略</a></li>
+<li><a href="#p1-6">1.6 核心公式：为什么 A·S·D 和 T 被分开</a></li>
+<li><a href="#p1-7">1.7 Toy Example：同样 32 条样本，训练信号完全不同</a></li>
+<li><a href="#p1-8">1.8 Baseline Deep Comparison（strongest baseline 的选择）</a></li>
+<li><a href="#p1-9">1.9 Experiment Setup：数据、模型、问题与协议</a></li>
+<li><a href="#p1-10">1.10 Results Deep Dive：八个值得记住的定量证据</a></li>
+<li><a href="#p1-11">1.11 Table / Figure Reading：读懂作者真正展示的证据</a></li>
+<li><a href="#p1-12">1.12 Ablation / Mechanistic Analysis</a></li>
+<li><a href="#p1-13">1.13 Claim vs Evidence</a></li>
+<li><a href="#p1-14">1.14 Contribution、Limitation 与失败模式</a></li>
+<li><a href="#p1-15">1.15 Reproduction View：先做一个小而可信的版本</a></li>
+<li><a href="#p1-16">1.16 Research Value（七项逐项判断）</a></li>
+<li><a href="#p1-17">1.17 Migration 1：Video-Agent 的时空状态组成律（研究建议）</a></li>
+<li><a href="#p1-18">1.18 Migration 2：Agent Memory 的状态反事实基准（研究建议）</a></li>
+<li><a href="#p1-19">1.19 Attack / Verification Lens 与 9 句记忆卡</a></li>
+<li><a href="#paper2">Paper 2 · EnvSched: Environment-Aware Scheduling for Rollout-Efficient Agent Reinforcement Learning</a></li>
+<li><a href="#p2-1">2.1 一句话定位</a></li>
+<li><a href="#p2-2">2.2 人话版（先理解为什么要调度）</a></li>
+<li><a href="#p2-3">2.3 Background &amp; Gap：GRPO 为什么会浪费 rollout</a></li>
+<li><a href="#p2-4">2.4 Core Insight：高方差与高覆盖必须联合优化</a></li>
+<li><a href="#p2-5">2.5 Method Deep Dive：从静态拓扑到在线任务池</a></li>
+<li><a href="#p2-6">2.6 核心公式与数学直觉（不是只看一个 variance）</a></li>
+<li><a href="#p2-7">2.7 Toy Example：四个任务如何竞争下一批预算</a></li>
+<li><a href="#p2-8">2.8 Baseline Deep Comparison（谁是真正最强对照）</a></li>
+<li><a href="#p2-9">2.9 Experiment Setup：训练、评测、系统成本</a></li>
+<li><a href="#p2-10">2.10 Metrics 教学：什么才叫 rollout efficient</a></li>
+<li><a href="#p2-11">2.11 Results Deep Dive：九个可核查现象</a></li>
+<li><a href="#p2-12">2.12 Table / Figure Reading：从图表里找弱项</a></li>
+<li><a href="#p2-13">2.13 Ablation &amp; Mechanistic Analysis：哪些组件真有用</a></li>
+<li><a href="#p2-14">2.14 Claim vs Evidence</a></li>
+<li><a href="#p2-15">2.15 Contribution、Limitation、Failure Modes</a></li>
+<li><a href="#p2-16">2.16 Reproduction View：官方代码优先验证什么</a></li>
+<li><a href="#p2-17">2.17 Research Value（七项）</a></li>
+<li><a href="#p2-18">2.18 Migration 1：Cost-Aware Agent RL Scheduler（研究建议）</a></li>
+<li><a href="#p2-19">2.19 Migration 2：Streaming Video 的预算感知采帧/缓存（研究建议）</a></li>
+<li><a href="#p2-20">2.20 Attack / Verification Lens 与 9 句记忆卡</a></li>
+<li><a href="#synthesis">Cross-Paper Synthesis · 共同结论与冲突</a></li>
+<li><a href="#s-1">3.1 共同趋势：训练预算的“结构”比数量本身更重要</a></li>
+<li><a href="#s-2">3.2 互补、假设冲突与 Collision</a></li>
+<li><a href="#s-3">3.3 Combined Research Opportunities：最优先做什么</a></li>
+<li><a href="#s-4">3.4 阅读与复现优先级</a></li>
+<li><a href="#sources">Sources / Links / 数据可信度</a></li></ul></div><main class="report"><h1 id="overview">Daily Top Papers Deep Dive · 2026-10-29</h1>
+<p><strong>研究日期：2026-10-29（北京时间）｜检索重点：2026-10-27 至 2026-10-28｜精读：2 篇</strong></p>
+<blockquote>
+<p>阅读原则：优先原始 arXiv 全文和附录；所有论文数字取自原文，所有新增实验构想标记为“建议/待验证”。两篇均为 2026-10-27 提交的 v1 预印本，非 BACKFILL。没有为了覆盖 Video / Inference 而牺牲当日机制与证据强度。</p>
+</blockquote>
+<h2 id="selection">今日选择与阅读路线</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>论文</th>
+<th>方向</th>
+<th>核心问题</th>
+<th>推荐先看</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#1</td>
+<td><strong>Scaling Laws for Tool-Use Agents via Controllable Environment Synthesis</strong></td>
+<td>Agent / Data Scaling</td>
+<td>固定训练预算下，应增加工具、任务、初始数据库状态还是干扰复杂度？</td>
+<td>§1.6 组成律与 §1.9 实验</td>
+</tr>
+<tr>
+<td>#2</td>
+<td><strong>EnvSched: Environment-Aware Scheduling for Rollout-Efficient Agent Reinforcement Learning</strong></td>
+<td>Agent / RL</td>
+<td>固定 rollout 预算下，下一批该训练哪些环境—任务对？</td>
+<td>§2.6 调度公式与 §2.9 消融</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>为什么选这两篇？</strong> 它们都把 Agent 训练的瓶颈从“换更强的 policy objective”转向<strong>训练数据/交互预算的结构化分配</strong>，但处在不同层级。SynthAPI 通过 849 次模型训练建立数据组成—泛化关系；EnvSched 通过可执行环境图和历史 reward 统计进行在线课程调度，且提供官方实现。两者构成可以直接开展实验的交叉问题：<strong>先决定生成什么环境，再决定在哪些环境上花 rollout。</strong></p>
+<p><strong>来源审计：</strong> 已阅读两篇 arXiv HTML 的 Introduction、Method、Experiments、主要 Table/Figure、Appendix；EnvSched 官方 GitHub 可访问；SynthAPI 未发现可核实的官方代码发布，故标记为“未确认公开”，不虚构项目地址。最近 7 天已讨论的 NgramRL、HarnessMM、FOCUS、Triage 未重复入选。</p>
+
+<h1 id="paper1">Paper 1 · Scaling Laws for Tool-Use Agents via Controllable Environment Synthesis</h1>
+<p><strong>Authors</strong>：Andrew Szot, Samira Abnar, Omar Attia, Abbas Kazerouni, Michael Kirchhof, Cheng-Yu Hsieh, Raviteja Vemulapalli, Alexander Toshev。<strong>Affiliation</strong>：Apple。<strong>Date</strong>：2026-10-27（arXiv v1）。<strong>Venue/Status</strong>：arXiv preprint；未确认正式录用。<strong>Paper</strong>：<a href="https://arxiv.org/abs/2610.37648">arXiv 摘要</a> · <a href="https://arxiv.org/html/2610.37648">HTML 全文</a> · <a href="https://arxiv.org/pdf/2610.37648">PDF</a>。<strong>Project/Code</strong>：未发现作者明确发布的可验证官方仓库；复现需自行实现。<strong>主线</strong>：Agent / Tool-use / Synthetic Environment Scaling。</p>
+<h2 id="p1-1">1.1 一句话定位</h2>
+<p>本文不是再发明一种 Agent 推理策略，而是研究<strong>工具型 Agent 的训练世界应如何组成</strong>，将可控的工具广度、任务数量、数据库多样性和干扰深度写成能够预测下游泛化的经验 scaling law。</p>
+<h2 id="p1-2">1.2 人话版（先建立直觉）</h2>
+<p>想训练一个能在不同软件里办事的 Agent，最容易想到的是拼命造任务：一万个购物指令、一万个日历指令，再用强模型演示操作。但这种堆量可能让模型只记住固定接口和固定数据，而没有学会遇到新 API、新用户记录、新干扰项时如何找信息、核对状态和安全执行。作者构建 SynthAPI：让构建模型写出真正能运行的 Python 应用、数据库、读写 API，再为任务自动生成初始数据、标准答案程序和可执行 verifier。最重要的是把生成预算拆成四个旋钮：多少个 app、每个 app 多少种任务、每条指令有多少种数据库实例、数据库里多少干扰数据。对 849 个训练模型的实验发现，小预算宜重复熟悉工具，大预算则更应该扩大工具与数据库状态的覆盖。组成感知的模型在外推区间的归一化分数预测误差为 0.0285，而只看任务数量的模型为 0.1706。它提供的是训练数据投资原则，而不是推理时的即时加速。</p>
+<h2 id="p1-3">1.3 Background &amp; Research Gap：为什么只增加 QA/轨迹不够</h2>
+<p>传统 Tool-use SFT 常把一条任务写成“用户请求→模型工具调用→工具返回→最终答复”。若工具结果由语言模型在文本中模拟，生成器可能自相矛盾：上一步库存扣了两件，下一步却又显示原库存；模型学到的是看似合理的对话，而非遵守数据库状态转移。另一条路线是生成可执行环境，但已有工作常强调环境总量、轨迹总量或成功率，很少把“新工具”和“旧工具的新任务”区分成独立变量。于是，当预算只有 1 万条轨迹时，团队不知道应该开发 50 个新 API，还是给现有 API 再写 500 个任务。</p>
+<p><strong>具体例子：</strong> 购物 app 的请求是“把 A 商品退货，退款打回原支付方式，但不要取消另一件商品”。一个真正的 agent 要先查订单、确认退货资格、识别订单行 ID、执行退款并检查另一行未改变。若所有训练实例都固定订单号和商品名，模型可能靠模式匹配成功；把相同指令放进四种不同初始数据库，再增加相似商品和无关订单，才迫使它依赖工具返回而非表面记忆。论文要填补的 gap 是：<strong>哪一种多样性在什么训练规模最值钱，以及这种选择能否定量预测？</strong></p>
+<p>需要注意，本论文的主要学习过程是 <strong>SFT 而非在线 RL</strong>。生成的任务具有二元 verifier，可以供未来 RL 使用，但为了完成 849 个配置对比，作者先让专家生成成功轨迹，再以监督损失蒸馏。不能把本文称为“证明 RL 的 scaling law”。</p>
+<h2 id="p1-4">1.4 Core Insight：泛化上限与学习速度由不同旋钮控制</h2>
+<p>核心观察是<strong>数据组成的最优点随预算发生相变式移动</strong>。在 9B 学生模型上，64–512 条训练任务时，8 个 app 最好；达到 4096 条及以上时，64 个 app 明显更好。数据状态也类似：32–512 个实例时单一数据库状态更有效，512–4096 时两个状态更好，更大预算时四个状态更好。作者将这一现象解释为：初期需要在有限工具上形成稳定行为；训练规模上来后，同一行为的重复收益下降，而工具接口和数据库状态的扩展提升泛化天花板。</p>
+<p>这是<strong>大量受控实验支持的经验规律</strong>，不是数学定理。它不是“工具越多永远越好”：小预算时扩展过快会使每个 app 的监督过稀；也不是“多造 task 没用”：任务数 T 仍决定向上限靠近的速度。对 D（干扰批次数）的观察同样是经验性的，D=4 在大预算时明显更有利，但并没有证明真实世界的无限干扰都能产生正收益。它提示一个重要区分：<strong>数据覆盖广度决定潜在可学能力，重复练习决定是否真正学到。</strong></p>
+<h2 id="p1-5">1.5 Method Deep Dive：从 app 代码到学生策略</h2>
+<p><strong>Input → App taxonomy → Builder LLM 生成 db.py / apis.py → Task instruction → Db⁰ / verifier / oracle solver → 执行与校验 → Expert rollout → 成功轨迹筛选 → Qwen3.5 SFT → 跨环境测试与拟合 scaling law。</strong></p>
+<p><strong>步骤一：定义可控的应用世界。</strong> 作者手工设定购物、音乐、生产力、金融、健身、消息、工具、社交八类应用。Gemini-3.1 Pro（离线互联网访问）首先提出 app 功能清单，再用 Python dataclass/Enum 定义结构化数据表，最后实现公开 API。API 通过统一 CRUD 原语访问数据库，便于跟踪所有读写变更。这里的数学对象不是 embedding，而是可执行状态机：状态 Db，动作 a，转移 Db′=f(Db,a)。潜在故障是 API 有隐含 side effect、数据库外直接修改或 schema 不一致，因此统一访问路径是重要的工程约束。</p>
+<p><strong>步骤二：生成任务而不是仅生成答案。</strong> 每个 task 由自然语言 instruction、初始数据库 Db⁰、程序化成功验证器 v 和参考求解程序 π* 构成。参考程序必须通过公开 API 操作，verifier 在终态检查目标是否满足；额外干扰数据必须保持任务初始未完成且最终可解。成功条件可写成 v(Db_final, answer)∈{0,1}。若 verifier 只检查目标字段而不检查副作用，Agent 可能“完成任务但误删别的记录”，这是该生成范式最需要防范的 oracle gap。</p>
+<p><strong>步骤三：把生成空间拆成四个独立旋钮。</strong> A 是 app 数，T 是每个 app 的任务指令数，S 是同一指令对应的初始数据库实例数，D 是每个数据库包含的核心及干扰数据批次数。样本数 N=A×T×S，D 不直接增加样本数，却会增加状态复杂度与 token 成本。这里非常关键：<strong>固定 N 不等于固定 token / FLOPs</strong>，因为不同 D 可能使上下文和轨迹长度变化。作者另外以近似训练 FLOPs 进行拟合，但所有“同任务数”结论不应自动理解为“同实际训练成本”。</p>
+<p><strong>步骤四：通过专家行为蒸馏。</strong> GLM-5.2 最多尝试四次，保留首条通过 verifier 的轨迹；四次都失败的任务丢弃。训练只对 reasoning 与 action/code token 计算 next-token cross-entropy，不对用户 prompt 和工具 observation 反向传播。这个 mask 防止模型把不可控制的环境返回当作需要预测的目标。代价是筛选偏向专家已经能解决的任务，复杂任务可能系统性缺席；单条成功轨迹也没有显式覆盖多种可行计划或错误恢复。</p>
+<p><strong>步骤五：评估、拟合、再用拟合选配方。</strong> 每组 (A,T,S,D,M) 独立训练学生，在新 app / 外部 benchmark 上测成功率；先做单旋钮对比，再用统一函数预测归一化分数，最后选定 32,768 实例下的最优配方，并与同数量的非最优配方比较。方法输出有两个：训练好的 Agent，以及给定预算时建议的环境组成比例。失败模式包括经验公式在新生成器上失效、跨 app 的语义差异被低估、数据生成成本高于训练成本。</p>
+<h2 id="p1-6">1.6 核心公式：为什么 A·S·D 和 T 被分开</h2>
+<div class="equation">N=A\times T\times S,\qquad C\approx 6ML</div>
+<p>N 是训练实例数；M 是学生参数量；L 是监督 token 数；C 是论文使用的训练 FLOPs 近似。因为 D 会增加数据库深度而不改变 N，C 比 N 更接近真实训练成本，但 6ML 仍没有计算合成数据、专家 rollout、环境执行与推理评估的成本。</p>
+<div class="equation">\widehat P_M^1(A,T,S,D)=\sigma\!\left(c_0+c_A\log_2(ASD)\right)\;\sigma\!\left(b_0+b_T\log_2 T\right)^\nu</div>
+<p>σ(z)=1/(1+e⁻ᶻ)。第一项是随 app 数 A、数据库宽度 S、干扰深度 D 增长的<strong>经验上限因子</strong>；第二项是随着每 app 任务数 T 增长而逐渐接近 1 的<strong>学习进度因子</strong>；ν 调节进度曲线形状。系数 c₀、cA、b₀、bT、ν 通过最小二乘拟合，且每个模型规模分别拟合。它并没有证明 A、S、D 在真实因果上完全可交换：它们只是在这一函数形式里以乘积 ASD 进入。</p>
+<p>对照 baseline 只看样本总数：<span class="equation inline">P̂⁰(N)=U·σ(b₀+bN·log₂N)^ν</span>。若两个数据集都有 N=32768，baseline 会预测相同的组成收益，而新公式可根据 A、S、D、T 给出不同预测。调大 A 但固定 N 时，T 必然下降：第一项升高、第二项下降，因而存在预算依赖的最优解。调大 D 会提高模型预测的上限，但真实 token 成本、错误率和数据污染风险可能同时升高。论文附录 9B 的拟合参数为 c₀=-0.25、cA=0.236、b₀=-0.41、bT=0.495、ν=1.46；不要将这组系数直接搬到其他模型。</p>
+<p>归一化诊断分数 P 是先按 benchmark 对比原始 zero-shot 与已观测最佳模型的增量做缩放，再取均值。<strong>MAE</strong> 是 |预测 P−真实 P| 的平均值，越小越好；<strong>RMSE</strong> 更惩罚大误差。P 是针对观察到的最优值归一化，不等于真实世界成功概率，跨研究不能直接把 P=0.8 理解成 80% 成功率。另一个容易忽视的问题是作者声称 P∈[0,1]，该结论依赖实验范围及分母定义；不能据此推出对未来任意模型的绝对界。</p>
+<h2 id="p1-7">1.7 Toy Example：同样 32 条样本，训练信号完全不同</h2>
+<p>构造一个小型日历/订单世界（<strong>教学例子，非论文原始实验</strong>）。方案甲：A=2 个 app、T=16 种任务、S=1 个初始数据库、D=1，得到 N=32。方案乙：A=4、T=4、S=2、D=3，同样 N=32。用户指令是“找到周五上午与王老师冲突的预约并改到下午，同时保持另一场会议不动”。甲让 Agent 重复大量类似的日历指令，几乎每次都看到同一组记录；乙让同一指令在两种冲突日程下运行，并加入多个相似姓名、时间重叠但无关的预约。</p>
+<p>对于乙，Agent 必须先调用 list_tools 找到查询接口，按名字/时间检索，读取 ID 与冲突字段，再执行 update，最后通过 verifier 检查目标预约改变且旁支会议不变。假设模型最初只会使用固定 ID，那么甲的训练损失可能下降更快，但乙更可能教会“读取工具结果→基于当前状态选对象”的规则。可是在只有 32 条数据时，乙每个 app 只有四种任务，容易学不熟；这就是论文所发现的小预算集中、较大预算扩展的直觉。若改为 N=4096，甲的重复价值下降，乙的覆盖优势更可能体现。这个例子解释机制，但<strong>不是可替代论文数字的证据</strong>。</p>
+<h2 id="p1-8">1.8 Baseline Deep Comparison（strongest baseline 的选择）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>合理机制</th>
+<th>本 setting 的短板</th>
+<th>SynthAPI 的改变</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SimSAT（AppWorld 最强外部）</strong></td>
+<td>LLM 模拟长轨迹，适合复杂任务蒸馏</td>
+<td>文本模拟状态不必完全等同可执行数据库；实验规模和训练配方不同</td>
+<td>真实 Python 状态转移与可控数据库生成</td>
+<td>机制+工程</td>
+</tr>
+<tr>
+<td><strong>EnvFactory（BFCL 4B 最强）</strong></td>
+<td>从真实资源生成可执行环境</td>
+<td>本文关注其报告结果而非同预算公平复验</td>
+<td>生成控制变量和组成律</td>
+<td>研究设计+工程</td>
+</tr>
+<tr>
+<td><strong>EnvScaler（BFCL 8B 最强）</strong></td>
+<td>程序化环境与可验证任务</td>
+<td>主要优化生成规模，本文追问预算怎么分配</td>
+<td>显式 A/T/S/D</td>
+<td>机制性问题重定义</td>
+</tr>
+<tr>
+<td><strong>Nemotron-Agentic</strong></td>
+<td>大型合成轨迹语料，可直接 SFT</td>
+<td>多步状态复杂度与 benchmark 不匹配，部分任务退化</td>
+<td>高状态复杂度的可执行任务</td>
+<td>数据设计</td>
+</tr>
+<tr>
+<td><strong>SynthAPI-SubOpt（最严格内部对照）</strong></td>
+<td>同生成器、同样本数，隔离组成差异</td>
+<td>A=32,T=1024,S=1,D=2 过度重复任务</td>
+<td>A=64,T=128,S=4,D=4</td>
+<td>控制变量组合</td>
+</tr>
+</tbody>
+</table></div>
+<p>“最强 baseline”要分两种：<strong>检验论文核心 claim 时，最有说服力的是同预算 SynthAPI-SubOpt</strong>；与外部方法比较时，AppWorld 用 SimSAT，BFCL 按模型大小分别是 EnvFactory / EnvScaler。作者明确承认外部方法 SFT/RL 混用且数据量不同，因此不能将 leaderboard 优势归因于 SynthAPI 单一机制或数据效率。</p>
+<h2 id="p1-9">1.9 Experiment Setup：数据、模型、问题与协议</h2>
+<p><strong>研究问题 RQ1：预算固定，哪个数据组成最泛化？</strong> 在 64 个 app、10,472 个 API（6,266 写、4,206 读）上，系统扫描 A/T/S/D；总共生成 458,752 个任务，训练 849 个模型。学生是 Qwen3.5-2B/4B/9B/27B，专家 GLM-5.2，app builder Gemini-3.1 Pro。原始合成数据合计 5.9B token，其中 721M 为 reasoning/action 监督 token。训练默认一轮 SFT，验证集留出 4k 轨迹，验证 loss 连续五次升高提前停止。bf16、学习率 2e-5、warmup 1%、梯度裁剪 1.0；作者报告 B200 多卡节点配置，不能把它当作低成本实验。</p>
+<p><strong>研究问题 RQ2：能否外推未见过的大算力配置？</strong> 以 AppWorld + SynthAPI-Holdout 为 diagnostic set，拟合时排除训练 FLOPs 最高的 25% 运行，再预测该外推集合；按作者的 FLOPs 口径最大达到拟合区间上界的 16 倍。训练 FLOPs 采用 C≈6ML，不包括数据生成成本。每个 benchmark 的成功率先按起始模型和观察到的最优分数归一化。</p>
+<p><strong>研究问题 RQ3：推荐配方是否能迁移到真正不同的工具集？</strong> AppWorld Test-N 168、Test-C 417，9 个 app/457 APIs；BFCL-v3 Multi-Turn 800 任务、8 域/129 APIs；ASTRA-Bench High 939 任务、6 app/27 APIs；SynthAPI-Holdout 4 个未训练 app×25 任务。AppWorld 最多 50 步；SynthAPI 自身 32 步，工具 observation 截断 2048 token；评估使用统一 meta-tools 发现工具、执行 Python 代码，验证最终状态。主要指标是 task goal completion/success rate，越高越好，但它依赖 verifier 是否充分检查副作用。</p>
+<h2 id="p1-10">1.10 Results Deep Dive：八个值得记住的定量证据</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>证据</th>
+<th>数字 / 对比</th>
+<th>能证明什么</th>
+<th>另一种解释 / 警惕</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 组成律外推</td>
+<td>MAE <strong>0.0285 vs 0.1706</strong>，约下降 83.3%</td>
+<td>比只看任务数更能预测同生成器的表现</td>
+<td>拟合函数形式由观察启发；外部生成器未知</td>
+</tr>
+<tr>
+<td>② 工具广度阈值</td>
+<td>9B：64–512 任务时 A=8 最佳；N≥4096 时 A=64 最佳</td>
+<td>最优数据分配随规模变化</td>
+<td>只是被扫描的离散候选集合</td>
+</tr>
+<tr>
+<td>③ 数据状态广度</td>
+<td>N=32–512 用 S=1；512–4096 用 S=2；更大用 S=4</td>
+<td>训练要学习状态变化而非记住固定实例</td>
+<td>与任务难度、token 成本耦合</td>
+</tr>
+<tr>
+<td>④ 4B 同预算 AppWorld Test-C</td>
+<td>SubOpt 38.4 → Opt <strong>45.0</strong>，+6.6 pp</td>
+<td>仅改组成可提升外部成功率</td>
+<td>A/S/D 同时改变，不能单独归因</td>
+</tr>
+<tr>
+<td>⑤ 9B 同预算 Holdout</td>
+<td>56.0 → <strong>63.0</strong>，+7.0 pp</td>
+<td>对新 app 的泛化明显受组成影响</td>
+<td>Holdout 由同一生成器产生</td>
+</tr>
+<tr>
+<td>⑥ 27B 同预算 AppWorld Test-C</td>
+<td>73.8 → <strong>74.1</strong>，仅 +0.3 pp</td>
+<td>规模大时此处组成收益很小</td>
+<td>已有能力较强、接近局部上限</td>
+</tr>
+<tr>
+<td>⑦ Big 对外部最强 AppWorld</td>
+<td>4B 66.4 vs SimSAT 58.8，+7.6；9B 77.0 vs 65.4，+11.6 pp</td>
+<td>大规模合成训练可达到很强表现</td>
+<td><strong>不是同预算</strong>；Big 训练四轮</td>
+</tr>
+<tr>
+<td>⑧ Big 并非处处更强</td>
+<td>4B Holdout Opt 56.0，Big <strong>53.0</strong>，−3.0 pp</td>
+<td>数据/epoch 增加也可能损伤部分泛化</td>
+<td>可能是分布、过拟合或评估噪声，原因未被隔离</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>strongest result</strong>：在严格内部比较中，9B Holdout +7.0 pp，4B AppWorld +6.6 pp；在外部对比中，9B AppWorld Test-C 对 SimSAT +11.6 pp，但成本不可比。<strong>weakest result</strong>：27B AppWorld +0.3 pp，以及 4B Holdout Big 反而下降 3.0 pp。<strong>model-specific</strong>：大模型上部分配方收益饱和；<strong>dataset-specific</strong>：AppWorld 与 SynthAPI-Holdout 反应不同；<strong>trade-off</strong>：复杂数据库可能增加上下文/训练成本，论文未给完整 dollar cost。</p>
+<h2 id="p1-11">1.11 Table / Figure Reading：读懂作者真正展示的证据</h2>
+<p><strong>Figure 1（流程示意）</strong>：左侧是真实 Agent 与工具交互，中间是 app→任务→数据库/验证器生成，右侧是组成旋钮到训练性能。它证明系统结构清晰，<strong>不直接证明因果效果</strong>；重点看四个旋钮如何贯穿数据生成与实验设计。</p>
+<p><strong>Figure 2(a)(b)(c)（9B 数据组成曲线）</strong>：横轴任务实例数 N，纵轴 diagnostic 归一化表现，不同曲线对应 A、S、D。作者要证明规模越大越应拓展 app/状态/干扰。真实支持是实验网格中出现最优曲线交叉；不能从曲线外推“任意 A/S/D 单调提高”。D=4 的好处也可能受下游数据密度影响。</p>
+<p><strong>Figure 3（组成律外推）</strong>：横轴 SFT FLOPs，纵轴归一化 score；线是拟合模型，点是最优配置下的真实分数，拟合使用所有训练配置。图支持该生成器上的计算外推，不是跨生成器的普适 scaling law；最优前沿只展示最优点，可能弱化对其他配置的残差可视化。</p>
+<p><strong>Table 1（四 benchmark×三规模）</strong>：行是 Zero-shot、Nemotron、SubOpt、Opt、Big；列是 AppWorld、ASTRA、BFCL、Holdout 各 4B/9B/27B。要逐行读：4B BFCL 44.9→48.8，9B ASTRA 74.2→75.5，27B BFCL 59.6→61.5，均是同预算 Opt 超 SubOpt；但 Big 的 4B Holdout 53.0 小于 Opt 56.0，不能只报最好的格子。</p>
+<p><strong>Table 2 / Appendix Table 4（外部比较和拆分）</strong>：Table 2 4B BFCL 50.5 超 EnvFactory 48.5，8B 55.6 超 EnvScaler 51.9；AppWorld Test-C 9B 77.0 超 SimSAT 65.4。Appendix Table 4 揭示 Test-N 9B 83.3 vs SimSAT 74.5；对照 Test-C 77.0 vs 65.4，挑战集上的优势更大，但对方训练流程不同。</p>
+<p><strong>Figure 10（外部生成器的有限验证）</strong>：在 SimSAT 上，N=128/256/512 时较少 app 往往更好；N=1024 时 A=32 超过 A=16。这是跨 pipeline 的方向性证据，却只验证 app/task 维度，没有验证 S、D 和完整公式；“只在 SynthAPI 验证”应精确理解为完整 law 仍局限于 SynthAPI。</p>
+<h2 id="p1-12">1.12 Ablation / Mechanistic Analysis</h2>
+<p>本论文最有价值的消融是<strong>固定 N 调整 A/T/S/D</strong>，不是删掉 Transformer 某层。固定 N 但提高 A 意味着降低 T；低预算性能可能下降，高预算上限上升，说明工具广度与练习密度存在竞争。固定 N 提高 S，意味着同一指令对应不同初始状态；大预算性能提升支持“状态泛化”的解释，但还不能排除数据库实例带来的 token 分布变化。D=1/2/4 的比较显示复杂干扰更适合大规模训练，但论文没有单独证明模型真的学会了目标 ID 的因果追踪。最好的机制验证应该再加入<strong>同 token、同 FLOPs、同任务难度</strong>的严格匹配，并对真实工具调用进行错误归因。</p>
+<h2 id="p1-13">1.13 Claim vs Evidence</h2>
+<p><strong>Authors Claim</strong>：可控生成工具环境揭示可预测的数据组成规律，最优配方优于现有训练数据方法。<strong>Experiments Actually Show</strong>：849 个学生训练配置、四种模型规模、两个 diagnostic 任务集支持组成相关性；同任务数 Opt 优于 SubOpt；Big 在多个外部 benchmark 强于若干已报告 baseline。<strong>What Is Not Yet Proven</strong>：没有证明公式适用于真实 SaaS、交互用户、长邮件检索、不同 builder 或 RL 更新；没有证明某一旋钮单独造成全部 Opt 提升；外部比较不能证明同训练 FLOPs 的优势；也未展示完整生成成本和系统部署表现。</p>
+<h2 id="p1-14">1.14 Contribution、Limitation 与失败模式</h2>
+<p><strong>Contribution 1 [New System / Engineering]</strong>：从 schema、API 到可执行 verifier 的一体化任务生成；组件多为既有技术组合，价值在可控性和大规模实验。<strong>Contribution 2 [New Empirical Finding]</strong>：发现数据预算增加时最优配置从重复任务转向更多 app、更多数据库实例和更深干扰。<strong>Contribution 3 [New Objective / Empirical Model]</strong>：组成感知的经验 scaling law，用外推误差和配方比较验证其预测效用；不是新的 policy loss 或理论收敛证明。</p>
+<p><strong>Authors' Limitation</strong>：无用户交互澄清；任务局限单 app；没有长邮件、笔记等真实文档语义深度；完整 law 未跨生成器验证。<strong>Additional Limitation</strong>：构建依赖闭源 Gemini-3.1 Pro、专家依赖 GLM-5.2；成功轨迹筛选存在 selection bias；verifier 可能被投机利用；工具覆盖度不等于行为组合覆盖度；生成环境的安全约束未必等于真实 API 权限；D 可能增加无效 token 和训练成本；大模型部分收益很小，且 Big 的某些 holdout 格子退步。若生成器把相同结构换名字反复采样，名义上的 app diversity 可能夸大真实机制多样性。</p>
+<h2 id="p1-15">1.15 Reproduction View：先做一个小而可信的版本</h2>
+<p>优先实现 <code>db.py</code> 数据模型、<code>apis.py</code> CRUD 包装、<code>task_generator.py</code>、<code>verify.py</code>、<code>oracle.py</code>、<code>rollout.py</code>、<code>sft_mask.py</code>、<code>fit_scaling.py</code> 七个模块。最容易踩坑的是：verifier 在执行前已经为真、oracle 绕过公开 API、同 ID 冲突、观察截断破坏任务、tool output 被误算 loss、数据配置改变了 token 数却仍宣称等预算。最小版本建议 4 个 app、每个 8/16/32 条指令、S∈{1,2}、D∈{1,2}，每个配置收集 100–1000 条可验证轨迹，用一个可本地运行的 1B–3B 模型训练；保持 optimizer、step 数、seed 和有效监督 token 对齐。先验证 <strong>同 N 下改变 S 是否提升未见数据库状态上的 task success</strong>，比一开始拟合 5 参数的 scaling law 更可靠。作者的 849 次模型训练与 B200 资源不应成为最小复现的前提。</p>
+<h2 id="p1-16">1.16 Research Value（七项逐项判断）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>价值</th>
+<th>具体理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline Potential</td>
+<td>高</td>
+<td>A/T/S/D 提供可操作的生成基线，适合任何 Agent 数据预算研究</td>
+</tr>
+<tr>
+<td>Migration Potential</td>
+<td>高</td>
+<td>将数据库实例广度映射到视频场景、工具状态、环境扰动</td>
+</tr>
+<tr>
+<td>Systems Potential</td>
+<td>中</td>
+<td>生成和验证流水线可工程化，但尚非推理加速方法</td>
+</tr>
+<tr>
+<td>Attack Potential</td>
+<td>高</td>
+<td>verifier 漏洞、虚假 ID、状态污染可构造 reward hacking</td>
+</tr>
+<tr>
+<td>Evaluation Potential</td>
+<td>高</td>
+<td>可测 state robustness、side-effect、cross-app transfer</td>
+</tr>
+<tr>
+<td>Benchmark Potential</td>
+<td>高</td>
+<td>能构造同指令不同 Db⁰ 的 counterfactual benchmark</td>
+</tr>
+<tr>
+<td>New Paper Potential</td>
+<td>中高</td>
+<td>组成感知与在线 RL 调度联合优化，需避免与已有课程学习重合</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="p1-17">1.17 Migration 1：Video-Agent 的时空状态组成律（研究建议）</h2>
+<p><strong>Original Problem →</strong> Agent 训练数据过度集中于少量工具与固定数据库。<strong>Transferable Mechanism →</strong> 将“指令×初始状态×干扰复杂度”拆成独立数据维度。<strong>New Research Question →</strong> 视频工具 Agent 在固定视觉 token 预算下，扩展视频来源、事件模板还是同事件不同时间扰动，哪个最提高跨视频泛化？<strong>Method Modification →</strong> 把 A 映射为视频域/工具集，T 为事件问答/操作模板，S 为同事件的视角/时序实例，D 为无关镜头和相似动作干扰；保留可执行验证器。<strong>Minimum Experiment →</strong> 用公开短视频集先抽 200 个事件，做 4 种组合：更多事件、更多视频域、更多时序扰动、更多干扰帧；每组固定 800 条监督样本与 32k 视觉 token 预算，三种 seed，记录帧数、visual tokens、GPU latency 和 QA 正确率，重点做相同事件换背景/换时间的 OOD split。<strong>Model →</strong> Qwen2.5-VL-3B（实验建议，不是论文使用模型）。<strong>Dataset →</strong> Video-MME 子集或自建可复验事件片段。<strong>Baseline →</strong> uniform frame sampling、固定事件模板增强、无扰动 SFT。<strong>Metric →</strong> QA accuracy、OOD drop、tokens/query、wall-clock latency。<strong>Expected Contribution →</strong> 从“更多帧”转向“更有效的训练状态多样性”。<strong>Risk →</strong> 时间扰动可能改变正确答案，标注/验证成本高。<strong>Collision Risk →</strong> 视频数据增强与 curriculum 已有大量工作；新颖性必须来自可控组成律与同预算外推。</p>
+<h2 id="p1-18">1.18 Migration 2：Agent Memory 的状态反事实基准（研究建议）</h2>
+<p><strong>Original Problem →</strong> 工具 Agent 可能记住固定数据库状态。<strong>Transferable Mechanism →</strong> 固定任务意图，系统改变 Db⁰ 并增加干扰。<strong>New Research Question →</strong> 长期记忆 Agent 的成功究竟来自可复用程序技能，还是记住了某次用户状态？<strong>Method Modification →</strong> 为同一任务创建 4 个可追踪版本：原始状态、ID 置换、关键字段更新、冲突历史；检验 memory 写入后是否能在新状态中重新读取并纠错。<strong>Minimum Experiment →</strong> 选 100 条双阶段工具任务，先让 Agent 完成阶段一并写 memory；第二阶段分别施加 ID swap / stale value / distractor / contradiction 四种干预，每组 3 seed；记录 memory retrieval、工具调用、最终状态与误改率，输出 4×100×3 的结果矩阵。<strong>Model →</strong> Qwen3-4B-Instruct 或同级开源 Agent。<strong>Dataset →</strong> 自建 SQLite ToolWorld，附可执行 oracle；可参考 AppWorld 任务结构。<strong>Baseline →</strong> raw-history、BM25 memory、summary memory、无记忆。<strong>Metric →</strong> success、stale-memory reliance rate、unintended edits、tool calls。<strong>Expected Contribution →</strong> 评估“记忆是否改变后续决策”而非只看问答召回。<strong>Risk →</strong> memory 格式与检索策略混杂。<strong>Collision Risk →</strong> 与 agent memory benchmark、stale memory 评测方向重叠，需突出状态干预与可执行副作用。</p>
+<h2 id="p1-19">1.19 Attack / Verification Lens 与 9 句记忆卡</h2>
+<p><strong>攻击视角</strong>：对同一个 verifier 构造多个错误终态，测试是否可以靠误删、提前满足字段、注入伪造记录或调用顺序漏洞通过验证；再用 state-diff 和权限审计复核。<strong>黑盒 probe</strong>：只看任务成功与工具日志，逐步增加 D 并做 ID permutation，拟合 performance–complexity 曲线。<strong>效率压力测试</strong>：把 D 从 1 增到 8，记录真实 token、latency、memory，而不只记录 task count。<strong>新指标</strong>：Counterfactual State Generalization（同指令多状态平均成功率）与 Side-effect-adjusted Success（成功且无非授权改动）。这些是可做的扩展，不是论文已经报告的结果。</p>
+<p><strong>如果只记住这篇论文：</strong> ① 它研究训练环境如何组成，不是新 RL loss。② SynthAPI 的四个旋钮是 A、T、S、D。③ N=A×T×S，D 改变状态深度而非样本数。④ 小预算需要在少量工具上重复练习。⑤ 大预算更需要新 app 与新数据库实例。⑥ 组成感知的外推 MAE 为 0.0285，任务数基线为 0.1706。⑦ 同 32,768 任务的 Opt 优于 SubOpt，但多个旋钮同时变化。⑧ Big 的跨论文分数不可当作同成本胜利。⑨ 最值得迁移的是同指令、多状态、可执行验证的反事实设计。</p>
+
+<h1 id="paper2">Paper 2 · EnvSched: Environment-Aware Scheduling for Rollout-Efficient Agent Reinforcement Learning</h1>
+<p><strong>Authors</strong>：Sihan Yang, Weichen Bai, Ruichuan An, Yiming Cheng, Zhiyuan Feng, Tianyi Jiang, Renye Yan, Ning Ding, Yifan Zhang, Renrui Zhang, Yehui Tang, Wentao Zhang。<strong>Affiliations</strong>：PKU、XJTU、THU、Samsung Research、CASIA、CUHK（对应作者以原文及 README 为准）。<strong>Date</strong>：2026-10-27（arXiv v1）。<strong>Venue/Status</strong>：arXiv preprint，未确认正式录用。<strong>Paper</strong>：<a href="https://arxiv.org/abs/2610.37609">arXiv 摘要</a> · <a href="https://arxiv.org/html/2610.37609">HTML 全文</a> · <a href="https://arxiv.org/pdf/2610.37609">PDF</a>。<strong>Code</strong>：<a href="https://github.com/Hhankyangg/envsched">官方 GitHub：Hhankyangg/envsched</a>（MIT，已核验公开）。<strong>主线</strong>：RL for Agents / Rollout Efficiency / Environment Scheduling。</p>
+<h2 id="p2-1">2.1 一句话定位</h2>
+<p>EnvSched 将 Agent RL 的样本选择从<strong>单个 prompt 的难度估计</strong>升级为<strong>环境—任务图上的在线 rollout 预算分配</strong>，同时追求组内 reward 差异和跨环境覆盖，减少无信息训练。</p>
+<h2 id="p2-2">2.2 人话版（先理解为什么要调度）</h2>
+<p>训练工具 Agent 时，一道题通常让模型尝试八次，再根据八条轨迹的奖励差异更新策略。问题是有些题八次都成功、有些题八次都失败，组内几乎没有差异，训练花了大量推理预算却得到很弱的学习信号。更糟的是，如果一直挑那些刚好一半成功的题，模型可能只会处理少数几个软件环境，遇到新工具就不行。EnvSched 不额外采样探路轨迹，而是把已有训练结果存成历史：每道题属于哪个环境、使用什么工具、依赖哪些数据库字段、验证器检查什么；再构造同环境和跨环境两种相似关系，用邻居的 reward 统计估计尚未练过的题是否有价值。每个 batch 一半用于覆盖少见环境，一半用于优先挑高价值任务。Qwen3-8B 训练 40 步在三个 benchmark 上平均 48.81，超过随机调度在前 120 步达到的最好分数；同时消融说明单纯追求高 reward 方差或单纯追求覆盖都不够。</p>
+<h2 id="p2-3">2.3 Background &amp; Gap：GRPO 为什么会浪费 rollout</h2>
+<p>在 group-relative policy optimization（GRPO）里，对同一任务 x 采样 K 条轨迹 τ₁…τK，得到 reward r₁…rK，再用组内均值/方差构造相对 advantage。若 K=8，八条都拿 1 分，大家相对优势几乎一样；八条都拿 0 分，也没有“这条比那条更好”的区分。反之，若四条成功四条失败，组内差异大，梯度更可能有方向。旧方法可以依据 prompt 难度、成功率、历史 reward 或 embedding 相似度选择题目，例如 DPS、LEEPS，但它们未充分把<strong>环境的 API、状态转移、verifier 依赖和跨环境操作拓扑</strong>纳入调度对象。</p>
+<p><strong>具体例子：</strong> 任务甲在 CRM 里“查客户→确认权限→修改负责人→核验”，任务乙在医院里“查患者→确认床位→变更分配→核验”。两者表面词汇不同，实际共享“查 ID—前置条件—状态修改—终态验证”的结构。如果 CRM 的历史 rollout 表明 ID 解析最容易失败，那么即使医院任务从未被采样，也能借其结构邻居估计训练价值。与此同时，若一个 batch 里全是 CRM 任务，模型对医院的工具覆盖仍然不足。论文填补的是<strong>同时估计单任务可学习性与批次环境覆盖</strong>的缺口。</p>
+<h2 id="p2-4">2.4 Core Insight：高方差与高覆盖必须联合优化</h2>
+<p>作者观察到 group reward 的差异性是训练信号的代理指标，但单纯挑高方差任务会使任务池集中在少数环境；单纯挑新环境则可能选到完全学不会或已经会的题。EnvSched 将二者拆成 exploitation 和 coverage 两个阶段，默认每批 64 个环境—任务对，其中 32 个覆盖、32 个利用，并通过配额和相似度惩罚防止 batch 重复。真正的新意不在“用 reward variance 选择难度适中样本”——这在先前 RLVR 课程学习中已有——而在<strong>把环境结构和 reward 拓扑作为可迁移的关系，并在同一 batch 中显式控制环境覆盖</strong>。</p>
+<p>证据分三层：表 2 显示被选任务的平均 reward 方差提高 34%，环境覆盖提高 26%；表 3 证明只用 coverage 或 exploitation 都使最终成绩下降；附录中的未见任务案例说明邻居统计可以在无自身 rollout 历史时预测有信息量的任务。前两层是强关联/受控消融，最后一层是机制解释示例，但还不能严格证明“跨环境边”具有因果语义而非只是相关的词袋特征。</p>
+<h2 id="p2-5">2.5 Method Deep Dive：从静态拓扑到在线任务池</h2>
+<p><strong>Input（环境池与 task/verifier）→ LLM 抽取操作拓扑 → 构造同环境/跨环境相似图 → 冷启动 batch → K 次 rollout 与 GRPO 更新 → 更新 reward 历史 → 图邻居估计 → 32 coverage + 32 exploitation → 约束去重 → 下一步循环 → trained policy。</strong></p>
+<p><strong>步骤一：任务节点。</strong> 一个节点 i 是 (environment e, task x, initial state, verifier) 的组合。环境定义工具接口、转移规则和检查器；任务指定当前请求与初始状态。作者用 EnvScaler 池的 51 个环境、2550 条任务。与只存 prompt 文本不同，节点还存“这个任务用什么 API、依赖什么字段、哪些条件会一起失败”。节点上的动态状态包括历史 reward mean、variance、dispersion、采样次数和最近被选次数。</p>
+<p><strong>步骤二：离线抽取结构并建立双关系图。</strong> LLM 阅读 instruction、初始状态摘要、工具说明与 verifier，抽取操作（lookup/update/create/delete/validate/authorize）、先决条件 gate、依赖边、reward check group、冲突类型。within-environment 图保留具体工具名、字段、verifier 文本与代码；cross-environment 图去掉领域名字、实体 ID、字面值，只保留“先 lookup 再 authorize 再 update”的抽象结构。六种具体 TF–IDF 视角加权求余弦相似度，跨环境则用抽象拓扑文本的 TF–IDF 余弦相似度。风险是 LLM 抽取错误会使两个本质不同的任务被错误连接，图传播随后放大这种偏差。</p>
+<p><strong>步骤三：冷启动与观察。</strong> 初始无 reward 历史时，调度器先选环境代表任务，再用 novelty 填满 batch，第一批每个环境最多两条。每条任务采样 K=8 条轨迹，verifier 给出 0–1 范围内的 reward（案例中可为部分分数），用组内均值 m、总体方差 v 和修正 dispersion d 记录训练信号。每次 GRPO 更新仍是普通模型训练，EnvSched 主要改变<strong>被选中的任务分布</strong>，不是替换 GRPO 的核心 policy objective。</p>
+<p><strong>步骤四：传播邻居的历史证据。</strong> 对每个未见或少见节点，从同环境选最多 6 个已观察邻居，从跨环境选最多 12 个已观察邻居。旧观察按时间半衰期折扣，并相对各步全局均值做中心化，以避免“早期 policy 很弱、后期 policy 更强”的历史分布偏移。邻居权重由相似度和有效历史样本量共同决定；稀疏节点向全局均值收缩，防止单个偶然成功把优先级推得过高。</p>
+<p><strong>步骤五：融合、排序和构造 batch。</strong> 对 variance、mean、dispersion 分别预测，再用 mean×(1−mean) 与 dispersion 重建辅助方差估计，与直接方差估计做分位数融合。短窗口和长窗口的差异用于惩罚最近训练价值下降的任务。Coverage 阶段优先当前 batch 未覆盖、历史覆盖少的环境；Exploitation 阶段按 predicted informativeness 选任务，但乘以重复曝光折扣。每加入一个节点，减去它与当前 batch 已选节点的最大相似度惩罚。最后通过每轮环境配额、三轮滚动配额、连续选中限制与异常 identifier replay filter 控制冗余和奖励投机。</p>
+<p><strong>步骤六：反馈闭环。</strong> 新 rollout 的奖励再次写回节点，下一步重新预测所有候选的训练价值。这个环是 Memory（reward history）→ Planning（scheduler）→ Tool/Environment（rollout）→ Feedback（verifier）→ Learning（GRPO）。长时间运行时，旧统计必须折扣，否则早期“困难题”可能在 policy 学会后继续占用预算；但折扣太快又会使估计噪声增大。</p>
+<h2 id="p2-6">2.6 核心公式与数学直觉（不是只看一个 variance）</h2>
+<div class="equation">S_{ij}^{full}=\sum_{a=1}^{6}\alpha_a\cos(h_i^{(a)},h_j^{(a)}),\quad S_{ij}^{abs}=\cos(g_i,g_j)</div>
+<p>hᵢ 是具体任务的六种 TF–IDF 视图，α 权重和为 1；gᵢ 是删除领域实体后的抽象操作表示。具体图只连同环境，抽象图连跨环境。余弦相似度高不等于任务难度或 reward 分布必然相同，它只是允许借用邻居证据的<strong>归纳偏置</strong>。如果一个抽象拓扑相同的任务有更严格权限限制，跨环境传播就可能产生错误预测。</p>
+<div class="equation">m_i=\frac{1}{K}\sum_k r_{ik},\quad v_i=\frac{1}{K}\sum_k(r_{ik}-m_i)^2,\quad d_i=\operatorname{clip}_{[0,1]}\!\frac{v_i}{\max(m_i(1-m_i),0.01)}</div>
+<p>m 是组均值，v 是<strong>总体方差</strong>（分母 K，不是 K−1），d 是相对 Bernoulli 方差的修正离散度。若奖励二元且成功率 p，则 v=p(1−p)，在 p=0.5 最大 0.25，在 p=0 或 1 为零。它反映组内区分度，而非最终泛化收益的真实因果效应；部分 reward、长轨迹截断和不可靠 verifier 都可能使 v 与学习价值脱钩。</p>
+<div class="equation">G_i^{r,y}=\frac{\sum_{j\in N^r(i)}a_{ij}^r\bar y_j+\lambda_g b^y}{\sum_j a_{ij}^r+\lambda_g},\quad P_i^y=\tfrac12G_i^{in,y}+\tfrac12G_i^{cross,y},\quad\hat y_i=\frac{W_i\bar y_i+\lambda_sP_i^y}{W_i+\lambda_s}</div>
+<p>y 可为 variance、mean、dispersion；b 是当前全局参考值；W 是本任务有效历史权重；λg=λs=2。没有自己的历史时 W=0，完全依赖图先验；观察越多，本任务历史权重越大。邻居权重用自适应带宽的高斯核和历史权重构造，既要相似也要有足够新近观测。作者用长半衰期 8 步、短半衰期 2 步，近期预测价值下降时施加 ηdecline=0.5 的惩罚。</p>
+<div class="equation">i^*=\arg\max_{i\in\mathcal A}\left[a_{i,t}^{phase}-\lambda_{sim}\max_{j\in\mathcal B}S_{ij}^{full}\right],\qquad\omega_i=(1+c_i/c_0)^{-1/2}</div>
+<p>a_phase 是 coverage 阶段的 qᵢ，或 exploitation 阶段的 qᵢωᵢ；cᵢ 是累计曝光次数，c₀=16，λsim=0.08。max similarity 惩罚意味着“当前 batch 中只要有一个很相似的任务，就降低再选它的吸引力”，这比只比较全局均值更能避免局部重复。ρ=0.5 控制 coverage/exploitation 的比例；ρ→0 容易过度利用，ρ→1 则可能低信息覆盖。<strong>RL objective 本身</strong>依然是带 clipping 的 GRPO surrogate，advantage 来自组内奖励相对差异；论文采用 policy-ratio clip 0.2 和 batch-whitened、截断到 [-0.2,0.2] 的 advantage。本文没有声称一个新的 KL 正则项，也没有报告独立的 KL ablation，不应自行编造。</p>
+<h2 id="p2-7">2.7 Toy Example：四个任务如何竞争下一批预算</h2>
+<p>设有 CRM 的 C1/C2、医院的 H1/H2 四个任务（<strong>教学例子，非论文原始数字</strong>）。C1 和 H1 都要求“查对象 ID→检查权限→修改关系→核验”，跨环境相似 0.9；C2/H2 只要求简单只读查询。上一轮 C1 八次 reward 为 [1,1,1,1,0,0,0,0]，均值 0.5，方差 0.25；C2 八次全 1，方差 0；H1 尚未训练，H2 八次全 0，方差 0。若只看任务自身历史，H1 没有可用信息；EnvSched 可通过 C1 的抽象拓扑估计 H1 可能也产生可分化的 rollout，给它较高 exploitation 分数。</p>
+<p>现在假设 batch 只有两个槽位：纯 exploitation 可能选 C1 和另一个 CRM 相似任务；纯 coverage 可能选 H2 这种全失败的题。一个“先覆盖再利用”的简化调度会选 H1（新增医院环境且预测有价值）和 C1（高方差），同时相似度惩罚防止两条几乎相同的 CRM 任务占满。下一轮 H1 若八次全失败，其真实 variance=0，历史会逐渐拉低对它的估计；若四成成功，则继续保留价值。这个例子说明 graph prior 如何给未见任务冷启动，但不代表本文在四任务小样本上有正式实验。</p>
+<h2 id="p2-8">2.8 Baseline Deep Comparison（谁是真正最强对照）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>怎么做 / 为什么合理</th>
+<th>在本 setting 的问题</th>
+<th>EnvSched 改什么</th>
+<th>差异性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Random（主要因果基线）</strong></td>
+<td>均匀抽取环境—任务，成本最低</td>
+<td>无法避开无方差组，环境覆盖随机</td>
+<td>预测价值 + 显式覆盖</td>
+<td>机制性</td>
+</tr>
+<tr>
+<td><strong>DPS</strong></td>
+<td>从历史预测 prompt solving dynamics，挑有信号样本</td>
+<td>不显式编码工具/状态/verifier 拓扑</td>
+<td>引入环境结构与配额</td>
+<td>机制性</td>
+</tr>
+<tr>
+<td><strong>LEEPS（最接近的强调度基线）</strong></td>
+<td>embedding 邻居 + 历史 outcome + explore/exploit</td>
+<td>相似度偏向语义，不区分跨环境操作结构</td>
+<td>双关系图与结构化 coverage</td>
+<td>机制性组合</td>
+</tr>
+<tr>
+<td><strong>Coverage-only</strong></td>
+<td>尽量遍历更多环境</td>
+<td>可能选全错或全对题，组内梯度弱</td>
+<td>加 exploitation 半批</td>
+<td>消融</td>
+</tr>
+<tr>
+<td><strong>Exploitation-only</strong></td>
+<td>专挑高方差组</td>
+<td>环境覆盖收缩，易过拟合少数工具</td>
+<td>加 coverage 半批</td>
+<td>消融</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>strongest baseline</strong>：若考察是否“调度比不调度好”，Random 是最干净的成本匹配基线；若考察新机制相对已有主动采样方法，<strong>LEEPS 是最接近的结构性 strongest baseline</strong>，但并非每一项数值都比 DPS 强（例如 8B τ-Bench DPS 48.08 高于 LEEPS 47.68）。本文同时给出两个强基线，避免人为挑弱对手。</p>
+<h2 id="p2-9">2.9 Experiment Setup：训练、评测、系统成本</h2>
+<p><strong>研究问题 RQ1：相同 rollout 预算能否更快学会工具使用？</strong> 数据池是 EnvScaler 的 <strong>51 环境、2550 任务</strong>，并非外部摘要所写的其他规模。训练 Qwen3-Thinking 1.7B、4B、8B、30B-A3B；GRPO 每步 B=64 个任务，每任务 K=8 条 rollout，即 <strong>512 条轨迹/步</strong>。200 步共 102,400 条轨迹；40 步共 20,480 条，按固定上限计算是 1/5 的 rollout 次数。训练 200 单 epoch 步，Adam 学习率 1e-6、cosine decay、10 warmup、ratio clip 0.2；采样 temperature=0.99、top-p=0.99、top-k=100；40 turn 上限、每 turn 4096 token、每序列 32000 token。三种随机种子聚合报告。</p>
+<p><strong>研究问题 RQ2：提升是否跨 benchmark？</strong> BFCL-v3 Multi-Turn（function calling，含缺失函数/参数/长上下文子集）、τ-Bench（模拟用户与工具交互）、ACEBench-Agent（多步/多轮任务）。τ-Bench 使用 GPT-5.6-terra 作为 user model，ACEBench-Agent 使用 GPT-4o-2024-08-06。最终各 benchmark 的 Overall 是原 benchmark 的加权指标，不应随意将子列简单算术平均。论文的三 benchmark 汇总平均是对三个 Overall 做平均，不能与单个 benchmark 的 weighted Overall 混淆。</p>
+<p><strong>研究问题 RQ3：调度开销是否抵消收益？</strong> 每步在线调度约 34.93 秒；Qwen3-4B 在 H100 上训练一步约 25 分钟，调度占约 2.3%。池规模 2550 时，静态稀疏特征约 85.87 MiB，邻居/进度状态 1.24 MiB，另一个两矩阵表示 42.59 MiB，均在 CPU。作者报告固定邻居容量下近似线性的在线选择复杂度；<strong>离线 LLM 拓扑抽取的调用成本未被完整纳入 2.3%</strong>。官方仓库包含 <code>selector/</code>、<code>topology_generator/</code>、<code>configs/</code>、<code>vendor/ROLL/</code> 和 <code>train.py</code>，依赖 Linux/CUDA 工具链，README 给出 PyTorch 2.6.0、vLLM 0.8.4 等版本。</p>
+<h2 id="p2-10">2.10 Metrics 教学：什么才叫 rollout efficient</h2>
+<p><strong>Reward variance</strong> 是每任务 K 条轨迹奖励的总体方差，越高通常意味着组内有区分度；它不是单调越高越好，因为高方差可能来自随机 verifier 或不稳定环境。<strong>Environment coverage per batch</strong> 是一个 batch 触达的不同环境数，越高表示覆盖更广，但不能保证有效梯度。<strong>Tools used per batch</strong> 统计被触达的工具广度，高通常有助于多样性，但不代表每个工具都被正确使用。<strong>Success / Overall</strong> 是 benchmark 规定的成功或加权得分，越高越好；要警惕模拟用户、部分奖励与 verifier 偏差。<strong>Step efficiency</strong> 比较达到某得分需要多少训练步，本文每步 rollout 数固定，所以可近似比较 rollout 数，但<strong>不等于真实 wall-clock 加速 5 倍</strong>：不同步长、轨迹 token、调度开销都可能影响时间。训练 GPU 内存和 tokens/s 未给出完整对照，不应虚构。</p>
+<h2 id="p2-11">2.11 Results Deep Dive：九个可核查现象</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>证据</th>
+<th>结果 / 对比</th>
+<th>支持什么</th>
+<th>反例或其他解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 8B 40 步</td>
+<td>三 benchmark 平均 <strong>48.81</strong>，超过 Random 前 120 步最好分数</td>
+<td>少 rollout 达到更高水平</td>
+<td>非完整 wall-clock 对比</td>
+</tr>
+<tr>
+<td>② 4B BFCL 200 步</td>
+<td>Random 28.83 → <strong>31.88</strong>，+3.05 pp</td>
+<td>同预算提升工具调用</td>
+<td>绝对分数仍较低</td>
+</tr>
+<tr>
+<td>③ 4B τ-Bench</td>
+<td>37.78 → <strong>41.01</strong>，+3.23 pp</td>
+<td>改善用户交互任务</td>
+<td>使用模拟 user model</td>
+</tr>
+<tr>
+<td>④ 8B BFCL</td>
+<td>33.88 → <strong>37.88</strong>，+4.00 pp</td>
+<td>跨规模有效</td>
+<td>8B 在某些指标训练后不升反降</td>
+</tr>
+<tr>
+<td>⑤ 30B-A3B 三项</td>
+<td>BFCL +3.92、τ +3.03、ACE +2.67 pp（原文四舍五入）</td>
+<td>稀疏大模型也有效</td>
+<td>大模型没有独立超参搜索</td>
+</tr>
+<tr>
+<td>⑥ 4B reward 方差</td>
+<td>0.03208 → <strong>0.04290</strong>，+34%</td>
+<td>选到更有组内差异的题</td>
+<td>方差只是训练价值代理</td>
+</tr>
+<tr>
+<td>⑦ 4B 环境覆盖</td>
+<td>36.53 → <strong>45.96</strong>，+26%；工具数 413.41→478.39，+16%</td>
+<td>同时实现多样性</td>
+<td>工具使用≠工具正确性</td>
+</tr>
+<tr>
+<td>⑧ 8B 非单调训练</td>
+<td>τ 40 步 <strong>50.71</strong>，200 步 <strong>50.30</strong>；ACE 200 步 <strong>58.67</strong> = 未训练 58.67</td>
+<td>更久训练未必更好</td>
+<td>过拟合、噪声、评估离散性均可能</td>
+</tr>
+<tr>
+<td>⑨ 更大跨环境邻居</td>
+<td>默认 Kcross=12 的 BFCL 31.88；改为 24 得 <strong>32.83</strong>，+0.95</td>
+<td>默认参数不是处处最优</td>
+<td>更多邻居也增加计算与错边风险</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>strongest result</strong>：8B 在 40 步达到 48.81 的跨 benchmark 平均，且 4B/8B/30B 在相同 200 步预算下普遍超 Random；<strong>weakest result</strong>：8B ACE 200 步与 base 持平，8B τ 200 步略低于 40 步；<strong>failure case</strong>：附录医院任务中，5 条轨迹陷入反复查患者/验权限的循环，直到 40 turn 上限，reward 为 0。高方差未必代表“模型学到了更安全的操作”，可能只是偶然突破一个阻塞 gate。</p>
+<h2 id="p2-12">2.12 Table / Figure Reading：从图表里找弱项</h2>
+<p><strong>Figure 1（环境规模与训练效率）</strong>：左边说明可执行环境池和 RL 资源不断增长，右边绘制 Qwen3-8B 的平均得分随训练步数变化。关键结论是 40 步 EnvSched 的 48.81 超过 Random 在 120 步内的最好成绩。它支持 step/sample efficiency，但曲线的纵轴不是 GPU 秒数，不能据此宣称实际训练速度 3 倍。</p>
+<p><strong>Figure 2 + Figure 3（调度循环与双关系估计）</strong>：Figure 2 是结构图，显示 batch rollout 结果如何写入历史、影响下一个 batch；Figure 3 左侧把同环境/跨环境邻居连接到目标任务，右侧展示两类估计与自身历史的融合。它们解释了机制，但不能替代实际的反事实图干预实验。</p>
+<p><strong>Table 1（四规模×三 benchmark）</strong>：要同时读 40 步和 200 步。Qwen3-8B Random 200 的 BFCL/τ/ACE 为 33.88/47.27/55.33，EnvSched 40 为 37.71/50.71/58.00，200 为 37.88/50.30/58.67。值得注意 40→200 的边际收益极小甚至下降；在 ACE 上 200 也只是回到 base 58.67，提醒我们 RL 可能损害原有能力。</p>
+<p><strong>Table 2 + Figure 4（信号与覆盖）</strong>：Table 2 同时列 reward variance、median variance、median reward、环境覆盖、工具覆盖与 BFCL。平均 reward 0.595→0.592 略降，而方差上升，说明调度不是简单选更容易的任务。Figure 4 的对数纵轴展示 200 步内高方差和覆盖的持续趋势，但仅说明调度分布改变，不直接证明方差造成准确率提升。</p>
+<p><strong>Table 3（真正关键的消融）</strong>：Full BFCL/τ/ACE=31.88/41.01/58.00。Coverage-only 为 29.71/39.39/56.67；Exploitation-only 为 29.17/38.59/56.00。Exploitation-only 方差更高 0.0442，却因环境覆盖降至 33.95 而表现更差，是对“方差越高训练越好”的最直接反例。只保留同环境边 BFCL 降 1.46，只保留跨环境边降 1.25；但跨环境边数量从 12 增到 24 反而有更好 BFCL，这说明邻域超参仍值得搜索。</p>
+<p><strong>Table 4 + Appendix F（冷启动与真实失败）</strong>：100 个独立七步实验中，exploitation hit rate 从 57.2% 提高到 92.1%，初始 batch 的高低组差距在第七步显著缩小；但这主要证明调度器能找高方差任务，未证明长期最终能力。附录 env_190-task_8 的八条奖励为 (0.2143,0.2143,0.7857,0,0,0,0,0)，五条零分轨迹在 ID/权限查找上循环，揭示“高方差=值得学”可能混入环境接口陷阱。</p>
+<h2 id="p2-13">2.13 Ablation &amp; Mechanistic Analysis：哪些组件真有用</h2>
+<p><strong>去掉跨环境边</strong>：BFCL 31.88→30.42（−1.46），τ 41.01→40.40（−0.61），ACE 持平 58.00；说明跨环境抽象有一定补充价值，但不是所有 benchmark 必需。<strong>去掉同环境边</strong>：BFCL→30.63（−1.25），ACE→57.33（−0.67），τ 持平；说明两类边有互补性。<strong>只 coverage</strong>：环境覆盖 45.96→51.00，却 BFCL −2.17；说明覆盖不是越高越好。<strong>只 exploitation</strong>：reward 方差 0.0429→0.0442，BFCL −2.71，环境覆盖 −12.01；证明单纯最大化代理指标会伤害下游。<strong>调整邻居数</strong>：Kcross 6 时 BFCL 30.92，24 时 32.83，默认 12 时 31.88；表明作者固定超参不是统一最优。</p>
+<p>这些是强的<strong>组件级因果干预</strong>（只替换一个调度组件并重新训练），但对“抽象图是否学到正确的操作因果结构”的解释仍主要来自案例。更严格的实验应打乱 cross-environment 边、保持 degree 分布不变，或者在相同 TF–IDF 相似度下改变 verifier dependency，检查预测误差和最终策略的变化。还应统计在训练后期 reward 方差是否逐步偏离真实 policy improvement。</p>
+<h2 id="p2-14">2.14 Claim vs Evidence</h2>
+<p><strong>Authors Claim</strong>：环境级任务调度可提高 Agent RL 的 rollout efficiency；双关系图 + 历史统计 + 覆盖分配比单纯 prompt 调度更好。<strong>Experiments Actually Show</strong>：在 EnvScaler 2550 条任务、51 个环境、四个 Qwen3 规模、三项工具 Agent benchmark 和统一 GRPO 设置下，EnvSched 相对 Random、DPS、LEEPS 多数得分更高；消融支持 coverage/exploitation 互补；在线调度约占 4B 单步训练时间 2.3%。<strong>What Is Not Yet Proven</strong>：没有跨不同训练环境生成器的强外推；没有全面的离线抽取成本、不同 GPU 的端到端成本；没有证明所有高方差任务的梯度都具有正泛化价值；没有证明模拟用户的 benchmark 增益可直接迁移到真实用户；没有充分说明在极大环境池中静态相似矩阵构建的扩展性。</p>
+<h2 id="p2-15">2.15 Contribution、Limitation、Failure Modes</h2>
+<p><strong>Contribution 1 [New Problem Formulation]</strong>：将环境—任务对作为 Agent RL 数据管理基本单元，而非裸 prompt。<strong>Contribution 2 [New Mechanism]</strong>：具体与抽象双关系图，用旧 rollout 预测新任务 reward 分布。<strong>Contribution 3 [New System / Engineering]</strong>：无额外 pilot rollout 的 coverage/exploitation batch 构造与在线历史更新；代码开放。<strong>Contribution 4 [New Empirical Finding]</strong>：最高 reward 方差的 exploitation-only 反而弱于均衡调度，表明代理信号和环境覆盖存在冲突。各组件如 TF–IDF、余弦相似、GRPO、explore/exploit 均非单独首创，创新主要在组合对象与反馈闭环。</p>
+<p><strong>Authors' Limitation（可从实验边界确定）</strong>：验证限于 EnvScaler 池及给定 Qwen3 系列；真实多 Agent、跨 session 长期记忆与开放互联网工具没有直接评估。<strong>Additional Limitation</strong>：离线 LLM 抽取 topology 可能引入闭源依赖与额外费用；相似度高的任务可能拥有完全不同的权限/风险；部分 reward 易被 verifier 投机利用；固定 ρ=0.5 不适应训练阶段变化；调度分数的近期下降惩罚可能错误忽略“先难后易”的有价值任务；batch 级配额可能阻止稀有但关键的高收益任务；30B 模型推理成本巨大；多轮交互 40 turn 截断使部分高方差来自工具循环；reward hacking 的 identifier filter 依赖 replay 能否复现环境。</p>
+<h2 id="p2-16">2.16 Reproduction View：官方代码优先验证什么</h2>
+<p>仓库已公开，可从 <code>selector/</code> 的静态图、历史统计、batch 构造入手，再检查 <code>topology_generator/</code> 的抽象操作提取和 <code>configs/</code> 的 GRPO 设置。官方安装环境为 Linux x86_64、Python 3.10、CUDA 12.4、cuDNN 9、PyTorch 2.6.0、vLLM 0.8.4；先运行 repo 自带测试与 dry-run，不要直接投入 200 步多 GPU。<strong>最小复现</strong>：用 100–300 个环境—任务对，B=16、K=4，比较 Random、variance-only、coverage-only、full scheduler 各 20–40 步，固定初始 checkpoint、采样种子、总轨迹数、token 上限。第一优先验证<strong>选中任务的平均 reward variance 与环境覆盖能否同时上升</strong>；第二步再看 BFCL 子集是否有增益。记录静态图构建时间、离线 LLM token、每步调度时间、rollout tokens 和真实 GPU wall-clock，避免只凭 step 数宣称系统加速。</p>
+<p>容易踩坑：每个任务的 8 条 rollout 必须在同一 policy 版本采样；mean/variance 使用总体方差；历史统计要按 step 时间中心化；训练数据不能泄露 test verifier；测试用户模型必须固定；多 GPU 时不能让 scheduler 的 batch 在 rank 间错位；未观察任务的 prior 不能偷看未来 reward。官方训练设置每步 64×8，40 步 20480 条 rollout，200 步 102400 条；这是复现成本估算的起点，不是所有轨迹 token 等长的保证。</p>
+<h2 id="p2-17">2.17 Research Value（七项）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>价值</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline Potential</td>
+<td>很高</td>
+<td>官方代码和固定训练池，适合作为主动采样基线</td>
+</tr>
+<tr>
+<td>Migration Potential</td>
+<td>很高</td>
+<td>历史信号→结构邻居→预算选择可迁移至 Agent / Video / Reasoning</td>
+</tr>
+<tr>
+<td>Systems Potential</td>
+<td>中高</td>
+<td>调度开销仅占报告中 4B 单步约 2.3%，可结合 serving-aware cost</td>
+</tr>
+<tr>
+<td>Attack Potential</td>
+<td>高</td>
+<td>高方差样本可能是 verifier exploit 或工具循环，可设计 stress test</td>
+</tr>
+<tr>
+<td>Evaluation Potential</td>
+<td>高</td>
+<td>可定义 learning-gain calibration、coverage-conditioned utility</td>
+</tr>
+<tr>
+<td>Benchmark Potential</td>
+<td>高</td>
+<td>跨环境抽象结构可生成 held-out topology 测试集</td>
+</tr>
+<tr>
+<td>New Paper Potential</td>
+<td>高</td>
+<td>代理 variance 与真实 downstream utility 的差异尚未解决</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="p2-18">2.18 Migration 1：Cost-Aware Agent RL Scheduler（研究建议）</h2>
+<p><strong>Original Problem →</strong> EnvSched 主要按 reward 方差与覆盖选择任务。<strong>Transferable Mechanism →</strong> 图邻居估计和双阶段 batch 约束。<strong>New Research Question →</strong> 同样 512 条 rollout 的预算下，能否把 token/GPU 时间也计入，最大化单位训练成本带来的真实泛化增益？<strong>Method Modification →</strong> 在节点上增加估计的 rollout token、执行耗时和 verifier 费用，优先级改成“预期边际下游改进 / 预计 GPU 秒”，并设置最低环境覆盖；另训练一个小回归器预测 Δheldout success，而非只预测 v。<strong>Minimum Experiment →</strong> 先冻结 Qwen3-1.7B，采集 200 个任务×8 rollout 的 reward、tokens、latency、tool calls；按 70/15/15 task split 拟合成本预测器；之后在相同 20k generated tokens 或同 GPU 秒预算下分别跑 Random、EnvSched、variance/cost、predicted-gain/cost，三 seed，每 10 步评估 100 条 holdout；绘制 accuracy-vs-GPU-hour Pareto 曲线。<strong>Model →</strong> Qwen3-1.7B 或 4B。<strong>Dataset →</strong> EnvScaler 可复用任务池，BFCL-v3 子集作外测。<strong>Baseline →</strong> Random、DPS、LEEPS、原 EnvSched。<strong>Metric →</strong> BFCL success、GPU-hour、tokens/solved task、regret、coverage。<strong>Expected Contribution →</strong> 从 rollout-count efficiency 推进到真实成本效率。<strong>Risk →</strong> 训练收益预测高度噪声、非平稳；可能选择廉价但无用任务。<strong>Collision Risk →</strong> 与已有 cost-aware curriculum / adaptive rollout allocation 重合，必须报告真实 wall-clock 与独立测试泛化。</p>
+<h2 id="p2-19">2.19 Migration 2：Streaming Video 的预算感知采帧/缓存（研究建议）</h2>
+<p><strong>Original Problem →</strong> RL 训练中无法知道下一批哪个环境—任务最值得花计算。<strong>Transferable Mechanism →</strong> 两层相似图、历史观测传播、coverage/exploitation、冗余惩罚。<strong>New Research Question →</strong> 流式 Video QA 中，能否只为最有信息价值的时段做高分辨率编码，且避免过度集中在同一动作？<strong>Method Modification →</strong> 将任务节点换成 (video segment, query)；within 边连接同视频邻近片段，cross 边连接跨视频相似事件拓扑；把 reward variance 换成校准后的 answer-change probability 或 uncertainty reduction，并显式加入 GPU latency 成本。<strong>Minimum Experiment →</strong> 取 200 段 30–120 秒视频，均匀采 1fps 作廉价预览，给每段 8 个候选高分辨率窗口；预算固定为每题最多 16 张高分辨率帧，比较 uniform、motion score、uncertainty-only、coverage+uncertainty；测 Qwen2.5-VL-3B 的准确率、真实端到端延迟、视觉 token、显存峰值，3 seeds，并按长短视频分桶。<strong>Model →</strong> Qwen2.5-VL-3B。<strong>Dataset →</strong> Video-MME 公开子集（需核对任务许可与标签）。<strong>Baseline →</strong> uniform sampling、query-aware top-k、entropy-only。<strong>Metric →</strong> QA accuracy、latency、tokens、peak VRAM、accuracy/second。<strong>Expected Contribution →</strong> 将环境级调度迁移到 query-aware 视觉计算分配。<strong>Risk →</strong> query 不确定性与视觉证据缺失并不等价；额外打分可能抵消加速。<strong>Collision Risk →</strong> 自适应帧采样、token pruning 已非常拥挤；需要突出图传播与严格 wall-clock 结果。</p>
+<h2 id="p2-20">2.20 Attack / Verification Lens 与 9 句记忆卡</h2>
+<p><strong>攻击与鲁棒性</strong>：可构造高方差但无真实学习价值的任务——例如故意让 verifier 部分分数易刷、权限查找陷入循环、API 响应随机变化；观察调度器是否反复选中。<strong>黑盒 probe</strong>：只观察被选任务分布、任务成功率、GPU token，计算“variance increase 是否预测下一轮 held-out improvement”。<strong>新 metric</strong>：Marginal Learning Utility Calibration（按方差分桶，测真实后续收益）、Coverage-Conditioned Success（在相同覆盖度下的任务成功率）、Verifier Exploit Amplification（被选样本中 exploit 比例）。<strong>Recovery</strong>：人为让环境 API 改名/参数变化，测试历史图能否重新校准，而不是持续复用陈旧邻居。</p>
+<p><strong>如果只记住这篇论文：</strong> ① EnvSched 不是新 GRPO loss，而是任务选择器。② 基本单元是 environment–task pair。③ 同环境边保留工具与 verifier 细节，跨环境边保留抽象操作拓扑。④ K=8 rollout 的 reward 方差代表组内区分度。⑤ 一半 batch 负责 coverage，一半负责 exploitation。⑥ 4B reward 方差提高 34%，环境覆盖提高 26%。⑦ 只 exploitation 方差更高却分数更低。⑧ 8B 40 步跨三项平均 48.81，但不等于真实 wall-clock 速度提升。⑨ 最有价值的后续研究是用真实边际泛化收益和 GPU 成本替代单一 reward variance。</p>
+
+<h1 id="synthesis">Cross-Paper Synthesis · 共同结论与冲突</h1>
+<h2 id="s-1">3.1 共同趋势：训练预算的“结构”比数量本身更重要</h2>
+<p>SynthAPI 解决<strong>离线生成什么数据</strong>，EnvSched 解决<strong>在线训练下一步选什么数据</strong>。前者把环境多样性写成 A/T/S/D，并观察到预算增大时最优比例变化；后者把环境多样性和当前 policy 的 reward 信号联合优化。共同趋势不是“永远增加多样性”，而是<strong>多样性要与学习阶段、训练信号、计算成本共同定价</strong>。这与仅增加轨迹数、仅挑高难度题或仅最大化 reward 方差的范式不同。</p>
+<h2 id="s-2">3.2 互补、假设冲突与 Collision</h2>
+<p><strong>互补</strong>：SynthAPI 可生成大量带 verifier 的环境—任务池，EnvSched 可在该池上运行 RL，选择哪些 task 真正值得花 8 次 rollout；SynthAPI 的 S（同指令不同初始状态）还可直接成为 EnvSched 的图节点关系。<strong>假设冲突</strong>：SynthAPI 的组成律是在相对静态 SFT 数据上拟合的；EnvSched 的最优采样取决于不断变化的 policy。若固定 A/T/S/D 的最优点随训练动态变化，离线组成律就不能直接决定在线分配。<strong>Strongest Collision（研究机会，不是已证明的论文冲突）</strong>：Static Composition Optimum × Dynamic Marginal Utility——静态数据广度收益和动态 reward variance 价值不一定一致。</p>
+<p>两篇没有在同一模型、同一数据池、同一训练预算下直接对比，<strong>不能声称其中一篇推翻另一篇</strong>。与 AdaRoll-GRPO 等按问题难度分配 rollout 数的方法也有交叉：EnvSched 决定“选哪些 task”，AdaRoll 类方法决定“每题分多少 rollout”，SynthAPI 决定“先生成哪些 task”。组合时需区分三层预算，避免重复发表已有主动采样概念。</p>
+<h2 id="s-3">3.3 Combined Research Opportunities：最优先做什么</h2>
+<p><strong>Idea A：Hierarchical Data &amp; Rollout Budgeting。</strong> 上层控制 A/T/S/D 的增量生成，下层用 EnvSched 的历史信号选择 task，最底层按任务的预期信息增益动态决定 K。定义统一目标：在 GPU-hour 与数据生成费用限制下最大化 held-out tool success。最小实验先只做两个层级：固定生成池与固定 512 rollouts/step，比较 random、composition-only、scheduler-only、composition+scheduler；三个 seed，记录真实训练时间与泛化，若联合方法并未超过最强单方法，优先分析重复覆盖和 reward 方差偏差。</p>
+<p><strong>Idea B：Verifier-Aware Counterfactual Curriculum。</strong> 生成同一指令的多个 Db⁰，改变 ID、权限、无关记录和工具输出顺序；将这些反事实实例接成图。对每个 batch 不只看 reward variance，还要看跨状态的一致性与 side-effect-free success。关键科学问题是：模型是否学到了“操作依赖结构”，还是只学会在 verifier 中碰巧得分？可定义 verifier exploit rate、counterfactual robustness 和 causal dependency accuracy。</p>
+<p><strong>Idea C：Training Efficiency Stress Benchmark。</strong> 固定真实 GPU 时间，分别提高环境数量、状态复杂度、工具调用长度和 verifier 复杂度，画出成功率与成本的 Pareto frontier。把“任务数”“rollout 数”“训练 token”“wall-clock”四种预算分开报告，这能同时检验两篇论文的隐含成本假设，也适用于 Video Agent / Reasoning Agent。</p>
+<h2 id="s-4">3.4 阅读与复现优先级</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>目的</th>
+<th>优先论文</th>
+<th>原因</th>
+<th>最先复现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>建立 Agent 数据生成 baseline</td>
+<td>SynthAPI</td>
+<td>组成旋钮清晰，适合实验设计</td>
+<td>固定 N 比较 S=1/2 与 D=1/2</td>
+</tr>
+<tr>
+<td>快速获得可运行代码</td>
+<td>EnvSched</td>
+<td>官方实现、配置与训练脚本公开</td>
+<td>selector 的 coverage/variance 消融</td>
+</tr>
+<tr>
+<td>研究系统与成本</td>
+<td>EnvSched</td>
+<td>已给在线调度开销，可继续加 GPU 秒</td>
+<td>same-token-budget 对照</td>
+</tr>
+<tr>
+<td>研究 benchmark / attack</td>
+<td>两篇组合</td>
+<td>verifier + 反事实 Db⁰ + reward 选择偏差</td>
+<td>state-diff、ID swap、reward exploit</td>
+</tr>
+<tr>
+<td>新论文潜力</td>
+<td>联合方案</td>
+<td>静态组成与动态训练价值存在可检验张力</td>
+<td>2×2 factorial 实验</td>
+</tr>
+</tbody>
+</table></div>
+<h1 id="sources">Sources / Links / 数据可信度</h1>
+<ol>
+<li><strong>Szot et al. (2026-10-27)</strong>：<a href="https://arxiv.org/abs/2610.37648">Scaling Laws for Tool-Use Agents via Controllable Environment Synthesis</a>，<a href="https://arxiv.org/html/2610.37648">arXiv HTML 全文</a>。核验主文 §3–4、Figure 1/2/3、Table 1/2、附录 A–E 与 Figure 10。官方代码：<strong>Not Confirmed</strong>。</li>
+<li><strong>Yang et al. (2026-10-27)</strong>：<a href="https://arxiv.org/abs/2610.37609">EnvSched</a>，<a href="https://arxiv.org/html/2610.37609">arXiv HTML 全文</a>，<a href="https://github.com/Hhankyangg/envsched">官方代码 GitHub</a>。核验 §2–3、Figure 1–4、Table 1–4、Appendix B–F、README 与配置说明。</li>
+<li><strong>相关交叉论文（未列入正式精读）</strong>：<a href="https://arxiv.org/abs/2610.37429">Bayes-Adaptive MDPs for Rollout Allocation to Enhance GRPO Training</a>，2026-10-27；用于界定“选 task”与“分配 K”的 Collision 风险，不将其未审计实验数字混入正文。</li>
+</ol>
+<p><strong>解释边界</strong>：正文中的论文结果与参数均依赖所链接的原始来源；标有“教学例子”“研究建议”的 toy case、迁移方案和新指标是本报告提出的可验证假设，不是作者已完成实验。所有分数差值单位为百分点（pp）时已显式标注。缺失的部署、显存、真实 wall-clock 或代码信息不补猜。</p>
+</main><p class="footer">2026-10-29 · 自包含 HTML · 所有论文链接均指向原始来源 · Ctrl+F 可检索</p></div><a class="toplink" href="#toc">↑ 目录</a></body></html>

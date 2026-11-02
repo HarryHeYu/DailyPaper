@@ -1,0 +1,513 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Daily Top Papers Deep Dive 2026-10-30: The Trinity and ResCom, method, formulas, experiments, ablations, systems metrics, reproduction and migration"><title>AI Deep Dive — 2026-10-30</title><style>
+:root{color-scheme:light;--ink:#192c3b;--muted:#627485;--border:#dce5ec;--accent:#1765a4;--bg:#f5f8fb;--panel:#fff;--soft:#eaf3fa;--warn:#8a551a}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;color:var(--ink);line-height:1.85;font-size:15px}
+.hero{background:linear-gradient(125deg,#112e46,#194f72);color:#fff;padding:54px max(24px,calc((100vw - 1080px)/2)) 45px}.hero .eyebrow{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:#b7d7ec;font-weight:700}.hero h1{margin:10px 0 12px;font-size:clamp(28px,3.5vw,42px);letter-spacing:-.02em;color:#fff}.hero p{color:#d6e7f3;margin:0;max-width:800px;font-size:15px}.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:23px}.hero .meta span{background:#ffffff1b;border:1px solid #ffffff38;border-radius:7px;padding:5px 11px;font-size:12px}
+main{max-width:1080px;margin:28px auto 90px;padding:0 20px}.toc{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:22px 28px;box-shadow:0 3px 15px #16324b09;margin-bottom:30px}.toc h2{font-size:18px;margin:0 0 15px;border:0;padding:0}.toc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.toc-group{border:1px solid var(--border);border-radius:8px;padding:10px 13px;min-width:0;background:#fbfdff}.toc-group summary{cursor:pointer;list-style:none}.toc-group summary::-webkit-details-marker{display:none}.toc-main{font-size:14px;font-weight:700;color:#1a4e73;text-decoration:none}.toc-links{display:grid;grid-template-columns:1fr;gap:2px;padding:8px 0 2px}.toc-links a{font-size:12px;color:#566b7b;text-decoration:none;white-space:normal;line-height:1.5;padding:2px 0}.toc-links a:hover,.toc-main:hover{text-decoration:underline}
+article{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:34px clamp(18px,4vw,52px);box-shadow:0 5px 24px #18354b09}article>h1:first-child{display:none}h1,h2,h3,h4{line-height:1.38;letter-spacing:-.015em}article h1{font-size:29px;margin:58px 0 22px;padding-top:20px;border-top:2px solid #d8e6f0;color:#153c58}article h2{font-size:21px;margin:35px 0 13px;color:#174563;border-bottom:1px solid #e5edf3;padding-bottom:9px}article h3{font-size:17px;margin:24px 0 10px;color:#245676}p{margin:12px 0 16px}a{color:#1765a4;text-underline-offset:3px;overflow-wrap:anywhere}.heading-link{font-size:.6em;opacity:.3;text-decoration:none;font-weight:400}.heading-link:hover{opacity:1}strong{color:#142f44}blockquote{background:#f0f6fa;border-left:4px solid #6aa3c9;margin:16px 0 24px;padding:14px 20px;color:#36546a;border-radius:0 7px 7px 0}blockquote p{margin:0}.table-scroll{overflow-x:auto;max-width:100%;border:1px solid var(--border);border-radius:9px;margin:17px 0 25px}table{width:100%;border-collapse:collapse;font-size:13px;line-height:1.65;min-width:670px}th{background:#eaf3f8;color:#224e68;font-weight:700;text-align:left;white-space:normal}th,td{border-bottom:1px solid #e5edf3;padding:10px 12px;vertical-align:top}tr:nth-child(even) td{background:#fbfdff}tr:last-child td{border-bottom:0}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#f0f4f8;color:#35516a;padding:2px 5px;border-radius:4px;font-size:.87em;overflow-wrap:anywhere}pre{background:#132f42;color:#e9f4fb;padding:16px 18px;border-radius:8px;overflow-x:auto}pre code{background:transparent;color:inherit}.equation{font-family:"SFMono-Regular",Consolas,"Noto Sans Mono",monospace;font-size:14px;line-height:1.8;background:#f0f5fa;border:1px solid #d5e4ef;border-radius:9px;padding:15px 20px;margin:15px 0 18px;overflow-x:auto;white-space:nowrap;color:#173f5b}hr{border:0;border-top:1px solid #dbe5ed;margin:44px 0}ul,ol{padding-left:24px}li{margin:5px 0}.footer{font-size:12px;color:var(--muted);text-align:center;padding:24px}.backtop{position:fixed;right:23px;bottom:22px;background:#1c557d;color:#fff;border-radius:8px;padding:9px 12px;text-decoration:none;font-size:12px;box-shadow:0 3px 13px #112f4b2a}.backtop:hover{color:#fff;background:#133e5d}
+@media(max-width:700px){.hero{padding:38px 22px}.toc-grid{grid-template-columns:1fr}.toc{padding:18px}.toc-group{padding:10px}article{padding:23px 17px}article h1{font-size:24px}article h2{font-size:19px}body{font-size:14px}.equation{font-size:12px}.backtop{right:10px;bottom:10px}}
+@media print{body{background:#fff;font-size:11pt}.hero{background:#fff;color:#000;padding:20px}.hero h1{color:#000}.hero p,.hero .eyebrow{color:#444}.hero .meta span{color:#444;border:1px solid #ccc}main{max-width:none;margin:0;padding:0}article{border:0;box-shadow:none;padding:10px}.toc,.backtop{display:none}.table-scroll{overflow:visible}table{min-width:0;font-size:9pt}h1,h2,h3{break-after:avoid}tr,blockquote{break-inside:avoid}a{color:#000}}
+</style></head><body><header class="hero" id="top"><div class="eyebrow">AI Research · Full Paper Deep Dive</div><h1>Daily Top Papers Deep Dive</h1><p>2026 年 10 月 30 日 · 两篇完整精读 · Agent Capability Evolution × Efficient Inference</p><div class="meta"><span>2 Papers</span><span>28 + 18 Agent Benchmarks</span><span>W4A4 Quantization</span><span>原文证据 + 失败模式 + 复现方案</span></div></header><main><nav class="toc" aria-label="文章目录"><h2>阅读目录 / Contents</h2><div class="toc-grid"><details class="toc-group" open><summary><a class="toc-main" href="#daily-top-papers-deep-dive-2026-10-30">Daily Top Papers Deep Dive — 2026-10-30</a></summary><div class="toc-links"><a href="#today-s-deep-dive-selection">Today&#x27;s Deep Dive Selection</a></div></details><details class="toc-group" open><summary><a class="toc-main" href="#paper-1-the-trinity">Paper 1 — The Trinity</a></summary><div class="toc-links"><a href="#1-基本信息与一句话定位">1. 基本信息与一句话定位</a><a href="#2-人话版-问题-方法-结果-意义">2. 人话版（问题、方法、结果、意义）</a><a href="#3-background-research-gap-为什么按任务进化不够">3. Background &amp; Research Gap：为什么按任务进化不够</a><a href="#4-core-insight-能力是跨模态任务的共同因子">4. Core Insight：能力是跨模态任务的共同因子</a><a href="#5-method-deep-dive-从任务到能力树-世界树-harness-树">5. Method Deep Dive：从任务到能力树、世界树、Harness 树</a><a href="#6-核心公式与数学直觉">6. 核心公式与数学直觉</a><a href="#7-toy-example-跨游戏与视频任务共享-证据确认">7. Toy Example：跨游戏与视频任务共享“证据确认”</a><a href="#8-baseline-deep-comparison-3-5-个">8. Baseline Deep Comparison（3–5 个）</a><a href="#9-experiment-setup-与-metrics-教学">9. Experiment Setup 与 Metrics 教学</a><a href="#10-results-deep-dive-八个具体证据与反例">10. Results Deep Dive：八个具体证据与反例</a><a href="#11-table-figure-reading-不能只看平均数">11. Table / Figure Reading：不能只看平均数</a><a href="#12-ablation-claim-vs-evidence-contribution">12. Ablation、Claim vs Evidence、Contribution</a><a href="#13-limitations-failure-modes">13. Limitations &amp; Failure Modes</a><a href="#14-reproduction-view-先复现最小机制-不要照搬-46-benchmark">14. Reproduction View：先复现最小机制，不要照搬 46 benchmark</a><a href="#15-research-value-与两条迁移路线">15. Research Value 与两条迁移路线</a><a href="#16-attack-verification-lens-与-只记住这篇-的-9-句话">16. Attack / Verification Lens 与“只记住这篇”的 9 句话</a></div></details><details class="toc-group" open><summary><a class="toc-main" href="#paper-2-rescom">Paper 2 — ResCom</a></summary><div class="toc-links"><a href="#1-基本信息与一句话定位-2">1. 基本信息与一句话定位</a><a href="#2-人话版-问题-方法-结果-意义-2">2. 人话版（问题、方法、结果、意义）</a><a href="#3-background-research-gap-为什么量化后仍然需要补偿">3. Background &amp; Research Gap：为什么量化后仍然需要补偿</a><a href="#4-core-insight-缺失信号比额外参数更重要">4. Core Insight：缺失信号比额外参数更重要</a><a href="#5-method-deep-dive-每个量化层增加一条小支路">5. Method Deep Dive：每个量化层增加一条小支路</a><a href="#6-核心公式-svd-gram-projection-逐项解释">6. 核心公式、SVD/Gram/Projection 逐项解释</a><a href="#7-toy-example-两个-activation-落在同一量化桶">7. Toy Example：两个 activation 落在同一量化桶</a><a href="#8-baseline-deep-comparison-谁是真正的-strongest-baseline">8. Baseline Deep Comparison：谁是真正的 strongest baseline</a><a href="#9-experiment-setup-与-metrics-教学-2">9. Experiment Setup 与 Metrics 教学</a><a href="#10-results-deep-dive-八个结果-包含最弱与负结果">10. Results Deep Dive：八个结果，包含最弱与负结果</a><a href="#11-table-figure-reading-逐图表识别证据强度">11. Table / Figure Reading：逐图表识别证据强度</a><a href="#12-ablation-claim-vs-evidence-contribution-2">12. Ablation、Claim vs Evidence、Contribution</a><a href="#13-limitations-failure-modes-2">13. Limitations &amp; Failure Modes</a><a href="#14-inference-acceleration-专用-bottleneck-与真实效率表">14. Inference Acceleration 专用：Bottleneck 与真实效率表</a><a href="#15-reproduction-view-先复现层级恒等式-再测系统">15. Reproduction View：先复现层级恒等式，再测系统</a><a href="#16-research-value-与两条迁移路线">16. Research Value 与两条迁移路线</a><a href="#17-attack-verification-lens-与-只记住这篇-的-9-句话">17. Attack / Verification Lens 与“只记住这篇”的 9 句话</a></div></details><details class="toc-group" open><summary><a class="toc-main" href="#cross-paper-synthesis-共同机制与分歧">Cross-Paper Synthesis — 共同机制与分歧</a></summary><div class="toc-links"><a href="#combined-research-opportunities-三个可执行想法">Combined Research Opportunities：三个可执行想法</a><a href="#collision-overlap-已有工作与边界">Collision / Overlap：已有工作与边界</a><a href="#reading-reproduction-priority">Reading / Reproduction Priority</a><a href="#sources-links-与证据声明">Sources / Links 与证据声明</a><a href="#deep-dive-depth-audit">Deep Dive Depth Audit</a></div></details></div></nav><article><h1 id="daily-top-papers-deep-dive-2026-10-30">Daily Top Papers Deep Dive — 2026-10-30<a class="heading-link" href="#daily-top-papers-deep-dive-2026-10-30"> §</a></h1>
+<blockquote>
+<p><strong>本期独立检索窗口</strong>：优先检查 arXiv 2026-10-28 新论文列表（网页显示的最新 new-list）；两篇的首次提交分别为 2026-10-26、2026-10-25，属于最近数日新近公开、在 10-28 列表可见的论文。没有把首次提交日误写为今天，也没有把 arXiv 预印本写成已录用会议论文。<strong>阅读依据</strong>：两篇 arXiv HTML 正文、方法、结果、附录；The Trinity 的官方 GitHub 状态。所有结果均是作者报告，不是独立复现。</p>
+</blockquote>
+<h2 id="today-s-deep-dive-selection">Today's Deep Dive Selection<a class="heading-link" href="#today-s-deep-dive-selection"> §</a></h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>论文</th>
+<th>方向</th>
+<th>为什么今天精读</th>
+<th>源文件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#1</td>
+<td><strong>The Trinity: Capability-Driven Recursive Self-Improvement for Multimodal Agents</strong></td>
+<td>Agent / Multi-Agent / Environment Generation</td>
+<td>把 Agent 自改进的基本单位从 task 改为 capability，含世界生成、模块继承、验证、路由和跨任务迁移；28+18 benchmarks 及真实机器人</td>
+<td><a href="https://arxiv.org/html/2610.36077" rel="noopener noreferrer" target="_blank">arXiv HTML</a></td>
+</tr>
+<tr>
+<td>#2</td>
+<td><strong>ResCom: Activation Residual Compensation for Large Language Model Quantization</strong></td>
+<td>Efficient Inference / Quantization</td>
+<td>有明确的信息论式瓶颈、闭式低秩回归、可证性质与硬件实测；同时有非常值得警惕的质量—延迟负面证据</td>
+<td><a href="https://arxiv.org/html/2610.35955" rel="noopener noreferrer" target="_blank">arXiv HTML</a></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>选择原则</strong>：四条主线同级竞争；这次不是凑方向。前者提供“如何把反馈变成可迁移 Agent 能力”的可复现框架，后者提供“如何只修补压缩过程中真正丢失的信号”的数学工具。前两期已讨论的 FOCUS、Triage、Scaling Laws for Tool-Use Agents、EnvSched 不重复。今天不纳入视频论文，并不意味着 Video Acceleration 降权；是这两篇正文证据和可迁移机制更完整。<strong>不使用 BACKFILL</strong>。</p>
+<hr/>
+<p><a id="paper1"></a></p>
+<h1 id="paper-1-the-trinity">Paper 1 — The Trinity<a class="heading-link" href="#paper-1-the-trinity"> §</a></h1>
+<h2 id="1-基本信息与一句话定位">1. 基本信息与一句话定位<a class="heading-link" href="#1-基本信息与一句话定位"> §</a></h2>
+<p><strong>标题</strong>：The Trinity: Capability-Driven Recursive Self-Improvement for Multimodal Agents。<strong>作者</strong>：Weidong Tang、Ruiheng Wang、Jingxuan Zhang、Hexin Wang 等；通信作者 Pengfei Zhou、Odin Zhang、Yang You。<strong>机构</strong>：InfRec、西安电子科技大学、同济大学、新加坡国立大学、加州大学伯克利分校、香港中文大学、香港科技大学、香港大学、上海创新研究院等。<strong>日期</strong>：arXiv v1 于 <strong>2026-10-26 UTC</strong> 提交。<strong>Venue/Status</strong>：arXiv 预印本，正文未声明已录用 venue。<strong>模型</strong>：冻结的 Claude Opus 5，优化 Harness 而非模型权重。<strong>论文</strong>：<a href="https://arxiv.org/abs/2610.36077" rel="noopener noreferrer" target="_blank">摘要</a> / <a href="https://arxiv.org/html/2610.36077" rel="noopener noreferrer" target="_blank">正文</a> / <a href="https://arxiv.org/pdf/2610.36077" rel="noopener noreferrer" target="_blank">PDF</a>。<strong>项目</strong>：<a href="https://trinity-rsi.github.io/" rel="noopener noreferrer" target="_blank">官网</a>。<strong>代码</strong>：<a href="https://github.com/InfRec-Cardinal/The-Trinity" rel="noopener noreferrer" target="_blank">官方仓库</a>，2026-10-28 README 明确写着 <em>Code: Coming Soon</em>，当时只有报告与项目说明；不能称为已经开源可运行实现。</p>
+<p><strong>一句话定位</strong>：它试图解决“Agent 在一个任务上改进的经验如何变成可验证、可继承、可路由的跨任务能力”，而不是仅把一个任务的提示词反复改好。</p>
+<h2 id="2-人话版-问题-方法-结果-意义">2. 人话版（问题、方法、结果、意义）<a class="heading-link" href="#2-人话版-问题-方法-结果-意义"> §</a></h2>
+<p>现有 Agent 的“自我进化”常常是：在某个游戏、编码任务或网页任务上失败，分析失败，改写 prompt / tool workflow，然后在同一个任务上再试。问题在于，不同任务表面上完全不同，却可能都需要“记住当前状态”“验证假设”“不要重复已失败动作”等共同能力；反过来，一份面向所有任务的统一提示词又会相互干扰。The Trinity 将系统分成 Creator（造可验证训练世界）、Explorer（执行并积累轨迹）、Evolver（从轨迹中归纳能力要求和改进模块）。它把任务归类为 capability tree，沿树继承和修改 Harness，并用 Router 在新任务上选择合适版本。冻结同一个大模型后，28 个训练 benchmark 的平均分由 39.06 升至 73.16，18 个 unseen benchmark 由 37.45 升至 63.61。值得重视的不是“自进化”口号，而是它把任务、轨迹、模块、版本、验证和路由连成了可检查的数据流；但它仍高度依赖强闭源模型和大量交互成本。</p>
+<h2 id="3-background-research-gap-为什么按任务进化不够">3. Background &amp; Research Gap：为什么按任务进化不够<a class="heading-link" href="#3-background-research-gap-为什么按任务进化不够"> §</a></h2>
+<p>Agent 不是简单的 LLM 单轮回答。以迷宫任务为例，模型必须在每步接收 observation、更新地图、判断动作是否有效、执行、再根据反馈修正地图。若失败源于“走过的死路被遗忘”，修复的是状态追踪机制，而非“迷宫”这一主题。同样，视频 QA 的跨帧证据定位和游戏中的观测记账，都涉及证据维护；多 Agent 博弈的假设更新和科学实验中的假设证伪，也共享推理协议。按 benchmark 名称存一套 workflow 会重复学习相同修复；只用一个全局 Harness，又会在不同预算、不同可观测性和不同工具权限下产生冲突。</p>
+<p><strong>旧范式</strong>包括：Global Harness（所有训练环境共享一份模块）、Task-Domain（每任务或任务域单独训练）、Capability-Domain（能力平铺分类但无继承）、普通 task-specific recursive harness self-improvement，以及 agent–environment co-evolution。它们各有合理性：Global 能共享数据，Task-Domain 可避免冲突，环境生成可扩大训练覆盖；问题是没有同时解决“哪些能力可共享”“何处专门化”“生成环境是否真的训练原任务需要的能力”“新任务应调用哪一版 Harness”。</p>
+<p>作者给出 ARC-AGI-3 与 Micromouse 的例子：一个是视觉网格游戏，一个是探索迷宫，表面任务不一样，但都依赖感知与状态跟踪。若把两者的失败轨迹抽象成“observation-to-state grounding”和“re-acquisition of out-of-window facts”，就可以复用同一 Memory/Perception 模块。这里的 <strong>research gap</strong> 是可迁移的执行协议，而非再训练一个更大的模型。</p>
+<h2 id="4-core-insight-能力是跨模态任务的共同因子">4. Core Insight：能力是跨模态任务的共同因子<a class="heading-link" href="#4-core-insight-能力是跨模态任务的共同因子"> §</a></h2>
+<p>核心观察属于<strong>经验性系统假设</strong>：任务外观、数据集名称与所需决策能力不是一一对应。作者通过规范化的任务说明和已验证轨迹，为每个任务建立能力集合 K_τ；再按预先固定顺序将能力集合变成 Trie 路径。共同前缀共享模块，分支保留专门化修复。它并非证明能力天然具有树形因果结构：作者明确说固定顺序不代表能力间的因果依赖。树只是共享与版本管理的工程结构。</p>
+<p>第二个观察是<strong>训练世界可以保留决策难点，而无需复制原环境表面细节</strong>。例如把需要“行动前检查不可逆约束”的机器人/游戏任务变成小型、可验证的状态机；只要模型必须做相同类型的判断，模拟环境就可能提供更清洁的反馈。这里的风险是 simulator shortcut：模型可能只学会模拟世界的特征，迁移时失败。作者通过原 benchmark 与真实机器人评估，而不是仅在自造世界上评估，部分缓解这一风险。</p>
+<p>第三个观察是<strong>不同 Harness 版本可以作为候选策略</strong>，由具备能力先验与执行历史的 Router 选择。选择时必须先提交版本和理由，后执行、后验证，避免使用真实结果作弊；这个设计和 Agent memory/provenance 研究非常接近。</p>
+<h2 id="5-method-deep-dive-从任务到能力树-世界树-harness-树">5. Method Deep Dive：从任务到能力树、世界树、Harness 树<a class="heading-link" href="#5-method-deep-dive-从任务到能力树-世界树-harness-树"> §</a></h2>
+<p><strong>Input → 规范化 benchmark/task spec → Base Harness 轨迹 → 能力标签与 Trie → Creator 生成可验证世界 → Explorer 执行 → Evolver 修模块 → 选择性继承与版本冻结 → Router 选择 Harness → 原任务验证反馈 → Output。</strong></p>
+<p><strong>Step 1｜定义可执行 Harness。</strong> 论文将 H_φ 定义为六类协议 <code>(Perception, Memory, Inference, Planning, Orchestration, Loop)</code>。Perception 把 observation 提取成事实；Memory 结合历史和 controller state 形成视图；Inference 维护候选假设；Planning 形成决策；Orchestration 判断固定工具集合中哪些可用；Loop 决定实际动作、commit 或等待。模块只读取允许的公开记录；只有 Memory 可显式携带状态。这里的重点是把提示词系统变成有类型接口的模块，而非一大段不可追踪的 prompt。</p>
+<p><strong>Step 2｜冻结任务与数据边界。</strong> Evolver 先把任务描述整理为目标、观测、动作、反馈、完成条件和预算；划定 Train/Unseen。Explorer 使用同一 Base Harness 跑训练样本，记录 observation、action、结果和执行配置。系统用哈希链验证记录完整性；基础设施失败与任务失败分开。若这一步混入 unseen 的成功轨迹，后续所有“迁移”都可能是泄漏。</p>
+<p><strong>Step 3｜从缺陷到能力标签。</strong> 独立 agent 提议能力类别，judge 合并，reviewer 检查定义、证据和覆盖。附录给出六类能力：PST（感知/状态跟踪）、HCI（假设/对手推断）、CFR（约束/反馈修复）、GVT（目标/价值取舍）、VEA（视频证据获取）、VC（视频理解），并细分成 F01–F24、V01–V06 缺陷。能力可以多标签：同一任务同时需要记忆、约束检查和预算规划。</p>
+<p><strong>Step 4｜构造 Trie。</strong> 固定顺序 <code>c,d,a,b,e,f</code>，对每个任务的能力集合排序，路径的公共前缀合并。论文共构造 11 个 capability nodes，Explorer 的 Harness 树有 10 个非根候选配置。某任务在内部节点也可直接结束，不强制叶节点才是合法任务。<strong>注意</strong>：换一个排序可能改变共享结构；作者没有证明排序是全局最优。</p>
+<p><strong>Step 5｜Capability-Driven Real2Sim2Real。</strong> Creator 不复制原 benchmark 的私有答案或布局，而是把节点要求转成简化训练 level。host verifier 检查环境绑定、状态转移、渲染和完成条件。筛选 Harness 在固定预算内试跑：太简单或太难都调整难度，只保留预设中间成功率带的世界。世界在一次本地训练内冻结，避免评估目标边训练边变化。可验证世界相当于为“具体能力”提供一个密集、低歧义的训练信号，但不是神经网络梯度 reward。</p>
+<p><strong>Step 6｜模块演化与选择性继承。</strong> Explorer 比较成功/失败轨迹，提出对六协议模块的局部更新。每次更新必须记录 node、前驱版本、episode、可执行例子；host 检查 ownership、类型、接口和版本谱系。子节点先比较旧父模块与更新后父模块，在<strong>相同任务/预算/次数</strong>上严格更好才接受新的继承；本地模块可以覆盖父模块，但保留 lineage。一个细节：本地模块通过合法性审查即可保留，<strong>不要求当下分数提升</strong>，因此仍可能发生短期退化。</p>
+<p><strong>Step 7｜Creator 的下一轮更新。</strong> Creator 仅在 verifier 检测失败时修改自己的世界构造模块；轮末合并各节点验证过的 proposal，去重并形成下一轮 Base Harness。Explorer 则沿固定树继续迭代。论文是 <strong>Harness RSI</strong>，不是对 Claude 权重执行 PPO、GRPO 或 DPO。</p>
+<p><strong>Step 8｜Capability-Aware Router。</strong> 给新任务公开目标、初始 observation、元数据与图片；Router 从固定版本池选择 h_n。它检索相似执行记录（cosine ≥ 0.5，最多 10 条，FIFO 20,000 条），结合能力卡片、历史成功与成本，先提交决策，再运行并验证终止 receipt，最后把 <code>(task, chosen harness, feedback)</code> 追加到 memory。Unseen 的能力真值标签不能进入决策；错误选择无 fallback。这样一条 trajectory 对未来行为的作用路径非常明确：<strong>证据 → 记忆检索 → Harness 选择 → 行为 → 终局验证 → 新证据</strong>。</p>
+<h2 id="6-核心公式与数学直觉">6. 核心公式与数学直觉<a class="heading-link" href="#6-核心公式与数学直觉"> §</a></h2>
+<div class="equation">Hφ = (Πer, M, I, P, F, L)； pτ = sort≺(Kτ)； T = Trie({pτ})</div>
+<p><code>Kτ</code> 是任务所需能力集合；<code>≺</code> 是固定顺序；<code>T</code> 是前缀共享树。优化对象并非一个端到端可微 loss，而是<strong>经验证的任务成功率与执行成本</strong>。树构造使共享从“相似任务名称”变成“相同能力前缀”，但标签与顺序来自系统设计。</p>
+<div class="equation">Hᵢ,v = Pᵢ,v ⊕ Lᵢ,v； (P ⊕ L)[m] = L[m]（若本地有 m），否则 P[m]</div>
+<p><code>P</code> 为继承模块 registry，<code>L</code> 为本地 registry，<code>⊕</code> 是本地优先的合并，不是向量加法。它允许继承通用记忆协议，同时覆盖某类任务特有的动作验证。错误的覆盖可能破坏上游功能，因此必须有接口与 lineage 审查。</p>
+<div class="equation">Zᵢ₊₁,v = Rollout(Pᵢ₊₁,v ⊕ Lᵢ,v, Dᵢ₊₁,v)； L̃ᵢ₊₁,v = Evolve(Lᵢ,v, Zᵢ₊₁,v, Fᵢ,v)</div>
+<p><code>D</code> 是节点训练世界，<code>Z</code> 是真实执行轨迹，<code>F</code> 是历史反馈。改变世界难度会改变反馈分布；若只在自造世界上比较分数，会产生 reward hacking 的环境版本。作者把原任务评价放在另一个阶段，这是设计上的关键防线。</p>
+<div class="equation">hₙ = π(xₙ, C, R(xₙ, Mₙ), S(Mₙ))； Mₙ₊₁ = Append(Mₙ, (xₙ, hₙ, fₙ))</div>
+<p><code>π</code> 是 Router 策略，<code>C</code> 是版本池，<code>R</code> 是相似记忆，<code>S</code> 是已观测配置成本/成功统计，<code>fₙ</code> 是验证后的反馈。没有一个在文中训练出的 RL advantage 或 KL penalty；将其称为“RL 训练 Claude”会误读。</p>
+<h2 id="7-toy-example-跨游戏与视频任务共享-证据确认">7. Toy Example：跨游戏与视频任务共享“证据确认”<a class="heading-link" href="#7-toy-example-跨游戏与视频任务共享-证据确认"> §</a></h2>
+<p>假设训练集中有一个三格迷宫 A 和一个视频事件定位 B。A 的 agent 看见红门，未确认钥匙就尝试开门，浪费动作；B 的 agent 看见一帧红色物体就断言“目标出现”，忽略前后帧。Evolver 不把两者按“游戏/视频”分开，而标注共同能力“evidence-gated commitment”，A 还需要 state tracking，B 还需要 video evidence acquisition。Creator 为共同能力造一个三状态环境：<code>未知 → 收集第二证据 → 满足条件才 commit</code>，验证器明确判断是否过早提交。Explorer 在 20 个合成回合中学得一个 <code>pre_commit_check</code> 模块（20 只是教学例子，<strong>非论文实验参数</strong>）。模块在父节点通过验证，A 分支继承后增加动作合法性检查，B 分支继承后增加跨帧时间一致性检查。新任务 C 到来，Router 根据公开输入选择包含这两个能力的 Harness；C 的终局成功/失败 receipt 再影响未来路由。若 B 的画面质量差导致验证器误标，错误就会从 world 进入 module，再进入后续任务；因此“验证器正确性”比提示词写得漂亮更关键。</p>
+<h2 id="8-baseline-deep-comparison-3-5-个">8. Baseline Deep Comparison（3–5 个）<a class="heading-link" href="#8-baseline-deep-comparison-3-5-个"> §</a></h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>如何做／为什么合理</th>
+<th>在本设置的短板</th>
+<th>Trinity 改变了什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Global Real</strong></td>
+<td>28 个原环境训练一份 Harness，数据共享最大；<strong>组织对比中最强传统基线</strong></td>
+<td>Unseen 42.92，难处理能力冲突；训练 582.54M tokens</td>
+<td>Trie 专门化 + 共享父模块，Sim 版 Unseen 47.26，机制与训练环境同时改变</td>
+</tr>
+<tr>
+<td>Task-Domain Real</td>
+<td>15 个 task-specific Harness，减少干扰</td>
+<td>Unseen 40.82，经验碎片化</td>
+<td>按能力而非任务名共享</td>
+</tr>
+<tr>
+<td>Capability-Domain Real</td>
+<td>6 个平铺能力组，训练成本最低 136.94M</td>
+<td>Unseen 39.43，缺跨能力组合继承</td>
+<td>由平铺组改为前缀树与选择性继承</td>
+</tr>
+<tr>
+<td><strong>Capability Tree Real</strong></td>
+<td>与提案相同树和继承，只在原任务训练；<strong>最严格的 Sim 消融对照</strong></td>
+<td>Unseen 42.31</td>
+<td>改用能力保持型合成世界后升至 47.26，但训练成本也由 211.56M 升至 405.70M</td>
+</tr>
+<tr>
+<td>Agent Self-Routing / Random</td>
+<td>不看能力标签，或只看任务信息选 Harness</td>
+<td>Random Unseen 46.23；基础 Self-Routing 52.36</td>
+<td>加能力卡片至 58.27，再加经验记忆至 60.96；Oracle 63.61 是事后上界，不能当可部署 baseline</td>
+</tr>
+</tbody>
+</table></div>
+<p>注意：组织比较（Table 3）是 <strong>Module Only、无 skills</strong>；后面的四轮完整 Harness 分数含各自准备的 skills，不能直接把两套数当作单变量实验。</p>
+<h2 id="9-experiment-setup-与-metrics-教学">9. Experiment Setup 与 Metrics 教学<a class="heading-link" href="#9-experiment-setup-与-metrics-教学"> §</a></h2>
+<p><strong>RQ1</strong>：能力树是否比任务组织更好？Table 3 在同一冻结 Claude Opus 5 下比较 Global、Task-Domain、Capability-Domain、Tree Real、Tree Sim；其中 Tree Real vs Tree Sim 最接近只改训练世界的比较。<strong>RQ2</strong>：持续四轮 RSI 是否有效？Figure 5/6 与 Appendix Table 8 在固定 Train/Unseen 划分、拓扑、backbone 下观察增量。<strong>RQ3</strong>：Router 的能力标签与 memory 各贡献多少？Table 4 逐项增加 Cap、Mem。<strong>RQ4</strong>：模块相关性是否有行为作用？Figure 7 和 Table 5 做 relevant/irrelevant addition 及 removal。<strong>RQ5</strong>：能否跨到真实机器人？Table 6 的 SOON（Unitree G1）和 CaP-X（AlohaMini2）测试。</p>
+<p><strong>数据</strong>：28 Train、18 Unseen，涵盖规则发现、约束求解、感知控制、多 Agent、长时交互。论文部分 Train 使用少量固定实例、重复 episodes；Unseen 有官方全量或固定子集，例如 Video-MME-v2 取 400/800 视频、1600 问，PHYRE 50 个测试任务，SciGym 126/137 个小系统。Train/Unseen 不是随机同分布 QA 切分，而是 benchmark-level generalization。每个 benchmark–Harness 配对还先进行 <strong>5 次 skill preparation trials</strong>，汇总成固定 skills 后再正式测试；这些 trial 不计入正式成功率。</p>
+<p><strong>指标</strong>：每 benchmark 原生 success / win / solve / accuracy / progress / human rank percentile 等被放到 0–100，之后做 benchmark-equal mean（每个 benchmark 权重相同）。<strong>高分更好</strong>，但 10 次机器人试验和 1600 道视频问答在总体均值里权重相同；不同任务的 1 分未必有相同实际价值。<code>Training Tokens (M)</code> 统计进化阶段 token 总量，<code>Inference Tokens (M)</code> 为评估阶段 token 成本；<strong>低成本更好</strong>，但 token 不是美元、GPU 小时或真实延迟。Router 的 Oracle 是知道每实例最优配置的事后参考，不能视为真实在线算法。相关性系数 r∈[-1,1] 仅表示共变，不能证明模块导致能力。</p>
+<p><strong>计算与协议</strong>：同一冻结闭源 backbone；训练/推理 token 成本在表中给出，但完整 API 费用、重复种子方差和系统 wall-clock 未充分报告。硬件部署动作预算、终止条件与 verifier 见附录；真实机器人每任务仅 10 次正式 episode，置信区间需要自行补做。不存在权重更新、RL rollout policy-gradient 或可报告的 KL/entropy 训练项。</p>
+<h2 id="10-results-deep-dive-八个具体证据与反例">10. Results Deep Dive：八个具体证据与反例<a class="heading-link" href="#10-results-deep-dive-八个具体证据与反例"> §</a></h2>
+<ol>
+<li><strong>整体最大证据</strong>：28 Train 从 39.06 → 73.16，<strong>+34.10 点</strong>；18 Unseen 从 37.45 → 63.61，<strong>+26.16 点</strong>（Table 8）。支持跨 benchmark 的整体改善，但混合了 Harness 演化、skills 准备与评估时路由，不能单独归因给“能力树”。</li>
+<li><strong>真正的合成环境对照</strong>：Tree Real 的 Unseen 42.31，Tree Sim 47.26，<strong>+4.95 点</strong>；Train 53.44 → 56.95，+3.51（Table 3）。支持 Sim 有迁移价值，但训练 token 211.56M → 405.70M，<strong>+91.8%</strong>，不是同成本下严格优势。</li>
+<li><strong>模块与技能互补</strong>：Base 39.06/37.45；Module Only 56.95/47.26；Skill Only 58.86/48.67；两者结合 63.80/53.53（Table 2，Train/Unseen）。说明并非“模块替代 skills”，而是两条能力来源可叠加；但不等于无交互项的简单加法。</li>
+<li><strong>迭代边际收益递减</strong>：Train 第一轮 63.80，第四轮 73.16，额外 <strong>+9.36</strong>；18 Unseen 第一轮 53.53，第四轮 63.61，额外 <strong>+10.08</strong>（Table 8）。若看 Figure 6 的非机器人 16 个 Unseen，则是 57.72 → 64.06，<strong>+6.34</strong>。必须区分统计口径。</li>
+<li><strong>Router 的记忆作用较小但可测</strong>：Unseen 只有任务信息 52.36，加能力说明 58.27（+5.91），再加检索记忆 60.96（+2.69），Oracle 63.61（Table 4）。能力先验贡献大于经验检索；记忆有效不意味着越多越好，检索错误可能污染决策。</li>
+<li><strong>模块干预比相关性更有力</strong>：在 Base 上加 relevant module，Train 39.06 → 58.45，<strong>+19.39</strong>；加 irrelevant 仅 40.08，<strong>+1.02</strong>；从 Iteration 4 删除 relevant，73.16 → 70.42，<strong>−2.74</strong>（Table 5）。这是局部操作性证据；由于 relevant 的定义依赖能力标签和模块库，仍不能推断任何任意新任务都会如此。</li>
+<li><strong>真实机器人转移</strong>：SOON Real 0 → 60%，CaP-X Real 0 → 60%，各 10 次正式 episode（Table 6）。可见迁移，但每次成功相当于 10 个百分点；与五次预先 skill preparation 一起变化，不能把 +60 点全归给 Harness 模块。</li>
+<li><strong>明确的弱项与失败</strong>：Crafter 最终 60，低于 Codex 82.7 与 DeepSeek 70；DiG-bench 最终 36.8，低于 Codex 40.4 与 DeepSeek 54.4；Eleusis 从第一轮 82.2 回落到 81.1；Mastermind 在 88.9 停滞（Appendix Table 8）。这否定了“所有任务持续变好”这一过强解读。</li>
+</ol>
+<h2 id="11-table-figure-reading-不能只看平均数">11. Table / Figure Reading：不能只看平均数<a class="heading-link" href="#11-table-figure-reading-不能只看平均数"> §</a></h2>
+<p><strong>Figure 1 / Figure 2（总系统图）</strong>：从 task tree 到 capability tree，再到 Harness tree；三个角色互相喂验证反馈。图的价值在于明确数据边界，<strong>不是</strong>性能证据。需要复现时逐箭头记录版本和 receipt，避免把 Creator 的私有 verifier 信息交给 Explorer。</p>
+<p><strong>Table 2（模块 × 技能的 2×2）</strong>：横向比较 Base、Module Only、Skill Only、Ours；最重要是组合的 63.80/53.53 高于单独 56.95/47.26 和 58.86/48.67。它说明互补，但没有控制 skill preparation 的 token 总开销，不能据此宣称组合的单位成本最优。</p>
+<p><strong>Table 3（组织与环境）</strong>：同时有 Train/Unseen、训练 tokens、评估 tokens。Tree Sim Unseen 最好（47.26），但训练成本 405.70M 远高于 Tree Real 211.56M；Capability-Domain 136.94M 最便宜却最弱。真正结论是“更好的迁移—成本前沿”，不是“合成环境绝对更省算力”。</p>
+<p><strong>Figure 5 / Figure 6 与 Appendix Table 8（四轮曲线和逐任务）</strong>：Figure 6 的 Unseen 均值排除两项机器人（Base 42.13、Final 64.06），Table 8 另给含机器人 37.45→63.61；这两个数字都对，但不能混用。Figure 5 的径向柱状图容易遮蔽 Crafter/DiG-bench 的负对比，必须查 Table 8。</p>
+<p><strong>Table 4（路由消融）</strong>：Random 46.23，基本 Router 52.36，能力 Router 58.27，能力+Memory 60.96，Oracle 63.61。最接近因果消融的是同一 Router 上逐项打开信息；但因为记忆顺序和历史依赖，仍需多种顺序随机化来测鲁棒性。</p>
+<p><strong>Figure 7 / Table 5（相关性与干预）</strong>：HCI–Inference 的相关系数 0.744 是描述性统计；Table 5 的加/删模块才是行为干预。二者一致支持能力—模块对应关系，但 relevant module 的选取并非盲法、也不是随机化的大规模因果试验。</p>
+<h2 id="12-ablation-claim-vs-evidence-contribution">12. Ablation、Claim vs Evidence、Contribution<a class="heading-link" href="#12-ablation-claim-vs-evidence-contribution"> §</a></h2>
+<p><strong>Ablation</strong>：去掉 skills，Ours 从 63.80/53.53 变成 Module Only 56.95/47.26；去掉层级（改为平铺），Unseen 从 Tree Real 42.31 变为 Capability-Domain 39.43；去掉 Sim，47.26 变 42.31；去掉 Router memory，60.96 变 58.27；删 relevant module，73.16 变 70.42。每个差异的协议不完全相同，不能拼成一条可加性因果公式。</p>
+<p><strong>Authors Claim</strong>：能力驱动的世界生成与 Harness RSI 可带来跨任务、跨模态、真实具身环境的泛化；能力先验可帮助模块选择。<strong>Experiments Actually Show</strong>：在固定 Claude Opus 5、作者搭建/筛选的任务和验证协议中，四轮 Harness 进化提高多数均值；Sim 与 Router 有配对消融；机器人两个小样本场景改善。<strong>What Is Not Yet Proven</strong>：跨模型迁移、树顺序最优、长期持续扩展不遗忘、真实生产成本、同 token/同 wall-clock 的优势、所有场景无数据泄漏，以及相关性背后的通用因果规律。</p>
+<p><strong>Contribution 1 — New Mechanism</strong>：从任务名切换到 capability Trie，进行模块化继承、覆盖与谱系管理。创新主要是组织与闭环协议，Trie 本身是经典数据结构。<strong>Contribution 2 — New System/Engineering</strong>：Creator–Explorer–Evolver 的验证世界与 Harness 联合演化；单个组件并非全新，组合及边界设计是贡献。<strong>Contribution 3 — New Evaluation/Empirical Finding</strong>：跨 46 个 Train/Unseen benchmark（含机器人）的多轮与路由消融、能力模块干预；不是发布了一个全新通用 benchmark。<strong>Contribution 4 — New Empirical Finding</strong>：能力说明对 Router 的收益超过历史检索的增益，但仅在本文 setting 下成立。</p>
+<h2 id="13-limitations-failure-modes">13. Limitations &amp; Failure Modes<a class="heading-link" href="#13-limitations-failure-modes"> §</a></h2>
+<p><strong>Authors' Limitations</strong>：官方承认 web 搜索用于 benchmark discovery，检索覆盖与质量不稳定；研究主要停留在 Harness 层，未验证模型权重层的共同进化。<strong>Additional Limitations</strong>：一是闭源 Claude Opus 5 使运行成本与可复制性不透明；二是 task spec / verifier / capability assignment 可能发生同源偏差；三是固定顺序 Trie 可能把相互冲突的能力放在同一父节点；四是本地合法更新不要求分数提升，可能积累回归；五是 Router memory FIFO 会遗忘稀有失败，且历史成本统计受先前路由选择偏差影响；六是机器人 10 episode 的方差较大；七是 benchmark-equal mean 混合不同 metric；八是合成世界生成成本不小，不能只报告执行 token；九是 skills 的独立准备会改变每个 Harness 的实际能力；十是没有多模型、多独立种子、真实长期流式任务的充分检验。</p>
+<h2 id="14-reproduction-view-先复现最小机制-不要照搬-46-benchmark">14. Reproduction View：先复现最小机制，不要照搬 46 benchmark<a class="heading-link" href="#14-reproduction-view-先复现最小机制-不要照搬-46-benchmark"> §</a></h2>
+<p><strong>关键模块</strong>：<code>task_spec_normalizer</code>、<code>trajectory_logger</code>（hash、verifier receipt）、<code>capability_annotator</code>、<code>trie_builder</code>、<code>world_generator</code>、<code>world_verifier</code>、<code>module_registry</code>（版本与父子覆盖）、<code>evolver</code>、<code>router</code>、<code>evaluation_ledger</code>。官方仓库截至本次检查尚未公开可运行代码，因此以下是<strong>独立最小复现方案</strong>，不是作者命令。</p>
+<p>先选 3 类轻量可验证任务：MiniGrid 类状态追踪、MiniHack/简单约束迷宫、自己构造的多轮工具检索；每类 30 Train、30 held-out seed，严格按任务族分离；用同一开放模型（例如 Qwen3-8B-Instruct，实际版本需在实验时锁定），固定温度与动作预算 30。定义三类能力 <code>state_tracking / constraint_check / evidence_verify</code>，每类两个 typed 模块；用 10–20 个小型合成世界训练。比较 <code>Base / Global / Task-specific / Flat capability / Capability Trie Real / Capability Trie Sim</code>，各 3 个 seed，<strong>先不加入 skills 和 Router</strong>，以避免混淆。输出 success、每任务 token、工具调用数、失败类型、模块继承命中、错误验证率。第一个必须跑的实验是 <strong>Tree Real vs Tree Sim 在同样训练 token 预算下的 held-out success</strong>；若不能优于 Real，则论文最核心的“世界抽象可迁移”假设在此设置不成立。随后再做 Router +/− memory，采用先提交选择、后执行的日志锁定协议。</p>
+<h2 id="15-research-value-与两条迁移路线">15. Research Value 与两条迁移路线<a class="heading-link" href="#15-research-value-与两条迁移路线"> §</a></h2>
+<p><strong>Baseline Potential</strong>：中高，完整框架昂贵，但 capability grouping 和 Router 可作为强系统 baseline。<strong>Migration Potential</strong>：高，能迁移到跨 Agent 记忆与视频证据获取。<strong>Systems Potential</strong>：高，typed modules、versioned receipts、fallback policy 与 registry 很实用。<strong>Attack Potential</strong>：高，可对 world verifier、记忆检索和模块继承进行污染攻击。<strong>Evaluation Potential</strong>：高，可定义跨任务能力迁移增益与 verifier fidelity。<strong>Benchmark Potential</strong>：高，可按“同能力、异表面任务”构建受控测试。<strong>New Paper Potential</strong>：中高，关键在证明“迁移是能力机制而非任务近邻记忆”。</p>
+<h3 id="migration-a-跨-agent-session-continuity-的因果可追踪记忆">Migration A：跨 Agent Session Continuity 的因果可追踪记忆<a class="heading-link" href="#migration-a-跨-agent-session-continuity-的因果可追踪记忆"> §</a></h3>
+<p><strong>Original Problem</strong>：Harness 自改进的能力模块与执行记录如何影响未来任务。<strong>Transferable Mechanism</strong>：带版本、前驱、验证 receipt 的模块 registry + capability router。<strong>New Research Question</strong>：跨 Codex/Claude/DSH 的历史会话，究竟哪些片段对新任务有可测的边际帮助？<strong>Method Modification</strong>：将历史拆成 <code>goal / state / tool / failure / resolution</code> 操作卡，建立 capability 标签；检索后先声明“将引用哪条历史、预期改变什么行动”，执行结束比较引用与不引用的结果。<strong>Minimum Experiment</strong>：从 100 个可重放软件任务构造配对 continuation，随机分为 50/50 Train/Test；对每个 Test task 运行 <code>no memory / nearest session / operation card / capability+provenance</code>，每种 3 seed；设置 4k/16k memory budget、top-k 1/5/10、错误历史注入 0/10/30%；每次记录选择前 hash、具体 tool calls、通过的单测和时间。<strong>Model</strong>：Qwen3-Coder-30B-A3B-Instruct 或可用同级 coding model（锁定 checkpoint）。<strong>Dataset</strong>：SWE-bench Verified 的可运行子集 + 自建可重放 Git 任务（严格排除污染与重复仓库）。<strong>Baseline</strong>：BM25、embedding top-k、session summary、no-memory。<strong>Metric</strong>：resolved rate、wrong-transfer rate、tokens、wall-clock、引用证据的可验证率。<strong>Expected Contribution</strong>：首次把“跨 Agent 会话接力”评估成因果可追踪的能力复用。<strong>Risk</strong>：任务重放不确定性、工具环境差异。<strong>Collision Risk</strong>：EvoWeave/已有 episodic memory、Harness RSI 与工具记忆系统已有相近组件，创新应集中在 intervention protocol 与 provenance correctness，而非“再做一个 memory graph”。</p>
+<h3 id="migration-b-video-agent-的证据获取与预算路由">Migration B：Video Agent 的证据获取与预算路由<a class="heading-link" href="#migration-b-video-agent-的证据获取与预算路由"> §</a></h3>
+<p><strong>Original Problem</strong>：不同任务调用不同 Harness，视频证据采集能力有专门模块。<strong>Transferable Mechanism</strong>：VEA/VC 与状态追踪分离；Router 根据问题选择工具与证据策略。<strong>New Research Question</strong>：同样视频 token 预算下，按问题能力标签选择 frame selector，能否比统一采样更准且更快？<strong>Method Modification</strong>：能力节点 <code>temporal_order / counting / localization / motion</code>；每节点绑定 <code>uniform / motion / query-aware / dense verification</code> selector，Router 先预测所需能力再选帧。<strong>Minimum Experiment</strong>：Video-MME-v2 固定 400 视频/1600 QA 的可访问子集或 LongVideoBench 官方划分；按视频去重切 train/test；视觉 token 预算 256/512/1024；对每题运行四种 selector 与 Router，固定 VLM、解码、GPU；记录选帧时间、prefill、decode、总 wall-clock、峰值显存、正确率、证据时间 IoU；随机 20% 题注入无关运动片段。<strong>Model</strong>：Qwen3-VL-8B-Instruct（锁定版本）。<strong>Dataset</strong>：Video-MME-v2 / LongVideoBench。<strong>Baseline</strong>：Uniform、motion-only、query-aware top-k、oracle selector（仅上界）。<strong>Metric</strong>：QA accuracy、latency、FPS、visual tokens、peak VRAM、evidence recall。<strong>Expected Contribution</strong>：能力路由的 accuracy–latency Pareto 曲线与证据忠实性评价。<strong>Risk</strong>：Router 自身推理成本抵消省下的帧；问题标签泄漏。<strong>Collision Risk</strong>：adaptive frame selection 与 query-aware pruning 已很拥挤，必须以 verified capability transfer 和严格 wall-clock 为新点。</p>
+<h2 id="16-attack-verification-lens-与-只记住这篇-的-9-句话">16. Attack / Verification Lens 与“只记住这篇”的 9 句话<a class="heading-link" href="#16-attack-verification-lens-与-只记住这篇-的-9-句话"> §</a></h2>
+<p><strong>攻击面</strong>：让 Creator 生成含 shortcut 的环境；在验证器中植入错误成功条件；让某次失败轨迹伪装成成功 receipt；污染 Router memory 使其选择错误 Harness；让父模块升级破坏子模块接口。<strong>Black-box probe</strong>：固定任务输入，只改变记忆证据或能力卡片，看 Harness 选择与工具调用是否变化。<strong>新指标建议</strong>：<code>Causal Memory Utility = Success(with record) − Success(without record)</code>，并单独报告错误历史的 harm rate；<code>Verifier Fidelity</code> 用独立 oracle 检验。<strong>Recovery</strong>：撤销错误模块后检查子树能否恢复原性能。</p>
+<ol>
+<li>The Trinity 改的是 Harness，不是模型权重。2. 真正的共享单位是能力要求，不是任务名称。3. Trie 只是组织工具，不是能力因果图。4. Creator 造世界、Explorer 执行、Evolver 归纳与改模块。5. 所有轨迹都应保留版本与验证凭据。6. 合成环境比原任务训练更强，但首轮训练 token 更贵。7. Router 的能力先验收益大于增加历史检索的收益。8. 总均值上升不意味着每个任务上升，Crafter/DiG-bench 是明显反例。9. 最值得迁移的是<strong>可追踪的能力模块 + 受控干预验证</strong>，而不是复制其庞大系统。</li>
+</ol>
+<hr/>
+<p><a id="paper2"></a></p>
+<h1 id="paper-2-rescom">Paper 2 — ResCom<a class="heading-link" href="#paper-2-rescom"> §</a></h1>
+<h2 id="1-基本信息与一句话定位-2">1. 基本信息与一句话定位<a class="heading-link" href="#1-基本信息与一句话定位-2"> §</a></h2>
+<p><strong>标题</strong>：ResCom: Activation Residual Compensation for Large Language Model Quantization。<strong>作者</strong>：Ning Yang、Bohan Cui、Zhuowen Liu、Yuting Wang。<strong>机构</strong>：中国科学院自动化研究所、复旦大学、香港中文大学、中国科学院大学。<strong>日期</strong>：arXiv v1 于 <strong>2026-10-25 UTC</strong> 提交。<strong>Venue/Status</strong>：arXiv 预印本，未确认会议录用。<strong>论文</strong>：<a href="https://arxiv.org/abs/2610.35955" rel="noopener noreferrer" target="_blank">摘要</a> / <a href="https://arxiv.org/html/2610.35955" rel="noopener noreferrer" target="_blank">HTML 正文</a> / <a href="https://arxiv.org/pdf/2610.35955" rel="noopener noreferrer" target="_blank">PDF</a>。<strong>项目/代码</strong>：论文与 arXiv 页面未提供可核实的作者官方代码仓库链接；<strong>Code Status: Not Verified</strong>，不能把论文内伪代码当成已开源实现。</p>
+<p><strong>一句话定位</strong>：它不是发明另一种 4-bit 量化器，而是利用量化时被丢弃的 activation residual，给已经量化好的模型附加一个闭式求解的低秩补偿器，在不重新训练主模型的前提下修复输出质量。</p>
+<h2 id="2-人话版-问题-方法-结果-意义-2">2. 人话版（问题、方法、结果、意义）<a class="heading-link" href="#2-人话版-问题-方法-结果-意义-2"> §</a></h2>
+<p>把 LLM 权重和激活都压到 4 bit 可以降低存储和潜在计算成本，但每次把浮点 activation 四舍五入成少量离散值时，会把不同输入压成同一个数字。传统量化修复若只看已经舍入的 activation，就无法分辨这些原本不同的输入。ResCom 抓住一个简单但强的信号：<strong>舍入前的值减去舍入后的值</strong>，这正是被丢掉的信息。它不把所有信息都补回来，而是通过校准数据，找出哪些残差方向会显著影响 layer output，用 Cholesky、SVD 和低秩回归拟合一条很小的补偿支路。Llama-3-8B 的 W4A4 WikiText-2 perplexity 从 7.708 降到 7.147，MMLU 增加 2.89 点，GSM8K strict 从 23.96% 升到 36.16%。但必须看到，作者的 FP32 模拟推理并没有比 FP16 快，额外补偿还会增加 decode 延迟；这是“提高量化质量/显存效率”的论文，不是已证明的端到端推理加速方案。</p>
+<h2 id="3-background-research-gap-为什么量化后仍然需要补偿">3. Background &amp; Research Gap：为什么量化后仍然需要补偿<a class="heading-link" href="#3-background-research-gap-为什么量化后仍然需要补偿"> §</a></h2>
+<p>考虑一个线性层 <code>y = Wx + c</code>。权重量化让 <code>W</code> 的表示变粗，激活量化让 <code>x</code> 也变粗。W4A4 意味着主路径的权重和激活主要采用 4-bit 表示。激活 outlier 会扩大动态范围，使相同 16 个等级之间的间距变大；因此常见方法先处理 outlier，再量化。SmoothQuant 用缩放把困难从 activation 侧转移到 weight 侧；QuaRot/SpinQuant 用旋转把异常维度混合；FlatQuant 用变换；PrefixQuant 处理特定 outlier；SERQ 用 selected-channel compensation 恢复一部分输出。这些方法能让舍入误差变小，却不能让舍入操作完全无损。</p>
+<p>一个最小反例：量化器把 1.21 和 1.24 都映射为 1.2。如果后续补偿器只能读取 <code>Q(x)=1.2</code>，它对两者必然输出相同修正；但当线性层权重为 100 时，原输出分别是 121 与 124，理想修正差了 3。<strong>从舍入后的数字本身无法恢复这 3</strong>。这是一个信息不可辨识问题，而不是调大 LoRA rank 就能解决的问题。若保留 <code>d=x−Q(x)</code>，两个输入分别产生 0.01 与 0.04，差异立即可见。</p>
+<p>旧的 QERA/LQER 对量化误差做低秩重建；ARHQ 也使用未舍入信息，但会在构造量化模型时拆分权重、重新量化主路径；SERQ 在既有主路径上补偿，但输入主要是 rounded activation。本文的 gap 更具体：<strong>量化器和已校准权重完全冻结后，如何利用主路径尚未使用的残差，以很小的附加计算修复层输出？</strong></p>
+<h2 id="4-core-insight-缺失信号比额外参数更重要">4. Core Insight：缺失信号比额外参数更重要<a class="heading-link" href="#4-core-insight-缺失信号比额外参数更重要"> §</a></h2>
+<p>作者的第一层观察是<strong>量化桶内的信息丢失是不可逆的</strong>：相同 <code>Q(x)</code> 可以对应不同 <code>x</code> 和不同真实输出。第二层观察是<strong>量化残差与输出误差之间存在精确的线性关系</strong>，前提是参考输出与量化主路径使用同一冻结有效线性算子 <code>W_s</code>。于是误差目标不需要训练一个神经网络来猜，可以直接写成 <code>e = W_s d</code>。第三层观察是<strong>有限 rank 应按输出重要性分配，而不是按输入残差能量分配</strong>：一个大残差可能被权重压到几乎不影响输出，一个小残差可能被权重放大很多倍。</p>
+<p>这三点分别是信息可辨识性事实、线性代数恒等式、以及输出感知校准的工程设计。论文给出 Proposition 1：对指定的 activation-rounding target，在相同 rank 预算下，以 residual 为输入的最优无正则线性修复不会比用 <code>x</code> 或 <code>Q(x)</code> 更差。<strong>定理只针对给定校准样本、指定层级误差与 rank 约束</strong>；它不证明端到端任务 accuracy 必然提升，也不保证跨模型、跨精度单调变好。</p>
+<h2 id="5-method-deep-dive-每个量化层增加一条小支路">5. Method Deep Dive：每个量化层增加一条小支路<a class="heading-link" href="#5-method-deep-dive-每个量化层增加一条小支路"> §</a></h2>
+<p><strong>Input：已校准 W4A4 host + calibration tokens → 捕获量化前 x 和 Q(x) → 计算 d、目标 e → 流式累计 G/C 统计 → Cholesky whitening → truncated SVD → 生成 U/V/b → 所有层一次性挂载补偿支路 → Output：冻结主路径 + 低秩修复。</strong></p>
+<p><strong>Step 1｜先确定“同一冻结算子”条件。</strong> 在 SERQ setting，<code>W_s</code> 是 dequantized main weight 与已存在的 selected-channel 线性补偿的合成有效映射。量化前输出 <code>y_u = W_s x + c</code>，量化后 <code>ŷ = W_s Q(x) + c</code>。只改变输入是否舍入，才能把两者差定义为<strong>纯 activation-rounding error</strong>。如果 host 还有独立输出量化、不同分支使用不同 quantizer，这个恒等式不再自动成立；论文附录 C 明确要求重新定义真实 reference/host 误差目标。</p>
+<p><strong>Step 2｜保留残差，不改变主路径。</strong> 在 input quantizer 处记录 <code>d=x−Q(x)</code>，主路径照常执行 <code>W_s Q(x)</code>；新支路计算 <code>U(Vd)+b</code> 并加回输出。<code>V</code> 先把 n 维残差投影到 r 维，<code>U</code> 再从 r 维映射到 m 维；rank 32 是论文主要默认值。每 token 额外约 <code>r(n+m)</code> 次乘加及 n 维减法，额外参数 <code>r(n+m)+m</code>。若 r 接近原维度，补偿效果可能更好，但计算与显存收益会丧失。</p>
+<p><strong>Step 3｜流式收集校准统计。</strong> 使用 T 个 token，收集每层 <code>(d_t,e_t)</code>；计算均值并中心化。<code>G = Σ(d−d̄)(d−d̄)^T</code> 是残差 Gram/协方差尺度矩阵，记录残差维度之间如何一起变化；<code>C = Σ(e−ē)(d−d̄)^T</code> 是输出误差与残差的 cross-covariance，记录哪种输入残差对应哪种输出损失。只保存 G、C 与均值，内存与 T 无关，但每层需 O(n²+mn) 统计空间；对大 hidden size 不可忽视。</p>
+<p><strong>Step 4｜解带 rank 约束的 ridge 回归。</strong> 目标是最小化 calibration 上的输出误差平方和，同时惩罚过大的补偿矩阵。先计算 <code>G+λI=LLᵀ</code> 的 Cholesky 分解。加 λ 是为了让校准样本有限或高度相关时矩阵稳定可逆；λ 太大时会把所有修复压小，太小时可能放大校准噪声。随后对 <code>C L^(−T)</code> 做 SVD，取前 r 个奇异方向，反变换得到 U、V，再计算 bias <code>b=ē−UVd̄</code>。<strong>不要显式求矩阵逆</strong>，实现时用三角求解更稳定。</p>
+<p><strong>Step 5｜一次性挂载所有层。</strong> 论文特别强调：所有层的 G/C 必须在<strong>未修复 host</strong> 上先收集完，再同时挂载新支路。如果先修第 1 层、再用修后的 activation 校准第 2 层，后者目标就不再属于同一个冻结参考分布。反过来，一次性挂载也会产生 layer interaction：前层修复改变后层输入，局部最优不保证全模型最优。这个矛盾是值得做后续研究的真实 limitation。</p>
+<p><strong>Step 6｜选择修复位置。</strong> 默认只在 attention 的 Q/K/V/O projection 上加 rank-32 分支，而不是所有 FFN 层。原因是成本—质量平衡：全线性层修复的 PPL 略低，但额外计算更大。校准样本为 128 个 WikiText-2 的 2048-token windows，<code>λ = 0.01 tr(G)/n</code>，这是主要复现超参数，不是理论必需的唯一选择。</p>
+<h2 id="6-核心公式-svd-gram-projection-逐项解释">6. 核心公式、SVD/Gram/Projection 逐项解释<a class="heading-link" href="#6-核心公式-svd-gram-projection-逐项解释"> §</a></h2>
+<div class="equation">d = x − Q(x)； e = Wₛx + c − [WₛQ(x)+c] = Wₛd</div>
+<p><code>x</code> 为量化前激活，<code>Q(x)</code> 为量化后反量化回同坐标系的激活，<code>d</code> 为舍入残差，<code>W_s</code> 为冻结有效线性映射，<code>e</code> 为因舍入而丢失的输出。这个等式说明 <strong>residual 是充分且直接的线性输入</strong>，而不是让补偿器从已经失真的值里猜原值。</p>
+<div class="equation">min(rank(B) ≤ r, b) Σₜ ‖eₜ − B dₜ − b‖²₂ + λ ‖B‖²F； B = U V</div>
+<p><code>B∈R^(m×n)</code> 是补偿矩阵，<code>rank(B)≤r</code> 限制有效自由度，<code>b</code> 是输出均值偏移，<code>λ</code> 是 ridge 惩罚。第一项越小，层输出修复越准确；第二项越小，参数幅度越稳健。这里不是最小化语言模型 cross-entropy，而是最小化<strong>层级输出误差</strong>。与 strongest baseline SERQ 的区别是：SERQ 的已校准 selected-channel 补偿仍依赖 rounded activation；ResCom 在其后补充 <code>d</code> 的专门支路。</p>
+<div class="equation">G = Σₜ d̃ₜ d̃ₜᵀ； C = Σₜ ẽₜ d̃ₜᵀ； G+λI = L Lᵀ； C L^(−T) = Φ Σ Ψᵀ</div>
+<p><code>G</code> 是输入残差的 Gram 统计，<code>C</code> 是残差—输出误差的关联统计；Cholesky 的 L 把不同尺度和相关性的输入方向标准化。SVD 把白化后对输出最重要的方向排在前面，取 <code>Φ_r,Σ_r,Ψ_r</code> 即保留前 r 个方向。<code>U=Φ_rΣ_r</code>、<code>V=Ψ_rᵀL^(−1)</code>、<code>b=ē−UVd̄</code>。这里的 <strong>projection</strong> 是把输出误差投影到主奇异子空间，而不是注意力权重投影；也不是 PCA 仅保留输入残差方差最大的方向。</p>
+<div class="equation">Rᵣ(d) = Σ_{i&gt;r} sᵢ² ≤ min{Rᵣ(x), Rᵣ(Q(x))}</div>
+<p><code>s_i</code> 是中心化目标误差矩阵的奇异值。Eckart–Young 型截断误差给出 rank-r 下的不可避免剩余；因为 <code>e=W_s d</code>，residual 输入能构造达到这一低秩下界的映射。<code>x</code> 和 <code>Q(x)</code> 在相同 rank 下不能保证做到。加 ridge 后，误差上界多一项 <code>λ‖P_r W_s‖²F</code>，其中 <code>P_r</code> 投影到目标误差前 r 个左奇异方向。<strong>边界</strong>：只对给定样本和局部 target；不能用它证明 W4A8、任务指标或真实推理速度必定改善。</p>
+<h2 id="7-toy-example-两个-activation-落在同一量化桶">7. Toy Example：两个 activation 落在同一量化桶<a class="heading-link" href="#7-toy-example-两个-activation-落在同一量化桶"> §</a></h2>
+<p>假设线性层 <code>W_s=[100, 1]</code>，bias 0，两个输入 <code>x_A=[1.21, 2.02]</code>、<code>x_B=[1.24, 2.02]</code>；简化量化器把第一维都变成 1.20、第二维变成 2.00。则 <code>Q(x_A)=Q(x_B)=[1.20,2.00]</code>，主路径输出都是 <code>122.00</code>。原始输出 A 是 <code>123.02</code>，B 是 <code>126.02</code>，理想补偿分别是 <code>1.02</code> 与 <code>4.02</code>。若只用 <code>Q(x)</code> 做任何确定性修复，A/B 修正必然相同，无法同时正确。</p>
+<p>ResCom 捕获 <code>d_A=[0.01,0.02]</code>、<code>d_B=[0.04,0.02]</code>。若 rank=1 且校准数据表明第一维主导输出误差，取 <code>V=[1,0]</code>、<code>U=[100]</code>，补偿分别为 1 与 4，输出变成 123 与 126；剩余 0.02 来自第二维未修复残差。若 rank=2 并用真实 W_s，可完全恢复 123.02 和 126.02。这个数字例子是<strong>教学构造，非论文实验</strong>。它同时说明为什么单纯“多加参数”不够：必须把区分 A/B 的信号提供给支路；也说明为什么低 rank 需要按输出敏感性而不是残差绝对大小排序。</p>
+<h2 id="8-baseline-deep-comparison-谁是真正的-strongest-baseline">8. Baseline Deep Comparison：谁是真正的 strongest baseline<a class="heading-link" href="#8-baseline-deep-comparison-谁是真正的-strongest-baseline"> §</a></h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>做法与合理性</th>
+<th>本文 setting 的不足</th>
+<th>ResCom 的区别</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SERQ</strong></td>
+<td>已校准 W4A4 + selected-channel compensation；<strong>最严格的 strongest paired baseline</strong></td>
+<td>只能利用其现有补偿输入，量化桶内差异仍丢失</td>
+<td>冻结 SERQ，新增 residual-conditioned rank-r 支路；直接配对比较，因果识别较清楚</td>
+</tr>
+<tr>
+<td>SmoothQuant / g128</td>
+<td>缩放 activation 与 weight 的难度，低开销且经典</td>
+<td>W4A4 outlier 仍可使质量明显退化</td>
+<td>ResCom 是 post-calibration 修复，不替代缩放</td>
+</tr>
+<tr>
+<td>QuaRot / SpinQuant</td>
+<td>旋转或学习旋转以缓和 outlier，适合低比特量化</td>
+<td>旋转后仍会舍入；有额外旋转计算</td>
+<td>从被舍入掉的残差恢复 output-relevant 信息，正交于变换本身</td>
+</tr>
+<tr>
+<td>QERA / LQER</td>
+<td>对量化输出误差做低秩重建，数学/工程上成熟</td>
+<td>目标和分支输入不专门针对 activation-rounding residual</td>
+<td>输出感知的残差条件化 + 闭式 reduced-rank regression</td>
+</tr>
+<tr>
+<td><strong>ARHQ</strong></td>
+<td>使用未舍入 activation 和 weight split，利用更丰富信号</td>
+<td>需要重新构造/量化主路径，难在已有 host 上无侵入附加</td>
+<td>不改权重和原量化器，直接对冻结 host 的输出误差拟合</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest baseline 的两个含义</strong>：要证明“新分支有用”，最强的是<strong>同 checkpoint 的 SERQ</strong>；要证明“residual 是关键而不是 rank 增加”，最强的是<strong>同 rank、同 target、同预算的 unrounded-input branch</strong>（Table 5）。作者的 selected-channel budget-matched control 在 PPL 甚至略优于默认低秩实现，必须如实指出。</p>
+<h2 id="9-experiment-setup-与-metrics-教学-2">9. Experiment Setup 与 Metrics 教学<a class="heading-link" href="#9-experiment-setup-与-metrics-教学-2"> §</a></h2>
+<p><strong>RQ1：</strong> 在已校准 W4A4 checkpoint 上，ResCom 是否跨模型规模和架构改善质量？测试 Llama-3/3.2 1B–8B、LLaMA-2 7B/13B/70B、Mistral-7B-v0.3、Gemma-3 1B/4B；以 SERQ 为主，另测试 PrefixQuant、FlatQuant。<strong>RQ2：</strong> 是 residual 信号还是新增容量导致改善？在相同 rank/参数/MAC 预算下，比较 rounded、unrounded、residual 三种支路输入。<strong>RQ3：</strong> 校准数据和修复位置敏感吗？做 rank 8–256、calibration windows 32/128/512、attention-only vs all-linear、重复抽样。<strong>RQ4：</strong> 质量修复能否转化为部署价值？在 B200 上分别测 FP32 模拟、compact-storage 与 native MXFP4。注意这些是<strong>三个不同执行协议</strong>，不能把某协议的 accuracy 和另一协议的 latency 拼成一个真实部署结果。</p>
+<p><strong>校准</strong>：WikiText-2 128×2048 windows；rank=32；<code>λ=0.01 tr(G)/n</code>；先全模型收集 moments 后挂载。<strong>评估</strong>：WikiText-2/C4 PPL、8 项 zero-shot accuracy、MMLU 57 subjects、GSM8K 5-shot（flexible/strict）、LongBench 的 QMSum/SAMSum/RepoBench-P。C4 为 WikiText-2 拟合之外的语料；长文本生成使用 7500 token 输入预算、对应任务的输出限制，具体见 Appendix F。<strong>硬件</strong>：B200，性能测量以 batch=1 为主；FP32 模拟关闭 TF32，native MXFP4 是功能性实现而非成熟 serving kernel。</p>
+<p><strong>PPL（Perplexity）</strong>：近似为 <code>exp(平均负对数似然)</code>，<strong>越低越好</strong>，反映对真实下一个 token 的预测能力；不等于人类偏好或任务正确率。<strong>MMLU</strong>：57 学科多选题 accuracy，越高越好，但对 prompt/评估 harness 敏感。<strong>GSM8K Strict</strong>：算术推理答案严格匹配，越高越好；Flexible 对格式更宽容，二者差异能揭示答案解析偏差。<strong>LongBench</strong>：QMSum/SAMSum 等任务各有自己的自动指标，越高通常越好，但自动摘要分数不等于事实忠实性。<strong>ρ_r</strong>：相对于校准层误差的正则化拟合减少比例，越高表示局部 fit 更好；不能等同下游准确率。<strong>Peak GiB</strong>：峰值分配显存，越低越好，依赖实现、prompt 长度与 KV cache。<strong>Prefill latency</strong>：一次处理输入 prompt 的耗时，越低越好；<strong>TPOT</strong>：生成阶段每个 token 的平均耗时，越低越好；<strong>TTFT</strong> 是首 token 出现时间，论文未提供独立完整报告。<strong>Nominal MAC overhead</strong> 是算术量估计，不等于真实 GPU latency。没有报告可推广的 batch-size scaling、energy 或多用户 throughput，统一记为 Not Reported。</p>
+<h2 id="10-results-deep-dive-八个结果-包含最弱与负结果">10. Results Deep Dive：八个结果，包含最弱与负结果<a class="heading-link" href="#10-results-deep-dive-八个结果-包含最弱与负结果"> §</a></h2>
+<ol>
+<li><strong>最强质量结果之一</strong>：Llama-3-8B 的 WikiText-2 PPL <strong>7.708 → 7.147</strong>，绝对降 0.561、相对降约 7.28%；同 checkpoint 的 MMLU <strong>54.69 → 57.58</strong>（+2.89 点），8-task zero-shot <strong>62.98 → 64.89</strong>（+1.91 点，Table 1）。支持修复有效，但仍未回到 FP16 的 PPL 6.13 / MMLU 62.13。</li>
+<li><strong>推理任务改善突出</strong>：Llama-3-8B GSM8K strict <strong>23.96% → 36.16%</strong>，+12.20 点（Table 4），比 PPL 的相对改善大得多。可能说明量化误差在多步生成中累积；但这只是解释假设，论文未证明每个推理步骤的因果机制。</li>
+<li><strong>跨语料泛化</strong>：同一 WikiText-2 校准的 Llama-3-8B 在 C4 上 PPL <strong>11.192 → 10.349</strong>，降 0.843；LLaMA-2 7B 的 C4 <strong>7.432 → 7.315</strong>，降 0.117（Table 2/3）。说明并非仅记住 WikiText-2 词分布，但跨领域的幅度差异明显。</li>
+<li><strong>跨模型收益不均</strong>：Mistral-7B PPL <strong>5.663 → 5.617</strong>，仅降 0.046；zero-shot <strong>67.10 → 67.13</strong>，仅 +0.03 点（Table 2）。这属于<strong>weakest result</strong>：同一机制可修，但未必有可观应用收益。</li>
+<li><strong>不同量化 host 的适用性</strong>：SERQ 7.708→7.147；PrefixQuant 7.860→7.605；FlatQuant 6.972→6.960（Table 3）。在本来更强的 FlatQuant 上仅降 0.012，显示方法不是通用大幅提升器。</li>
+<li><strong>严格信号消融</strong>：Llama-3-8B rank 32，rounded-input branch PPL <strong>8.327</strong>，unrounded-input <strong>7.242</strong>，residual-input <strong>7.147</strong>（Table 5）。在相同容量下，rounded 甚至比未修复 SERQ 7.708 更差；这是支持“丢失信号本身重要”的最强机制证据。</li>
+<li><strong>明显负结果</strong>：Gemma-3-4B 的 SAMSum <strong>16.73 → 8.17</strong>，近乎腰斩；Gemma-3-1B 的 GSM8K strict <strong>1.36 → 0.99</strong>（Table 4）。更重要的是 W4A8 setting：Gemma-3-4B WikiText-2 PPL <strong>10.753 → 11.128</strong>（变差），C4 <strong>14.901 → 15.326</strong>（Appendix Table 15）。这直接否定“残差补偿总是有益”。</li>
+<li><strong>系统代价不能回避</strong>：B200 FP32 模拟 4K prefill <strong>1342.32 → 1372.46 ms</strong>（+2.25%），decode <strong>76.79 → 86.11 ms/token</strong>（约 +12.14%）；同表 FP16 prefill <strong>209.07 ms</strong>、decode <strong>15.89 ms/token</strong>（Table 17）。因此在该实现上，ResCom <strong>不是比 FP16 更快</strong>。compact-storage 14.233 GiB vs FP16 19.686 GiB（节省 27.7%），但 compact SERQ 14.130 GiB，新增支路 +0.103 GiB。native MXFP4 的 4096 prompt +32 token：BF16 0.788 s，MXFP4 7.302 s，MXFP4+ResCom <strong>7.571 s</strong>；显存 20.686 / 11.097 / 11.200 GiB（Appendix Table 19）。这体现当前 wrapper 的 kernel/调度瓶颈，<strong>理论 MAC 少绝不代表真实 wall-clock 加速</strong>。</li>
+</ol>
+<h2 id="11-table-figure-reading-逐图表识别证据强度">11. Table / Figure Reading：逐图表识别证据强度<a class="heading-link" href="#11-table-figure-reading-逐图表识别证据强度"> §</a></h2>
+<p><strong>Figure 1（SERQ / ARHQ / ResCom 三条路径）</strong>：看支路接在何处、读取 <code>Q(x)</code> 还是 <code>d</code>、是否改主路径。图真正证明的是架构差异；它不能证明哪个效果最好。复现时应检查残差是在 host 的实际 quantizer 坐标系中计算，而不是拿原始 hidden state 与错误 scale 的 dequant 值相减。</p>
+<p><strong>Table 1（跨 Llama 主结果）</strong>：每个模型分 PPL、zero-shot、MMLU，必须比较同一 SERQ checkpoint 的成对行。Llama-3-8B MMLU +2.89 最显著；LLaMA-2 7B zero-shot <strong>62.52 → 62.30</strong>，反而下降 0.22，说明“每个指标都改善”并不成立。表中部分其它方法为文献已发表值、量化设置不同，不能当严格统一重跑的排行榜。</p>
+<p><strong>Table 2/3（跨模型与跨语料）</strong>：C4 在 WikiText-2 calibration 之外，能检验过拟合；Mistral 的改善很小，FlatQuant 的 0.012 几乎没有实用价值。这里最有用的不是最大值，而是<strong>host 越强，剩余可修复空间可能越小</strong>，但论文没有形式化证明这个关系。</p>
+<p><strong>Table 4（GSM8K + LongBench）</strong>：Llama-3-8B 的 GSM8K +12.20 点是强结果；Gemma-3-4B 的 SAMSum -8.56 点是强反例。作者总体概述“多项指标提升”，但部署不能只看平均 PPL：对摘要、检索或代码场景应分别做 acceptance test。</p>
+<p><strong>Table 5 / Figure 4（matched-input 与 repair site）</strong>：rank 32 下 residual 7.147、unrounded 7.242、rounded 8.327，证明输入信号差异；attention-only 7.147、all-linear 7.070、budget-matched selected channels <strong>7.135</strong>（Table 7b）。后者略胜默认 rank-32，这意味着真正新颖的是 residual-conditioning，而非某个特定低秩参数化必然最优。</p>
+<p><strong>Figure 5 / Appendix Tables 17–19（效率）</strong>：必须把 FP32 simulation、compact storage、native MXFP4 三种路径分开。图上更小的显存不是更快的吞吐；native MXFP4 的 4K prompt 情况相较 BF16 慢很多。最值得跟进的是 fused frontend kernel 的局部 microbenchmark（Table 18），但它不包含 main GEMM，不能拿局部 3.4× 比值声称端到端 3.4× 加速。</p>
+<h2 id="12-ablation-claim-vs-evidence-contribution-2">12. Ablation、Claim vs Evidence、Contribution<a class="heading-link" href="#12-ablation-claim-vs-evidence-contribution-2"> §</a></h2>
+<p><strong>Ablation</strong>：去掉 residual 改用 rounded input，rank-32 PPL 7.147→8.327；改用 unrounded input，7.147→7.242；减少 rank 32→8，7.147→7.203；增大 rank 32→256，7.147→7.085，但算力和参数同步增加；只修 bias，PPL 7.715；修全部线性层 7.070，略好但预算更高；32/128/512 校准 windows 分别 7.139/7.147/7.137，差异小。不同 calibration draws 的 ΔPPL 标准差在测试中低于 0.006，支持局部稳定性。<strong>不要把局部拟合改善当成端到端严格因果</strong>：前层修复改变后层输入，附录承认了这个局限。</p>
+<p><strong>Authors Claim</strong>：残差是低比特量化后有价值的额外信息，闭式低秩修复在多个模型/任务上改善质量且保留显存优势。<strong>Experiments Actually Show</strong>：W4A4 下配对 SERQ 的 PPL 普遍改善；rank-matched ablation 支持 residual 输入；一部分 reasoning/LongBench 改善；B200 上有真实 latency/VRAM 数据。<strong>What Is Not Yet Proven</strong>：推理速度提升、在更成熟低比特 kernel 下仍有同样性价比、W4A8 也改善、所有下游任务单调变好、batch&gt;1 规模效应、超长上下文的 KV cache 影响、量化残差本身的隐私安全边界。</p>
+<p><strong>Contribution 1 — New Mechanism</strong>：用 activation rounding residual 作为后校准补偿输入，明确恢复主路径缺失的区别信息。<strong>Contribution 2 — New Objective / Mathematical Analysis</strong>：输出感知 reduced-rank ridge regression，Cholesky+SVD 闭式解，给出 residual alignment proposition；基础线性代数是成熟工具，创新在目标与输入的结合。<strong>Contribution 3 — New Empirical Finding</strong>：同 rank residual &gt; unrounded &gt; rounded 的强消融，跨 W4A4 host/模型/语料的配对验证。<strong>Contribution 4 — New System/Engineering</strong>：FP32、compact、MXFP4 的实现分析与 fused residual frontend；当前 native wrapper 仍明显未优化，不能称为生产级推理加速系统。</p>
+<h2 id="13-limitations-failure-modes-2">13. Limitations &amp; Failure Modes<a class="heading-link" href="#13-limitations-failure-modes-2"> §</a></h2>
+<p><strong>Authors' Limitation（从正文/附录明确边界归纳）</strong>：局部闭式最优不保证修复后网络的 end-to-end 最优；不同 host 的真实 target 定义不一定等于 <code>W_s d</code>；native MXFP4 wrapper 尚非优化 serving kernel；效果取决于 backbone、task、quantization pipeline。<strong>Additional Limitation</strong>：W4A8 的负收益揭示信号强度不足时补偿可能过拟合；某些生成任务明显退化；多层并行修复会改变下游残差分布；长上下文推理中的 K/V activation 修复可能改变 KV cache 数值，需明确缓存与重用协议；rank 和 λ 的静态选择忽略层间差异；每层 O(n²+mn) 校准统计在大模型上昂贵；FP32 factor 精度与低比特主路径之间的类型转换可能增加 kernel launch 和带宽；batch 1 的 B200 测量不能外推到高并发；没有能耗、吞吐和质量-延迟 Pareto 的完整部署曲线；部分 baseline 采用文献数值而非完全相同代码栈重跑。</p>
+<h2 id="14-inference-acceleration-专用-bottleneck-与真实效率表">14. Inference Acceleration 专用：Bottleneck 与真实效率表<a class="heading-link" href="#14-inference-acceleration-专用-bottleneck-与真实效率表"> §</a></h2>
+<p><strong>Bottleneck</strong>：W4A4 原始目标是减少权重/激活内存与算术负担；ResCom 实际解决的是低比特的<strong>质量瓶颈</strong>，额外分支引入 compute/memory movement。它没有减少 target transformer 的 token 数、KV cache 长度或 attention complexity。<strong>Acceleration Mechanism</strong>：理论上以 rank-r 的 <code>U(Vd)</code> 代替昂贵的 full-rank <code>W_s d</code>，少算的是“为了补偿而额外执行的高精度全矩阵乘法”，不是比<strong>无补偿 SERQ</strong>少算。对 SERQ 而言它是新增计算。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align:right">Baseline</th>
+<th style="text-align:right">ResCom</th>
+<th>Change / 说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTFT</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>无单独 TTFT</td>
+</tr>
+<tr>
+<td>TPOT，FP32 模拟 B200 batch1</td>
+<td style="text-align:right">76.79 ms</td>
+<td style="text-align:right">86.11 ms</td>
+<td><strong>+12.14% 更慢</strong></td>
+</tr>
+<tr>
+<td>Prefill，4K FP32 模拟</td>
+<td style="text-align:right">1342.32 ms</td>
+<td style="text-align:right">1372.46 ms</td>
+<td><strong>+2.25% 更慢</strong></td>
+</tr>
+<tr>
+<td>Tokens/s</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>可从 batch1 TPOT 估单流速度，但论文未给吞吐系统测量</td>
+</tr>
+<tr>
+<td>Multi-user throughput</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>未验证批量扩展</td>
+</tr>
+<tr>
+<td>GPU memory，compact</td>
+<td style="text-align:right">14.130 GiB</td>
+<td style="text-align:right">14.233 GiB</td>
+<td>+0.103 GiB；相对 FP16 19.686 GiB 仍节省 27.7%</td>
+</tr>
+<tr>
+<td>KV memory</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>未独立报告</td>
+</tr>
+<tr>
+<td>Added factor MACs</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">r(n+m) / token / layer</td>
+<td>主路径外新增；相对 full dense correction 较少</td>
+</tr>
+<tr>
+<td>Native MXFP4 4K+32 total time</td>
+<td style="text-align:right">7.302 s</td>
+<td style="text-align:right">7.571 s</td>
+<td>+3.7% 更慢；BF16 仅 0.788 s</td>
+</tr>
+<tr>
+<td>Accuracy，W4A4 Llama-3-8B</td>
+<td style="text-align:right">PPL 7.708</td>
+<td style="text-align:right">PPL 7.147</td>
+<td>更好；GSM8K strict +12.20 点</td>
+</tr>
+<tr>
+<td>Energy / batch-size scaling</td>
+<td style="text-align:right">Not Reported</td>
+<td style="text-align:right">Not Reported</td>
+<td>不能推断</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Retraining</strong>：不更新 host 权重，不需要 gradient fine-tuning；需要一次性校准。<strong>硬件相关</strong>：数学方法不依赖 B200，但实际 latency 取决于 kernel、量化格式、batch、内存带宽和算子融合。<strong>Long-context</strong>：有 LongBench 质量测量，但没有证明 32k/128k 的真实端到端速度/显存 scaling。<strong>迁移 VLM/Video/Agent</strong>：可用于视觉 projector 或多模态融合层，但视觉 token 分布和激活 outlier 可能与 WikiText-2 不同；必须重新拟合并测每模态误差。<strong>关键判定</strong>：本文验证的是“质量修复与部分显存节省可以共存”，<strong>没有验证比 BF16/FP16 更快</strong>。</p>
+<h2 id="15-reproduction-view-先复现层级恒等式-再测系统">15. Reproduction View：先复现层级恒等式，再测系统<a class="heading-link" href="#15-reproduction-view-先复现层级恒等式-再测系统"> §</a></h2>
+<p><strong>最关键代码模块</strong>：<code>quantizer_hook</code>（捕获 x/Q(x)）、<code>frozen_host_adapter</code>（构造正确的 y_ref 和 e）、<code>moment_collector</code>（流式 G/C）、<code>cholesky_svd_solver</code>、<code>residual_branch</code>、<code>attach_all_at_once</code>、<code>ppl_eval</code>、<code>latency_benchmark</code>。<strong>最容易踩坑</strong>：误把未缩放的 x 与旋转后 Q(x) 相减；在统计尚未收集完时先挂载分支；Cholesky 数值病态；使用错误的 SERQ selected-channel 有效映射；用不同 prompt 评估修复前后；把 FP32 模拟当 native INT4；测时没有 warmup、CUDA synchronize 或缓存状态一致性。</p>
+<p><strong>最小复现方案</strong>：先用一个 2 层、hidden=256 的 Transformer 或随机线性层，构造 W4A4 fake quant，验证逐 token <code>e=W_s d</code> 的最大误差应接近浮点数值误差；然后收集 8k–32k calibration tokens，求 rank=8/16/32、λ/trace(G)∈{0.001,0.01,0.1}，比较 <code>rounded / unrounded / residual</code> 三个相同容量输入，输出 held-out layer MSE 与 PPL。再在 Llama-3.2-1B 的现成 SERQ checkpoint（若可合法取得）上复现 rank-32 attention-only：先确认 host PPL 接近论文 12.461，再检验修复后是否接近 12.071；若 checkpoint 不可得，应明确改用自己的量化 host，<strong>不可直接要求复现相同绝对数字</strong>。性能实验固定 GPU、batch=1/8、prompt=128/2048/4096、generation=32/128，分别报告 <code>prefill / decode / total / peak VRAM / PPL</code>，所有模型执行相同 kernel path；<strong>第一优先验证的是 residual vs unrounded 的 matched-rank 消融</strong>，不是争取一个漂亮的 speedup。</p>
+<h2 id="16-research-value-与两条迁移路线">16. Research Value 与两条迁移路线<a class="heading-link" href="#16-research-value-与两条迁移路线"> §</a></h2>
+<p><strong>Baseline Potential</strong>：高，SERQ + ResCom 可构成质量修复基线，尤其适合比较相同 W4A4 checkpoint。<strong>Migration Potential</strong>：中高，核心是“丢失信号的输出感知低秩修复”，不局限于文本。<strong>Systems Potential</strong>：中，当前 native 性能弱，但算子融合和动态 rank 有优化空间。<strong>Attack Potential</strong>：中，构造高输出敏感残差可形成量化脆弱性测试。<strong>Evaluation Potential</strong>：高，layer fit 与 downstream metric 的失配值得系统评测。<strong>Benchmark Potential</strong>：高，可建立跨模态、跨精度、跨长度的 quality–latency benchmark。<strong>New Paper Potential</strong>：中高，必须补齐部署收益与负结果机制，而非只再换一个 SVD 公式。</p>
+<h3 id="migration-a-vlm-video-的模态条件化残差修复">Migration A：VLM / Video 的模态条件化残差修复<a class="heading-link" href="#migration-a-vlm-video-的模态条件化残差修复"> §</a></h3>
+<p><strong>Original Problem</strong>：文本 LLM W4A4 activation rounding 损失影响输出。<strong>Transferable Mechanism</strong>：<code>d=x−Q(x)</code> + 输出感知 reduced-rank regression。<strong>New Research Question</strong>：视觉 token 与文本 token 的量化残差方向是否不同，单一低秩支路是否在视觉理解/视频时序任务上产生负迁移？<strong>Method Modification</strong>：在 multimodal projector 与前四层 fusion attention 分别收集 <code>G_visual, C_visual</code> 和 <code>G_text, C_text</code>；拟合 shared rank-16、modality-specific rank-16、combined rank-32 三种支路，测试同预算。<strong>Minimum Experiment</strong>：用 Qwen3-VL-8B-Instruct 的可量化子模块或 LLaVA-1.5-7B（视 checkpoint/算子支持锁定），每模态各 16k calibration tokens，rank∈{0,8,16,32}、λ∈{0.001,0.01,0.1}×trace(G)/n；图像使用 MME/MMBench 固定评估集，视频使用 Video-MME 或 MVBench，保证视频级去重。训练仅拟合残差，不更新主模型；记录各模态 layer MSE、QA accuracy、temporal order accuracy、4K prefill、TPOT、峰值显存。<strong>Model</strong>：LLaVA-1.5-7B / Qwen3-VL-8B。<strong>Dataset</strong>：MMBench、MVBench、Video-MME。<strong>Baseline</strong>：W4A4 host、SERQ 类 selected-channel、unrounded-input rank branch、shared residual rank branch。<strong>Metric</strong>：accuracy、PPL（文本控制组）、视觉 token 敏感度、latency、VRAM。<strong>Expected Contribution</strong>：证明是否需要 modality-conditioned compensation，并给出负迁移边界。<strong>Risk</strong>：视觉投影结构和 host quantizer 不满足同一 <code>W_s</code> 条件；校准视频与测试泄漏。<strong>Collision Risk</strong>：QERA、视觉量化补偿及模态感知量化已有大量相近工作，真正新意应是<strong>严格的模态残差可辨识性与 matched-budget 负结果</strong>。</p>
+<h3 id="migration-b-kv-cache-量化后的误差感知稀疏修复">Migration B：KV Cache 量化后的误差感知稀疏修复<a class="heading-link" href="#migration-b-kv-cache-量化后的误差感知稀疏修复"> §</a></h3>
+<p><strong>Original Problem</strong>：低比特 KV cache 节省内存却改变 attention 输出。<strong>Transferable Mechanism</strong>：保留/预测量化残差中对下游输出最敏感的方向，而不是按残差幅度或 token recency 保留。<strong>New Research Question</strong>：在固定 KV 字节预算下，能否只为少量高影响 token/head 存储残差低秩码，提高长上下文质量而不损失 decode throughput？<strong>Method Modification</strong>：针对每个 attention head 的 K/V 定义 <code>d_K=K−Q(K)</code>、<code>d_V=V−Q(V)</code>；用 query-conditioned output error 或校准期近似梯度选择 top-p head/token，额外保存 rank-8 residual code；注意 attention softmax 非线性，<strong>不能照搬 <code>e=W_s d</code> 恒等式</strong>，需要局部线性化或直接测真实 attention output error。<strong>Minimum Experiment</strong>：Llama-3.2-3B，长上下文 4k/16k/32k，KV 精度 2/3/4 bit，固定总 KV 字节预算；选 100 个 LongBench/Needle-in-a-Haystack 测例做校准，另 300 个不重叠样本评估；比较 <code>uniform 2-bit / recent+sink / per-head mixed precision / residual top-k / query-aware residual</code>；batch 1/8，测 PPL、retrieval accuracy、TPOT、TTFT、tokens/s、峰值 VRAM。<strong>Model</strong>：Llama-3.2-3B 或可用 32k 模型。<strong>Dataset</strong>：LongBench + synthetic needle probes。<strong>Baseline</strong>：uniform quant、recent/sink retention、现有 E8/向量量化方案（在相同 bit/硬件条件下）。<strong>Metric</strong>：quality per KV GiB、decode latency、quality–throughput Pareto。<strong>Expected Contribution</strong>：从“按 token 重要性保留”转向“按输出误差贡献修复”的 KV 质量—成本前沿。<strong>Risk</strong>：query-dependent 额外读写抵消节省、attention 非线性与动态 prefix 导致校准失效。<strong>Collision Risk</strong>：KV cache 量化与重要 token selection 极度拥挤，必须做同字节预算、同 kernel、长上下文的强比较。</p>
+<h2 id="17-attack-verification-lens-与-只记住这篇-的-9-句话">17. Attack / Verification Lens 与“只记住这篇”的 9 句话<a class="heading-link" href="#17-attack-verification-lens-与-只记住这篇-的-9-句话"> §</a></h2>
+<p><strong>Attack</strong>：构造量化桶边界附近输入，使 <code>d</code> 很小但 <code>W_s d</code> 很大；检测某些 token/head 在 W4A4 下的输出翻转。<strong>Black-box probe</strong>：不需要读权重，比较 FP16 与 W4A4 在等义改写、长上下文位置变化、稀有 token 上的输出一致性，估计量化脆弱区域。<strong>Robustness test</strong>：W4A4/W4A8、不同 rank、不同校准分布与随机种子；特别跟踪 SAMSum 类负迁移。<strong>Efficiency stress test</strong>：batch 1→8→32、prefill 128→32k、decode 长度变化、kernel fusion on/off。<strong>New metric</strong>：<code>Net Utility per Millisecond = (TaskGain − α·QualityRegression) / AddedLatency</code>，α 必须事先规定；同时报告显存 Pareto，不用一个数字掩盖 trade-off。</p>
+<ol>
+<li>量化后的相同数值可能来自不同真实激活。2. 只读 rounded activation 的补偿器无法区分这些输入。3. residual <code>d=x−Q(x)</code> 保存了被舍入掉的信息。4. 在线性同算子条件下，丢失的输出正好是 <code>W_s d</code>。5. rank-r 补偿应优先拟合输出敏感方向而非输入大方差方向。6. Cholesky + SVD 使后校准修复无需梯度训练。7. W4A4 的 PPL/GSM8K 改善有证据，但 W4A8 和部分 LongBench 指标出现负结果。8. 现有 FP32/native 测量没有证明端到端加速，甚至比 BF16 慢得多。9. 最值得研究的是<strong>残差信息、任务质量与真实系统成本之间的边际收益</strong>。</li>
+</ol>
+<hr/>
+<p><a id="synthesis"></a></p>
+<h1 id="cross-paper-synthesis-共同机制与分歧">Cross-Paper Synthesis — 共同机制与分歧<a class="heading-link" href="#cross-paper-synthesis-共同机制与分歧"> §</a></h1>
+<p>这两篇分别处理两个不同层次的“信息损失”。The Trinity 关注 <strong>交互历史中哪些可验证经验应该进入下一次决策</strong>；ResCom 关注 <strong>低比特计算中哪些被舍弃的激活信息值得恢复</strong>。二者都不主张把所有历史/残差完整保留，而是让某种“下游效用”指导有限预算下的选择。但这只是<strong>概念互补，不是同一算法</strong>：Trinity 的模块选择是非可微的、含长期状态与 verifier；ResCom 的优化是冻结线性层上的闭式平方误差最小化。不能把后者的 Proposition 1 直接搬去证明 Agent memory 的最优性。</p>
+<p><strong>共同趋势</strong>：2026 年的系统论文越来越重视冻结 backbone 后的外围可控机制：Harness、router、校准补偿、证据 ledger、实际成本。<strong>可组合的机制</strong>：用 Trinity 的 capability router 判断任务需要什么精度/证据，再用 ResCom 的 output-aware residual budget 决定哪些层或视觉 token 值得额外修复。<strong>冲突假设</strong>：Trinity 默认任务能力标签足够预测最合适模块；ResCom 说明真正的误差贡献可能由底层连续数值方向决定。高层标签不一定预测数值误差；要做层级—数值联合路由，必须有实测校准。</p>
+<h2 id="combined-research-opportunities-三个可执行想法">Combined Research Opportunities：三个可执行想法<a class="heading-link" href="#combined-research-opportunities-三个可执行想法"> §</a></h2>
+<p><strong>Idea 1｜Verified Marginal Utility Router（优先）</strong>。统一衡量“启用一个 Agent memory/module/visual token/quantization repair branch 后，最终任务效用改善多少、额外成本多少”。训练时采用 matched counterfactual pairs；部署时 Router 只用公开可用特征预测增益。最小实验：固定 200 个视频 QA，四种帧选择策略与三种残差修复 rank，记录 accuracy、wall-clock、VRAM；把 Router 的收益与 oracle 上界、uniform 预算比较。新意必须是<strong>可验证的因果边际效用</strong>，不是普通 mixture-of-experts。</p>
+<p><strong>Idea 2｜Capability-Conditioned Precision</strong>。将 Agent 的任务能力需求映射到不同精度配置：时序顺序/细粒度计数使用更高视觉 projector 精度，普通文本任务使用低比特。最小实验在一个 VLM 上为 <code>text-only / image counting / temporal order</code> 三类任务建立 per-layer residual sensitivity，按固定显存预算路由 rank 0/8/32；若 Router 额外开销超过节省，判定失败。</p>
+<p><strong>Idea 3｜Evidence &amp; Residual Failure Benchmark</strong>。两种干预：给 Agent 注入错误但格式合法的记忆 receipt；给量化模型构造同桶不同输出的高敏感输入。共同报告 <code>failure amplification</code>、<code>repair recovery</code> 与 <code>cost of verification</code>。它们不是同一攻击，但可共享“信息被抹平后，系统如何恢复区别”的实验范式。</p>
+<h2 id="collision-overlap-已有工作与边界">Collision / Overlap：已有工作与边界<a class="heading-link" href="#collision-overlap-已有工作与边界"> §</a></h2>
+<p><strong>Agent 侧 Collision</strong>：Recursive Harness Self-Improvement、ModularRSI、HarnessDev、EvoWeave、task-specific skill libraries、agent memory provenance 已覆盖“模块化改进/经验复用”的部分空间。The Trinity 的独特性更接近 <strong>capability Trie + 可验证世界 + 选择性继承 + Router 的联合闭环</strong>，而非首次提出 agent 自改进。</p>
+<p><strong>Inference 侧 Collision</strong>：QERA/LQER/ARHQ/SERQ、SmoothQuant、QuaRot、FlatQuant、KV cache vector quantization 已覆盖低秩修复、残差、量化重建的大量空间。ResCom 的区别是<strong>后校准冻结 host、用 activation rounding residual 拟合明确的层输出 target、带证明的 matched-rank 信号比较</strong>。跨论文的“Verified Marginal Utility Router”目前是研究假说，<strong>Strongest Collision = capability-aware routing × output-aware residual budgeting</strong>；尚未发现这两篇直接互相引用或构成同题竞争。</p>
+<h2 id="reading-reproduction-priority">Reading / Reproduction Priority<a class="heading-link" href="#reading-reproduction-priority"> §</a></h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>行动</th>
+<th>理由</th>
+<th>首个验收信号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>复现 ResCom 的 <code>residual vs unrounded vs rounded</code> 同 rank 消融</td>
+<td>数学清楚、局部实验可控、成本低</td>
+<td>rank-32 residual 的 held-out layer MSE 最低，且 PPL 方向一致</td>
+</tr>
+<tr>
+<td>2</td>
+<td>复现 Trinity 的 <code>Capability Tree Real vs Sim</code> 同 token 预算对照</td>
+<td>验证最核心的跨任务迁移主张</td>
+<td>held-out success 提升且成本已匹配</td>
+</tr>
+<tr>
+<td>3</td>
+<td>做能力条件化 Video QA selector</td>
+<td>最容易形成 Video Acceleration × Agent 交叉</td>
+<td>accuracy–latency Pareto 改善、证据 recall 不退化</td>
+</tr>
+<tr>
+<td>4</td>
+<td>检查 ResCom native kernel 的端到端性能</td>
+<td>防止把理论算力节省当成系统加速</td>
+<td>batch/prompt sweep 的 wall-clock、VRAM、PPL 同时报告</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sources-links-与证据声明">Sources / Links 与证据声明<a class="heading-link" href="#sources-links-与证据声明"> §</a></h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Source</th>
+<th>链接</th>
+<th>本报告主要使用的部分</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1</td>
+<td><a href="https://arxiv.org/html/2610.36077" rel="noopener noreferrer" target="_blank">The Trinity arXiv HTML</a></td>
+<td>§§2–4，Table 2–6，Appendix B/D/E，Figure 1–8</td>
+</tr>
+<tr>
+<td>S2</td>
+<td><a href="https://arxiv.org/abs/2610.36077" rel="noopener noreferrer" target="_blank">The Trinity arXiv abstract / v1 history</a></td>
+<td>首次提交日期、作者、预印本状态</td>
+</tr>
+<tr>
+<td>S3</td>
+<td><a href="https://github.com/InfRec-Cardinal/The-Trinity" rel="noopener noreferrer" target="_blank">The Trinity 官方 GitHub</a></td>
+<td>2026-10-28 README 代码 Coming Soon</td>
+</tr>
+<tr>
+<td>S4</td>
+<td><a href="https://arxiv.org/html/2610.35955" rel="noopener noreferrer" target="_blank">ResCom arXiv HTML</a></td>
+<td>§3 公式与 Proposition 1、Tables 1–7、Appendix A/C/F/G/H</td>
+</tr>
+<tr>
+<td>S5</td>
+<td><a href="https://arxiv.org/abs/2610.35955" rel="noopener noreferrer" target="_blank">ResCom arXiv abstract / v1 history</a></td>
+<td>作者、首次提交日期、论文状态</td>
+</tr>
+<tr>
+<td>S6</td>
+<td><a href="https://arxiv.org/list/cs.AI/new" rel="noopener noreferrer" target="_blank">arXiv cs.AI new listing</a> / <a href="https://arxiv.org/list/cs.LG/new" rel="noopener noreferrer" target="_blank">cs.LG new listing</a></td>
+<td>2026-10-28 最新可见新论文列表与候选筛选</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>证据分级</strong>：表中数字来自作者论文原表；toy examples 与 migration minimum experiments 是本报告独立提出的教学/研究方案；没有运行作者代码或 GPU 实验。The Trinity 的代码公开状态以检查时的官方 README 为准，后续可能变化。<code>Not Reported</code> 仅表示论文未提供本报告所需的可比指标，不是断言作者没有做任何相关测试。</p>
+<h2 id="deep-dive-depth-audit">Deep Dive Depth Audit<a class="heading-link" href="#deep-dive-depth-audit"> §</a></h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>核查项</th>
+<th>The Trinity</th>
+<th>ResCom</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正文/附录可读；完整 Method/核心公式</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>3–5 baselines + strongest baseline</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>完整设置/指标解释/5–8 个具体结果</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>≥3 Table/Figure 深读</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>消融/负结果/Claim vs Evidence</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Contribution/Limitations/Reproduction</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>两条可执行 Migration + Collision 风险</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>方向专用分析/Attack &amp; Verification</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>本期结论</strong>：最有研究价值的不是“Agent 自进化 + 低比特量化”这两个标签，而是如何在<strong>严格验证、固定预算、真实 wall-clock 与失败案例</strong>下，证明某条经验或某份残差确实改善了未来决策。</p>
+</article><div class="footer">独立研究解读 · 作者结果未独立复现 · UTF-8 / 自包含 HTML / Ctrl+F 可搜索全文</div></main><a class="backtop" href="#top">↑ 返回顶部</a></body></html>

@@ -1,0 +1,547 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Daily Top Papers Deep Dive — 2026-10-31</title><style>
+:root{color-scheme:light;--bg:#f5f7fa;--ink:#182a3a;--muted:#617287;--accent:#1763b1;--edge:#dce4ee;--panel:#fff;--soft:#eef5ff;--mono:#0c406d}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans CJK SC","Microsoft YaHei","PingFang SC",sans-serif;line-height:1.88;font-size:16px}
+a{color:var(--accent);text-underline-offset:3px}a:hover{text-decoration-thickness:2px}.wrap{max-width:1050px;margin:0 auto;padding:28px 26px 100px}.hero{padding:42px 45px;border-radius:20px;background:linear-gradient(120deg,#142b49,#1b4c76);color:white;margin-bottom:24px}.hero h1{font-size:34px;line-height:1.25;margin:0 0 14px}.hero p{color:#dbe7f4;margin:10px 0}.hero .stamp{letter-spacing:.11em;text-transform:uppercase;color:#a9d4ff;font-size:12px;font-weight:700}.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.chip{border:1px solid #ffffff45;border-radius:999px;padding:4px 12px;font-size:13px;color:#e8f4ff}
+.toc,.summary,.paper,.synthesis{background:var(--panel);border:1px solid var(--edge);border-radius:16px;padding:27px 33px;margin-bottom:22px;box-shadow:0 3px 16px #15253b08}.toc h2,.summary h2{margin-top:0}.toc ul{columns:2;column-gap:28px;padding-left:22px}.toc li{break-inside:avoid;margin:4px 0;font-size:14px}.paper-head{border-bottom:2px solid var(--edge);padding-bottom:17px;margin-bottom:20px}.paper-head .num{font-size:13px;color:var(--accent);font-weight:700;letter-spacing:.09em}.paper-head h2{font-size:27px;line-height:1.4;margin:8px 0}.paper-head p{color:var(--muted);margin:5px 0}.paper section{border-bottom:1px solid var(--edge);padding:10px 0 18px;scroll-margin-top:24px}.paper section:last-child{border:0}.paper h3{font-size:21px;line-height:1.45;margin:24px 0 12px;color:#1a446b}.paper h4{font-size:17px;margin:18px 0 8px;color:#294e72}.paper p,.synthesis p{margin:12px 0;text-align:justify}.paper strong,.synthesis strong{color:#173f69}.paper ul,.synthesis ul{padding-left:23px}.paper li,.synthesis li{margin:7px 0}.table-scroll{overflow-x:auto;max-width:100%;border:1px solid var(--edge);border-radius:11px;margin:15px 0}.table-scroll table{border-collapse:collapse;min-width:740px;width:100%;font-size:13px;line-height:1.55}.table-scroll th{background:#eaf2fc;color:#1b456e;text-align:left}.table-scroll th,.table-scroll td{border-bottom:1px solid #e3e9f1;padding:10px 12px;vertical-align:top}.table-scroll tr:nth-child(even) td{background:#fbfdff}.table-scroll tr:hover td{background:#f0f6fd}.eq{font-family:"SFMono-Regular",Consolas,"Noto Sans Mono",monospace;background:#eef4fb;border-left:4px solid #2b79bd;border-radius:0 8px 8px 0;padding:16px 19px;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;margin:16px 0;color:var(--mono);font-size:14px}.flowline{background:#eff6fb;border:1px dashed #8caecc;border-radius:10px;padding:15px 19px;font-size:14px;font-weight:600;color:#28506e;line-height:2}.synthesis{padding:35px}.synthesis h2{font-size:23px;margin-top:28px}.synthesis h2:first-child{margin-top:0}.footer{font-size:13px;color:var(--muted);text-align:center;margin-top:26px}.quick{display:grid;grid-template-columns:1fr 1fr;gap:16px}.quick>div{padding:18px;border-radius:12px;background:#f3f7fc;border:1px solid var(--edge)}.quick h3{margin:0 0 7px;font-size:16px}.quick p{margin:0;font-size:14px}.paper section{break-inside:auto}@media(max-width:760px){.wrap{padding:12px 10px 55px}.hero{padding:26px 21px}.hero h1{font-size:27px}.toc,.summary,.paper,.synthesis{padding:19px 16px}.toc ul{columns:1}.paper-head h2{font-size:22px}.paper h3{font-size:19px}.quick{grid-template-columns:1fr}.table-scroll table{min-width:680px}}
+@media print{body{background:white}.wrap{max-width:none}.hero{background:#1b3656!important;color:white!important;print-color-adjust:exact}.paper,.toc,.summary,.synthesis{box-shadow:none;border-color:#ddd}.toc{display:none}a{color:#13548b}}
+</style></head><body><div class="wrap"><header class="hero"><div class="stamp">Independent Research Deep Dive · 2026-10-31</div><h1>Daily Top Papers Deep Dive</h1><p>两篇论文，两条机制：Agent 的学习信用与 Video DiT 的统计稀疏估计</p><div class="meta"><span class="chip">2026-10-31</span><span class="chip">2 Papers · Full-text verified</span><span class="chip">RL / Agent + Video Acceleration</span><span class="chip">No BACKFILL</span></div></header><nav class="toc" aria-label="目录"><h2>目录 · 点击跳转 / Ctrl+F 全文检索</h2><ul><li><a href="#selection">今日选择与筛选理由</a></li><li><a href="#paper1">Paper 1 完整精读</a></li><li><a href="#p1-s1">1.1 基本信息、一句话定位与人话版</a></li><li><a href="#p1-s2">1.2 Background &amp; Research Gap：从 RAG 到在线学习行为</a></li><li><a href="#p1-s3">1.3 Core Insight：性能变强不等于学会探索</a></li><li><a href="#p1-s4">1.4 Method Deep Dive：从教材解析到 GRPO 更新</a></li><li><a href="#p1-s5">1.5 核心公式与数学直觉：奖励、优势、KL 与策略目标</a></li><li><a href="#p1-s6">1.6 Baseline Deep Comparison：为什么 Top-k Sections 最强</a></li><li><a href="#p1-s7">1.7 Experiment Setup、Metrics 与 Research Questions</a></li><li><a href="#p1-s8">1.8 Results Deep Dive：九条证据、强项与反例</a></li><li><a href="#p1-s9">1.9 Table / Figure Reading：逐图检查证据边界</a></li><li><a href="#p1-s10">1.10 Ablation / Mechanistic Analysis、Claim vs Evidence</a></li><li><a href="#p1-s11">1.11 Limitation、Failure Modes 与 Reproduction View</a></li><li><a href="#p1-s12">1.12 Research Value、Migration Analysis（两条可执行路线）</a></li><li><a href="#p1-s13">1.13 RL / Agent 专用分析、Attack Lens 与十句记忆</a></li><li><a href="#paper2">Paper 2 完整精读</a></li><li><a href="#p2-s1">2.1 基本信息、一句话定位与人话版</a></li><li><a href="#p2-s2">2.2 Background &amp; Research Gap：为什么 Top-k 稀疏不够</a></li><li><a href="#p2-s3">2.3 Core Insight：不丢尾部，而是对尾部作统计估计</a></li><li><a href="#p2-s4">2.4 Method Deep Dive：从 Q/K/V 到加权稀疏输出</a></li><li><a href="#p2-s5">2.5 核心公式：softmax、IBCS、SIP 与偏差界限</a></li><li><a href="#p2-s6">2.6 Baseline Deep Comparison：公平性与 strongest baseline</a></li><li><a href="#p2-s7">2.7 Experiment Setup、Metrics 与系统口径</a></li><li><a href="#p2-s8">2.8 Efficiency Breakdown：不能把稀疏率当加速率</a></li><li><a href="#p2-s9">2.9 Results Deep Dive：十条定量证据与边界</a></li><li><a href="#p2-s10">2.10 Table / Figure Reading：五个最关键图表</a></li><li><a href="#p2-s11">2.11 Ablation / Mechanistic Analysis 与 Claim vs Evidence</a></li><li><a href="#p2-s12">2.12 Limitation、Failure Modes 与 Reproduction View</a></li><li><a href="#p2-s13">2.13 Research Value 与两条 Migration Analysis</a></li><li><a href="#p2-s14">2.14 Video / Inference 专用分析、Attack Lens 与十句记忆</a></li><li><a href="#cross">跨论文综合、迁移与来源</a></li></ul></nav><section class="summary" id="selection"><h2>Today's Deep Dive Selection · 为什么选这两篇</h2><p>本次独立检索了 2026-10-30 arXiv 最近提交清单（cs.AI、cs.LG、cs.CL、cs.CV、cs.DC），并查阅了候选的完整 HTML 正文、实验表格与附录。最终只选两篇 10 月 29 日新投稿：一篇直接击中 Agent RL 的探索—credit 冲突，一篇在 Video DiT 上同时给出统计估计机制、同预算消融和真实端到端速度。两篇与过去七天已做精读的论文 ID 不重复。</p>
+<div class="quick"><div><h3>01 · Agent RL / Self-Learning</h3><p>看点：纯终局 RL 让工具使用坍缩；奖励与回合信用如何恢复有效学习；同协议 +4.6 pp。</p><p><a href="#paper1">进入 Paper 1</a></p></div><div><h3>02 · Video DiT / Sparse Attention</h3><p>看点：用 inclusion probability 修正长尾 softmax；在 H20 上实测 1.84–2.23×；核心代码尚未发布。</p><p><a href="#paper2">进入 Paper 2</a></p></div></div>
+<p><strong>未入选但核查过的近期候选</strong>：VeriCUA（Agent 验证，arXiv:2610.40578）与 Training Foundation Models with a Single Algorithm（统一训练，arXiv:2610.40564）均有可读正文且值得后续跟进；本次为保证两篇的公式、图表、复现和迁移深度，不增加第三篇。另一个已精读过的 Triage（arXiv:2610.35706）在七天冷却期内，本次不重复。</p>
+
+</section><article class="paper" id="paper1"><div class="paper-head"><div class="num">PAPER 01 · RL × Agent × Long-context Learning</div><h2>Incentivizing Self-Learning in Large Language Models via Reinforcement Learning</h2><p>51.5% → 79.5% overall proof accuracy；同协议 GRPO +4.6 pp</p></div>
+<section id="p1-s1"><h3>01 · 基本信息、一句话定位与人话版</h3><p><strong>Title</strong>：Incentivizing Self-Learning in Large Language Models via Reinforcement Learning。<strong>Authors</strong>：Lingkai Kong、Yuzhe Gu、Haiteng Zhao、Zijian Wu、Youqing Fang、Zhouqi Hua、Yanan Sun、Kai Chen、Wenwei Zhang。<strong>Affiliation</strong>：上海人工智能实验室、上海交通大学等多机构。<strong>Date</strong>：2026-10-29（arXiv v1）。<strong>Venue / Status</strong>：arXiv 预印本；正文未声明正式接收会议。<strong>Paper</strong>：<a href="https://arxiv.org/abs/2610.39671">arXiv</a> / <a href="https://arxiv.org/html/2610.39671">完整 HTML</a>。<strong>Project / Code</strong>：正文与 arXiv 页面未给出可核验的官方代码仓库，记为 <strong>Not Reported</strong>，不能等同于已开源。</p>
+<p><strong>一句话定位</strong>：把“边推理边从陌生长文档学习”从提示工程转为可训练的 Agent RL 能力，并用探索激励与回合级信用分配缓解终局奖励无法教会模型主动读书的问题。</p>
+<p><strong>人话版（约 300 字）</strong>：给大模型一道研究生数学证明题，再给它一本二十万 token 左右的教材。常规 RAG 会在开始前把相关章节塞进上下文，或者模型干脆凭参数记忆作答；但真正的研究过程是先分析缺口、查看目录、检索定义、阅读定理，再把新知识用到证明中。作者构造了这样的交互式任务，并设计 BookNavigator 三种操作，让模型在一道题内交替推理与学习。关键困难是：仅凭最终证明是否正确做 GRPO，模型可能学得更会证明，却越来越不愿意用工具。作者给正确且确实调用工具的轨迹探索奖励，再用冻结模型评价每一回合工具行为，将整条轨迹的 advantage 重新分配给各回合。Intern-S2-Preview-35B 在三个数学测试划分上的综合准确率由 51.5% 升到 79.5%，超过最强固定检索 RL 基线 6.4 个百分点。不过跨任务收益只有 1.7 与 2.3 点，程序执行类任务还下降。因此，它证明的是一套值得继续检验的学习策略，而不是“模型已普遍学会自主学习”。</p>
+</section>
+<section id="p1-s2"><h3>02 · Background &amp; Research Gap：从 RAG 到在线学习行为</h3><p>传统参数化知识只能覆盖预训练期间学到的内容；普通 RAG 在问题开始时检索片段并拼接进 prompt，往往假设“什么信息相关”可以在推理前一次确定。长教材里，定义可能在第 2 章、关键引理在第 5 章，真正需要哪个定理，常常要推导到中途才知道。ReAct 虽能把 reasoning 和 tool-use 交替，但只是交互框架，不自动保证策略会在新任务中主动学习。Search-R1、R1-Searcher 等通过结果奖励训练检索，重点通常是搜到答案相关内容；本论文要求从材料中学习<strong>可迁移的数学原理</strong>，而非找到被隐藏的题目答案。</p>
+<p>举例：要证明二维对称随机游走常返、一维常返、三维及以上暂留，模型不能只检索“最终答案”，而应先确认 return probability 与 Green function 的联系，再读取维数相关的收敛判据，最后给出证明。仅靠标题关键词匹配，可能检索到相邻章节却不知道何时进一步查证。把整个教材一次性放入 64k 窗口又不现实：作者统计每本平均 208,252 token，固定上下文只能截取部分材料。</p>
+<p>这里有两个 gap。<strong>交互 gap</strong>：检索计划需要随中间推理动态更新。<strong>优化 gap</strong>：终局正确率与“有用地学习”不一致，奖励一个成功答案时也可能奖励了完全不读书的轨迹，导致策略在熟悉题上越训练越省略工具。作者的贡献是将学习动作显式纳入 RL 轨迹，并设计防止工具行为坍缩的奖励与 credit redistribution。</p>
+</section>
+<section id="p1-s3"><h3>03 · Core Insight：性能变强不等于学会探索</h3><p>最关键的观察来自 Table 4：原始模型 36.9% 的轨迹至少使用一次工具；只按终局证明正确性训练 GRPO 后，这一比例降到 6.7%，每轨迹调用由 1.5 降到 0.3；与此同时整体准确率却从 51.5% 升到 74.9%。这说明优化器可以通过强化参数内的证明能力绕开“教材学习”路径。该现象是<strong>受控消融中的经验观察</strong>，不是普遍定理；尤其在知识熟悉的问题上，少调用工具本身未必错误。</p>
+<p>作者将问题拆成两个不同信号：其一是“保持探索行为被尝试”，用只奖励成功轨迹的 bonus 防止无限制刷工具；其二是“分辨某一次查阅是否有价值”，用冻结 judge 根据工具输出与后续推理标记 useful / neutral / harmful。前者解决是否进入工具分支，后者解决进入后学什么。特别注意：作者把 useful 与 neutral 都映射为 1、harmful 映射为 0.5，实际是<strong>压低明显有害步骤</strong>，并非精确测量每个工具动作带来的因果收益。</p>
+<p>这一 insight 可迁移到 coding agent、研究 agent、长视频搜索：最终成功可能掩盖过程中的无效操作，终局失败也可能包含值得保留的探索行为。必须把“探索率”“探索质量”“最终成功率”同时评估，而不是只看一个 accuracy。</p>
+</section>
+<section id="p1-s4"><h3>04 · Method Deep Dive：从教材解析到 GRPO 更新</h3><div class="flowline">原始教材与习题 → 分离参考解答 → 章节索引 → BookNavigator → 交互式推理轨迹 → 终局证明 Judge → 工具回合 Judge → 探索奖励与 advantage 重分配 → GRPO 更新 → 新题上的自适应学习策略</div>
+
+<h3>Step 1：构造无答案泄露的学习环境</h3>
+<p>从 158 本数学教材抽取章节正文、习题、对应参考解；把习题及解答从模型可见材料中剔除，只保留定义、定理、一般性证明、解释和示例。每个章节保存 ID、标题、正文，形成有层次的长文本库。习题本身必须自包含，显式引用节编号的题被排除。此步骤的失败模式是 PDF 解析丢失公式、目录错配或相邻定理残留题解；这些会使后续学习难度与评测可信度变化。</p>
+<h3>Step 2：给策略三个可观测的学习动作</h3>
+<p><code>get_toc</code> 返回章节树，解决“我应该从哪开始”的定位问题；<code>search_index</code> 以关键词在教材中检索，并返回章节 ID、匹配片段和分数；<code>read_section(id)</code> 返回整节正文，提供完整证明前提。工具返回 observation，追加到历史。模型既要决定是否调用，也要决定调用哪一种、查询什么、读哪节；模型本身不是搜索引擎。论文附录的提示还要求<strong>若要检索必须先 get_toc 一次</strong>，并限制重复、无效检索。这是强行为先验，不能把训练收益全归因于 reward。</p>
+<h3>Step 3：构造带工具反馈的 trajectory</h3>
+<p>第 t 回合先产生推理片段 zₜ，再选动作 aₜ，接收 oₜ；终止时输出完整证明 ŷ。题目 q、历史 hₜ=(zᵢ,aᵢ,oᵢ)ᵢ&lt;ₜ 共同构成 state。正确性 judge 只看到题目、隐藏的标准解和最终证明，不看到完整检索历史，避免直接因为工具调用数量给高分。成功记 +1，失败记 −1。</p>
+<h3>Step 4：计算 trajectory-level exploration bonus</h3>
+<p>若终局正确且至少有一次成功工具调用，附加 b=1 的 bonus，权重 β 随训练从 1 余弦退火到 0.25。失败轨迹不因调用工具而获得正奖励，减少纯刷调用的收益；但成功后“象征性查一次目录”仍可能获得 bonus，属于明确的 reward hacking 风险。</p>
+<h3>Step 5：用后续推理评估工具动作</h3>
+<p>冻结初始 Intern-S2 模型作 tool judge，输入当前工具回合历史和<strong>下一回合推理</strong>，判定 useful / neutral / harmful。作者故意不给它最终答案与 reference solution，使它关注工具对下一步的实际帮助；但由于下一回合推理也由模型产生，它可能误判“模型说自己用了资料”与“资料确实改变推理”的关系。该评分不是反事实因果效应。</p>
+<h3>Step 6：重分配 advantage、更新策略</h3>
+<p>在同题 8 条 rollout 的 GRPO group 中先算 trajectory advantage A，再根据每回合评分 cₜ 相对 token 加权均值的偏差，修正回合 advantage。所有该回合<strong>策略生成</strong>的 token 共享修正后的 advantage；外部教材 observation 不参加 policy loss。更新采用 clipped importance ratio，防止一次参数更新过大。模型最终学习的是何时看书、查什么、如何把结果融入证明，而不是在测试时修改权重。</p>
+</section>
+<section id="p1-s5"><h3>05 · 核心公式与数学直觉：奖励、优势、KL 与策略目标</h3><div class="eq">Rₙ(τ) = r(τ) + βₙ · b(τ) · 𝟙[r(τ)=1]，其中 r ∈ {−1,+1}</div>
+
+<p>βₙ 是第 n 个 rollout step 的探索权重，b(τ)=1 表示至少一次成功调用；乘上正确性指示函数后，只有<strong>做对且调用过工具</strong>才额外获益。若 β=0，优化退化为纯 outcome reward；β 太大，可能把不必要的工具调用变成成功轨迹的固定收益。β 从 1 降到 0.25 是先鼓励探索、后强调解决问题的折中，不是从论文理论推导出的唯一最优日程。</p>
+<div class="eq">c̄ = (Σₜ mₜcₜ)/(Σₜ mₜ)；Ãₜ = A + α|A|(cₜ−c̄)</div>
+
+<p>mₜ 是本回合参与 loss 的策略 token 数，cₜ 是工具评分，α=1 是修正强度。减去 c̄ 使 ΣmₜÃₜ / Σmₜ = A，意味着<strong>不改变整条轨迹的 token 加权平均 advantage，只改变哪个回合更值得强化</strong>。|A| 让修正幅度随整体优势绝对值缩放；当 A&lt;0 时，好的回合可能得到“没那么负”的学习信号，而不是必然正值。与普通 GRPO 的“整条 trajectory 共用 A”相比，这不是新终局目标，而是细粒度 credit assignment。</p>
+<div class="eq">J(θ) = E [ (1/Σmₜ) ΣₜΣⱼ min(ρₜⱼÃₜ, clip(ρₜⱼ,0.8,1.28)Ãₜ) ]</div>
+
+<p>ρₜⱼ=πθ(token|history)/πold(token|history)，表示新旧策略对同一 token 的概率比；clip 抑制离策略更新。实现中还会 mask ρ&gt;2 的 token，使用 leave-one-out group advantage、group-entropy reweighting、whitespace penalty；<strong>KL regularization 关闭</strong>，所以没有显式的 β_KL·KL(πθ||πref) 项。KL 一般用来约束新策略偏离参考策略，关闭它可减少约束但提高漂移风险；不能据此推断模型训练不稳定，论文未给充分稳定性曲线。探索 bonus 是 reward shaping；tool credit 是 advantage shaping，两者作用层次不同。</p>
+<p><strong>Toy Example（人为构造，不是论文数据）</strong>：同题 4 条轨迹分别是“成功且读书”“成功不读书”“失败读书”“失败不读书”。取 β=0.5，它们的 R 为 1.5、1、−1、−1。假设第一条经 group normalization 得到 A=0.8；三回合有效 token 数 m=(100,200,100)，工具评分 c=(1,0.5,1)，则 c̄=0.75，修正后 Ã=(1.0,0.6,1.0)，token 加权均值仍是 0.8。第二回合虽处于成功轨迹，但因无效重复检索，强化强度降低；这正是作者要解决的“成功不代表每一步都好”。如果把 c=(1,1,1)，重分配自动消失，说明该机制依赖 judge 能区分步骤。</p>
+</section>
+<section id="p1-s6"><h3>06 · Baseline Deep Comparison：为什么 Top-k Sections 最强</h3><div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Baseline</th>
+  <th>如何工作与合理性</th>
+  <th>本文 setting 的不足</th>
+  <th>机制差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>No-Book + RL</td>
+  <td>只凭题目与模型内知识做证明，消除检索噪声</td>
+  <td>OOD 需要新定义时无法主动获取；整体 68.5%</td>
+  <td>缺外部学习渠道</td>
+</tr>
+<tr>
+  <td>Top-k Sections + RL</td>
+  <td>用关键词匹配预取最多 8 节，兼顾相关性和成本</td>
+  <td>不能根据中途推理调整检索；整体 73.1%</td>
+  <td>固定前置检索 vs 交互式策略</td>
+</tr>
+<tr>
+  <td>Long-Context + RL</td>
+  <td>按原书顺序塞入 64k token，简单直接</td>
+  <td>平均一本 208k token，窗口截断和无关上下文严重；72.2%</td>
+  <td>静态长上下文 vs 动态定位</td>
+</tr>
+<tr>
+  <td>Oracle Section + RL</td>
+  <td>提供习题来源节，理想化 provenance 检索</td>
+  <td>题目证明可能依赖其他章节；71.0%</td>
+  <td>单节先验 vs 多步学习</td>
+</tr>
+<tr>
+  <td>Correctness-only Self-Learning RL</td>
+  <td>同样工具、同样交互，但只看终局正确</td>
+  <td>74.9% 且工具轨迹仅 6.7%</td>
+  <td>最有诊断价值的消融，缺探索激励和 credit</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest baseline</strong>：在 Table 1 的固定检索协议中，Top-k Sections + RL 的综合分数 73.1% 最高；若比较“同工具同环境、只改 RL 机制”，则 correctness-only Self-Learning RL 的 74.9% 更严格、更强。不能把 79.5−73.1=6.4 点都解释成奖励机制贡献，因为其中还包含交互式工具协议的差异；同协议下完整方法只比纯终局 GRPO 高 <strong>4.6 点</strong>。这两个比较必须同时报告。</p>
+</section>
+<section id="p1-s7"><h3>07 · Experiment Setup、Metrics 与 Research Questions</h3><p><strong>数据与划分</strong>：158 本教材、5,183 道题；训练 132 本书的 4,557 题；ID-Book 为训练出现过的 4 本教材中的 205 道保留题；OOD-Book 为未训练的 7 本书、155 题；OOD-Subject 为未参与专项训练的概率统计 19 本书、266 题。每本平均 55.8 节、208,252 tokens。三组总计 626 题，整体分数是对应评测协议下的综合结果，不能擅自当成简单三组等权平均。</p>
+<p><strong>模型与训练</strong>：Intern-S2-Preview-35B 初始化；50 rollout steps；每 batch 目标 128 个题组，每题 8 条轨迹，2 个 mini-batch 优化步骤；AdamW 学习率 1e−6、β₁=0.9、β₂=0.95、weight decay=0.1、gradient clip=1.0；ratio clip [0.8,1.28]；不加 KL。每个交互最多 8 回合，总轨迹上限 64k tokens。名义 rollout 目标 50×128×8=51,200 条，但论文未给实际有效轨迹数、GPU-hours 或每条 token 分布，不能把该乘积冒充实测训练成本。</p>
+<p><strong>终局 Judge</strong>：GLM-5.2 对最终证明与隐藏参考解进行 8 次独立严格审查，只有 8 次全部接受才记正确；训练时工具 Judge 是冻结初始 35B。评测每题独立采样 4 个答案并取平均。BrowseComp-Plus 使用 BM25 检索与 Qwen3-32B judge，CL-bench 使用 GPT-5.1 judge，两个外部基准都<strong>没有使用 BookNavigator</strong>，因而是训练迁移而非相同工具协议复现。</p>
+<p><strong>Metrics 教学</strong>：Proof Accuracy = 判定正确的证明比例，越高越好，但对 judge 的错误、证明格式和题目难度敏感；8-shot pessimistic verification 提高严格性，也可能错杀非标准正确证明。Tool Traj. = 至少调用一次工具的轨迹比例，越高不必然越好，能检测“完全不探索”的策略坍缩；Calls/Traj. = 平均调用次数，太高会增加 token 与延迟成本，必须结合 accuracy 与 useful-rate。OOD Accuracy 测对未见教材/学科的泛化；跨任务的 +1.7/+2.3 是<strong>绝对百分点</strong>而非相对提升率。</p>
+<p><strong>RQ1</strong>：RL 是否能让原本低效的交互读书协议变成有效策略？看 Table 1 前后变化。<strong>RQ2</strong>：收益是否来自更强基础推理，还是实际使用了外部知识？看 Table 2 No-Book 与移除章节。<strong>RQ3</strong>：是否能迁移到新任务？看 Table 3。<strong>RQ4</strong>：奖励 bonus 和回合 credit 各承担什么作用？看 Table 4 的准确率与工具使用率。</p>
+</section>
+<section id="p1-s8"><h3>08 · Results Deep Dive：九条证据、强项与反例</h3><div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>数字或现象</th>
+  <th>对照与差值</th>
+  <th>严格支持什么</th>
+  <th>另一种解释 / 弱点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Self-Learning 51.5→79.5%</td>
+  <td>+28.0 pp</td>
+  <td>该训练组合能显著提升数学证明准确率</td>
+  <td>RL 也提升基础推理，非全部归因于读书</td>
+</tr>
+<tr>
+  <td>最强固定检索 73.1%</td>
+  <td>完整方法 +6.4 pp</td>
+  <td>交互式协议有优势</td>
+  <td>同时改变协议与 reward，非纯机制消融</td>
+</tr>
+<tr>
+  <td>同协议纯 GRPO 74.9%</td>
+  <td>完整方法 +4.6 pp</td>
+  <td>两个 RL 修正有增益</td>
+  <td>未提供多随机种子误差条，稳健性未充分证明</td>
+</tr>
+<tr>
+  <td>OOD-Book 85.2 vs 81.0%</td>
+  <td>+4.2 pp（Top-k）</td>
+  <td>未见教材仍可受益</td>
+  <td>主题与训练集部分重叠</td>
+</tr>
+<tr>
+  <td>OOD-Subject 86.7 vs 81.3%</td>
+  <td>+5.4 pp（Top-k）</td>
+  <td>概率统计新学科迁移</td>
+  <td>数学内部迁移，不等于通用 Agent</td>
+</tr>
+<tr>
+  <td>No-Book 测试 71.7 vs 79.5%</td>
+  <td>去教材 −7.8 pp</td>
+  <td>外部教材访问仍贡献性能</td>
+  <td>也可能是工具交互格式和上下文差异</td>
+</tr>
+<tr>
+  <td>Source Removal 74.6 vs Non-source 79.8%</td>
+  <td>−5.2 pp</td>
+  <td>相关源章节对表现有特殊贡献</td>
+  <td>未验证其他教材泄露与知识重合</td>
+</tr>
+<tr>
+  <td>纯 GRPO 工具轨迹 36.9→6.7%</td>
+  <td>−30.2 pp</td>
+  <td>终局奖励可诱发工具行为坍缩</td>
+  <td>对熟悉题，少用工具可能是合理节省</td>
+</tr>
+<tr>
+  <td>Bonus-only 工具轨迹 79.9%</td>
+  <td>vs full 58.4%，但总分 77.0 vs 79.5</td>
+  <td>多调用不等于更好；credit 可抑制冗余</td>
+  <td>工具调用成本未折算为单位计算收益</td>
+</tr>
+<tr>
+  <td>BrowseComp-Plus 50.2→51.9%</td>
+  <td>+1.7 pp</td>
+  <td>跨任务迁移存在但小</td>
+  <td>需显著性检验和多 backbone</td>
+</tr>
+<tr>
+  <td>CL-bench 14.8→17.1%</td>
+  <td>+2.3 pp；PTE 16.6→15.9</td>
+  <td>迁移选择性强</td>
+  <td>程序执行任务有负迁移</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest result</strong> 是 OOD-Subject 的 56.8→86.7（+29.9 pp）与总体 +28.0，说明训练前后差距很大；但公平的同协议机制贡献应看 +4.6 pp。<strong>Weakest result</strong> 是 CL-bench Procedural Task Execution 16.6→15.9（−0.7 pp），并且外部检索 benchmark 仅 +1.7 pp。<strong>Model-specific weakness</strong>：只训练一个 35B backbone，无法推断 7B 或 70B 的行为。<strong>Dataset-specific weakness</strong>：数据是高等数学教材，定义—定理—证明结构明显，不代表网页、视频或真实科研都同样受益。<strong>Trade-off</strong>：准确率与工具频率之间非单调，full 58.4%/3.0 次优于 bonus-only 79.9%/5.9 次，提示必须评价每次有用信息的边际贡献。</p>
+</section>
+<section id="p1-s9"><h3>09 · Table / Figure Reading：逐图检查证据边界</h3><p><strong>Figure 1（任务框架与性能概览）</strong>：左侧是题目、教材导航、推理与评估的闭环，右侧对比 base、无书 RL、完整 RL 在多个划分上的表现。图形主要证明“训练后的交互式学习策略表现更好”，不能单凭图证明内部获得了通用知识抽取算法；因为协议、工具提示和训练 reward 都同时变化。</p>
+<p><strong>Table 1（五协议 × 三数据划分 × 训练前后）</strong>：读行时先固定是否 RL，再比较协议；读列时固定协议，再比较 ID/OOD。一个反常点是 Self-Learning 未训练时总体 51.5%，低于 No-Book 的 55.7%，所以“工具越多越好”在原始模型上不成立。另一个异常是 OOD-Book 基础分数 65.2% 比 ID-Book 33.9% 高，说明划分难度不等价，不能简单把 OOD 分数高解释为更强泛化。</p>
+<p><strong>Table 2（参考材料反事实替换）</strong>：行是 base 与 +RL，列是配对教材、无教材、同主题教材、删除源章节、删除非源章节。Source Removal 74.6 vs Non-Source Removal 79.8 是最接近“确实用到教材”的证据，因为控制了删除节数；但它并未直接记录模型是否引用了被删除的具体定理，也不是严格因果识别。</p>
+<p><strong>Table 3（跨任务）</strong>：列包含 BrowseComp-Plus 与 CL-bench 四个子类。总体 17.1 领先，但 PTE 15.9 低于 base 16.6；这不是小字可忽略的弱项，而是“证明式学习”与“精确执行流程”之间的能力边界。若要迁移到 computer-use Agent，应优先以 PTE 为反例做压力测试。</p>
+<p><strong>Table 4（奖励消融）</strong>：同时看 accuracy、Tool Traj.、Calls/Traj.，不能只看第一列。bonus-only 提升 OOD 且把调用拉到 79.9%，full 把调用压到 58.4% 并进一步提准确率，支持两种奖励互补；但 useful/neutral 同分，不能据此说 judge 已经学到精确的“工具信息增益”。</p>
+</section>
+<section id="p1-s10"><h3>10 · Ablation / Mechanistic Analysis、Claim vs Evidence</h3><p><strong>去掉全部过程设计</strong>：总体从 79.5 降至 74.9，工具轨迹从 58.4% 降到 6.7%。这是组合效果，不区分两个组件。<strong>只加 Tool Credit</strong>：总体 76.2、工具轨迹 7.0%，说明回合评分能改善学习信号，但几乎不恢复主动探索。<strong>只加 Bonus</strong>：总体 77.0、工具轨迹 79.9%，说明奖励能改变行为分布，但频繁调用未必带来更好解答。<strong>两者一起</strong>：79.5 与 58.4%，最符合“有必要时才学习”的方向，但缺少按题目难度、知识新颖度的分层工具效率分析。</p>
+<p><strong>Authors Claim</strong>：RL 能训练出从长教材自主学习并迁移到陌生领域的策略。<strong>Experiments Actually Show</strong>：在 35B 单模型、数学证明环境、四次采样平均、LLM judge 下，交互式训练对未见教材与概率统计学科有大幅收益，且可改善小幅外部 benchmark 表现；源章节删除实验支持教材内容有帮助。<strong>What Is Not Yet Proven</strong>：工具调用产生的是独立的、可验证的新知识，而非把模型已知内容重新表述；跨学科普适性；实际部署中的时间成本收益；对 judge 变化、工具失败、恶意教材与数据污染的稳健性；跨多 backbone 的统计显著性。</p>
+<p><strong>Contribution</strong>：① [New Benchmark / Protocol] 教材—习题分离、长文档交互式证明环境（较明确的新任务组合）；② [New Objective / Mechanism] 正确性门控退火探索奖励（常见 shaping 组件的针对性组合）；③ [New Mechanism] token-weighted、均值保持的回合 credit 重分配（相对标准 GRPO 有明确算法变化）；④ [New Empirical Finding] 终局 RL 可使工具使用坍缩、探索激励与过程信用互补。创新不是“发明 GRPO 或 RAG”，而是为自学行为设计可评估的 RL 闭环。</p>
+</section>
+<section id="p1-s11"><h3>11 · Limitation、Failure Modes 与 Reproduction View</h3><p><strong>Authors' Limitation / 可从论文直接确认的范围</strong>：实验主要建立在一个 35B 模型和数学教材上，跨任务提升不均匀；论文未给出统一 GPU-hours、每题推理 latency、能耗或公开代码链接。<strong>Additional Limitation</strong>：严格的 8 次证明 judge 使训练奖励成本高，且其误判会影响 advantage；将 neutral 和 useful 同分会使“无效但合理的检索”难以区分；成功+一次工具即可领 bonus，有象征性调用风险；长章节返回可能吞掉 64k 预算；数据抽取若残留题解会污染评估；程序任务的负迁移说明策略未学会对不同任务选择不同学习方式。</p>
+<p><strong>复现关键模块</strong>：<code>book_parser</code>（保留标题、公式与节 ID）、<code>navigator</code>（TOC / lexical search / full read）、<code>trajectory_runner</code>（8 轮、64k token）、<code>solution_judge</code>（独立 8 次严格投票）、<code>tool_judge</code>（冻结模型、读取 next reasoning）、<code>reward_and_credit</code>（β、c̄、Ã）、<code>grpo_trainer</code>（group LOO、clip 与 mask）、<code>eval_harness</code>（4 samples/problem）。先锁定教材拆分与题解剔除，再做 100 道题的离线行为分析；<strong>最先跑的核心实验</strong>是同一模型、同一题、同一工具下比较 outcome-only、bonus-only、credit-only、full 四组，记录准确率、工具率、无效调用率、token/题。</p>
+<p><strong>最容易踩坑</strong>：将工具输出 token 错算入 policy loss；忘记对 c 做 mₜ 加权中心化；在训练时把参考答案泄露给 tool judge；把“调用成功”误当“信息有用”；训练/评测的 prompt 控制器不同；多次 judge 未真正独立采样；把四次样本平均当 pass@4。复现时固定随机种子、版本、judge 温度和数据分割哈希，输出每个条件的 bootstrap 置信区间。若算力不足，先用 7B 模型验证<strong>工具使用坍缩和 reward ablation 的方向</strong>，而不是声称复现 35B 的绝对准确率。</p>
+</section>
+<section id="p1-s12"><h3>12 · Research Value、Migration Analysis（两条可执行路线）</h3><p><strong>Baseline Potential：高</strong>，同协议 outcome-only GRPO 74.9% 是清晰对照；<strong>Migration Potential：高</strong>，任何有长期工具交互的 agent 都有终局/过程不一致问题；<strong>Systems Potential：中</strong>，可加入工具成本但论文未优化 wall-clock；<strong>Attack Potential：高</strong>，能设计 reward-hacking 工具刷调用攻击；<strong>Evaluation Potential：高</strong>，tool-necessity 与 counterfactual source removal 可变成标准评测；<strong>Benchmark Potential：高</strong>，从数学教材扩展到代码库与视频知识库；<strong>New Paper Potential：中高</strong>，关键在证明“工具调用真的改变了决策”，而不是再加一个奖励系数。</p>
+<h3>Migration A：Coding Agent 的反事实工具价值（优先）</h3>
+<p><strong>Original Problem</strong>：数学证明 agent 在成功后可能停止查阅教材。<strong>Transferable Mechanism</strong>：终局成功门控探索 + 回合 credit 重分配。<strong>New Research Question</strong>：Coding Agent 的 <code>grep/read_file/test</code> 是否应按“修复贡献”而非“调用次数”获得奖励？<strong>Method Modification</strong>：用测试通过率作为 terminal reward，工具回合评价改为“下一次代码修改是否引用了该输出中的路径/符号/失败信息”，增加工具成本 λ·tokens 与反事实遮蔽实验。<strong>Minimum Experiment</strong>：从 SWE-bench Verified 抽 100 个可运行任务，固定同一 7B/14B coding model、相同检索工具、8 步上限；保存 4 条 rollout/题；实现 4 组（outcome-only、bonus、credit、full），另设随机遮蔽单次 <code>read_file</code> 输出重放 20 题；每组至少 3 个种子。<strong>Model</strong>：Qwen3-Coder 系列可获取权重的模型（实际版本实验前锁定）。<strong>Dataset</strong>：SWE-bench Verified 子集。<strong>Baseline</strong>：标准 GRPO、ReAct + 固定工具、随机过程评分。<strong>Metric</strong>：resolved rate、每题 tokens、调用数、无效工具率、遮蔽后成功率差。<strong>Expected Contribution</strong>：把 process credit 与真实工具因果贡献对齐。<strong>Risk</strong>：代码执行成本高，judge 可被伪造日志欺骗。<strong>Collision Risk</strong>：与 StepSearch、SLATE、IG-Search 的细粒度 credit 有明显重叠，必须突出遮蔽因果测试和成本约束。</p>
+<h3>Migration B：长视频证据检索的主动学习</h3>
+<p><strong>Original Problem</strong>：模型在长教材中不知道何时查阅相关章节。<strong>Transferable Mechanism</strong>：目录→检索→精读的分层交互协议和受控探索奖励。<strong>New Research Question</strong>：长视频 QA 中，是否可让 agent 先看事件目录，再按推理缺口读取局部帧，从而减少视觉 token？<strong>Method Modification</strong>：将 BookNavigator 改为 <code>get_event_index</code>、<code>search_clip</code>、<code>read_clip(t0,t1,fps)</code>，按事件片段建立可回溯 provenance，reward 改为答题正确+证据时间戳有效−token 成本。<strong>Minimum Experiment</strong>：LongVideoBench 取 200 道题、每题统一 8 个操作预算；先抽 1 fps 建索引，read_clip 支持 2/4 fps；四组对照固定 32 帧、均匀 64 帧、检索 top-k、交互 agent；保存每步选帧时间戳与原始帧总数；优先做推理时策略不训练的最小版本，再小规模 RL。<strong>Model</strong>：Qwen2.5-VL-7B-Instruct（实验建议，非论文所用）。<strong>Dataset</strong>：LongVideoBench。<strong>Baseline</strong>：uniform frame、query-aware top-k、ReAct-style selection。<strong>Metric</strong>：QA accuracy、frame count、visual tokens、TTFT、wall-clock、evidence recall。<strong>Expected Contribution</strong>：任务条件化证据预算与真实计算节约。<strong>Risk</strong>：早期事件索引遗漏不可逆，模型无法发现未入索引的关键瞬间。<strong>Collision Risk</strong>：与主动帧选择和视频 token pruning 大量重叠；需突出“推理缺口触发的可验证补充读取”。</p>
+</section>
+<section id="p1-s13"><h3>13 · RL / Agent 专用分析、Attack Lens 与十句记忆</h3><p><strong>RL Formulation</strong>：State 是题目、已读章节与历史推理；Action 是语言 token、工具名及参数；Policy 为 πθ；Trajectory 为多回合推理—工具观察链；Reward 是终局 ±1 加正确性门控探索奖励；Advantage 是组内 LOO 值经回合评分重新分配；Objective 是 clipped GRPO；KL 显式关闭、熵通过实现中的 group-entropy reweighting 间接影响训练；Credit Assignment 不依赖直接给每个工具动作一份真实 reward，而是由冻结 judge 提供弱监督。Reward 来源一部分是 GLM-5.2 learned judge，一部分是 rule-based bonus；既有 sparse terminal 也有 retrospective process score。训练 token 总量、实际 GPU 小时与 wall-clock <strong>Not Reported</strong>。</p>
+<p><strong>Agent Architecture</strong>：Problem → Planner/Reasoner → BookNavigator → Textbook Environment → Observation → Tool Judge → Credit / Policy Update。Memory 主要是<strong>当前任务内的历史上下文</strong>，没有证明持久跨任务 episodic memory；skill library 也不是论文核心。Long-horizon 最多 8 轮、64k token，不等同于无限长交互。Failure propagation：一次错误的检索关键词可让后续推理引用错误定理；tool judge 若把它标 useful，会进一步强化错误路径；最终正确性 judge 可能掩盖中途浪费。</p>
+<p><strong>Attack / Verification Lens</strong>：攻击者可构造“每次成功前必调 get_toc 一次”的策略骗取 bonus；也可在教材片段中放入伪造的操作指令，测试工具输出是否污染推理。黑盒 probe 可只看工具调用频率、答案变化、删除源章节后的表现，估计模型是否真正依赖外部证据。建议定义 <code>Evidence Necessity Gap = Acc(full)−Acc(masked-relevant-source)</code> 与 <code>Useful Calls per 1k tokens</code>，并对无关章节遮蔽作负对照。恢复测试可在隐藏关键章节后允许额外 2 次检索，看 agent 能否主动 reacquire 替代证据。</p>
+<p><strong>如果只记住十句话</strong>：① 论文研究的是“在陌生长材料中边读边解题”，不是普通一次性 RAG。② BookNavigator 提供目录、搜索和整节阅读。③ 数据是 158 本教材与 5,183 道数学题。④ 核心模型是 Intern-S2-Preview-35B。⑤ 纯终局 GRPO 会把工具轨迹比例从 36.9% 压到 6.7%。⑥ 探索 bonus 只奖励最终成功且有工具调用的轨迹。⑦ Tool Credit 用冻结 judge 评价回合，并保持平均 advantage 不变。⑧ 完整方法总体准确率 79.5%，同协议纯 GRPO 是 74.9%。⑨ 跨任务提升较小且程序执行出现负迁移。⑩ 最值得迁移的是“工具动作的可验证边际贡献”，不是简单鼓励更多调用。</p>
+</section>
+</article><article class="paper" id="paper2"><div class="paper-head"><div class="num">PAPER 02 · Video Generation × Sparse Attention × Efficient Inference</div><h2>AB-Attention: Accurate Block Attention for Accelerating Video Diffusion Transformers</h2><p>89–92% sparse-step attention skipped；1.84–2.23× end-to-end</p></div>
+<section id="p2-s1"><h3>01 · 基本信息、一句话定位与人话版</h3><p><strong>Title</strong>：AB-Attention: Accurate Block Attention for Accelerating Video Diffusion Transformers。<strong>Authors</strong>：Bin Xu、Mo Zhang、Zhengfeiyang Zhang、Xinfeng Yang、Yixing Ma、Wei Wang、HeXin Wang、Pengfei Zhou、Wangbo Zhao。<strong>Affiliation</strong>：InfRec、香港中文大学（深圳）、山东大学、东京大学、复旦大学、加州大学伯克利分校、香港科技大学、新加坡国立大学等。<strong>Date</strong>：2026-10-29（arXiv v1）。<strong>Venue / Status</strong>：arXiv 预印本，未确认会议接收。<strong>Paper</strong>：<a href="https://arxiv.org/abs/2610.39663">arXiv</a> / <a href="https://arxiv.org/html/2610.39663">完整 HTML</a>。<strong>Project</strong>：<a href="https://infrec-cardinal.github.io/AB-Attention/">项目页</a>。<strong>Code</strong>：<a href="https://github.com/InfRec-Cardinal/AB-Attention/">官方 GitHub</a>，截至 2026-10-31 页面标注 <strong>Code coming soon</strong>，已有 README/演示但未发布可复现核心实现。</p>
+<p><strong>一句话定位</strong>：在 Video DiT 的高稀疏注意力中，用“局部聚类估计重要性 + 带纳入概率修正的采样 + 小块选择大 tile 执行”同时缓解精度损失和 GPU 执行效率问题。</p>
+<p><strong>人话版（约 300 字）</strong>：视频扩散模型的注意力要让每个时空 token 和大量其他 token 交互，81 帧或 129 帧的生成过程中，重复几十次会非常昂贵。现有稀疏注意力通过只保留重要块加速，但有两个问题：一是估计块的重要性太粗，二是直接丢弃未选块会改变 softmax 的分母，哪怕剩余块都算得完全正确，结果也会偏。AB-Attention 不把“选不到的块”当作不存在，而是根据每块被抽到的概率，对选中块的贡献作逆概率加权，近似完整注意力；同时用一个 query block 内的轻量聚类做更准确的块打分，再把 4-token 小块拼成 GPU 擅长的 128-token tile。作者在 Wan2.1 和 HunyuanVideo 上报告 89–92% 的稀疏步 attention 计算被跳过，单视频端到端加速 1.84–2.23 倍，PSNR 领先最强基线 1.6–4.4 dB。关键不是“省了 90% FLOPs 就加速 10 倍”，而是把统计估计与 GPU kernel 共同设计。</p>
+</section>
+<section id="p2-s2"><h3>02 · Background &amp; Research Gap：为什么 Top-k 稀疏不够</h3><p>Video Diffusion Transformer 把视频编码成大量空间—时间 token，并在 50 个 denoising step 中重复计算 attention。一个注意力 head 的 Q、K、V 各有 n 个 token，dense QKᵀ 的算术复杂度约 O(n²d)。FlashAttention-3 通过 tile 化减少 HBM 访问、避免显式 n×n attention matrix，但它仍计算全部 query-key 交互；这是<strong>IO 优化</strong>与<strong>算术稀疏化</strong>的区别。</p>
+<p>传统 block-sparse 先估计每个 KV 块重要性，再 top-k 保留。静态 RadialAttention 用时空能量衰减布局，几乎没有动态选择开销，但可能错过远距离语义依赖；动态 SVG2 用全局聚类提高语义聚合，却要重新排列 token；DFSAttn 用空间填充曲线和子块评分，仍受 block 粒度与 kernel 的约束。问题不只是“挑选更好的 k 块”，而是即使 oracle 精确挑出最重要块，长尾注意力质量也可能不可忽略：论文 Figure 2 指出在仅保留约 10.8% key 时，4-token 块的 oracle top-k 也只覆盖约 69% 注意力质量。</p>
+<p>举例：一个视频里前景人物与背景光照、远处物体都有弱但广泛的联系。Top-k 只选人物相关块，softmax 分母变小，使被保留的局部特征权重被系统性放大；扩散模型几十步后这种偏差会累积为颜色、纹理或运动不一致。作者要填的是<strong>稀疏估计偏差 + 硬件 tile 粒度</strong>两个 gap，且不需要重新训练视频生成模型。</p>
+</section>
+<section id="p2-s3"><h3>03 · Core Insight：不丢尾部，而是对尾部作统计估计</h3><p>第一条观察是 block 内的 query 不一定关注同一组 key。把 128 个 query 简单求均值，可能把两个方向相反的注意力偏好互相抵消；全局聚类虽能避免，却需跨整段视频运行聚类和重排。于是只在每个 query block 内聚类 8 个代表，利用簇权重估计每个 KV 小块的平均注意力质量，<strong>局部计算，不改变原 token 顺序</strong>。</p>
+<p>第二条观察更关键：softmax 输出是分子 Σexp(logit)V 与分母 Σexp(logit) 的比值。直接剪掉低分块同时改变分子和分母。若每个 KV 块被抽到的概率 π 已知，抽到时乘 1/π，可以构造对分子、分母分别无偏的 Horvitz–Thompson 估计；再做比值形成 attention 输出。<strong>注意：比值本身通常有偏</strong>，论文明确承认，不能宣传为“完全无偏的 attention”。这属于已有抽样估计原理在 block attention 上的机制性应用。</p>
+<p>第三条是系统层发现：选择粒度可以小于执行 tile。作者选 4-token KV 块，但在 kernel 中即时 gather/pack 成完整 128-token tensor-core tile，不必每个 4-token 块单独启动低效矩阵运算。三个 insight 相互依赖：更好的评分降低方差；逆概率权重纠正删尾偏差；硬件拼块让细粒度选择的精度收益真正转成 wall-clock 速度。</p>
+</section>
+<section id="p2-s4"><h3>04 · Method Deep Dive：从 Q/K/V 到加权稀疏输出</h3><div class="flowline">Video DiT 当前 Q/K/V → Query 128-token 分块 / KV 4-token 分块 → Query 局部 8 簇 → KV pooled keys → 注意力质量评分 S → 固定预算 inclusion probability π → systematic sampling → gather/pack 128-token tiles → logits 减 logπ → fused online softmax → 稀疏 attention 输出</div>
+
+<h3>Step 1：定义两个不对称的粒度</h3>
+<p>每个 query block 有 Bq=128 个 query；每个 KV selection block 只有 b=4 个 token。为什么不把 query 也切成 4？因为多个 query 小块若共用一个 execution tile，就要取各自选择集合的并集，反而增加执行量；若拆成小 execution tile，又损失 tensor-core 利用率。因此只细化 key 侧，让选择精确但 query 执行形状稳定。</p>
+<h3>Step 2：IBCS 只在局部做一次聚类</h3>
+<p>在每个 query block 内用 farthest-first 选 8 个初始中心，再做一轮 k-means assignment，得到 centroid q̄ᵣ 与簇占比 wᵣ。KV 每个 4-token 小块再平均成两个 pooled key，减少评分开销。对每个 centroid 计算它落在 KV 小块上的 softmax mass，按簇占比加权形成 Sᵢⱼ。若一个小簇对遥远物体高度关注，它的得分不会被整个 query block 的大均值完全抹去。潜在失败是簇数太少或一次迭代未收敛，无法分辨多峰 query。</p>
+<h3>Step 3：从分数变成有正概率的固定预算抽样</h3>
+<p>每个 query block 的 M 个 KV 块都得到 Sᵢⱼ。作者选择 s 个不同块，令 πᵢⱼ=min(1,λᵢSᵢⱼ)，通过调 λ 使 Σπ=s。高分块 π=1 必选，尾部块保持正概率。使用 systematic sampling 而非独立伯努利，保证每次正好 s 个不同块，避免 GPU tile 装不满或重复采样；这同时引入相关性，不能把方差分析当作独立样本处理。</p>
+<h3>Step 4：对采样块施加逆概率 logit 修正</h3>
+<p>对抽到的 KV block 计算精确 QKᵀ 与 V，但在 softmax 前把该 block 所有 logit 减去 logπ。这样一个低概率被抽到的块就代表它自己以及未抽到的类似质量；实现不需要再跑一条 correction attention path。该操作直接进入 online softmax 的归一化，不是简单在最终输出后乘常数。极小 π 会产生大权重，方差和数值稳定性是关键风险。</p>
+<h3>Step 5：kernel 侧打包与跨 step 重用 plan</h3>
+<p>选择出的 4-token 块按索引 gather，现场打包成 128-token 的执行 tile，融合 softmax 与 V accumulation；原序列不做全局 token permutation。选择计划每 C=4 个 denoising step 重建一次，但每个 step 仍使用当前 Q/K/V 重算 attention。Wan2.1 的文本 cross-attention 保持 dense；HunyuanVideo 对文本 key 与文本 query 的路径也保持精确。前 10/50 个 denoising step、首个 Transformer block 都不稀疏，避免初期误差放大。</p>
+</section>
+<section id="p2-s5"><h3>05 · 核心公式：softmax、IBCS、SIP 与偏差界限</h3><div class="eq">O = softmax(QKᵀ/√d)V，Q,K,V ∈ ℝⁿˣᵈ；dense 算术复杂度 O(n²d)</div>
+
+<p>这是完整 attention；稀疏 mask 把某些 logit 设为 −∞，相当于彻底删除对应 key，归一化分母也随之改变。FlashAttention 保留数学上相同的 O，只优化内存移动；AB-Attention 改变被计算的 pair，因此输出是近似值。</p>
+<div class="eq">Sᵢⱼ = Σᵣ wᵢᵣ · [ Σₖ∈K̄ⱼ exp(q̄ᵢᵣ·k/√d) / Σₖ∈K̄ exp(q̄ᵢᵣ·k/√d) ]</div>
+
+<p>这里 i 是 query block，j 是 KV block，r 是 query cluster，wᵢᵣ 是簇大小占比，K̄ 是 pooled keys。分数 S 近似“该 KV 块从整个 query block 得到多少 attention mass”。它不是训练出的额外模型，也不需要反向传播。R=8 是主要超参数；R 太小会模糊语义，R 太大提高评分成本、降低加速收益。</p>
+<div class="eq">πᵢⱼ = min(1, λᵢSᵢⱼ)，Σⱼπᵢⱼ = s</div>
+
+<p>s 是固定的采样块预算，λᵢ 用于满足预算。π 是<strong>纳入概率</strong>，不是每次有放回采样的 categorical probability；多个 π 可以为 1，Σπ=s 而不是 1。若 S 集中，策略近似保留 top-k；若分散，尾部获得更大覆盖。作者把分数下限设 1e−30，保证理论上 π&gt;0，但极小概率仍可能放大方差。</p>
+<div class="eq">N̂ᵢ=Σⱼ∈Jᵢ Nᵢⱼ/πᵢⱼ；D̂ᵢ=Σⱼ∈Jᵢ Dᵢⱼ/πᵢⱼ；Ôᵢ=N̂ᵢ/D̂ᵢ</div>
+
+<div class="eq">Ôᵢ = softmax(QᵢKⱼᵀ/√d − logπᵢⱼ) Vⱼ，j∈Jᵢ</div>
+
+<p>N 是 exp(logit)V 的分子贡献，D 是 exp(logit) 的分母贡献。对固定 Q/K/V，E[N̂]=N、E[D̂]=D；但 E[N̂/D̂] 一般不等于 N/D。作者的实证发现是这种有偏 ratio estimator 的<strong>误差</strong>低于直接 top-k 截断，尤其在长尾 mass 显著时。与 strongest baseline SVG2/DFSAttn 的目标不同：它们尽力挑选重要块并舍弃其他块，AB 还试图估计被舍弃部分对归一化的影响。</p>
+<p><strong>Toy Example（人为构造）</strong>：4 个 KV 块的真实 attention mass 分别是 (0.60,0.25,0.10,0.05)，value 是 (1,0,2,−1)，dense 输出为 0.60+0+0.20−0.05=0.75。设预算 s=2，取 λ=2.5，可得 π=(1,0.625,0.25,0.125)，总和恰好 2。若抽到块 1 与 3，逆概率分母估计 0.60+0.10/0.25=1.00，分子 0.60+0.10×2/0.25=1.40，输出 1.40；若抽到 1 与 2，输出 0.60。单次估计可能偏离甚至超出原输出，说明该方法不是逐样本精确恢复；但长期抽样时分子分母各自的期望正确。真正要衡量的是采样方差、扩散步累积误差与视觉质量。</p>
+</section>
+<section id="p2-s6"><h3>06 · Baseline Deep Comparison：公平性与 strongest baseline</h3><div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Baseline</th>
+  <th>机制与合理性</th>
+  <th>本文 setting 的弱点</th>
+  <th>与 AB 的差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Dense FlashAttention-3</td>
+  <td>全部 QK pair，精度参考</td>
+  <td>720p 长视频每步成本高</td>
+  <td>精确参考，不是加速竞争者</td>
+</tr>
+<tr>
+  <td>RadialAttention</td>
+  <td>静态时空能量衰减 mask，几乎不需在线评分</td>
+  <td>对内容依赖的远距离关系不灵活</td>
+  <td>静态剪枝 vs 动态概率估计</td>
+</tr>
+<tr>
+  <td>SVG2</td>
+  <td>全局 k-means 语义聚类与重排，动态捕捉重要块</td>
+  <td>全局聚类/重排昂贵；未选块直接丢</td>
+  <td>全局语义 grouping vs 局部 IBCS+SIP</td>
+</tr>
+<tr>
+  <td>DFSAttn</td>
+  <td>3D Hilbert curve + 分层子块评分，动态 mask</td>
+  <td>仍受 tile 粒度与硬阈值截断影响</td>
+  <td>结构化重排 vs 细粒度加权抽样</td>
+</tr>
+<tr>
+  <td>Oracle top-k（诊断）</td>
+  <td>用真实 attention mass 选择最大块，理想排序上界</td>
+  <td>10.8% key 时只保留约 69% mass</td>
+  <td>排序最优仍不等于无偏估计</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest baseline 不能全模型一刀切</strong>：在 Wan2.1 1.3B 与 14B 上，SVG2 的 PSNR 分别 30.021、29.236，是三种实际稀疏 baseline 中最高；在 HunyuanVideo 13B 上，DFSAttn 的 30.251 略高于 SVG2 的 30.230，并且速度 2.07× 是最接近 AB 的。AB 相应 PSNR 是 34.436、30.788、34.347，因此领先 4.415、1.552、4.096 dB。需要注意 baseline 的 sparsity 不相同，AB 反而更稀疏；这强化了结果，但也意味着无法单靠 Table 1 分离“选择器更好”与“特定配置更好”，Table 2 同稀疏消融才更接近机制证据。</p>
+</section>
+<section id="p2-s7"><h3>07 · Experiment Setup、Metrics 与系统口径</h3><p><strong>Models</strong>：Wan2.1-T2V-1.3B、Wan2.1-T2V-14B、HunyuanVideo-T2V-13B。<strong>Data</strong>：Penguin Benchmark 600 个文本提示，每个提示使用与 dense 对照相同的 seed；Wan 生成 81 帧，Hunyuan 129 帧，均为 720p。<strong>Setting</strong>：BF16、PyTorch 2.6、CUDA 12.4、NVIDIA H20；50 个去噪步；前 10 步与首 Transformer block 保持 dense；Wan KV selection block=4、query block=128、R=8、s=2048 blocks，Hunyuan s=2272；C=4 重建 sampling plan。官方 baseline 使用公开实现的默认参数，三者的稀疏 mask 统一在 FlashInfer FlashAttention-3 block-sparse backend 执行，减少后端差异。</p>
+<p><strong>Quality metrics</strong>：PSNR 是与 dense 对照逐帧均方误差的对数指标，越高越接近 dense；PSNR 高不等于人类偏好必然高。SSIM 评价亮度、对比度与结构相似性，越高越好；LPIPS 用感知网络特征距离，越低越好，能捕捉 PSNR 忽略的语义感知差异。VBench AQ/BC/IQ/MS/SC 分别评价审美、背景一致、成像、运动平滑、主体一致，越高通常越好；它们与 dense 相似性互补，防止“忠于一个本身不好的参考”被误读为生成质量提高。</p>
+<p><strong>Efficiency metrics</strong>：Sparsity = <strong>稀疏去噪步骤内</strong>跳过的 video attention pair 占比，不是整个网络 FLOPs 降幅；Latency = 单个视频从文本编码、50 步 denoising 到 VAE 解码的 wall-clock，包含 plan 构建与 sampling，排除模型加载、初始噪声加载和视频导出；Speedup = dense latency / sparse latency。论文没有独立报告 FPS、tokens/s、峰值 GPU Memory、energy、attention kernel microbenchmark 分解，不能补造。端到端延迟是实测而非从 sparsity 推算。</p>
+<p><strong>RQ1</strong>：高稀疏下 fidelity 能否优于动态剪枝？Table 1。<strong>RQ2</strong>：加速是否在真实视频生成 wall-clock 生效？Table 1 的 Latency/Speedup。<strong>RQ3</strong>：局部 query clustering、SIP weighting、小块选择分别贡献多少？Table 2。<strong>RQ4</strong>：更小 selection block 在固定执行预算下是否稳定提高 fidelity？Figure 5 与 Table 3。<strong>RQ5</strong>：强稀疏是否破坏视频主观质量？Figure 1/4 与 VBench，但主观用户研究未给出。</p>
+</section>
+<section id="p2-s8"><h3>08 · Efficiency Breakdown：不能把稀疏率当加速率</h3><div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>Metric</th>
+  <th style="text-align:right">Dense / Baseline</th>
+  <th style="text-align:right">AB-Attention</th>
+  <th>Change / 口径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Frames</td>
+  <td style="text-align:right">Wan 81 / Hunyuan 129</td>
+  <td style="text-align:right">相同</td>
+  <td>无帧数减少</td>
+</tr>
+<tr>
+  <td>Visual Tokens</td>
+  <td style="text-align:right">Wan 75,600 / Hunyuan 118,800（由 18,900/29,700 个 4-token 块推算）</td>
+  <td style="text-align:right">输入序列相同</td>
+  <td>没有删掉 token，仅稀疏交互</td>
+</tr>
+<tr>
+  <td>Attention pairs</td>
+  <td style="text-align:right">100%（稀疏步 dense 参考）</td>
+  <td style="text-align:right">Wan 10.84% / Hunyuan 7.65%</td>
+  <td>跳过 89.16% / 92.35%</td>
+</tr>
+<tr>
+  <td>全模型 FLOPs</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>不能由 attention sparsity 直接替代</td>
+</tr>
+<tr>
+  <td>Wan 1.3B latency</td>
+  <td style="text-align:right">962.39 s</td>
+  <td style="text-align:right">479.11 s</td>
+  <td>2.01× wall-clock</td>
+</tr>
+<tr>
+  <td>Wan 14B latency</td>
+  <td style="text-align:right">4743.52 s</td>
+  <td style="text-align:right">2571.52 s</td>
+  <td>1.84× wall-clock</td>
+</tr>
+<tr>
+  <td>Hunyuan 13B latency</td>
+  <td style="text-align:right">4399.03 s</td>
+  <td style="text-align:right">1974.61 s</td>
+  <td>2.23× wall-clock</td>
+</tr>
+<tr>
+  <td>Throughput / FPS</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>不推算正式指标</td>
+</tr>
+<tr>
+  <td>GPU Memory</td>
+  <td style="text-align:right">Not Reported</td>
+  <td style="text-align:right">Not Reported</td>
+  <td>可能受 gather 与缓存影响</td>
+</tr>
+<tr>
+  <td>Wan 14B PSNR</td>
+  <td style="text-align:right">SVG2 29.236 dB（最强）</td>
+  <td style="text-align:right">30.788 dB</td>
+  <td>+1.552 dB，且更稀疏</td>
+</tr>
+<tr>
+  <td>Hunyuan LPIPS</td>
+  <td style="text-align:right">DFSAttn 0.1151</td>
+  <td style="text-align:right">0.0700</td>
+  <td>−0.0451</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>理论与实测的分界</strong>：Wan 只计算 10.84% 的稀疏步 video attention pair，理论 attention pair 减少约 9.23×，但真实整视频只有 1.84–2.01×。因为 50 步中前 10 步仍 dense，首个 block、文本 attention、MLP、VAE、调度与 selector 都消耗时间；Hunyuan 的 7.65% pair 也绝不意味着 13.1× 端到端加速。作者的优势是已经测了包含 selector 的端到端时间；但只有 H20 和单视频协议，尚无不同 batch、不同 GPU、长视频长度曲线与多请求吞吐验证。</p>
+</section>
+<section id="p2-s9"><h3>09 · Results Deep Dive：十条定量证据与边界</h3><div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>观察</th>
+  <th>对照与差值</th>
+  <th>能支持的 Claim</th>
+  <th>可能的另一解释 / 弱点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Wan 1.3B PSNR 34.436</td>
+  <td>SVG2 30.021，+4.415 dB</td>
+  <td>更接近 dense 输出</td>
+  <td>不等于绝对视频美学最好</td>
+</tr>
+<tr>
+  <td>Wan 1.3B latency 479.11 s</td>
+  <td>Dense 962.39，2.01×</td>
+  <td>wall-clock 真实加速</td>
+  <td>未含加载/导出</td>
+</tr>
+<tr>
+  <td>Wan 14B PSNR 30.788</td>
+  <td>SVG2 29.236，+1.552 dB</td>
+  <td>大模型仍有优势</td>
+  <td>三模型中优势最弱</td>
+</tr>
+<tr>
+  <td>Wan 14B latency 2571.52 s</td>
+  <td>Dense 4743.52，1.84×</td>
+  <td>14B 有实测收益</td>
+  <td>三模型中加速最小</td>
+</tr>
+<tr>
+  <td>Hunyuan PSNR 34.347</td>
+  <td>DFSAttn 30.251，+4.096 dB</td>
+  <td>换架构仍保真</td>
+  <td>只测一个 13B 视频架构</td>
+</tr>
+<tr>
+  <td>Hunyuan latency 1974.61 s</td>
+  <td>Dense 4399.03，2.23×</td>
+  <td>最强端到端加速</td>
+  <td>GPU 限于 H20</td>
+</tr>
+<tr>
+  <td>Hunyuan attention sparsity 92.35%</td>
+  <td>DFSAttn 81.29%，少算 11.06 pp</td>
+  <td>选择/估计更高效</td>
+  <td>pair 省下不等于同比 wall-clock</td>
+</tr>
+<tr>
+  <td>Hunyuan LPIPS 0.0700</td>
+  <td>DFSAttn 0.1151，降低 0.0451</td>
+  <td>感知差异减小</td>
+  <td>LPIPS 以 dense 为参照</td>
+</tr>
+<tr>
+  <td>去 SIP 权重 PSNR 29.705→25.706</td>
+  <td>−3.999 dB（同预算）</td>
+  <td>逆概率权重贡献最大</td>
+  <td>单模型 100 prompts 消融</td>
+</tr>
+<tr>
+  <td>Uniform no weights 22.452</td>
+  <td>比 full 低 7.253 dB</td>
+  <td>重要性评分与权重互补</td>
+  <td>与 full 同时改变两机制</td>
+</tr>
+<tr>
+  <td>去 IBCS 29.705→28.793</td>
+  <td>−0.912 dB</td>
+  <td>局部语义聚类有效</td>
+  <td>只替换成 positional pooling</td>
+</tr>
+<tr>
+  <td>改 tile-level 29.705→28.686</td>
+  <td>−1.019 dB</td>
+  <td>细粒度选择有价值</td>
+  <td>还需单独测 gather kernel 开销</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Strongest result</strong>：Wan 1.3B 的 +4.415 dB PSNR、Hunyuan 的 2.23× wall-clock，且方法在三个模型都同时获得最高 PSNR/SSIM/最低 LPIPS。<strong>Weakest result</strong>：Wan 14B 的 PSNR 增益只有约 1.55 dB、加速 1.84×；并且 Wan 1.3B 的 VBench AQ 为 58.02，低于 dense 的 59.11，也低于 Radial 的 59.65。<strong>Trade-off</strong>：近似 dense 的 fidelity 不是“生成质量每个维度更好”，稀疏化依然可能损失审美或局部内容。<strong>Dataset-specific weakness</strong>：只在 Penguin 600 prompts、720p 以及固定帧数测试；超长视频与不同分辨率尚无定量结论。</p>
+</section>
+<section id="p2-s10"><h3>10 · Table / Figure Reading：五个最关键图表</h3><p><strong>Figure 1（单帧及局部放大视觉对比）</strong>：同一 Wan2.1-14B 提示、同一生成设置下展示 dense 与几种 sparse 方法的视觉差异。作者想说明 AB 保住细节；真正能支持的是<strong>给定案例</strong>的可视相似性。它不能替代 600 prompts 的平均指标，更不能排除 cherry-picking；应同时看 Figure 4 与定量 Table 1。</p>
+<p><strong>Figure 2(a)(b)(c)（注意力质量分布、Recall、误差）</strong>：横轴分别与保留 key 比例、块粒度或选择预算相关，纵轴展示累计 mass、top-k recall 和 attention 相对 ℓ₂ error。最重要的异常是：4-token oracle top-k 在约 10.8% key 预算下仍只覆盖约 69% mass；作者称 IBCS 将 mean pooling 到 oracle 的 recall gap 减半；SIP 相对 oracle top-k 的输出误差低 41%。这说明最优排序未必是最优估计，但这些是<strong>attention 层级诊断</strong>，并不自动推出整视频感知质量。</p>
+<p><strong>Figure 3（方法流程图）</strong>：三部分依次为 IBCS query clusters、SIP 采样/逆概率加权、GPU tile 打包。读图时注意权重进入的是 logit 的 −logπ，而不是在 softmax 结果上直接乘 1/π；否则归一化不正确。也要区分 selection block=4 与 execution tile=128，二者分离才是系统贡献。</p>
+<p><strong>Table 1（三模型质量/速度大表）</strong>：行按 Wan1.3B、Wan14B、Hunyuan13B 分组，列同时有 PSNR、SSIM、LPIPS、VBench 五维、sparsity、latency、speedup。它支持“AB 在这三个设置同时最稀疏、最快、最接近 dense”，但 VBench 不是全列最好，例如 Wan1.3B AQ 低于 Radial。最有说服力的数字是 Hunyuan 4399.03→1974.61 s，不是单独的 92.35%。</p>
+<p><strong>Table 2 + Figure 5 / Table 3（机制消融与粒度曲线）</strong>：Table 2 同 89.16% sparsity 下逐项去掉 IBCS、SIP、细粒度选择；最强效应是去 SIP weights 下降 4.00 dB。Figure 5 / Table 3 把 selection block 从 128 逐步降到 4，PSNR 从 28.686 单调升到 29.705，SSIM 0.9006→0.9154，LPIPS 0.1113→0.0956；这更直接支持“细粒度有用”，但没有独立展示不同粒度 kernel 的 wall-clock 变化。</p>
+</section>
+<section id="p2-s11"><h3>11 · Ablation / Mechanistic Analysis 与 Claim vs Evidence</h3><p><strong>IBCS 消融</strong>：用 8 个相邻 query interval 的平均替代 8 个语义簇，PSNR 29.705→28.793，说明代表 query 的方式影响打分精度。<strong>SIP 消融</strong>：保留按分数采样但不做权重，25.706；改确定性 top-k，25.711，两者都比 full 低约 4 dB，说明单纯“采得更好”不够，关键是被丢块的质量需要补偿。<strong>Uniform 消融</strong>：均匀采样且不加权 22.452，表明 importance score 与 reweighting 有互补性。<strong>Tile 消融</strong>：退回 128-token selection block，28.686，说明选择粒度影响质量。<strong>局限</strong>：这些消融主要在 Wan14B 100 prompts 上，不能完全推断 Hunyuan 的每个组件贡献；没有看到 per-layer variance、跨 denoising step 的误差传播曲线或多 seed 稳健性。</p>
+<p><strong>Authors Claim</strong>：无需重新训练、准确的高稀疏 attention 估计，且能端到端加速视频生成。<strong>Experiments Actually Show</strong>：在三款 T2V DiT、H20、720p、固定 50 steps、600 prompts 下，PSNR/SSIM/LPIPS 均优于三种稀疏 baseline，端到端加速 1.84–2.23×；同稀疏消融表明逆概率权重最关键。<strong>What Is Not Yet Proven</strong>：比值 estimator 无偏（实际上一般有偏）；所有 GPU 上同样快；不同 batch 下吞吐稳定；超长视频、streaming video 与视频理解模型可直接复用；全模型 FLOPs、GPU memory 或能耗按相同比例下降。</p>
+<p><strong>Contribution</strong>：① [New Mechanism] IBCS 在 query block 内聚类而不全局重排（已有聚类的更适合 GPU 的设计）；② [New Objective / Statistical Estimator] 将 inclusion-probability weighting 用于 softmax 分子分母的单次采样估计（已有 Horvitz–Thompson 原理的新应用）；③ [New System / Engineering] 4-token selection 与 128-token execution tile 分离、fused gather（关键工程贡献）；④ [New Empirical Finding] 在相同稀疏预算下 sampling+weighting 明显优于 top-k；⑤ [New Evaluation Protocol] 同 prompt/seed 的 dense reference 与真实端到端时间，属于严格的实验实践而非全新 benchmark。</p>
+</section>
+<section id="p2-s12"><h3>12 · Limitation、Failure Modes 与 Reproduction View</h3><p><strong>Authors' Limitation</strong>：官方明确写 kernel 当前面向 NVIDIA H20，且仅支持 forward inference；评测只覆盖三个 T2V DiT，未来需支持其他硬件与 backward。<strong>Additional Limitation</strong>：代码仓库目前只有说明与演示、标记 coming soon，无法直接运行原 kernel；sample plan 每 4 步复用，若某个 prompt 在中间 step 发生注意力重分布，可能错过新出现的重要关系；π 极小会造成逆概率大权重，可能增加方差；视觉质量指标与人类偏好并不一致；生成模型之外的 attention（文本、前 10 步）仍 dense；GPU 内存、能耗、吞吐、batch scaling 未报告。</p>
+<p><strong>复现模块</strong>：<code>local_cluster(Q, R=8)</code>、<code>pool_keys(K, b=4)</code>、<code>block_score</code>、<code>solve_inclusion_probs(S,s)</code>、<code>systematic_sample</code>、<code>weighted_sparse_attention</code>、<code>fused_gather_kernel</code>、<code>denoising_plan_cache</code>、<code>video_quality_eval</code>。<strong>最小复现</strong>不必立刻跑 14B：先在随机 Q/K/V 上计算 dense、top-k、uniform、SIP，重复抽样估计 numerator/denominator 的无偏性与 ratio bias；再用 PyTorch 实现 b=4 与 Bq=128 的参考版本，比较相同 KV budget 下 attention relative ℓ₂ error；随后再移植到 Wan1.3B，先只替换一个 attention layer、一个 denoising step，逐步扩大到完整生成。</p>
+<p><strong>最敏感参数</strong>：R、b、s、C、随机 seed、π floor、是否保留文本 key 的 dense 路径、BF16 数值精度。<strong>最易踩坑</strong>：把概率归一化成 Σπ=1 而不是 s；用有放回抽样产生重复 KV 块；忘记对 logit 减 logπ；对所有 token 使用同一 π；采样计划跨 step 复用但不重算当前 QK；把稀疏步 pair sparsity 当全网络 FLOPs。<strong>第一优先复现实验</strong>是 Table 2 的 w/o weights：同样选择集合、同样 KV budget，仅开关 −logπ，检验是否接近 4 dB 的方向性收益；如果只有一个 H20 外的 GPU，先报告 kernel latency 而不是宣称完全复现论文的 2.23×。</p>
+</section>
+<section id="p2-s13"><h3>13 · Research Value 与两条 Migration Analysis</h3><p><strong>Baseline Potential：高</strong>，SVG2、DFSAttn、Radial 构成清晰对照；<strong>Migration Potential：高</strong>，估计未选项贡献可迁移到 KV/视觉 token 稀疏化；<strong>Systems Potential：很高</strong>，细粒度 selection 与硬件 tile 解耦是核心；<strong>Attack Potential：中高</strong>，可设计分布漂移与极小概率导致的误差压力测试；<strong>Evaluation Potential：高</strong>，分开测 pair sparsity、kernel latency、end-to-end latency 与质量；<strong>Benchmark Potential：中高</strong>，建立 query-aware 稀疏采样的长视频/长上下文误差基准；<strong>New Paper Potential：中高</strong>，关键是迁移到动态工作负载并报告真实系统收益，而非只把 b 再缩小。</p>
+<h3>Migration A：长上下文 LLM KV 的重要性采样</h3>
+<p><strong>Original Problem</strong>：视频 DiT 稀疏 attention 丢掉长尾 mass。<strong>Transferable Mechanism</strong>：基于 block mass 的 inclusion-probability weighting。<strong>New Research Question</strong>：在 causal decode 的 KV eviction/selection 中，逆概率修正能否在同样 KV 预算下减少长上下文答案偏差？<strong>Method Modification</strong>：对每个 decode query 的历史 KV 分 16-token block，用近期 query 聚类估计 mass；采样后在 attention logit 减 logπ，始终保留 sink 与最近窗口 token；为每层/每头设 variance guard，当估计方差过高回退 dense。<strong>Minimum Experiment</strong>：Llama-3.1-8B-Instruct（可用权重与许可须实验前确认）、LongBench 200 条样本，输入 8k/16k/32k，KV 预算 25%/12.5%；四组 dense、H2O 类 deterministic eviction、random sample、SIP sample；每个样本固定 seed，记录 3 次重复、层级 attention relative ℓ₂、准确率、TTFT、TPOT、peak KV memory；先只实现 PyTorch reference kernel，再用 FlashInfer backend。<strong>Model</strong>：Llama-3.1-8B-Instruct。<strong>Dataset</strong>：LongBench。<strong>Baseline</strong>：dense、H2O、top-k score pruning、uniform。<strong>Metric</strong>：task score、TTFT、TPOT、KV bytes、variance。<strong>Expected Contribution</strong>：把“KV 不保留”与“KV 对输出贡献被统计估计”区分开。<strong>Risk</strong>：自回归 query 分布随生成漂移，不能像 DiT 一样预先构建稳定 plan。<strong>Collision Risk</strong>：与已有 KV sampling、重要性采样、SparseAttention 高重叠；必须做动态因果解码和系统效率的新证据。</p>
+<h3>Migration B：Video QA 的 query-aware frame budget</h3>
+<p><strong>Original Problem</strong>：DiT 的大量时空交互不可全部计算。<strong>Transferable Mechanism</strong>：局部聚类重要性估计 + 固定预算概率采样 + 逆概率补偿。<strong>New Research Question</strong>：对长视频 QA，随机保留少量帧但对 pooled evidence 进行概率修正，是否优于 deterministic top-k 选帧？<strong>Method Modification</strong>：对 1 fps 候选帧用 CLIP/视觉编码器生成 frame embeddings，按 4 帧一组评分；query 与中间推理状态产生 frame relevance；采样后对可线性聚合的证据池用 1/π 校正，对非线性 LLM cross-attention 则只在可改写的 attention kernel 中用 −logπ，不能直接把概率乘到文本答案上。<strong>Minimum Experiment</strong>：LongVideoBench 200 题，固定 8/16/32 帧预算，比较 uniform、CLIP top-k、IBCS-score top-k、SIP；每题 3 个 seed；冻结 Qwen2.5-VL-7B-Instruct，统计 QA accuracy、evidence timestamp recall、视觉 tokens、TTFT、wall-clock、峰值显存；先做视觉 pooled-feature 估计，再验证是否值得改模型 attention。<strong>Model</strong>：Qwen2.5-VL-7B-Instruct（建议）。<strong>Dataset</strong>：LongVideoBench。<strong>Baseline</strong>：uniform、CLIP top-k、adaptive frame selection。<strong>Metric</strong>：accuracy / frame、evidence recall、wall-clock、quality-speed Pareto。<strong>Expected Contribution</strong>：从硬剪枝转向概率补偿的可解释视觉预算。<strong>Risk</strong>：帧证据是离散事件，遗漏唯一关键帧时无法用统计权重补回内容。<strong>Collision Risk</strong>：与 query-aware frame sampling 重叠明显，必须突出校正是否真实降低 evidence bias，而非随机化本身。</p>
+</section>
+<section id="p2-s14"><h3>14 · Video / Inference 专用分析、Attack Lens 与十句记忆</h3><p><strong>Video Acceleration 视角</strong>：加速发生在视频生成 DiT 的 video self-attention，<strong>不减少 frames、不减少 denoising steps、不减少输入 token 数</strong>，只减少 QK 交互；training-free，现有权重不需要更新。对 long-video 是否有效，论文只验证 81/129 帧、720p，没有长度 scaling 曲线。方法是 activation-aware，不是文本 query-aware；文本提示通过生成模型内部表征间接影响选择。Streaming / agent video workload 的迁移需要重新设计缓存与因果时序约束。</p>
+<p><strong>Inference Acceleration 视角</strong>：瓶颈是 denoising 阶段重复的 attention arithmetic 与 HBM 数据移动，机制是少计算大部分 QK pair，并在 kernel 内即时 gather 小块；不是 KV cache eviction 或 speculative decoding。TTFT、TPOT、tokens/s 属于 autoregressive serving 指标，对本 T2V 论文不适用，记 <strong>Not Applicable</strong> 而非假造。Batch-size scaling、GPU memory、energy、FLOPs <strong>Not Reported</strong>；wall-clock speedup 已报告。是否能迁移到 LLM/VLM/Agent，取决于 causal mask、query 分布漂移与 kernel 是否可用。</p>
+<p><strong>Attack / Verification Lens</strong>：构造 adversarial prompt，让重要视觉实体只在远处一小块出现，检测 IBCS 是否给它过小 π；在不同 denoising step 人为改变 attention 分布，测 C=4 plan reuse 的 stale-mask 误差；人为制造两个语义相反的 query cluster，测 R=1/4/8/16 的 fidelity；在极小 π 下监测数值溢出与 variance；黑盒只比较输出视频的帧级 PSNR/LPIPS、时间一致性与生成延迟。可定义 <code>Long-tail Recovery Ratio = retained attention mass estimated / true dense mass</code>，但需区分 numerator/denominator 的无偏与 ratio bias。</p>
+<p><strong>如果只记住十句话</strong>：① 视频 DiT 的 QK attention 随 token 数平方增长。② FlashAttention 减 IO，不会自动减少 QK pair。③ AB 的选择单元是 4-token KV 块，执行单元仍是 128-token tile。④ IBCS 在每个 query block 内聚类 8 个代表。⑤ SIP 用 π∝重要性抽样且保证固定预算。⑥ 被抽中块的 logit 减 logπ，补偿未选块的贡献。⑦ 分子与分母估计各自无偏，但最终比值不保证无偏。⑧ 三个模型稀疏步跳过 89–92% attention，端到端只快 1.84–2.23 倍。⑨ 去掉逆概率权重会损失约 4 dB PSNR，是最关键消融。⑩ 当前核心代码未发布、只在 H20 评测，迁移时应先验证统计性质和真实 kernel 延迟。</p>
+</section>
+</article><section class="synthesis" id="cross"><h2>Cross-Paper Synthesis：今天两篇共同说明什么</h2>
+<p>两篇研究看似一篇训练 Agent、一篇加速 Video DiT，实际都在处理<strong>有限预算下对未完全观察部分的处理</strong>。Self-Learning 的问题是：Agent 可以不读材料就答题，结果奖励不能说明哪些观察必要；AB-Attention 的问题是：只计算少量 KV pair，不能把未计算的长尾质量视为零。前者用奖励和回合级 credit 让“主动获取信息”变成学习对象，后者用纳入概率与逆概率修正让“没计算的信息”仍在估计中留下痕迹。</p>
+<p>但两者的数学保证完全不同：RL 的 tool credit 来自 learned judge，是行为相关性评估；AB 的 Horvitz–Thompson 分子/分母无偏来自明确抽样概率，具备统计期望保证。<strong>不能直接把 RL 的 cₜ 当成 attention inclusion probability，也不能把视频 SIP 的无偏性宣称为 Agent 轨迹的因果无偏性。</strong> 真正可组合的是实验设计：固定计算预算、记录每个信息动作的纳入概率/成本、做相关证据删除与负对照，再看终局能力是否变化。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+  <th>维度</th>
+  <th>Self-Learning RL</th>
+  <th>AB-Attention</th>
+  <th>可组合启示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>稀缺资源</td>
+  <td>交互轮数、工具调用、长上下文 token</td>
+  <td>QK pair、GPU tile、denoising 时间</td>
+  <td>统一预算下比较质量</td>
+</tr>
+<tr>
+  <td>选择机制</td>
+  <td>policy 根据当前推理选择章节</td>
+  <td>IBCS 根据 Q/K 估计块重要性</td>
+  <td>Query-aware information acquisition</td>
+</tr>
+<tr>
+  <td>补偿机制</td>
+  <td>结果奖励 + process credit</td>
+  <td>逆概率估计未选块</td>
+  <td>区分“奖励行为”与“估计遗漏”</td>
+</tr>
+<tr>
+  <td>主要风险</td>
+  <td>reward hacking、judge bias</td>
+  <td>ratio bias、variance、kernel overhead</td>
+  <td>双重反事实测试</td>
+</tr>
+<tr>
+  <td>最强证据</td>
+  <td>Table 4 同协议 reward ablation</td>
+  <td>Table 2 同稀疏机制 ablation</td>
+  <td>保持预算、只替换一个组件</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Combined Research Opportunities：三个值得实际做的方向</h2>
+<p><strong>Opportunity 1 — Verified Marginal Information Utility（优先）</strong>：对 Agent 每次 <code>search/read</code> 记录 token 成本、所读证据与后续决策。用遮蔽单次 observation 的重放差分，校准 learned tool judge 的评分，再将 reward 设为 <code>success − λ·cost + η·verified_marginal_gain</code>。在 coding agent 上先做 100 任务、3 seeds、4 ablation；成功率和每成功任务 GPU 秒必须一起报告。这比“多一个 LLM 打分”更有机制创新。</p>
+<p><strong>Opportunity 2 — Budgeted Video Evidence Acquisition</strong>：先用便宜的低帧率事件索引，再让视频 QA Agent 决定精读哪些时间段；对连续可加权特征用 SIP，对离散唯一事件保留确定性 coverage guard。设 8/16/32 帧预算，在 LongVideoBench 记录 QA accuracy、evidence recall、TTFT 与 wall-clock。与普通 top-k 的差别应是<strong>明确测量遗漏证据导致的系统性偏差</strong>。</p>
+<p><strong>Opportunity 3 — Variance-aware Sparse Inference</strong>：将 AB 的 π 下界与估计方差作为 runtime signal；当 query 分布快速变化或尾部权重不稳定时，自动增大预算或切回 dense。先在 Wan1.3B 的部分 layer 运行 b=4、C∈{1,2,4,8}、R∈{4,8,16}，报告相同平均 sparsity 下的 PSNR 与 latency。该方向更偏 systems，代码 release 后才有完整复现基础。</p>
+<h2>Collision / Overlap：明确已知重叠，不伪造“撞车”</h2>
+<p>Self-Learning 与 Search-R1、StepSearch、SLATE、IG-Search 在工具 RL 和细粒度 reward 上有方法邻近，差别在教材式长期学习、正确性门控 bonus、均值保持 credit。AB 与 SVG2、DFSAttn、SpargeAttention、Rectified SpaAttn 等在稀疏注意力上直接竞争；其中 inverse-probability ratio estimator 是需要单独证明工程价值的差异。两篇之间<strong>没有发现直接论文级 Collision</strong>；“工具信息获取 × importance sampling”目前是研究假设，不能当成已存在同一工作。</p>
+<h2>Reading / Reproduction Priority</h2>
+<p><strong>第一优先阅读</strong>：Self-Learning 的 Eq.(5)–(8)、Table 1/2/4 与 Appendix C；最容易转化为 Agent RL 项目，但先做工具行为坍缩与 cost-normalized evaluation。<strong>第二优先阅读</strong>：AB 的 Eq.(3)–(7)、Figure 2、Table 1/2/3、Appendix A/B/C；最适合做 Video/Inference 系统基线，但目前核心代码未发布，先做 estimator reference implementation。<strong>最适合 baseline</strong>：Self-Learning 同协议 correctness-only GRPO 与 AB 的 DFSAttn/SVG2。<strong>最适合 system idea</strong>：AB 的细粒度选择/大 tile 执行。<strong>最适合 benchmark/metric</strong>：Self-Learning 的 source removal 与工具边际贡献。<strong>最适合 attack/evaluation</strong>：对 Agent 做象征性工具调用 reward hacking，对 AB 做 stale-plan 与低概率高权重压力测试。</p>
+<h2>Sources / Links &amp; 证据边界</h2>
+<ol>
+<li><a href="https://arxiv.org/abs/2610.39671">Self-Learning arXiv metadata（2026-10-29）</a>；<a href="https://arxiv.org/html/2610.39671">HTML 全文（Method、Table 1–5、Appendix A–C）</a>。</li>
+<li><a href="https://arxiv.org/abs/2610.39663">AB-Attention arXiv metadata（2026-10-29）</a>；<a href="https://arxiv.org/html/2610.39663">HTML 全文（Method、Table 1–3、Figure 1–5、Appendix A–D）</a>。</li>
+<li><a href="https://infrec-cardinal.github.io/AB-Attention/">AB 官方项目页</a>；<a href="https://github.com/InfRec-Cardinal/AB-Attention">AB 官方 GitHub（截至 2026-10-31：Code coming soon）</a>。</li>
+<li>本报告的数字均来自对应原文的表格或明确文字；所有 Toy Example 和 Migration 的模型、实验配置均标为<strong>研究者提出的建议</strong>，不是作者已完成实验。未报告指标不作估算。两篇均为最近 72 小时内新投稿，不是 BACKFILL；与 10/24–10/30 已有 Deep Dive 的 arXiv ID 不重复。</li>
+</ol>
+</section><footer class="footer">Independent analysis · Sources linked inline · Not Reported means no verified value in the paper · UTF-8 standalone HTML · 2026-10-31</footer></div></body></html>
