@@ -1,0 +1,298 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="2026-11-03 Daily Top Papers Deep Dive: Latent Sparse Attention and Ask on Demand. 两篇论文完整中文精读。"><title>Daily Top Papers Deep Dive — 2026-11-03</title><style>
+:root{color-scheme:light;--bg:#f5f6fa;--surface:#fff;--ink:#1c2533;--muted:#5c6a7d;--line:#dfe5ed;--accent:#1e5f8a;--soft:#eaf3fa;--strong:#153d59}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.88 -apple-system,BlinkMacSystemFont,"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:1060px;margin:28px auto 80px;background:var(--surface);padding:54px clamp(24px,6vw,80px);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 28px rgba(30,55,90,.045)}
+h1{font-size:clamp(26px,4vw,40px);line-height:1.24;color:var(--strong);margin:0 0 26px;letter-spacing:-.035em}
+h2{font-size:25px;line-height:1.42;margin:62px 0 18px;color:#123d5e;padding-top:8px;border-top:2px solid #dbeaf3}
+h3{font-size:19px;line-height:1.5;margin:34px 0 12px;color:#1c4968}p{margin:12px 0 18px;text-align:justify}strong{font-weight:700;color:#153f5e}a{color:var(--accent);text-decoration:none;border-bottom:1px solid #a7c6da}a:hover{color:#0b4164;border-bottom-color:currentColor}
+blockquote{margin:20px 0 30px;padding:16px 20px;border-left:4px solid #709db8;background:#f3f8fb;color:#344e61;border-radius:0 9px 9px 0}blockquote p{margin:0}
+hr{border:0;border-top:1px solid var(--line);margin:42px 0}code{font: .91em/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;background:#f1f4f7;border-radius:4px;padding:1px 4px;overflow-wrap:anywhere}
+.table-wrap{overflow-x:auto;margin:20px 0 26px;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;min-width:680px;width:100%;font-size:14px;line-height:1.55}th,td{padding:11px 13px;border-bottom:1px solid #e5ebf0;text-align:left;vertical-align:top}th{background:#edf4f9;color:#244a64;font-weight:700;position:sticky;top:0}tr:nth-child(even) td{background:#fafbfd}tr:last-child td{border-bottom:0}
+.formula{overflow-x:auto;background:#f4f7fb;border:1px solid #d7e1ed;border-radius:10px;padding:19px 22px;margin:20px 0 26px;font:15px/2.05 ui-monospace,"Noto Sans Mono CJK SC",Consolas,monospace;color:#143951;white-space:normal;word-break:break-word}
+.pipeline{padding:18px 22px;margin:20px 0 24px;background:#f5f8fb;border:1px solid #dce6ee;border-left:4px solid #407da6;border-radius:8px;font-weight:600;color:#1e4867;line-height:1.85}
+.top-toc{margin:22px 0 35px;border:1px solid var(--line);border-radius:12px;padding:20px 24px;background:#fafcfe}.top-toc h2{font-size:17px;margin:0 0 12px;padding:0;border:0;color:#2d4f68}.top-toc .toc-links{display:grid;grid-template-columns:1fr 1fr;column-gap:24px;row-gap:7px}.top-toc a{display:block;border:0;font-size:13px;line-height:1.5;padding:5px 0}.top-toc a.toc-h2{font-weight:700;color:#174b70;margin-top:6px}.top-toc a.toc-h3{padding-left:13px;color:#506679}
+small,.meta{color:var(--muted)}.foot{margin-top:55px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:18px}
+@media(max-width:720px){body{font-size:15px;line-height:1.82}main{margin:0;padding:28px 19px 54px;border:0;border-radius:0}.top-toc .toc-links{grid-template-columns:1fr}h2{font-size:22px}h3{font-size:18px}p{text-align:left}.formula{font-size:13px}}
+@media print{body{background:#fff}main{box-shadow:none;border:0;max-width:none;margin:0;padding:0}a{color:#124f79}h2,h3{break-after:avoid}p{orphans:3;widows:3}.table-wrap{overflow:visible}table{font-size:12px}}
+</style></head><body><main><h1 id="top">Daily Top Papers Deep Dive — 2026-11-03</h1>
+<blockquote>
+<p>独立检索窗口：以 arXiv 2026-11-02 最新公告为主；两篇均为 2026-10-30 首次提交、2026-11-02 出现在 cs.AI recent 列表的预印本。以下为论文正文、实验图表与官方仓库核对后的研究笔记。作者数字是报告值，迁移实验和风险评估是本报告的独立推论。没有把模型能力、单层加速与端到端加速混为一谈。</p>
+</blockquote><nav class="top-toc" aria-label="目录"><h2>目录 · 快速跳转</h2><div class="toc-links"><a class="toc-h2" href="#selection">Today&#x27;s Deep Dive Selection</a><a class="toc-h2" href="#paper-1">Paper 1 · Latent Sparse Attention (LSA)</a><a class="toc-h3" href="#section-3">1. 基本信息与一句话定位</a><a class="toc-h3" href="#section-4">2. 人话版（问题—方法—结果—价值）</a><a class="toc-h3" href="#section-5">3. Background &amp; Research Gap：为什么已有 sparse attention 还不够</a><a class="toc-h3" href="#section-6">4. Core Insight：语义索引优于位置索引，但层次结构有代价</a><a class="toc-h3" href="#section-7">5. Method Deep Dive：从 KV 到语义桶再到稀疏读取</a><a class="toc-h3" href="#section-8">6. 核心公式与数学直觉</a><a class="toc-h3" href="#section-9">7. Toy Example：12 个日志片段如何被找到</a><a class="toc-h3" href="#section-10">8. Baseline Deep Comparison：strongest baseline 不能只看谁最快</a><a class="toc-h3" href="#section-11">9. Experiment Setup 与 Metrics 教学</a><a class="toc-h3" href="#section-12">10. Results Deep Dive：8 个可核对的证据点</a><a class="toc-h3" href="#section-13">11. Table / Figure Reading：不只看最大数字</a><a class="toc-h3" href="#section-14">12. Ablation / Mechanistic Analysis</a><a class="toc-h3" href="#section-15">13. Claim vs Evidence / Contribution</a><a class="toc-h3" href="#section-16">14. Limitations &amp; Failure Modes</a><a class="toc-h3" href="#section-17">15. Reproduction View：先复现正确性，再追求 10M</a><a class="toc-h3" href="#section-18">16. Research Value 七维评价</a><a class="toc-h3" href="#section-19">17. Migration Analysis（两条可直接动手的路线）</a><a class="toc-h3" href="#section-20">18. Attack / Verification Lens 与 9 句话记忆卡</a><a class="toc-h2" href="#paper-2">Paper 2 · Ask on Demand (AOD)</a><a class="toc-h3" href="#section-22">1. 基本信息与一句话定位</a><a class="toc-h3" href="#section-23">2. 人话版（问题—方法—结果—价值）</a><a class="toc-h3" href="#section-24">3. Background &amp; Research Gap：共享不是越多越好</a><a class="toc-h3" href="#section-25">4. Core Insight：请求的价值是反事实团队收益</a><a class="toc-h3" href="#section-26">5. Method Deep Dive：在线决策与离线门控训练两条链</a><a class="toc-h3" href="#section-27">6. 核心公式、RL/因果直觉与 reward 风险</a><a class="toc-h3" href="#section-28">7. Toy Example：一次求助怎样改变整个团队</a><a class="toc-h3" href="#section-29">8. Baseline Deep Comparison 与 strongest baseline</a><a class="toc-h3" href="#section-30">9. Experiment Setup 与 Metrics 教学</a><a class="toc-h3" href="#section-31">10. Results Deep Dive：8 个带对比的结果</a><a class="toc-h3" href="#section-32">11. Table / Figure Reading：重点看反例</a><a class="toc-h3" href="#section-33">12. Ablation / Mechanistic Analysis</a><a class="toc-h3" href="#section-34">13. Claim vs Evidence / Contribution</a><a class="toc-h3" href="#section-35">14. Authors&#x27; / Additional Limitations 与失败传播</a><a class="toc-h3" href="#section-36">15. Reproduction View：在没有官方代码时如何做最小版本</a><a class="toc-h3" href="#section-37">16. Research Value 七维评价</a><a class="toc-h3" href="#section-38">17. Migration Analysis（两条可执行研究）</a><a class="toc-h3" href="#section-39">18. Attack / Verification Lens 与 9 句话记忆卡</a><a class="toc-h2" href="#synthesis">Cross-Paper Synthesis：共同趋势与机制交叉</a><a class="toc-h2" href="#opportunities">Combined Research Opportunities / Collision &amp; Overlap</a><a class="toc-h2" href="#priority">Reading / Reproduction Priority</a><a class="toc-h2" href="#sources">Sources / Links / 核查边界</a></div></nav>
+<h2 class="section-heading" id="selection">Today's Deep Dive Selection</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>优先</th>
+<th>论文</th>
+<th>研究主线</th>
+<th>选择理由</th>
+<th>正文与状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Latent Sparse Attention: Towards Subquadratic Ultra-Long Context Attention</strong></td>
+<td>Inference Acceleration / Long Context</td>
+<td>把稀疏注意力的真正瓶颈从“算 attention”重新定位到“找 key”；有 10M-token、H200/B300、TTFT/TPOT 与 native-training 对照；公开代码</td>
+<td><a href="https://arxiv.org/abs/2610.42147" rel="noopener noreferrer" target="_blank">arXiv</a> · <a href="https://arxiv.org/html/2610.42147" rel="noopener noreferrer" target="_blank">HTML</a> · <a href="https://github.com/Prefrontal-AI/latent-sparse-attention" rel="noopener noreferrer" target="_blank">Code</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Ask on Demand: Targeted Peer Communication for Parallel Agentic Systems</strong></td>
+<td>Agent / Multi-Agent / Learning</td>
+<td>用相同状态的 approve/deny 配对 rollout 监督通信门控，直接研究一条 peer trajectory 如何改变团队结局；有 2 个交互基准、跨模型与团队规模消融</td>
+<td><a href="https://arxiv.org/abs/2610.41378" rel="noopener noreferrer" target="_blank">arXiv</a> · <a href="https://arxiv.org/html/2610.41378v1" rel="noopener noreferrer" target="_blank">HTML</a> · <a href="https://arxiv.org/pdf/2610.41378" rel="noopener noreferrer" target="_blank">PDF</a></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>选择逻辑。</strong> 两篇均有可访问完整正文、明确机制、可检验定量证据和可迁移实验。LSA 的系统结果尤其强，但其树搜索在 GLM 上存在明显准确率退化；AOD 的因果式训练标签很值得复用，但其小模型 AppWorld 不一定优于最强共享内存基线。优先深入两篇，而不是为覆盖 Video/RL 硬凑第三篇。7 天冷却核对：排除前一天已精读的 SCOPE 和 GAAC；本次两篇不同。</p>
+<hr/>
+<h2 class="section-heading" id="paper-1">Paper 1 · Latent Sparse Attention (LSA)</h2>
+<h3 class="section-heading" id="section-3">1. 基本信息与一句话定位</h3>
+<p><strong>Title</strong>：Latent Sparse Attention: Towards Subquadratic Ultra-Long Context Attention。<strong>Authors</strong>：Ales Kubicek、Andrea Caciolai、Liangzu Peng、Sukrit Sumant、Benjamin Hoover、Fraser Greenlee、Ruairidh M. Battleday、Radim Urban、Torsten Hoefler、James C.R. Whittington。<strong>Affiliation</strong>：Prefrontal AI、ETH Zurich。<strong>Date</strong>：2026-10-30 v1；2026-11-02 出现在 arXiv 最新公告。<strong>Venue/Status</strong>：arXiv preprint，正文写明 Preprint，不据 ICML 模板推断录用。<strong>Paper</strong>：<a href="https://arxiv.org/abs/2610.42147" rel="noopener noreferrer" target="_blank">arXiv</a> / <a href="https://arxiv.org/html/2610.42147" rel="noopener noreferrer" target="_blank">正文</a>。<strong>Code</strong>：<a href="https://github.com/Prefrontal-AI/latent-sparse-attention" rel="noopener noreferrer" target="_blank">官方实现</a>；<a href="https://github.com/Prefrontal-AI/sglang" rel="noopener noreferrer" target="_blank">SGLang fork</a>。<strong>Project</strong>：未确认独立项目页。</p>
+<p><strong>一句话定位</strong>：在千万 token 的长上下文里，稀疏注意力已不再主要慢在加权求和，而是慢在“从千万个历史 key 中找出应该看的那几千个”；LSA 用学习到的语义聚类索引，把这一检索阶段从逐 key 扫描改为按簇或树搜索。</p>
+<h3 class="section-heading" id="section-4">2. 人话版（问题—方法—结果—价值）</h3>
+<p>想象一个编码助手连续工作几周，积累上千万 token 的日志。每次回答只需要少数相关历史片段，传统 full attention 却要看全部历史。稀疏注意力表面上只读 4096 个 key，看似已经省了计算；但为了选出这些 key，许多 indexer 仍需逐块扫描几百万个候选，因此索引自己成为大头。LSA 先把相似 key 压到低维空间，聚成可查询的语义桶；查询时只评分桶中心，再展开桶中的原始位置，最终仍用原模型的 attention kernel 读取被选中的 KV。已有模型可用 D-LSA 蒸馏索引，新模型可用 N-LSA 直接训练。论文在 10M token 上报告非常大的单层加速，同时给出端到端 TTFT/TPOT 的较小但真实收益。最值得记住的不是某个 72.4× 数字，而是<strong>索引复杂度本身也必须被优化</strong>，以及“单层快”和“整模型快”必须分别测。</p>
+<h3 class="section-heading" id="section-5">3. Background &amp; Research Gap：为什么已有 sparse attention 还不够</h3>
+<p>对序列长度 T，标准因果注意力 prefill 需要大约 O(T²) 次 query-key 交互，单 token decode 需要 O(T)。Sparse attention 限定每个 query 仅访问 k 个历史 key，主 attention 计算变为 O(Tk) 和 O(k)。但是，假设 indexer 仍逐个比较 T 个 key：每个 query 的索引是 O(T)，所有 query 仍是 O(T²)。所以 sparse attention 不是自动得到 subquadratic 系统；只是把贵的 attention 改成便宜的 indexer 扫描。论文 Figure 2 的测量：在 GLM-5.3-Flash 的 10M-token 单层 prefill 中，传统 sparse attention 的时间约 98% 花在 indexer，若 indexer 免费，理论还可再快约 58× prefill 和 8.9× decode。这是明确的工程瓶颈测量，不是抽象猜测。</p>
+<p>举例：日志共有 10,000,000 个 token，当前问题“上周为什么回滚数据库迁移”。相关的回滚记录可能分散在第 13 万、421 万和 997 万 token。按最近位置的 sliding window 会漏掉旧证据；按连续块摘要的 block sparse attention 可能因为一个关键句被大量无关文本稀释而错过；对所有块打分则扫描成本随 T 增长。LSA 的目标不是把全部历史扔掉，而是让不同位置的“回滚原因”在语义空间相邻，先定位簇，再读真实 key。这个设计与 KV eviction 不同：它保留全部 KV，只改变访问路径，所以不能声称压缩了 KV 主体。</p>
+<h3 class="section-heading" id="section-6">4. Core Insight：语义索引优于位置索引，但层次结构有代价</h3>
+<p>作者的核心观察分三层。第一层是性能剖析：稀疏 attention 在极长序列上，选 key 的扫描比实际读取 key 更贵。第二层是表示假设：attention 的 key 本身或低维投影保留了足够的语义邻近关系，能聚出与 query 相关的簇；与按位置切块不同，语义桶可包含远隔百万 token 的相似证据。第三层是算法假设：桶中心可近似代表桶内成员的相关性，树搜索可以只访问每层少量候选，从而把索引复杂度由 O(T) / query 逼近 O(log T) / query。第一层有真实 profile，第二层靠准确率对照支持，第三层在复杂度上成立，但在特定模型上会有检索误差积累。</p>
+<p>特别重要：<strong>Flat D-LSA 不是真正 subquadratic 的 prefill</strong>。Flat 仍要评分全部桶，桶数随 T 线性增长，只是常数显著缩小；只有 Tree 且每层 beam 固定时才得到理论 O(T log T) 的索引 prefill。论文在 10M 上最突出的 production 数字多来自 Flat，Tree 在 GLM 上的质量不足。把论文标题直接解释为“所有配置均已实测亚二次复杂度”是不正确的。</p>
+<h3 class="section-heading" id="section-7">5. Method Deep Dive：从 KV 到语义桶再到稀疏读取</h3>
+<div class="pipeline">Input：每层 Q/K/V、历史 token 位置 → L2 归一化 / pooling → 局部 Ward 聚类 → bucket cache / 可选层次树 → query 低维映射 → top-p bucket / beam search → 展开原始 key 索引 Jᵢ → sink + window 去重 → 原 attention kernel 输出</div>
+<p><strong>Step 1：构造索引 key。</strong> D-LSA 读取原 attention 的 key，用可学习矩阵 W_K^idx 映射到 d_idx=64 的低维空间，再 L2 归一化。Qwen-3.8-27B 只读无 RoPE 的维度，避免绝对/相对位置旋转干扰语义聚类。这里的输入是原模型隐藏的 key，而不是自然语言段落 embedding；索引是逐层的、随 KV 动态产生。投影若把细粒度区分压没，后面无论怎么搜都无法恢复。</p>
+<p><strong>Step 2：减少聚类工作。</strong> 每四个连续 index key 合成一个 pool key，令聚类对象由 T 变成 T/4。然后按 512-token 的 cluster block 做 bottom-up Ward 聚类，平均每桶 8 个原始 key、最大 16 个。Ward 准则选使簇内平方距离增长最小的合并；限制桶大小防止一个高频主题吞掉大量 key。已封闭 block 的桶不再改写，正在写入的 block 则由最近 512-token window 兜底。这样可在线追加而不必每次全局重聚类。</p>
+<p><strong>Step 3：保存双层信息。</strong> Bucket cache 不仅存中心 c_b，还存桶内 key 的原始 token 位置表。语义中心是粗索引，不是最终 Value；最终 attention 仍从 KV cache 按索引取原始 K/V。这个区别关系到质量和内存：LSA 不压缩 Value，不是近似 attention output 的低秩替换；代价是原始 KV 必须常驻或可访问。</p>
+<p><strong>Step 4：查询与扩展。</strong> D-LSA 把各 query head 的向量汇总，映射为一个 index query，归一化后用点积 s(i,b)=qᵢ·c_b 对桶评分。选 top-p 个桶，按排名展开，直至取得 k 个 long-range key；另强制加入前四个 sink key 和最近 512 个 window key，去重得到 Jᵢ。一个索引列表供所有 query head 共享，节省索引计算，但可能漏掉只对某一个 head 重要的细节。</p>
+<p><strong>Step 5：Flat / Tree 两条路径。</strong> Flat 直接评分全部 bucket centroid，简单、GPU 并行友好、质量稳定，但索引仍线性于 T。Tree 把桶继续聚成上层 node bucket，在每层保留 beam，再向下展开候选。若层数 O(log T)、每层候选数受控，单 query 的比较次数才是 O(log T)。失败模式是早期父节点选错，真正相关的叶子从未进入 beam，后续不能纠正。单请求 decode 时逐层 kernel/同步开销很高，所以论文实际 Tree decode 仍使用 Flat 路径。</p>
+<p><strong>Step 6：两种训练方案。</strong> D-LSA 冻结主模型，仅训练 W_Q^idx、W_K^idx 与蒸馏温度；使用原 attention 的分布作 teacher，适合已有权重。N-LSA 在约 0.5B 的新模型中直接聚类原生 key，用各 query head 对簇的最大相似度选桶；选择过程 stop-gradient，仅对被访问 key 的 attention 路径做 next-token loss，既不需要 teacher，也不增加索引投影参数。它是否可扩展到数十 B 模型尚未证明。</p>
+<h3 class="section-heading" id="section-8">6. 核心公式与数学直觉</h3>
+<div class="formula">kⱼ⁽idx⁾ = normalize(kⱼ⁽attn⁾ Wₖ⁽idx⁾)； qᵢ⁽idx⁾ = normalize((Σₕ qᵢ,ₕ⁽attn⁾) Wq⁽idx⁾)<br/>sᵢ,ᵦ = qᵢ⁽idx⁾ · cᵦ； Jᵢ = sink ∪ window ∪ expand(top-p buckets, k keys)</div>
+<p>这里的 d_idx 是索引维度，p 是候选桶数，k 是远距离 key 数量，c_b 是 L2 归一化簇中心。提高 k 通常改善召回却增大真正 attention 的 IO；提高 p 降低漏检但让检索和展开变贵；增大桶尺寸会减少 centroid 数，却让单个相关 key 被平均掉。固定 window 是局部安全网，sink 用于覆盖注意力常见的首部聚集。<strong>三个预算 p、k、window 共同决定真实计算量</strong>，只说 k=4096 不足以复现。</p>
+<div class="formula">Lᵢ = KL(Aᵢ ∥ Âᵢ) = Σⱼ Aᵢⱼ log(Aᵢⱼ / Âᵢⱼ)<br/>Aᵢⱼ = meanₕ softmaxⱼ(qᵢₕ · kⱼ / √dₕ)； Âᵢⱼ = softmaxⱼ(qᵢ⁽idx⁾ · kⱼ⁽idx⁾ / τ)</div>
+<p>Forward KL 的直觉：teacher 给某些 key 高概率时，student 若把它们判得极低会受到较大惩罚；但它不直接监督“经过聚类、top-p、扩展后的离散 Jᵢ 是否保留关键 token”。这正是 distillation objective 与部署目标之间的 gap。τ 控制 student 分布尖锐程度，只用于训练损失，不是推理阶段 attention softmax 的温度。作者仅保留 teacher top-2048 高权重 key 后重新归一化作为 target，而 student 分布仍覆盖允许检索范围，训练总量 352M tokens、48k step、每步抽 128 queries、学习率 3e-4。与原生 full-attention objective 不同，D-LSA 优化的是<strong>选择器分布对齐</strong>，并不直接优化任务答案正确率。</p>
+<div class="formula">N-LSA: sᵢ,ᵦ = maxₕ [ normalize(qᵢₕ) · cᵦ ]； L = −Σₜ log Pθ(xₜ | x₍₍ₜ₎₎)； stop-gradient(selection)</div>
+<p>N-LSA 的 max-head 使只被一个 head 强烈需要的桶也可能入选，缓解 D-LSA 共享 query 的弱点；但 max 会偏向偶然高值的 head。离散 top-k 不可导，梯度不会教模型如何直接改变桶分配，而是通过已选中 K/V 的下游 token loss 间接调整表示。训练初期可能出现“没选中就永远学不到”的探索问题，论文用 sink/window 与预训练配置缓和，但未严格证明避免这一问题。</p>
+<h3 class="section-heading" id="section-9">7. Toy Example：12 个日志片段如何被找到</h3>
+<p>构造一个与论文机制一致、数值仅用于教学的小例子。历史 12 个片段按时间排列：①登录、②数据库迁移、③天气、④代码审查、⑤回滚失败、⑥招聘、⑦测试、⑧回滚修复、⑨午餐、⑩缓存、⑪发布、⑫最新问题。查询“迁移为什么回滚”。假设低维 index embedding 将②⑤⑧聚成“迁移/回滚”桶 B1，①⑥⑨聚成 B2，③⑦⑪聚成 B3，④⑩⑫聚成 B4。查询与中心的余弦相似度分别为 0.91、0.08、0.21、0.36，top-1 选 B1，展开为②⑤⑧。若当前窗口覆盖⑪⑫、sink 覆盖①，则 J={①②⑤⑧⑪⑫}，真正 attention 仍对这些位置的原始 K/V 计算 softmax。若⑤是唯一有用句却被错误归入 B3，top-1 就会漏证据；把 p 提高到 2、或者让语义桶更纯净可能修复，但不是免费。若树根把 B1 的中心与无关桶合并并被 beam 剪掉，后续再精细的叶子匹配也无济于事。这正是 Tree 在长上下文上可能比 Flat 更差的具体机制。</p>
+<h3 class="section-heading" id="section-10">8. Baseline Deep Comparison：strongest baseline 不能只看谁最快</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>做法与合理性</th>
+<th>在本文 setting 的失败点</th>
+<th>LSA 的差别</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>原生 GLM-5.3-Flash sparse attention（最强生产系统基线）</strong></td>
+<td>预训练时已融入稀疏注意力，质量比较公平、部署真实</td>
+<td>indexer 扫描全部压缩块，10M 时占主导</td>
+<td>语义桶与小索引空间减扫描；机制 + kernel 工程</td>
+</tr>
+<tr>
+<td><strong>Qwen-3.8-27B Full Attention（最强精度参照）</strong></td>
+<td>不丢历史 key，直接作为精度上界候选</td>
+<td>10M 时 prefill 极贵</td>
+<td>限制访问键集合；不是严格质量上界，因为外推和采样存在噪声</td>
+</tr>
+<tr>
+<td><strong>Block Sparse Flat / QSA 风格</strong></td>
+<td>按四个连续 key 聚块，易向量化</td>
+<td>逐块评分仍线性，关键 key 被邻居平均</td>
+<td>按语义而非仅位置聚簇，低维投影</td>
+</tr>
+<tr>
+<td><strong>Block Sparse Tree / HiP/PISA 风格</strong></td>
+<td>树搜索减少候选</td>
+<td>位置块 summary 容易隐藏稀有关键 token</td>
+<td>语义中心更可检索，但同样有 beam 误差</td>
+</tr>
+<tr>
+<td><strong>D-LSA Training-Free（PCA）</strong></td>
+<td>无训练，复现门槛低</td>
+<td>在 GLM 上落后于蒸馏索引</td>
+<td>说明学习投影不是完全可省略</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>strongest baseline 的双重含义</strong>：对系统速度与部署价值，应以原生 GLM sparse attention 为首要比较对象；对精度保真，以原模型 full attention（Qwen）为参照。把 72.4× 相对 Full 的数字当成“击败当前最好 sparse serving 的 72.4×”属于不当比较。</p>
+<h3 class="section-heading" id="section-11">9. Experiment Setup 与 Metrics 教学</h3>
+<p>D-LSA 测两个预训练模型：Qwen-3.8-27B（原 full attention）与 GLM-5.3-Flash（原 sparse attention）。知识测试：MMLU-Pro 抽样 2000、GPQA-Diamond；推理：AIME25 四次重复、MATH500 抽样 100；长上下文：LongBench v2 抽样 60、RULER 13 项从 4k 到 10M（≤1M 每任务 100 个，&gt;1M 每任务 20 个）、PaperTrail 跨科学论文关联事实任务。10M Qwen 使用 YaRN factor 40（PaperTrail 为 42），GLM 无显式位置编码。测试部署 SGLang、H200/B300、TP8/CP8、chunk 32768，单请求 256 输出 token、3 次请求中位数。<strong>Research Question A</strong>：是否保留知识/推理/长上下文准确率？<strong>B</strong>：索引和 attention 单层是否更快？<strong>C</strong>：整模型 TTFT/TPOT 是否更快？<strong>D</strong>：不蒸馏的新模型能否在训练时直接受益？</p>
+<p>N-LSA 另训约 0.5B、24 层 hybrid，每第四层为 attention、其余 Gated DeltaNet；8 query heads、单 KV head 128 维。FineWeb-Edu 100B tokens、4k warmup/stable，LongDocs 12B tokens、128k decay。与 Full、SWA、NSA、PISA 同数据同结构，稀疏方法每 query 约访问 2560 keys。此结果不能自动推广到 27B 模型或 10M-token native training。</p>
+<p><strong>RULER Accuracy</strong>：合成长上下文检索/追踪任务答对比例，越高越好；适合看 needle retrieval，却不等于真实复杂软件工程成功率。<strong>PaperTrail</strong>：跨多篇科学文献找到人工嵌入的事实链，越高越好；比单 needle 更接近跨文档整合，但仍是构造任务。<strong>TTFT</strong>：从请求进入到首 token 出现的秒数，越低越好；受 prefill、排队和系统配置影响。<strong>TPOT</strong>：输出阶段平均每个 token 耗时，越低越好；本实验单请求，不能代表大批量吞吐。<strong>单层 prefill/decode speedup</strong>：相同硬件下基线耗时/新方法耗时，&gt;1 更快；不包含其余网络层。<strong>KV/index memory</strong>：应分开记账，LSA 只减少 indexer cache，未压缩原始 KV。<strong>Validation NTP loss</strong>：每 token 负对数似然，越低越好；接近不等于所有下游行为等价。<strong>FPS/energy/批量吞吐</strong>：Not Reported，不能填成推算结果。</p>
+<h3 class="section-heading" id="section-12">10. Results Deep Dive：8 个可核对的证据点</h3>
+<ol>
+<li><strong>10M 单层 GLM</strong>：相对原生 sparse attention，D-LSA prefill <strong>22.7×</strong>、decode <strong>4.6×</strong>；这最直接支持“索引器是瓶颈”。但仅是一层，不是整模型或所有请求规模的速度。</li>
+<li><strong>10M 单层 Qwen</strong>：相对 Full Attention，prefill <strong>72.4×</strong>、decode <strong>42.5×</strong>；数值很强，但 baseline 计算量更大，不能与 GLM sparse 基线横向混用。</li>
+<li><strong>H200 GLM CP8 端到端</strong>：10M 时原 TTFT <strong>451.5 s</strong>、TPOT <strong>17.9 ms</strong>，Flat LSA 分别快 <strong>2.24×</strong>、<strong>2.10×</strong>；换算约 201.6 s 和 8.5 ms。说明层级加速确实进入 wall-clock，但 TTFT 仍是分钟级。</li>
+<li><strong>H200 GLM TP8 端到端</strong>：10M 原 TTFT <strong>1300.9 s</strong>、TPOT <strong>18.9 ms</strong>，LSA 快 <strong>5.83×</strong>、<strong>1.91×</strong>；约 223.1 s 和 9.9 ms。TP8/CP8 之间基线本身差异巨大，必须锁定并行配置再比较。</li>
+<li><strong>H200 Qwen TP8+DCP8</strong>：10M Full TTFT <strong>4582.2 s</strong>、TPOT <strong>32.1 ms</strong>，Flat 快 <strong>9.21×</strong>、<strong>2.87×</strong>；约 497.5 s 与 11.2 ms。它证明可部署但远非“实时读完 10M”。</li>
+<li><strong>质量的正反两面</strong>：Qwen 10M RULER Flat <strong>63.9 vs Full 59.9</strong>，PaperTrail <strong>29.1 vs 19.8</strong>；但 GLM 10M RULER <strong>Tree 55.8 vs Flat 66.8</strong>，Tree 低 <strong>11.0 点</strong>。前者可能受采样/外推噪声影响，不代表稀疏比全注意力本质更准确；后者是非常明确的 tree retrieval failure。</li>
+<li><strong>索引内存</strong>：10M 每层 Flat LSA <strong>246 MiB</strong>，GLM sparse index <strong>331 MiB</strong>、QSA 风格 <strong>642 MiB</strong>；分别减少约 25.7% 和 61.7%。但 GLM 同条件原 KV 约 <strong>10 GiB/层</strong>，索引减少不能当作总显存减少 25.7%。</li>
+<li><strong>N-LSA native</strong>：128k validation loss <strong>1.085 vs Full 1.085</strong>；RULER 128k <strong>32.2 vs Full 34.7、NSA 19.2、PISA 14.6、SWA 3.0</strong>；单层训练 <strong>1.6×</strong>、全模型 decay <strong>1.24×</strong>，但峰值单层训练显存 <strong>6.8 vs 5.8 GiB</strong>。因此速度和质量收益伴随显存负担，是最重要的 trade-off。</li>
+</ol>
+<h3 class="section-heading" id="section-13">11. Table / Figure Reading：不只看最大数字</h3>
+<p><strong>Figure 2：稀疏注意力的隐藏成本。</strong> 横轴上下文从 512k 到 10M，纵轴同时展示 sparse/full speedup、indexer 时间占比和免费 indexer 的潜在收益。10M 处 98% 是“为什么要做索引层研究”的核心证据。它不证明聚类一定最好，只证明优化目标正确。</p>
+<p><strong>Figure 3 与 Table 2：结构与预算。</strong> Figure 3 左侧 Flat 的投影、pool、Ward、top-p、expand 是具体可实现的 dataflow，右侧 Tree 展示分层 beam；Table 2 的 64 维、512 block、k=4096、p=1024 等数字说明真正运行的是预算受限索引。不同 baseline 的 k 不完全一致，因此速度/精度比较应看整体 budget 而非只看模型名称。</p>
+<p><strong>Figure 5：质量曲线。</strong> 关注 Qwen 长上下文 Flat 的 RULER/PaperTrail 与 GLM Tree 在 &gt;1M 的明显掉点。论文虽强调“接近基线”，但在 GLM 2M–5M Flat 也可能落后最高 8 点，不能说每个长度都保真。异常点揭示“检索层次越深不一定越好”。</p>
+<p><strong>Figure 6 + Table 3：单层与整模型。</strong> Figure 6 是 one-layer speedup、索引内存、到 100M 的外推趋势；Table 3 是真实 SGLang TTFT/TPOT。100M &gt;90× 是 extrapolation，不是 100M 真机测量。Table 3 在 512k/1M 的某些配置出现 &lt;1×，说明索引 overhead 在短上下文可能抵消收益。</p>
+<p><strong>Figure 7 + Table 4：Native training 的证据链。</strong> 同数据同预算下验证损失、长上下文任务和训练耗时一起看，才能排除“纯牺牲质量换速度”。但峰值显存增加 1.0 GiB、native 只测 0.5B/128k，仍是限制而非可忽略的脚注。</p>
+<h3 class="section-heading" id="section-14">12. Ablation / Mechanistic Analysis</h3>
+<p><strong>去掉可学习投影</strong> → D-LSA Training-Free PCA 在 Qwen 上接近 Flat，但 GLM 落后，说明索引空间训练在已原生 sparse 的表示中更重要；不意味着 PCA 在任何模型都无效。<strong>Flat 换 Tree</strong> → 理论复杂度下降，却在 GLM 10M RULER 从 66.8 掉到 55.8；说明层级路由的 early-pruning 误差可能压过算力收益。<strong>缩小 k</strong> → 论文报告超过 1M 的质量更容易下降，因此长上下文预算选 4096；这是经验选择，不是最优性定理。<strong>增大 index dimension</strong> → 作者观察 64 以上收益不大，说明瓶颈未必在维度表达力；但更复杂 query 的反例尚待测试。<strong>Native 对比 SWA/NSA/PISA</strong> → 在 128k 同访问预算下明显优于位置型稀疏，支持语义聚簇的机制贡献；仍不能证明某个单独聚类细节的因果作用。<strong>不同并行方式</strong> → CP8/TP8 改变索引复制与通信路径，系统收益对部署拓扑敏感。</p>
+<h3 class="section-heading" id="section-15">13. Claim vs Evidence / Contribution</h3>
+<p><strong>Authors Claim</strong>：LSA 可以保留极长上下文质量并显著加速 prefill/decode；Tree 的索引复杂度为 O(log T) 每 query；Native 可只靠 NTP 训练。<strong>Experiments Actually Show</strong>：在两个具体预训练模型、10M-token 子集评测、H200/B300 和 SGLang 条件下，Flat D-LSA 具备可观端到端速度收益；约 0.5B 的 native 模型在 128k 近似 full accuracy。<strong>What Is Not Yet Proven</strong>：Tree 在 10M 仍保真、100M 的真实 wall-clock、长时间多租户大 batch、低成本 GPU 上的收益、真实 coding-agent 的任务完成率与模型规模迁移。</p>
+<p><strong>Contribution 1 [New Mechanism]</strong>：低维语义桶 + 可选分层搜索替代逐 key/逐位置块索引，核心新意是检索空间与组织方式的结合。<strong>Contribution 2 [New Objective/Adaptation]</strong>：D-LSA 冻结基座并蒸馏 attention distribution，KL 不是全新数学目标，创新是用于该 indexer。<strong>Contribution 3 [New Empirical Finding]</strong>：10M 下索引器 98% 时间和单层/端到端差距的系统量化。<strong>Contribution 4 [New Benchmark/Protocol]</strong>：PaperTrail 跨科学论文证据链，适合评估语义检索。<strong>Contribution 5 [New System/Engineering]</strong>：CuTe/Triton kernels、SGLang fork、CP/TP/EP 支持与可复现代码；属于重要工程贡献，而不是新的 attention 数学公式。</p>
+<h3 class="section-heading" id="section-16">14. Limitations &amp; Failure Modes</h3>
+<p><strong>Authors' Limitation</strong>：LSA 不减少原始 KV 存储；Tree 在 GLM 超过 1M 后质量明显掉；N-LSA 仅在 0.5B、128k、Flat 上验证；树在单请求 decode 上可能不划算。<strong>Additional Limitation</strong>：极长上下文评测使用抽样（&gt;1M 的 RULER 每任务仅 20 prompts），置信区间与任务方差不可忽略；10M 外推可能与训练位置分布不同；对需要精确字面匹配的代码符号、时间戳、数字 ID，语义中心可能不稳定；跨层复用索引、KV eviction、量化组合后的误差会叠加；动态追加、索引重建和多用户并发可能改变吞吐；H200/B300 专用优化的性能不能直接迁移到 8GB 4060；单层训练显存上升且低长度可能更慢。还要注意同一篇报告内“全局 attention 层加速”与“全模型含其它层”的分母不同。</p>
+<h3 class="section-heading" id="section-17">15. Reproduction View：先复现正确性，再追求 10M</h3>
+<p>官方仓库可核对的模块：<code>src/lsa/core</code>（bucket/selection）、<code>src/lsa/training/distillation</code>（索引投影）、<code>src/lsa/training/native</code>、<code>src/lsa/baselines</code>、<code>src/lsa/evaluation</code>、<code>src/lsa/sglang</code>。README 使用 Python 3.12、uv；先 <code>uv sync --locked --extra evaluation</code>，确认 <code>uv run lsa --help</code>。SGLang 插件需官方 fork，示例明确要求 <code>--disable-prefill-cuda-graph</code>，否则可能启动失败；服务日志必须出现 <code>armed</code> 才能确认不是误跑原 attention。官方复现使用 H200/B300 与特定 CUDA 容器，不要把单卡 4060 的玩具试验当作论文系统复现。</p>
+<p><strong>最小实验 A（功能）</strong>：选一个可在本机跑的开源小模型，固定 8k/16k/32k 输入，构造 100 个 needle/跨段关联问题，分别测 Full、4-token block flat、LSA flat，记录 answer accuracy、选中关键 token 的 recall@k、indexer 时间、attention 时间、peak memory；设 <code>d_idx ∈ {32,64}</code>、<code>k ∈ {256,512,1024}</code>、<code>bucket_size ∈ {8,16}</code>、<code>seed=3</code>。先用 cosine k-means/简化 Ward 的 Python 原型检查语义召回，再接 GPU kernel。<strong>最小实验 B（机制）</strong>：冻结相同 KV，比较位置块 vs 语义桶 vs 语义树，统计各自 false-negative retrieval 和平均搜索节点数，专门加入随机数字/代码符号反例。<strong>最先验证的 Claim</strong>：在相同 k 和相同问题集合下，语义桶比位置块找回更多关键位置；若这一步不成立，后续优化 kernel 没有研究意义。</p>
+<h3 class="section-heading" id="section-18">16. Research Value 七维评价</h3>
+<p><strong>Baseline Potential：高。</strong> 官方实现和真实系统指标使其适合作为长上下文索引基线，但必须同时保留原 sparse attention。<strong>Migration Potential：高。</strong> 可以把语义桶映射到 video frame features、agent memory、tool log。<strong>Systems Potential：很高。</strong> 现成 SGLang、CuTe/Triton、CP 支持可用来研究 cache/检索联合优化。<strong>Attack Potential：中高。</strong> 对簇中心进行语义污染，制造 top-p 误召回。<strong>Evaluation Potential：高。</strong> 关键证据 recall@k 与 TTFT/TPOT 可同时评估。<strong>Benchmark Potential：高。</strong> PaperTrail 思路可改成跨工具轨迹的证据链。<strong>New Paper Potential：中高。</strong> 只改桶大小创新不足；若提出可证明的误差/成本自适应路由，并在真实长时 Agent/Video 流上验证，有更强价值。</p>
+<h3 class="section-heading" id="section-19">17. Migration Analysis（两条可直接动手的路线）</h3>
+<p><strong>Migration A：Video VLM 的 query-aware temporal bucket routing。</strong> <strong>Original Problem</strong>：10M 文本 key 的索引扫描。<strong>Transferable Mechanism</strong>：低维语义桶、top-p 查询、局部窗口兜底。<strong>New Research Question</strong>：长视频问答能否在不漏短暂事件的情况下，将 frame/token 检索由全量扫描改为语义桶检索？<strong>Method Modification</strong>：对每帧 8–32 个 visual tokens 先池化为 frame key，按语义聚簇；保留最近帧、场景切换帧、query 相关 top-p 桶；将检索结果还原成原视觉 token 给冻结 VLM。<strong>Minimum Experiment</strong>：用 Qwen2.5-VL-3B 或同量级开源 Video VLM，LongVideoBench/MVBench 的可获取子集 200 QA，采样 1/2 FPS，视频长度按 2/5/10 分钟分组；比较 uniform frames、query-aware top-k cosine、位置块聚合、语义桶 flat/tree；每组固定 32/64/128 帧预算、3 seeds，记录 accuracy、event-recall、frames、visual tokens、prefill latency、TTFT、peak GPU、indexer time。<strong>Model</strong>：Qwen2.5-VL-3B。<strong>Dataset</strong>：LongVideoBench、MVBench（按许可获取）。<strong>Baseline</strong>：uniform、cosine top-k、block sparse。<strong>Metric</strong>：QA accuracy、关键事件 recall、wall-clock speedup、显存。<strong>Expected Contribution</strong>：联合评价视觉证据召回与真实加速的新索引方法。<strong>Risk</strong>：视觉特征跨镜头分布漂移，关键瞬间被平均。<strong>Collision Risk</strong>：高；与现有 query-aware frame selection、video token pruning、PREM 等相邻，必须证明索引复杂度/精度前沿有新增量。</p>
+<p><strong>Migration B：Agent trace 的可追溯长记忆检索。</strong> <strong>Original Problem</strong>：长序列检索成本。<strong>Transferable Mechanism</strong>：语义桶 + 原始 key 索引表。<strong>New Research Question</strong>：能否在保留证据出处的前提下，让 Agent 从几十万条 tool history 中低成本定位可复用步骤？<strong>Method Modification</strong>：以 <code>(tool, args, observation, timestamp, task_id)</code> 为最小可追溯事件；事件 embedding 建桶，但检索返回完整原始事件及因果上下文，不只返回 summary；保留最近窗口和高风险错误事件。<strong>Minimum Experiment</strong>：在 100/1k/10k 条合成+真实工具轨迹中注入 1–3 跳依赖，设计 300 问；比较 BM25、dense flat retrieval、summary-only memory、bucket flat/tree；固定召回预算 2k/4k/8k tokens，测 exact evidence recall、citation correctness、answer accuracy、retrieval ms、峰值内存；单独对相似错误消息和恶意记录施压。<strong>Model</strong>：Qwen3-4B 或可用等量开源模型。<strong>Dataset</strong>：公开 Agent trajectories + 可控合成工具日志。<strong>Baseline</strong>：BM25、FAISS flat、summary-only。<strong>Metric</strong>：recall@budget、success、latency、provenance precision。<strong>Expected Contribution</strong>：索引层与证据链联动的长时 Agent Memory 系统。<strong>Risk</strong>：embedding 相似不等于因果可用，历史工具状态已过期。<strong>Collision Risk</strong>：中高；必须与现有 episodic memory/trajectory retrieval 区分，突出动态索引成本与证据完整性。</p>
+<h3 class="section-heading" id="section-20">18. Attack / Verification Lens 与 9 句话记忆卡</h3>
+<p>可构造 <strong>cluster hijack</strong>：在长日志中注入大量与查询相似但事实错误的文本，观察 top-p 桶是否被占满；可做 <strong>rare-token probe</strong>：同义背景中嵌唯一数字 ID，测检索是否漏掉；可做 <strong>length stress</strong>：固定答案位置、背景从 8k 扩到 1M，分解 indexer time 与真实 TPOT；可做 <strong>recovery test</strong>：删除或扰动关键桶后增加 k/p 是否恢复答案。建议新指标 <code>evidence recall / indexer millisecond</code> 与 <code>TTFT@fixed accuracy</code>，不要只看 FLOPs。</p>
+<p><strong>只记住这篇的九句话。</strong> ① Sparse attention 的 indexer 可能比 attention 本体更慢。② LSA 在低维空间按语义聚 key，不只按时间切块。③ Bucket cache 存中心和原始位置，主 KV 不丢。④ Flat 有常数收益，Tree 才有理论亚二次检索。⑤ D-LSA 用 teacher attention 的 forward KL 蒸馏小投影。⑥ N-LSA 用原生 key、max-head 路由和 NTP loss。⑦ 10M 单层的几十倍不等于端到端几十倍。⑧ GLM Tree 的 11 点掉分是不能忽略的失败。⑨ 下一步最有价值的是 query-aware 视觉/Agent 检索的证据召回—延迟联合优化。</p>
+<hr/>
+<h2 class="section-heading" id="paper-2">Paper 2 · Ask on Demand (AOD)</h2>
+<h3 class="section-heading" id="section-22">1. 基本信息与一句话定位</h3>
+<p><strong>Title</strong>：Ask on Demand: Targeted Peer Communication for Parallel Agentic Systems。<strong>Authors</strong>：Haofu Yang、Hongyang Yin、Ran Bi、Faguo Wu、Peng Xue、Feng Zhou、Han Zhang。<strong>Affiliation</strong>：Beihang University、Tsinghua University、China Telecom Artificial Intelligence Technology (Beijing) Co., Ltd.。<strong>Date</strong>：2026-10-30 v1；2026-11-02 arXiv 最新公告。<strong>Venue/Status</strong>：arXiv preprint，未查到可核实会议录用。<strong>Paper</strong>：<a href="https://arxiv.org/abs/2610.41378" rel="noopener noreferrer" target="_blank">arXiv</a> / <a href="https://arxiv.org/html/2610.41378v1" rel="noopener noreferrer" target="_blank">HTML</a> / <a href="https://arxiv.org/pdf/2610.41378" rel="noopener noreferrer" target="_blank">PDF</a>。<strong>Code</strong>：截至本次核查未确认作者官方公开仓库，不能把第三方论文索引算作代码。<strong>Project</strong>：未确认独立页面。</p>
+<p><strong>一句话定位</strong>：让并行 Agent 在“当前真的需要”时向最相关的同伴索取带出处的历史证据，并通过同状态 approve/deny 的配对未来 rollout 学会何时通信值得花钱。</p>
+<h3 class="section-heading" id="section-23">2. 人话版（问题—方法—结果—价值）</h3>
+<p>多个 Agent 同时完成复杂任务时，每个 Agent 都会走不同的工具路径，发现别人尚不知道的事实。最直接的共享办法是定时广播，或者先把轨迹压成共享记忆；问题是：一个细节在产生时看起来不重要，到了另一位 Agent 决策时却可能成为关键证据。AOD 把共享从“生产者提前决定要说什么”改成“消费者遇到问题才提出 need/known/decision”。一个小 gate 先判断这次求助是否值得，再用 BM25 从其他 Agent 已完成的工具记录里找到合适同伴，要求它根据原始证据给出可引用回答。gate 的训练标签不是人工猜“问题是否有用”，而是从相同团队状态分叉出“批准求助”和“拒绝求助”，比较最终团队结果与后续 token 成本。论文在 AppWorld、WebShop 观察到增益，但也有小模型上不如 LTS 的明确弱项。最重要的迁移价值是：<strong>通信价值应该用它改变了什么未来行为来定义，而不只是文本相关性</strong>。</p>
+<h3 class="section-heading" id="section-24">3. Background &amp; Research Gap：共享不是越多越好</h3>
+<p>Parallel Agent 的优势来自多样探索：同一任务可能有多个 API 路径、搜索词、验证策略。如果三位 Agent 各自跑完再挑答案，Independent 能保持多样性，却会重复碰壁；PeriodicShare 定时广播能减少重复，但无论接收者是否需要，都消耗上下文，还可能把所有人拉向同一个错误线索。LTS 把部分中间步骤写入共享记忆，AgentFugue 先压缩 episode 再按意图检索，效率更好，但它们仍在记录产生时做信息筛选或摘要，可能丢掉将来才重要的参数和错误日志。</p>
+<p>具体例子：任务是从邮件中找一份歌曲清单。Agent A 搜索“road trip”失败，Agent B 在邮件标题“For the drive”中发现歌曲清单，Agent C 在日历中寻找活动。B 的发现如果在初期被摘要成“找到一封旅行相关邮件”，其准确标题、邮件编号、工具返回片段可能丢失。A 到后面需要精确搜索词时，才知道“邮件标题”是关键。此时按需向 B 问“我用 road trip 没结果，应该搜哪个标题”，比所有人定时接收 B 的长日志更合适。论文 Figure 2 就采用类似例子。</p>
+<p>Research Gap 不是“Agent 之间不会发消息”，而是<strong>什么时候发、发给谁、发什么证据、该用谁的最终收益衡量</strong>。作者的贡献集中在这些控制问题，不是训练一个更强的基础 LLM，也不是多 Agent 通用通信的首创。</p>
+<h3 class="section-heading" id="section-25">4. Core Insight：请求的价值是反事实团队收益</h3>
+<p>作者提出两个可分离的假设。<strong>信息相关性</strong>：在请求者明确 need/known/decision 后，从同伴历史检索相关片段，比预先统一压缩更不容易漏掉局部证据；BM25 只决定“谁可能知道”。<strong>行为价值</strong>：相关不等于值得问。即使 B 有答案，A 可能马上自己发现，或者求助使团队过度集中、总 token 增多。因此真正的监督应比较“现在问”与“现在不问”对团队终局的影响。后者属于基于受控分叉的经验反事实估计，优于单纯按问答相关性标注，却不是无假设的因果证明：未来随机性、环境回放完整性、最终候选选择器都会影响估计。</p>
+<p>这里还有一个微妙的目标选择。论文最终团队输出由 Agent 自报 confidence 选择，而不是 oracle 选最佳。若一个求助改善了 Agent B 的真实答案，却使另一个错误 Agent 更自信，最终团队 reward 可能下降。gate 学到的是<strong>在固定 selector σ 下的边际通信价值</strong>，而非通信对所有候选质量的纯净影响。这既是合理的部署目标，也是容易被忽视的依赖。</p>
+<h3 class="section-heading" id="section-26">5. Method Deep Dive：在线决策与离线门控训练两条链</h3>
+<div class="pipeline">在线：Task u + K 条独立轨迹 → Agent 提出 ask_peer(need, known, decision) → Qwen3-0.6B gate APPROVE/DENY → BM25 选择 peer → 只读已完成工具证据 → 冻结 answerer 生成带引用答复 → 请求者执行工具 → 最终 confidence selector 选结果</div>
+<p><strong>Step 1：保留多条局部状态。</strong> K 个 Agent 在同一任务的独立环境副本中探索，每个有 h_{k,t}，包含自己的工具历史和此前收到的答复。不同副本的环境状态并不共享，避免一个 Agent 的修改直接破坏另一个的执行。错误传播主要通过信息而不是共享执行状态发生。</p>
+<p><strong>Step 2：请求由任务 Agent 自己提出。</strong> <code>ask_peer</code> 是可用工具，模型在需要时产生三元组 <code>(need, known, decision)</code>：缺什么、目前确证什么、拿到回答会如何改变下一步行动。gate 不改写请求，避免它同时成为问题生成器和价值判别器。若任务模型根本不会提出高价值请求，gate 无法凭空发现；这限制了方法的上限。</p>
+<p><strong>Step 3：gate 决定是否付通信费。</strong> 共享的 0.6B 模型只读请求与请求者局部上下文，输出 APPROVE 或 DENY。拒绝意味着本次不问，不阻止后续再问。批准后才进入同伴检索和回答，节省不必要的模型调用。gate 本身也是 token 开销的一部分，论文把辅助模型调用纳入团队成本。</p>
+<p><strong>Step 4：peer selection。</strong> 只索引其他 Agent 到当前时刻已经完成的记录，正在运行的 action 和未来记录不能偷看；并且排除同伴此前收到的其他 Agent 回复，减少二手传播。BM25 在各同伴的 passage 中找最高相关项，选择一个 peer，而不是广播给全部。BM25 词面匹配对工具错误码、API 名称可能很有效，但对同义语义和多跳依赖较弱。</p>
+<p><strong>Step 5：evidence-grounded answering。</strong> 选中的 peer 使用冻结 answerer，输入任务、请求、受 token budget 限制的证据片段，返回带引用的简短回答；不新执行工具、不打断其工作。请求者可以核对引用，并在自己的环境中执行。若证据不足应返回 insufficient/partial，而不是编造确定答案。机制上它把“谁有证据”与“如何用证据”拆成检索和生成两步。</p>
+<p><strong>Step 6：训练数据不是离线问答对。</strong> 先让团队用行为策略 π_b 跑完整任务并记录请求，选取部分请求；在 gate 决策前保存完整团队状态 s（历史、环境、预算、已完成记录），通过重放已有模型输出恢复前缀，验证 pending request 与状态一致。再从相同 s 分叉，唯一初始干预是批准或拒绝当前请求。每支继续运行整个团队到终止。若环境回放不一致，这个标签就不可信。</p>
+<p><strong>Step 7：paired continuation 与自适应采样。</strong> 两支使用相同随机种子；后续其他请求按统一 π_p 以概率 p 批准（默认 0.5）。初始请求固定批准/拒绝，不受 p 影响。每请求先 5 对 rollout，若估计不稳定增加到 10/15/20 对。比较的是从分叉后产生的 team reward 与 suffix tokens，既避免把已经花掉的前缀成本算进决策，也使标签更接近边际价值。</p>
+<p><strong>Step 8：转成监督标签并训练 gate。</strong> 如果批准带来正的团队 reward 差，标 APPROVE；reward 基本持平时，只有批准使后续 token 更少才标 APPROVE；否则 DENY。依据配对数量和标准误给权重，最多 20 对仍不稳定再乘 0.25；保留全部 APPROVE，抽样 DENY。最后只对 Qwen3-0.6B 的决策 token 做加权交叉熵全参数微调。任务模型、peer answerer 不更新。推理时不再运行昂贵的 paired rollout，这把训练成本换成了便宜的 gate 调用。</p>
+<h3 class="section-heading" id="section-27">6. 核心公式、RL/因果直觉与 reward 风险</h3>
+<div class="formula">πθ(a | xᵢ,ₜ), a ∈ {APPROVE, DENY}； xᵢ,ₜ = (qᵢ,ₜ, requester-local context)<br/>qᵢ,ₜ = (need, known, decision) = M(hᵢ,ₜ)</div>
+<p>这是二元通信策略，不是训练任务 Agent 的 token-level RL policy。<strong>State</strong> 是 gate 可见的请求者局部上下文；<strong>Action</strong> 是批准/拒绝；<strong>Policy</strong> 是 Qwen3-0.6B；<strong>Trajectory</strong> 是之后整个团队的交互；<strong>Reward</strong> 是经固定 confidence selector 选出的最终任务得分；<strong>Credit Assignment</strong> 是比较同一状态的两种 gate 动作。没有用 PPO/GRPO 优化 gate；最终训练是 supervised weighted cross entropy，因此不能把它宣传成“新的 PPO objective”。</p>
+<div class="formula">ΔRₚ(s,q) = E[R | s,q,APPROVE,πₚ] − E[R | s,q,DENY,πₚ]<br/>ΔCₚ(s,q) = E[C_suffix | s,q,APPROVE,πₚ] − E[C_suffix | s,q,DENY,πₚ]<br/>估计：ΔR̂ = (1/n) Σₗ (Rᴬₗ − Rᴰₗ)，n∈{5,10,15,20}</div>
+<p>两分支共享种子降低方差，n 自适应防止把高噪声请求误判成好请求。p 控制后续通信政策，所以 ΔRₚ 不是脱离部署策略的永恒属性；换一个团队、工具分布或未来沟通概率，当前求助的边际价值可能反转。相比把 reward 平均分给所有步骤，配对干预更精确地归因于一个具体 ask_peer 决策，但仍受到非确定性和 selector 的干扰。</p>
+<div class="formula">y = APPROVE if ΔR̂ &gt; ε； else APPROVE if |ΔR̂|≤ε and ΔĈ &lt; −ε； else DENY<br/>L(θ) = − [1/Σwₘ] Σₘ wₘ Σᵣ log pθ(zₘ,ᵣ | xₘ,zₘ,&lt;ᵣ)； ε=10⁻⁹</div>
+<p>这个规则是<strong>词典序 reward-first、cost-second</strong>，不是常见的 <code>R − λC</code> 连续效用。只要估计 ΔR 为微小正数，即使 token 成本暴涨也会批准；ε 仅是浮点容差而非统计显著性阈值。这会带来 reward hacking/噪声过拟合风险，尤其在小样本 stochastic benchmark 上。权重 w 把 rollout 不稳定性降权，但标签仍取均值符号，未明确使用置信区间显著性来否决小效应。一个更稳健的后续研究是显式成本权衡、保守下界或双目标 Pareto gate。</p>
+<h3 class="section-heading" id="section-28">7. Toy Example：一次求助怎样改变整个团队</h3>
+<p>构造教学用三 Agent 邮件任务。Agent A 的本地状态为 <code>search("road trip") → no result</code>；B 已读到邮件 <code>[B:14] subject="For the drive"</code>；C 正在看日历。A 提出 <code>need=哪封邮件有歌曲清单; known=road trip 搜索失败; decision=换用哪个标题搜索</code>。BM25 给 B 片段 0.82、C 0.41，若 gate APPROVE，B 回答“搜 For the drive，证据 [B:14]”，A 搜索后完成任务。若 DENY，A 可能再尝试几个词，也可能失败。现在从同一 s 跑五对：假设 approve 的团队得分是 [1,1,1,0,1]，deny 是 [1,0,0,0,1]，则 ΔR̂=(4−2)/5=+0.4；后续 token approve 平均 800、deny 600，ΔĈ=+200。标签仍为 APPROVE，因为 reward 优先。另一个请求“天气是什么”即使 BM25 能回答，假设两分支最终 reward 相同，而批准多花 300 tokens，标签为 DENY。这个例子区分了<strong>相关性分数</strong>与<strong>行动价值标签</strong>，数字仅用于解释，不是论文实测。</p>
+<h3 class="section-heading" id="section-29">8. Baseline Deep Comparison 与 strongest baseline</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Baseline</th>
+<th>为什么合理</th>
+<th>在该 setting 的问题</th>
+<th>AOD 的变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Independent</strong></td>
+<td>多条独立轨迹，探索多样性最好理解</td>
+<td>彼此重复查错、无法复用证据</td>
+<td>在需要时建立定向信息通路</td>
+</tr>
+<tr>
+<td><strong>PeriodicShare</strong></td>
+<td>简单定期广播，容易部署</td>
+<td>无差别传递、token 开销、同质化</td>
+<td>gate 过滤请求，单 peer 回答</td>
+</tr>
+<tr>
+<td><strong>LTS (Adapted) — 4B AppWorld strongest baseline</strong></td>
+<td>共享关键中间步骤，避免重复发现</td>
+<td>写入时可能提前压缩/选择</td>
+<td>AOD 改为读时检索，但在小模型该任务并未全面胜出</td>
+</tr>
+<tr>
+<td><strong>AgentFugue (Adapted) — 35B AppWorld 最强共享对手</strong></td>
+<td>episode 压缩 + 按意图检索，兼顾成本</td>
+<td>摘要遗漏细节，且成本优势部分来自上下文压缩</td>
+<td>从原始已完成记录按需回答；与其成本比较并非完全控制变量</td>
+</tr>
+<tr>
+<td><strong>Autonomous / AOD-Prompt</strong></td>
+<td>允许全部请求或用未训练 gate，检验是否需要学门控</td>
+<td>不区分帮助是否有团队价值</td>
+<td>配对 rollout 学习 gate，属于训练机制改动</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>strongest baseline 是分 setting 的</strong>：35B AppWorld selected TGC 最接近的是 AgentFugue 59.72；4B AppWorld LTS TGC 31.39、SGC 12.50 甚至优于 AOD 31.11、10.83；35B WebShop LTS TS 69.16、SR 43.50 最接近；因此不能笼统称 AOD 每列 SOTA。本文的创新是信息流方向与门控训练，不是 BM25 本身的新算法。</p>
+<h3 class="section-heading" id="section-30">9. Experiment Setup 与 Metrics 教学</h3>
+<p><strong>Datasets</strong>：AppWorld 120 tasks、40 scenarios，测试跨应用 stateful API；WebShop 200 shopping tasks，测试搜索和满足购买约束。<strong>Task Models</strong>：Qwen3.5-35B-A3B 与 Qwen3.5-4B；<strong>Gate</strong>：Qwen3-0.6B，只用 35B 轨迹训练、在同一 benchmark 内跨 task model 共享；<strong>K</strong>：默认三 Agent，另测 K=5/7/9；<strong>Seeds</strong>：三次。LTS 与 AgentFugue 的 adapted 版本使用冻结 DeepSeek-V4-Pro controller；不同基线的上下文管理不完全一致。<strong>Training</strong>：每请求 5–20 paired rollout、p 默认 0.5；没有足够可核实的总训练 GPU-hour 和精确 train/test split 细节，记作 Not Reported，而不是估计。</p>
+<p><strong>Research Question A</strong>：AOD 是否比独立并行和共享记忆提高最终被选中的任务表现？<strong>B</strong>：成本是否小于广播与共享内存？<strong>C</strong>：训练 gate、相关 peer、生成答案各自贡献多少？<strong>D</strong>：信息共享是否牺牲探索多样性？<strong>E</strong>：三 Agent 学到的 gate 能否泛化到更多 Agent？</p>
+<p><strong>TGC</strong>（Task Goal Completion）是 AppWorld 的任务目标完成度，越高越好；可部分完成但不等于整个场景成功。<strong>SGC</strong>（Scenario Goal Completion）反映场景级目标完成，越高越好，通常更严格。<strong>TS</strong>（Task Score）是 WebShop 按商品匹配条件的评分，越高越好；一个高分但未满足全部条件的商品未必算成功。<strong>SR</strong>（Success Rate）是满足成功标准的任务比例，越高越好。<strong>Oracle@K</strong> 用真实 benchmark feedback 从 K 条候选中挑最佳，是候选上限而非可部署选取器；与 selected 指标差距揭示 confidence selection 失效。<strong>Cost</strong> 是所有 task/auxiliary LLM 的 input+output tokens，越低越好；不计 BM25、存储、网络、等待时间，因此不等于 wall-clock latency 或美元账单。<strong>Exploration Diversity D</strong> 是 Agent 两两资源集合的 Jaccard distance 均值，越高代表路径更不同，却不一定更好；<strong>Coverage</strong> 是团队访问不同资源的并集大小，越高不代表全部访问有用。多指标必须联合看。</p>
+<h3 class="section-heading" id="section-31">10. Results Deep Dive：8 个带对比的结果</h3>
+<ol>
+<li><strong>35B AppWorld selected TGC</strong>：AOD <strong>62.78</strong>，Independent <strong>53.89</strong>，+<strong>8.89</strong> 点；对最强 AgentFugue <strong>59.72</strong>，+<strong>3.06</strong> 点。支持按需通信有效，但仅三种 seed、120 tasks，误差与样本选择需要关注。</li>
+<li><strong>35B AppWorld SGC</strong>：AOD <strong>38.33</strong>，Independent <strong>30.00</strong>，+<strong>8.33</strong>；AgentFugue <strong>32.50</strong>，+<strong>5.83</strong>。比 TGC 更接近端到端成功，是该 setting 最有价值的提升。</li>
+<li><strong>35B WebShop</strong>：TS <strong>70.27 vs LTS 69.16</strong>（+1.11）；SR <strong>45.50 vs LTS 43.50</strong>（+2.00）。有改善但幅度不大，不能过度解读为广泛能力飞跃。</li>
+<li><strong>4B AppWorld failure</strong>：AOD selected TGC <strong>31.11 vs LTS 31.39</strong>（−0.28），SGC <strong>10.83 vs 12.50</strong>（−1.67）。作者主文 Table 1 明确显示 AOD 并非全面胜过最强基线；弱模型可能更难形成高质量请求或利用回答。</li>
+<li><strong>4B Oracle@3 的选择差距</strong>：AOD AppWorld Oracle TGC <strong>38.06</strong>、selected <strong>31.11</strong>，差 <strong>6.95</strong> 点；LTS Oracle <strong>35.28</strong>、selected <strong>31.39</strong>，差 <strong>3.89</strong> 点。AOD 能产生更好的候选，却更难用 confidence 选出来，提示新研究可转向 selector calibration。</li>
+<li><strong>Gate 消融（35B AppWorld）</strong>：Autonomous <strong>56.67/31.67</strong>（TGC/SGC）、AOD-Prompt <strong>57.50/33.33</strong>、训练 gate <strong>62.78/38.33</strong>；成本倍数 <strong>1.13/1.11/1.09</strong>。说明不仅“能问”，学会筛选何时问才重要。</li>
+<li><strong>Peer/Answer 消融的反例</strong>：AppWorld Random Peer SGC <strong>30.00</strong>、直接 Evidence-Based <strong>40.50</strong>、AOD 生成回答 <strong>38.33</strong>。生成答案比原始检索片段低 <strong>2.17</strong> 点，说明 LLM answerer 可能丢信息或引入偏差；但 AOD TGC <strong>62.78</strong> 高于 Evidence-Based <strong>60.00</strong>，呈现指标 trade-off。</li>
+<li><strong>K 扩展的强弱</strong>：K=7 AppWorld SGC <strong>42.50 vs Independent 25.00</strong>（+17.50），是很强的团队协作信号；但 K=9 WebShop SR <strong>44.50 vs Independent 46.00</strong>（−1.50），即使 TS <strong>72.30 vs 70.51</strong> 更高，不能声称每个规模每个指标均改善。K=7/9 WebShop tokens 由 <strong>0.816→0.748M</strong>、<strong>1.084→1.005M</strong>，说明团队变大后仍可能省模型 token。</li>
+</ol>
+<h3 class="section-heading" id="section-32">11. Table / Figure Reading：重点看反例</h3>
+<p><strong>Figure 1（概念对照）</strong>：左边是共享内存提前摘要，右边是按需向同伴索取带证据答复。图说明设计动机，不是性能证据；“共享一定导致错误传播”不能从概念图推出。</p>
+<p><strong>Figure 2（在线/离线双环）</strong>：上半是 requester→gate→BM25→peer→evidence→tool；下半是保存状态、approve/deny 分叉、比较终局、gate SFT。注意图中 0.81 vs 0.64 的 reward 和 1.2K vs 0.6K tokens 是示意，不应误写为 benchmark 实验结果。</p>
+<p><strong>Table 1（主表）</strong>：按两个 task model、两个 benchmark、selected 与 Oracle 分列。必须看 4B AppWorld AOD 低于 LTS 的两列，以及 4B Oracle 明显高于 selected；不能只复制表格 Improvement 正值。三 seed 的均值与标准差不足以支持所有小幅差异显著。</p>
+<p><strong>Figure 3（token cost）</strong>：是相对 Independent 的全团队 token 百分比，而非秒数或 FLOPs；AgentFugue 对已完成 context 进行摘要替换，比较条件不完全等价。AOD 在 35B WebShop 和 4B AppWorld 可同时改善表现并节省 token，但在 35B AppWorld 相对 Independent 成本倍数为 1.09，并非处处省 token。</p>
+<p><strong>Table 2 / Table 3（组件消融）</strong>：Table 2 证明训练 gate 的必要性；Table 3 的 Evidence-Based AppWorld SGC 40.50 &gt; AOD 38.33 是“生成摘要不总比原证据好”的关键反例。若做复现，必须单独保留原始证据直传 baseline。</p>
+<p><strong>Figure 4 + Table 4（多样性与规模）</strong>：Figure 4 同时展示 pairwise Jaccard diversity 与 team coverage；在 WebShop，AOD diversity 可能略低但覆盖更多产品。Table 4 K=9 WebShop SR 下降提醒我们扩展团队不自动改善严格成功率。</p>
+<p><strong>Figure 5/6（监督敏感性）</strong>：后续请求批准概率 p=0.5 整体较平衡，WebShop p=0.25 的 TS 略高，但 p=0.5 的 SR=45.50 更好且 token 更少；team reward 优于 requester reward（WebShop SR 42.50→45.50）。这证明 reward target 会改变学习方向，却没有穷尽所有 p 或成本权重。</p>
+<h3 class="section-heading" id="section-33">12. Ablation / Mechanistic Analysis</h3>
+<p><strong>去掉 learned gate → Autonomous 全部执行请求</strong>：35B AppWorld TGC 62.78→56.67，SGC 38.33→31.67，成本 1.09→1.13；gate 的作用不是生成更好内容，而是过滤无效通信。<strong>换成 pretrained prompt gate</strong>：TGC 降 5.28 点，说明 outcome-supervision 比一般“是否应该问”的语义判断更适合团队目标。<strong>随机 peer</strong>：AppWorld SGC 降 8.33、WebShop SR 降 5.00，验证证据定位有实质贡献。<strong>生成回答换成原证据</strong>：AppWorld SGC 反而升到 40.50，说明 answerer 的加工并非严格单调增益。<strong>team reward 换 requester reward</strong>：WebShop SR 从 45.50 降至 42.50，支持集体目标的必要性，但也依赖固定 selector。<strong>K=3 训练→K=5/7/9</strong>：多数 selected 指标有益，K=9 WebShop SR 却回落。<strong>p=0.25/0.5/0.75</strong>：默认 0.5 综合较好，但不是证明全局最优。上述是受控组件比较，能支持模块有用，却不能自动证明 BM25 相关性和最终成功存在严格因果链。</p>
+<h3 class="section-heading" id="section-34">13. Claim vs Evidence / Contribution</h3>
+<p><strong>Authors Claim</strong>：按需定向通信提升并行 Agent 表现，学到的 gate 兼顾推理成本与团队收益，跨模型和团队规模有效。<strong>Experiments Actually Show</strong>：在 AppWorld 120 tasks 和 WebShop 200 tasks、两个 Qwen3.5 task model、三 seed、默认 K=3 及 K≤9 的测试里，相比 Independent 多数任务指标更好；对共享基线存在小模型 AppWorld 和 K=9 WebShop SR 反例。<strong>What Is Not Yet Proven</strong>：在 SWE-bench、真实企业多 Agent 长时工作流、异构模型团队、异步环境、共享外部状态、强对抗工具输出下是否可靠；训练时的配对 rollout 费用能否被未来部署节省抵消；gate 的价值估计是否对未来政策变化鲁棒；端到端 wall-clock 与美元成本是否下降。</p>
+<p><strong>Contribution 1 [New Mechanism]</strong>：消费者按需发起 <code>need/known/decision</code>，从原始 peer 记录选择单人证据回答；创新是消息方向、时机和证据绑定的组合，BM25 与 RAG 本身非新。<strong>Contribution 2 [New Objective/Protocol]</strong>：从同状态 approve/deny paired continuation 估计通信边际 team reward 与 suffix cost；paired rollout 思路有前作，价值在将其用于通信 gate 并结合团队选择。<strong>Contribution 3 [New Empirical Finding]</strong>：信息共享收益不等于多样性最大化，team reward supervision 比 requester reward 更有用。<strong>Contribution 4 [New Evaluation]</strong>：联合 selected/Oracle、Diversity/Coverage、token cost 和 team size，评价更接近真实团队机制。<strong>Contribution 5 [New System/Engineering]</strong>：冻结 task/answerer，仅训练小 gate 的模块化架构，部署改动较轻。</p>
+<h3 class="section-heading" id="section-35">14. Authors' / Additional Limitations 与失败传播</h3>
+<p><strong>Authors' / 正文可见限制</strong>：论文只验证两个交互基准、两种 task model；selected 与 Oracle 存在明显差距；成本只计模型 tokens，AgentFugue 的压缩使横向比较不完全同构；一些消融出现 Evidence-Based 更强和小模型更弱。论文正文没有给出可直接核对的全量训练耗时与官方代码链接。<strong>Additional Limitation</strong>：并行环境若不支持 deterministic replay，approve/deny 的差异可能混入外部事件；每个请求 5–20 对完整团队 rollout 可能非常昂贵；正负样本重采样会影响部署校准；ε=1e-9 不是统计置信阈值，微小 reward 差可能导致过度批准；BM25 对同义词和跨模态证据检索弱；同伴证据可能过时、恶意或来自错误工具，带 citation 也不保证真实；只选择一个 peer 可能错过互补证据；长任务中旧回答进入请求者 history，后续被当作已知事实，错误会通过 memory→planning→tool→environment 连锁放大；自报 confidence 可能与正确率脱钩。</p>
+<p><strong>Failure Propagation 具体链</strong>：B 的工具返回一个伪造的邮件标题 → BM25 由于词面高度相关选中 B → answerer 引用这个错误记录 → A 把它写入自己的 <code>known</code> → 下一步 API 查询错误对象 → 最终 A 高 confidence 但失败 → selector 选中错误答案。训练 gate 只学“历史上批准是否改善团队”，并没有对单条证据的真实性做因果验证。因此安全防线应该放在 evidence provenance、跨工具验证、低信任源隔离和最终 selector 校准上，而不是仅提高 gate approval accuracy。</p>
+<h3 class="section-heading" id="section-36">15. Reproduction View：在没有官方代码时如何做最小版本</h3>
+<p>最关键模块为 <code>ask_peer</code> schema、每 Agent event log、BM25 index、peer chooser、evidence answerer、state snapshot/replay、paired continuation runner、gate labeler、Qwen3-0.6B SFT、confidence selector、evaluation harness。推荐先不用完整 AppWorld：在一个支持可重置状态的 WebShop 小任务集上跑 K=3，冻结同一个 4B task model，先实现 Independent 和 Always-Approve 两组，再实现 BM25 原证据直传，最后训练 gate。记录每条事件的 <code>(agent_id, tool_call_id, timestamp, raw_observation, source, parent_ids)</code>，严格过滤未来事件与其他 Agent 的二手回复。</p>
+<p><strong>最小配置</strong>：选 50 个 WebShop tasks 做 train、另 50 个 held-out 做 eval（仅为复现起点，非论文官方 split）；K=3；每任务相同 max_steps 和 token budget；训练请求每个最多抽 2 条，先 5 对 shared-seed rollout，预算允许增至 10；后续 p=0.5；标签 reward-first/cost-tie；比较 gate pretrained、always approve、trained gate；报告 TS、SR、Oracle@3、team tokens、请求率、有效请求率、BM25 evidence recall、回放一致率、wall-clock。<strong>先跑的实验</strong>：同状态分叉的 20 个手工可验证请求，逐个检查批准分支确实只改变当前通信决策，证明日志回放正确，再扩展到 100+ 请求。<strong>最容易踩坑</strong>：不同分支工具随机性不同、并行调用时序泄漏、缓存共享造成隐性状态污染、token 统计漏算 answerer、训练标签与 eval tasks 交叉、confidence selector 实现不一致。若不能可靠 replay，宁可先研究固定离线状态的 pairwise value，不要声称严格复现论文。</p>
+<h3 class="section-heading" id="section-37">16. Research Value 七维评价</h3>
+<p><strong>Baseline Potential：高。</strong> 适合作为 multi-agent selective communication baseline，但缺官方代码会增加复现成本。<strong>Migration Potential：很高。</strong> paired continuation 能迁移到 memory write、tool selection、agent handoff、video frame retrieval。<strong>Systems Potential：中高。</strong> 只训 0.6B gate 适合模块化服务，但需要量化排队和检索成本。<strong>Attack Potential：很高。</strong> 可以研究伪造证据、请求诱导、confidence 污染与多 Agent 传播。<strong>Evaluation Potential：很高。</strong> selected-vs-Oracle gap、counterfactual ΔR、citation validity 可组成机制评测。<strong>Benchmark Potential：高。</strong> 可以构造带 provenance 的工具轨迹因果影响数据集。<strong>New Paper Potential：高但碰撞密集。</strong> 单纯把 gate 从 SFT 改成 PPO 不够新；若实现鲁棒反事实估计、跨策略校准与可审计证据流，可能形成清晰贡献。</p>
+<h3 class="section-heading" id="section-38">17. Migration Analysis（两条可执行研究）</h3>
+<p><strong>Migration A：Provenance-Conditioned Communication Gate / Agent Security。</strong> <strong>Original Problem</strong>：只按团队终局估计求助价值。<strong>Transferable Mechanism</strong>：同状态 approve/deny 配对干预 + 小 gate。<strong>New Research Question</strong>：把证据真实性、来源信任与错误传播代价纳入 gate 后，能否在保留任务收益的同时减少跨 Agent 错误扩散？<strong>Method Modification</strong>：每个 peer reply 强制携带原始 tool ID、timestamp、hash、信任等级；gate 的输入增加 provenance validity、跨源一致性、source age；标签改为 reward 与 cost 的保守双目标，附加 verified-evidence constraint。<strong>Minimum Experiment</strong>：用 100 个 AppWorld/WebShop 可重置任务、K=3、Qwen3.5-4B task model；随机对 0/10/20/30% 的 peer records 注入“相似但错误的 API 参数/商品约束”，对照 Independent、AlwaysShare、AOD-style gate、provenance-aware gate；每组 3 seeds、固定 max_steps，记录 SR/SGC、错误证据采纳率、错误跨 Agent 传播层数、false-approve、tokens、wall-clock。先手工标 50 条注入记录验证 provenance checker 的 precision/recall。<strong>Model</strong>：Qwen3.5-4B + Qwen3-0.6B gate。<strong>Dataset</strong>：AppWorld/WebShop 子集 + 控制注入。<strong>Baseline</strong>：Independent、AOD gate、citation-only filter。<strong>Metric</strong>：task success、propagation rate、cost、citation precision。<strong>Expected Contribution</strong>：通信价值和信息可信度联合约束的安全 Agent 协作。<strong>Risk</strong>：真实性验证本身昂贵，哈希只能保证未篡改不保证工具源真实。<strong>Collision Risk</strong>：高；与 agent provenance、prompt injection defense、communication pruning 工作相邻，需做明确的因果传播基准。</p>
+<p><strong>Migration B：Memory Write 的 Counterfactual Value Learning。</strong> <strong>Original Problem</strong>：Agent 在每次写记忆时难判断未来是否有用。<strong>Transferable Mechanism</strong>：把一个信息动作分叉为执行/跳过，用未来团队成功与成本做监督。<strong>New Research Question</strong>：memory admission 能否由“未来行为增益”而非摘要显著性决定？<strong>Method Modification</strong>：把 APPROVE/DENY 换成 WRITE/SKIP；对同一 state 保存原始轨迹，分别允许和禁止写入一条 memory，再重放未来 5–20 个任务；学习 gate 输入包括 memory 内容、来源、相似历史、未来查询类别；同时控制 token budget 与 memory eviction。<strong>Minimum Experiment</strong>：构造 100 个跨任务 Agent episode，每 episode 20–50 tool steps，分为 60 train/20 val/20 test；候选记忆 500 条、注入 20% misleading notes；比较 write-all、recency、LLM-judge salience、embedding novelty、counterfactual gate；每组 3 seeds，报告未来任务 SR、memory token、read precision、harmful-write rate、每有效记忆的额外 rollout 数。<strong>Model</strong>：Qwen3-4B executor + Qwen3-0.6B gate。<strong>Dataset</strong>：可重置 tool sandbox + 合成跨任务依赖。<strong>Baseline</strong>：write-all、salience、novelty、random。<strong>Metric</strong>：future success uplift、memory utility@budget、harmful propagation。<strong>Expected Contribution</strong>：从静态记忆选择走向行为价值驱动的可验证写入。<strong>Risk</strong>：昂贵的 future replay 与部署分布偏移。<strong>Collision Risk</strong>：高；必须与 existing experience replay、memory utility estimation、trajectory selection 文献检索去重。</p>
+<h3 class="section-heading" id="section-39">18. Attack / Verification Lens 与 9 句话记忆卡</h3>
+<p>可以构造 <strong>request injection</strong>：让恶意工具输出诱导 Agent 提出特定 <code>ask_peer</code>；<strong>evidence laundering</strong>：错误日志带有貌似可信的 citation，被 peer answerer 转述后进入其他 Agent 的已知状态；<strong>black-box probe</strong>：对相同请求仅改变 peer history 的一个事实，测后续 action 是否改变；<strong>efficiency stress</strong>：增加 K、请求密度和 BM25 corpus，分别测模型 token 与真实 wall-clock；<strong>recovery test</strong>：在错误答复传播后提供更正证据，测团队是否重新规划。建议定义 <code>causal evidence utilization rate</code>：只有删除某条证据会改变正确行动时，才把它计为真正被利用，避免仅靠引用次数虚报收益。</p>
+<p><strong>只记住这篇的九句话。</strong> ① 多 Agent 的知识不共享会重复探索。② 提前摘要可能丢掉未来才重要的细节。③ AOD 由请求者在需要时提出结构化问题。④ Gate 先决定值不值得问，BM25 再找最相关同伴。⑤ 回答必须来自已完成的原始记录并带引用。⑥ 同状态 approve/deny paired rollout 是核心学习信号。⑦ 训练是加权 SFT，不是 PPO。⑧ 4B AppWorld 与 Evidence-Based 消融暴露真实失败点。⑨ 最值得迁移的是通信/记忆行为的反事实价值估计与可信证据约束。</p>
+<hr/>
+<h2 class="section-heading" id="synthesis">Cross-Paper Synthesis：共同趋势与机制交叉</h2>
+<p>两篇研究对象一个是神经网络内部的 KV 访问，一个是多 Agent 外部的经验访问，但共享一条研究路线：<strong>保留完整信息，避免提前不可逆压缩；在消费时根据当前 query 决定访问什么；把访问成本作为一等公民。</strong> LSA 的 <code>query → semantic bucket → original KV</code> 与 AOD 的 <code>need → BM25 peer → original tool evidence</code> 是两个尺度的选择性检索。两者的目标也有本质差异：LSA 蒸馏 teacher attention 的相关性，AOD 用未来团队 reward 学通信价值；“相似”与“有用”不是同一个优化目标。</p>
+<p><strong>可组合机制</strong>：对 Agent 工具记录先用 LSA 风格的动态语义桶做高效候选检索，再用 AOD 风格的 counterfactual gate 判断这次跨 Agent 信息访问是否值得执行。要区分索引层的 <code>recall@budget</code> 与决策层的 <code>Δteam reward</code>，不能只看回答质量。<strong>可能冲突</strong>：LSA 的簇中心与 AOD 的 BM25 都可能把“词面/语义相近但因果无关”的记录排在前面；树索引的 early pruning 会让 gate 根本看不到有用证据，而 gate 的拒绝又会掩盖 retrieval failure。需要在同一 replay state 上把 retrieval miss、gate reject、answer distortion、selector failure 四种错误分解开。</p>
+<h2 class="section-heading" id="opportunities">Combined Research Opportunities / Collision &amp; Overlap</h2>
+<p><strong>Idea 1：Counterfactual-Routed Memory Access。</strong> 对每条 memory retrieval 决策估计其真实未来收益，以 <code>retrieval score × estimated action value</code> 做联合排序；预算由 token、indexer latency、peer call cost 组成。最小验证：200 个多步工具任务，固定候选记录，比较 BM25、dense cosine、LSA bucket、AOD gate、bucket+gate，输出 SR、evidence recall、TTFT、tokens、false-negative。若只做两方法拼接，论文新意有限；应强调可归因的成本/成功 Pareto 前沿。</p>
+<p><strong>Idea 2：Causal Retrieval Stress Test。</strong> 生成多条表面相关但因果错误的历史记录，分别攻击 LSA top-p、AOD BM25、gate 和最终 selector。使用 controlled intervention <code>remove / replace / reorder one evidence item</code> 观察最终动作变化，形成可复现的 failure propagation benchmark。它比单纯问答正确率更能揭示 Agent memory 是否真正参与决策。</p>
+<p><strong>Collision 判定</strong>：今天两篇之间没有发现“同一问题同一方法”的直接论文重复；它们是<strong>机制互补而非已证实 collision</strong>。与既有领域的潜在重叠更强：LSA ↔ semantic KV retrieval / hierarchical sparse attention；AOD ↔ shared episodic memory / selective multi-agent communication / causal rollout valuation。投稿前必须针对最新工作做单独 novelty search，不应把概念相似当成研究空白。</p>
+<h2 class="section-heading" id="priority">Reading / Reproduction Priority</h2>
+<p><strong>先读 LSA</strong>：若目标是 systems / inference，优先核对正文 §3、Figure 5/6、Table 3、官方 README；最值得复现的是“同一 k 下语义索引召回 vs 位置索引召回”和真实 TTFT。<strong>再读 AOD</strong>：若目标是 Agent/RL，优先核对 §3.3–3.4、Table 1/2/3、Figure 2，先实现 deterministic paired replay，避免一上来训练 0.6B gate 却无法确认监督信号正确。<strong>最适合 baseline</strong>：LSA（有代码、系统指标）。<strong>最适合系统加速 idea</strong>：LSA。<strong>最适合 benchmark/metric</strong>：LSA 的 PaperTrail 思路与 AOD 的 selected-vs-Oracle / causal ΔR 联合。<strong>最适合 attack/evaluation</strong>：AOD 的跨 Agent 证据传播与门控误判。</p>
+<h2 class="section-heading" id="sources">Sources / Links / 核查边界</h2>
+<ol>
+<li><a href="https://arxiv.org/abs/2610.42147" rel="noopener noreferrer" target="_blank">Latent Sparse Attention — arXiv 2610.42147，2026-10-30 v1</a>；<a href="https://arxiv.org/html/2610.42147" rel="noopener noreferrer" target="_blank">HTML 全文（Method、Evaluation、Appendix）</a>；<a href="https://github.com/Prefrontal-AI/latent-sparse-attention" rel="noopener noreferrer" target="_blank">官方代码与复现说明</a>；<a href="https://github.com/Prefrontal-AI/sglang" rel="noopener noreferrer" target="_blank">SGLang fork</a>。</li>
+<li><a href="https://arxiv.org/abs/2610.41378" rel="noopener noreferrer" target="_blank">Ask on Demand — arXiv 2610.41378，2026-10-30 v1</a>；<a href="https://arxiv.org/html/2610.41378v1" rel="noopener noreferrer" target="_blank">HTML 全文</a>；<a href="https://arxiv.org/pdf/2610.41378" rel="noopener noreferrer" target="_blank">PDF</a>。作者官方代码未确认公开，附加 supplementary 的部分精确配置未从可见正文核实。</li>
+<li><a href="https://arxiv.org/list/cs.AI/recent" rel="noopener noreferrer" target="_blank">arXiv cs.AI recent — 2026-11-02 公告列表</a>。所有数字均对应论文报告的具体 model、dataset、hardware 与 setting；toy examples、研究迁移和风险是本报告推演，不是作者已实测结果。</li>
+</ol>
+<div class="foot">资料核对日期：2026-11-03（北京时间）。本报告为独立研究解读；作者报告结果与推演/建议已在正文区分。自包含 HTML，无外部字体、脚本或图片依赖。</div></main></body></html>
