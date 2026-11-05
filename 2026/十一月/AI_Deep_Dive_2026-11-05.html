@@ -1,0 +1,185 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Daily Top Papers Deep Dive 2026-11-05</title><style>body{background:#f6f8fb;color:#172336;font:17px/1.95 system-ui,-apple-system,"Noto Sans CJK SC",sans-serif;margin:0}main{max-width:980px;margin:auto;background:white;padding:44px 6vw;box-shadow:0 3px 24px #dce4ee}h1{font-size:2.1rem;line-height:1.3}h2{font-size:1.65rem;border-bottom:2px solid #e2e9f2;padding-top:30px}h3{font-size:1.22rem;margin-top:30px;color:#173d72}p{margin:12px 0}a{color:#1660ae}nav{background:#f0f5fc;border-radius:12px;padding:18px 28px}nav a{display:block}.scroll{overflow-x:auto}table{border-collapse:collapse;min-width:660px;font-size:14px;line-height:1.5}th,td{border:1px solid #dce3ed;padding:9px 12px;text-align:left}th{background:#edf3fa}code,.formula{font-family:ui-monospace,monospace;background:#f2f5fa;padding:3px 6px;overflow-x:auto}.formula{display:block;padding:18px;white-space:pre-wrap}blockquote{border-left:4px solid #3573b4;padding:6px 16px;background:#f4f8fd}small{color:#526478}@media(max-width:600px){main{padding:22px 18px}body{font-size:16px}}</style></head><body><main>
+<h1>Daily Top Papers Deep Dive — 2026-11-05</h1>
+<p><strong>独立检索 · 2 篇精读 · RL/Agent 与多模态推理加速</strong>。证据截止 2026-11-05；以论文原文的数字为准，研究迁移均标记为分析建议而非作者结论。</p>
+<nav><strong>目录</strong><a href="#selection">今日选择</a><a href="#p1">Paper 1 · Memento</a><a href="#p2">Paper 2 · R²-Omni</a><a href="#synthesis">跨论文综合与复现顺序</a><a href="#sources">来源</a></nav>
+<h2 id="selection">今日选择与理由</h2>
+<p>第一篇 Memento 是 Agent Memory 与 RL 的交叉：它把记笔记从提示词习惯变成可训练的跨窗口策略，并提供大规模消融。第二篇 R²-Omni 是 Video/Audio 推理加速与 KV 压缩的交叉：其新意在于同时减少 token 结构冗余与缓存精度冗余，并用开放式生成而非单一选择题评价。两篇均有可访问的 arXiv 全文、方法公式、主实验与附录。</p>
+<p>冷却检查：上一期已选的 Zero-to-One RLVR 与 Agent Memory as Rate-Limited Filtering 不重复。Memento 于 10 月 30 日首次提交，标记 <strong>BACKFILL</strong>（距今六天）；R²-Omni 于 11 月 2 日提交，属于近 72 小时窗口附近。</p>
+<article id="p1"><h2>Paper 1 — Memento: Learning Context Management for Long Context Processing Agents</h2></article>
+<h3>基本信息与一句话定位</h3>
+<p><strong>Yunfan Zhang、Taehoon Hwang、Kathleen McKeown、Smaranda Muresan</strong>；Columbia University；arXiv:2611.00244v1，2026-10-30；预印本，未核实正式接收。<a href="https://arxiv.org/html/2611.00244">HTML 原文</a> · <a href="https://arxiv.org/pdf/2611.00244">PDF</a>。官方代码链接在已查阅正文中未确认，不能标作开源。</p>
+<p><strong>定位：</strong>通过 hindsight SFT 启动记忆工具行为，再用跨上下文窗口的 GRPO 使 Agent 学会保留证据、继续检索并基于置信度回溯。</p>
+<h3>人话版</h3>
+<p>一个阅读百万 token 小说的 Agent，不能把整本书一直塞进上下文。常见做法是检索、阅读、遇到窗口上限时写摘要，但通用模型即使拥有记笔记工具，也可能从不调用，或者重复写没有价值的笔记。Memento 的思路不是直接扩大窗口，而是先让强模型完成检索，再在正确轨迹中事后插入“此刻应该记下什么”的示范，用这些数据教 Qwen3-8B 何时保存状态。接着通过 RL 奖励正确答案、合法笔记与合理置信度，让策略在自己的长轨迹中逐渐稳定。测试时可保留最近操作、重启上下文，甚至从旧笔记回退。最终四数据集微平均从 36.9% 提升到 67.8%，但回退成本很高，且仍未证明可泛化到真实软件工程 Agent。</p>
+<h3>Background &amp; Research Gap</h3>
+<p>传统 ReAct 把 thought、action、observation 逐轮追加；窗口固定，历史随任务增长。纯截断会丢失早期证据，预先压缩整本书又不一定知道用户真正问什么。MemWalker/ReadAgent/GraphReader 用树、gist 或图组织文档；MemGPT/ReSum 则提供记忆管理机制。本文关注不同的问题：不是“系统有没有存储槽”，而是“策略会不会在正确时机向槽中写入对未来有用的状态”。</p>
+<p>具体例子：问题问小说后半部人物为什么改变决定。Agent 在第 2 章找到承诺，在第 30 章找到背叛，在第 70 章找到和解。若第 2 章线索在上下文折叠前未写入笔记，最终只能凭最近事件猜测；若每读一段都写笔记，则昂贵、重复并污染后续搜索。研究缺口是如何通过训练同时学会写入时机、内容和复用。</p>
+<h3>Core Insight：工具存在不代表行为存在</h3>
+<p>作者报告：GPT-5.5 在 337 个测试样本上从不调用记笔记工具；12K 条 GLM-5.3 试运行轨迹中没有符合规则的笔记；原始 Qwen3-8B 只有约 6% 轨迹含有效笔记。由此可见，单纯把工具写进 system prompt 并不会产生可强化的探索行为。</p>
+<p>这是一项特定 harness 下的经验观察，不是对所有通用模型的能力定理。SFT 的作用主要是把稀有行为放入策略支持集，RL 再优化实际轨迹上的效用。它也解释了为什么 RL-only 容易学会“不写笔记”：不写可以避免格式和工具成本，早期偶然正确的短轨迹反而更易获得奖励。</p>
+<h3>Method Deep Dive：逐步从输入到输出</h3>
+<p><code>Book + Question → semantic/ripgrep search → view evidence → create_notes → context reset/fold → continue → answer + confidence → optional backtrack</code></p>
+<p>Step 1：把书按 128–256 token 的滑动窗口切段，使用 bge-small-en-v1.5 建立语义索引；另外提供 ripgrep_search 精确字符串检索和 view 按行查看。输入不是完整小说上下文，而是查询和工具返回的局部证据。检索失败时再好的笔记也无法补回未找到的事实。</p>
+<p>Step 2：create_notes 记录关键事实、已经排除的假设和下一步检索计划。规则要求每个非末窗口至少一条、总数少于五条；不能首个动作就写、不能连续写；两条笔记 token 集相似度不得超过 80%。这些规则只是可操作的 proxy，并不保证事实正确。</p>
+<p>Step 3：先运行 GLM-5.3 获得正确轨迹，再事后插入笔记；不修改原来的检索动作和最终答案。约 6K 条轨迹用于 Qwen3-8B SFT。这样避免从零探索 note action，但 hindsight 笔记可能包含未来信息的总结偏差，部署时未必总能提前识别重要证据。</p>
+<p>Step 4：用 GRPO 对同一问题采样多条轨迹；最终 reward 分配给所有上下文窗口内的 assistant token。于是早期笔记也会因后续答案正确而获得正 advantage，但这仍是粗粒度 credit assignment，无法判断是哪条笔记真正贡献了答案。</p>
+<p>Step 5：训练只使用新窗口 compaction；测试可使用 context folding，保留最后一条笔记之后尚未总结的原始工具交互。若答案置信度低，第一次从中间笔记恢复，第二次从第一条笔记恢复，随后从头开始。回溯可能找到新证据，也可能重复错误。</p>
+<h3>核心公式与数学直觉</h3>
+<p><span class="formula">R = λF·F + F [ Y + λM·M + λC·(1 − (Y−p)²) ]</span></p>
+<p>F 为格式合法且未被识别为 reward hacking 的指示量，Y 是答案正确与否，M 是整条轨迹的笔记有效性，p 是模型报告的置信度。λF、λM、λC 控制格式、记忆与校准权重。F=0 时其余奖励全部被门控；增大 λM 可能诱导形式合规但内容空洞的笔记；增大 λC 可能让模型更保守而不是更准确。Brier 项 1−(Y−p)²：正确时鼓励 p 接近 1，错误时鼓励 p 接近 0。</p>
+<p><span class="formula">Âᵢ = (Rᵢ − mean(R₁…Rᴳ)) / std(R₁…Rᴳ)</span></p>
+<p>同一道题的 G 条轨迹相互比较，优于同组平均的轨迹得到正 advantage；若组内奖励完全相同，实际实现需处理标准差为零。策略目标使用 clipped importance ratio r=πθ(o|c)/πold(o|c)，并惩罚 KL(πθ||πSFT)。Clip 抑制大步更新；KL 让模型不偏离已学会的笔记行为。β 太大可能抑制 RL 改善，太小则策略可能丢失 SFT 教授的工具习惯。</p>
+<p>与仅优化最终正确率的 RL-only 相比，Memento 显式加入笔记有效性和置信度；与纯 SFT 相比，优化目标基于自己采样轨迹的最终成败，而非只模仿 hindsight 示范。</p>
+<h3>Toy Example：一条跨窗口轨迹</h3>
+<p>假设问题是“谁把钥匙交给了园丁，为什么？”窗口 A 检索第 5 章，发现 Alice 曾保管钥匙；随后 view 第 18 章发现 Bob 偷走钥匙。create_notes 写入“Alice 原持有人；Bob 后来取走；尚未查交付对象”。窗口 B 检索“gardener”“handed”，找到第 61 章 Bob 为保护妹妹交给园丁。第二条笔记保存完整因果链；最终输出“Bob，为保护妹妹”，p=0.9。</p>
+<p>若另一条轨迹遗漏第 18 章，误答 Alice 且 p=0.95，则 Y=0、校准奖励显著下降。若 p=0.2 触发回溯，Agent 从前一笔记继续找新证据；这展示了奖励和回溯如何工作，但只是教学例子，不是论文实验记录。</p>
+<h3>Baseline Deep Comparison</h3>
+<p>① 原始 Qwen3-8B + Fold/Backtrack：同一底座和 harness，36.9%，是最直接的因果对照；弱点是几乎不产生有效笔记。② SFT-only + Fold：42.4%，学会动作但没有在自身轨迹上可靠执行；加回溯为 59.1%。③ RL-only + Fold：57.5%，能优化短期 QA，却逐渐放弃 compaction。④ GLM-5.3 + Fold/Backtrack：69.3%，是同 harness 下最强外部模型 baseline，Memento 差 1.5 点但成本低。⑤ GLM-5.3 full context：74.3%，是整体最高准确率参考，不属于相同上下文预算。</p>
+<p>Strongest baseline 必须按问题定义：研究“相同 Agent harness 下的能力”时是 GLM-5.3 Fold/Backtrack；研究“所有系统最高准确率”时是 GLM-5.3 full context。不能把 GPT-5.5 的 13.1% 当作通用能力排名，因为其格式合规率只有 21.4%，明显存在接口适配偏差。</p>
+<h3>Experiment Setup 与 Metrics</h3>
+<p>模型 Qwen3-8B；训练 judge Qwen3-14B；测试 judge Qwen3-235B-A22B-Instruct-2507，避免同一 judge 直接评估自身奖励。数据 LiteraryQA、NovelHopQA、SagaScale English 用于训练/验证/测试，NovelQA 完全留作外部测试。原始数据按书与问题无交集做 8:1:1；训练 17K 问题/600 书，验证 2.3K/70 书，测试 4,708 问题/160 书。最长书 2.5M tokens，模型同时持有不超过 20K。</p>
+<p>Research Question A：SFT+RL 是否优于单独阶段？看 Table 1、Figure 3/4。Research Question B：folding 是否比单窗口有效？看 Table 2。Research Question C：回溯带来的额外正确率是否值得成本？看 Table 2 和 token 统计。</p>
+<p>Accuracy 是 LLM judge 对自由文本答案是否匹配短标准答案的判定，越高越好，但可能被同义词、证据不足或 judge 偏差误导。Micro average 按全部题目加权，不能等同于四数据集平均；Saga 仅 37 题，权重很小。Tokens/rollout 是每条推理轨迹平均 token 消耗，越低通常越便宜但也可能代表提前放弃。Cost 是按 8×B200、64 美元/小时估算整套测试运行成本，GPT-5.5 使用 API 价格并外推，不是跨部署环境完全可比的硬件测量。</p>
+<div class="scroll"><table><thead><tr><th>设置</th><th>LitQA</th><th>NHopQA</th><th>NovelQA</th><th>Saga</th><th>Micro</th><th>Tokens</th><th>Cost USD</th></tr></thead><tbody>
+<tr><td>Qwen3-8B 原始+fold/backtrack</td><td>35.2</td><td>29.1</td><td>39.8</td><td>37.8</td><td>36.9</td><td>15K</td><td>37</td></tr>
+<tr><td>SFT+RL Fold</td><td>69.0</td><td>67.8</td><td>63.6</td><td>67.6</td><td>66.3</td><td>14K</td><td>29</td></tr>
+<tr><td>Memento Fold+Backtrack</td><td>70.2</td><td>72.8</td><td>64.9</td><td>70.3</td><td>67.8</td><td>23K</td><td>48</td></tr>
+<tr><td>GLM-5.3 Fold+Backtrack</td><td>71.2</td><td>43.4</td><td>72.1</td><td>91.9</td><td>69.3</td><td>47K</td><td>448</td></tr>
+<tr><td>GLM-5.3 Full Context</td><td>76.6</td><td>75.8</td><td>71.9</td><td>75.7</td><td>74.3</td><td>167K</td><td>1270</td></tr>
+</tbody></table></div>
+<h3>Results Deep Dive：八个可核查现象</h3>
+<p>① 36.9→67.8，+30.9 个百分点：与同底座未训练 Agent 比较，强力支持联合训练有用；但训练和推理机制同时变化，不宜全部归因于 RL。</p>
+<p>② 42.4→66.3，+23.9 点：同为 folding，SFT-only 对 SFT+RL，支持在线轨迹强化是关键。</p>
+<p>③ 57.5→66.3，+8.8 点：RL-only 对 SFT+RL，说明 SFT 不只是增加数据量，还帮助发现笔记策略。</p>
+<p>④ Memento 67.8 vs GLM-5.3 同 harness 69.3，仅差 1.5 点；成本 48 vs 448 美元，约 9.3 倍差距。模型、硬件计价和策略不同，不能把它理解为纯参数效率。</p>
+<p>⑤ NovelHopQA 72.8 vs GLM 同 harness 43.4，高 29.4 点（正文四舍五入报告 29.3），显示特定多跳任务优势；但在 NovelQA Memento 64.9 vs GLM 72.1，落后 7.2 点，属于 dataset-specific weakness。</p>
+<p>⑥ 全书 GLM 74.3 vs Memento 67.8，差 6.5 点（正文叙述有 6.4 的取整差异），说明压缩上下文并未完全追上完整长上下文。</p>
+<p>⑦ Table 2：Memento 单窗口 58.6→fold 66.9，+8.3；回溯再到 67.8，仅 +0.9。说明跨窗口继续比昂贵重试更值得。</p>
+<p>⑧ 回溯只发生于 18.9% 轨迹，却耗费 43% tokens；RL 后错误答案只有约 30–40% 被标为低置信度。最弱环节不是记笔记，而是置信度识别和回溯的成本效率。</p>
+<h3>Figure/Table 精读</h3>
+<p>Figure 1 比较新窗口 compaction、保留最近交互的 folding、从历史笔记重启的 backtracking。它说明三者的状态保留边界不同，但仅是机制图，不是性能证据。</p>
+<p>Figure 2 展示 hindsight 注入笔记→SFT→跨窗口 GRPO→测试回溯的因果流程。值得注意训练和测试共享 note 接口，但训练并未覆盖所有推理模式。</p>
+<p>Table 1 横向是四数据集与成本，纵向分 full-context、原始 Agent、训练变体。最强总准确率仍是 GLM full context 74.3；Memento 的优势是成本—准确率折中，不能简单称“全面超过大模型”。</p>
+<p>Figure 3 验证集准确率曲线：SFT+RL 最终领先 RL-only，灰点是 reward hacking 导致的异常评价，作者随后收紧答案长度限制；这提醒评测协议在训练中发生过调整。</p>
+<p>Figure 4 记录 context restart 频率：RL-only 在前约 20 步几乎归零；SFT+RL 稳定在约 0.15。图显示行为保留，但不能独立证明每条 note 的内容具有因果贡献。</p>
+<h3>Ablation / Claim vs Evidence / Failure</h3>
+<p>去掉 SFT：fold 准确率 66.3→57.5，下降 8.8；去掉 RL：下降到 42.4；去掉 folding：从 66.9 到 58.6；去掉 backtracking：67.8→66.9，影响小。作者声称“联合训练是必要的”；实验严格支持当前 Book QA harness 的互补性，不足以证明其它 Agent 任务都需要相同 SFT+RL。</p>
+<p>作者限制：只测英文小说 QA、短答案和 LLM judge；训练最多三个上下文段；笔记规则是启发式；Saga 只有 37 题；GPT-5.5 抽样较少。额外风险：hindsight teacher 的笔记可能隐含未来知识；笔记中的事实错误可跨窗口传播；置信度过高时不会触发回溯；奖励可能偏向“形式正确的笔记”而非真正改善证据覆盖。</p>
+<h3>Contribution / Reproduction View</h3>
+<p>Contribution 1（New Training Recipe）：在正确轨迹中事后插入笔记，构建稀有工具动作的 SFT 支持集；这是既有 imitation 与 hindsight annotation 的针对性组合。Contribution 2（New Objective Integration）：格式门控、笔记合法性、答案正确性、Brier 校准联合 GRPO；目标组件本身并非全新，但跨窗口分配有工程意义。Contribution 3（New Agent System）：统一 note checkpoint 支持 folding 与回溯，属于系统集成。</p>
+<p>最小复现：先在 Qwen3-8B 上实现 search/view/create_notes，限制 16K 或 20K 上下文；选择 100 本书、每本若干跨章问题，划分按书隔离；收集正确 teacher 轨迹，后插 1–3 条笔记，SFT；再做每题 G=4 或 8 的 GRPO，记录有效笔记率、fold 后正确率、平均工具调用与 tokens。最先验证“RL-only 的笔记频率是否坍塌”，因为它比最终精度更直接检验机制。</p>
+<p>工程坑：reset 前未写笔记会造成不可恢复的信息损失；跨窗口 token logprob 必须对应各自上下文；不能把工具输出 token 当 assistant policy token；相似度规则可能误伤必要重复；不同 judge 必须保留原始判分日志；重试产生的重复检索成本要计入总 token。</p>
+<h3>Research Value 与 Attack / Verification Lens</h3>
+<p>Baseline Potential：高，适合作为长时 Agent memory policy 的可训练基线。Migration Potential：高，可迁移到 coding agent 的工作状态压缩。Systems Potential：中高，统一 checkpoint 可用于成本预算调度。Attack Potential：高，可在笔记中注入错误证据观察跨窗口污染。Evaluation Potential：高，除了最终正确率可测 note causal utility。Benchmark Potential：高，构造“证据出现早、查询依赖晚”的跨窗口任务。New Paper Potential：取决于是否能证明笔记内容的因果作用，而非仅在 Book QA 上调 reward。</p>
+<p>黑盒 probe：替换一条笔记中的关键事实，比较最终答案变化；robustness test：逐步增加上下文重启次数；reacquisition test：删除已写笔记后是否重新找到证据；efficiency stress：固定正确率下比较 token/成功题。</p>
+<h3>Migration 1：Agent 记忆的反事实信用分配（研究建议）</h3>
+<p>Original Problem：轨迹级 reward 无法定位有效笔记。Transferable Mechanism：note checkpoint + outcome feedback。New Research Question：能否通过删改笔记的反事实影响，训练写入策略而不是奖励格式？Method Modification：对同一 checkpoint 分别保留、删除、打乱一条 note，计算成功率差，作为 note-specific reward。Minimum Experiment：Qwen3-8B、200 条多跳 QA；每条轨迹生成最多 3 条笔记，每条做 2 个反事实 continuation；用相同随机种子和检索工具；比较原 GRPO、no-note、causal-note reward。Model：Qwen3-8B。Dataset：NovelHopQA 子集并按书划分。Baseline：Memento-style trajectory reward、random note deletion。Metric：accuracy、Δaccuracy per note、token cost、note contamination rate。Expected Contribution：可解释的 memory credit assignment。Risk：反事实 rollout 昂贵且有方差。Collision Risk：与现有 causal memory attribution/agent credit assignment 方向可能重合，需先检索。</p>
+<h3>Migration 2：Coding Agent 的可验证状态压缩（研究建议）</h3>
+<p>Original Problem：长代码修改任务中 Agent 遗失文件状态。Transferable Mechanism：hindsight notes + folding。New Research Question：带文件路径、测试证据和 commit 状态的结构化笔记是否优于自由摘要？Method Modification：note schema 包含目标、已修改文件、失败测试、待办和证据哈希；奖励改为测试通过率与恢复成本。Minimum Experiment：从 SWE-bench Verified 取 50 个可运行任务，固定同一模型与最大工具预算；分别用原始 ReAct、prompt-summary、SFT note、SFT+RL note；在第 8/16/24 次工具调用强制 reset；记录恢复后首个正确行动和测试通过。Model：Qwen3-8B 或兼容 coding backbone。Dataset：SWE-bench Verified。Baseline：ReAct、简单 compaction、Memento-style。Metric：resolved%、token、重复工具调用、状态恢复准确率。Expected Contribution：面向工程 Agent 的状态保真 benchmark。Risk：运行环境与 RL rollout 成本。Collision Risk：AgentFold、FoldAct、ReSum 已涉及折叠，需要突出可验证文件状态与因果消融。</p>
+<h3>只记住这篇论文：九句话</h3>
+<p>第一，记忆工具的可用性不等于 Agent 会使用它。第二，通用模型在特定 harness 中甚至几乎不写有效笔记。第三，hindsight SFT 能先把笔记行为教出来。第四，GRPO 再用真实轨迹成败强化这种行为。第五，奖励同时考虑答案、格式、笔记和置信度。第六，跨窗口 credit assignment 仍然粗糙。第七，folding 比单纯清空上下文更有效。第八，回溯只带来约一点精度，却耗费大量 token。第九，下一步最值得研究的是“哪条笔记因果性地改变了未来行为”。</p>
+<article id="p2"><h2>Paper 2 — R²-Omni: Reducing Structural and Precision Redundancy in Omni-LLMs for Long-Form Generation</h2></article>
+<h3>基本信息与定位</h3>
+<p>Bolong Feng、Pengfei Zhou、Zhenglin Wan、Wei Wang、Wangbo Zhao；论文列出 InfRec、Cardinal AI Lab、上海交通大学、新加坡国立大学、香港科技大学等机构；arXiv:2611.03247v1，2026-11-02，预印本。<a href="https://arxiv.org/html/2611.03247">HTML 原文</a> · <a href="https://arxiv.org/pdf/2611.03247">PDF</a>。已查正文未核实官方代码仓库，不将其视作已开源。</p>
+<p>一句话：先合并视频/音频的结构性重复 token，再按注意力输出误差分配 KV value 精度，以降低长篇多模态生成的显存和时延，同时避免激进 query-based pruning 丢掉长回答所需的细节。</p>
+<h3>人话版</h3>
+<p>给一段十分钟的视频配上音频，让 Omni-LLM 写出详细事件描述，模型既要看到许多画面，也要保留声音细节。传统 token pruning 往往挑出与当前问题最相关的少数片段，这对四选一问题可能够用，但对几百字的完整叙述就可能漏掉次要事件。R²-Omni 分两步：先根据相邻图像块、相邻帧以及连续音频特征的相似性，合并真正重复的信息；然后不再随意丢 token，而是对保留下来的 KV cache 进行按页混合精度分配。重要且量化后会影响 attention 输出的页面给更多 bit，其余使用低精度。作者报告平均约 5 倍缓存压缩、保留 97.98% 相对生成质量以及 1.48 倍端到端加速。关键价值是把“内容覆盖”和“数值精度”拆成两个可独立优化的预算。</p>
+<h3>Background &amp; Gap</h3>
+<p>Omni-LLM 通常包含视觉/音频 encoder、projector 与 LLM decoder。输入 token 越多，prefill 计算与后续每步读取 KV 的带宽越高。直接裁掉低 query-attention token，能够降低 token 数量，却假定初始查询足以预测整段生成所需信息。对于“完整描述发生了什么”，生成到后半段才可能需要起初注意力低的动作、声音或场景。</p>
+<p>例如视频开头有门铃，随后人物讨论天气，最后才出现递送包裹。问“人物是否开门”，只需门口片段；问“逐段描述所有事件”，门铃、讨论和包裹都需要。前者适合 query-aware selection，后者更适合保留多样性、合并近重复信息。即使 token 已减少，每个 token 在各层保留 BF16 K/V 也可能过度精确。本文的 gap 是联合处理结构重复与精度重复，而非简单串联两个独立压缩器。</p>
+<h3>Core Insight：两种冗余的代价函数不同</h3>
+<p>第一种冗余是跨 token 内容重叠，适合以时空邻域相似度判断：相邻背景块几乎一样时保留代表块，场景变化时不强行合并。第二种冗余是同一 token 表示所需 bit 不同：有些 value 量化到 INT2 对 attention 输出几乎无影响，另一些会造成明显失真。</p>
+<p>作者观察到多选题精度对剪枝更鲁棒，而开放式长生成退化更快。这是 benchmark 上的经验观察；由此推导的“保留多样性更重要”有合理机制，但仍需通过不同内容覆盖指标来进一步验证。设计上 STC 不使用初始 query 来删除内容，SSPA 才使用 query 与跨模态对齐作为分配精度的软先验。</p>
+<h3>Method Deep Dive：Input → STC → Prefill → SSPA → Decode</h3>
+<p>Step 1 输入：视频 Xv 和音频 Xa 经 encoder 得到 Nv×D 与 Na×D 特征，projector 映射到 LLM embedding。视频分相邻帧对；音频分局部 chunk。</p>
+<p>Step 2 视频空间合并：对同帧相邻 patch 建图，余弦相似度超过 τs 的边通过 Union-Find 组成连通区域；大区域切分以防过度合并。每个区域选择与均值方向最接近的原始 token，而不是平均出一个可能脱离训练分布的新 token。</p>
+<p>Step 3 视频时间合并：比较相邻帧均值向量的余弦相似度；超过 τt 时复用前帧区域覆盖，移除后帧对应位置的重复 token；若变化大则独立进行空间合并。风险是全局均值很像但局部有关键小物体变化，导致细节误删。</p>
+<p>Step 4 音频合并：对同一 chunk 内相邻音频 token，余弦超过 τa 的候选按相似度排序，贪心选择不重叠对并平均；保留 chunk 边界和合并比例上限，避免抹掉短暂音素或事件。</p>
+<p>Step 5 prefill：合并后的序列进入原始 LLM，形成层级 KV。把保留 token 按最多 32 个组成 page，跨模态边界切页。历史 K 使用 channel-wise INT4，V 的 page 允许 INT2/INT4/BF16。</p>
+<p>Step 6 SSPA：取 prefill 末尾 Nq 个 query anchor 估计注意力；按 query relevance 与音视频对齐形成 semantic prior。然后模拟每个 page 从 2→4 或 4→16 bit 的 attention 输出改善，按每 bit 改善排序，在预算内升级。</p>
+<p>Step 7 为控制计算量，每四层共享 page 精度分配，但每层独立量化 KV。外层 refinement 处理 precision-specific pool 重新排布导致 K 量化块改变的问题。最终 decode 使用混合精度缓存。该流程无需重新训练模型，但预处理与校准本身也消耗运行时间。</p>
+<h3>核心公式：结构代表与精度分配</h3>
+<p><span class="formula">i* = argmaxᵢ cos(fᵢ, meanⱼ∈R fⱼ)</span></p>
+<p>这一步选择原始 patch 中最代表区域的 token；若 τs 过低会把不同物体合并，过高则省不下 token。τt 影响跨帧重用的保守程度。</p>
+<p><span class="formula">s_sem(page) = ω·s_attn(page) + (1−ω)·s_align(page)</span></p>
+<p>ω 大则更信任当前 query；ω 小则偏向跨模态一致性。两个信号按模态归一化，避免音频/视频 token 数不同导致直接比较失衡。注意它不是用于硬删除 token，而是决定存储精度。</p>
+<p><span class="formula">A(K) = softmax(QKᵀ / √d)
+R₀ = A(K)V − A(K̂)V̂₂
+Cₐ = A_page(K̂) (V̂_new − V̂_old)
+r(a) = L(R) − L(R−Cₐ)
+J(a) = r(a)/ΔBits × [1+β(2Pₐ−1)]</span></p>
+<p>R₀ 是 BF16 attention 输出与量化输出之差，包含 K 量化和 V 量化共同误差。Cₐ 是升级某页 value 精度对输出的修正；r(a) 越大，说明误差减少越多；ΔBits 越大则存储成本越高。J 把“每多占一 bit 能降低多少输出失真”与语义先验 Pₐ 结合。β 过大可能让语义评分压过实际误差收益；若 r(a) 为负，升级反而不改善当前残差，应拒绝。</p>
+<p>与固定 INT4 的 KIVI 或仅剪 token 的 OmniZip 不同，本文目标不是简单最大化 attention score，而是固定缓存预算下近似最小化 attention-output distortion，并保留多样化内容。该目标仍只是最终生成质量的 surrogate，不等价于真实文本事实性。</p>
+<h3>Toy Example：视频 + 音频的两级压缩</h3>
+<p>假设输入 4 帧，每帧 8 个视觉 token，另有 8 个音频 token，共 40 个。帧 1/2 背景几乎相同，STC 将 16 个视觉 token 合并到 9 个；帧 3/4 出现新物体，保留 13 个；音频 8→6，最终 28 token。注意 40→28 仅是教学数字。</p>
+<p>假设 28 token 分成 4 页，每页初始 value INT2。页 A 包含人物面部，INT2→INT4 减少输出失真 0.12、成本 64 bit；页 B 包含静止背景，收益 0.01、成本相同；页 C 是短暂警报声，收益 0.10；页 D 是重复环境噪声，收益 0.005。在只能升级两页的预算下，选择 A/C 而非 B/D。若后续回答需要背景细节，B 的低精度仍保留内容但可能产生数值误差；这说明精度压缩与 token 删除的失败机制不同。</p>
+<h3>Baseline Deep Comparison</h3>
+<p>OmniSelect：根据重要性选择音视频 token，节省 prefill，但可能遗漏开放式描述中的低初始注意力事件。OmniZip：更强的多模态 token 压缩，对部分数据表现较好，却仍面临覆盖损失。SEATS：在 LLM 内外进行结构/语义精简，属于较强 token baseline。KIVI：利用 K/V 分布非对称进行量化，保存 token 覆盖但固定量化规则难以分配细粒度精度。OTT/OScaR：更强的 KV 量化对照，尤其 OTT 在部分模型的长文本质量接近或超过原模型。</p>
+<p>Strongest baseline 不存在跨模型唯一赢家：Qwen2.5-Omni-3B 的相对质量最高压缩基线为 OTT 94.12%；Qwen2.5-Omni-7B 的压缩基线 OTT 99.19%，是该行更严格的比较对象。R²-Omni 的价值是跨任务更均衡的质量与缓存预算，而非所有单项指标都最好。</p>
+<h3>Experiment Setup 与 Metrics</h3>
+<p>模型：Qwen2.5-Omni-3B、Qwen2.5-Omni-7B、MiniCPM-o-4.5。数据：video-SALMONN 2 testset、LongVALE、OmniDCBench。使用 NVIDIA H800 80GB、greedy decoding。Qwen 在 Video-SALMONN 2 采样 128 帧，MiniCPM 原生音视频对齐采样最多 100 帧；LongVALE 最多 100 帧；OmniDCBench 2 FPS、最多 160 帧。</p>
+<p>Research Question A：同约 5× 内存压缩比，开放式生成质量能否优于剪枝或纯 KV 量化？Research Question B：STC 与 SSPA 是否互补？Research Question C：省下的 token/bit 能否变成实际端到端加速？</p>
+<p>Correct ↑ 是视频描述中正确性得分，越高越好；EER ↓ 是事件错误率，越低越好。SODA-C 与 SODA-M ↑ 衡量时间事件匹配与描述质量的综合指标，不能等同于逐事实的完整召回。Avg. Rel. Quality 是各任务相对原模型质量的聚合，97.98% 不意味着 97.98% 绝对正确率。Compression ratio = 原缓存占用/压缩缓存占用，5× 表示约 80% 缓存节省；wall-clock speedup = baseline elapsed/proposed elapsed，必须把 STC 与校准开销算进去。</p>
+<div class="scroll"><table><thead><tr><th>Qwen2.5-Omni-3B</th><th>Correct↑</th><th>EER↓</th><th>LongVALE SODA-C↑</th><th>OmniDC SODA-M↑</th><th>平均相对质量</th></tr></thead><tbody>
+<tr><td>原模型</td><td>24.45</td><td>85.66</td><td>2.06</td><td>5.01</td><td>100.00</td></tr>
+<tr><td>OmniZip</td><td>17.49</td><td>92.79</td><td>2.12</td><td>4.65</td><td>89.89</td></tr>
+<tr><td>OTT</td><td>22.85</td><td>87.93</td><td>1.71</td><td>5.14</td><td>94.12</td></tr>
+<tr><td>R²-Omni</td><td>23.54</td><td>85.63</td><td>2.23</td><td>4.78</td><td>99.99</td></tr>
+</tbody></table></div>
+<h3>Results Deep Dive：八项证据与边界</h3>
+<p>① 作者整体报告约 5.0× memory reduction：这是 KV 内存而非总 GPU 显存的五倍降低；模型权重和 encoder 占用不会同比缩小。</p>
+<p>② 97.98% baseline relative generation quality：说明综合保真较好，但相对质量聚合可能掩盖个别 benchmark 退化。</p>
+<p>③ 1.48× end-to-end speedup：比仅报 FLOPs 更有系统价值，但硬件限定 H800，需检验不同 batch 和输入长度。</p>
+<p>④ Qwen3B Correct：24.45 原始→23.54 R²，下降 0.91；OTT 为 22.85，R² 比它高 0.69。保留较好，但不是无损。</p>
+<p>⑤ Qwen3B EER：85.66 原始 vs 85.63 R²，改善 0.03；差异极小，不能宣称稳定显著提高。</p>
+<p>⑥ LongVALE SODA-C：2.06 原始→2.23 R²，增加 0.17；可能是去冗余降低噪声，也可能是评测方差，需要多次种子。</p>
+<p>⑦ OmniDC SODA-M：5.01 原始→4.78 R²，下降 0.23，属于明显 trade-off；OTT 达 5.14，反而高于 R²。</p>
+<p>⑧ Qwen3B 相对质量：R² 99.99 vs OTT 94.12，相差 5.87 个相对质量点；但这是汇总指标，不能替代逐任务结果。</p>
+<h3>Table / Figure Reading</h3>
+<p>Figure 1(a) 比较 token pruning 对选择题与开放式生成的质量退化：开放式任务下降更快，支撑“初始 query relevance 不够覆盖全部事实”的动机；但不能单独证明相似度合并是最优策略。</p>
+<p>Figure 1(b) 将被合并的 token 与被降低精度的 value 分开标示，强调两种不同信息损失路径；是概念图。</p>
+<p>Figure 2 显示 STC 在 prefill 前、SSPA 在 cache 建立后。真正的工程问题是 SSPA 校准是否抵消 prefill 节省；必须看端到端结果，而非只数 token。</p>
+<p>Table 1 将每种方法按视频 Correct/EER、LongVALE SODA-C、OmniDC SODA-M 和相对质量比较。Qwen3B 的 R² 综合最好，但 OmniDC 的 OTT 5.14 超过 R² 4.78，说明不存在逐列全胜。</p>
+<p>实验的 Efficiency Analysis 与 Ablation 分别用于判断真实 wall-clock 与 STC/SSPA 互补性；若部署时只复现 token 数而没有记录压缩 kernel、量化重排和校准耗时，就没有复现最重要的系统 claim。</p>
+<h3>Ablation / Claim vs Evidence / Limitation</h3>
+<p>作者的核心机制判断是 STC 保护内容覆盖、SSPA 减少缓存精度浪费。去掉 STC 预计会保留更长序列、prefill 较慢；去掉 SSPA 则缓存 bit 数更高。两模块效果应在匹配最终内存预算下比较，而不能仅比较默认阈值。当前报告中的整体数字能支持联合方法的性能，但并不能从单一结果证明“语义先验是必要条件”；需要查看分配信号 ablation 的逐行数值。</p>
+<p>Authors Claim：训练免费、结构与精度联合优化、长篇生成质量较好。Experiments Actually Show：在三种 Omni 模型、三个长篇任务、H800 的设定下有较强的内存—质量折中及端到端加速。What Is Not Yet Proven：不同 GPU、批量请求、持续流输入、强领域变化、极长视频以及对生成事实覆盖率的因果保证。</p>
+<p>Additional Limitation：帧均值相似可能掩盖局部突发事件；音频平均可能抹掉瞬时警报；按页同精度使小而关键的 token 受同页其它 token 影响；校准 query 不代表后续长生成的全部需求；输出误差代理与语义真实性并非单调关系。</p>
+<h3>Video / Inference Efficiency Breakdown</h3>
+<p>瓶颈主要是多模态 prefill 的长序列计算和 decode 时 KV 读取的显存带宽。STC 真正少算的是被合并 token 对应的后续 Transformer 计算；SSPA 真正少搬运的是量化后缓存字节。需要区分 encoder 仍处理原始帧、压缩前特征计算、压缩/校准 overhead 和 LLM 加速。</p>
+<div class="scroll"><table><thead><tr><th>Metric</th><th>Baseline</th><th>Proposed</th><th>Change / evidence</th></tr></thead><tbody>
+<tr><td>Frames</td><td>原始采样最多 128/100/160</td><td>相同原始采样</td><td>未报告减少采样帧数</td></tr>
+<tr><td>Visual Tokens</td><td>原始 token 数</td><td>STC 后减少</td><td>具体数量 Not Reported</td></tr>
+<tr><td>FLOPs</td><td>Not Reported</td><td>Not Reported</td><td>不能推断理论比例</td></tr>
+<tr><td>End-to-end latency</td><td>1.00× 标准化</td><td>约 0.676×</td><td>报告 1.48× speedup</td></tr>
+<tr><td>Throughput / FPS</td><td>Not Reported</td><td>Not Reported</td><td>不能推断</td></tr>
+<tr><td>Total GPU memory</td><td>Not Reported</td><td>Not Reported</td><td>不能等同于 KV 压缩</td></tr>
+<tr><td>KV memory</td><td>1.00×</td><td>约 0.20×</td><td>平均 5.0× 压缩</td></tr>
+<tr><td>Relative generation quality</td><td>100%</td><td>97.98%</td><td>下降 2.02 个相对百分点</td></tr>
+</tbody></table></div>
+<h3>Contribution / Reproduction View</h3>
+<p>Contribution 1（New Mechanism Combination）：时空相似度视频合并与局部音频合并，强调开放式生成的信息多样性。Contribution 2（New Allocation Objective）：用 attention-output distortion per bit 与语义先验决定混合精度。Contribution 3（New System Integration）：page 级布局、四层共享分配、外层 K 重排校正。已有组件包括 Union-Find、cosine matching、KIVI 式 K/V 非对称和 Hadamard 预处理；创新主要在组合约束与输出敏感分配。</p>
+<p>最小复现建议：先用 Qwen2.5-Omni-3B + Video-SALMONN 2 子集 100 条，固定 greedy、128 帧、相同 prompt。依次跑 BF16 原始、STC-only、INT4 K + INT2 V、STC+均匀量化、STC+SSPA；扫描 τs/τt/τa 和 ω，严格匹配 5× KV 预算。每条样本记录输入 tokens、prefill ms、SSPA calibration ms、decode ms、peak allocated GPU、KV bytes、Correct/EER。</p>
+<p>最容易踩坑的是 token 位置编码随合并变化、音视频时间对齐失效、量化池重排改变 K block、不同 kernel 使 FLOPs 优势无法兑现，以及不同任务的生成长度影响端到端计时。最先复现 Table 1 的 Qwen3B Correct 与相对质量，再复现实际 latency。</p>
+<h3>Research Value / Attack Lens</h3>
+<p>Baseline Potential：高，适合多模态 KV 压缩的强对照。Migration Potential：高，视频 Agent 可以沿用结构合并并为长期证据分配精度。Systems Potential：高，因为已有端到端 wall-clock 结果。Attack Potential：高，可构造局部事件被帧均值掩盖的反例。Evaluation Potential：高，应把开放式事实覆盖与 latency 作为双目标。Benchmark Potential：高，可按短暂声音、局部运动、跨模态冲突构建压缩压力集。New Paper Potential：若提出生成过程中自适应 precision reallocation 并证明收益，机制空间更清晰。</p>
+<p>Verification：对同一视频插入 1 帧小目标或 100ms 声音，检测 STC 是否删掉；在相同 KV 字节下比较逐事件 recall；将 query 在生成中途改变，检验静态精度分配的鲁棒性；以峰值内存和 p95 latency 评估 serving 压力。</p>
+<h3>Migration 1：Query-evolving Video Agent Cache（研究建议）</h3>
+<p>Original Problem：静态 query 校准不覆盖后续生成/工具任务。Transferable Mechanism：输出敏感 page precision allocation。New Research Question：当 Agent 的目标随交互改变，能否在线重新分配 KV bit 而不重新编码视频？Method Modification：保留可升级的低精度 page 与少量高精度影子缓存，对每个新工具查询估计 attention-output sensitivity；预算内升级/降级。Minimum Experiment：Qwen2.5-Omni-3B，100 段视频，每段依次问 3 个不同事件问题；在固定 1GB 或相对 5× KV 预算下比较静态 R²、均匀 INT4、动态精度；测每轮 QA 和切换延迟。Model：Qwen2.5-Omni-3B。Dataset：Video-SALMONN 2 及人工构造多轮问题。Baseline：R²-Omni static、KIVI、token pruning。Metric：event recall、KV bytes、p95 TTFT、TPOT、quality。Expected Contribution：可重分配多模态记忆预算。Risk：动态升级需要原始高精度信息，若完全丢弃则不可恢复。Collision Risk：与 dynamic KV quantization/streaming cache 重合，需突出 query shift 与可恢复性。</p>
+<h3>Migration 2：稀有事件保真压缩 Benchmark（研究建议）</h3>
+<p>Original Problem：相似度合并可能抹掉短暂但重要的事件。Transferable Mechanism：结构冗余与语义精度分离。New Research Question：现有压缩在 rare-event 和 audio-video conflict 下的失真如何量化？Method Modification：构建每段视频 1–3 个短暂目标事件，并生成长篇描述问题与短答案对照；对删改事件做 counterfactual。Minimum Experiment：从 100 段公开可复用视频裁出 5–20 秒片段，插入或标注短暂视觉/音频事件；对每段做无压缩、OmniZip、KIVI、R² 的 2×/5×/8× 配置，人工复核 30% 输出。Model：Qwen2.5-Omni-3B/7B。Dataset：video-SALMONN 2 子集及受控合成片段。Baseline：OmniZip、KIVI、R²。Metric：rare-event recall、hallucination、temporal ordering、KV bytes、wall-clock。Expected Contribution：更敏感的长生成压缩评测协议。Risk：合成事件不自然、标注偏差。Collision Risk：与 video token importance benchmark 有交集，需强调音视频联合和开放式输出。</p>
+<h3>只记住这篇论文：九句话</h3>
+<p>第一，开放式长回答比选择题更怕丢掉低注意力细节。第二，token 数量冗余和 KV 数值精度冗余是两类问题。第三，STC 在 prefill 前根据时空/音频结构合并 token。第四，它尽量不按初始 query 硬删内容。第五，SSPA 在 prefill 后按 page 分配 value 精度。第六，精度升级优先看 attention 输出误差每 bit 的收益。第七，语义先验只是辅助，不能替代真实生成质量评价。第八，作者报告约 5× KV 压缩与 1.48× 端到端加速。第九，未来最值得检验的是动态 query 和稀有事件下的压缩失效。</p>
+<section id="synthesis"><h2>Cross-Paper Synthesis · Combined Research Opportunities</h2></section>
+<h3>共同趋势、互补与 Collision</h3>
+<p>共同趋势：更大上下文或更多 token 不一定是最佳解；重要的是让系统学会保留对未来任务有用的信息，并明确“信息保留”的成本。Memento 通过 Agent 行为写入语义笔记，R²-Omni 通过结构合并与数值精度分配保存多模态特征。两者处在不同抽象层：前者压缩可解释状态，后者压缩连续表示。</p>
+<p>可组合机制：Video Agent 在低层使用 R²-Omni 控制视频 KV，在高层使用 Memento 管理事件笔记。两者可能发生的冲突是：低层压缩丢失稀有事件后，高层 Agent 无论多会记笔记也无法恢复；高层 note 若把错误事件当事实保存，低层更高精度也无法纠正。</p>
+<p>最值得探索的统一框架是 budgeted evidence preservation：每一条可追溯事件记录具有来源帧、置信度、存储字节、未来被使用概率和可恢复成本。高层通过任务反馈学习写入，低层通过输出失真分配 bit；共同优化最终任务正确率与总 latency，而非分别优化摘要相似度和 attention MSE。</p>
+<p>Strongest Collision：当前两篇之间不存在已证明的直接方法冲突；潜在研究重叠是“未来用途驱动的记忆分配”。这是可形成联合实验的问题，不应宣称已有同题竞争。</p>
+<h3>Combined Research Opportunity：最小可运行联合实验</h3>
+<p>任务：视频中发生 6–10 个事件，用户分三轮提出不同问题。固定 Qwen2.5-Omni-3B、统一视频采样、统一工具预算。四组：①无压缩+无笔记；②R² 压缩+无笔记；③无压缩+结构化笔记；④R²+结构化笔记。第五组可加入动态精度升级。</p>
+<p>每轮输出事件证据 ID、文本答案、confidence；保存 source frame/time range。指标：逐事件召回、最终答案准确率、笔记引用正确率、KV bytes、prefill/decode ms、token、端到端 p95。通过强制在第二轮改变问题类型，测试两级 memory 是否真正保留了未来未知需求。若联合方法在同等成本下提高 Pareto frontier，才值得推进成论文。</p>
+<h3>Reading / Reproduction Priority</h3>
+<p>阅读优先级 1：Memento §3.3–3.6、Table 1/2、Figure 3/4、Appendix A；先复现 note-rate collapse。优先级 2：R²-Omni §3.2–3.3、Table 1、Efficiency、Appendix B 的量化布局；先做相同 5× KV budget 下的质量/时延复现。</p>
+<p>作为 baseline：Memento 更适合长时 Agent RL；作为 systems acceleration idea：R²-Omni 更强；作为 benchmark/metric idea：稀有事件保真与笔记反事实贡献都值得尝试；作为 attack/evaluation：跨窗口 note contamination 与时空合并误删可以组合。</p>
+<section id="sources"><h2>Sources / Links</h2><p><a href="https://arxiv.org/html/2611.00244">Memento — arXiv full HTML</a> · <a href="https://arxiv.org/abs/2611.00244">arXiv metadata</a></p><p><a href="https://arxiv.org/html/2611.03247">R²-Omni — arXiv full HTML</a> · <a href="https://arxiv.org/abs/2611.03247">arXiv metadata</a></p><p><small>证据说明：数值取自原文表格和方法段落；教学案例、迁移实验和新增局限是独立分析。未核实的代码与未报告系统指标均未编造。部分作者给出的综合比例与表格取整存在微小差异。本文为独立研究阅读报告，不代表同行评审结论。</small></p></section></main></body></html>
