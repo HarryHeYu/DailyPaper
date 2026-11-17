@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Daily AI Research Radar — 2026-11-17</title>
+<style>
+:root{
+  --bg:#f6f1e8;
+  --paper:#fffdf8;
+  --ink:#1c1916;
+  --muted:#57534e;
+  --line:#e4d8c4;
+  --link:#0b57d0;
+  --linkv:#6b21a8;
+  --s:#9a3412;
+  --a:#1e3a5f;
+  --b:#3f3f46;
+  --chip:#f0e6d6;
+  --warn:#9f1239;
+  --ok:#166534;
+  --toc:#2b2118;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Source Han Serif SC","Noto Serif CJK SC","Songti SC","STSong","Georgia","Times New Roman",serif;
+  font-size:17.5px;
+  line-height:1.85;
+}
+.wrap{max-width:860px;margin:0 auto;padding:0 22px 80px}
+header.mast{
+  padding:36px 0 10px;
+  border-bottom:2px solid var(--ink);
+}
+header.mast h1{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC","Helvetica Neue",sans-serif;
+  font-weight:700;
+  font-size:1.85rem;
+  line-height:1.35;
+  margin:0 0 8px;
+  letter-spacing:.02em;
+}
+.sub{color:var(--muted);font-size:.95rem;font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif}
+nav#toc{
+  position:sticky;top:0;z-index:20;
+  background:rgba(246,241,232,.96);
+  backdrop-filter:saturate(1.2) blur(8px);
+  border-bottom:1px solid var(--line);
+  margin:0 -22px;
+  padding:8px 22px;
+}
+nav#toc strong{display:block;font-size:.8rem;letter-spacing:.08em;color:var(--toc);font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif}
+nav#toc ol{
+  list-style:none;margin:4px 0 0;padding:0;
+  display:flex;flex-wrap:wrap;gap:4px 12px;
+  font-size:.82rem;
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+}
+nav#toc a{color:var(--link);text-decoration:none}
+nav#toc a:hover{text-decoration:underline}
+h2{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:1.38rem;
+  margin:2.2em 0 .6em;
+  padding-top:.4em;
+  border-top:1px solid var(--line);
+  color:var(--toc);
+}
+h3{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:1.16rem;margin:1.5em 0 .4em;color:var(--s);
+}
+h4{font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;font-size:1.02rem;margin:1.15em 0 .3em;color:var(--a)}
+p{margin:.7em 0}
+a{color:var(--link);text-decoration-thickness:1px;text-underline-offset:2px}
+a:visited{color:var(--linkv)}
+.lead{font-size:1.02rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 16px}
+.chip{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:.78rem;background:var(--chip);border:1px solid var(--line);
+  border-radius:999px;padding:2px 10px;color:var(--muted)
+}
+article.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:22px 24px 28px;
+  margin:1.4em 0 2em;
+  box-shadow:0 1px 0 rgba(43,33,24,.04);
+}
+.meta, .meta p, .meta li{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:.92rem;line-height:1.55;color:var(--muted)
+}
+.meta h3{color:var(--ink);margin-top:0}
+.meta ul{padding-left:1.1em}
+.badge{
+  display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;
+  padding:1px 7px;border-radius:4px;margin-right:6px;vertical-align:middle;
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+}
+.badge.S{background:#9a3412;color:#fff}
+.badge.A{background:#1e3a5f;color:#fff}
+.badge.B{background:#3f3f46;color:#fff}
+table{
+  border-collapse:collapse;width:100%;margin:12px 0 16px;
+  font-size:.88rem;font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  line-height:1.45;
+}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#f3ece1}
+.table-wrap{overflow-x:auto;margin:10px 0 16px}
+details.paper{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:0;margin:1em 0}
+details.paper>summary{
+  cursor:pointer;list-style:none;padding:14px 18px;
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-weight:650;font-size:1.02rem;
+}
+details.paper>summary::-webkit-details-marker{display:none}
+details.paper[open]>summary{border-bottom:1px solid var(--line)}
+details.paper .inner{padding:6px 22px 22px}
+.note{background:#f8f1e3;border-left:3px solid #b45309;padding:8px 12px;margin:12px 0;color:#44403c}
+.warn{background:#fff1f2;border-left:3px solid var(--warn);padding:8px 12px;margin:12px 0}
+.ok{color:var(--ok);font-weight:650}
+.fail{color:var(--warn);font-weight:650}
+.formula{font-family:"Cambria Math","Times New Roman",serif;background:#faf7f2;padding:2px 4px;border-radius:3px}
+ol.rank, ul.plain{padding-left:1.25em}
+footer{margin-top:3em;padding-top:1em;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+@media print{
+  nav#toc{position:static;background:none;border:0}
+  body{background:#fff;font-size:11pt}
+  article.paper, details.paper{break-inside:avoid;box-shadow:none}
+  a{color:#000;text-decoration:underline}
+  .wrap{max-width:none}
+}
+
+</style>
+<style>math{font-size:1.08em}.math-display{overflow-x:auto;margin:.8em 0;text-align:center}.math-display math{display:block}code.tex{color:#b45309}</style></head>
+<body>
+<div class="wrap">
+<header class="mast" id="sec-header">
+<h1>Daily AI Research Radar &amp; Idea Miner</h1>
+<p class="sub">日期：2026-11-17（Asia/Shanghai，周二） · 检索窗口：周一 2026-11-16 arXiv 公告批次（submitted 主要落在 2026-11-13 至周日截止前；该批次未被 11-16 日报覆盖，因昨日报告写于周一公告之前）· 周二 20:00 ET / 周三 09:00 上海时间之前的“周二公告”在撰稿时（约 08:26–08:41 Asia/Shanghai）尚未出现在 <span class="plain">arxiv.org/list/*/new</span>。本报告不以记忆补写未上线批次。</p>
+</header>
+
+<nav id="toc">
+<strong>目录</strong>
+<ol>
+<li><a href="#sec-exec">执行摘要</a></li>
+<li><a href="#sec-important">今日最重要</a></li>
+<li><a href="#sec-top3">Top 3 必读</a></li>
+<li><a href="#sec-top5">Top 5</a></li>
+<li><a href="#sec-rl">RL Highlights</a></li>
+<li><a href="#sec-agent">Agent Highlights</a></li>
+<li><a href="#sec-video">Video Acceleration Highlights</a></li>
+<li><a href="#sec-s">Tier S</a></li>
+<li><a href="#sec-a">Tier A</a></li>
+<li><a href="#sec-b">Tier B</a></li>
+<li><a href="#sec-ideas">Idea Mining</a></li>
+<li><a href="#sec-collision">Collision Detection</a></li>
+<li><a href="#sec-reading">Reading Priority</a></li>
+<li><a href="#sec-watch">Candidate Watchlist</a></li>
+<li><a href="#sec-stats">今日统计</a></li>
+<li><a href="#sec-sources">Sources / Links</a></li>
+<li><a href="#sec-audit">Depth Audit</a></li>
+</ol>
+</nav>
+
+<section id="sec-exec">
+<h2>执行摘要</h2>
+<div class="chips">
+<span class="chip">Candidate Pool: 55</span>
+<span class="chip">Formal: 7</span>
+<span class="chip">RL: 2</span>
+<span class="chip">Agent / Multi-Agent: 4</span>
+<span class="chip">Video Acceleration: 3</span>
+<span class="chip">Unlearning: 0</span>
+<span class="chip">Other: 0</span>
+<span class="chip">Tier S: 2</span>
+<span class="chip">Tier A: 3</span>
+<span class="chip">Tier B: 2</span>
+</div>
+<p class="lead">一句话：周一公告把三条主线同时往“把诊断写成可执行的规则，而不是再加一个提示或再训一遍同样的目标”推进。智能体强化学习里，脚手架可以被编译成可回放的程序，并且压缩应当锁住、指导应当与策略一起演化；VLM 投机解码里，接受损失集中在视觉依赖 token 上，把这个量写进权重比只换多模态数据更有效；屏幕流和少步视频生成则分别用像素差复用 KV、以及把坍缩的激活方向找回来，处理加速之后剩下的实时性与多样性问题。</p>
+<p><strong>RL Line：</strong>今日最重要的是 <a href="#p-2611.18533">ModHarness-RL（arXiv:2611.18533）</a>：在 CodeSearch 四个设置上相对固定手写脚手架平均约 +19%，Qwen3-8B 上下文受限时 Overall F1 从 0.333 到 0.412。同日的 <a href="#p-2611.17924">TIDE（arXiv:2611.17924）</a> 不改策略目标，却把 on-policy 同步训练里长尾 rollout 浪费的 GPU 要回来，R1-Distill-8B 上占最优吞吐的比例从 83.2% 提到 97.4%，跨配置加速约 1.16–1.36×。</p>
+<p><strong>Agent Line：</strong>ModHarness-RL 同时属于这条线。<a href="#p-2611.17808">CarryOn（arXiv:2611.17808）</a> 用“紧凑执行状态 + 带出处证据 + 学来的选择器”管理长程上下文，三个 Actor、三个基准的宏观成功率 75.7%，比最强基线高 6.7 个百分点。<a href="#p-2611.18516">StreamEmbed（arXiv:2611.18516）</a> 把屏幕历史做成赶得上拍摄速度的视觉索引，完整编码 2.33 秒/张的路径被压到 0.66 秒，R@10 仅从 83.4 降到 82.1。<a href="#p-2611.17610">PACE 综合（arXiv:2611.17610）</a> 则给出一条方法学警戒：一旦把样本数或预算对齐，多智能体相对单智能体的平均准确率差为 −0.042。</p>
+<p><strong>Video / Multimodal Acceleration Line：</strong>证据最完整的是 <a href="#p-2611.18482">MMFlash（arXiv:2611.18482）</a>：同数据训练的 DFlash 在 Qwen3.5-4B / 9B 图像贪心下平均 2.72× / 2.75×，MMFlash 到 3.00× / 3.05×；长视频加稀疏注意力并微调后平均 2.33–2.71×。StreamEmbed 处理的是屏幕流而非自然视频，但机制同属视觉 token 剪枝与跨帧 KV 复用。<a href="#p-2611.18550">ReDiverse（arXiv:2611.18550）</a> 指出少步蒸馏后多样性崩溃来自激活方向变少，而不是总方差先消失。</p>
+</section>
+
+<section id="sec-important">
+<h2>Today's Most Important Paper</h2>
+<p><strong>ModHarness-RL: Recasting Harnesses as Learnable and Evolving Programs for Agentic RL</strong>（<a href="https://arxiv.org/abs/2611.18533">arXiv:2611.18533</a>，Penn State / LinkedIn / UCSB）。它把“模型看见什么、何时被提醒”从手写提示改成可在历史轨迹上免费回放、并用留出训练集闸门的程序，同时保持标准 GRPO 与可验证的轨迹奖励。对用户主线的意义是：这是一套可以接到现有 agent RL 训练循环上的脚手架学习协议，而不是又一个只在零样本里写笔记的技能库。精读入口见 <a href="#p-2611.18533">Tier S</a>。</p>
+</section>
+
+<section id="sec-top3">
+<h2>Top 3 必读</h2>
+<ol class="rank">
+<li><a href="#p-2611.18533">ModHarness-RL</a> — 先看 §3 的程序表示与 Algorithm 1，再对 Table 1 与 Table 3：完整方法、单程序、以及“先策略后脚手架 / 让 Compression 跟着变”分别掉在哪里。</li>
+<li><a href="#p-2611.18482">MMFlash</a> — 先看 Figure 3 的 Q1–Q4 接受率（46% 对 22%）和 §4.2 的三项权重，再对 Table 1（同数据 DFlash）与 Table 2（稀疏注意力单独贡献）。</li>
+<li><a href="#p-2611.17808">CarryOn</a> — 先看状态与带出处证据的拆分，再对 Table 1 的成功率 / <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>S</mi><mrow><mn>0.8</mn></mrow></msub></mrow></math></span> / NCS，以及 Table 2 去掉 MEMORY 之后的 66.1%。</li>
+</ol>
+</section>
+
+<section id="sec-top5">
+<h2>Top 5</h2>
+<ol class="rank">
+<li>ModHarness-RL（2611.18533）— Tier S，Agent RL 脚手架共演化。</li>
+<li>MMFlash（2611.18482）— Tier S，VLM / 长视频投机解码。</li>
+<li>CarryOn（2611.17808）— Tier A，长程上下文该留下什么。</li>
+<li>TIDE（2611.17924）— Tier A，on-policy RL 的墙钟利用率。</li>
+<li>StreamEmbed（2611.18516）— Tier A，屏幕流视觉索引的实时编码。</li>
+</ol>
+</section>
+
+<section id="sec-rl">
+<h2>RL Highlights</h2>
+<ul class="plain">
+<li><strong>ModHarness-RL</strong>：奖励仍是轨迹级可验证结果（定位 F1、通关、SQL 执行一致），信用分配仍是 GRPO 组内标准化优势；新意在于脚手架程序改变了每一步的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>c</mi><mi>t</mi></msub></mrow></math></span>，并且 Steering 只干预回放显示“不会自己消失”的失败。</li>
+<li><strong>TIDE</strong>：不改目标与优势，只重叠“长尾还在解码 / 空 GPU 已经可以训练”，并保持 on-policy 语义。最强对照是同机同步系统，不是异步离策略流水线。</li>
+<li>同批次还有 Offline KL-regularized RL 的样本复杂度、ARCHER 的可执行推理轨迹等，放入 Watchlist，未做正式深读。</li>
+</ul>
+</section>
+
+<section id="sec-agent">
+<h2>Agent / Multi-Agent Highlights</h2>
+<ul class="plain">
+<li><strong>ModHarness-RL</strong> 与 <strong>CarryOn</strong> 构成一对互补：前者在训练期编译“看见什么 / 何时提醒”，后者在推理期用选择器保留带出处的证据。两者都反对“摘要等于遗忘”。</li>
+<li><strong>PACE</strong> 提醒：用贪心单次当对照的多智能体收益，不能直接当成协调的贡献。</li>
+<li><strong>StreamEmbed</strong> 为计算机使用智能体提供可实时更新的视觉记忆索引；WebArena-Pro、Only as Safe as the Weakest Agent 等留在 Watchlist。</li>
+</ul>
+</section>
+
+<section id="sec-video">
+<h2>Video Acceleration Highlights</h2>
+<ul class="plain">
+<li><strong>MMFlash</strong> 是今日证据链最完整的生成加速：墙钟 tok/s，而不是理论 FLOPs；视频上必须把稀疏注意力写进训练。</li>
+<li><strong>StreamEmbed</strong> 用空间剪枝 + 跨屏 KV 复用把 2.33 秒的视觉编码拉回 0.66 秒，准确率只掉 1.3 个 R@10。</li>
+<li><strong>ReDiverse</strong> 处理少步蒸馏后的多样性崩溃，是加速管道的下游质量修补，而不是再减步数。</li>
+</ul>
+</section>
+
+<section id="sec-s">
+<h2>Tier S（全文精读，默认展开）</h2>
+
+<article class="paper" data-fulltext="yes" data-id="2611.18533" data-tier="S" id="p-2611.18533">
+<div class="meta">
+<h3><span class="badge S">S</span> ModHarness-RL: Recasting Harnesses as Learnable and Evolving Programs for Agentic RL</h3>
+<ul>
+<li><strong>Authors:</strong> Zelin He, Siyu Zhu, Jacob Helwig, Yujian Liu, Li An, Rohit Jain, Shiyu Chang, Alborz Geramifard</li>
+<li><strong>Affiliation:</strong> The Pennsylvania State University（Zelin He）；LinkedIn（Siyu Zhu, Jacob Helwig, Rohit Jain, Shiyu Chang, Alborz Geramifard）；University of California, Santa Barbara（Yujian Liu, Li An, Shiyu Chang）。前三位为共同一作。</li>
+<li><strong>Date / Venue / Status:</strong> arXiv 2611.18533v1，submitted 2026-11-13，周一 2026-11-16 公告批次（cs.AI / cs.CL / cs.LG）。非正式发表。</li>
+<li><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.18533">arXiv:2611.18533</a> · <a href="https://arxiv.org/pdf/2611.18533.pdf">PDF</a>。论文首页写有 Website，正文未给出可核验的独立代码仓库。</li>
+<li><strong>Code Availability:</strong> 未找到已核验的官方 GitHub；程序示意见 Appendix D。基线 DeepAgents 引用了 LangChain 实现。</li>
+<li><strong>原文访问:</strong> 已阅读 HTML/PDF 全文（§2–4、Table 1–5、Figure 4–7、Appendix A、C）。</li>
+</ul>
+</div>
+
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>智能体强化学习里，模型外面总有一套脚手架（harness）：它决定历史怎么被写进上下文、模型走偏时要不要给一句提醒。常见做法是人手写好这套脚手架，然后在整个训练过程中原封不动。作者认为这不合理：好的脚手架依赖于环境、数据和当前策略，而且策略一变，它也该变。</p>
+<p>ModHarness-RL 把脚手架写成作用在结构化 State 上的两个确定性程序。Compression 读取完整交互记录，按规则重渲染历史，把不再需要的片段卸掉，从而在有限预算里保住关键证据；它在训练开始前对基策略拟合一次，之后固定，以免上下文在策略学习中不停改写法。Steering 是一组触发器，每个触发器检测一种可验证的失败模式（例如重复调用同一工具），只在触发时追加短指导；它每隔 10 个训练步更新一轮，并且先用全部历史轨迹做零成本回放，看这种失败是在自行消失，还是稳定存在，再决定安装、观察或放弃。策略本身仍用标准 GRPO。CodeSearch 上，相对固定的手写脚手架，四个设置平均约高 19%；Qwen3-8B 在上下文受限时 Overall F1 从 0.333 到 0.412（+24%），并且超过写这些程序的 GPT-5-mini 零样本。消融表明：先训策略再改脚手架、或让 Compression 随策略一起演变，都会掉点。</p>
+</section>
+
+<h4>背景与研究缺口</h4>
+<section class="analysis" data-part="background">
+<p>长程工具智能体的轨迹会迅速堆满重复的检索结果、失败的命令输出和已经过时的计划。上下文一满，就只能丢弃早期回合，或叫另一个模型做摘要。与此同时，模型会反复犯同一类错：再查一次已经查过的文件、用错工具参数、在该提交时继续探索。已有工作分别从记忆、技能库、提示词或整套脚手架编辑去补这块，但它们大多仍把“模型看见什么、何时被提醒”当成训练外围的文本产物，而不是可以在轨迹上执行、检查、回放的程序。</p>
+<p>缺口有两层。第一，若压缩历史靠在线调用教师模型，代价会随训练轨迹数线性增长，而且每次改写都可能打断前缀缓存。第二，若把指导当成固定提示，它无法区分“策略再训几步自己就会改掉的偶发错误”和“训练怎样都不会自己消掉的稳定失败”；把偶发错误写成永久提醒，等于在策略还在学的时候塞进多余监督。作者要的是一种脚手架：不调用模型就能在每一步运行，能在旧轨迹上事后检验，并且只在闸门确认它提高了留出训练任务的分数之后才安装。</p>
+</section>
+
+<h4>核心洞察</h4>
+<section class="analysis" data-part="insight">
+<p>脚手架不应当是一段越写越长的提示，而应当是两个作用在同一份完整 State 上的程序：一个决定“这一回合该看见怎样的历史”，一个决定“这一回合要不要插入一句针对已知失败的提醒”。因为它们是程序，所以可以在历史轨迹上免费回放，画出某种失败是在下降、走平还是上升；只有走平或上升的失败才值得干预。Compression 适合一次拟合后锁住，因为它改变的是上下文的写法，写法不稳会破坏策略学习；Steering 则必须与策略共演化，因为失败模式会随策略改变。把两者的安装都放到留出训练集上的闸门后面，才能避免把教师模型的文风蒸馏进策略，也避免在评测集上挑程序。</p>
+</section>
+
+<h4>方法深挖</h4>
+<section class="analysis method" data-part="method">
+<p><strong>Agent 架构与 State。</strong> 策略 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mi>&#x003B8;</mi></msub></mrow></math></span> 在任务 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>q</mi><mi>&#x0007E;</mi><mi>&#x1D49F;</mi></mrow></math></span> 上与工具集 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x1D4AF;</mi></mrow></math></span> 多回合交互。第 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi></mrow></math></span> 步读取上下文 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>c</mi><mi>t</mi></msub></mrow></math></span>，采样动作 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>a</mi><mi>t</mi></msub><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mi>&#x003B8;</mi></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><msub><mi>c</mi><mi>t</mi></msub><mo stretchy="false">&#x00029;</mo></mrow></math></span>（本回合完整回复，以一次工具调用结束），观察 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>o</mi><mi>t</mi></msub><mo>&#x0003D;</mo><mi>&#x1D4AF;</mi><mo stretchy="false">&#x00028;</mo><msub><mi>a</mi><mi>t</mi></msub><mo stretchy="false">&#x00029;</mo></mrow></math></span>，直到终止步 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi></mrow></math></span>。轨迹为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><mi>q</mi><mo>&#x0002C;</mo><msub><mi>a</mi><mn>0</mn></msub><mo>&#x0002C;</mo><msub><mi>o</mi><mn>0</mn></msub><mo>&#x0002C;</mo><mi>&#x02026;</mi><mo>&#x0002C;</mo><msub><mi>a</mi><mi>T</mi></msub><mo stretchy="false">&#x00029;</mo></mrow></math></span>。作者把 State 写成带类型的记录 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mi>t</mi></msub><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><mi>q</mi><mo>&#x0002C;</mo><msub><mi>u</mi><mn>0</mn></msub><mo>&#x0002C;</mo><mi>&#x02026;</mi><mo>&#x0002C;</mo><msub><mi>u</mi><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow></math></span>，其中 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>u</mi><mi>i</mi></msub><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><msub><mi>a</mi><mi>i</mi></msub><mo>&#x0002C;</mo><msub><mi>o</mi><mi>i</mi></msub><mo stretchy="false">&#x00029;</mo></mrow></math></span>，每回合含 `.thought`、工具名与参数、执行输出或带元数据的检索文档，以及该回合展示过的指导。最朴素的脚手架是把记录直接拼成不断变长的抄本 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>c</mi><mi>t</mi><mrow><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi></mrow></mrow></msubsup></mrow></math></span>。ModHarness 则学习 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x0210B;</mi><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">s</mi></mrow><mo>&#x0002C;</mo><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false">&#x00029;</mo></mrow></math></span>，在每一步用完整 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mi>t</mi></msub></mrow></math></span> 重新渲染上下文：compress 给出压缩后的历史视图，steer 仅在触发时于其后追加指导。执行 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x0210B;</mi></mrow></math></span> 不调用模型、不计模型 token，因此可以在每条轨迹的每一步运行。</p>
+<p><strong>RL Formulation。</strong> 目标是 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mo>max</mo><mi>&#x003B8;</mi></msub><msub><mi>&#x1D53C;</mi><mrow><mi>q</mi><mi>&#x0007E;</mi><mi>&#x1D49F;</mi><mo>&#x0002C;</mo><mspace width="0.167em" /><mi>&#x003C4;</mi><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mi>&#x003B8;</mi></msub></mrow></msub><mo stretchy="false">[</mo><mi>r</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">]</mo></mrow></math></span>。优化器用 GRPO（在 verl 中实现，vLLM 做 rollout）。对每个任务采样一组 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>G</mi></mrow></math></span> 条轨迹，组内标准化奖励得到优势</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mover accent="true"><mrow><mi>A</mi></mrow><mo>&#x0005E;</mo></mover><mi>i</mi></msub><mo>&#x0003D;</mo><mfrac><mrow><msub><mi>R</mi><mi>i</mi></msub><mo>&#x02212;</mo><mo>mean</mo><mo stretchy="false">&#x00028;</mo><mo stretchy="false">&#x0007B;</mo><msub><mi>R</mi><mi>j</mi></msub><msubsup><mo stretchy="false">&#x0007D;</mo><mrow><mi>j</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>G</mi></mrow></msubsup><mo stretchy="false">&#x00029;</mo></mrow><mrow><mo>std</mo><mo stretchy="false">&#x00028;</mo><mo stretchy="false">&#x0007B;</mo><msub><mi>R</mi><mi>j</mi></msub><msubsup><mo stretchy="false">&#x0007D;</mo><mrow><mi>j</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>G</mi></mrow></msubsup><mo stretchy="false">&#x00029;</mo></mrow></mfrac></mrow></math></div>
+<p>再最小化论文给出的裁剪目标（含 KL 项）</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">G</mi><mi mathvariant="normal">R</mi><mi mathvariant="normal">P</mi><mi mathvariant="normal">O</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>G</mi></mrow></mfrac><munderover><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>G</mi></mrow></munderover><mfrac><mrow><mn>1</mn></mrow><mrow><mo stretchy="false">&#x0007C;</mo><msub><mi>&#x003C4;</mi><mi>i</mi></msub><mo stretchy="false">&#x0007C;</mo></mrow></mfrac><munderover><mo>&#x02211;</mo><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mo stretchy="false">&#x0007C;</mo><msub><mi>&#x003C4;</mi><mi>i</mi></msub><mo stretchy="false">&#x0007C;</mo></mrow></munderover><mo>min</mo><mo minsize="1.2em" maxsize="1.2em">(</mo><msub><mi>&#x003C1;</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><msub><mover accent="true"><mrow><mi>A</mi></mrow><mo>&#x0005E;</mo></mover><mi>i</mi></msub><mo>&#x0002C;</mo><mo>clip</mo><mo stretchy="false">&#x00028;</mo><msub><mi>&#x003C1;</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x0002C;</mo><mn>1</mn><mo>&#x02212;</mo><mi>&#x003F5;</mi><mo>&#x0002C;</mo><mn>1</mn><mo>&#x0002B;</mo><mi>&#x003F5;</mi><mo stretchy="false">&#x00029;</mo><msub><mover accent="true"><mrow><mi>A</mi></mrow><mo>&#x0005E;</mo></mover><mi>i</mi></msub><mo minsize="1.2em" maxsize="1.2em">)</mo><mo>&#x02212;</mo><mi>&#x003B2;</mi><mspace width="0.167em" /><msub><mi>&#x1D53B;</mi><mrow><mrow><mi mathvariant="normal">K</mi><mi mathvariant="normal">L</mi></mrow></mrow></msub><mo stretchy="false">[</mo><msub><mi>&#x003C0;</mi><mi>&#x003B8;</mi></msub><mo fence="false" stretchy="false">&#x02016;</mo><msub><mi>&#x003C0;</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub><mo stretchy="false">]</mo></mrow></math></div>
+<p>其中 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C1;</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub></mrow></math></span> 是 token 级重要性比，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 为固定参考策略。奖励因环境而异，都是轨迹级、可验证的结果奖励，没有逐步人工标注：CodeSearch 是文件/模块/实体三个 F1 之和（报表示三个 F1 的均值，落在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>&#x0002C;</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></span>）；ALFWorld 是通关 1、否则 0；BIRD SQL 是最终查询与金标准结果一致为 1，否则 0。信用分配因此仍是组内标准化的轨迹优势，广播到该轨迹的所有 token；脚手架并不改写奖励，它只改变 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>c</mi><mi>t</mi></msub></mrow></math></span>，从而改变哪些 token 会在何种上下文中被采样。KL 系数在 CodeSearch 为 0.001、ALFWorld 为 0.01、BIRD 为 0；熵奖励仅 ALFWorld 使用 0.001。所有方法训练 200 步，每环境内优化设置相同，差别只在模型周围的脚手架。</p>
+<p><strong>Compression：一次拟合，然后锁住。</strong> 先用基策略 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mn>0</mn></msub></mrow></math></span> 在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x1D49F;</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></mrow></msub></mrow></math></span> 上以追加式上下文做 rollout，得到水库 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x0211B;</mi><mn>0</mn></msub></mrow></math></span>。LLM 创建者（GPT-5-mini）阅读这些轨迹和上下文被填满的方式，写出若干候选压缩程序；每个候选编译、修复直到能跑，再在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x0211B;</mi><mn>0</mn></msub></mrow></math></span> 的存档回合上测量它是否不忠（删掉了任务相关信息）或无效（上下文几乎没变），不合适就改写。候选集 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x1D4AB;</mi></mrow></math></span> 在留出训练任务 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>&#x1D49F;</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></mrow><mrow><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow></msubsup></mrow></math></span> 上、用冻结的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mn>0</mn></msub></mrow></math></span> 各跑一次，得分最高者成为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x0210B;</mi><mn>0</mn></msub></mrow></math></span> 并在此后固定。作者也试过让 compress 随策略每 10 步重拟合，Table 3 显示全面落后，说明上下文写法需要稳定。</p>
+<p><strong>Steering：与策略共演化，先回放再安装。</strong> 每轮先在现任 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x0210B;</mi><mrow><mi>k</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msub></mrow></math></span> 下用 GRPO 更新策略，得到 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mi>k</mi></msub></mrow></math></span> 与新轨迹 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x0211B;</mi><mi>k</mi></msub></mrow></math></span>。创建者从“同一任务有的轨迹成功、有的失败”的混合组提出失败假说：每个假说是一个作用在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mi>t</mi></msub></mrow></math></span> 上的触发器，加上指导文本的要点。关键步骤是 Replay：把每个候选触发器在全部历史轨迹 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x0211B;</mi><mrow><mn>0</mn><mi>:</mi><mi>k</mi></mrow></msub></mrow></math></span> 上执行，统计该失败在各训练步出现的频率，得到曲线 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x02130;</mi></mrow></math></span>。这一步无需模型调用。判定者阅读曲线与已安装集合，给出三种裁决：失败走平或上升则 intervene（安装触发器与指导）；看起来真实但尚未稳定则 monitor（留下观察，暂不展示指导）；持续下降则 continue（不装）。被接纳的触发器还要作为一组一起过闸门：只有在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mi>k</mi></msub></mrow></math></span> 下、在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>&#x1D49F;</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></mrow><mrow><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow></msubsup></mrow></math></span> 上严格超过 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x0210B;</mi><mrow><mi>k</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msub></mrow></math></span> 才成为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x0210B;</mi><mi>k</mi></msub></mrow></math></span>。默认 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>20</mn></mrow></math></span> 轮，每 10 个训练步一次，与训练并行，训练器不必等待。一个玩具例子：若触发器是“连续两回合调用了参数相同的同一 shell 命令”，回放会告诉你这种重复是在随训练消失，还是在后期仍然成批出现；只有后者才会把“不要重复同一查询，改检查已有输出”写进下一回合的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>c</mi><mi>t</mi></msub></mrow></math></span>。</p>
+<p><strong>长程与失败传播。</strong> 两个程序每一步都读完整 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mi>t</mi></msub></mrow></math></span>，因此某一步被卸掉的内容仍可在后续步骤按需重新出现，这是对“压缩等于永久遗忘”的显式否定。失败若不被写成可执行的触发器，就只能通过轨迹级奖励间接影响后续回合；Steering 把可检测失败从隐式信用改成定点干预。它也因此受边界约束：只能捕捉“可用显式规则在记录上检测”的模式，对开放对话里语义层面的偏离帮助有限。</p>
+</section>
+
+<h4>实验设置与结果</h4>
+<section class="analysis results" data-part="results">
+<p><strong>设置。</strong> 三个环境共用同一套对比逻辑，只改脚手架。CodeSearch 跟随 CodeScout：在修复前的仓库里定位应改的文件、模块与实体，训练用 SWE-Smith，评测 288 题（SWE-Bench Lite 100、Verified 100、Pro 88），模型为 Qwen3-4B / 8B，每步 8 个任务、每任务 8 条轨迹，学习率 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>6</mn></mrow></msup></mrow></math></span>，温度 1.0，每回合最多 1024 token、最多 10 回合、每回合一次 shell（30 秒、最多 10,000 字节输出）。ALFWorld 跟随 GiGPO：274 个评测游戏（seen 140、unseen 134），Qwen2.5-1.5B-Instruct / 7B-Instruct；1.5B 在 RL 前用规则专家的 288 个成功局做 9 步 SFT，否则 GRPO 组内优势全为零。与 GiGPO 只展示最近两回合不同，本文保留完整历史直至触达预算。BIRD SQL 跟随 MTIR-SQL：训练集去掉题面已超 6144 token 的 663 题后剩 7726，评测 dev 1534 题，Qwen3.5-2B / 4B，每步 64 题、每题 5 条轨迹，最多 6 回合。所有方法训练 200 步，在 8×H100 单节点上，用最终检查点评估；凡是要从轨迹学习文本产物的方法，创建者都是 GPT-5-mini。上下文分两档：受限默认 1024 历史 token（会在典型回合中途用尽），充足默认 8192（ALFWorld 提到 12288，因 8192 仍不够长）。<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>&#x1D49F;</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></mrow><mrow><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow></msubsup></mrow></math></span> 在 CodeSearch 与 ALFWorld 为 128 个任务，与评测集不相交。基线包括：固定手写 Base harness；只加其中一个程序的 +Compression / +Steering；EvolveR（记忆）、SkillRL（技能库）、INSPO（提示共演化）、HarnessForge（编辑脚手架模块）、DeepAgents（带规划清单、草稿本和子智能体的复杂手写脚手架），以及 GPT-5-mini 零样本。</p>
+
+<p><strong>RQ1：在 CodeSearch 上，可学习脚手架是否稳定优于固定手写脚手架，以及这个收益是不是教师模型的蒸馏？</strong> 设定即 Table 1：同一模型、同一 GRPO 配置，只换脚手架，在受限与充足两档、两个模型规模上报告 Lite / Verified / Pro 的 Overall F1。观察：四个设置里 ModHarness-RL 都高于 Base，平均约 +19%。Qwen3-4B 受限从 0.303 到 0.368（+21%），充足从 0.361 到 0.424（+17%）；Qwen3-8B 受限从 0.333 到 0.412（+24%），充足从 0.403 到 0.460（+14%）。最强第三方在 4B 受限是 SkillRL 的 0.349（+15%），8B 受限是 DeepAgents 的 0.368（+10%），都低于完整方法。GPT-5-mini 零样本在受限档只有 0.094（4B 对比栏）和 0.089（8B），充足档为 0.366，仍低于 8B 的 ModHarness-RL 0.460，也低于 4B 的 0.424。单程序拆解（正文与 Figure 4）：CodeSearch 上 Steering 平均约 +15%，Compression 约 +6%，说明这个环境的主要病是重复性失败而不是纯粹的上下文塞满。解释：收益来自“程序在策略轨迹上被闸门选中”，不是把教师的零样本能力写进权重；否则零样本教师不应在受限档如此之差，完整方法也不应系统超过教师。</p>
+
+<div class="table-wrap">
+<table>
+<caption>Table 1 摘录：CodeSearch Overall F1（Lite / Verified / Pro 平均）及相对同模型 Base harness 的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x00394;</mi></mrow></math></span>。</caption>
+<thead><tr><th>模型 / 预算</th><th>Base</th><th>最强第三方（姓名 / 分数）</th><th>ModHarness-RL</th><th><span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x00394;</mi></mrow></math></span></th></tr></thead>
+<tbody>
+<tr><td>Qwen3-4B，受限</td><td>0.303</td><td>SkillRL 0.349</td><td>0.368</td><td>+21%</td></tr>
+<tr><td>Qwen3-4B，充足</td><td>0.361</td><td>SkillRL 0.395</td><td>0.424</td><td>+17%</td></tr>
+<tr><td>Qwen3-8B，受限</td><td>0.333</td><td>DeepAgents 0.368</td><td>0.412</td><td>+24%</td></tr>
+<tr><td>Qwen3-8B，充足</td><td>0.403</td><td>DeepAgents 0.430</td><td>0.460</td><td>+14%</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><strong>RQ2：两个程序各自解决什么问题？共演化是否必要？压缩程序是否比在线教师摘要更划算？</strong> 设定包括 Figure 4 / 6 的单程序对比、Table 2 的代价，以及 Table 3 的流水线消融。观察：ALFWorld 在受限预算下，两模型平均 Compression +22%、Steering +16%，与 CodeSearch 相反，说明在回合很长、历史更快触顶的家庭任务里，先保住关键观察比插入指导更重要。BIRD 上两者在 2B 接近，4B 上 Compression 更好。Figure 6 进一步说，受限档 Compression 相对 Base，Qwen3-8B CodeSearch 约 +8%，Qwen2.5-7B ALFWorld 约 +21%；充足档则主要省 prefill：在训练所用预算下，ALFWorld 少 74% token，CodeSearch 少 10%，且因为 compress 是确定性程序，早先回合的渲染保持一致，前缀缓存大部分仍有效。Table 2 把同一创建者 GPT-5-mini 的在线摘要（GPT Compaction）拿来对比：Compression 在 4 个设置中的 2 个分数更高，另外两个最多低约 5%，但估计的教师调用与 token 少约两个数量级（例如 4B CodeSearch 受限：36 次对 12,365 次调用，0.183M 对 62.6M token），受限档每步墙钟估计可降三个数量级以上（0.30 ms 对 749 ms）。</p>
+<div class="table-wrap">
+<table>
+<caption>Table 2 摘录：一次训练中 Compression 相对 GPT Compaction（同一创建者 GPT-5-mini）的代价。带 e/s 的数字为原文估计值。</caption>
+<thead><tr><th>设置</th><th>方法</th><th>Score</th><th>Calls</th><th>Tokens</th><th>ms/turn</th></tr></thead>
+<tbody>
+<tr><td>CodeSearch，Qwen3-4B，受限</td><td>GPT Compaction</td><td>0.340</td><td>12,365</td><td>62.6M (e)</td><td>749 (e)</td></tr>
+<tr><td>同上</td><td>Compression</td><td>0.345</td><td>36 (s)</td><td>0.183M (e,s)</td><td>0.30</td></tr>
+<tr><td>ALFWorld，Qwen2.5-1.5B，受限</td><td>GPT Compaction</td><td>8.723</td><td>247,347</td><td>1,789.5M (e)</td><td>4,127 (e)</td></tr>
+<tr><td>同上</td><td>Compression</td><td>8.893</td><td>38 (s)</td><td>0.198M (e,s)</td><td>1.42</td></tr>
+</tbody>
+</table>
+</div>
+<p>Table 3 是机制证据：去掉创建（训练中不再提新触发器）或去掉判定（所有提案直接进闸门），四个格子全部下降；先训策略再优化脚手架、或先装脚手架再训策略，同样全面落后（例如 4B 充足：完整方法 0.424，策略先行 0.290，脚手架先行 0.352）；让 Compression 随策略演变，8B 受限甚至掉到 0.279，低于 Base 的 0.333。更新间隔 10 步在 Table 4 上是 4B 充足的最好点（0.424，对 5 步的 0.404 与 20 步的 0.404）。解释：Compression 的价值是“用一次编译换掉每回合的教师摘要”，Steering 的价值是“只干预不会自己消失的失败”；两者必须与策略交错，而不能做成两个前后相继的阶段。失败边界是：ALFWorld 与 BIRD 没有完整第三方基线矩阵；闸门样本只有 128（或 BIRD 受限 256）个留出题；程序写手是专有模型；确定性规则覆盖不了纯语义失败。</p>
+
+<div class="table-wrap">
+<table>
+<caption>Table 3：CodeSearch Overall F1 消融。完整系统在四个格子上都最高。</caption>
+<thead><tr><th>流水线</th><th>4B 受限</th><th>8B 受限</th><th>4B 充足</th><th>8B 充足</th></tr></thead>
+<tbody>
+<tr><td>w/o generation</td><td>0.302</td><td>0.378</td><td>0.365</td><td>0.375</td></tr>
+<tr><td>w/o judging</td><td>0.356</td><td>0.377</td><td>0.376</td><td>0.411</td></tr>
+<tr><td>policy first, then harness</td><td>0.344</td><td>0.395</td><td>0.290</td><td>0.444</td></tr>
+<tr><td>harness first, then policy</td><td>0.341</td><td>0.381</td><td>0.352</td><td>0.451</td></tr>
+<tr><td>evolving Compression</td><td>0.336</td><td>0.279</td><td>0.360</td><td>0.398</td></tr>
+<tr><td>ModHarness-RL</td><td>0.368</td><td>0.412</td><td>0.424</td><td>0.460</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<h4>主张与证据、贡献与局限</h4>
+<section class="analysis" data-part="claim">
+<p>主主张是：把脚手架写成可执行程序，并让 Compression 锁住、Steering 与 GRPO 策略共演化，能够在多种环境与两种上下文预算下超过固定手写脚手架，且收益不是教师蒸馏。Table 1 加上 GPT-5-mini 零样本对照，是主张的主证据；Table 3 把共演化、判定和“压缩不宜随策略改写法”写成可证伪的消融；Table 2 说明程序化压缩相对在线摘要的代价优势。相对弱的证据是 ALFWorld / BIRD 主要靠单程序曲线和正文百分数，没有像 Table 1 那样的完整第三方表，因此“跨环境普遍成立”应读作定向验证，而不是同等强度的排行。局限还包括：闸门样本量有限；创建者与判定者都是 GPT-5-mini；比较范围在 CodeSearch 最完整；确定性程序不适合开放对话。贡献是把 agent RL 里“模型看见什么、何时被提醒”从提示工程对象改成可回放、可闸门的程序对象，并给出一套可操作的更新节奏（20 轮、每 10 步、与训练并行）。研究价值在于：它和近期把经验写成 playbook、步骤分数或技能库的工作可以对照——这里经验被编译成对 State 的规则，而不是再喂回模型当文本记忆。</p>
+</section>
+
+<h4>最小可执行迁移</h4>
+<section class="analysis" data-part="migration">
+<p>若要在自己的工具智能体 GRPO 训练里试验这件事，不必一开始就同时上两个程序。最小路径是：把交互记录成带类型的 State（思考、工具名、参数、输出），先保持现有奖励与 GRPO 超参不变。第一步只做 Compression：用基策略在训练集上 rollout，让一个能写代码的模型提出若干“按规则重渲染历史”的程序，在留出训练题上挑选能跑、且不降低分数的一个，然后锁定，再开 RL。对照必须是同一预算下的追加式 Base harness，以及用同一个写手做在线摘要的 compaction，同时记录 prefill token 与前缀缓存命中，而不是只看结局分数。第二步再加 Steering：每 10 个训练步，从混合成功/失败组提出触发器，在历史轨迹上免费回放，只把走平或上升的失败送进闸门；闸门必须用留出训练题，绝不能用测试集。环境建议先选工具输出结构化、奖励可自动计算的一种，例如代码定位或 SQL，而不是开放对话。风险是：创建者若换成弱模型，提案质量会下降；若让 compress 跟着策略改，上下文不稳可能直接伤性能；触发器写得过宽，会把偶发错误当成永久指导。成功标准很具体：相对 Base 的结局分数上升，且 Table 2 那种“教师调用次数少一个数量级以上”的代价差被保持。若资源只够改一个旋钮，优先锁住 Compression、不要让历史写法随策略漂移；Steering 可以后加，但必须保留回放曲线，否则就会把仍在自行下降的失败写成永久提醒。评测时用最终 200 步检查点，并同时报告受限与充足两档，避免只在某一档上挑选好看的数字。</p>
+</section>
+
+<h4>五句总结</h4>
+<section class="analysis" data-part="summary">
+<p>智能体 RL 的脚手架不该在整个训练里保持手写不变，因为它依赖当前策略。把历史压缩和失败指导写成作用在完整 State 上的程序，就可以免费回放、用留出集闸门，而不必每一步请教师改写。Compression 应一次拟合后锁住，Steering 应与策略交错更新，顺序颠倒或让压缩跟着变都会掉点。CodeSearch 上四个设置平均约 +19%，且超过写程序的 GPT-5-mini 零样本。这一套仍然吃轨迹级奖励，并不发明新的逐步奖励；它改变的是策略在每一步看见什么、以及何时被提醒。</p>
+</section>
+</article>
+
+<article class="paper" data-fulltext="yes" data-id="2611.18482" data-tier="S" id="p-2611.18482">
+<div class="meta">
+<h3><span class="badge S">S</span> MMFlash: Faster Speculative Decoding for Vision-Language Models</h3>
+<ul>
+<li><strong>Authors:</strong> Sicheng Feng, Zigeng Chen, Song Wang, Gongfan Fang, Xinchao Wang</li>
+<li><strong>Affiliation:</strong> National University of Singapore</li>
+<li><strong>Date / Venue / Status:</strong> arXiv 2611.18482v1，submitted 2026-11-13，周一 2026-11-16 公告批次（cs.CV）。非正式发表。</li>
+<li><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.18482">arXiv:2611.18482</a> · <a href="https://arxiv.org/pdf/2611.18482.pdf">PDF</a> · Code: <a href="https://github.com/fscdc/MMFlash">github.com/fscdc/MMFlash</a> · Models: <a href="https://huggingface.co/collections/FSCCS/mmflash">huggingface.co/collections/FSCCS/mmflash</a></li>
+<li><strong>Code Availability:</strong> 论文给出上述 GitHub 与 Hugging Face 集合链接；本报告未再核验仓库提交时间线。</li>
+<li><strong>原文访问:</strong> 已阅读 HTML/PDF 全文（§3 Preliminaries、§4 Method、§5 Experiments、Table 1–10、Figure 3–4、Appendix B–F）。</li>
+</ul>
+</div>
+
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>投机解码让一个更轻的草稿模型先提出一串 token，再由目标模型一次性并行验证，从而缩短自回归生成的墙钟时间。DFlash 这类扩散式草稿器能在一次前向里填完整块，文本上已经很快；但换成视觉-语言模型后，真正“看图才能写对”的 token 往往最先把整块截断。作者用目标模型自己、在有图和无图两种条件下的下一词分布 KL 散度来定义 token 级视觉依赖，并发现接受率从最低依赖四分位的 46% 降到最高依赖四分位的 22%，截断点有 44% 落在最高依赖四分位；即使用约 90 万条多模态样本按官方配方再训一遍，这个缺口也合不上。</p>
+<p>MMFlash 的做法不是再堆一个更复杂的草稿结构，而是把上述诊断直接写进训练权重：离线算好视觉依赖分，再用目标置信度（有图分布的熵）和草稿模型当前会不会写对，去放大那些“图像既改变了预测、目标又已经想清楚、草稿却还没学会”的位置；同时用草稿自信度估计整块前缀能否活过验证，避免把梯度浪费在验证根本走不到的后段。对平均约 4 万 token 的长视频，他们还观察到草稿注意力一半堆在最近 256 个位置，于是在训练和推理用同一套稀疏模式：保留前 4 个 sink、步长 32 采样的视觉 token、全部文本和一个 256 的局部窗。主结果是墙钟加速而不是纸面 FLOPs：Qwen3.5-4B / 9B 在七个图像基准、贪心解码下平均加速 3.00× / 3.05×，高于同数据训练的 DFlash（2.72× / 2.75×）；视频上再轻量微调后平均加速约 2.33–2.71×。</p>
+</section>
+
+<h4>背景与研究缺口</h4>
+<section class="analysis" data-part="background">
+<p>投机解码的速度取决于草稿有多常被目标模型原样接受。自回归草稿器要逐步写完一整块，草稿步数和草稿长度绑在一起；DFlash 把一块 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi></mrow></math></span> 个位置里的锚点之后 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x02212;</mo><mn>1</mn></mrow></math></span> 个 mask 并行填满，于是可以把省下来的串行步数换成更深的草稿器。它的训练损失是对目标自身选择的交叉熵，但位置权重只按块内下标指数衰减，因为验证只接受前缀：第 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math></span> 个位置被拒，后面全部作废。</p>
+<p>这个设计在文本上合理，迁到 VLM 时却留下一个盲区。图像或视频里，有的 token 只是在把句子写完，有的必须读图表里的数字、坐标或某一帧的事件。两者在块内的位置可能相同，对接受长度的贡献却完全不同。已有工作要么把文本草稿器直接套到多模态目标上，要么只用多模态数据再做一次同样的位置加权训练，默认“看过图就会写图像 token”。缺口在于：没有一个只依赖目标模型、因而可以离线预计算的 token 级量，来指出草稿到底在哪些位置系统性失败；也就没有理由修改损失，把容量用在那些位置上。长视频还叠加了另一层问题：上下文从图像基准平均 477 个 token 涨到约 4 万，草稿器是否还要在每一步对全部视觉 token 做全注意力，同样缺少依据。</p>
+</section>
+
+<h4>核心洞察</h4>
+<section class="analysis" data-part="insight">
+<p>真正决定一块草稿能走多远的，不是“这个位置靠不靠前”，而是“目标写这个词时到底有没有在看图、看完有没有想清楚、草稿现在会不会写对、以及验证会不会走到这里”。视觉依赖可以用目标模型自己来量：同一前缀下，把图像拿掉前后的下一词分布做 KL；这个量与草稿器无关，只需离线算一次。若再乘上有图分布的置信度，就能把“图在说话但目标自己还在几种答案间摇摆”的位置排除出去——那些位置再加权也学不成稳定模仿。训练时把这套分数与“块前缀能否存活”和“草稿是否仍会写错”相乘，额外梯度就会自动从已学会的视觉 token 撤走，避免伤害文本 token。长视频上，小草稿器的注意力本就集中在问题、已写答案和最近窗口，对远帧是摊薄的；与其维持全上下文注意力，不如在训练和推理用同一套稀疏模式，既省计算，又不制造训练-推理不一致。</p>
+</section>
+
+<h4>方法深挖</h4>
+<section class="analysis method" data-part="method">
+<p><strong>输入到输出。</strong> 训练阶段，先用冻结的目标 VLM 在其自己生成的回答上，为每个位置离线计算视觉依赖与有图熵，存进数据，之后不再产生额外训练开销。每个训练块以一个锚点 token（推理时对应上一步验证给出的 bonus token）开头，后面跟 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x02212;</mo><mn>1</mn></mrow></math></span> 个 mask；草稿器读取目标模型若干层的隐状态，一次前向填完这些 mask，得到每个位置上目标所选 token <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>z</mi><mi>k</mi><mrow><mo>&#x022C6;</mo></mrow></msubsup></mrow></math></span> 的概率 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>q</mi><mi>k</mi></msub></mrow></math></span>。损失是带新权重的交叉熵。推理时，草稿器提出长度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi></mrow></math></span> 的块，目标模型并行验证，接受一个前缀并给出下一个 bonus token，再开启下一块。视频基准上，训练和推理使用同一套稀疏注意力，而不是先全注意力训练再在测试时窗口化。</p>
+<p><strong>视觉依赖与置信度门控。</strong> 对前缀 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>x</mi><mrow><mo>&#x0003C;</mo><mi>t</mi></mrow></msub></mrow></math></span> 与图像 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>I</mi></mrow></math></span>，定义</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>d</mi><mi>t</mi></msub><mo>&#x0003D;</mo><mrow><mi mathvariant="normal">K</mi><mi mathvariant="normal">L</mi></mrow><mo minsize="1.2em" maxsize="1.2em">(</mo><mi>p</mi><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><msub><mi>x</mi><mrow><mo>&#x0003C;</mo><mi>t</mi></mrow></msub><mo>&#x0002C;</mo><mi>I</mi><mo stretchy="false">&#x00029;</mo><mspace width="0.167em" /><mo minsize="1.2em" maxsize="1.2em">\|</mo><mspace width="0.167em" /><mi>p</mi><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><msub><mi>x</mi><mrow><mo>&#x0003C;</mo><mi>t</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo minsize="1.2em" maxsize="1.2em">)</mo></mrow></math></div>
+<p>其中 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi></mrow></math></span> 是目标模型的下一词分布。原始 KL 无界且重尾，故在整个训练集 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x1D49F;</mi></mrow></math></span> 上按秩映射到分位数 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover><mrow><mi>g</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mi>t</mi></msub><mo>&#x02208;</mo><mo stretchy="false">[</mo><mn>0</mn><mo>&#x0002C;</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></span>。再按有图分布的熵 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>H</mi><mi>t</mi></msub><mo>&#x0003D;</mo><mi>H</mi><mo stretchy="false">&#x00028;</mo><mi>p</mi><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><msub><mi>x</mi><mrow><mo>&#x0003C;</mo><mi>t</mi></mrow></msub><mo>&#x0002C;</mo><mi>I</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo></mrow></math></span> 缩放</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>g</mi><mi>t</mi></msub><mo>&#x0003D;</mo><msub><mover><mrow><mi>g</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mi>t</mi></msub><mo>&#x000B7;</mo><mi>exp</mi><mo stretchy="false">&#x00028;</mo><mo>&#x02212;</mo><msub><mi>H</mi><mi>t</mi></msub><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<p>于是 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>g</mi><mi>t</mi></msub></mrow></math></span> 高，当且仅当图像既改变了预测，目标又已经把质量集中在少数选项上。这正是“再花力气可能换来接受”的位置。一个直观的玩具例子是：写“The chart shows that sales reached”之后的数字，拿掉图以后下一词分布会明显摊开，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>d</mi><mi>t</mi></msub></mrow></math></span> 高、熵低，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>g</mi><mi>t</mi></msub></mrow></math></span> 接近 1；而写冠词或介词时，有图无图几乎同分布，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>g</mi><mi>t</mi></msub></mrow></math></span> 接近 0。DFlash 的位置权重对这两个 token 一视同仁，MMFlash 则只给前者加码。</p>
+<p><strong>三项相乘的块内权重。</strong> MMFlash 保留 DFlash 的交叉熵拟合，但把原来只依赖下标的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>w</mi><mi>k</mi></msub><mo>&#x0003D;</mo><mi>exp</mi><mo stretchy="false">&#x00028;</mo><mo>&#x02212;</mo><mo stretchy="false">&#x00028;</mo><mi>k</mi><mo>&#x02212;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0002F;</mo><mi>&#x003B3;</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 换成</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>w</mi><mi>k</mi></msub><mo>&#x0003D;</mo><msub><mi>b</mi><mi>k</mi></msub><mo minsize="1.2em" maxsize="1.2em">(</mo><mn>1</mn><mo>&#x0002B;</mo><mi>&#x003B1;</mi><mspace width="0.167em" /><msub><mi>g</mi><mi>k</mi></msub><mspace width="0.167em" /><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x02212;</mo><mo>sg</mo><mo stretchy="false">&#x00028;</mo><msub><mi>q</mi><mi>k</mi></msub><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo><mo minsize="1.2em" maxsize="1.2em">)</mo><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">M</mi><mi mathvariant="normal">F</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">h</mi></mrow></mrow></msub><mo>&#x0003D;</mo><munderover><mo>&#x02211;</mo><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>B</mi><mo>&#x02212;</mo><mn>1</mn></mrow></munderover><msub><mi>w</mi><mi>k</mi></msub><mo stretchy="false">&#x00028;</mo><mo>&#x02212;</mo><mi>log</mi><msub><mi>q</mi><mi>k</mi></msub><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<p>其中 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>sg</mo><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo stretchy="false">&#x00029;</mo></mrow></math></span> 是停止梯度。<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>b</mi><mi>k</mi></msub></mrow></math></span> 是验证感知的前缀存活估计：</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>b</mi><mi>k</mi></msub><mo>&#x0003D;</mo><munderover><mo>&#x0220F;</mo><mrow><mi>i</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>k</mi></mrow></munderover><msub><mover><mrow><mi>q</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mi>i</mi></msub><mo>&#x0002C;</mo><mspace width="2em" /><msub><mover><mrow><mi>q</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mi>i</mi></msub><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x02212;</mo><mi>&#x003BB;</mi><mo stretchy="false">&#x00029;</mo><mspace width="0.167em" /><mo>sg</mo><mo stretchy="false">&#x00028;</mo><msub><mi>q</mi><mi>i</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002B;</mo><mi>&#x003BB;</mi></mrow></math></div>
+<p>平滑 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math></span> 保证每一项至少为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math></span>，单个提前错误会削弱后续位置，但不会把整段后半的梯度封死。<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x02212;</mo><mo>sg</mo><mo stretchy="false">&#x00028;</mo><msub><mi>q</mi><mi>k</mi></msub><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo></mrow></math></span> 则是动态项：草稿已经会写的视觉 token，加成自行消退，避免过拟合图像位置、牺牲文本位置。默认 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi><mo>&#x0003D;</mo><mn>0.5</mn></mrow></math></span>、<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B1;</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math></span>，块长 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math></span>。</p>
+<p><strong>视频长度下的稀疏注意力。</strong> 七个图像基准的平均输入约 477 个 token，三个视频基准则约 41,218。对训练好的 MMFlash 草稿器做注意力分析：最近 256 个位置只占上下文的 0.8%，却拿走 50.1% 的注意力；远帧占上下文 96% 以上，合计仍吸走约 46%，但单 token 贡献很低，说明全上下文起草有大量冗余。简单窗口能提高视频接受长度，但会丢掉窗外的视觉证据。作者因此采用固定稀疏模式：保留前 4 个 sink token、按步长 32 采样的视觉 token、全部文本 token，以及 256 的局部窗；训练与推理共用，以保证上下文可见范围一致。</p>
+<p><strong>推理时的接受规则与 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span>。</strong> 目标模型一次读完草稿块，从左到右核对；第一个与目标解码策略所选 token 不一致的位置成为截断点，该位置之后全部丢弃，再由目标给出 bonus token 作为下一块锚点。平均接受长度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span> 是每次起草后实际留下的 token 数（含 bonus 的计数方式与原文一致）。停止梯度是必要的：若 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>q</mi><mi>k</mi></msub></mrow></math></span> 同时出现在权重和交叉熵里，模型可以通过故意压低自信度来抬权重，损失信号会失真。把 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>q</mi><mi>k</mi></msub></mrow></math></span> 从权重图中切开，权重只作为对“现在还不会的视觉 token、且验证还走得到”的调度系数，学习本身仍是拟合目标选择。</p>
+<p><strong>与基线目标的差别。</strong> MTP 是 Qwen3.5 自带的多 token 预测头，草稿步数与深度绑在一起；EAGLE-3 是自回归树状投机解码的强基线，本文用与 MMFlash 相同的数据训练；DFlash-z 是官方发布、在纯文本上训练的 6 层草稿器，读取目标 8 层隐状态；DFlash 则按官方设定、在与 MMFlash 相同的约 90 万多模态样本上训练，5 层、读取 5 层隐状态。MMFlash 与最后这一支的唯一系统性差别，就是损失权重以及视频上的稀疏注意力，而不是换成另一种起草结构。这使主表上的加速差可以直接读成“视觉感知重加权是否值回票价”。</p>
+</section>
+
+<h4>实验设置与结果</h4>
+<section class="analysis results" data-part="results">
+<p><strong>设置。</strong> 目标模型为 Qwen3.5-4B 与 9B。训练数据取自 LLaVA-OV-1.5-Instruct-Data 约 100 万条，用目标模型按官方解码设置（温度 0、top-<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi><mo>&#x0003D;</mo><mn>0.95</mn></mrow></math></span>、top-<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>20</mn></mrow></math></span>、最长 4096）重写回答；为提高训练效率，部分限制为单词或选项字母的提示被改成逐步推理，Qwen3.5-4B 上有 37.0% 的提示被改写，改写后中位回答长度从 3 提到 130，不超过 8 个 token 的比例从 12.5% 降到 1.0%。丢弃总长超过 4096 的样本后约剩 90 万条。块长 16、每条最多 512 个锚点、batch size 2、6 个 epoch，学习率 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>6.0</mn><mo>&#x000D7;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>4</mn></mrow></msup></mrow></math></span>，余弦退火，前 4% 线性 warmup，8 张 H100。因离线缓存隐状态可达数十 TB，作者采用在线训练，每步同时跑目标模型。主推理在单张 H200 上用 SGLang，关闭 thinking，并发为 1，温度 0 与 1 各评一次。图像评测覆盖 ChartQA、CharXiv、MMStar、MMBench、DynaMath、MathVista、MathVerse，每个基准固定 200 个随机样本、零样本、LMMs-Eval。视频评测为 LongVideoBench、MVBench、Video-MME（平均上下文约 41.6K / 42.3K / 39.8K token），在 LLaVA-Video-178K 的 2K 样本上用稀疏模式再微调 3 个 epoch。指标是平均接受长度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span> 和相对无草稿基线的墙钟加速（token/s），不是理论 FLOPs。</p>
+
+<p><strong>RQ1：在同样的多模态数据上，视觉感知重加权能否胜过 DFlash，并且在真实并发下是否还在？</strong> 设定就是 Table 1 与 Table 3：同一目标、同一训练数据、同一块长 16，比较 MTP、EAGLE-3、DFlash-z、DFlash 与 MMFlash。观察：温度 0 时，Qwen3.5-4B 的平均 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span> / 加速为 MMFlash 5.70 / 3.00×，DFlash 5.12 / 2.72×，DFlash-z 4.71 / 2.62×，EAGLE-3 3.86 / 1.58×，MTP(7) 4.03 / 1.63×；9B 上 MMFlash 为 5.60 / 3.05×，DFlash 为 4.95 / 2.75×。温度 1 时 4B / 9B 的 MMFlash 平均加速仍为 2.54× / 2.70×，相对 DFlash 的 2.38× / 2.46× 仍高 6.7–10.9%。单点上，4B 贪心在 CharXiv 达到 6.17 / 3.46×，在 MMStar 则只有 4.49 / 2.55×，说明视觉依赖更重的任务接受长度更短，但相对 DFlash 的优势仍然在。并发从 1 增到 32 时加速会收窄（例如 4B CharXiv 从 3.46× 降到 1.61×，吞吐从 826 升到 4395 tok/s，基线则从 238 升到 2733），但 9B 上峰值仍有 3.58×（ChartQA，并发 1，623 对 174 tok/s）；在所报告的六个任务上，并发 16 的 MMFlash 吞吐仍高于并发 32 的基线。vLLM + FlashAttention 上加速为 1.17–3.72×，与 SGLang 方向一致。解释：重加权确实把容量用在了原先最容易截断的视觉 token 上，而不是只靠换数据或加深草稿器；加速随并发下降，是因为解码逐渐算力受限，这是墙钟现象，不是接受长度先塌掉。</p>
+
+<div class="table-wrap">
+<table>
+<caption>Table 1 摘录（温度 = 0）：七个图像基准的平均接受长度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span> 与墙钟加速。完整分项见原文 Table 1。</caption>
+<thead><tr><th>目标</th><th>方法</th><th>平均 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span></th><th>平均加速</th></tr></thead>
+<tbody>
+<tr><td>Qwen3.5-4B</td><td>MTP (7)</td><td>4.03</td><td>1.63×</td></tr>
+<tr><td>Qwen3.5-4B</td><td>EAGLE-3 (16)</td><td>3.86</td><td>1.58×</td></tr>
+<tr><td>Qwen3.5-4B</td><td>DFlash (16)，同数据</td><td>5.12</td><td>2.72×</td></tr>
+<tr><td>Qwen3.5-4B</td><td>MMFlash (16)</td><td>5.70</td><td>3.00×</td></tr>
+<tr><td>Qwen3.5-9B</td><td>DFlash (16)，同数据</td><td>4.95</td><td>2.75×</td></tr>
+<tr><td>Qwen3.5-9B</td><td>MMFlash (16)</td><td>5.60</td><td>3.05×</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><strong>RQ2：长视频上，稀疏注意力是“测试时的小技巧”，还是必须写进训练的一部分？它会不会伤害图像基准？</strong> 设定是 Table 2：先把已在图像数据上训练的 MMFlash 直接用到三个视频基准，再只加稀疏注意力、不额外训练，最后在 2K 视频样本上微调 3 个 epoch。观察：对 4B，DFlash 在 LongVideoBench / MVBench / Video-MME 上为 3.14 / 2.11×、3.01 / 1.82×、2.81 / 1.75×；MMFlash 稠密注意力几乎持平（3.23 / 2.23×、2.91 / 1.83×、2.86 / 1.82×），稀疏注意力立刻把接受长度和加速抬到 3.81 / 2.44×、3.50 / 2.05×、3.20 / 1.93×；再微调后为 4.09 / 2.67×、3.83 / 2.24×、3.45 / 2.09×。9B 微调后为 4.16 / 3.07×、3.74 / 2.66×、3.63 / 2.39×。论文报告稀疏注意力单独平均提升接受长度 11.1%、加速 4.7%，微调后分别为 20.0% 与 13.7%，平均加速 2.33–2.71×，比 DFlash 高 11.2–23.2%。Figure 4 还显示，简单窗口会降低图像基准的接受长度，却提高视频基准，说明“短上下文要全看见、长上下文要稀疏”不是同一套超参能蒙混过关的。解释：视频上的主要浪费是远帧上的冗余全注意力，而不是视觉重加权还不够；但稀疏模式必须在训练时就固定，否则可见上下文与学习信号不一致。图像与视频不能共用同一种注意力密度，这是这条方法的适用边界。</p>
+
+<div class="table-wrap">
+<table>
+<caption>Table 2 摘录（温度 = 0）：视频基准上逐步加稀疏注意力与微调。加速相对无草稿基线。</caption>
+<thead><tr><th>目标</th><th>方法</th><th>LongVideoBench <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span> / 加速</th><th>MVBench</th><th>Video-MME</th></tr></thead>
+<tbody>
+<tr><td>Qwen3.5-4B</td><td>DFlash (16)</td><td>3.14 / 2.11×</td><td>3.01 / 1.82×</td><td>2.81 / 1.75×</td></tr>
+<tr><td>Qwen3.5-4B</td><td>MMFlash + 稀疏注意力</td><td>3.81 / 2.44×</td><td>3.50 / 2.05×</td><td>3.20 / 1.93×</td></tr>
+<tr><td>Qwen3.5-4B</td><td>+ 微调</td><td>4.09 / 2.67×</td><td>3.83 / 2.24×</td><td>3.45 / 2.09×</td></tr>
+<tr><td>Qwen3.5-9B</td><td>+ 微调</td><td>4.16 / 3.07×</td><td>3.74 / 2.66×</td><td>3.63 / 2.39×</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><strong>消融、迁移与效率表。</strong> Table 4：测试块长从训练时的 16 降到 8，4B / 9B 平均加速从 3.00× / 3.05× 只降到 2.84× / 2.89×（约 5.3%），但平均 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span> 下降约 18.7%，因为 8 的上限拦住了本可更长的块（ChartQA / CharXiv 上分别有 28.8% 与 27.6% 的块顶满 8）。Table 6：草稿器从 3 层加到 5 层，加速升 6.7–8.1%，再加到 8 层变化不到 1%，默认因此停在 5 层。Table 7：把读取的目标隐状态从 5 层加到 8 层，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span> 略升，加速最多多 0.01×，在线训练时间却增加 19.9%。跨家族 Table 5：Gemma4-E4B-it 上 MMFlash 在 ChartQA / MMStar / DynaMath 为 2.87× / 2.10× / 3.02×，高于同数据 EAGLE-3 的 2.27× / 1.50× / 1.90×；Qwen3.8-27B 上达到 4.18× / 3.54× / 4.71×。失败边界也很清楚：评测只有 200 样本、关闭 thinking、未报告 GPU 显存与理论 FLOPs；视频仍明显难于图像，稀疏模式是启发式而不是按问题选帧；并发升高后加速会向 1.1–1.6× 收窄。最强可对比基线始终是同数据、同块长的 DFlash，而不是文本预训练的 DFlash-z 或 MTP。</p>
+
+<div class="table-wrap">
+<table>
+<caption>Video / Multimodal Acceleration 效率表（Qwen3.5-4B，除非另注）。墙钟数字来自原文；理论 FLOPs 与显存未报告。</caption>
+<thead><tr><th>Metric</th><th>Baseline</th><th>Proposed</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>平均输入 token（图像七基准）</td><td>477</td><td>477</td><td>未改输入</td></tr>
+<tr><td>平均输入 token（视频三基准）</td><td>约 39.8K–42.3K</td><td>同左，但草稿注意力为 4 sink + 步长 32 视觉 + 全文 + 256 窗</td><td>稀疏可见范围，非丢帧解码</td></tr>
+<tr><td>Visual Tokens / Frames</td><td>未按帧给出精确保留数</td><td>视觉 token 步长 32 采样（视频）</td><td>Not Reported at frame level</td></tr>
+<tr><td>理论 FLOPs</td><td>Not Reported</td><td>Not Reported</td><td>—</td></tr>
+<tr><td>墙钟加速（图像，温度 0，平均）</td><td>DFlash 2.72×；无草稿 1.00×</td><td>MMFlash 3.00×（9B 为 3.05×）</td><td>相对最强同数据草稿基线约 +10%</td></tr>
+<tr><td>吞吐（4B CharXiv，SGLang 并发 1）</td><td>238 tok/s</td><td>826 tok/s</td><td>3.46×</td></tr>
+<tr><td>吞吐（4B CharXiv，并发 32）</td><td>2733 tok/s</td><td>4395 tok/s</td><td>1.61×（算力受限后收窄）</td></tr>
+<tr><td>GPU Memory</td><td>Not Reported</td><td>Not Reported</td><td>—</td></tr>
+<tr><td>接受长度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span>（图像平均，温度 0）</td><td>DFlash 5.12</td><td>5.70</td><td>+0.58</td></tr>
+<tr><td>质量 / 准确率</td><td>目标模型自身解码分布</td><td>投机解码在接受规则下与目标一致</td><td>不改目标答案，只改延迟</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<h4>主张与证据、贡献与局限</h4>
+<section class="analysis" data-part="claim">
+<p>论文的主主张是：VLM 投机解码的接受损失集中在视觉依赖 token 上，把这一诊断写进损失、并在长视频上配上训练-推理一致的稀疏注意力，就能在不改目标模型的前提下提高墙钟加速。Table 1 与同数据 DFlash 的对比是最硬的证据；Figure 3 的 46% 对 22%、截断点 44% 落在 Q4，说明问题不是“没见过图”，而是目标函数看不见图。Table 2 把稀疏注意力和微调拆开，避免把视频收益全部算到重加权头上。相对弱的部分是：主表样本只有每基准 200 条；提示改写改变了训练回答长度，虽对所有自训基线一视同仁，但仍使“官方数据配方”不再完全可比；DFlash-z 的完整训练配方并未公开；显存和 FLOPs 缺席，因此不能把它读成理论计算最优，只能读成 H200 / H100 上的墙钟结果。</p>
+<p>贡献有三：给出可离线预计算的 token 级视觉依赖量；把验证存活、未学会程度和视觉接地三项乘进同一权重；为视频上下文提供简单可复现的稀疏起草模式，并在 Qwen 与 Gemma、4B 到 27B 上给出系统加速数字。局限同样明确：方法针对“视觉输入、文本输出”的 VLM，不是 omni 或语音生成；视频草稿器仍是在图像草稿器上做启发式稀疏与轻量微调；高并发下加速会回落；思考模式关闭。研究价值在于，它把“多模态投机解码为什么变慢”从系统调参问题改写成一个可测量、可加权的 token 属性，后续工作可以在此之上做按问题选帧、帧级依赖，或把同一想法迁到音频-视觉交错上下文。</p>
+</section>
+
+<h4>最小可执行迁移</h4>
+<section class="analysis" data-part="migration">
+<p>若要把 MMFlash 接到自己的 VLM 服务，不必先改草稿结构。最小实验可以是：冻结一个已有 DFlash 或同构扩散草稿器，用目标模型对其训练回答离线计算 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>d</mi><mi>t</mi></msub></mrow></math></span> 与 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>H</mi><mi>t</mi></msub></mrow></math></span>，按分位数得到 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>g</mi><mi>t</mi></msub></mrow></math></span>，然后只把 DFlash 损失里的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>w</mi><mi>k</mi></msub></mrow></math></span> 换成本文的三项乘积，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi><mo>&#x0003D;</mo><mn>0.5</mn></mrow></math></span>，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B1;</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math></span>，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math></span>。数据必须用目标自己生成的回答，先从十几万到几十万条看趋势；不要用与目标解码不一致的开放答案，否则草稿在拟合一个推理时根本不会选的分布。基线必须包括“同数据、同块长、旧位置权重”的 DFlash，否则说不清是数据还是权重在起作用；EAGLE-3 或 MTP 可以并列，但它们不是解释本文机制的对照。指标看 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span> 和单卡墙钟 tok/s，并按视觉依赖四分位拆接受率，确认 Q4 是否被抬起来、文本位置的接受率有没有掉。若目标是长视频，第二步再把注意力改成 4 sink + stride 32 + 局部 256，训练和推理必须同构，并单独报告“只加稀疏、不微调”这一行，避免把稀疏与重加权混成一笔。硬件上，与主表完全对读需要 8×H100 训练和 1×H200 服务；资源不够时，可先在 4B、单一文档基准（CharXiv 或 ChartQA）上跑通权重替换，再决定是否做视频微调。风险有三：提示改写会改变回答长度，复现必须记录改写比例；并发升高后加速会收窄，结论不要只写并发 1 的峰值；思考模式若开启，接受长度与主表不可直接比较。若要对外声称服务加速，还应补一张与 Table 3 同结构的并发曲线，并写明框架是 SGLang 还是 vLLM，因为两者对基线吞吐的提升并不对称。</p>
+</section>
+
+<h4>五句总结</h4>
+<section class="analysis" data-part="summary">
+<p>DFlash 在 VLM 上的失败不是“没看过图”，而是位置权重看不见哪些 token 在依赖图像。用目标模型自己的有图/无图 KL 加上熵门控，可以把训练信号对准“图既改了预测、目标又已经想清楚”的位置。再乘上前缀存活估计和“草稿是否仍写错”，额外梯度会随学习自动撤走，避免伤害文本 token。长视频上应把稀疏注意力写进训练，而不是只在测试时加窗。同数据对比下，Qwen3.5-4B / 9B 图像贪心平均加速 3.00× / 3.05×，视频微调后约 2.33–2.71×，这是墙钟数字，不是 FLOPs 最优声明。</p>
+</section>
+</article>
+
+</section>
+
+<section id="sec-a">
+<h2>Tier A</h2>
+<details class="paper" id="p-2611.17808-wrap">
+<summary><span class="badge A">A</span> CarryOn：用带出处的证据和学来的选择器，决定长程智能体上下文里该留下什么（Agent Memory / Context）</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.17808" data-tier="A" id="p-2611.17808">
+<div class="meta">
+<h3><span class="badge A">A</span> CarryOn: Learning What to Keep in Context for Long-Horizon LLM Agents</h3>
+<ul>
+<li><strong>Authors:</strong> Lihuan Li, Ruiyi Yang, Jiru Wang, Yifan Duan, Xiachong Lin, Hao Xue, Yang Song, Flora Salim</li>
+<li><strong>Affiliation:</strong> University of New South Wales（除 Hao Xue）；The Hong Kong University of Science and Technology (Guangzhou)（Hao Xue）。Ruiyi Yang 与 Jiru Wang 为共同第二作者。</li>
+<li><strong>Date / Venue / Status:</strong> arXiv 2611.17808v1，submitted 2026-11-13，周一 2026-11-16 公告（cs.CL / cs.AI）。非正式发表。</li>
+<li><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.17808">arXiv:2611.17808</a> · <a href="https://arxiv.org/pdf/2611.17808.pdf">PDF</a>。正文未给出已核验的官方代码仓库。</li>
+<li><strong>原文访问:</strong> 已阅读 HTML/PDF（§3 Method、§4–5、Table 1–3、Appendix D）。</li>
+</ul>
+</div>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>长程工具智能体的历史会迅速超出窗口。摘要可能丢掉稍后真正要用的精确字段，整段保留又会把大量无关回合继续送给模型。CarryOn 把上下文拆成两块：一份紧凑的执行状态，加上带来源链接的细粒度证据。一个学来的选择器和自适应保留策略决定留下什么，管理上下文时不再额外调用 LLM。作者在 AppWorld、OfficeBench 和 Tau2 Telecom 上用 Claude Sonnet 5、Qwen3.8-27B、Gemma-4-31B 三个 Actor 评测，宏观平均任务成功率为 75.7%，比最强基线高 6.7 个百分点，并在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>S</mi><mrow><mn>0.8</mn></mrow></msub></mrow></math></span>（成功优先、同时计入资源）和成功单位成本 NCS 上总体最好。</p>
+</section>
+<h4>方法与智能体结构</h4>
+<section class="analysis" data-part="method">
+<p><strong>Agent Architecture / State。</strong> Actor 仍负责调用工具、推进任务；CarryOn 是外挂的上下文管理器。历史被切成证据单元，并维护一份可读写的执行状态（控制状态）。选择器给证据打分，自适应保留决定当前步把哪些证据和状态一起写入 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>c</mi><mi>t</mi></msub></mrow></math></span>。选择器的监督来自离线标注的状态与证据有用性，而不是在线让 Actor 自学“什么该忘”；论文还给出面向本地部署的 CarryOn-E 变体，用教师上下文蒸馏，使较小的本地模型也能做类似的保留决策。管理器本身不再为“该不该删这句话”再叫一次 LLM，所以每步的额外成本主要是选择器前向，而不是又一轮生成。Long-Horizon 问题被说得很清楚：后段动作常常依赖很早出现的精确值（账号、余额、议程时间），摘要一旦把数字写含糊，失败会在后续工具调用中爆发，而不是在被删的那一步立刻显现。这就是失败传播的路径：早期证据丢失，中期状态看起来还正常，末期才在付款或写表时出错。</p>
+<p>评测不用单一成功率。<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>S</mi><mrow><mi>&#x003B1;</mi></mrow></msub></mrow></math></span> 把成功放在前面，同时惩罚资源；NCS 是归一化的“每次成功花掉的资源”，Full History 被标成 1。这个设计很重要：FIFO 或检索有时看起来省了上下文，却会用更多步数把任务做砸，NCS 会把它揭出来。</p>
+</section>
+<h4>结果与消融</h4>
+<section class="analysis" data-part="results">
+<p>Table 1 是主证据。AppWorld 上，Claude 的成功率从 Full History 的 43.5% 升到 CarryOn 的 79.8%，略高于最强基线 SWE-Pruner 的 79.2%，NCS 从 1.000 降到 0.556；Qwen 从 65.5% 到 84.5%（SWE-Pruner 68.5%），Gemma 从 53.6% 到 72.0%。OfficeBench 上三个 Actor 分别为 69.5 / 66.3 / 66.3，Claude 与 Qwen 至少持平或超过 Full History，NCS 明显下降（Qwen 0.476，Gemma 0.338）。Tau2 上 Qwen 90.0%、Gemma 77.5%，Claude 为 75.0%，与 Full History 持平但 NCS 为 1.121，是少数没有同时赢下成本和成功率的格子。检索基线在 AppWorld 上对 Claude 只有 11.9%，说明“按相似度找回历史”在应用型长程任务里可以非常差。</p>
+<p>Table 2 在 AppWorld + Claude 上拆组件：去掉 MEMORY 掉到 66.1%；只做排序是 76.8%；细粒度训练 73.2%；按新近度打包 76.2%；完整 CarryOn 79.8%，NCS 0.556 也最好。Table 3 显示 MEMORY 容量 128 个代理 token 时成功率最高（79.8%），64 时截断多达 284 次，256 时成功率 78.0%、截断只剩 8 次，并不是越大越好。主张“更短的上下文也可以更好做决定”总体上成立，但 Tau2 + Claude 提醒：在已经很短、对话型的流程里，管理器可能带来轻微成本回升。局限是没有公开已核验代码，Actor 是专有或大模型 API，选择器训练细节主要在附录；迁移时至少要保留“状态 + 带出处证据”的拆分，并用 NCS 而不是只看成功率。</p>
+<p>把这些数字放到长程智能体的设计里，有三点值得单独写。第一，最强的“短历史”基线并不是 FIFO 或检索，而是 SWE-Pruner 和 ACON 这类专门为智能体历史设计的方法：在 AppWorld + Claude 上，SWE-Pruner 已经把 43.5% 拉到 79.2%，CarryOn 只再多 0.6 个点，但 NCS 从 0.652 降到 0.556，说明它的主要附加值常常是更省、而不只是更高。Qwen 上则相反，84.5% 对 68.5% 是大幅度的成功率优势，SWE-Pruner 在这个 Actor 上甚至只比 Full History 好 3 个点，跨模型并不稳定。第二，OfficeBench 的 Full History 已经不差（63.2 / 66.3 / 51.6），CarryOn 的胜利更多体现在 NCS：Gemma 的 0.338 意味着同样一次成功大约只花 Full History 三分之一的资源。第三，Tau2 + Claude 的 75.0% 与 Full History 持平、NCS 1.121，是必须写进局限的格子——上下文管理不是免费午餐，在轨迹本来就不长的客服诊断里，选择器和证据槽位可能成为额外开销。Appendix 的案例也表明，证据会被再次选中而不是写进摘要后丢掉，这与“压缩等于遗忘”相反，却依赖于出处链接仍然可用。</p>
+<p>若要迁移，最小实验不必重训 Actor。先把轨迹记成“控制状态 + 带来源的证据片段”，用一个小选择器在离线标注上学习保留策略，对照 FIFO、检索和一种现成的摘要/剪枝器，同时报成功率和 NCS。数据可选 AppWorld 或自己的多应用工具日志。不要只用成功率宣布胜利，也不要在 Claude 的 AppWorld 上看着 79.8% 对 79.2% 就声称全面超越 SWE-Pruner。风险是选择器过拟合某一种应用的字段（余额、日期），换到新工具模式会失效；以及 MEMORY 容量并不是越大越好，需要像 Table 3 那样扫 64 / 128 / 256。</p>
+</section>
+</article>
+</div>
+</details>
+
+<details class="paper" id="p-2611.17924-wrap">
+<summary><span class="badge A">A</span> TIDE：在保持 on-policy 语义的前提下，把长尾 rollout 浪费的 GPU 要回来（RL Systems / Training Efficiency）</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.17924" data-tier="A" id="p-2611.17924">
+<div class="meta">
+<h3><span class="badge A">A</span> TIDE: Reclaiming Lost Performance In On-Policy Reinforcement Learning</h3>
+<ul>
+<li><strong>Authors:</strong> Mathew Jacob, Morgan Borjigin-Wang, Kan Zhu, Po Hao Chen, Yi Pan, Andy Ruan, Nayani Modugula, Ethan Lavi, Luis Ceze, Malte Schwarzkopf, Akshay Narayan, Deepti Raghavan, Stephanie Wang</li>
+<li><strong>Affiliation:</strong> University of Washington（Jacob, Zhu, Ruan, Ceze, Stephanie Wang）；Brown University（Borjigin-Wang, Chen, Lavi, Schwarzkopf, Narayan, Raghavan）；UC Berkeley（Yi Pan）；New York University（Modugula）。Jacob 与 Borjigin-Wang 为共同一作。</li>
+<li><strong>Date / Venue / Status:</strong> arXiv 2611.17924v1，submitted 2026-11-13，周一 2026-11-16 公告（cs.LG / cs.DC / cs.PF）。非正式发表。</li>
+<li><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.17924">arXiv:2611.17924</a> · <a href="https://arxiv.org/pdf/2611.17924.pdf">PDF</a>。正文引用 ServingStudio、<a href="https://github.com/THUDM/slime">slime</a> 等训练栈，未见独立的 TIDE 仓库声明被本报告核验。</li>
+<li><strong>原文访问:</strong> 已阅读 HTML/PDF（§3–6、Table 1–3）。</li>
+</ul>
+</div>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>同步、同机部署的 LLM on-policy 强化学习有一个很具体的浪费：一个 batch 里总有几条特别长的 rollout，推理引擎要么空等长尾，要么以很小的 batch 低效解码。TIDE 不改梯度公式，而是在保持 on-policy 语义的前提下做两件事：长尾还没结束时，把已经空出来的 rollout GPU 临时改去跑训练；以及把未完成的 rollout 在推理引擎之间迁移，把解码 batch 重新做满。迁移时机由自适应策略决定，不必为每种应用手调。评估覆盖 DAPO Math、R1-Distill-8B、Text2SQL 和 Qwen2.5-Coder-7B，以及 H200 / H100 / L40S 三种拓扑。相对同机基线，端到端最高约 1.36×，并把“占最优吞吐的比例”从例如 R1-Distill-8B 的 83.2% 提到 97.4%。</p>
+</section>
+<h4>方法：在哪里省时间，又不破坏 on-policy</h4>
+<section class="analysis" data-part="method">
+<p><strong>RL 训练效率，而不是新的目标函数。</strong> 状态、动作、奖励和优势仍由上层算法（如 DAPO）定义；TIDE 是训练系统。On-policy 约束的含义是：用于更新的轨迹必须来自当前策略，不能为了填满 GPU 就提前拿旧策略的样本来凑。因此系统不能用经典的异步离策略缓冲来消灭长尾，只能在“同一批 rollout 尚未完成”的窗口里做文章。作者把同机执行的浪费拆成三类（Table 1）：空等长尾的 Idle loss、小 batch 解码的 Ineff. loss，以及引擎与训练器状态换进换出的 Misc. idle。四套应用里，Text2SQL 在 8×H200 上只有 56.6% 的最优吞吐，Idle loss 高达 30.0%；R1-Distill-8B 已经比较好，仍只有 83.2%。</p>
+<p>两个机制对应两类损失。Repurposing：部分引擎已经完成自己的 rollout 时，不要让这些 GPU 空转，把它们切到训练侧，与仍在生成的长尾重叠。Migration：把卡住的请求搬到更空的引擎，恢复解码 batch。自适应迁移策略决定何时搬、搬哪些；KV veto 用来避免得不偿失的迁移（Table 3 里，8×H200 上加上 KV veto 后步进时间从 572.5 秒微升到 576.9，但 4×H100 上从 1052.4 降到 1002.9）。挑战在于切换开销、KV 缓存迁移成本和不要改变“这批数据来自当前策略”的语义。</p>
+</section>
+<h4>结果与消融</h4>
+<section class="analysis" data-part="results">
+<p>Table 2 给出相对最优吞吐的比例：DAPO Math 8×H200 从 75.1% 到 87.0%；R1-Distill-8B 4×H100 从 83.2% 到 97.4%；Text2SQL 8×H200 从 56.6% 到 77.2%；Qwen2.5-Coder-7B 4×L40S 从 78.4% 到 95.1%。也就是说，原先越“不饱满”的应用，绝对提升越大，但没有任何一档宣称超过最优上界。Table 3 在 DAPO Math 上逐项叠加：同机 689.1 秒（1.00×）→ 加 Repurposing 666.8（1.03×）→ 加负载均衡 617.9（1.12×）→ 加 Migration 572.5（1.20×）→ 加 KV veto 576.9（1.19×，在这块 H200 上几乎持平）。4×H100（TIDE-FSDP）上没有负载均衡这一档，完整系统为 1.14×。正文还给出跨配置 1.16–1.36× 的总区间，1.36× 出现在 H200 测试床。最强基线就是同机同步系统，而不是已经拆分部署的 off-policy 流水线；若有人把 TIDE 和异步 RL 比速度，就比较了两种不同的语义。局限是：应用与硬件组合有限，Table 3 并非在所有拓扑上都单调变好，系统实现绑定具体训练栈。迁移价值很直接：任何做 on-policy LLM RL 的团队，如果 step time 曲线被长尾拉开，应先量 Idle / Ineff. / Misc. 三类损失，再决定是迁请求还是把空 GPU 切去训练，而不是先改算法。</p>
+<p>读这些表时有一个容易误读的地方：97.4% 并不是“算法收敛到最优策略”，而是“这一步的 GPU 时间已经接近一个没有长尾、没有小 batch、没有切换开销的上界”。Text2SQL 即使上了 TIDE 也只有 77.2%，说明长尾特别重的应用，单靠迁移和改用途仍拿不回全部空隙，可能还要在数据侧截断或分组。Table 3 的非单调性同样重要：在 8×H200 上，Migration 已经把步进时间降到 572.5 秒，再加 KV veto 反而到 576.9 秒，但同一否决在 4×H100 上是净收益。所以 KV veto 不是无条件的加速器，而是对“这次搬迁会不会把 KV 白搬一次”的保险。作者强调自适应策略使配置不必为每个应用重写，这一点只能部分被 Table 2 的跨应用数字支持——我们没有看到策略在失败时的回退曲线。和今天的 ModHarness-RL、MMFlash 放在一起，TIDE 提醒的是另一层：即使目标函数不变，on-policy 的墙钟效率已经足够成为独立问题。最小迁移是：在现有同步训练栈上先打点三类损失占比，若 Idle loss 超过百分之十，再尝试在长尾窗口里把空闲推理 GPU 切去跑训练；迁移请求作为第二步，并务必带上类似 KV veto 的成本开关。不要为了填满 GPU 就把上一策略的样本混进当前 batch，那已经离开本文坚持的 on-policy 语义。若你的栈已经是分离式的推理集群加训练集群，TIDE 的同机假设不一定成立，此时更该先问调度层能否在长尾窗口做等价的改用途，而不是直接搬论文里的实现细节。报告结果时也应同时给出 step time 和“占最优吞吐的比例”，只报加速倍数会掩盖 Text2SQL 那种即使加速后仍远离上界的情况。</p>
+</section>
+</article>
+</div>
+</details>
+
+<details class="paper" id="p-2611.18516-wrap">
+<summary><span class="badge A">A</span> StreamEmbed：用空间剪枝和跨屏 KV 复用，给屏幕历史做赶上拍摄速度的视觉索引（Video / Visual Token Efficiency + Agent Memory）</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.18516" data-tier="A" id="p-2611.18516">
+<div class="meta">
+<h3><span class="badge A">A</span> StreamEmbed: Real-Time Indexing from Pixels for Screenshot Retrieval</h3>
+<ul>
+<li><strong>Authors:</strong> Dayoon Ko, Yichuan Wang, Soyeong Jeong, Joseph E. Gonzalez, Gunhee Kim, Sewon Min</li>
+<li><strong>Affiliation:</strong> University of California, Berkeley（Ko, Wang, Gonzalez, Min）；Seoul National University（Ko, Gunhee Kim）；KAIST（Jeong）。Sewon Min 为通讯作者。</li>
+<li><strong>Date / Venue / Status:</strong> arXiv 2611.18516v1，submitted 2026-11-13，周一 2026-11-16 公告（cs.CV / cs.IR / cs.LG）。非正式发表。</li>
+<li><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.18516">arXiv:2611.18516</a> · <a href="https://arxiv.org/pdf/2611.18516.pdf">PDF</a> · Code: <a href="https://github.com/StarTrail-org/StreamEmbed">github.com/StarTrail-org/StreamEmbed</a> · 数据: <a href="https://huggingface.co/datasets/dayoon/ScreenMemEval">huggingface.co/datasets/dayoon/ScreenMemEval</a></li>
+<li><strong>原文访问:</strong> 已阅读 HTML/PDF（§4–6、Table 1–2、5–6、8、10）。</li>
+</ul>
+</div>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>屏幕历史可以成为人或计算机使用智能体的可视记忆，但它必须在每张截图到达时就被编码进索引，不能等离线再跑。OCR 索引快，却丢掉版式和图像；完整视觉编码在他们的测量里超过两秒，跟不上两秒一张的屏幕流。关键观察是：连续屏幕高度冗余，多数像素在邻块之间、在相邻截图之间是重复的。StreamEmbed 只根据像素差，做两件事：空间 token 剪枝，跳过与邻居重复的块；时间上复用未改变块的 KV。再用一个小的一致性适配器，把剪枝和复用后的表示拉回完整编码。他们发布 ScreenMemEval：两个人和一个计算机使用智能体共 184 小时、10,426 道题。在 M2 Pro 上，相对完整截图编码最快约 3.7×，并在匹配延迟下比 OCR 索引最多高 6.3 个 Recall@10 点。</p>
+</section>
+<h4>方法与效率机制</h4>
+<section class="analysis" data-part="method">
+<p>输入是按时间到达的截图流，输出是可检索的嵌入索引。空间剪枝在 ViT 网格上跳过与邻居几乎相同的块，并保留一定的网格结构（消融里去掉 grid keep 会在 SME-Agent 上从 57.1 降到 55.2 R@10）。时间 KV 复用则在跨截图仍未改变的块上，直接重用缓存的键和值，避免 ViT 与后续语言模型部分的重复计算。一致性适配器是唯一需要学习的小模块，用来补偿剪枝和复用带来的分布偏移，目标是贴近完整截图嵌入，而不是另训一个检索模型。指引信号只有像素差，没有OCR 或额外的语言模型判断，这使它可以跟在截图后面实时跑。</p>
+</section>
+<h4>结果、消融与效率表</h4>
+<section class="analysis" data-part="results">
+<p>Table 1 先标定问题：Qwen3-VL-Embedding-2B 的文本索引 R@10 为 64.0、总延迟 0.65 秒（含 0.34 秒 OCR）；完整截图索引 74.1，但编码 2.33 秒。Table 8 的主结果里，微调后的完整截图 Qwen3-VL-2B 在 SME-H1 / H2 / Agent 上 All R@10 为 83.4 / 84.5 / 58.2；StreamEmbed 为 82.1 / 83.3 / 57.6，接近完整视觉编码，并明显高于最强文本索引（微调 Qwen3-VL-2B 文本 77.4 / 77.4 / 51.3，或再加 BM25 的 78.6 / 78.7 / 53.2）。Table 5 显示同一套加速可迁到 8B、SigLIP2 和 Vultron：例如 8B 在 H1 上 84.0→83.0，GPU 延迟 5.15→1.59 秒。Table 6 是逐步消融（H1 GPU 延迟）：完整微调截图 83.4 / 2.33 秒；加线性 patch 嵌入仍 83.4，延迟 1.65；再加空间剪枝 82.8 / 1.00；加时间复用 81.8 / 0.66；加上一致性适配器回到 82.1 / 0.66。也就是准确率的最后 0.3 点几乎是适配器找回的，速度则主要来自剪枝和 KV 复用。Table 10 把 2.33 秒拆成 ViT 1.66 + LM 0.66，复用后分别为 0.34 与 0.29，合计 0.66 秒，约 3.53×；摘要中的 3.7× 是跨配置上界。屏幕流不是自然视频，但机制同属视觉 token 与跨帧 KV 缓存，对计算机使用智能体的记忆索引直接有用。局限：主延迟在 M2 Pro 上报告，和数据中心 GPU 不可直接比；Agent 来源的 R@10 明显低于人类历史；多 recording 问题仍然更难（H1 上 StreamEmbed Multi 为 52.2，对 Single 的 88.0）。</p>
+<p>基准本身也是贡献。Table 2：SME-H1 / H2 / Agent 分别来自 117 / 57 / 43 天，截图 63.5k / 12.8k / 55.9k，问题 5,111 / 3,507 / 1,808，其中多 recording 占少数（846 / 411 / 154）。按 5 秒一帧估的屏幕时间约为 88 + 18 + 78 = 184 小时。问题类型覆盖 where / when / what / how / value，以及跨记录的计数、比较、顺序和持续时间。评测是检索而不是让模型直接写答案，这使索引延迟可以被单独测量。Table 4 还看了索引放大到按年计的截图量时，1-bit 或 PQ 可以把 RAM 从每条 4096 字节压到 64–128 字节，并保持接近 Flat 的 R@10，说明“编码赶得上拍摄”之后，存储和检索会成为下一瓶颈。和 MMFlash 的对比很有启发：两者都利用视觉冗余，但一个加速的是 VLM 文本生成，一个加速的是屏幕流的嵌入；把 StreamEmbed 的跨屏 KV 复用接到计算机使用智能体的视觉编码器，比再做一个通用视频 LLM 剪枝更贴近它的数据。</p>
+<p>最小复现：用公开的 ScreenMemEval，先复现 Table 6 的逐步延迟，确认空间剪枝和 KV 复用各自省下多少毫秒、适配器找回多少 R@10。基线至少包括 Apple Vision OCR + 文本编码，以及同一编码器的完整截图。若只有 GPU 服务器，应重新测墙钟，不要直接引用 M2 Pro 的 0.66 秒。风险是像素差阈值对动画或视频播放区域会失效，连续变化的区域将几乎无法复用；以及 Agent 轨迹的视觉风格若与人类训练历史不同，H1 上微调的适配器可能把 Agent 的 R@10 再削一截（Table 5 里 Vultron 在 Agent 上从 60.4 降到 56.8，掉得比人类历史更明显）。另一条该记住的数字是：文本索引即使把编码器做到 8B，H1 的 R@10 也只有 75.0，加 BM25 和微调后的视觉-文本混合到 78.6，仍然低于完整截图的 83.4 和 StreamEmbed 的 82.1。所以这条工作的意义不是“再快一点的 OCR”，而是在几乎不牺牲视觉检索质量的前提下，把编码重新放回实时路径。若截图间隔不是 2 秒而是更密，0.66 秒的余量会迅速消失，那时需要重新看空间阈值和是否对动画区域单独关闭复用。</p>
+<div class="table-wrap">
+<table>
+<caption>效率表（SME-H1，微调 Qwen3-VL-2B，Table 6 / 10 的 GPU 墙钟）。理论 FLOPs 未报告。</caption>
+<thead><tr><th>Metric</th><th>Baseline（完整截图）</th><th>Proposed（StreamEmbed）</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>Frames / 输入</td><td>每张全图</td><td>每张全图，但按像素差剪枝/复用</td><td>不丢帧，丢重复块</td></tr>
+<tr><td>Visual Tokens</td><td>全部 patch</td><td>空间剪枝 + 跨屏 KV 复用</td><td>未给出精确保留比例</td></tr>
+<tr><td>理论 FLOPs</td><td>Not Reported</td><td>Not Reported</td><td>—</td></tr>
+<tr><td>Latency（GPU，秒/张）</td><td>2.33（ViT 1.66 + LM 0.66）</td><td>0.66（0.34 + 0.29）</td><td>约 3.53× 更快</td></tr>
+<tr><td>Throughput</td><td>约 0.43 张/秒</td><td>约 1.52 张/秒</td><td>可越过 2 秒/张的拍摄间隔</td></tr>
+<tr><td>GPU Memory</td><td>Not Reported</td><td>Not Reported</td><td>—</td></tr>
+<tr><td>R@10（H1 All）</td><td>83.4</td><td>82.1</td><td>−1.3；仍高于文本 77.4</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+</article>
+</div>
+</details>
+
+</section>
+
+<section id="sec-b">
+<h2>Tier B</h2>
+<details class="paper" id="p-2611.17610-wrap">
+<summary><span class="badge B">B</span> More Agents, More Samples, or More Thinking? 在对等计算预算下，多智能体并不自动赢（Agent / Test-time Compute）</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.17610" data-tier="B" id="p-2611.17610">
+<div class="meta">
+<h3><span class="badge B">B</span> More Agents, More Samples, or More Thinking? Untangling Coordination, Ensembling, and Test-Time Compute in Multi-Agent LLMs</h3>
+<ul>
+<li><strong>Authors:</strong> Seyed Mahmoud Sajjadi Mohammadabadi</li>
+<li><strong>Affiliation:</strong> Department of Computer Science and Engineering, University of Nevada, Reno。</li>
+<li><strong>Date / Venue / Status:</strong> arXiv 2611.17610v1，submitted 2026-11-13，周一 2026-11-16 公告（cs.AI）。非正式发表。</li>
+<li><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.17610">arXiv:2611.17610</a> · <a href="https://arxiv.org/pdf/2611.17610.pdf">PDF</a> · 复现与清单: <a href="https://github.com/mahmoudsajjadi/pace">github.com/mahmoudsajjadi/pace</a></li>
+<li><strong>原文访问:</strong> 已阅读 HTML/PDF（§3–6、主要综合表与附录敏感性分析）。</li>
+</ul>
+</div>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>许多多智能体论文把“几个会通信的模型”去和“一次贪心单次解码”比，然后宣布协调有用。这篇综合研究指出，这样比把样本数和推理计算都算进了协调的功劳。作者整理了 9 项主要实证、516 种多智能体配置，用六维资源向量和四档基线梯子重新对齐比较。相对贪心单次（Category A），总体差异为负，去掉贡献最大的那项研究后接近零；相对样本数对齐（B）或资源预算对齐（C）的基线，多智能体平均准确率差为 −0.042，74% 的可比对照中多智能体不高于基线。所谓约 45% 能力阈值，在抽出的数据里也站不稳。</p>
+</section>
+<h4>分析</h4>
+<section class="analysis" data-part="analysis">
+<p>概念框架把常见混淆写成可检验的来源：上下文拥挤、token 被脚手架稀释、以及“看起来像协调、其实只是多采了几次样”。四档基线是这篇工作最可迁移的工具：A 是一次贪心；B 对齐样本数（例如多数投票、重复采样）；C 对齐总资源预算；D 则更接近真正控制通信本身。PACE 协议要求报告资源向量，而不是只报准确率。综合结果的方向很一致：一旦把样本和预算对齐，通信架构的平均优势消失，甚至为负；多层次随机效应在对数几率尺度上的估计同样为负，并对敏感性检查保持符号。实践含义不是“不要做多智能体”，而是：若你的对照还停留在贪心单次，就还没有证明协调的价值。最小的下一步，是把已有多智能体系统放到 Category B/C 对照下重评，看优势是否还在。局限也很明显：这是对已发表对照的再综合，不是一组在统一代码库里重跑的新实验；研究间任务结构差异大，负平均不能排除在特定分工或工具协议上存在正收益。作者在附录里也列出了尚未被这些对照检验的正收益假说，那些才是还值得做新实验的地方。对今天的正式论文来说，这篇综合像一条方法学警戒线：ModHarness-RL 比较的是同一预算下的不同脚手架，对照是干净的；但若有人把“多智能体加通信”只拿去打一次贪心解码，PACE 会把它记成 Category A 的表观收益。审稿清单和配套代码降低了复现门槛，值得作为评估工具保存，而不必把它的负平均读成多智能体研究的终审判决。</p>
+</section>
+</article>
+</div>
+</details>
+
+<details class="paper" id="p-2611.18550-wrap">
+<summary><span class="badge B">B</span> ReDiverse：蒸馏后的少步图像/视频生成并不缺方差，缺的是方向（Video Generation Quality after Distillation）</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.18550" data-tier="B" id="p-2611.18550">
+<div class="meta">
+<h3><span class="badge B">B</span> Restoring Diversity in Distilled Image and Video Generators by Probing Activations</h3>
+<ul>
+<li><strong>Authors:</strong> Furkan Horoz, Ozgur Kara, Kaan Oktay, Adil Kaan Akan, Atakan Kara, Anand Bhattad, James Matthew Rehg</li>
+<li><strong>Affiliation:</strong> University of Illinois at Urbana-Champaign（Horoz, Kara, Rehg）；fal（Oktay, Akan, Atakan Kara）；Johns Hopkins University（Bhattad）。Bhattad 与 Rehg 为通讯作者。</li>
+<li><strong>Date / Venue / Status:</strong> arXiv 2611.18550v1，submitted 2026-11-13，周一 2026-11-16 公告（cs.CV）。非正式发表。</li>
+<li><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.18550">arXiv:2611.18550</a> · <a href="https://arxiv.org/pdf/2611.18550.pdf">PDF</a> · Code: <a href="https://github.com/H-furkan/rediverse">github.com/H-furkan/rediverse</a> · Models: <a href="https://huggingface.co/ReDiverse/ReDiverse">huggingface.co/ReDiverse</a></li>
+<li><strong>原文访问:</strong> 已阅读 HTML/PDF（§3–5、Table 7、16 及视频多样性指标表）。</li>
+</ul>
+</div>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>把扩散模型蒸馏成少步学生，采样会快很多，但不同随机种子生成的样本往往几乎一个模样。作者探测学生相对教师的内部激活，发现学生的总激活方差并不明显更小，而是把方差集中进了少得多的方向；这种方向坍缩可以定位到初始去噪步的某个中间块。因此多样性崩溃被解释成方差分配错误，而不是生成能力被蒸馏掉了。ReDiverse-FT 用轻量适配器在这些丢失方向上做对齐；ReDiverse-TF 则是训练免费的随机转向。两者可组合。图像和视频（包括 Wan 2.1）上都给出了多样性指标和相对学生的成对胜率。</p>
+</section>
+<h4>分析</h4>
+<section class="analysis" data-part="analysis">
+<p>对视频加速这条线，这篇工作的位置很清楚：它不减少步数，而是修补“已经减少步数之后”的质量。若多样性崩溃来自某一个可识别的块，那么修复不必重训整个学生。Table 7 列出了各骨干上坍缩的块与教师回归步，例如 Wan 2.1-T2V-14B 的学生是 lightx2v，坍缩块为 block 28，教师回归步为 8。成对比较（Table 16）上，ReDiverse 在 SDXL 的 DINO / TPIPS 多样性上相对学生分别以 95% / 97% 的提示赢过，但 CLIPScore 只有 38% 更高，说明多样性和对齐之间仍有折中；SD3 上 DINO / TPIPS 为 100% / 99%，CLIPScore 31%。视频表给出教师、FastVideo 与 Turbo 的 DINO、V-JEPA2、TPIPS、ViCLIP 等参考，Turbo 的多样性掉得更厉害（DINO 35.8 对教师 55.3）。主张的强处是机制定位清楚，并同时提供训练与免训练两条修复；弱处是主表数字在图像上更完整，视频对比需要结合附录阅读，且转向可能轻度牺牲对齐。它与“少步蒸馏加速”是互补问题：加速若以模式坍缩为代价，墙钟收益会在应用侧被抵消。最小实验是：在一个已有的少步视频学生上，按论文协议找出初始步方差最集中的块，先试 ReDiverse-TF，用 DINO / TPIPS / ViCLIP-S 同时看多样性与对齐，不要只报看起来更花的样本。和 MMFlash、TIDE 不同，ReDiverse 不声称墙钟更快，它问的是加速之后还剩多少可分的样本模式。若你的少步视频管线已经在线上，这是比再追 0.2× 加速更可能改变用户体验的修补。局限是探测协议依赖教师可访问，闭源学生若拿不到对应教师激活，训练免费转向也需要对准的方向估计来源。附录还比较了注入教师方向、学生方向或随机方向，主方法选择对准教师中丢失的那些方向，而不是加噪声式地“把方差打散”。</p>
+</section>
+</article>
+</div>
+</details>
+
+</section>
+
+<section id="sec-ideas">
+<h2>Idea Mining</h2>
+<p>以下四条都来自今日正式论文的交叉，而不是关键词拼接。每条都可以在一周到数周的预算里做最小实验。</p>
+
+<h3>Idea 1（最佳）：把 Steering 触发器编译到 CarryOn 的带出处证据上</h3>
+<ul class="plain">
+<li><strong>Inspiration:</strong> ModHarness-RL 的可回放 steer 程序；CarryOn 的控制状态 + 源链接证据。</li>
+<li><strong>Gap:</strong> CarryOn 的选择器学习“留下什么”，但不检测可验证失败，也不会在失败走平时才插入指导；ModHarness 的触发器作用在工具轨迹记录上，没有把“精确字段的出处”当成一等对象。</li>
+<li><strong>Hypothesis:</strong> 在 AppWorld 一类多应用任务上，用确定性程序检查证据槽位（例如余额被覆盖、同一订单 ID 出现冲突）并按回放曲线闸门安装指导，会同时提高成功率并降低 NCS，且优于只做 CarryOn 选择器或只在扁平抄本上做 Steering。</li>
+<li><strong>Method:</strong> 保持 Actor 与奖励不变；上下文一律写成状态 + 证据单元；Steering 只读这些单元，不另请 LLM 改写历史；Compression 若使用则锁定。</li>
+<li><strong>Minimum Viable Experiment:</strong> AppWorld 训练/测试拆分，Qwen3 或同等 7–8B Actor，GRPO 或冻结 Actor 的推理期对比均可先做推理期版本以降低成本。</li>
+<li><strong>Model / Dataset / Baseline / Metric:</strong> Qwen3-8B 或 Claude 之一；AppWorld；Full History、CarryOn、扁平 Steering、本文组合；成功率、<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>S</mi><mrow><mn>0.8</mn></mrow></msub></mrow></math></span>、NCS、指定失败模式的频率曲线。</li>
+<li><strong>Expected Contribution:</strong> 证明“证据选择”和“失败干预”可以共享同一份可审计 State，而不必再训练一个摘要模型。</li>
+<li><strong>Novelty ★★★★☆ / Feasibility ★★★★☆ / Compute ★★☆☆☆</strong>（推理期版本成本更低；若上 GRPO 则升到 ★★★）。</li>
+<li><strong>Risk:</strong> 触发器在应用字段上过拟合；闸门样本过小。</li>
+<li><strong>Collision Risk:</strong> 中等，见下文与 HyperSkill / Experience-Handoff 的差别。</li>
+<li><strong>Best Venue:</strong> ACL / ICLR / 智能体专项Workshop 之后的正式会议。</li>
+</ul>
+
+<h3>Idea 2：把 TIDE 的长尾改用途接到智能体 GRPO</h3>
+<ul class="plain">
+<li><strong>Inspiration:</strong> TIDE 的 Idle / Ineff. 分解；ModHarness 在 ALFWorld 上最多 50 回合、CodeSearch 上工具输出很长。</li>
+<li><strong>Gap:</strong> TIDE 评估的是数学、蒸馏和 Text2SQL 等相对短的生成，没有报告家庭任务或仓库定位这类超长尾智能体 rollout。</li>
+<li><strong>Hypothesis:</strong> 智能体轨迹的 Idle loss 将高于 DAPO Math 的 15.2%，仅 repurposing 一项的相对收益就会超过 Table 3 里的 1.03×。</li>
+<li><strong>Minimum Viable Experiment:</strong> 在 8 GPU 同步 GRPO 栈上跑 ALFWorld 或 CodeSearch，先打点三类损失，再打开“长尾未结束时把空推理 GPU 切去训练”，保持 on-policy 批次语义。</li>
+<li><strong>Model / Dataset / Baseline / Metric:</strong> Qwen2.5-7B 或 Qwen3-8B；ALFWorld 或 SWE-Smith；同机同步系统；step time、占最优吞吐比例、最终任务分数（须验证不掉点）。</li>
+<li><strong>Expected Contribution:</strong> 给 agent RL 提供一张可公开的利用率分解，而不是只报算法分数。</li>
+<li><strong>Novelty ★★★☆☆ / Feasibility ★★★☆☆ / Compute ★★★☆☆</strong></li>
+<li><strong>Risk:</strong> 切换开销吃掉收益；实现绑定训练栈。</li>
+<li><strong>Collision Risk:</strong> 低到中，是 TIDE 在新负载上的迁移，需明确新负载特征。</li>
+<li><strong>Best Venue:</strong> MLSys / EuroSys / ICLR 系统与学习交叉。</li>
+</ul>
+
+<h3>Idea 3：用像素差候选帧，再计算帧级视觉依赖，为视频投机解码选上下文</h3>
+<ul class="plain">
+<li><strong>Inspiration:</strong> MMFlash 把 token 级 KL 当训练信号，并承认视频仍用启发式稀疏；StreamEmbed 只用像素差决定复用。</li>
+<li><strong>Gap:</strong> MMFlash 的 stride-32 不看问题，对所有远帧一视同仁；若对每一帧都跑两次目标模型算 KL，离线成本会爆。</li>
+<li><strong>Hypothesis:</strong> 先用像素差（或时间 KV 是否可复用）筛出“看起来在变”的帧，只在这些帧上计算有图/无图或有帧/无帧的依赖分，再让草稿器优先保留高依赖帧，将在 LongVideoBench 上以接近稠密的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span> 达到不低于 MMFlash 稀疏模式的加速。</li>
+<li><strong>Minimum Viable Experiment:</strong> 冻结已有 MMFlash 或 DFlash 草稿器，不改损失，只改可见视觉上下文的选择；对比固定 stride-32、随机采样、像素差筛选 + 依赖打分。</li>
+<li><strong>Model / Dataset / Baseline / Metric:</strong> Qwen3.5-4B；LongVideoBench / Video-MME；MMFlash 稀疏模式；<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span>、墙钟加速、按问题类型拆分。</li>
+<li><strong>Expected Contribution:</strong> 把“问题相关的视觉上下文”做成可离线预计算的选帧规则，而不是再训一个重的视频草稿器。</li>
+<li><strong>Novelty ★★★★☆ / Feasibility ★★★☆☆ / Compute ★★★☆☆</strong></li>
+<li><strong>Risk:</strong> 像素差在镜头运动上会全选中，退回近似稠密；依赖分定义在帧级可能不稳定。</li>
+<li><strong>Collision Risk:</strong> 中，与 MMFlash 自己的未来工作陈述相邻，必须强调像素差预筛和“不改损失、只改可见上下文”的差分。</li>
+<li><strong>Best Venue:</strong> CVPR / ECCV / NeurIPS 效率轨。</li>
+</ul>
+
+<h3>Idea 4：用 PACE 的 Category C 预算，重评可学习脚手架对“更多智能体”的优势</h3>
+<ul class="plain">
+<li><strong>Inspiration:</strong> PACE 的负平均；ModHarness 在单策略、同训练步数下的正收益。</li>
+<li><strong>Gap:</strong> 两者都还没有回答：若把 ModHarness 多出来的训练时教师调用，拿去加采样或加一个通信同伴，谁会赢。</li>
+<li><strong>Hypothesis:</strong> 在 Category C 对齐后，单策略 + 程序脚手架仍优于同样 token 预算的双智能体通信，至少在 CodeSearch 定位任务上如此。</li>
+<li><strong>Minimum Viable Experiment:</strong> 固定总生成 token 或总教师调用，比较 Base、ModHarness-RL、以及样本对齐的单智能体 self-consistency。</li>
+<li><strong>Metric:</strong> Overall F1、每成功样本的 token、PACE 资源向量。</li>
+<li><strong>Novelty ★★★☆☆ / Feasibility ★★★★☆ / Compute ★★★☆☆</strong></li>
+<li><strong>Collision Risk:</strong> 低，属于评价协议落地。</li>
+<li><strong>Best Venue:</strong> 评价与智能体研讨会，随后 ICLR/ACL。</li>
+</ul>
+</section>
+
+<section id="sec-collision">
+<h2>Collision Detection</h2>
+<div class="warn">
+<p><strong>⚠️ Collision Warning：Yes（有条件撞题，不是题目已被关闭）。</strong></p>
+<p><strong>ReDiverse vs eDMD（Nov 14 Tier A，arXiv:2611.17194）。</strong> 两者都处理少步蒸馏生成。eDMD 从端点分布匹配入手改善少步扩散蒸馏；ReDiverse 从学生激活方向坍缩入手恢复多样性。已解决的部分是“少步学生会塌”，但塌的机制和修复对象不同。剩余缺口：把方向修补接到 eDMD 类蒸馏目标里，是否还能在 Wan 2.1 上同时保住多样性和对齐。仍值得做，但必须把 eDMD 列为对照，而不是只对学生本身比。</p>
+<p><strong>ModHarness-RL vs Experience-Handoff / HyperSkill（近七日正式论文）。</strong> 都在回答“哪些经验应该留下来影响以后的策略”。Experience-Handoff 把经验写成按再执行奖励记账的 playbook；HyperSkill 写成冻结骨干上的超图技能库；ModHarness 把经验编译成对 State 的确定性程序，并用回放曲线决定何时干预。重合在“经验外置”，差分在“可执行、可回放、闸门安装、压缩锁住”。仍值得做 Idea 1，但相关工作必须点名这三篇。</p>
+<p><strong>MMFlash vs ForeSpark（Nov 13 Tier A）。</strong> 同属投机解码的预算与调度；ForeSpark 关心并行投机里草稿与验证的预算，MMFlash 关心多模态 token 的视觉依赖重加权。重合是系统层加速，机制几乎不重叠。Idea 3 需避免写成 ForeSpark 的多模态换皮。</p>
+<p><strong>CarryOn / StreamEmbed vs 近七日记忆工作（MemInStream、Cleaning History、When Should Agents Remember）。</strong> 都谈记忆与遗忘，但 MemInStream 是流视频记忆评测，Cleaning History 给出“世界里错误还在时改写历史会伤害恢复”的反例，CarryOn / StreamEmbed 分别是应用轨迹上下文与屏幕像素索引。没有关闭题目，只是任何“改写历史”的设计都必须把 Cleaning History 当作失败边界。</p>
+</div>
+</section>
+
+<section id="sec-reading">
+<h2>Reading Priority</h2>
+<h3>READ NOW</h3>
+<ul class="plain">
+<li><strong>ModHarness-RL</strong> — 最值得看 §3.2 与 Table 3：共演化是不是必要，以及 Figure 7 / 12 判定器何时该安装指导。</li>
+<li><strong>MMFlash</strong> — 最值得看 Figure 3、公式 (1)–(4) 和 Table 1–2；不要只看平均加速倍数。</li>
+</ul>
+<h3>READ THIS WEEK</h3>
+<ul class="plain">
+<li><strong>CarryOn</strong> — Table 1 的 NCS 与 Table 2 消融；对照自己的长程智能体记忆设计。</li>
+<li><strong>TIDE</strong> — Table 1 的损失分解和 Table 3 消融，判断自己的同步 RL 栈浪费在哪一类。</li>
+<li><strong>StreamEmbed</strong> — Table 6 / 10 的逐步延迟，以及 ScreenMemEval 是否可直接用来评计算机使用记忆。</li>
+</ul>
+<h3>SAVE</h3>
+<ul class="plain">
+<li>PACE 综合、ReDiverse、WebArena-Pro、Only as Safe as the Weakest Agent、V-JEPA-LM、JVT、ARCHER、AutoRL。</li>
+</ul>
+<h3>SKIP（今日主线以外或过偏应用，除非你就在该领域）</h3>
+<ul class="plain">
+<li>钙钛矿筛选 RL、血管升压药世界模型、卫星卸载、肉瘤病例抽取等应用向智能体论文。</li>
+</ul>
+</section>
+
+<section id="sec-watch">
+<h2>Candidate Watchlist</h2>
+<ul class="plain">
+<li><a href="https://arxiv.org/abs/2611.17955">WebArena-Pro (2611.17955)</a> — Agent / Benchmark。20 个自托管应用、300 题，含音视频网页任务，已中 NeurIPS 2026 E&amp;D。值得作为评测集保存，今日未做正式深读是因为主贡献是基准而不是新机制。</li>
+<li><a href="https://arxiv.org/abs/2611.17520">Only as Safe as the Weakest Agent (2611.17520)</a> — Multi-Agent Security。论证有些攻击只在多智能体系统里出现，且系统安全被最弱的阅读者绑定。与 PACE 的“协调未必加分”可以对照着读。</li>
+<li><a href="https://arxiv.org/abs/2611.18494">ARCHER (2611.18494)</a> — RL for small LMs。把思维链编译成带计算器调用的可执行动作轨迹再做强化学习，适合关心可审计推理的读者。</li>
+<li><a href="https://arxiv.org/abs/2611.17790">AutoRL (2611.17790)</a> — 用多智能体系统去监控并介入正在进行的 RL 训练，和 ModHarness 的“过程级监督”有家族相似性，但对象是训练动态而不是智能体脚手架。</li>
+<li><a href="https://arxiv.org/abs/2611.18549">JVT (2611.18549)</a> — 像素空间视频扩散的简化 DiT，强调不要级联和预训练自动编码器，属于生成架构而非加速主线。</li>
+<li><a href="https://arxiv.org/abs/2611.17831">V-JEPA-LM (2611.17831)</a> — 让视频-语言模型读动态而不是静态、与文本对齐的表示，机制向表征，今日未排正式名额。</li>
+<li><a href="https://arxiv.org/abs/2611.18459">Callo (2611.18459)</a> — 在预填-解码分离下，用投机解码服务 KV 失效后的 cache-miss 请求，和 MMFlash 同属投机解码系统层。</li>
+<li><a href="https://arxiv.org/abs/2611.17864">Orthogonal Null-Space Unlearning (2611.17864)</a> — 轻量 LLM 卸载，把遗忘与效用分开。按用户权重未进入 Tier S/A，但方法清楚，可作卸载对照。</li>
+<li><a href="https://arxiv.org/abs/2611.18397">Gamer (2611.18397)</a> — 长程实时游戏的通用 VLA。体量大、偏具身与游戏智能体，适合有这条线的读者回头看。</li>
+<li><a href="https://arxiv.org/abs/2611.17917">Semantic Strategy Unlearning in MARL (2611.17917)</a> — 合作策略必须改写时的语义卸载。与主线有关但 Unlearning 权重较低，故未占正式名额。</li>
+<li><a href="https://arxiv.org/abs/2611.17603">Offline KL-Regularized RL with Stochastic Transitions (2611.17603)</a> — 给 LLM 微调常用的 KL 正则目标补上随机转移下的样本复杂度，理论向。</li>
+<li><a href="https://arxiv.org/abs/2611.18514">Can Mechanistic Interpretability Help Explain LLM Agent Failures? (2611.18514)</a> — 用机械可解释性分析网页元素选择失败，解释性 × 智能体的交叉点。</li>
+</ul>
+</section>
+
+<section id="sec-stats">
+<h2>今日统计</h2>
+<ul class="plain">
+<li>Candidate Pool: 55（均来自周一 2026-11-16 新公告，摘要已筛选；正式深读 7 篇全文）</li>
+<li>Formal Papers: 7</li>
+<li>RL: 2（ModHarness-RL，TIDE）</li>
+<li>Agent / Multi-Agent: 4（ModHarness-RL，CarryOn，StreamEmbed，PACE）</li>
+<li>Video Acceleration: 3（MMFlash，StreamEmbed，ReDiverse）</li>
+<li>Unlearning: 0（正式名额；Watchlist 中有 2 篇相关）</li>
+<li>Other: 0</li>
+<li>Tier S / A / B: 2 / 3 / 2</li>
+<li>检索说明：优先使用了当日仍在线的周一新批次（昨日报告写于该批次上线前）。周二公告在 08:41 Asia/Shanghai 仍未出现在 arXiv new 页面。</li>
+</ul>
+</section>
+
+<section id="sec-sources">
+<h2>Sources / Links</h2>
+<ul class="plain">
+<li>arXiv new listings（2026-11-16）: <a href="https://arxiv.org/list/cs.LG/new">cs.LG</a> · <a href="https://arxiv.org/list/cs.AI/new">cs.AI</a> · <a href="https://arxiv.org/list/cs.CL/new">cs.CL</a> · <a href="https://arxiv.org/list/cs.CV/new">cs.CV</a> · <a href="https://arxiv.org/list/cs.MA/new">cs.MA</a> · cs.RO / cs.DC / eess.IV</li>
+<li>arXiv recent / API（HTTPS export.arxiv.org，按 submittedDate 降序）用于补全 published 时间戳</li>
+<li>Hugging Face Daily Papers: <a href="https://huggingface.co/papers">huggingface.co/papers</a>（页面日期仍为 Nov 16，与周一公告一致）</li>
+<li>候选池 JSON: <code>/workspace/radar/work-2026-11-17/lists/candidate_pool.json</code></li>
+<li>全文来源: 各论文 PDF 与 arXiv HTML，文本抽自 pdftotext 与官方 HTML</li>
+</ul>
+</section>
+
+<section id="sec-audit">
+<h2>Depth Audit</h2>
+<p>下列数字由程序根据 HTML 中 <code>article.paper</code> 的 <code>.analysis</code> 正文计算（去掉表格、链接包装和 <code>.meta</code>）。Tier S 门槛：CJK 正文 3500–5000，Method ≥1000，Experiments+Results ≥900，且必须实际阅读全文。</p>
+<div id="audit-table-slot"><table><thead><tr><th>Paper</th><th>Tier</th><th>CJK body</th><th>Method</th><th>Results</th><th>Tables</th><th>Numeric facts</th><th>Full text</th><th>Threshold</th><th>Unfinished</th></tr></thead><tbody>
+<tr><td>2611.18533</td><td>S</td><td>4069</td><td>1080</td><td>1053</td><td>3</td><td>102</td><td>yes</td><td class="ok">通过</td><td>无</td></tr>
+<tr><td>2611.18482</td><td>S</td><td>4320</td><td>1063</td><td>1035</td><td>3</td><td>140</td><td>yes</td><td class="ok">通过</td><td>无</td></tr>
+<tr><td>2611.17808</td><td>A</td><td>1254</td><td>378</td><td>705</td><td>0</td><td>49</td><td>yes</td><td class="ok">通过</td><td>无</td></tr>
+<tr><td>2611.17924</td><td>A</td><td>1211</td><td>317</td><td>718</td><td>0</td><td>40</td><td>yes</td><td class="ok">通过</td><td>无</td></tr>
+<tr><td>2611.18516</td><td>A</td><td>1231</td><td>195</td><td>803</td><td>1</td><td>75</td><td>yes</td><td class="ok">通过</td><td>无</td></tr>
+<tr><td>2611.17610</td><td>B</td><td>677</td><td>0</td><td>0</td><td>0</td><td>13</td><td>yes</td><td class="ok">通过</td><td>无</td></tr>
+<tr><td>2611.18550</td><td>B</td><td>681</td><td>0</td><td>0</td><td>0</td><td>23</td><td>yes</td><td class="ok">通过</td><td>无</td></tr>
+</tbody></table>
+<p>程序结论：tier_s_pass=True，all_pass=True，缺失章节=无。</p></div>
+</section>
+
+<footer>
+<p>Daily AI Research Radar — 2026-11-17 · 生成于 Asia/Shanghai · 公式已转为 MathML，页面自包含，无需外部脚本。</p>
+</footer>
+</div>
+</body>
+</html>

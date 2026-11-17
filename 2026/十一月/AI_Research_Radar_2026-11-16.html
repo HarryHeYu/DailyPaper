@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily AI Research Radar &amp; Idea Miner — 2026-11-16</title>
+<style>
+:root{
+  --bg:#f6f1e8;
+  --paper:#fffdf8;
+  --ink:#1c1916;
+  --muted:#57534e;
+  --line:#e4d8c4;
+  --link:#0b57d0;
+  --linkv:#6b21a8;
+  --s:#9a3412;
+  --a:#1e3a5f;
+  --b:#3f3f46;
+  --chip:#f0e6d6;
+  --warn:#9f1239;
+  --ok:#166534;
+  --toc:#2b2118;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Source Han Serif SC","Noto Serif CJK SC","Songti SC","STSong","Georgia","Times New Roman",serif;
+  font-size:17.5px;
+  line-height:1.85;
+}
+.wrap{max-width:860px;margin:0 auto;padding:0 22px 80px}
+header.mast{
+  padding:36px 0 10px;
+  border-bottom:2px solid var(--ink);
+}
+header.mast h1{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC","Helvetica Neue",sans-serif;
+  font-weight:700;
+  font-size:1.85rem;
+  line-height:1.35;
+  margin:0 0 8px;
+  letter-spacing:.02em;
+}
+.sub{color:var(--muted);font-size:.95rem;font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif}
+nav#toc{
+  position:sticky;top:0;z-index:20;
+  background:rgba(246,241,232,.96);
+  backdrop-filter:saturate(1.2) blur(8px);
+  border-bottom:1px solid var(--line);
+  margin:0 -22px;
+  padding:8px 22px;
+}
+nav#toc strong{display:block;font-size:.8rem;letter-spacing:.08em;color:var(--toc);font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif}
+nav#toc ol{
+  list-style:none;margin:4px 0 0;padding:0;
+  display:flex;flex-wrap:wrap;gap:4px 12px;
+  font-size:.82rem;
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+}
+nav#toc a{color:var(--link);text-decoration:none}
+nav#toc a:hover{text-decoration:underline}
+h2{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:1.38rem;
+  margin:2.2em 0 .6em;
+  padding-top:.4em;
+  border-top:1px solid var(--line);
+  color:var(--toc);
+}
+h3{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:1.16rem;margin:1.5em 0 .4em;color:var(--s);
+}
+h4{font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;font-size:1.02rem;margin:1.15em 0 .3em;color:var(--a)}
+p{margin:.7em 0}
+a{color:var(--link);text-decoration-thickness:1px;text-underline-offset:2px}
+a:visited{color:var(--linkv)}
+.lead{font-size:1.02rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 16px}
+.chip{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:.78rem;background:var(--chip);border:1px solid var(--line);
+  border-radius:999px;padding:2px 10px;color:var(--muted)
+}
+article.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:22px 24px 28px;
+  margin:1.4em 0 2em;
+  box-shadow:0 1px 0 rgba(43,33,24,.04);
+}
+.meta, .meta p, .meta li{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:.92rem;line-height:1.55;color:var(--muted)
+}
+.meta h3{color:var(--ink);margin-top:0}
+.meta ul{padding-left:1.1em}
+.badge{
+  display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;
+  padding:1px 7px;border-radius:4px;margin-right:6px;vertical-align:middle;
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+}
+.badge.S{background:#9a3412;color:#fff}
+.badge.A{background:#1e3a5f;color:#fff}
+.badge.B{background:#3f3f46;color:#fff}
+table{
+  border-collapse:collapse;width:100%;margin:12px 0 16px;
+  font-size:.88rem;font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  line-height:1.45;
+}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#f3ece1}
+.table-wrap{overflow-x:auto;margin:10px 0 16px}
+details.paper{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:0;margin:1em 0}
+details.paper>summary{
+  cursor:pointer;list-style:none;padding:14px 18px;
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-weight:650;font-size:1.02rem;
+}
+details.paper>summary::-webkit-details-marker{display:none}
+details.paper[open]>summary{border-bottom:1px solid var(--line)}
+details.paper .inner{padding:6px 22px 22px}
+.note{background:#f8f1e3;border-left:3px solid #b45309;padding:8px 12px;margin:12px 0;color:#44403c}
+.warn{background:#fff1f2;border-left:3px solid var(--warn);padding:8px 12px;margin:12px 0}
+.ok{color:var(--ok);font-weight:650}
+.fail{color:var(--warn);font-weight:650}
+.formula{font-family:"Cambria Math","Times New Roman",serif;background:#faf7f2;padding:2px 4px;border-radius:3px}
+ol.rank, ul.plain{padding-left:1.25em}
+footer{margin-top:3em;padding-top:1em;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+@media print{
+  nav#toc{position:static;background:none;border:0}
+  body{background:#fff;font-size:11pt}
+  article.paper, details.paper{break-inside:avoid;box-shadow:none}
+  a{color:#000;text-decoration:underline}
+  .wrap{max-width:none}
+}
+
+</style><style>math{font-size:1.08em}.math-display{overflow-x:auto;margin:.8em 0;text-align:center}.math-display math{display:block}code.tex{color:#b45309}</style></head>
+<body><div class="wrap">
+<header class="mast" id="sec-header">
+<h1>Daily AI Research Radar &amp; Idea Miner</h1>
+<p class="sub">日期：2026-11-16（星期一）· 时区：Asia/Shanghai（CST, UTC+8）</p>
+<p class="sub">覆盖：RL for LLMs &amp; Agents · Agent / Multi-Agent · Video / Multimodal Acceleration · 以及推理、高效推理、持续学习、安全隐私、解释性、机器遗忘等次级赛道</p>
+<p class="warn"><strong>关于周一公告：</strong>按 arXiv 惯例，覆盖周五 14:00 ET 截止提交的 Monday mailing 应在周日 20:00 ET（北京时间周一 09:00）发布。本次任务在北京时间 08:21 首次核验，08:30 再次核验：<code>/list/cs.LG/new</code> 等六个类别仍显示 “Showing new listings for Friday, 13 November 2026”；Hugging Face Daily Papers API 拒绝大于 2026-11-13 的日期；cs.LG RSS 频道为空（<code>pubDate: Sun, 15 Nov 2026 00:00:00 -0500</code>）。因此<strong>周一新批次在本报告截稿时尚未发布</strong>。今日正式论文全部来自周五 11-13 公告中、近三日日报尚未正式展开的高价值工作，提交时间多为 2026-11-11 至 11-12，仍落在 24–72 小时窗口，<strong>不标记为 1–3 个月 BACKFILL</strong>，也未编造“今日新稿”。</p>
+</header>
+
+<nav id="toc">
+<strong>目录</strong>
+<ol>
+<li><a href="#sec-exec">执行摘要</a></li><li><a href="#sec-important">今日最重要论文</a></li>
+<li><a href="#sec-top3">Top 3 必读</a></li><li><a href="#sec-top5">Top 5</a></li>
+<li><a href="#sec-rl">RL Highlights</a></li><li><a href="#sec-agent">Agent Highlights</a></li>
+<li><a href="#sec-video">Video Acceleration Highlights</a></li>
+<li><a href="#sec-s">Tier S（全文精读，展开）</a></li><li><a href="#sec-a">Tier A</a></li><li><a href="#sec-b">Tier B</a></li>
+<li><a href="#sec-ideas">Idea Mining</a></li><li><a href="#sec-collision">Collision Detection</a></li>
+<li><a href="#sec-reading">阅读优先级</a></li><li><a href="#sec-watch">Candidate Watchlist</a></li>
+<li><a href="#sec-stats">今日统计</a></li><li><a href="#sec-sources">Sources / Links</a></li><li><a href="#sec-audit">Depth Audit</a></li>
+</ol>
+</nav>
+
+<section id="sec-exec">
+<h2>执行摘要</h2>
+<div class="chips">
+<span class="chip">Candidate Pool: 57（摘要已读）</span><span class="chip">Formal: 8</span>
+<span class="chip">RL: 4</span><span class="chip">Agent / Multi-Agent: 4</span><span class="chip">Video Acceleration: 2</span>
+<span class="chip">Unlearning: 0</span><span class="chip">Other: 0</span>
+<span class="chip">Tier S: 2</span><span class="chip">Tier A: 3</span><span class="chip">Tier B: 3</span>
+</div>
+<p>一句话：在周一新批次尚未出炉的窗口里，周五剩余高价值论文把主线推进到“<strong>信用该按什么问题、在哪个时间尺度上计算</strong>”。回合之内，决策模型只要看见整段回放并被问“这一步有没有帮助”，就能把步骤信用教给远比自己更弱的策略；回合之间，交接用的 playbook 必须按再执行一次的下游奖励来记账，而不能靠延迟奖励广播给整条链；探索则应发生在验证器承认的子空间里，而不是在全部轨迹的熵上。</p>
+<p><strong>RL Line：</strong>今日最重要的是 Actor, Judge, or Teacher?（<a href="https://arxiv.org/abs/2611.17167">arXiv:2611.17167</a>）：JEV 自己当演员只完成 42.9% 的 ALFWorld，却能把 Qwen2.5-1.5B 的结局 GRPO 从 72.8% 提到 82.9%，WebShop 从 56.8% 提到 71.4%；问错问题（Hindsight + Value）反而掉到 69.3%。VEPO（<a href="https://arxiv.org/abs/2611.15493">arXiv:2611.15493</a>）把有效熵加进 GRPO，1.5B / 7B 的六基准平均 Avg@32 从 48.4 / 58.9 升到 50.6 / 61.1。Rethinking SFT Data（<a href="https://arxiv.org/abs/2611.14912">arXiv:2611.14912</a>）则提醒：在 rollout 预算对齐后，SFT 并不必然比 RL 更不会泛化。</p>
+<p><strong>Agent Line：</strong>Experience-Handoff RL / ACE-RL（<a href="https://arxiv.org/abs/2611.16409">arXiv:2611.16409</a>）在四个基准上以 RSI@3 达到 0.775 / 0.987 / 0.667 / 0.340，高于把 GRPO 演员放进同一脚手架，Delayed-joint PPO 还出现训练崩溃。HyperSkill（<a href="https://arxiv.org/abs/2611.15178">arXiv:2611.15178</a>）用冻结骨干的超图技能库把 11 数据集平均 F1 从 29.0 拉到 42.0。Cleaning History（<a href="https://arxiv.org/abs/2611.14654">arXiv:2611.14654</a>）给出一个必须写进交接设计的反例：世界里错误还在时，把历史改成“已经成功”会伤害恢复。</p>
+<p><strong>Video / Multimodal Acceleration Line：</strong>TRACE（<a href="https://arxiv.org/abs/2611.15983">arXiv:2611.15983</a>）是今天证据最完整的视频生成加速：Wan2.1 1920×1088、81 帧、单卡 A800 上，端到端 1,826 秒对 FreeSwim 的 5,010 秒（2.74×），Q-Align 反而从 4.381 升到 4.690。VPR（<a href="https://arxiv.org/abs/2611.15100">arXiv:2611.15100</a>）不是视频论文，但给出了训练免费改视觉 KV 相位的墙钟数字：Qwen2.5-7B 在 32K+128 token 上只多 0.13% 时延，DocVQA 从 52.6 回到 76.8。今日没有新增机器遗忘的正式精读。</p>
+</section>
+
+<section id="sec-important">
+<h2>Today's Most Important Paper</h2>
+<p><strong>Actor, Judge, or Teacher? Understanding Decision Models in Long-Horizon Agents</strong>（<a href="https://arxiv.org/abs/2611.17167">arXiv:2611.17167</a>）。选它，是因为它把近几日反复出现的信用分配问题，收成一个可证伪的角色实验：同一套决策模型，问法与可见上下文不同，演员、法官和教师的效用可以完全分开。最值得先看的是 Table 3 的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><mn>2</mn></mrow></math></span> 教师消融，以及 Figure 5 里 Value 与 Progress 的分数间隔（0.05 对 0.36）。未来研究价值在于，过程奖励不必来自一个更强的在线控制器，而来自一个看过完整后果、被问对问题的冻结评判器。配套阅读 ACE-RL 的 Table 2，可以看到同一逻辑在回合之间如何写成可验证的交接价值。</p>
+</section>
+
+<section id="sec-top3">
+<h2>Top 3 必读</h2>
+<ol class="rank">
+<li><strong><a href="https://arxiv.org/abs/2611.17167">Actor, Judge, or Teacher?</a></strong>。为什么：它证明“演不好”不等于“教不好”。学什么机制：Hindsight + Progress 的加性、组内中心化优势，以及故意不做标准差放大。优先读：第 3.3 节、Table 3、Table 4、Figure 5。</li>
+<li><strong><a href="https://arxiv.org/abs/2611.16409">Experience-Handoff RL (ACE-RL)</a></strong>。为什么：它把脚手架里的 playbook 从提示工程对象改成强化学习对象。学什么机制：用一次下游执行估计交接价值，并在角色组内做 GRPO。优先读：第 3 节、Algorithm 1、Table 2、Figure 7（丢掉编辑的控制）。</li>
+<li><strong><a href="https://arxiv.org/abs/2611.15983">TRACE</a></strong>。为什么：今天唯一同时给出质量与端到端墙钟的视频生成加速论文。学什么机制：跨分辨率轨迹同步加布局引导的结构校正。优先读：Table 1 的时延列（1,826 秒对 5,010 秒）和 4.1 节的 81 帧 / A800 设置。</li>
+</ol>
+</section>
+
+<section id="sec-top5">
+<h2>Top 5</h2>
+<ol class="rank">
+<li><a href="https://arxiv.org/abs/2611.17167">arXiv:2611.17167</a> Actor, Judge, or Teacher?</li>
+<li><a href="https://arxiv.org/abs/2611.16409">arXiv:2611.16409</a> Experience-Handoff RL / ACE-RL</li>
+<li><a href="https://arxiv.org/abs/2611.15983">arXiv:2611.15983</a> TRACE</li>
+<li><a href="https://arxiv.org/abs/2611.15100">arXiv:2611.15100</a> Visual Position Re-Anchoring (VPR)</li>
+<li><a href="https://arxiv.org/abs/2611.15493">arXiv:2611.15493</a> Effective Entropy / VEPO</li>
+</ol>
+</section>
+
+<section id="sec-rl">
+<h2>RL Highlights</h2>
+<p>今日 RL 线有两层。第一层是信用的<strong>问题形式</strong>：17167 表明，后见本身不够，问“会不会成功”会把步骤分数摊平，只有“是否有帮助”才能教策略；15493 表明，熵也必须限制在验证器承认的轨迹上，否则多样性只是无效发散。第二层是<strong>数据对照是否公平</strong>：14912 用对齐 rollout 预算的 SFT，动摇了“RL 才会泛化”的简便说法。ACE-RL 虽放在 Agent 线展开，但其角色分组优势同样是 RL 方法贡献。近期已做 Tier S 的 NOPO、OMA、Dense Rewards in GRPO 今日不再展开，只在 Collision 中引用。</p>
+</section>
+
+<section id="sec-agent">
+<h2>Agent / Multi-Agent Highlights</h2>
+<p>Agent 线今天最清楚的进展，是把“经验写给未来自己”从一种脚手架习惯，变成可以按下游结果学习的对象（ACE-RL），同时又被另一篇实证论文警告：若世界里错误还在，把历史写成已经成功，接收模型会更糟（14654）。HyperSkill 提供第三条路：经验不进权重、也不进可训练 playbook，而是进冻结骨干外的超图技能库，11 数据集平均 +13.0 F1，但依赖专有 API 与按数据集选配。演员-法官-教师论文同时属于这条线，因为它处理的是长程家庭与购物智能体，而不是纯数学推理。</p>
+</section>
+
+<section id="sec-video">
+<h2>Video Acceleration Highlights</h2>
+<p>视频生成加速的主结果是 TRACE：在冻结 Wan / Bernini 骨干上做训练免费分辨率扩展，并在 A800 上报告端到端时延，相对 FreeSwim 为 2.02×–2.92×，质量指标同步上升。VPR 补上多模态长上下文这一侧：它不减视觉 token，只改缓存里的旋转相位，固定频率模型上的额外时延可以低到 0.1% 量级，但评测主体是图文而非视频，不能写成视频加速已完成。显存与理论 FLOPs 在两篇里都基本未报，读速度时请以墙钟为准。昨日正式展开的 TraceKV、DiFiT、MemInStream 与冷却中的 APEX（2611.14033）今日不重复精读。</p>
+</section>
+<section id="sec-s">
+<h2>Tier S（全文精读，默认展开）</h2>
+<article class="paper" data-fulltext="yes" data-id="2611.17167" data-tier="S" id="p-2611.17167">
+<div class="meta">
+<h3><span class="badge S">S</span> Actor, Judge, or Teacher? Understanding Decision Models in Long-Horizon Agents</h3>
+<ul>
+<li><strong>Authors:</strong> Haochen Liu, Qianhao Zhu, Zixuan Wang, Dingming Li, Tongbo Chen, Peng Qiu, Yingqi Qu, Weiming Lu, Jun Xiao, Yongliang Shen</li>
+<li><strong>Affiliation:</strong> Zhejiang University；Baidu Inc.（Peng Qiu, Yingqi Qu）</li>
+<li><strong>Date / Venue / Status:</strong> arXiv 2611.17167v1，提交 2026-11-12，周五 2026-11-13 公告（cs.AI / cs.CL）。非正式发表。</li>
+<li><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.17167">arXiv:2611.17167</a> · <a href="https://arxiv.org/pdf/2611.17167.pdf">PDF</a> · Code: <a href="https://github.com/ZJU-REAL/decision-agents">github.com/ZJU-REAL/decision-agents</a>（论文声明）</li>
+<li><strong>Code Availability:</strong> 论文给出上述仓库链接；本报告未再逐一核验仓库提交记录。</li>
+<li><strong>原文访问:</strong> 已阅读 PDF 全文（Method、Experiments、Table 2–5、Figure 2–5）。</li>
+</ul>
+</div>
+
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>决策模型不生成长文本，而是对带类型的问题给出选项及概率，因此既可用来选下一步，也可在事后给已执行动作打分，或在强化学习里提供步骤监督。以往几乎只按“它自己当演员能不能做完任务”来评价，结论往往很难看：它们会被更容易的子目标吸引，跳过必须先做的步骤。本文要问：一个自己演不好的决策模型，能不能当好老师？</p>
+<p>作者在 ALFWorld 上比较了三款专用决策模型（JEV、Decider v1.2、GPT Decisions）和三个用同样问题接口改装的通用 LLM，并只用 JEV 当老师，去训练 Qwen2.5-1.5B 与 7B 策略。关键发现非常干净：JEV 自己当演员只完成 42.9% 的 ALFWorld 任务，有顺序依赖的任务上更只有 14.7%；但若让它在看到整条轨迹后回答“这一步是否帮助达成了目标”，再把中心化后的分数加进 GRPO 的结局优势，1.5B 策略成功率从只有结局奖励的 72.8% 升到 82.9%，WebShop 从 56.8% 升到 71.4%。换成“这一步之后任务会不会成功”这个问题，同样的模型和同样的后见上下文，ALFWorld 反而掉到 69.3%。也就是说，差演员可以是好老师，但前提是问对问题、并给它看完整后果。</p>
+</section>
+
+<h4>背景与研究缺口</h4>
+<section class="analysis" data-part="background">
+<p>长程智能体的强化学习长期被一个结构问题卡住：任务往往到最后才给出对错，GRPO 一类结局奖励会把同一条轨迹里的所有动作写成同一个优势。想把信用拆到步骤，要么为每个环境手工标注过程奖励，要么每一步都问一个昂贵的 LLM 评判。决策模型看起来能填这个空缺：它们预训了带概率的选择，查询便宜，同一套接口可以切换成演员、法官或教师。</p>
+<p>缺口在于，公开评价几乎只看演员角色。已有工作反复报告它们会被提到任务物体的命令吸引、跳过前置子目标。若只根据这些失败就否定它们，会漏掉一个可能性：演员必须在后果出现前预见到“先放杯子会让任务做不完”；法官却是在整段回放之后打分，能看到后来有没有加热、有没有把杯子放到桌上。本文把这个差别做成实验：先量演员的失败形态，再改问题与上下文看法官是否仍把分数摊平，最后把最能分开动作贡献的打分接到 GRPO，看策略能否超过纯结局基线，甚至超过老师自己当演员的水平。若这一假设成立，决策模型就可以从控制器改写成过程奖励源。</p>
+</section>
+
+<h4>核心洞察</h4>
+<section class="analysis" data-part="insight">
+<p>核心判断可以压成一句话：角色不是模型的属性，而是问题与可见上下文的属性。同一模型在只看见前缀时，会像演员一样被更容易的子目标吸走；一旦看见整条轨迹，并被问“这一步帮没帮上忙”而不是“任务最终会不会成功”，就能把里程碑动作和空操作分开。这才是值得加进 GRPO 的过程信号。若问题仍盯着最终成败，后见分数会在一条轨迹里变得差不多，几乎只是把结局奖励再说一遍。要迁移的不是更强的在线演员，而是用后见加贡献问题，把一个不必自己能做对的模型变成步骤级教师。</p>
+</section>
+
+<h4>方法深挖</h4>
+<section class="analysis method" data-part="method">
+<p><strong>输入与角色定义。</strong>决策模型 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>D</mi></mrow></math></span> 接收一个目标 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>g</mi></mrow></math></span>、一段可见上下文，以及一个关于某个动作 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi></mrow></math></span> 的是非问题，输出 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>&#x0002C;</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></span> 上的分数。专用决策模型通过各自的决策 API 查询；通用 LLM 则用两种方式接到同一接口：提示词归一化 Yes/No 概率（Qwen prompted、GPT Luna），或约束式读出（Qwen constrained）。所有通用模型在实验中关闭推理。六个模型分成两组：JEV（TypeSafe AI，闭源，基座与适配方式未披露）、Decider v1.2（Perplexity，由 Qwen3.8-27B 全参数微调，开源权重）、GPT Decisions（OpenAI，基于 GPT-6 Luna，适配方式未披露）；以及三个对照：Qwen prompted、Qwen constrained（皆基于 Qwen3.8-27B）和 GPT Luna。</p>
+<p><strong>三个角色共用同一套查询，只改可见范围和问题。</strong>演员角色：在当前观察与候选动作上选择下一步，相当于在线决策。法官角色：对已经执行的动作打分，上下文可以是动作之前的前缀（Prefix），也可以是整条轨迹（Hindsight），并且隐去环境奖励、成功标签与隐藏状态，避免直接泄漏结局。教师角色：法官的同一套查询被应用到正在训练的策略所采样的轨迹上，模型在训练期保持冻结，测试期不再调用。</p>
+<p><strong>两个正交的设计轴。</strong>问题轴上，Value 问“该动作之后任务会不会成功”，Progress 问“该动作是否帮助达成了目标”。上下文轴上，Prefix 只给到当前步，Hindsight 给出整段回放。默认教师是 Hindsight + Progress。这四个组合后来会在 1.5B 策略上被完整交叉，用来证明不是“加了任何稠密分数都有用”，而是特定组合才有用。</p>
+<p><strong>接到 GRPO 的方式。</strong>对每个任务 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>u</mi></mrow></math></span>，策略 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mi>&#x003B8;</mi></msub></mrow></math></span> 采样一组轨迹 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x1D4A2;</mi><mi>u</mi></msub></mrow></math></span>。轨迹完成后，教师给每条轨迹 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C4;</mi><mi>i</mi></msub></mrow></math></span> 中的每个已执行动作打分 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x0003D;</mo><mi>D</mi><mo stretchy="false">&#x00028;</mo><mi>g</mi><mo>&#x0002C;</mo><msub><mi>&#x003C4;</mi><mi>i</mi></msub><mo>&#x0002C;</mo><mi>t</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02208;</mo><mo stretchy="false">[</mo><mn>0</mn><mo>&#x0002C;</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></span>。这些分数在组内做中心化，再加到 GRPO 的结局优势 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>A</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msubsup></mrow></math></span> 上，得到步骤优势。作者明确不除以分数的标准差：若一个组里教师给的分差不多，调整就应该很小，避免把近乎常数的分数放大成虚假的步骤差异。每个动作的优势再赋给该动作生成的全部 token。教师分数的权重取 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi><mo>&#x0003D;</mo><mn>0.5</mn></mrow></math></span>。也就是说，步骤监督是加性的、组内相对的，而且幅度被故意压住：它修正结局优势的分配，而不是改写奖励的定义。训练设置在两个环境上对齐：150 步、每步 16 个任务、每任务 8 条 rollout；ALFWorld 每条最多 30 个动作，WebShop 最多 15 个；策略提示/回复 token 上限分别为 2048/512 与 4096/512。</p>
+<p><strong>一个反直觉的设计。</strong>最容易想到的用法是让决策模型在线当演员，或至少用“任务会不会成功”这种和演员目标一致的问题来打分。论文却把默认教师选成了演员最不擅长的设定：先让它把整段后果看完，再问贡献而不是成败。后面的实验表明，这个选择不是口味问题：Hindsight + Value 在 ALFWorld 上反而低于纯结局 GRPO。换言之，后见本身不够，问错问题会把步骤信号稀释成结局奖励的回声。</p>
+<p><strong>诊断实验如何接到训练。</strong>演员诊断在 116 个“已经站在目的地、手里拿着还没被清洁/加热/冷却的物体”的状态上，对比完整目标与去掉容易子目标后的目标，历史、观察、候选动作和剩余步数完全相同，从而把“会不会做正确步骤”和“会不会被更容易的步骤吸走”分开。法官诊断则在 462 条至少含一个里程碑动作和一个空操作的轨迹上，把动作标成里程碑、空操作与其他三类，比较两种问题的分数间隔和 Recall@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>R</mi></mrow></math></span>。教师实验不再改环境，只把上述打分接到 GRPO，并在三个推理种子上报告成功率。整条链因此是：先在受控状态上定位失败机制，再在同一机制上选择监督问题，最后用策略学习检验这个选择是否可训练。</p>
+</section>
+
+<h4>关键公式与 Objective</h4>
+<section class="analysis" data-part="formula">
+<p>教师打分与组内中心化优势是贯穿全文的两条式子。打分不使用环境奖励：</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>s</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x0003D;</mo><mi>D</mi><mo stretchy="false">&#x00028;</mo><mi>g</mi><mo>&#x0002C;</mo><msub><mi>&#x003C4;</mi><mi>i</mi></msub><mo>&#x0002C;</mo><mi>t</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02208;</mo><mo stretchy="false">[</mo><mn>0</mn><mo>&#x0002C;</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></div>
+<p>组内中心化后与结局优势相加（<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi><mo>&#x0003D;</mo><mn>0.5</mn></mrow></math></span>，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>S</mi><mi>u</mi></msub></mrow></math></span> 为该组中所有被打分的动作）：</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>A</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x0003D;</mo><msubsup><mi>A</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msubsup><mo>&#x0002B;</mo><mi>&#x003BB;</mi><mo stretchy="true" fence="true" minsize="1.2em" maxsize="1.2em">(</mo><msub><mi>s</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x02212;</mo><msub><mover><mi>s</mi><mo stretchy="true">&#x000AF;</mo></mover><mi>u</mi></msub><mo stretchy="true" fence="true" minsize="1.2em" maxsize="1.2em">)</mo><mo>&#x0002C;</mo><mspace width="2em" /><msub><mover><mi>s</mi><mo stretchy="true">&#x000AF;</mo></mover><mi>u</mi></msub><mo>&#x0003D;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mo stretchy="false">&#x0007C;</mo><msub><mi>S</mi><mi>u</mi></msub><mo stretchy="false">&#x0007C;</mo></mrow></mfrac><munder><mo>&#x02211;</mo><mrow><mo stretchy="false">&#x00028;</mo><mi>j</mi><mo>&#x0002C;</mo><mi>k</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02208;</mo><msub><mi>S</mi><mi>u</mi></msub></mrow></munder><msub><mi>s</mi><mrow><mi>j</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub></mrow></math></div>
+<p>作者故意不做组内标准差归一化，使教师分数几乎相同的组只产生很小的步骤修正。每个 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>A</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub></mrow></math></span> 再广播到该动作的全部生成 token。训练目标仍是带裁剪的策略梯度，只是优势从纯结局变成了结局加上加权的教师贡献。</p>
+</section>
+
+<h4>Toy Example</h4>
+<section class="analysis" data-part="toy">
+<p>以“把加热过的杯子放到侧桌”为例。正确顺序是：走到微波炉、打开它、加热杯子、再放回侧桌。错误但更诱人的顺序是：手里已经拿着杯子，直接放到侧桌上。JEV 当演员时，在这类有依赖的任务上成功率只有 14.7% 到至多 18.8%；在 116 个“站在桌边、杯子还没加热”的状态上，完整目标下它把 63.8% 的概率分给“先放杯子”，只有 14.6% 分给必须先做的加热方向。如果把“放到侧桌”从目标里拿掉，这两项变成 2.5% 和 77.6%。模型并不是不知道该加热，而是更容易的子目标把概率吸走了。</p>
+<p>改当法官并看到后续加热成功后，情况会翻过来。只看前缀时，JEV 给过早放置打 0.79，给走向和打开微波炉只打 0.23 和 0.20；后见出现加热后，打开微波炉的分数升到 0.66，看完全程达到 0.76。教师用的正是这种后见贡献分：不要求 JEV 自己线上选对，只要求它在回放里承认哪些步骤后来有用。</p>
+</section>
+
+<h4>Baseline Comparison</h4>
+<section class="analysis" data-part="baseline">
+<p>演员与法官实验以六模型互比，最强演员是 Decider v1.2（ALFWorld 63.6%），但其 Heat 仍只有 18.8%。教师实验的主基线是只用结局奖励的 GRPO，数字引自 GiGPO（Feng 等，2025），并非作者同栈重跑，后文比较时必须记住这一点。更干净的对照是四组教师消融：Prefix 或 Hindsight，交叉 Value 或 Progress，它们共享同一策略、同一采样预算和同一个冻结的 JEV。最强是 Hindsight + Progress；最说明问题的阴性对照是 Hindsight + Value，它在 ALFWorld 上弱于纯结局 GRPO。1.5B 与 7B 对照表明该信号并不只在小模型上成立。</p>
+</section>
+
+<h4>实验设置与研究问题</h4>
+<section class="analysis results" data-part="results">
+<p><strong>设置。</strong>环境是 ALFWorld 与 WebShop。ALFWorld 被拆成无依赖（Pick、Look、Pick2）和有依赖（Clean、Heat、Cool）两类，后者必须先完成清洁/加热/冷却再放置。演员与教师评估使用同一批任务；演员每个任务评估一次，教师训练出的策略用三个推理种子取平均。WebShop 同时报告分数与成功率。JEV 教师通过 OpenRouter 查询，标价为每百万输入 token 0.042 美元、输出免费；四次 Hindsight + Progress 训练的教师 API 费用在 22.21 至 30.07 美元之间。</p>
+<p><strong>RQ1：演员失败是不是因为不知道正确步骤？</strong>Setup：在 116 个诊断状态上，比较完整目标与去掉容易子目标的目标。Observation：完整目标下 JEV 把 63.8% 概率给容易子目标、14.6% 给必须先做的步骤；去掉容易子目标后变为 2.5% 与 77.6%，六个演员方向一致。在完整任务成功率上，JEV 的 Pick2 为 70.8%，有依赖的三类分别只有 11.1%、18.8%、16.0%，总计 42.9%。Interpretation：失败主要是目标结构造成的注意劫持，而不是缺失程序性知识。进一步的提示实验支持这一点：只加一句“考虑依赖关系”，六个演员的成功率变化仅在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02212;</mo><mn>2.8</mn></mrow></math></span> 到 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x0002B;</mo><mn>5.2</mn></mrow></math></span> 个百分点；即使加上排序范例，JEV 也只从 19.0% 升到 24.1%，Decider 甚至从 89.7% 降到 85.3%。改提示补不好演员，更说明需要换角色而不是换话术。</p>
+<p><strong>RQ2：怎样的法官分数才能真正分开动作贡献，并且这些分数能不能教出更好的策略？</strong>Setup：先在 462 条轨迹上比较 Value 与 Progress（皆用 Hindsight），再把四种问题–上下文组合接到 Qwen2.5-1.5B 的 GRPO，并在 7B 上验证默认组合。Observation：作为法官，JEV 在 Value 下给里程碑/其他/空操作的均分是 0.632、0.604、0.577，几乎摊平；Progress 下变成 0.659、0.440、0.298，轨迹内里程碑比空操作高 0.36，Value 只有 0.05；Progress 的里程碑 Recall@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>R</mi></mrow></math></span> 在每个 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>R</mi></mrow></math></span> 上都高 8.0 到 16.0 个百分点。作为教师，Hindsight + Progress 把 1.5B 的 ALFWorld 成功率从 72.8% ± 3.6 升到 82.9% ± 2.9，WebShop 成功率从 56.8% ± 3.8 升到 71.4% ± 0.7；7B 上从 77.6% 升到 83.8%、从 66.1% 升到 73.6%。1.5B 教师策略已经超过 7B 的纯结局 GRPO（77.6% 与 66.1%）。Hindsight + Value 则把 ALFWorld 降到 69.3% ± 0.7。有依赖任务上，Hindsight + Progress 达到 86.8%，比其他三种设置高 6.9 到 16.2 个百分点，而 JEV 自己当演员只完成其中 14.7%。Interpretation：能教的是“后见下的贡献判断”，不是“后见下的成败预测”，也不是演员本人的成功率。最强结果出现在演员最弱的任务类型上，这正是本文想证明的机制，而不是平均分上的轻微波动。</p>
+<p><strong>最强与最弱结果，以及权衡。</strong>最强的是 1.5B 在 WebShop 上的绝对提升（成功率 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x0002B;</mo><mn>14.6</mn></mrow></math></span> 个百分点）以及有依赖 ALFWorld 任务上教师策略与演员老师之间的巨大反差（86.8% 对 14.7%）。最弱的是 Hindsight + Value 在 ALFWorld 上的回退，以及 Prefix 两种问题之间差别不大——没有后见时，贡献问题也帮不上太多忙。权衡则是：教师信号要在训练期为每个动作付一次 API 调用，四次默认训练各约 22–30 美元；测试期不再调用，所以推理成本回到策略本身。另一个权衡是对闭源 JEV 的依赖：开源的 Decider 是更强的演员（63.6%），但论文没有用它当老师做同等训练，因此“差演员才是好老师”这一命题目前主要建立在 JEV 上，还不能推广到所有决策模型。</p>
+</section>
+
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>策略</th><th>设置</th><th>ALFWorld 成功率 (%)</th><th>WebShop 成功率 (%)</th></tr></thead>
+<tbody>
+<tr><td>Qwen2.5-1.5B</td><td>GRPO（仅结局，GiGPO）</td><td>72.8 ± 3.6</td><td>56.8 ± 3.8</td></tr>
+<tr><td>Qwen2.5-1.5B</td><td>Hindsight + Value</td><td>69.3 ± 0.7</td><td>68.3 ± 1.5</td></tr>
+<tr><td>Qwen2.5-1.5B</td><td>Hindsight + Progress</td><td>82.9 ± 2.9</td><td>71.4 ± 0.7</td></tr>
+<tr><td>Qwen2.5-7B</td><td>GRPO（仅结局，GiGPO）</td><td>77.6 ± 5.2</td><td>66.1 ± 3.7</td></tr>
+<tr><td>Qwen2.5-7B</td><td>Hindsight + Progress</td><td>83.8 ± 1.6</td><td>73.6 ± 0.3</td></tr>
+</tbody>
+</table>
+<p class="note">数字摘自原文 Table 3，三次评估种子平均。ALFWorld 另有分任务列，见正文。</p>
+</div>
+<h4>Table / Figure Reading</h4>
+<section class="analysis results" data-part="reading">
+<p><strong>读 Table 2。</strong>无依赖三列里六个模型大多能做，Pick 普遍在 77.1%–97.1%；一进入有依赖三列，JEV 掉到 11.1/18.8/16.0，最强演员 Decider 也只在 Heat 上剩 18.8%。Pick2 与有依赖任务都包含两个子目标，但 Pick2 允许任意顺序，JEV 仍有 70.8%。表格因此不是在说“两个子目标就难”，而是在说“必须按顺序的两个子目标才难”。</p>
+<p><strong>读 Table 3。</strong>先横看 1.5B 的 All 与 WebShop Succ：唯一同时在两个环境上取得最高分的是 Hindsight + Progress（82.9 与 71.4）。Hindsight + Value 在 WebShop 分数上还不差（82.2 / 68.3），但在 ALFWorld 上是四组里最差的 69.3，说明后见加错问题会伤害需要步骤信用的家庭任务。再看 7B：默认教师仍优于 GRPO，但增益小于 1.5B，说明步骤监督在小策略上更珍贵。最后把 1.5B 的 82.9/71.4 和 7B GRPO 的 77.6/66.1 对着看：更好的过程奖励，在这两个环境上值一个模型规模档。</p>
+<p><strong>读 Table 4。</strong>Hindsight + Progress 不仅最终成功率高，而且更早完成：ALFWorld 在 20 步内完成 74.5%，其他三组只有 63.6%–69.5%；WebShop 在 10 步内已达 71.1%，接近其最终 71.4%，其他组在 60.9%–62.2%。这说明教师并没有靠“多走几步碰运气”涨分，而是让策略更早走到正确的前置子目标。</p>
+<p><strong>读 Figure 5。</strong>Value 的三条动作类型几乎叠在一起，Progress 才拉开。Recall@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>R</mi></mrow></math></span> 的优势在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>R</mi><mo>&#x0003D;</mo><mn>2</mn></mrow></math></span> 到 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>R</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math></span> 上都在，说明不是只对短轨迹有效。轨迹内间隔 0.36 对 0.05，是后面解释“为什么 Hindsight + Value 教不好”的直接证据：分数不够分散，加进优势几乎等于再写一遍结局奖励。</p>
+</section>
+
+<h4>消融、论断与证据</h4>
+<section class="analysis" data-part="claim">
+<p><strong>消融。</strong>问题与上下文的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><mn>2</mn></mrow></math></span> 已经是最关键的消融：只有 Hindsight + Progress 在两个环境上都显著优于 GRPO；Prefix 下两个问题接近；Hindsight + Value 在 ALFWorld 上有害。目标结构消融表明，去掉容易子目标就能把 JEV 对正确步骤的概率从 14.6% 拉到 77.6%。提示消融表明，一般性提醒几乎无效，排序范例只对部分模型部分有效。规模消融表明 7B 上方向相同但幅度更小。</p>
+<p><strong>Authors Claim / Experiments Actually Show / What Is Not Yet Proven。</strong>作者声称：演不好的决策模型仍然可以教得好，因为事后评价能看到行动时必须预见到的后果。实验实际表明的是：在 ALFWorld 与 WebShop 上，用冻结的 JEV、Hindsight + Progress、<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi><mo>&#x0003D;</mo><mn>0.5</mn></mrow></math></span> 的加性优势，可以稳定提高 Qwen2.5 1.5B/7B 的成功率，并且增益集中在有依赖任务与更短的完成步数上；同时，Value 问题与纯提示干预都不能替代这一选择。尚未被证明的是：换开源决策模型当老师是否再现同一模式，GRPO 若在作者自己的训练栈中重跑数字会不会变化，以及这套监督在更长的工具轨迹或缺少清晰子目标标注的环境中是否仍然有效。</p>
+</section>
+
+<h4>Contribution</h4>
+<section class="analysis" data-part="contribution">
+<p>（发现）拆开演员、法官、教师三角色，证明演员失败不蕴含教师失败。（机制）可训练信号来自“后见 + 贡献问题”，而不是后见本身或成败预测。（证据）两个环境上的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><mn>2</mn></mrow></math></span> 教师消融、动作类型分数间隔、完成步数，以及 1.5B 教师策略超过 7B 结局 GRPO。</p>
+</section>
+
+<h4>Limitation</h4>
+<section class="analysis" data-part="limitation">
+<p>作者承认：教师实验主要使用闭源 JEV，基座未知；通用 LLM 关闭了推理；环境只有 ALFWorld 与 WebShop；GRPO 数字引自 GiGPO 而非同栈复现；训练期按动作查询，费用随轨迹变长。此外，里程碑标注依赖可检查的状态变化，迁移到不可完全观测的工具环境会变难；<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math></span> 固定为 0.5；论文未把更强的演员 Decider 也训成教师，因此“差演员、好老师”还不能写成对所有决策模型成立的定律。</p>
+</section>
+
+<h4>Research Value</h4>
+<section class="analysis" data-part="value">
+<p>对 RL for Agents 而言，这是把信用分配从“再设计奖励模型”转向“复用已有决策模型，但改问题与上下文”的实证工作。它与把交接文本也纳入训练的路线互补：一个提供步骤级事后信用，一个提供跨回合的经验书写。Hindsight + Value 的失败也提醒做推理 RL 的人：把过程奖励问成“最终会不会对”，可能只是换一种方式广播结局优势。产品上的建议同样明确：别急着让决策模型在线控权，先让它在训练期看完整回放并回答贡献问题。</p>
+</section>
+
+<h4>Migration / Research Transfer</h4>
+<section class="analysis" data-part="migration">
+<p><strong>Original Problem：</strong>长程智能体的结局奖励无法区分轨迹中哪些动作真正推动了有顺序的子目标。</p>
+<p><strong>Transferable Mechanism：</strong>冻结一个不必自己能做对的评判模型，在整段轨迹可见的条件下询问“该动作是否有助于目标”，将组内中心化分数加到 GRPO 结局优势上，并且故意不做标准差放大。</p>
+<p><strong>New Research Question：</strong>在工具使用或软件工程智能体中，若把“是否有助于目标”改成“是否缩小了与最终补丁/最终状态的距离”，同一套加性优势能否在 SWE-bench 类任务上超过纯结局 GRPO，尤其是在教师模型自己解决率很低的实例上？</p>
+<p><strong>Method Modification：</strong>用开源评判器替换 JEV；用测试或状态差分自动标记里程碑式工具调用；先在不超过 20 步的短轨迹上验证问题形式，再扩展到长轨迹。</p>
+<p><strong>Minimum Experiment：</strong>在 MiniSWEBench 或 WebShop 风格的工具环境上，训练 Qwen2.5-1.5B 或 Qwen3-4B，对比纯 GRPO、Hindsight + Value、Hindsight + Progress 三组，每组三个种子，报告成功率、平均步数，以及教师模型自身 pass@1。</p>
+<p><strong>Model / Dataset / Baseline / Metric：</strong>Qwen3-4B-Instruct；MiniSWEBench 或 AppWorld；基线为同栈 GRPO 与 PPO；指标为成功率、到达成功所需步数、以及教师分数与自动里程碑标签的一致性。</p>
+<p><strong>Expected Contribution / 可证伪假设：</strong>若机制成立，Hindsight + Progress 应在教师自身解决率低于 30% 的任务子集上仍优于 GRPO，而 Hindsight + Value 不应显著优于 GRPO。若三组难分胜负，则说明该机制依赖家庭环境中干净的状态变化，不能直接迁移到工具轨迹。</p>
+<p><strong>Compute Cost / Risk / Collision Risk：</strong>★★★☆☆。主要成本是采样与教师推理，1.5B/4B 级别可在数张 GPU 上复现；风险是开源评判器质量明显低于 JEV，或自动里程碑标签过噪。撞题风险中等：过程奖励与 LLM-as-judge 文献很多，但“差演员、好老师”这一受控命题仍较新，需避开只换奖励模型、不改问题形式的重复。</p>
+</section>
+
+<h4>五句话总结</h4>
+<section class="analysis" data-part="summary">
+<p>一，决策模型演不好有顺序依赖的任务，主要是因为容易的子目标在行动当时吸走了概率，不是因为不知道正确步骤。二，同一模型在看到整条轨迹并被问“是否有帮助”时，能把里程碑动作和空操作分开。三，把这种分数加进 GRPO，1.5B 策略在 ALFWorld 与 WebShop 上分别达到 82.9% 与 71.4%，超过纯结局 GRPO 和 7B GRPO。四，只问最终成败或只给前缀，都得不到同等增益，Hindsight + Value 甚至有害。五，最值得迁移的不是更强的在线控制器，而是后见贡献这种信用分配。</p>
+</section>
+
+<h4>RL Formulation / Reward Analysis / Agent Architecture</h4>
+<div class="table-wrap">
+<table>
+<thead><tr><th>项目</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>State</td><td>目标、环境观察、候选动作、可见轨迹上下文（Prefix 或 Hindsight）</td></tr>
+<tr><td>Action / Policy</td><td>文本命令；被训练的是 Qwen2.5-1.5B/7B-Instruct，决策模型冻结</td></tr>
+<tr><td>Reward</td><td>任务结局奖励（稀疏、规则/环境验证）+ 冻结教师的步骤分数（稠密、模型打分）</td></tr>
+<tr><td>是否易 hack</td><td>教师分数不看环境奖励，但仍可能偏好“看起来像在推进”的语言；ALFWorld 有状态检查，WebShop 有购买成功与否</td></tr>
+<tr><td>Credit Assignment</td><td>GRPO 结局优势 + 组内中心化的教师贡献；不除标准差</td></tr>
+<tr><td>Objective / KL</td><td>裁剪的 GRPO 替代目标；正文未另报 KL 系数或熵系数</td></tr>
+<tr><td>Training Efficiency</td><td>150 步 × 16 任务 × 8 rollout；教师 API 约 22–30 美元/次训练；测试期无教师开销</td></tr>
+<tr><td>Agent Architecture</td><td>策略与环境交互；教师只在训练期事后打分，不进入测试闭环</td></tr>
+<tr><td>Long-Horizon / Failure Propagation</td><td>有依赖任务上，前缀阶段的过早放置会毁掉后续；后见教师把信用补回前置步骤，20 步内完成率从约 64–70% 升到 74.5%</td></tr>
+</tbody>
+</table>
+</div>
+</article>
+
+<article class="paper" data-fulltext="yes" data-id="2611.16409" data-tier="S" id="p-2611.16409">
+<div class="meta">
+<h3><span class="badge S">S</span> Experience-Handoff Reinforcement Learning for Recursive Self-Improvement</h3>
+<ul>
+<li><strong>Authors:</strong> Doyoung Kim, Byeongguk Jeon, Kailin Zhang, Sherry Yang</li>
+<li><strong>Affiliation:</strong> New York University；KAIST AI（Byeongguk Jeon）</li>
+<li><strong>Date / Venue / Status:</strong> arXiv 2611.16409v1，提交 2026-11-12，周五 2026-11-13 公告。非正式发表。</li>
+<li><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.16409">arXiv:2611.16409</a> · <a href="https://arxiv.org/pdf/2611.16409.pdf">PDF</a></li>
+<li><strong>Code Availability:</strong> 正文未给出可用的官方代码链接（未核实）。</li>
+<li><strong>原文访问:</strong> 已阅读 PDF 全文（第 2–5 节、Table 1–2、Figure 4–7、Algorithm 1）。</li>
+</ul>
+</div>
+
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>智能体做强化学习时，通常只拿最终对错更新策略，环境在试错过程中暴露的错误日志、测试失败和工具报错都被压成一个标量。另一条路线给模型套上反思与压缩的脚手架，把上一轮经验写成 playbook 交给下一轮，但这些交接文本怎么写，本身并没有被学习。本文把两件事放到同一个目标里：既用可验证的标量奖励做梯度更新，也把“写给未来自己的经验”当作训练对象。</p>
+<p>具体做法是固定 ACE 脚手架，让同一个 Qwen3 模型同时扮演行动者、反思者和 playbook 编辑者。候选 playbook 的价值不靠语言看起来是否合理，而靠再跑一条新轨迹，看下游行动者能不能因此得分。为了在与 GRPO 相同的 8 条行动 rollout 预算里给三个角色都造出对比组，作者设计了 ACE-RL 的采样树。在 Mastermind、MBPP、AppWorld 和 MiniSWEBench 上，同等训练计算下 ACE-RL 的 RSI@3 分别为 0.775、0.987、0.667、0.340，高于把 GRPO 演员直接放进同一脚手架的结果，也高于用评论家把下一轮奖励回传给整条链的 Delayed-joint PPO。增益不只来自更好的演员：丢掉 playbook 编辑后，AppWorld 与 MiniSWEBench 会掉一截。</p>
+</section>
+
+<h4>背景与研究缺口</h4>
+<section class="analysis" data-part="background">
+<p>当前智能体训练大致分成两派。一派是结局型 RL：GRPO 或 PPO 只优化当前回合的行动，环境反馈再丰富，最后也只剩一个标量。另一派是递归自我改进脚手架，例如 ACE：同一模型先行动，再反思，再编辑一份任务局部的 playbook，下一轮从这份文本接着干。脚手架保留了细粒度经验，但权重通常冻结，交接文本的写法靠提示工程，模型并没有因为“下一次真的更好了”而学会怎么写。</p>
+<p>把两者简单拼接并不解决问题。一种常见做法是先用结局 RL 训演员，再把它丢进手写脚手架；论文后面表明，这在部分基准上能缩小差距，但并不等于模型学会了利用自己写下的经验。另一种做法是把整条“行动–反思–编辑–再行动”链用同一条下一轮奖励和评论家一起训，这正是 Delayed-joint PPO / CompactionRL 一类方法的信用结构。风险在于，四个环节共享同一个延迟奖励，谁真正帮到了下一次尝试并不清楚，训练还可能崩溃。缺口因此很具体：需要一个目标，明确优化的是脚手架执行后的下游结果；还需要一种信用规则，让反思和编辑得到的是可验证的、执行过的 playbook 价值，而不是“看起来像总结”的语言奖励；并且这一切必须装进与普通 GRPO 相当的行动采样预算里。ACE-RL 就是对这个缺口的一个具体回答。</p>
+</section>
+
+<h4>核心洞察</h4>
+<section class="analysis" data-part="insight">
+<p>核心洞察是：交接文本的奖励必须来自它被执行之后的下游任务结果，而不是来自同一条链上延迟回传的总奖励，也不是来自对文本本身的偏好。一个编辑值多少钱，要看拿着这份新 playbook 再跑一次，行动者能得多少分；一条反思值多少钱，要看从它长出的那些可执行编辑平均能得多少分。有了这种可验证的交接价值，三个角色就可以各自在“同一输入的多个输出”上做组相对优势，从而在不增加行动 rollout 预算的前提下一起更新共享模型。换句话说，要学的不是“把经验写进权重”，而是“写出对未来尝试确实有用的经验”。</p>
+</section>
+
+<h4>方法深挖</h4>
+<section class="analysis method" data-part="method">
+<p><strong>固定的任务局部脚手架。</strong>作者采用 ACE 的任务局部变体。同一个策略 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mi>&#x003B8;</mi></msub></mrow></math></span> 在三套固定角色指令下工作：行动指令 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B9;</mi><mrow><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub></mrow></math></span>、反思指令 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B9;</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span>、编辑指令 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B9;</mi><mrow><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi></mrow></mrow></msub></mrow></math></span>。对任务 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>q</mi></mrow></math></span> 与当前 playbook <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi></mrow></math></span>，一次交接迭代是：先采样行动轨迹 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mi>&#x003B8;</mi></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><msub><mi>&#x003B9;</mi><mrow><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>q</mi><mo>&#x0002C;</mo><mi>P</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo></mrow></math></span>，由任务验证器给出 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>R</mi><mi>q</mi></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02208;</mo><mo stretchy="false">[</mo><mn>0</mn><mo>&#x0002C;</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></span>；再让反思者阅读轨迹、奖励以及环境暴露的测试失败和工具错误，写出洞见 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi></mrow></math></span>；最后由编辑者阅读 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi></mrow></math></span> 与 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi></mrow></math></span>，发出结构化操作 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>u</mi></mrow></math></span>（增加、更新或删除一条提示），经 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">y</mi></mrow></mrow></math></span> 得到候选 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>P</mi><mi>&#x02032;</mi></msup></mrow></math></span>。Playbook 只对当前任务局部有效：每次行动都开启新的环境回合，跨尝试保留的唯一状态就是 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi></mrow></math></span>。</p>
+<p><strong>学习问题。</strong>普通结局 RL 优化的是空 playbook 或固定 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mn>0</mn></msub></mrow></math></span> 下的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>J</mi><mrow><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>&#x1D53C;</mi><mo stretchy="false">[</mo><msub><mi>R</mi><mi>q</mi></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">]</mo></mrow></math></span>。作者改成优化脚手架执行的结果 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>J</mi><mi>H</mi></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>&#x1D53C;</mi><mo stretchy="false">[</mo><msub><mi>R</mi><mi>q</mi></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003C9;</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">]</mo></mrow></math></span>，其中 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C9;</mi></mrow></math></span> 是一次完整脚手架轨迹。落到 ACE 上，就是最大化新 playbook 之下一次新鲜尝试 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>&#x003C4;</mi><mo stretchy="false">&#x0007E;</mo></mover></mrow></math></span> 的奖励：<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>J</mi><mrow><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>&#x1D53C;</mi><mo stretchy="false">[</mo><msub><mi>R</mi><mi>q</mi></msub><mo stretchy="false">&#x00028;</mo><mover><mi>&#x003C4;</mi><mo stretchy="false">&#x0007E;</mo></mover><mo stretchy="false">&#x00029;</mo><mo stretchy="false">]</mo></mrow></math></span>。这个标量同时依赖于种子轨迹、反思、编辑和再尝试，因此必须把信用拆开，而不能只给 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>&#x003C4;</mi><mo stretchy="false">&#x0007E;</mo></mover></mrow></math></span> 打一个分。</p>
+<p><strong>可验证的交接奖励。</strong>对候选 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>P</mi><mi>&#x02032;</mi></msup><mo>&#x0003D;</mo><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">y</mi></mrow><mo stretchy="false">&#x00028;</mo><mi>P</mi><mo>&#x0002C;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>，用旧策略再采样一条行动 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>&#x003C4;</mi><mo stretchy="false">&#x0007E;</mo></mover><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mrow><msub><mi>&#x003B8;</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub></mrow></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><msub><mi>&#x003B9;</mi><mrow><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>q</mi><mo>&#x0002C;</mo><msup><mi>P</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo></mrow></math></span>，定义 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><msup><mi>P</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>R</mi><mi>q</mi></msub><mo stretchy="false">&#x00028;</mo><mover><mi>&#x003C4;</mi><mo stretchy="false">&#x0007E;</mo></mover><mo stretchy="false">&#x00029;</mo></mrow></math></span>。这是对目标 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>J</mi><mrow><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub></mrow></math></span> 里下游条件价值的一次无偏但高方差的估计。信用按产物而不是按整条链来给：编辑得到自己这份 playbook 的执行分，反思得到从它长出的可接受编辑的平均分，行动者无论跑在旧 playbook 还是候选 playbook 上，都拿自己的任务奖励 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>r</mi><mrow><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>R</mi><mi>q</mi></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>。写成式子就是 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>r</mi><mrow><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mover><mi>V</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">y</mi></mrow><mo stretchy="false">&#x00028;</mo><mi>P</mi><mo>&#x0002C;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo></mrow></math></span>，以及 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>r</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 对集合 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 里的编辑取平均；<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 为空时反思奖励为 0。</p>
+<p>不可接受的编辑，包括对 playbook 毫无改动的编辑，奖励记为 0。这样，语言上漂亮但执行后无增益的编辑不会被强化；反过来，即使种子轨迹失败，只要从它写出的反思能长出提高下游分数的编辑，反思仍可得到正奖励。把评估用的再尝试同时放进行动者组，还有第二层用意：演员不仅要在原来的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi></mrow></math></span> 上学会做事，也要学会阅读刚被选中的新 playbook，否则测试期的顺序自我改进会读到一份训练时从未见过的上下文。作者没有用额外的语言质量奖励或长度惩罚来约束 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi></mrow></math></span> 和 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>u</mi></mrow></math></span>，一切对错都以验证器在下一轮给出的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>R</mi><mi>q</mi></msub></mrow></math></span> 为准。</p>
+<p><strong>每个角色自己的对比组。</strong>GRPO 式优势要求同一输入有多个输出。算法 1 的采样树在每条任务上这样构造：先在当前 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>q</mi><mo>&#x0002C;</mo><mi>P</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 上采 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>N</mi></mrow></math></span> 条种子行动；从中均匀挑一条，写 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>M</mi></mrow></math></span> 条反思；再均匀挑一条可用反思，写 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi></mrow></math></span> 条编辑，其余可用反思各写一条；每个可接受编辑执行一次，这些再尝试并入行动者组。默认 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>N</mi><mo>&#x0003D;</mo><mn>4</mn><mo>&#x0002C;</mo><mi>M</mi><mo>&#x0003D;</mo><mn>2</mn><mo>&#x0002C;</mo><mi>C</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math></span>，行动组最多 8 条，与 GRPO 的组大小对齐，从而比较时不能把增益解释成“多采了几条轨迹”。角色 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>i</mi></mrow></math></span> 的优势为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>A</mi><mi>i</mi></msub><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><msub><mi>r</mi><mi>i</mi></msub><mo>&#x02212;</mo><msub><mi>&#x003BC;</mi><mi>G</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002F;</mo><mo stretchy="false">&#x00028;</mo><msub><mi>&#x003C3;</mi><mi>G</mi></msub><mo>&#x0002B;</mo><mi>&#x003F5;</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>，均值和标准差只在本角色的组内计算。常值奖励的组被丢掉，三个角色的输出在一次带裁剪的 token 级替代目标里一起更新共享参数。</p>
+<p><strong>Playbook 如何进入下一轮，以及一个反直觉选择。</strong>记种子奖励为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>s</mi><mo>&#x0003D;</mo><msub><mi>R</mi><mi>q</mi></msub><mo stretchy="false">&#x00028;</mo><msub><mi>&#x003C4;</mi><mrow><msup><mi>j</mi><mo>&#x022C6;</mo></msup></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow></math></span>，下一轮 playbook 取所有候选中 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><msup><mi>P</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00029;</mo></mrow></math></span> 最大且不差于 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>s</mi></mrow></math></span> 的那份，否则保留原 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi></mrow></math></span>。每 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>F</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math></span> 次遭遇把 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi></mrow></math></span> 重置为空，以避免过长文本失控，也使测试时超过三轮的编辑成为对训练分布的外推。反直觉之处在于：作者没有把下一轮奖励广播给整条链，而是为每个交接产物单独“跑一次账”。这比 Delayed-joint PPO 更费一次评估 rollout，但换来的是按角色可比较的、执行过的价值。行动预算仍然是 8，因为评估 rollout 本身就计入行动者组，演员也因此学会阅读新的和旧的 playbook。</p>
+</section>
+
+<h4>关键公式与 Objective</h4>
+<section class="analysis" data-part="formula">
+<p>脚手架目标与交接价值是主线。ACE 目标只为新 playbook 下的再尝试付酬：</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>J</mi><mrow><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>&#x1D53C;</mi><mrow><mo stretchy="false">&#x00028;</mo><mi>q</mi><mo>&#x0002C;</mo><mi>P</mi><mo stretchy="false">&#x00029;</mo><mi>&#x0007E;</mi><mi>&#x003BC;</mi></mrow></msub><mspace width="0.167em" /><msub><mi>&#x1D53C;</mi><mrow><mi>&#x003C4;</mi><mo>&#x0002C;</mo><mi>z</mi><mo>&#x0002C;</mo><mi>u</mi><mo>&#x0002C;</mo><mover><mi>&#x003C4;</mi><mo stretchy="false">&#x0007E;</mo></mover><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mi>&#x003B8;</mi></msub></mrow></msub><mo stretchy="true" fence="true" minsize="1.2em" maxsize="1.2em">[</mo><msub><mi>R</mi><mi>q</mi></msub><mo stretchy="false">&#x00028;</mo><mover><mi>&#x003C4;</mi><mo stretchy="false">&#x0007E;</mo></mover><mo stretchy="false">&#x00029;</mo><mo stretchy="true" fence="true" minsize="1.2em" maxsize="1.2em">]</mo></mrow></math></div>
+<p>候选 playbook 的价值用一次新鲜行动估计，再赋给编辑与反思：</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><msup><mi>P</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>R</mi><mi>q</mi></msub><mo stretchy="false">&#x00028;</mo><mover><mi>&#x003C4;</mi><mo stretchy="false">&#x0007E;</mo></mover><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mspace width="1em" /><msub><mi>r</mi><mrow><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mover><mi>V</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">y</mi></mrow><mo stretchy="false">&#x00028;</mo><mi>P</mi><mo>&#x0002C;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mspace width="1em" /><msub><mi>r</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mo stretchy="false">&#x0007C;</mo><mi>C</mi><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x0007C;</mo></mrow></mfrac><munder><mo>&#x02211;</mo><mrow><mi>u</mi><mo>&#x02208;</mo><mi>C</mi><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo stretchy="false">&#x00029;</mo></mrow></munder><mover><mi>V</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">y</mi></mrow><mo stretchy="false">&#x00028;</mo><mi>P</mi><mo>&#x0002C;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<p>组相对优势为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>A</mi><mi>i</mi></msub><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><msub><mi>r</mi><mi>i</mi></msub><mo>&#x02212;</mo><msub><mi>&#x003BC;</mi><mi>G</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002F;</mo><mo stretchy="false">&#x00028;</mo><msub><mi>&#x003C3;</mi><mi>G</mi></msub><mo>&#x0002B;</mo><mi>&#x003F5;</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>。下一轮 playbook 仅在候选价值不低于种子奖励时才替换。</p>
+</section>
+
+<h4>Toy Example</h4>
+<section class="analysis" data-part="toy">
+<p>想象一个 AppWorld 式任务：演员第一次没有找到所需数据接口，轨迹失败。反思者读到工具错误，写出“应先查询某张表的主键”。编辑者把这条提示写进 playbook。ACE-RL 不会因为这句话像经验就给奖励，而是用新 playbook 再跑一次：如果第二次拿到了数据并完成任务，这份编辑和那条反思才得到高分；如果再跑仍然失败，漂亮的总结也是 0。若同时还有另一条编辑只是改写了语气、没有改变行为，它会因为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover></mrow></math></span> 不高甚至因“未改动”被判不可接受而拿 0，从而在编辑组内被相对压低。测试时不再为候选打分，只按顺序执行“行动–反思–编辑–再行动”，RSI@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 表示前 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 次尝试中最好的一次奖励。这就是“把经验写给未来自己，并用未来自己的成绩给这笔经验打分”。</p>
+</section>
+
+<h4>Baseline Comparison</h4>
+<section class="analysis" data-part="baseline">
+<p>所有方法共用同一任务验证器，每步 8 个任务、每任务 8 条行动轨迹，并在同等累积更新 FLOPs 下比较。PPO 只训演员，用 GAE 评论家，测试看 pass@3。GRPO 同样只训演员，用组相对优势，测试既看独立 pass@3，也把它放进脚手架看 RSI@3。ERL 让模型改写提示并把改进内化到权重，测试不使用脚手架。Delayed-joint PPO 训三个角色，但整条链共享下一轮奖励与评论家，是最接近的“也训交接”的基线。ACE-RL 也训三个角色，但奖励来自执行过的 playbook，优势在角色组内归一化。最强的非本方法基线通常是 GRPO（独立或进脚手架后）；最能说明机制的对照是 Delayed-joint PPO 与“丢掉编辑再评估”的控制实验。</p>
+</section>
+
+<h4>实验设置与研究问题</h4>
+<section class="analysis results" data-part="results">
+<p><strong>设置。</strong>Mastermind 与 MBPP 用 Qwen3-0.6B（非思考模式），AppWorld 与 MiniSWEBench 用 Qwen3-4B-Instruct-2507。每条行动回合训练和测试都是 20 步（MBPP 为 6 步）。测试时权重冻结、温度 0.7。独立评估从八条互不交接的行动中取 pass@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span>；脚手架评估跑八次顺序访问，RSI@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 是前 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 次中的最好奖励，正文主数字取 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math></span>。每条方法只训练一次，误差杠是任务上的标准误。计算量按累积更新 FLOPs 对齐，PPO 类方法包含评论家。</p>
+<p><strong>RQ1：在相同行动预算和相同计算量下，为交接文本单独记账，是否优于只训演员、以及把下一轮奖励广播给整条链？</strong>Setup：Table 2 在四基准上比较 pass@3 与 RSI@3。Observation：ACE-RL 的 RSI@3 为 0.775 ± 0.014、0.987 ± 0.011、0.667 ± 0.063、0.340 ± 0.048。同脚手架里的 GRPO 是 0.739、0.820、0.597、0.260；独立 GRPO 的 pass@3 是 0.686、0.867、0.624、0.245。配对差值分别为 0.089、0.120、0.042、0.095（对独立 GRPO，标准误见正文）。Delayed-joint PPO 全面落后，并在训练中崩溃：Mastermind 上它在 0.54 EFLOPs 时冲到 0.66，随后训练奖励在 0.73 EFLOPs 前掉到 0.05 以下；MBPP 峰值 0.53，对 ACE-RL 的 0.99；AppWorld 与 MiniSWEBench 从 0.21 与 0.08 掉到接近 0。评论家后期解释方差仍高于 0.95，因此不能把崩溃简单归因于拟合失败。ERL 与 PPO 亦全部低于 GRPO，PPO 在 Mastermind 与 MiniSWEBench 上测试奖励甚至为 0。Interpretation：训练交接是有用的，但信用不能靠一条延迟奖励匀给整条链；按执行价值给角色分组，才能在小模型上稳定学到“写对经验”。</p>
+<p><strong>RQ2：增益是更好的演员，还是 playbook 真的在跨尝试起作用？这个作用在训练地平线 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>F</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math></span> 之外还在吗？</strong>Setup：先把同等计算的 GRPO 检查点放进同一脚手架；再把 ACE-RL 的编辑全部丢弃，使每次访问都读空 playbook；最后把 RSI@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 与 pass@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 画到 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math></span>。Observation：GRPO 进脚手架后仍落后，同等计算下为 0.74 对 0.78（Mastermind）、0.82 对 0.99（MBPP）、0.60 对 0.67（AppWorld）、0.26 对 0.34（MiniSWEBench）。丢掉编辑的控制中，playbook 在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>2</mn><mo>&#x0002C;</mo><mn>3</mn></mrow></math></span> 上四基准都有帮助，AppWorld 在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>2</mn></mrow></math></span> 为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.105</mn><mi>&#x000B1;</mi><mn>0.041</mn></mrow></math></span>，MiniSWEBench 在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math></span> 为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.090</mn><mi>&#x000B1;</mi><mn>0.040</mn></mrow></math></span>；MBPP 因接近天花板，0.987 对 0.977，差异很小。<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math></span> 时 ACE-RL 的 RSI 为 0.81、0.99、0.81、0.40，仍高于 GRPO 的 pass@8（0.78、0.91、0.68、0.30）。从 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math></span> 到 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math></span>，AppWorld 的差距还在扩大。例外是 Mastermind：过了训练地平线后，丢掉编辑的曲线从 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>5</mn></mrow></math></span> 起略微领先，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math></span> 时差 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.016</mn><mi>&#x000B1;</mi><mn>0.016</mn></mrow></math></span>。Interpretation：MBPP 上的高分不能全部记在 playbook 上，因为演员已经接近满分；AppWorld 与 MiniSWEBench 上，写出并保留经验确实贡献了可测的增益，而且在未见过的更长编辑链上没有整体崩掉。Mastermind 的后期回退则是真实的失败边界：任务局部提示在过多轮次后可能变负，说明交接价值需要过期或再选择，而不能假定“越写越有用”。</p>
+<p><strong>最强、最弱与权衡。</strong>最强是 MBPP 上 0.987 对 GRPO 进脚手架的 0.82，以及 AppWorld 在更长 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 上持续拉开。最弱是 Mastermind 超过三轮后 playbook 帮助消失，以及 AppWorld 上对独立 GRPO 的配对增益只有 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.042</mn><mi>&#x000B1;</mi><mn>0.041</mn></mrow></math></span>，统计上更不稳。权衡是：ACE-RL 把部分行动预算用在“为候选 playbook 记账”，种子行动更少；它换来了三个角色的可训练信号，但也依赖 playbook 定期重置，并且每套方法只跑了一个训练种子。</p>
+</section>
+
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>方法</th><th>评估</th><th>Mastermind</th><th>MBPP</th><th>AppWorld</th><th>MiniSWEBench</th></tr></thead>
+<tbody>
+<tr><td>Base</td><td>pass@3</td><td>0.431 ± 0.014</td><td>0.396 ± 0.041</td><td>0.252 ± 0.052</td><td>0.146 ± 0.029</td></tr>
+<tr><td>PPO</td><td>pass@3</td><td>0.000 ± 0.000</td><td>0.715 ± 0.036</td><td>0.106 ± 0.035</td><td>0.000 ± 0.000</td></tr>
+<tr><td>GRPO</td><td>pass@3</td><td>0.686 ± 0.010</td><td>0.867 ± 0.027</td><td>0.624 ± 0.060</td><td>0.245 ± 0.040</td></tr>
+<tr><td>ERL</td><td>pass@3</td><td>0.615 ± 0.010</td><td>0.509 ± 0.043</td><td>0.418 ± 0.059</td><td>0.234 ± 0.038</td></tr>
+<tr><td>GRPO</td><td>RSI@3</td><td>0.739 ± 0.012</td><td>0.820 ± 0.033</td><td>0.597 ± 0.066</td><td>0.260 ± 0.044</td></tr>
+<tr><td>Delayed-joint PPO</td><td>RSI@3</td><td>0.659 ± 0.011</td><td>0.500 ± 0.047</td><td>0.000 ± 0.000</td><td>0.010 ± 0.010</td></tr>
+<tr><td>ACE-RL</td><td>RSI@3</td><td>0.775 ± 0.014</td><td>0.987 ± 0.011</td><td>0.667 ± 0.063</td><td>0.340 ± 0.048</td></tr>
+</tbody>
+</table>
+<p class="note">数字摘自原文 Table 2，同等训练计算；误差为任务上的 1 SEM。模型为 Qwen3-0.6B（前两列）与 Qwen3-4B-Instruct（后两列）。</p>
+</div>
+<h4>Table / Figure Reading</h4>
+<section class="analysis results" data-part="reading">
+<p><strong>读 Table 1。</strong>行与行的差别不在验证器，而在“谁被训练、优势怎么算、交接文本的信用从哪来”。只有 ACE-RL 把信用写成“执行过的 playbook 价值”，Delayed-joint PPO 则写成“同一条链的下一次尝试”。后面所有崩溃与领先，都应该回到这一列来解释。</p>
+<p><strong>读 Table 2。</strong>先看同一列里 GRPO 的 pass@3 与 RSI@3：在 MBPP 上，进脚手架反而从 0.867 降到 0.820，说明把只训过演员的模型塞进脚手架，并不自动等于自我改进。ACE-RL 在四个 RSI@3 格子里都是最高，但 AppWorld 的误差杠较大（ ± 0.063），读这个格子时不应写成“大幅稳定领先”。MiniSWEBench 绝对水平仍低（0.340），方法赢的是相对增益，不是已经解决软件工程智能体。</p>
+<p><strong>读 Figure 6 与 Figure 7。</strong>Figure 6 把横轴改成尝试次数 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span>，ACE-RL 的顺序尝试始终在 GRPO 的独立 pass@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 之上，说明交接不是只在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math></span> 这个训练设定上投机。Figure 7 把演员固定，只开关编辑：零线以上才是 playbook 自己的贡献。AppWorld 与 MiniSWEBench 的曲线大多在零上，Mastermind 在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003E;</mo><mn>3</mn></mrow></math></span> 后靠近或越过零线，这是正文里最重要的失败图，不应被平均分掩盖。</p>
+</section>
+
+<h4>消融、论断与证据</h4>
+<section class="analysis" data-part="claim">
+<p><strong>消融与控制。</strong>真正起机制验证作用的不是换一套超参，而是三类对照：只训演员（GRPO/PPO）、训交接但信用不按执行价值拆开（Delayed-joint PPO、把改进内化到权重的 ERL）、以及 ACE-RL 自己丢掉编辑。前两类都无法同时在四基准上又高又稳；第三类表明增益不能全部解释为演员变强。</p>
+<p><strong>Authors Claim / Experiments Actually Show / What Is Not Yet Proven。</strong>作者声称，智能体训练不仅应优化当前回合的行动，还应优化未来回合将继承的、由模型写成的经验。实验实际表明：在四个基准、两种模型尺度、与 GRPO 对齐的 8 条行动预算和同等更新 FLOPs 下，按执行价值训练 ACE 的三个角色，可以得到更高的 RSI@3，并且在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math></span> 时整体仍高于独立 pass@8；playbook 在部分基准上有可分离的贡献。尚未被证明的是：同一套记账能否迁移到别的脚手架（不只是 ACE）；多随机种子下领先是否仍然显著；Mastermind 式的后期衰减如何被系统性避免；以及在更大模型和更长工具链上，一次评估 rollout 对 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover></mrow></math></span> 的估计是否太噪。</p>
+</section>
+
+<h4>Contribution</h4>
+<section class="analysis" data-part="contribution">
+<p>（问题表述）把经验交接强化学习写成对脚手架结果而非仅对当前行动的优化。（机制）用执行后的 playbook 价值给反思和编辑付酬，并用角色内对比组把它装进 GRPO 预算。（证据）四基准上对只训演员、内化式改写和延迟联合 PPO 的同等计算比较，以及丢掉编辑与超地平线 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 的控制实验。</p>
+</section>
+
+<h4>Limitation</h4>
+<section class="analysis" data-part="limitation">
+<p>作者在附录讨论了局限。从正文已能看到的限制包括：每个方法只训练一次；<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover></mrow></math></span> 只用一条评估 rollout，方差会进到反思和编辑的奖励里；playbook 每三轮强制重置，既是正则也是对长记忆的回避；MiniSWEBench 绝对成功仍然不高；Mastermind 在超过训练地平线后出现编辑变负。还可以补充：没有开源实现可供核对；计算对齐看的是更新 FLOPs 而非墙钟；脚手架提示与验证器都被固定，因此还不能声称“任何交接格式都可以这样训”。</p>
+</section>
+
+<h4>Research Value</h4>
+<section class="analysis" data-part="value">
+<p>这篇论文把“记忆/技能/playbook 该不该学”从提示工程问题，变成了一个有可验证奖励的强化学习问题。它与“用后见贡献分数给当前轨迹分配步骤信用”刚好咬合：一个管回合内的步骤，一个管回合间的经验书写。对 Agent RL 的启发是，脚手架不该只是测试期的包装，而应进入训练目标；对只做推理 RL 的启发是，若要把反思或总结当作未来上下文，最好按其下游效果而不是按文本相似度来付酬。</p>
+</section>
+
+<h4>Migration / Research Transfer</h4>
+<section class="analysis" data-part="migration">
+<p><strong>Original Problem：</strong>智能体脚手架会写下经验，但这些文本的写法本身没有被下游任务结果监督，模型因此可能学会“写得像总结”，而不是“写出下一次真能用的提示”。</p>
+<p><strong>Transferable Mechanism：</strong>为每个候选交接产物跑一次下游尝试，用其任务奖励作为可验证价值，再在同一输入的多个产物之间做组相对更新；演员的评估轨迹同时进入行动组。</p>
+<p><strong>New Research Question：</strong>若把 ACE 的 playbook 换成工具智能体的技能条目或记忆卡片，用同样的“执行一次再记账”能否提高 AppWorld 或 MiniSWEBench 上超过三轮的成功，并避免 Mastermind 式的后期衰减？</p>
+<p><strong>Method Modification：</strong>把重置规则改成按 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover></mrow></math></span> 下降触发的过期，而不是固定 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>F</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math></span>；对 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover></mrow></math></span> 用两条评估 rollout 降噪；在编辑组中加入一条“空编辑”作为明确的负对照。</p>
+<p><strong>Minimum Experiment：</strong>在 Qwen3-4B 与 AppWorld 上比较 GRPO 进脚手架、Delayed-joint PPO、ACE-RL 原版、以及带过期规则的 ACE-RL，报告 RSI@3 与 RSI@8，并重复丢掉编辑的控制，必要时再加一个训练种子以检查单次运行是否偶然领先。</p>
+<p><strong>Model / Dataset / Baseline / Metric：</strong>Qwen3-4B-Instruct；AppWorld 与 MiniSWEBench；基线为同栈 GRPO 与 Delayed-joint PPO；指标为 RSI@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span>、丢掉编辑后的差值、以及训练奖励是否崩溃。</p>
+<p><strong>Expected Contribution / 可证伪假设：</strong>若机制成立，带过期的版本应在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math></span> 时保持 playbook 差值为正，且不损失 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math></span> 的成绩。若所有交接方法都与 GRPO 进脚手架难分，则说明该基准上的增益主要来自演员，而不是经验书写。</p>
+<p><strong>Compute Cost / Risk / Collision Risk：</strong>★★★★☆。4B 级智能体 RL 成本明显高于 1.5B 的纯文本打分实验；风险是单次 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover></mrow></math></span> 过噪，以及单种子结论不稳。撞题风险中等偏高：CompactionRL、ACE 和各类记忆 RL 同期很多，差异化必须坚持“按执行价值给交接文本付酬”，而不是再做一个新脚手架。</p>
+</section>
+
+<h4>五句话总结</h4>
+<section class="analysis" data-part="summary">
+<p>一，ACE-RL 把递归自我改进脚手架里的经验书写，变成可以用下游任务奖励验证的学习对象。二，反思和编辑的分数来自再跑一次行动，而不是来自同一条链上广播的延迟奖励。三，在四个基准、与 GRPO 对齐的行动预算和计算量下，它的 RSI@3 全面最高，Delayed-joint PPO 则出现训练崩溃。四，丢掉编辑的控制表明，AppWorld 与 MiniSWEBench 的一部分增益确实来自 playbook，但 Mastermind 在超过三轮后会失效。五，最值得迁移的是“给交接文本按执行价值记账”，而不是 ACE 这个特定格式。</p>
+</section>
+
+<h4>RL Formulation / Reward Analysis / Agent Architecture</h4>
+<div class="table-wrap">
+<table>
+<thead><tr><th>项目</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>State</td><td>任务 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>q</mi></mrow></math></span>、当前 playbook <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi></mrow></math></span>、环境观察；跨尝试仅保留 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi></mrow></math></span></td></tr>
+<tr><td>Action / Policy</td><td>共享 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mi>&#x003B8;</mi></msub></mrow></math></span> 的三类输出：行动轨迹、反思文本、结构化编辑</td></tr>
+<tr><td>Reward</td><td>任务验证器 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>R</mi><mi>q</mi></msub><mo>&#x02208;</mo><mo stretchy="false">[</mo><mn>0</mn><mo>&#x0002C;</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></span>（稀疏、规则）；交接奖励是该验证器在候选 playbook 下的一次估计</td></tr>
+<tr><td>是否易 hack</td><td>不直接奖励文风，降低“写得像经验”的 hacking；但单次 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover></mrow></math></span> 可能把运气当成编辑质量</td></tr>
+<tr><td>Credit Assignment</td><td>按角色分组的组相对优势；编辑看 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><msup><mi>P</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00029;</mo></mrow></math></span>，反思看其编辑均值，行动看自身 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>R</mi><mi>q</mi></msub></mrow></math></span></td></tr>
+<tr><td>Objective / KL</td><td>三个角色共享一次裁剪替代目标（Eq. 24）；正文未单列 KL 或熵系数</td></tr>
+<tr><td>Training Efficiency</td><td>每任务 8 条行动轨迹（含评估 rollout）；与 GRPO 对齐；横轴用累积更新 EFLOPs</td></tr>
+<tr><td>Agent Architecture</td><td>输入 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02192;</mo></mrow></math></span> 行动者 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02192;</mo></mrow></math></span> 环境与验证器 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02192;</mo></mrow></math></span> 反思者 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02192;</mo></mrow></math></span> 编辑者 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02192;</mo></mrow></math></span> 更新 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi></mrow></math></span> <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02192;</mo></mrow></math></span> 下一轮行动</td></tr>
+<tr><td>Long-Horizon / Failure Propagation</td><td>训练只见 3 轮交接；错误或过时提示可能在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003E;</mo><mn>3</mn></mrow></math></span> 后伤害 Mastermind；失败的种子仍可能长出有用反思</td></tr>
+</tbody>
+</table>
+</div>
+</article>
+
+</section>
+<section id="sec-a">
+<h2>Tier A</h2>
+<details class="paper" id="p-2611.15100-wrap">
+<summary><span class="badge A">A</span> Keep Images in Sight：用训练免费的视觉位置再锚定，恢复长上下文里的图像细节（Multimodal / Long-context Efficiency）</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.15100" data-tier="A" id="p-2611.15100">
+<div class="meta">
+<h3><span class="badge A">A</span> Keep Images in Sight: Visual Position Re-Anchoring for Long-Context MLLMs</h3>
+<ul>
+<li>作者: Juntao Xu, Qichai Zhao, Rui Sun, Zhouyang Jiang, Shiwei Wu, Zhi Li, Kaisheng Ma, Yu Liu（Tsinghua University）</li>
+<li>ID: <a href="https://arxiv.org/abs/2611.15100">arXiv:2611.15100</a> · <a href="https://arxiv.org/pdf/2611.15100.pdf">PDF</a>（v1，cs.CV，提交 2026-11-11，周五 11-13 公告）</li>
+<li>Venue / 代码: 未核实正式发表；正文未给出已核验的代码链接</li>
+<li>全文来源: 已读 PDF，含 Table 1–6、Figure 6–8，以及附录 Table 9 的计时说明</li>
+<li>范围提示: 评测是长文本插入下的图像问答，<strong>不是视频基准</strong>。它进入今日 Video / Multimodal Acceleration 线，是因为对象是已缓存的视觉 KV，手段是训练免费的位置再锚定，并给出了墙钟开销。</li>
+</ul>
+</div>
+<h4>人话版</h4>
+<section class="analysis" data-part="human">
+<p>长上下文多模态模型常常把一张图早早放进对话，中间隔了很长文本后才被问到图上的细节。图其实还在上下文窗口里，但模型已经读不准。作者把这种失败称为视觉证据漂移：例如 Qwen2.5-VL-7B 的 DocVQA 从短上下文的 93.5 ANLS 掉到插入 32K 文本后的 52.6。他们用三种控制说明，真正起作用的是图像和问题之间的位置关系，而不只是上下文有多长。提出的 Visual Position Re-Anchoring（VPR）是训练免费方法：在问题开始前，把已缓存的视觉 key 的旋转相位，朝一个短上下文参考位置搬回去，注意力计算本身不变，也不额外做前向。默认用一次性的静态补偿。十个检查点、十个视觉任务上，静态 VPR 改进了 100 个模型–任务分数中的 97 个；在固定频率的 Qwen / LLaVA 上，32K 输入加 128 个生成 token 的额外时延只有 0.06%–0.14%。</p>
+</section>
+<h4>背景与缺口</h4>
+<section class="analysis" data-part="background">
+<p>多模态应用越来越需要“先看图、再谈很久、最后再问图”。保留图像 token 并不等于还能用到它的细节。作者还做了位置-only 控制：在不增加文本的前提下挪动图像与问题的相对位置，表现就会变，说明这不全是“上下文太长所以难”，而是位置关系本身可操作。已有训练免费干预往往去改注意力权重或反复重算映射，开销可以很大，有的甚至达到数倍墙钟。缺口是：能否只改缓存里视觉 key 的位置相位，就让问题在长上下文里重新“看见”图像，并且把墙钟开销压到可以忽略。</p>
+</section>
+<h4>核心洞察</h4>
+<section class="analysis" data-part="insight">
+<p>图像还在，并不等于位置编码仍把图像放在问题能够到的相对位置上。把视觉 key 的旋转相位搬回短上下文参考，等于在不删文本、不重训、不改注意力核的前提下，恢复图像与问题的相对距离。补偿过了头（<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mspace linebreak="newline" /><mi>r</mi><mi>h</mi><mi>o</mi><mo>&#x0003E;</mo><mn>1</mn></mrow></math></span>）会掉点，说明这不是简单的“越靠近问题越好”，而是要回到短上下文那种分离，而不是把图像相位推到问题之后。</p>
+</section>
+<h4>方法 Pipeline</h4>
+<section class="analysis method" data-part="method">
+<p>输入是已经预填充好的多模态 KV 缓存。在问题段开始前，VPR 只更新视觉 key 的旋转相位，value 与文本 key 不动，随后按标准注意力解码。静态日程把位移一次加满到短上下文参考，连续日程则随当前查询位置跟踪；默认用静态。强度用 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mspace linebreak="newline" /><mi>r</mi><mi>h</mi><mi>o</mi></mrow></math></span> 控制，主文取 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mspace linebreak="newline" /><mi>r</mi><mi>h</mi><mi>o</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math></span>。方法不提取注意力图，也不增加模型前向，只做缓存上的相位改写。对使用动态 NTK 的 InternVL3-2B，输入超过训练长度会改变频率，静态与连续都会反复再相位，开销明显上升，这是实现上必须分开报告的一点。</p>
+</section>
+<h4>实验设置与结果</h4>
+<section class="analysis results" data-part="results">
+<p><strong>设置。</strong>十个检查点覆盖 Qwen2.5-VL、Qwen3-VL、InternVL3 与 LLaVA，十个任务包括 POPE、CountBench、ChartQA、MathVista、DocVQA、GQA、AI2D、MMStar、TextVQA、RealWorldQA。主表在 32K 插入文本、每格 500 题上比较 Vanilla 与静态 VPR。计时在 H200 上，用拆分预填充并对齐 128 或 512 个生成 token。</p>
+<p><strong>RQ1：再锚定能不能在不删文本的情况下找回视觉细节？</strong>Table 1 中 97/100 项上升。Qwen2.5-7B 的 DocVQA 从 52.6 升到 76.8（+24.2），TextVQA 从 43.8 升到 62.2（+18.4）；Qwen2.5-3B 的 ChartQA 从 37.4 升到 74.8（+37.4）。三个下降出现在 GQA 与 AI2D。Figure 6 显示，Qwen2.5-3B 的 TextVQA 从短上下文 79.6 掉到 32K 的 37.6，VPR 拉回到 71.6，仍低于短上下文上限，恢复是大幅但不完全的。</p>
+<p><strong>RQ2：代价是多少，是否只是另一种注意力干预？</strong>Table 4 在匹配的拆分预填充下，Qwen2.5-7B 生成 128 token 时 Vanilla 3.465 秒、静态 VPR 3.470 秒（+0.13%），512 token 时 +0.33%；Qwen3-8B-Instruct 对应 +0.06% 与 +0.22%。InternVL3-2B 因动态 NTK，同样设置下额外开销达到 +28.51% 与 +33.82%。Table 5 在 Qwen2.5-VL-7B 的 POPE 上，VPR 于 32K 达到 63.4%，超过 VAF 的 62.0% 和 Vanilla 的 51.6%，并且 3.470 秒的开销低于 VAF 的 +4.8%、VGA 的 +17.8% 和 VAR 的 +460.1%。连续日程在准确率上没有稳定优势，却把固定频率模型的开销抬到 6%–11%，因此默认静态是合理的。Table 6 把任务改成“先从图像读出细节，再按文本映射表翻译成四字母代码”，VPR 在 8K 到 32K 上仍有 3.50–7.00 个百分点的增益，说明再锚定不只对直接读图有用，也能服务必须同时用到图和中间文本的查询。</p>
+</section>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Metric</th><th>Baseline (Vanilla)</th><th>Proposed (Static VPR)</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>Frames</td><td>Not Applicable（单图+长文本，非视频）</td><td>Not Applicable</td><td>Not Reported</td></tr>
+<tr><td>Visual Tokens</td><td>不减少，仅改视觉 key 相位</td><td>同左</td><td>0（不剪枝）</td></tr>
+<tr><td>FLOPs</td><td>Not Reported</td><td>Not Reported</td><td>Not Reported</td></tr>
+<tr><td>Latency（Qwen2.5-7B，32K+128 tok，H200）</td><td>3.465 s</td><td>3.470 s</td><td>+0.13%</td></tr>
+<tr><td>Throughput / FPS</td><td>Not Reported</td><td>Not Reported</td><td>Not Reported</td></tr>
+<tr><td>GPU Memory</td><td>Not Reported（主文 Table 4 未给峰值显存）</td><td>Not Reported</td><td>Not Reported</td></tr>
+<tr><td>Accuracy / Quality</td><td>Qwen2.5-7B DocVQA 52.6；POPE 51.6</td><td>76.8；63.4</td><td>+24.2 ANLS；+11.8</td></tr>
+</tbody>
+</table>
+</div>
+<h4>关键 Table / Figure、贡献与局限</h4>
+<section class="analysis" data-part="claim">
+<p>Table 2 显示 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mspace linebreak="newline" /><mi>r</mi><mi>h</mi><mi>o</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math></span> 取得六个检查点的最高平均 POPE 77.4%，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mspace linebreak="newline" /><mi>r</mi><mi>h</mi><mi>o</mi><mo>&#x0003D;</mo><mn>1.5</mn></mrow></math></span> 时 LLaVA 掉到 50.0%、InternVL3-2B 掉到 16.0%，这是过补偿的失败边界。Figure 8 还报告，静态 VPR 把答案所在区域在图像注意力中的份额提高了 0.70–2.57 个百分点。贡献是：把长上下文视觉失败定位为可操作的位置关系，并给出几乎零开销（在固定频率模型上）的训练免费修复。局限是：不是视频评测；恢复不完全；对动态频率模型并不便宜；主文没有完整报告显存与 FLOPs；三个任务出现小幅下降，说明再锚定不是对所有题型都无损。</p>
+</section>
+<h4>研究价值与最小迁移实验</h4>
+<section class="analysis" data-part="migration">
+<p>对视频与流式多模态智能体，VPR 提示一条不必剪 token 的路：在查询到来时重放视觉 KV 的位置，而不是重算或丢掉历史帧。最小实验：在长视频或多图文档问答中，把“最近问题”当作参考位置，对历史帧的视觉 key 做静态再锚定，对比 Vanilla、均匀丢帧和 DiFiT 一类剪枝，报告准确率、TTFT 与墙钟，并单独测试动态 NTK 模型的额外开销。Worth Deep Reading: YES（机制清楚，计时诚实，但需记住评测主体是图文而非视频）。</p>
+</section>
+</article>
+</div>
+</details>
+<details class="paper" id="p-2611.15983-wrap">
+<summary><span class="badge A">A</span> TRACE：用跨分辨率轨迹同步做训练免费的视频超分辨率生成，并给出 2.0–2.9× 墙钟加速（Video Generation Acceleration）</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.15983" data-tier="A" id="p-2611.15983">
+<div class="meta">
+<h3><span class="badge A">A</span> TRACE: Trajectory Synchronization for Training-Free Resolution Extension in Video Generation</h3>
+<ul>
+<li>作者: Libo Zhu, Fan Li, Zhixin Wang, Binglu Wang, Weisheng Dong, Yulun Zhang（上海交通大学、华为、西北工业大学、西安电子科技大学）</li>
+<li>ID: <a href="https://arxiv.org/abs/2611.15983">arXiv:2611.15983</a> · <a href="https://arxiv.org/pdf/2611.15983.pdf">PDF</a>（v1，cs.CV，提交 2026-11-11，周五 11-13 公告）</li>
+<li>代码: 论文声明将发布于 <a href="https://github.com/libozhu03/TRACE">github.com/libozhu03/TRACE</a>（未再核验仓库内容）</li>
+<li>全文来源: 已读 PDF，含 Table 1–2 与端到端 A800 计时</li>
+</ul>
+</div>
+<h4>人话版</h4>
+<section class="analysis" data-part="human">
+<p>很多视频生成骨干仍锁在较低分辨率，把它们重新训练到 1080p 或 4K 很贵。训练免费的做法通常是：先在低分辨率走完去噪，再把结果上采样后继续，或者直接在高分辨率上硬跑。前者对不齐对应噪声水平的轨迹，后者又慢又容易结构漂。TRACE 的想法是在早期去噪阶段同步低、高分辨率两条轨迹：高分辨率的更新由低分辨率预测和当前高分辨率状态算出来，这一阶段甚至不必做高分辨率模型推理；随后再用局部窗口注意力补细节，并用低分辨率布局去检查、修正多出来的主体。在冻结的 Wan2.1-1.3B、Wan2.2-A14B 与 Bernini-R-1.3B 上，相对最强训练免费基线 FreeSwim，端到端分别快 2.74×、2.92×、2.02×，Q-Align 等质量指标同时更高。</p>
+</section>
+<h4>背景与缺口</h4>
+<section class="analysis" data-part="background">
+<p>FreeSwim 等滑动窗口方法已经能做训练免费的分辨率扩展，但仍把低分辨率终点上采样再加噪，得到的高分辨率状态并不对应低分辨率轨迹的同一噪声阶段，细结构和语义容易漂，而且高分辨率全程推理很慢。缺口是：怎样在不微调骨干的前提下，既借用低分辨率已经走对的布局，又保留高分辨率自己长出新细节的自由，并且真正减少墙钟，而不是只谈理论 FLOPs。</p>
+</section>
+<h4>核心洞察</h4>
+<section class="analysis" data-part="insight">
+<p>高分辨率生成不需要从头自己走完一条轨迹。早期可以让低分辨率当“布局老师”，把对应噪声水平的预测搬到高分辨率状态上；后期再把自由度交还给高分辨率局部注意力。多出来的主体则用低分辨率布局做局部校正，并同步改写求解器缓存，以免 UniPC 一类多步求解器带着旧状态继续走。</p>
+</section>
+<h4>方法 Pipeline</h4>
+<section class="analysis method" data-part="method">
+<p>先在低分辨率（例如 Wan2.1 的 832×480）按共享噪声日程采样，缓存轨迹。高分辨率早期步用跨尺度轨迹同步（CSTS）：用校准过的上采样与噪声匹配参考，由低分辨率预测构造高分辨率更新，此阶段不做高分辨率骨干推理。进入模型步之后，在共享的高分辨率潜空间上用局部窗口注意力补细节。局部细化可能造出额外主体，于是轨迹引导的结构校正（TGSC）用交叉注意力定位提示中的实体，对照低分辨率布局生成修正掩膜，只改被怀疑重复的区域及其求解器历史。对更高分辨率，再把已经完成的 High 当作中间层，复用 Low 的缓存轨迹继续扩展。全程骨干冻结，无需按视频调参。</p>
+</section>
+<h4>实验设置与结果</h4>
+<section class="analysis results" data-part="results">
+<p><strong>设置。</strong>测试集是从 UltraVideo 选出的 120 个固定 prompt–参考对，遵循 4K-VBench 协议。Wan2.1-T2V-1.3B 与 Bernini-R-1.3B 生成 1920×1088，Wan2.2-T2V-A14B 生成 2560×1440；低分辨率分别为 832×480、848×480 与 1280×720。全部生成 81 帧、16 FPS，种子与负面提示对齐。端到端时延在一块 A800 上测量，包含低分辨率采样与 VAE。Wan2.1 用 50 步，另外两个骨干用 40 步。</p>
+<p><strong>RQ1：质量是否至少不弱于 FreeSwim，能否同时更快？</strong>Table 1 中，Wan2.1 上 TRACE 的 Q-Align 为 4.690，FreeSwim 4.381，直接高分辨率推理 4.165；VQAScore 为 0.8870 对 FreeSwim 的 0.8735；时延 1,826 秒对 FreeSwim 的 5,010 秒（2.74×）和对 Direct 的 3,366 秒（仍更快）。Wan2.2 上 Q-Align 4.752 对 4.524，时延 9,526 秒对 27,788 秒（2.92×）。Bernini 上 4.727 对 4.572，时延 2,831 秒对 5,708 秒（2.02×）。也就是说，加速不是靠牺牲感知质量换来的。</p>
+<p><strong>RQ2：两个模块各自做了什么？</strong>Table 2 在 30 条提示的子集上做消融：缺少结构校正时会出现额外自行车之类的重复主体，TGSC 能去掉它们；组合 CSTS 与 TGSC 把相关指标从较低的中间值抬到全文报告的水平（文中举 VQAScore 从 0.7929 到 0.9464 的子集观察）。失败边界主要在局部细化仍然可能先造出重复主体，校正必须及时；正文未报告显存与 FLOPs，因此不能把 2.7× 墙钟直接读成同样比例的计算节省。</p>
+</section>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Metric</th><th>Baseline (FreeSwim, Wan2.1 1920×1088)</th><th>Proposed (TRACE)</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>Frames</td><td>81</td><td>81</td><td>0</td></tr>
+<tr><td>Visual Tokens</td><td>Not Reported</td><td>Not Reported</td><td>Not Reported</td></tr>
+<tr><td>FLOPs</td><td>Not Reported</td><td>Not Reported</td><td>Not Reported</td></tr>
+<tr><td>Latency（A800，端到端）</td><td>5,010 s</td><td>1,826 s</td><td>2.74× 更快</td></tr>
+<tr><td>Throughput / FPS</td><td>81/5010 ≈ 0.016 帧/秒（生成吞吐）</td><td>81/1826 ≈ 0.044 帧/秒</td><td>约 2.74×</td></tr>
+<tr><td>GPU Memory</td><td>Not Reported</td><td>Not Reported</td><td>Not Reported</td></tr>
+<tr><td>Accuracy / Quality（Q-Align）</td><td>4.381</td><td>4.690</td><td>+0.309</td></tr>
+</tbody>
+</table>
+</div>
+<h4>贡献、局限与迁移</h4>
+<section class="analysis" data-part="claim">
+<p>贡献是一套真正给出墙钟数字的训练免费视频分辨率扩展流程，并把“对齐同一噪声水平的轨迹”从直觉写成可执行的同步与校正。局限是：120 条提示规模有限；显存与 FLOPs 未报；Wan2.2 上单条视频仍要约 2.6 小时，距离交互式生成很远；与视频超分后处理的比较放在附录，主文基线以生成侧方法为主。最小迁移实验：在同一 Wan2.1 设置下复现 FreeSwim 与 TRACE 的 10 条提示子集，核对 Q-Align 与端到端时延是否接近 2.7×，并补测峰值显存。对交互式世界模型而言，更有意义的下一步不是继续堆 4K，而是把跨尺度同步搬到少步或流式采样里，看墙钟能否从小时级降到分钟级。Worth Deep Reading: YES（视频生成加速线里今天证据最完整的一篇）。</p>
+</section>
+</article>
+</div>
+</details>
+<details class="paper" id="p-2611.15493-wrap">
+<summary><span class="badge A">A</span> The Illusion of Diversity：用有效熵在“做对了的轨迹子空间”里做 RLVR 探索（RL · Reasoning）</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.15493" data-tier="A" id="p-2611.15493">
+<div class="meta">
+<h3><span class="badge A">A</span> The Illusion of Diversity: Aligning LLM Exploration via Effective Entropy</h3>
+<ul>
+<li>作者: Xiaoliang Fu, Jiaye Lin, Yangyi Fang, Cong Qin, Binbin Zheng, Chaowen Hu, Zekai Shao（复旦、美团、清华、北大、中科大；通讯 Jiaye Lin）</li>
+<li>ID: <a href="https://arxiv.org/abs/2611.15493">arXiv:2611.15493</a> · <a href="https://arxiv.org/pdf/2611.15493.pdf">PDF</a>（v1，cs.LG，提交 2026-11-11，周五 11-13 公告）</li>
+<li>Venue: 论文写 Accepted at NeurIPS 2026</li>
+<li>全文来源: 已读 PDF，含 Table 1–2、Figure 3–4 与三随机种子结果</li>
+</ul>
+</div>
+<h4>人话版</h4>
+<section class="analysis" data-part="human">
+<p>RLVR 里人们常用 token 熵或序列熵来维持探索，但这些指标分不清“多种做对的方法”和“多种做错的胡话”。高熵看上去很多样，实际上可能只是在无效轨迹上发散，作者称之为多样性幻觉。他们定义有效熵：只在验证器判定正确的轨迹上计算 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02212;</mo><mspace linebreak="newline" /><mi>p</mi><mi>i</mi><mspace linebreak="newline" /><mi>l</mi><mi>o</mi><mi>g</mi><mspace linebreak="newline" /><mi>p</mi><mi>i</mi></mrow></math></span>，错误轨迹贡献为 0。VEPO 把这项以系数 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mspace linebreak="newline" /><mi>b</mi><mi>e</mi><mi>t</mi><mi>a</mi></mrow></math></span> 加进 GRPO，并不另建价值网络。梯度分析表明，对正确且序列概率小于 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>e</mi><mrow><mo>&#x02212;</mo><mn>1</mn></mrow></msup></mrow></math></span> 的轨迹，最小化有效熵损失会提高这条轨迹的概率，从而把质量推向“还没被充分探索的正确解”；错误轨迹的权重为零，不会因为“写得更乱”而获得探索奖励。在 DeepSeek-R1-Distill-Qwen 的 1.5B 与 7B 上，六个数学基准的平均 Avg@32 分别从 GRPO 的 48.4 和 58.9 升到 50.6 和 61.1；在两边都至少写出八条正确轨迹的 441 道 MATH500 题上，VEPO 的每题不同策略簇从 2.31 增加到 2.68。</p>
+</section>
+<h4>背景、缺口与洞察</h4>
+<section class="analysis" data-part="background">
+<p>GRPO 已经能用组内统计在没有评论家的情况下做 RLVR，但探索信号仍然沿用旧的熵。Token 熵只看下一步的局部不确定，序列熵又对全部轨迹一视同仁，而正确轨迹在组合上远比错误轨迹稀疏。继续最大化这些熵，等于把预算花在无效区域。有效熵把测量域改成“被验证器承认的子空间”：正确且概率偏低的轨迹会被吸引，错误轨迹得不到熵带来的额外推力。对自回归 LLM，序列概率几乎总是远小于 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>e</mi><mrow><mo>&#x02212;</mo><mn>1</mn></mrow></msup></mrow></math></span>，因此理论上的符号翻转在实践中可以忽略，VEPO 在常用体制下表现为对“尚未被充分探索的正确解”做吸引。</p>
+</section>
+<h4>方法 Pipeline</h4>
+<section class="analysis method" data-part="method">
+<p>有效熵定义为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>H</mi><mrow><mspace linebreak="newline" /><mi>m</mi><mi>a</mi><mi>t</mi><mi>h</mi><mi>r</mi><mi>m</mi><mrow><mi>e</mi><mi>f</mi><mi>f</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mspace linebreak="newline" /><mi>p</mi><msub><mi>i</mi><mspace linebreak="newline" /></msub><mi>t</mi><mi>h</mi><mi>e</mi><mi>t</mi><mi>a</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo>&#x02212;</mo><mspace linebreak="newline" /><mi>s</mi><mi>u</mi><msub><mi>m</mi><mi>o</mi></msub><mi>r</mi><mo stretchy="false">&#x00028;</mo><mi>o</mi><mspace linebreak="newline" /><mi>m</mi><mi>i</mi><mi>d</mi><mi>q</mi><mo stretchy="false">&#x00029;</mo><mspace linebreak="newline" /><mi>p</mi><msub><mi>i</mi><mspace linebreak="newline" /></msub><mi>t</mi><mi>h</mi><mi>e</mi><mi>t</mi><mi>a</mi><mo stretchy="false">&#x00028;</mo><mi>o</mi><mspace linebreak="newline" /><mi>m</mi><mi>i</mi><mi>d</mi><mi>q</mi><mo stretchy="false">&#x00029;</mo><mspace linebreak="newline" /><mi>l</mi><mi>o</mi><mi>g</mi><mspace linebreak="newline" /><mi>p</mi><msub><mi>i</mi><mspace linebreak="newline" /></msub><mi>t</mi><mi>h</mi><mi>e</mi><mi>t</mi><mi>a</mi><mo stretchy="false">&#x00028;</mo><mi>o</mi><mspace linebreak="newline" /><mi>m</mi><mi>i</mi><mi>d</mi><mi>q</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>，或等价的期望形式 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mspace linebreak="newline" /><mi>m</mi><mi>a</mi><mi>t</mi><mi>h</mi><mi>b</mi><mi>b</mi><msub><mrow><mi>E</mi></mrow><mrow><mi>o</mi><mspace linebreak="newline" /><mi>s</mi><mi>i</mi><mi>m</mi><mspace linebreak="newline" /><mi>p</mi><msub><mi>i</mi><mspace linebreak="newline" /></msub><mi>t</mi><mi>h</mi><mi>e</mi><mi>t</mi><mi>a</mi></mrow></msub><mo stretchy="false">[</mo><mo>&#x02212;</mo><mi>r</mi><mo stretchy="false">&#x00028;</mo><mi>o</mi><mspace linebreak="newline" /><mi>m</mi><mi>i</mi><mi>d</mi><mi>q</mi><mo stretchy="false">&#x00029;</mo><mspace linebreak="newline" /><mi>l</mi><mi>o</mi><mi>g</mi><mspace linebreak="newline" /><mi>p</mi><msub><mi>i</mi><mspace linebreak="newline" /></msub><mi>t</mi><mi>h</mi><mi>e</mi><mi>t</mi><mi>a</mi><mo stretchy="false">&#x00028;</mo><mi>o</mi><mspace linebreak="newline" /><mi>m</mi><mi>i</mi><mi>d</mi><mi>q</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">]</mo></mrow></math></span>。总目标为</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>J</mi><mrow><mspace linebreak="newline" /><mi>m</mi><mi>a</mi><mi>t</mi><mi>h</mi><mi>r</mi><mi>m</mi><mrow><mi>V</mi><mi>E</mi><mi>P</mi><mi>O</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mspace linebreak="newline" /><mi>t</mi><mi>h</mi><mi>e</mi><mi>t</mi><mi>a</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>J</mi><mrow><mspace linebreak="newline" /><mi>m</mi><mi>a</mi><mi>t</mi><mi>h</mi><mi>r</mi><mi>m</mi><mrow><mi>G</mi><mi>R</mi><mi>P</mi><mi>O</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mspace linebreak="newline" /><mi>t</mi><mi>h</mi><mi>e</mi><mi>t</mi><mi>a</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0002B;</mo><mspace linebreak="newline" /><mi>b</mi><mi>e</mi><mi>t</mi><mi>a</mi><mspace linebreak="newline" /><mo>&#x0002C;</mo><msub><mi>H</mi><mrow><mspace linebreak="newline" /><mi>m</mi><mi>a</mi><mi>t</mi><mi>h</mi><mi>r</mi><mi>m</mi><mrow><mi>e</mi><mi>f</mi><mi>f</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mspace linebreak="newline" /><mi>p</mi><msub><mi>i</mi><mspace linebreak="newline" /></msub><mi>t</mi><mi>h</mi><mi>e</mi><mi>t</mi><mi>a</mi><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<p>序列级权重 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>W</mi><mi>i</mi></msub><mo>&#x0003D;</mo><mi>r</mi><mo stretchy="false">&#x00028;</mo><msub><mi>o</mi><mi>i</mi></msub><mspace linebreak="newline" /><mi>m</mi><mi>i</mi><mi>d</mi><mi>q</mi><mo stretchy="false">&#x00029;</mo><mspace linebreak="newline" /><mi>b</mi><mi>i</mi><mi>g</mi><mi>l</mi><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x0002B;</mo><mspace linebreak="newline" /><mi>l</mi><mi>o</mi><mi>g</mi><mspace linebreak="newline" /><mi>p</mi><msub><mi>i</mi><mspace linebreak="newline" /></msub><mi>t</mi><mi>h</mi><mi>e</mi><mi>t</mi><mi>a</mi><mo stretchy="false">&#x00028;</mo><msub><mi>o</mi><mi>i</mi></msub><mspace linebreak="newline" /><mi>m</mi><mi>i</mi><mi>d</mi><mi>q</mi><mo stretchy="false">&#x00029;</mo><mspace linebreak="newline" /><mi>b</mi><mi>i</mi><mi>g</mi><mi>r</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 从计算图断开后，乘到各 token 的对数概率梯度上。默认 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mspace linebreak="newline" /><mi>b</mi><mi>e</mi><mi>t</mi><mi>a</mi><mo>&#x0003D;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>4</mn></mrow></msup></mrow></math></span>。训练用 DAPO-Math-17K，组大小 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>G</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math></span>，全局 batch 512，裁剪 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mspace linebreak="newline" /><mi>e</mi><mi>p</mi><mi>s</mi><mi>i</mi><mi>l</mi><mi>o</mi><mi>n</mi><mo>&#x0003D;</mo><mn>0.2</mn></mrow></math></span>。在线奖励用 math_verify，最终评估改用更严的 prime_math，以降低奖励黑客带来的虚高。这个实现故意保持最小：没有过程奖励模型，也没有额外的熵目标网络。作者提醒，序列对数概率按原始求和、不做长度归一化，换一种归一化就不再是同一个泛函；把 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>W</mi><mi>i</mi></msub></mrow></math></span> 广播到所有 token，也不能识别哪些推理步骤真正重要。若复用旧策略的 rollout，得到的是局部替代而非无偏的当前策略估计。</p>
+</section>
+<h4>实验设置与结果</h4>
+<section class="analysis results" data-part="results">
+<p><strong>设置。</strong>骨干为 DeepSeek-R1-Distill-Qwen 1.5B 与 7B。基准为 AIME24/25、AMC23、MATH500、Minerva、OlympiadBench，报告 Avg@32 与 Pass@32。基线包括 GRPO、Entropy-Reg、AEPO、Entropy-Adv、GTPO、Adv-Reweighting。</p>
+<p><strong>RQ1：有效熵能否在不牺牲准确率的前提下提高探索质量？</strong>Table 1 中，1.5B 的平均 Avg@32 / Pass@32 为 50.6 / 71.6，超过 GRPO 的 48.4 / 70.1 和 AEPO 的 48.5 / 70.7；7B 为 61.1 / 78.5，超过 GRPO 的 58.9 / 77.2 和 AEPO 的 59.3 / 78.1。单点并非全赢：1.5B 的 AIME25 Avg@32 为 27.8，略低于 Entropy-Reg 的 28.4 和 AEPO 的 28.1，但聚合与多数主基准仍更高。三个训练种子上，六基准 Avg@32 增益在 1.5B 为 +2.1、+2.4、+2.1 个百分点，在 7B 为 +2.3、+2.4、+1.9，方向一致。</p>
+<p><strong>RQ2：更高的 Avg@32 是不是只因为更常做对，而不是真的更多策略？</strong>Table 2 把比较限制在 441 道两边都能拿出至少八条正确轨迹的 MATH500-7B 题，每题各取恰好八条正确轨迹再聚类。VEPO 的每题不同簇为 2.68，对 GRPO 的 2.31（+0.37，16.0%，自助区间 [0.24, 0.50]）；Hill-1 有效众数为 2.24 对 1.97；最大簇占比从 0.68 降到 0.61。因为正确条数被对齐，这些差异不能用“做得对所以看起来更散”来解释。作者也写明：这只覆盖常被解出且答案被验证的题，并不证明每一步推理都正确。超参上，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B2;</mi><mo>&#x02208;</mo><mo stretchy="false">&#x0007B;</mo><mn>3</mn><mo>&#x000D7;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>5</mn></mrow></msup><mo>&#x0002C;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>4</mn></mrow></msup><mo>&#x0002C;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>3</mn></mrow></msup><mo>&#x0002C;</mo><mn>3</mn><mo>&#x000D7;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>3</mn></mrow></msup><mo>&#x0002C;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>2</mn></mrow></msup><mo stretchy="false">&#x0007D;</mo></mrow></math></span> 的扫描显示，过大的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B2;</mi></mrow></math></span> 会把熵维持得很高、收敛变慢，默认 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>4</mn></mrow></msup></mrow></math></span> 是在有效子空间探索与收敛之间的折中。这些结果合在一起说明：VEPO 的贡献主要是改了探索发生的区域，而不是堆了一个更复杂的优化器。</p>
+</section>
+<div class="table-wrap">
+<table>
+<thead><tr><th>骨干</th><th>方法</th><th>Avg@32 平均</th><th>Pass@32 平均</th></tr></thead>
+<tbody>
+<tr><td>1.5B</td><td>GRPO</td><td>48.4</td><td>70.1</td></tr>
+<tr><td>1.5B</td><td>AEPO</td><td>48.5</td><td>70.7</td></tr>
+<tr><td>1.5B</td><td>VEPO</td><td>50.6</td><td>71.6</td></tr>
+<tr><td>7B</td><td>GRPO</td><td>58.9</td><td>77.2</td></tr>
+<tr><td>7B</td><td>AEPO</td><td>59.3</td><td>78.1</td></tr>
+<tr><td>7B</td><td>VEPO</td><td>61.1</td><td>78.5</td></tr>
+</tbody>
+</table>
+</div>
+<h4>贡献、局限与迁移</h4>
+<section class="analysis" data-part="claim">
+<p>贡献是把“探索该在哪发生”从盲目熵改写成有效熵，并用一个几乎不加零件的 VEPO 把它接到 GRPO 上，同时用对齐正确条数的聚类直接测量策略多样性。局限是：只做了数学 RLVR；有效熵仍然依赖结局验证器，不能保证过程正确；Pass@32 的个别对比是混的；实现把同一序列权重广播到所有 token，并不做步骤级信用；<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B2;</mi></mrow></math></span> 过大时会把模型留在过久的探索相。最小实验：在同一 DAPO 设置上把 VEPO 接到 Qwen3-4B，对比 GRPO 与 Entropy-Reg，复现 Avg@32 与对齐正确条数后的簇数。它也和当天关于“trait hitchhiking”以及“问错过程问题会稀释信用”的观察相接：探索信号如果算错了域，就会在奖励没覆盖的行为上留下副作用。Worth Deep Reading: YES（公式干净，多样性证据比多数“我们熵更高所以更好”的论文更认真）。</p>
+</section>
+</article>
+</div>
+</details>
+
+</section>
+<section id="sec-b">
+<h2>Tier B</h2>
+<details class="paper" id="p-2611.15178-wrap">
+<summary><span class="badge B">B</span> HyperSkill：冻结骨干，用超图技能库演化替代参数空间里的 GRPO（Agent · Skill）</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.15178" data-tier="B" id="p-2611.15178">
+<div class="meta">
+<h3><span class="badge B">B</span> HyperSkill: Training-Free Omnimodal GRPO via Hypergraph-Indexed Skill-Library Evolution</h3>
+<ul>
+<li>作者: Haoran Luo, Shangkai Lin, Jinyang Wu, Xinliang Zhou, Luu Anh Tuan（NTU、清华、Stanford、VinUniversity）</li>
+<li>ID: <a href="https://arxiv.org/abs/2611.15178">arXiv:2611.15178</a> · <a href="https://arxiv.org/pdf/2611.15178.pdf">PDF</a>（v1，cs.AI，提交 2026-11-11；论文写 Accepted by NeurIPS 2026）</li>
+<li>全文来源: 已读 PDF 第 3–4 节与主结果叙述（Table 2 在正文中被引用，11 数据集平均 42.0 对最强基线 29.0）</li>
+</ul>
+</div>
+<h4>人话版</h4>
+<section class="analysis" data-part="human">
+<p>强化学习能打磨推理，但更新参数昂贵、会遗忘，也不容易审计。训练免费的技能库避开了梯度，却常常按整段轨迹的相关性收入条目，结构也是扁平的。HyperSkill 把骨干冻结，把“优势”记在超图技能库的节点与超边上：训练阶段用反事实检查决定一条技能该不该进库，并从失败里学一条协议技能；测试时由门控检索按优势排序注入技能；执行协议再迫使冻结模型给出答案。作者在 11 个文本、视觉和全模态基准上报告，HyperSkill 全部取得最高或并列，平均 token 级 F1 从最强基线 XSkill 的 29.0 升到 42.0（+13.0），相对零样本 27.4 为 +14.6。</p>
+</section>
+<h4>背景与方法</h4>
+<section class="analysis method" data-part="method">
+<p>评测集合名为 HyperSkill-Bench，含 AIME2024/2025、WebWalkerQA、FVQA、InfoSeek、DocBench、MMLongBench-Doc、OmniVideoBench、WorldSense 等 11 个数据集，共 636 道测试题，指标是带答案形状与 CJK 分词的 token 级 F1。所有方法共享冻结的 gemini-2.5-flash-lite 与同一工具栈，每个数据集用 128 道训练题构建库。三个组件分别是：C1 训练时蒸馏并做反事实准入，C2 超图演化与带阈值的门控检索，C3 执行协议（工具轮次、投票与输出约束）。基线包括 TrainingFreeGRPO、EvoSkill、SkillCraft、AutoSkill、Memento-Skills 与 XSkill，都按各自论文流程在同一 128 题上重建库。</p>
+</section>
+<h4>主要发现与数字</h4>
+<section class="analysis results" data-part="results">
+<p>六个训练免费基线的 11 数据集平均只在 23.4–29.0 之间，而且每个都会在至少三个数据集上低于零样本；HyperSkill 则在每一行都不低于零样本。相对次优列的优势在 AIME2024（+26.7）、AIME2025（+20.0）和 OmniVideoBench（+14.3）上最大，另有五个数据集的配对自助区间包含 0，作者把这五个保守计为平局。消融把平均从 42.0 降到 39.5（去掉 C1）、37.8（去掉 C2）和 31.6（去掉 C3），说明执行协议的贡献最大，但三个组件都有效。需要记住：骨干是闭源 API，库的超参按数据集在留出训练题上选定后再全量重训，因此比较的是“带配置选择的训练免费系统”，不是完全零调整的即插即用。</p>
+</section>
+<h4>贡献、局限与用途</h4>
+<section class="analysis" data-part="claim">
+<p>贡献是把 GRPO 的优势想法搬到可审计的技能库，并用反事实准入和超图组合来替代扁平记忆。局限包括：单次评估、测试集对 AIME 只有 30 题、F1 不是 Exact Match、依赖专有模型，以及部分数据集优势在统计上并不显著。它与当天的 ACE-RL、决策模型教师可以对照着读：一个把经验写进冻结库，一个把经验写进可训练 playbook，一个把经验写成步骤分数。潜在用途是在不能微调骨干的多模态代理里，先用小规模题目蒸馏可检查的技能，再看门控是否比相关度检索更稳。Why It Matters：它提醒我们，“训练免费 GRPO”如果没有反事实检查，可能只是换了一个会写笔记的零样本。</p>
+</section>
+</article>
+</div>
+</details>
+<details class="paper" id="p-2611.14912-wrap">
+<summary><span class="badge B">B</span> 重新审视“RL 会泛化、SFT 只会记”：关键其实是 SFT 数据从哪来、有多少（RL）</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.14912" data-tier="B" id="p-2611.14912">
+<div class="meta">
+<h3><span class="badge B">B</span> Rethinking “RL Generalizes, SFT Memorizes”: The Role of SFT Data</h3>
+<ul>
+<li>作者: Yunlong Hou, Fengzhuo Zhang, Yuan Cheng, Jiachun Pan, Xingyao Li, Zhuoran Yang（NUS、Yale、Cisco Foundation AI）</li>
+<li>ID: <a href="https://arxiv.org/abs/2611.14912">arXiv:2611.14912</a> · <a href="https://arxiv.org/pdf/2611.14912.pdf">PDF</a>（v1，cs.LG，提交 2026-11-11；论文写 Accepted to NeurIPS 2026）</li>
+<li>全文来源: 已读 PDF Table 1、第 3 节与附录 Table 5–6</li>
+</ul>
+</div>
+<h4>人话版</h4>
+<section class="analysis" data-part="human">
+<p>许多论文把“RL 更会泛化、SFT 只会记忆”写成近乎定律。本文用 Qwen2.5 / Qwen3 系列追问：这个结论是不是在 SFT 没有被给予与 RL 相当的数据资源时得出的。他们发现数据来源很关键：完全用更强模型生成的正确答案，并不总比用已经 RL 调过的同系列模型做拒绝采样更好；把两种来源按 70% / 30% 混合（Mix-2）时，SFT 在数学和更广的推理任务上都更稳。进一步把 SFT 的正确 rollout 数、乃至总 rollout 预算（含错误轨迹）与 RL 对齐后，SFT 可以达到与 RL 相当甚至更好的泛化。作者把原因部分归于更大的数据覆盖了长尾解题方法。</p>
+</section>
+<h4>背景与方法</h4>
+<section class="analysis method" data-part="method">
+<p>RL 在 DAPO 上训练，每题 8 条 rollout；对照 SFT 若只保留每题一条正确轨迹，看到的数据量天然少 8 倍。数据来源有两支：Qwen3-14B 拒绝采样得到 15,607 条，RL 调优模型拒绝采样得到 14,512 条，并按比例做成 Mix-k。规模实验再依次匹配“可解题目数”（约 1 万对）、“每题正确 rollout 数”（约 3.9 万）和“总 rollout 数”（约 13.8 万，含约 9.8 万条最终错误的轨迹）。方法标注由 Qwen3-32B 完成，共整理出 138 种解题方法。</p>
+</section>
+<h4>主要发现</h4>
+<section class="analysis results" data-part="results">
+<p>Table 1 在 Qwen2.5-7B 上给出具体分数：基座平均数学 42.7、一般推理 33.8；RL 后为 50.9 与 43.8。SFT 用纯 RL-tuned 或纯 Qwen3-14B 数据，数学已经接近甚至个别超过 RL（例如 SFT w/ Mix-2 的 MATH500 为 76.2，对 RL 的 74.8；AIME24 Avg@32 为 13.4，对 RL 的 14.2），但一般推理仍落后，直到 Mix-2（70% RL-tuned + 30% 强模型数据）把一般推理平均做到这组 SFT 里最好。附录 Table 5 里一般推理总平均：基座 33.8±0.41，RL 43.8±0.43，SFT w/ RL-tuned 在更大设置下可以到 43.7±0.41，部分混合超过 RL（正文 Figure 9 的 90%/10% 混合在 rollout 对齐后优于 RL）。更关键的观察是：匹配正确 rollout 已能大幅抬升 SFT 泛化，再把错误轨迹也纳入、对齐总预算，SFT 可以不再明显弱于 RL。尾部方法覆盖随 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math></span> 增加而上升，并且在 MMLU-Pro 等评测里被更频繁地用到。</p>
+</section>
+<h4>贡献、局限与意义</h4>
+<section class="analysis" data-part="claim">
+<p>贡献是把一句流行对比，改写成可检验的数据来源与数据规模问题，并提供理论侧的浅层 Transformer 分析作为支持。局限是：主表仍以 Qwen 家族为主；部分一般推理集（如 MMLU-Pro）波动很大，Mix-3 之后甚至崩到个位数；“方法”依赖另一个 LLM 标注；对齐的是 rollout 条数与梯度计算量，并不自动等于墙钟或采样开销完全相同。它提醒做 RL for LLM 的人：在宣称 RL 的泛化优势前，先问 SFT 是否已经看到了同样多、同样多样的正确与近正确轨迹。潜在用途是用 RL 模型当数据发生器，再以更便宜的 SFT 把长尾方法蒸馏回去。Why It Matters：若这一观察站得住，很多“必须上 RL 才能泛化”的实验结论需要重做对照，先把 SFT 的 rollout 预算补齐。</p>
+</section>
+</article>
+</div>
+</details>
+<details class="paper" id="p-2611.14654-wrap">
+<summary><span class="badge B">B</span> 当世界里错误还在，把智能体历史“清理干净”反而更糟（Agent Memory）</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.14654" data-tier="B" id="p-2611.14654">
+<div class="meta">
+<h3><span class="badge B">B</span> Cleaning an Agent's History Hurts When the World Still Holds the Error</h3>
+<ul>
+<li>作者: Egor Pakhomov, Anurag Koul, Hongjun Liu, Bo Pang, Shafiq Joty, Erik Nijkamp（Salesforce AI Research）</li>
+<li>ID: <a href="https://arxiv.org/abs/2611.14654">arXiv:2611.14654</a> · <a href="https://arxiv.org/pdf/2611.14654.pdf">PDF</a>（v1，cs.AI，提交 2026-11-10，周五 11-13 公告）</li>
+<li>全文来源: 已读 PDF 摘要、引言与第 5 节主要结果</li>
+</ul>
+</div>
+<h4>人话版</h4>
+<section class="analysis" data-part="human">
+<p>工具智能体会在历史上留下自己的错误，而压缩、修复或交接历史的系统，往往在世界状态并未被撤销的情况下，把记录改得看起来已经做对。先前工作很难分清：是“让模型看见正确答案”在起作用，还是“告诉它这一步已经完成”在起作用。本文把智能体冻在真实的中途状态上，只改历史或只改世界，再让接收模型接着做。结论很尖锐：同样是正确的值，写成一条诚实的旁注会帮助恢复，写成“自己已经成功完成的动作”却会伤害恢复；在世界里效果还不在时，一张成功回执更会把整任务成功率打下去。</p>
+</section>
+<h4>背景与方法</h4>
+<section class="analysis method" data-part="method">
+<p>两条受控设计。第一条在 AgentCE-Bench 的 319 个冻结状态上，智能体已经把一个错误值写入持久状态；世界保持不变，把同一经过核验的正确值用两种自然编辑写进历史：一条是保留原错误、在旁边附加真实说明；另一条是改写成智能体自己已完成的动作。第二条在 AppWorld 上，冻结一次数据库写入之后，独立变换回执（成功或失败）与世界（写入前或写入后），使两种回执在各自世界里恰好一种为真。接收模型包括 gpt-5.5 与 claude-sonnet-5。</p>
+</section>
+<h4>主要发现</h4>
+<section class="analysis results" data-part="results">
+<p>在 AgentCE-Bench 上，相对于匹配过角色、位置、轮次和长度的中性旁注，真实旁注把剩余目标的恢复率从 51% 提高到 66%；把同一正确值写成已完成动作，则把恢复率从无编辑历史的 50% 降到 44%。两种编辑披露的值相同，但效果相差 22 个点，并且在两个接收模型上都为正。这说明“答案出现在历史上”本身不能预测后果，复制可见值的简单假说不成立。在 AppWorld 上，当写入效果还不在世界里时，成功回执把整任务成功从 45% 降到 28%；一旦效果已经在，同一张成功回执又把成功从 38% 升到 49%。两种效应合计相差 27 个点，在多数接收模型与显著性阈值下保持同向。历史编辑的效果因此取决于它描述的世界是否仍然成立。</p>
+</section>
+<h4>贡献、局限与用途</h4>
+<section class="analysis" data-part="claim">
+<p>贡献是一次把“记录怎么写”和“世界里还剩什么”拆开的因果式评测，直接打到记忆压缩、错误修复和经验交接的设计假设。局限是：状态冻结与编辑都依赖可重置环境；接收模型是专有 API；恢复率与整任务成功是不同度量，不宜直接横比。它与 ACE-RL 形成对照：交接文本若把未完成的步骤写成已经完成，下游尝试可能比不写更糟；也与“清理历史”类记忆编辑形成碰撞。潜在用途是给 playbook 或记忆写入加一条约束：当世界尚未改变时，只允许旁注式的正确信息，不允许伪造成功。</p>
+</section>
+</article>
+</div>
+</details>
+
+</section>
+
+<section id="sec-ideas">
+<h2>Idea Mining</h2>
+
+<h3>Idea 1：查询到达时再锚定历史视频 KV</h3>
+<p><strong>Inspiration：</strong>VPR 证明单图+长文本里，视觉证据失败在很大程度上是位置关系问题；流式与长视频智能体则会不断累积历史帧，查询往往更晚才到。</p>
+<p><strong>Gap：</strong>VPR 没有视频基准，现有视频 token 剪枝（如昨日 DiFiT）走的是删 token 而不是改位置。流式场景里历史帧的 RoPE 会随着后续帧和时间文本越来越远，即使缓存还在，查询也可能“看不见”早先的证据。</p>
+<p><strong>Hypothesis：</strong>当新查询到达时，把历史帧的视觉 key 静态再锚定到一个短上下文参考，可以在不剪帧的情况下恢复证据访问，墙钟开销接近 VPR 在固定频率模型上的 0.1% 量级，准确率不低于轻量均匀抽帧。</p>
+<p><strong>Proposed Method：</strong>在 Qwen2.5-VL 或同类 M-RoPE 模型上，维护按帧分段的视觉 KV；查询到来时对历史视觉 key 做 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C1;</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math></span> 的静态相位搬移，文本 key 与 value 不动；对比 Vanilla、均匀丢帧、以及训练免费剪枝。</p>
+<p><strong>Minimum Viable Experiment：</strong>取一段长视频或多事件问答（如 MVBench 的长子集或流式基准的一折），固定 8K/16K/32K 已观察上下文，只改变查询到达时是否再锚定。</p>
+<p><strong>Model：</strong>Qwen2.5-VL-7B-Instruct。<strong>Dataset：</strong>长视频 / 流式 QA 的一折（须在实验记录中写明具体划分）。<strong>Baseline：</strong>Vanilla、均匀帧采样、DiFiT 或等效剪枝。<strong>Metric：</strong>准确率、TTFT、端到端时延、峰值显存。</p>
+<p><strong>Expected Contribution：</strong>给出“不删历史帧、只改位置”在视频智能体上是否成立的受控证据。</p>
+<p><strong>Novelty ★★★★☆ / Feasibility ★★★★☆ / Compute Cost ★★☆☆☆。</strong></p>
+<p><strong>Risk：</strong>视频的时间 RoPE 与图像的空间/时间轴耦合，简单搬移可能破坏帧间顺序。<strong>Collision Risk：</strong>中等，需避开只重复 VPR 图文实验的写法。<strong>Best Venue：</strong>CVPR / NeurIPS / ACL Findings（系统与评测向）。</p>
+
+<h3>Idea 2：带“禁止伪造成功”约束的后见教师交接</h3>
+<p><strong>Inspiration：</strong>ACE-RL 按下游执行给 playbook 记账；17167 说明问对问题才有步骤信号；14654 说明成功回执在世界未改变时会伤害恢复。</p>
+<p><strong>Gap：</strong>若只是把 JEV 分数加进 ACE-RL，会与今日两篇 Tier S 高度重合。真正剩下的缺口是：交接文本可能把尚未发生的世界变化写成已经完成，一次下游 rollout 的标量 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover></mrow></math></span> 不一定能惩罚这种写作。</p>
+<p><strong>Hypothesis：</strong>在 ACE-RL 的编辑奖励上增加一项可检查约束——若环境状态未变，包含“已完成/已成功”表述的编辑强制为 0 或负，同时用 Progress 问题给再尝试的步骤打分——可以减轻 Mastermind 在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003E;</mo><mn>3</mn></mrow></math></span> 后的 playbook 负贡献，并保持 AppWorld 上的 RSI@3。</p>
+<p><strong>Proposed Method：</strong>保留 ACE-RL 采样树；对 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>P</mi><mi>&#x02032;</mi></msup></mrow></math></span> 做一次状态对照，检测“成功声明 vs 世界未变”；再用冻结评判器对 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>&#x003C4;</mi><mo stretchy="false">&#x0007E;</mo></mover></mrow></math></span> 做 Hindsight + Progress 打分，作为辅助优势而非替代 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mi>V</mi><mo>&#x0005E;</mo></mover></mrow></math></span>。</p>
+<p><strong>Minimum Viable Experiment：</strong>Qwen3-4B，AppWorld + Mastermind，对比原版 ACE-RL、加约束的 ACE-RL、以及朴素“JEV + ACE-RL”拼接，报告 RSI@3、RSI@8 与丢掉编辑后的差值。</p>
+<p><strong>Model / Dataset / Baseline / Metric：</strong>Qwen3-4B-Instruct；AppWorld 与 Mastermind；原版 ACE-RL 与 GRPO-in-harness；RSI@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span>、playbook 差值、训练是否崩溃。</p>
+<p><strong>Expected Contribution：</strong>把记忆编辑的安全性约束写进交接 RL 的奖励，而不是再做一个新脚手架。</p>
+<p><strong>Novelty ★★★☆☆ / Feasibility ★★★☆☆ / Compute Cost ★★★★☆。</strong></p>
+<p><strong>Risk：</strong>状态对照在不完全可观测环境里会噪；闭源教师不可复现。<strong>Collision Risk：</strong>高，必须把差异放在 14654 的约束上。<strong>Best Venue：</strong>ICLR / NeurIPS / ICRA（智能体学习）。</p>
+
+<h3>Idea 3：工具轨迹上的有效熵探索</h3>
+<p><strong>Inspiration：</strong>VEPO 只在数学 RLVR 上验证了有效熵；智能体同样有可验证结局（测试、任务成功），但常用熵仍然鼓励无效的工具呼叫序列。</p>
+<p><strong>Gap：</strong>工具轨迹比数学解更长、也更容易出现“看起来多样但全部失败”的探索。</p>
+<p><strong>Hypothesis：</strong>把 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>H</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 加到工具使用 GRPO 上，在通过验证器的轨迹子空间里吸引小概率成功计划，将提高不同成功计划数，并在同等 rollout 预算下提高 pass@3。</p>
+<p><strong>Minimum Viable Experiment：</strong>Qwen3-4B 在 MBPP 或 AppWorld 上对比 GRPO、Entropy-Reg 与 VEPO 式有效熵，报告 pass@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span>、成功计划的聚类数，以及无效工具呼叫占比。</p>
+<p><strong>Model / Dataset / Baseline / Metric：</strong>Qwen3-4B；MBPP 或 AppWorld；GRPO 与 Entropy-Reg；pass@<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span>、有效计划数、平均工具呼叫次数。</p>
+<p><strong>Expected Contribution：</strong>检验有效熵是否只是数学现象，还是可迁移的智能体探索原则。</p>
+<p><strong>Novelty ★★★☆☆ / Feasibility ★★★★☆ / Compute Cost ★★★☆☆。</strong></p>
+<p><strong>Risk：</strong>稀疏成功使 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>H</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 估计方差很大。<strong>Collision Risk：</strong>中等，需与 VEPO 原文明确区分任务域。<strong>Best Venue：</strong>ICLR / ACL。</p>
+</section>
+
+<section id="sec-collision">
+<h2>Collision Detection</h2>
+<div class="warn"><strong>⚠️ Collision Warning：YES。</strong>今日两篇 Tier S 已经分别占据“回合内后见贡献信用”和“回合间交接文本信用”。若新课题只是把决策模型分数直接加进 ACE-RL，与今天已发表的机制重合过高；差异化必须放在交接文本的写作约束（例如世界未变时禁止伪造成功）或视频查询到达时的 KV 再锚定上，而不是再做一次同构拼接。</div>
+<p><strong>与近七日 Tier S / 正式论文的关系。</strong>OPSD4MAS（2611.16206，11-15 S）把未来对话当特权上下文给 token 级信用，与 17167 都在做更细的信用，但一个发生在多智能体对话，一个发生在单智能体后见打分，不要写成同一方法。NOPO（2611.17287）处理单侧可验证奖励，与 VEPO 都改 RLVR 的更新对象，但一个抑制被证伪样本，一个吸引欠探索的正确轨迹。APEX / 少步流式视频（2611.14033）与 TRACE 同属视频生成加速，但一个做少步流式，一个做训练免费分辨率扩展，评测协议不同。昨日 TraceKV、DiFiT 处理的是 KV 秩与视觉 token 剪枝，VPR 不减 token、只改相位，可并列阅读但不是重复实验。2611.15766 PriorSplit 与 OPSD4MAS 都涉及把技能/顺序放在模型外，今日只放入 Watchlist，避免再占正式栏。</p>
+<p><strong>剩余 Gap：</strong>视频查询到达时的再锚定仍缺直接证据；交接 RL 在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003E;</mo><mn>3</mn></mrow></math></span> 后的过期规则仍未系统解决；有效熵还没有走出数学域。</p>
+</section>
+
+<section id="sec-reading">
+<h2>阅读优先级</h2>
+<h3>READ NOW</h3>
+<ul>
+<li><a href="https://arxiv.org/abs/2611.17167">arXiv:2611.17167</a>：先看 Table 3 与 Figure 5，确认 Hindsight + Value 的确弱于纯结局 GRPO，再决定是否要把决策 API 接进自己的训练环。</li>
+<li><a href="https://arxiv.org/abs/2611.16409">arXiv:2611.16409</a>：先看 Table 2 与 Figure 7，分清“演员变强”和“playbook 真的有用”，并注意 Mastermind 在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003E;</mo><mn>3</mn></mrow></math></span> 的失败边界。</li>
+</ul>
+<h3>READ THIS WEEK</h3>
+<ul>
+<li><a href="https://arxiv.org/abs/2611.15983">arXiv:2611.15983</a> TRACE：核对 A800 墙钟与 81 帧设置，不要只用宣传中的 2.9×。</li>
+<li><a href="https://arxiv.org/abs/2611.15100">arXiv:2611.15100</a> VPR：看 Table 4 与 Table 5 的开销对照，以及 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C1;</mi><mo>&#x0003D;</mo><mn>1.5</mn></mrow></math></span> 的掉点。</li>
+<li><a href="https://arxiv.org/abs/2611.15493">arXiv:2611.15493</a> VEPO：看 Table 2 的对齐正确条数聚类，而不是只看 Avg@32。</li>
+</ul>
+<h3>SAVE</h3>
+<ul>
+<li><a href="https://arxiv.org/abs/2611.15178">arXiv:2611.15178</a>、<a href="https://arxiv.org/abs/2611.14912">arXiv:2611.14912</a>、<a href="https://arxiv.org/abs/2611.14654">arXiv:2611.14654</a>：分别作为技能库、SFT 对照和记忆编辑的备用证据。</li>
+<li>Watchlist 中的 <a href="https://arxiv.org/abs/2611.17320">arXiv:2611.17320</a> DiVR、<a href="https://arxiv.org/abs/2611.15766">arXiv:2611.15766</a> PriorSplit、<a href="https://arxiv.org/abs/2611.17336">arXiv:2611.17336</a> PixVid。</li>
+</ul>
+<h3>SKIP</h3>
+<ul>
+<li>近三日已正式展开的 OPSD4MAS、NOPO、TraceKV、DiFiT、HeMeR 等，今日不必再读一遍正文。</li>
+<li>领域过窄或只换环境的 RL 应用文，以及未读全文的普通 Unlearning 条目。</li>
+</ul>
+</section>
+
+<section id="sec-watch">
+<h2>Candidate Watchlist</h2>
+<p>以下条目今日未做正式展开。多数已读摘要；标了 PDF 的表示曾下载浏览但未按 Tier 写满。</p>
+<ul class="plain">
+<li><a href="https://arxiv.org/abs/2611.17320">arXiv:2611.17320</a> DiVR：训练验证器决定扩散语言模型何时重生成，LLaDA-8B 平均准确率 35.3%→43.4%，代价 1.9–3.5× greedy。</li>
+<li><a href="https://arxiv.org/abs/2611.15766">arXiv:2611.15766</a> Prior-as-Skill / PriorSplit：把顺序记在模型外，再读帧；与昨日 OPSD4MAS 相关，故不占正式栏。</li>
+<li><a href="https://arxiv.org/abs/2611.17336">arXiv:2611.17336</a> PixVid：把潜空间视频模型抬到像素空间，强调下一帧即可响应，互动延迟相关但主文加速表不如 TRACE 完整。</li>
+<li><a href="https://arxiv.org/abs/2611.14683">arXiv:2611.14683</a> Trait Hitchhiking：用 Price 方程描述 GRPO 中非目标特质的搭便车。</li>
+<li><a href="https://arxiv.org/abs/2611.15717">arXiv:2611.15717</a> / <a href="https://arxiv.org/abs/2611.16228">arXiv:2611.16228</a>：多语种 GRPO 后 MATH +36.07、XQuAD-Indic F1 −19.32，奖励覆盖之外的能力漂移。</li>
+<li><a href="https://arxiv.org/abs/2611.16628">arXiv:2611.16628</a> Safety as a Budget：校正约束 GRPO 的控制通道，有害协助 8.9%→4.8%。</li>
+<li><a href="https://arxiv.org/abs/2611.15268">arXiv:2611.15268</a> Teacher-Free Co-Evolution：小模型从部署日志同时进化 harness 与 LoRA。</li>
+<li><a href="https://arxiv.org/abs/2611.10439">arXiv:2611.10439</a> MixUA：多用户多智能体的多粒度记忆与隐私探针。</li>
+<li><a href="https://arxiv.org/abs/2611.16714">arXiv:2611.16714</a> Olifant：内存式推测解码，强调能耗与吞吐，而非只报加速比。</li>
+<li><a href="https://arxiv.org/abs/2611.16523">arXiv:2611.16523</a> RESYNC：截止时限下的流式推理，用残差同步陈旧隐状态。</li>
+<li><a href="https://arxiv.org/abs/2611.13004">arXiv:2611.13004</a> G-STAR：深度压缩自回归图像生成，1024 分辨率 2.5 秒 / H200（图像而非视频）。</li>
+<li><a href="https://arxiv.org/abs/2611.16748">arXiv:2611.16748</a> PhysLoop、<a href="https://arxiv.org/abs/2611.14815">arXiv:2611.14815</a> BirdDreams：视频生成的物理与驾驶世界模型，今日不作为加速论文展开。</li>
+<li><a href="https://arxiv.org/abs/2611.15925">arXiv:2611.15925</a> ShadowBench：遗忘评测中的词汇锚定幻觉，今日 Unlearning 仅列入观察。</li>
+<li><a href="https://arxiv.org/abs/2611.15729">arXiv:2611.15729</a> DISCERN、<a href="https://arxiv.org/abs/2611.17068">arXiv:2611.17068</a> MAPE、<a href="https://arxiv.org/abs/2611.15600">arXiv:2611.15600</a> MemCredit：记忆系统三条观察，近三日已在 Watchlist 出现。</li>
+<li>替换稿 <a href="https://arxiv.org/abs/2603.18859">arXiv:2603.18859</a> RewardFlow、<a href="https://arxiv.org/abs/2605.03327">arXiv:2605.03327</a> TIDE、<a href="https://arxiv.org/abs/2611.10453">arXiv:2611.10453</a> BunshinRL、<a href="https://arxiv.org/abs/2610.14671">arXiv:2610.14671</a> SPARE：若后续出现重大实验更新，再考虑正式展开。</li>
+</ul>
+</section>
+
+<section id="sec-stats">
+<h2>今日统计</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>项目</th><th>数量 / 说明</th></tr></thead>
+<tbody>
+<tr><td>Candidate Pool</td><td>57</td></tr>
+<tr><td>Formal Papers</td><td>8</td></tr>
+<tr><td>RL Papers</td><td>4（17167，16409，15493，14912）</td></tr>
+<tr><td>Agent / Multi-Agent Papers</td><td>4（17167，16409，15178，14654）</td></tr>
+<tr><td>Video Acceleration Papers</td><td>2（15983，15100；后者为长上下文视觉 KV，非视频基准）</td></tr>
+<tr><td>Unlearning Papers</td><td>0 篇正式 / Watchlist 含 2611.15925</td></tr>
+<tr><td>Tier S / A / B</td><td>2 / 3 / 3</td></tr>
+<tr><td>周一公告</td><td>截稿时未发布（08:21、08:30 CST 核验）</td></tr>
+<tr><td>BACKFILL</td><td>无（正式论文均来自周五 11-13 公告，仍在 72 小时窗）</td></tr>
+<tr><td>全文无法阅读而进入 Tier S</td><td>无</td></tr>
+</tbody>
+</table>
+</div>
+<h3>Candidate Pool 一览</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>ID</th><th>Title</th><th>方向</th><th>处置</th></tr></thead>
+<tbody>
+<tr><td><a href="https://arxiv.org/abs/2611.17167">arXiv:2611.17167</a></td><td>Actor, Judge, or Teacher? Understanding Decision Models in Long-Horizon Agents</td><td>RL · Agent</td><td>Tier S</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16409">arXiv:2611.16409</a></td><td>Experience-Handoff Reinforcement Learning for Recursive Self-Improvement</td><td>RL · Agent</td><td>Tier S</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15100">arXiv:2611.15100</a></td><td>Keep Images in Sight: Visual Position Re-Anchoring for Long-Context MLLMs</td><td>Video/Multimodal Efficiency</td><td>Tier A</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15983">arXiv:2611.15983</a></td><td>TRACE: Trajectory Synchronization for Training-Free Resolution Extension in Video Generation</td><td>Video Generation Acceleration</td><td>Tier A</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15493">arXiv:2611.15493</a></td><td>The Illusion of Diversity: Aligning LLM Exploration via Effective Entropy</td><td>RL · Reasoning</td><td>Tier A</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15178">arXiv:2611.15178</a></td><td>HyperSkill: Training-Free Omnimodal GRPO via Hypergraph-Indexed Skill-Library Evolution</td><td>Agent · Skill</td><td>Tier B</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.14912">arXiv:2611.14912</a></td><td>Rethinking &quot;RL Generalizes, SFT Memorizes&quot;: The Role of SFT Data</td><td>RL</td><td>Tier B</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.14654">arXiv:2611.14654</a></td><td>Cleaning an Agent&#x27;s History Hurts When the World Still Holds the Error</td><td>Agent Memory</td><td>Tier B</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.17320">arXiv:2611.17320</a></td><td>Learning When Diffusion Language Models Should Regenerate</td><td>Reasoning · Test-time</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15766">arXiv:2611.15766</a></td><td>Prior-as-Skill: Remember Outside and Read Inside with On-Policy Self-Distillation for Self-Evolving VLM Agents</td><td>Agent · VLM</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15268">arXiv:2611.15268</a></td><td>Knowledge in the Harness, Reliability in the Weights: Teacher-Free Co-Evolution of an LLM Agent</td><td>Agent</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.14683">arXiv:2611.14683</a></td><td>Trait Hitchhiking in LLM Post-Training</td><td>RL · Interp</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16628">arXiv:2611.16628</a></td><td>Safety as a Budget: Calibrating the Control Channel of Constrained GRPO for Vision-Language Models</td><td>RL · Safety</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15717">arXiv:2611.15717</a></td><td>Outside the Purview of the Reward: Capability Drift in Multilingual Post-Training</td><td>RL</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.17336">arXiv:2611.17336</a></td><td>Back to Pixels: Lifting Latent Video Diffusion into Pixel Space</td><td>Video Generation</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.13004">arXiv:2611.13004</a></td><td>G-STAR: 32–64× compressed AR image gen, 20× speedup, 2</td><td>Efficient Generation</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16714">arXiv:2611.16714</a></td><td>Towards Green Text Generation: Memory-Based Speculative Decoding</td><td>Efficient Inference</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16748">arXiv:2611.16748</a></td><td>PhysLoop: Harnessing LLMs&#x27; Physics Awareness for Self-Improving Video Generation Models</td><td>Video Generation</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16523">arXiv:2611.16523</a></td><td>RESYNC: Residual Latent-State Synchronization for Deadline-Bound Streaming Inference</td><td>Streaming Inference</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.10439">arXiv:2611.10439</a></td><td>MixUA: multi-granularity memory for multi-user multi-agent; +16 pts, 0</td><td>Agent Memory</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16369">arXiv:2611.16369</a></td><td>Bait: Mitigating Harmful Agentic Reinforcement Learning via Probing Reward Function</td><td>RL · Security</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16069">arXiv:2611.16069</a></td><td>&quot;It&#x27;s Just a Small Weapon&quot;: What Rewarding Misbehavior During RL Does to Character-Trained Models</td><td>RL · Safety</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15521">arXiv:2611.15521</a></td><td>DecArena: Evaluating Large-Scale Decentralized Multi-Agent Collaboration</td><td>Multi-Agent</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15729">arXiv:2611.15729</a></td><td>DISCERN: Preserve at Write, Resolve at Read for Persistent LLM-Agent Memory</td><td>Agent Memory</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.17068">arXiv:2611.17068</a></td><td>Discovering Effective Agent Memory Designs through Program Evolution</td><td>Agent Memory</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15600">arXiv:2611.15600</a></td><td>MemCredit: From Relevance to Utility for Decision-Time Memory in Long-Horizon Web Agents</td><td>Agent Memory</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.14815">arXiv:2611.14815</a></td><td>BirdDreams: Joint Perspective and BEV Video Generation for a Plausible, Reactive Driving World Model</td><td>Video Generation</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16400">arXiv:2611.16400</a></td><td>FuGIBench: Evaluating Reliable Preparation in Streaming Video</td><td>Video · Streaming</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.17048">arXiv:2611.17048</a></td><td>AURA 2.0: From User-Driven Responses to Model-Initiated Conversations in Streaming Video</td><td>Video · Streaming</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.13254">arXiv:2611.13254</a></td><td>Trajectory-level error source analysis: errors appear at median 0</td><td>Agent</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.14965">arXiv:2611.14965</a></td><td>Early Signals, Strong Decisions: Prefix-Guided Sampling for Parallel Test-Time Scaling</td><td>Reasoning · TTS</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.14864">arXiv:2611.14864</a></td><td>When Safety Becomes an Attack Surface: Manipulating Abstention in Tool-Using AI Agents</td><td>Agent Security</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15309">arXiv:2611.15309</a></td><td>Where Autonomy Belongs: A Separation of Powers for Agentic Program Evolution</td><td>Agent</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.17331">arXiv:2611.17331</a></td><td>TTB: Test-time Baking for Efficient Rendering of Decoder-only View Synthesis Models</td><td>Efficient Rendering</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15777">arXiv:2611.15777</a></td><td>SO-Arena: Benchmarking the Capability Spectrum and Reliability of System One Models</td><td>Eval</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.08219">arXiv:2611.08219</a></td><td>Agent-R²: scaling agents for realistic productivity via real-source data synthesis</td><td>Agent</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.08318">arXiv:2611.08318</a></td><td>Learning the task or the verifier? Criteria exposure in embodied self-improvement</td><td>Agent</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16217">arXiv:2611.16217</a></td><td>WorldDraft: If Code Builds the World, Can Video Models Just Render It?</td><td>Video Generation</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16517">arXiv:2611.16517</a></td><td>UniSpark: Exploring Hybrid Attention for Multimodal Understanding and Generation</td><td>Multimodal</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16961">arXiv:2611.16961</a></td><td>The Value of Thinking: Learning When to Reason in Hybrid Decision Models</td><td>Reasoning</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15426">arXiv:2611.15426</a></td><td>SimRec: Learning to Search, Ask, and Recommend from Simulated Interaction</td><td>Agent RL</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16228">arXiv:2611.16228</a></td><td>Indic-Task Gains and Regressions after Reinforcement Learning</td><td>RL</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.12872">arXiv:2611.12872</a></td><td>HiVe-Mem: horizontal memory expansion and vertical evidence for multimodal agents</td><td>Agent Memory</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15161">arXiv:2611.15161</a></td><td>CineMME: From Dialogue Grounding to Narrative Reasoning in Multimodal Video Understanding</td><td>Video Understanding</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.14051">arXiv:2611.14051</a></td><td>Cross-model KV reuse; TTFT median 2</td><td>Efficient Inference</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16301">arXiv:2611.16301</a></td><td>LoCoJAX: Host-Local Coordination for Small-Model RL on TPUs</td><td>RL Systems</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.17241">arXiv:2611.17241</a></td><td>Ballad: Bandit-Based LLM Routing for Automated Heuristic Discovery</td><td>Efficient Inference</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16053">arXiv:2611.16053</a></td><td>Wayfinder: Adaptive Resource Routing from Agent Citations</td><td>Agent</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.16590">arXiv:2611.16590</a></td><td>AstroMemBench: A Benchmark for Memory Systems in Embodied Spacecraft Agents</td><td>Agent Memory</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.17007">arXiv:2611.17007</a></td><td>Skill Adapter: Personalized Modification and Online Routing of General-Purpose Skills</td><td>Agent · Skill</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15447">arXiv:2611.15447</a></td><td>Escaping the Curse of Dimensionality in One-Step Flow-Based Generative Models</td><td>Video/Gen Theory</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.15925">arXiv:2611.15925</a></td><td>ShadowBench: Exposing Lexical Anchoring and the Illusion of Forgetting in Large Language Models</td><td>Unlearning</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2603.18859">arXiv:2603.18859</a></td><td>RewardFlow: Can Action-Level Reward Be Estimated from State-Graph Topology in Agentic RL?</td><td>Agent RL</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2605.03327">arXiv:2605.03327</a></td><td>TIDE: Token-Level Credit Assignment via Entropy-Gated Bounded Deviation</td><td>RL</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.10453">arXiv:2611.10453</a></td><td>BunshinRL: Whole-Workspace Forking for Agentic Reinforcement Learning Rollouts</td><td>Agent RL</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2610.14671">arXiv:2610.14671</a></td><td>SPARE: Shared Perception and Adaptive Retrieval of Evidence for Streaming Video Understanding</td><td>Video · Streaming</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2611.12125">arXiv:2611.12125</a></td><td>CARE-PO: Controllable Tool-Call Efficiency for LLM Agents</td><td>Agent</td><td>Watchlist / 仅摘要或未正式展开</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="sec-sources">
+<h2>Sources / Links</h2>
+<ul>
+<li>arXiv list/new：cs.LG、cs.AI、cs.CL、cs.CV、cs.MA、cs.DC（2026-11-16 08:21 CST 核验，公告日 Friday, 13 November 2026；LG 新稿 186，AI 113，CL 86，CV 170，MA 7，DC 23，另有交叉与替换）。</li>
+<li>arXiv pastweek、export API（latest submittedDate 仍止于 2026-11-12T18:59Z 附近，即周五截止前）、cs.LG RSS（频道为空）。</li>
+<li>Hugging Face Daily Papers：页面与 API 仍停留在 2026-11-13 批次（API 返回 date 必须 ≤ 2026-11-13T00:00:00.000Z）。</li>
+<li>正式论文 PDF：<a href="https://arxiv.org/abs/2611.17167">arXiv:2611.17167</a>、<a href="https://arxiv.org/abs/2611.16409">arXiv:2611.16409</a>、<a href="https://arxiv.org/abs/2611.15100">arXiv:2611.15100</a>、<a href="https://arxiv.org/abs/2611.15983">arXiv:2611.15983</a>、<a href="https://arxiv.org/abs/2611.15493">arXiv:2611.15493</a>、<a href="https://arxiv.org/abs/2611.15178">arXiv:2611.15178</a>、<a href="https://arxiv.org/abs/2611.14912">arXiv:2611.14912</a>、<a href="https://arxiv.org/abs/2611.14654">arXiv:2611.14654</a>，保存于 <code>/workspace/radar/work-2026-11-16/pdf/</code>。</li>
+<li>近三日日报：<code>AI_Research_Radar_2026-11-13.html</code> 至 <code>2026-11-15.html</code>，用于 Tier S 冷却与去重。</li>
+</ul>
+</section>
+
+<section id="sec-audit">
+<h2>Depth Audit</h2>
+<p>下面的表格由 <code>work-2026-11-16/audit.py</code> 在最终 HTML 上自动写入。中文字符不计标题、表格、元数据与链接。</p>
+<div id="audit-table-slot"><p>门槛：Tier S 正文中文 3500–5000（不计标题、表格、元数据、链接），Method ≥1000，Experiments+Results ≥900，必须全文（data-fulltext=yes），至少 2 个表格，足够真实数字。Tier A 1200–2000；Tier B 650–1100。全部论文 <span class="ok">all_pass=true</span>，缺节：无。</p>
+<p>原文访问：两篇 Tier S 与三篇 Tier A 均基于 arXiv PDF 正文（方法、实验与主表）。Tier B 同样下载并阅读了 PDF 的方法与主要结果段落，不是仅摘要改写。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>ID</th><th>Tier</th><th>正文 CJK</th><th>Method CJK</th><th>Results CJK</th><th>表格数</th><th>数字事实</th><th>全文</th><th>达标</th><th>未过原因</th><th>未完成项</th></tr></thead>
+<tbody>
+<tr><td>2611.17167</td><td>S</td><td>5000</td><td>1031</td><td>1181</td><td>2</td><td>94</td><td>yes</td><td><span class="ok">YES</span></td><td>—</td><td>—</td></tr><tr><td>2611.16409</td><td>S</td><td>4805</td><td>1006</td><td>1016</td><td>2</td><td>95</td><td>yes</td><td><span class="ok">YES</span></td><td>—</td><td>—</td></tr><tr><td>2611.15100</td><td>A</td><td>1345</td><td>170</td><td>313</td><td>1</td><td>58</td><td>yes</td><td><span class="ok">YES</span></td><td>—</td><td>—</td></tr><tr><td>2611.15983</td><td>A</td><td>1221</td><td>220</td><td>290</td><td>1</td><td>63</td><td>yes</td><td><span class="ok">YES</span></td><td>—</td><td>—</td></tr><tr><td>2611.15493</td><td>A</td><td>1208</td><td>192</td><td>334</td><td>1</td><td>52</td><td>yes</td><td><span class="ok">YES</span></td><td>—</td><td>—</td></tr><tr><td>2611.15178</td><td>B</td><td>711</td><td>126</td><td>187</td><td>0</td><td>26</td><td>yes</td><td><span class="ok">YES</span></td><td>—</td><td>—</td></tr><tr><td>2611.14912</td><td>B</td><td>698</td><td>118</td><td>182</td><td>0</td><td>38</td><td>yes</td><td><span class="ok">YES</span></td><td>—</td><td>—</td></tr><tr><td>2611.14654</td><td>B</td><td>775</td><td>158</td><td>228</td><td>0</td><td>19</td><td>yes</td><td><span class="ok">YES</span></td><td>—</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<footer>
+<p>Daily AI Research Radar &amp; Idea Miner · 2026-11-16 · Asia/Shanghai (CST, UTC+8)</p>
+</footer>
+</div></body></html>
