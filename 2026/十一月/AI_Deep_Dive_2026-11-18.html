@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Deep Dive 2026-11-18</title>
+<style>
+:root{--fg:#1a1a1a;--mut:#5b6472;--bg:#fbfaf7;--card:#fff;--ac:#9a3412;--ln:#e5e1d8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+font-family:"Noto Serif CJK SC","Source Han Serif SC","Songti SC","STSong","Georgia",serif;
+font-size:17px;line-height:1.8;letter-spacing:0}
+.wrap{max-width:820px;margin:0 auto;padding:28px 22px 80px}
+header h1{font-size:28px;line-height:1.35;margin:.2em 0;font-weight:700}
+.sub{color:var(--mut);font-size:15px}
+nav.toc{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:14px 20px;margin:22px 0}
+nav.toc ol{margin:.3em 0;padding-left:1.4em}nav.toc li{margin:.15em 0}
+nav.toc details summary{cursor:pointer;font-weight:600}
+nav.toc .secs{columns:2;font-size:14px;gap:12px}
+a{color:#1d4ed8;text-decoration:none;word-break:break-all}a:hover{text-decoration:underline}
+section.paper{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:8px 26px 26px;margin:30px 0}
+h2{font-size:23px;border-left:5px solid var(--ac);padding-left:12px;margin-top:1.4em;line-height:1.4}
+h3{font-size:18.5px;margin:1.55em 0 .5em;color:#7c2d12;border-bottom:1px dashed var(--ln);padding-bottom:4px}
+p{margin:.7em 0;text-align:start}
+.tag{display:inline-block;font-size:13px;padding:1px 9px;border-radius:999px;background:#fff1e6;color:#9a3412;border:1px solid #fdba74;margin-right:6px}
+.tag.bf{background:#eef2ff;color:#3730a3;border-color:#a5b4fc}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border:1px solid var(--ln);border-radius:8px}
+table{border-collapse:collapse;min-width:640px;width:100%;font-size:14.5px;line-height:1.6}
+th,td{border-bottom:1px solid var(--ln);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#f6f3ec;white-space:nowrap}tr:nth-child(even) td{background:#fcfbf8}
+.eq{overflow-x:auto;padding:10px 8px;margin:12px 0;background:#faf8f3;border-radius:6px}
+math{font-size:1.05em;font-family:"STIX Two Math","Cambria Math","Latin Modern Math","DejaVu Serif","Noto Serif",math,serif}
+math[display="block"]{display:block;margin:.35em 0}
+li{margin:.3em 0}
+.note{background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 16px;font-size:15px}
+footer{color:var(--mut);font-size:14px;margin-top:40px}
+.cap{font-size:14px;color:#5b6472;margin:14px 0 2px}
+.summary{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 18px}
+.gloss{font-size:15px}
+@media(max-width:640px){body{font-size:16px}nav.toc .secs{columns:1}section.paper{padding:6px 14px 18px}}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Daily Top Papers Deep Dive · 2026-11-18</h1>
+<p class="sub">北京时间（Asia/Shanghai）例行检索与精读 · 方向：Agent × Reinforcement Learning / Inference Acceleration / Video Acceleration · 3 篇精读 · MathML 离线渲染 · 无外部脚本</p>
+</header>
+<nav class="toc">
+<ol>
+<li><a href="#overview">今日概览：检索、选题与去重</a></li>
+<li><details><summary><a href="#p1">论文 1｜ViRA：用 Cross-Input Relative Policy Optimization 训练超高分辨率视觉智能体</a></summary><div class="secs"><div><a href="#p1-s1">1. 基本信息</a></div><div><a href="#p1-s2">2. 一句话定位</a></div><div><a href="#p1-s3">3. 人话版</a></div><div><a href="#p1-s4">4. 背景与缺口</a></div><div><a href="#p1-s5">5. 核心 insight</a></div><div><a href="#p1-s6">6. 方法逐步拆解</a></div><div><a href="#p1-s7">7. 核心公式：变量、目标与直觉</a></div><div><a href="#p1-s8">8. Toy example（本文自造算例，非论文数字）</a></div><div><a href="#p1-s9">9. Baselines</a></div><div><a href="#p1-s10">10. 实验设置</a></div><div><a href="#p1-s11">11. 指标教学</a></div><div><a href="#p1-s12">12. 可核验结果</a></div><div><a href="#p1-s13">13. 真实表图阅读</a></div><div><a href="#p1-s14">14. Ablation 与缺失的 ablation</a></div><div><a href="#p1-s15">15. Claim vs Evidence</a></div><div><a href="#p1-s16">16. 贡献</a></div><div><a href="#p1-s17">17. 局限</a></div><div><a href="#p1-s18">18. 复现要点</a></div><div><a href="#p1-s19">19. 研究价值</a></div><div><a href="#p1-s20">20. 可执行迁移</a></div><div><a href="#p1-s21">21. 方向专用分析（Agent × RL：CrossRPO 与 GRPO/RLOO、contrast set 奖励与 zoom 信用分配）</a></div><div><a href="#p1-s22">22. Attack / Verification lens</a></div><div><a href="#p1-s23">23. 记忆总结</a></div></div></details></li>
+<li><details><summary><a href="#p2">论文 2｜MiSTiQ：用 MicroScaling 网格量化做极端 KV Cache 压缩</a></summary><div class="secs"><div><a href="#p2-s1">1. 基本信息</a></div><div><a href="#p2-s2">2. 一句话定位</a></div><div><a href="#p2-s3">3. 人话版</a></div><div><a href="#p2-s4">4. 背景与缺口</a></div><div><a href="#p2-s5">5. 核心 insight</a></div><div><a href="#p2-s6">6. 方法逐步拆解</a></div><div><a href="#p2-s7">7. 核心公式：变量、目标与直觉</a></div><div><a href="#p2-s8">8. Toy example（本文自造算例，非论文数字）</a></div><div><a href="#p2-s9">9. Baselines</a></div><div><a href="#p2-s10">10. 实验设置</a></div><div><a href="#p2-s11">11. 指标教学</a></div><div><a href="#p2-s12">12. 可核验结果</a></div><div><a href="#p2-s13">13. 真实表图阅读</a></div><div><a href="#p2-s14">14. Ablation 与缺失的 ablation</a></div><div><a href="#p2-s15">15. Claim vs Evidence</a></div><div><a href="#p2-s16">16. 贡献</a></div><div><a href="#p2-s17">17. 局限</a></div><div><a href="#p2-s18">18. 复现要点</a></div><div><a href="#p2-s19">19. 研究价值</a></div><div><a href="#p2-s20">20. 可执行迁移</a></div><div><a href="#p2-s21">21. 方向专用分析（Inference Acceleration：KV 存储与低精度注意力计算）</a></div><div><a href="#p2-s22">22. Attack / Verification lens</a></div><div><a href="#p2-s23">23. 记忆总结</a></div></div></details></li>
+<li><details><summary><a href="#p3">论文 3｜QASK-Edit：按 Query 与 Key Source 自适应稀疏注意力以加速视频编辑</a></summary><div class="secs"><div><a href="#p3-s1">1. 基本信息</a></div><div><a href="#p3-s2">2. 一句话定位</a></div><div><a href="#p3-s3">3. 人话版</a></div><div><a href="#p3-s4">4. 背景与缺口</a></div><div><a href="#p3-s5">5. 核心 insight</a></div><div><a href="#p3-s6">6. 方法逐步拆解</a></div><div><a href="#p3-s7">7. 核心公式：变量、目标与直觉</a></div><div><a href="#p3-s8">8. Toy example（本文自造算例，非论文数字）</a></div><div><a href="#p3-s9">9. Baselines</a></div><div><a href="#p3-s10">10. 实验设置</a></div><div><a href="#p3-s11">11. 指标教学</a></div><div><a href="#p3-s12">12. 可核验结果</a></div><div><a href="#p3-s13">13. 真实表图阅读</a></div><div><a href="#p3-s14">14. Ablation 与缺失的 ablation</a></div><div><a href="#p3-s15">15. Claim vs Evidence</a></div><div><a href="#p3-s16">16. 贡献</a></div><div><a href="#p3-s17">17. 局限</a></div><div><a href="#p3-s18">18. 复现要点</a></div><div><a href="#p3-s19">19. 研究价值</a></div><div><a href="#p3-s20">20. 可执行迁移</a></div><div><a href="#p3-s21">21. 方向专用分析（Video Acceleration：训练免费稀疏注意力、query×key-source 自适应与质量–速度权衡）</a></div><div><a href="#p3-s22">22. Attack / Verification lens</a></div><div><a href="#p3-s23">23. 记忆总结</a></div></div></details></li>
+<li><a href="#verify">来源与验证报告</a></li>
+</ol>
+</nav>
+<section id="overview">
+<h2>今日概览：检索、选题与去重</h2>
+<div class="summary">
+<p>检索于 2026-11-18 09:10 起（北京时间，Asia/Shanghai）执行，是每日例行的 Daily Top Papers Deep Dive，不是补跑。当天为周三上午。抓取 arXiv <code>/list/{cs.LG,cs.AI,cs.CL,cs.CV,cs.MA,cs.DC}/recent</code>（Tue, 17 Nov 2026 新投稿为主），在强化学习、Agent/Multi-Agent、Video Acceleration、Inference Acceleration 四个方向中独立选题。三篇入选论文均来自 11 月 16–17 日提交窗口，全文 PDF 可访问，表格与附录可核验，故均不标记 BACKFILL。</p>
+</div>
+
+<h3>检索与范围</h3>
+<p>检索词覆盖：强化学习 / 策略优化 / GRPO / RLVR / RLHF / reward model；Agent / multi-agent / agentic / tool-use / memory；video diffusion 或 video DiT 的加速、稀疏、蒸馏、缓存；投机解码、KV cache、量化、MoE、LLM serving。列表解析得到 561 篇不重复条目后，按标题与摘要关键词初筛，再阅读摘要与目录，确认有可核验表格后入选。论文不限于 arXiv，但本日入选三篇均来自 arXiv，因其全文与表格可立即核验。</p>
+
+<h3>7 日去重</h3>
+<p>近 7 日已作为主精读出现、本次禁止重复（无实质版本更新或关键碰撞）的条目如下：</p>
+<ul>
+<li>2026-11-12：MCPO（2611.14015，RL）、REAL Loss（2611.14399，Inference）、SemanticKV（2611.11452，Video，BACKFILL）</li>
+<li>2026-11-13：ReTrace（2611.14492，Agent）、AutoScaffold（2611.14515，RL）、B3（2611.14387，Inference）</li>
+<li>2026-11-14：LEAD-RL（2611.17041，Agent）、NOPO（2611.17287，RL）、ESTRA（2611.10448，Video，BACKFILL）</li>
+<li>2026-11-15：TraceKV（2611.15569，Inference，BACKFILL）、HeMeR（2611.16487，Agent×Inference）、OPSD4MAS（2611.16206，Multi-Agent×RL）</li>
+<li>2026-11-16：TRACE（2611.15983，Video）、LazyWeights（2611.17108，Inference）、JudgeMix（2611.16174，Agent）</li>
+<li>2026-11-17：TIDE（2611.17924，RL）、MMFlash（2611.18482，Inference）、Token2Tile（2611.17930，Video）；当日无独立 Agent 论文</li>
+</ul>
+<p>硬排除 ID：2611.17924、2611.18482、2611.17930、2611.15983、2611.17108、2611.16174、2611.15569、2611.16487、2611.16206、2611.17041、2611.17287、2611.10448、2611.14492、2611.14515、2611.14387、2611.14015、2611.14399、2611.11452。</p>
+
+<h3>入选 3 篇</h3>
+<ol>
+<li><strong>ViRA / CrossRPO</strong>（<a href="https://arxiv.org/abs/2611.21605">arXiv:2611.21605</a>，Agent × RL）：用 contrast set 上的 Cross-Input Relative Policy Optimization 训练超高分辨率视觉智能体，避免只靠常识拿奖励。</li>
+<li><strong>MiSTiQ</strong>（<a href="https://arxiv.org/abs/2611.21216">arXiv:2611.21216</a>，Inference Acceleration）：把 trellis 量化与 MX 微缩放格式结合起来，做极端 KV cache 压缩，并争取在低精度格式上直接计算注意力。</li>
+<li><strong>QASK-Edit</strong>（<a href="https://arxiv.org/abs/2611.20704">arXiv:2611.20704</a>，Video Acceleration）：按 query 与 key source 自适应分配的训练免费稀疏注意力，加速视频 DiT 编辑。</li>
+</ol>
+
+<h3>方向轮换说明</h3>
+<p>2026-11-17 覆盖了 RL、Inference Acceleration 与 Video Acceleration，但没有独立 Agent 论文。本日优先补上 Agent，并以 ViRA 同时覆盖 RL（CrossRPO 相对 GRPO 的同策略训练）。Inference 选择全新的 KV 量化计算工作 MiSTiQ，Video 选择专门面向视频编辑 DiT 的 QASK-Edit，四个方向在本日均有着落。</p>
+
+<h3>考虑但未入选（摘）</h3>
+<ul>
+<li>Jetriever（2611.21478）：Agent memory 从相似度转向效用排序，表格充足，但本日已用 ViRA 覆盖 Agent，且 ViRA 同时补上 RL。</li>
+<li>CECAR（2611.20119）、RoShift（2611.20549）、Memory-Efficient Speculative Decoding（2611.20565）：均为推理加速候选，MiSTiQ 在“存储+低精度计算”上的方法完整度与表格更完整。</li>
+<li>Sparse Attention for Visual Generation（2611.21029）、TileCache（2611.20246）：视觉生成加速，但 QASK-Edit 更直接针对视频编辑 DiT 的端到端加速。</li>
+<li>GPRM（2611.20755）、SWE-OPD（2611.21020）、GainCtrl（2611.20736）：分别偏过程奖励、代码 agent 蒸馏与 agent 提前停止，质量不错，为控制篇数让位。</li>
+</ul>
+
+<h3>字数统计（按正文 CJK 汉字计，不含公式与标签）</h3>
+<p>三篇精读正文汉字数（去掉标签后统计 CJK 统一汉字 U+4E00–U+9FFF，不含标点、拉丁字母、数字与公式）：ViRA 6973 字，MiSTiQ 6989 字，QASK-Edit 6995 字，合计 20957 字。三篇均落在 4500–7000 的规格区间。</p>
+</section>
+
+<section class="paper" id="p1">
+<h2>论文 1｜ViRA：用 Cross-Input Relative Policy Optimization 训练超高分辨率视觉智能体</h2>
+<p><span class="tag">NEW</span><span class="tag">Agent</span><span class="tag">Reinforcement Learning</span><span class="tag">Agent × RL</span></p>
+
+<h3 id="p1-s1">1. 基本信息</h3>
+<p><strong>标题：</strong>ViRA: Toward Ultra-High-Resolution Visual Agents via Cross-Input Relative Policy Optimization。<strong>作者（PDF 署名，未改拼写）：</strong>Huawei Lin<sup>1,†</sup>、Jinting Liu<sup>1</sup>、Tongyan Wang<sup>2</sup>、Xuyang Chen<sup>1</sup>、Ruihua Shi<sup>1</sup>、Zhichao Xu<sup>3</sup>、Jiaxin Qin<sup>1</sup>、Guoshenghui Zhao<sup>1</sup>、Baijian Yang<sup>2</sup>、Yingjie Victor Chen<sup>2</sup>、Tan Yu<sup>4</sup>、Weijie Zhao<sup>1,‡</sup>。<sup>†</sup>为 Project Lead，<sup>‡</sup>为通讯作者（wjz@cs.rit.edu）。<strong>单位：</strong>1 Rochester Institute of Technology；2 Purdue University；3 University of Utah；4 NVIDIA。<strong>来源：</strong>arXiv:2611.21605v1 [cs.CV]，PDF 页眉标注 16 Nov 2026。更精确的 arXiv 上传时钟（时分秒）Not Reported。<strong>公告批次：</strong>按本次深读规格，属 2026-11-17 左右 arXiv 新投稿列表，<strong>不标 BACKFILL</strong>。<a href="https://arxiv.org/abs/2611.21605">摘要页</a> · <a href="https://arxiv.org/pdf/2611.21605.pdf">PDF</a>。本地核验文件：<code>/workspace/papers_2026-11-18/2611.21605.pdf</code>（pdfinfo 计 74 页）、<code>2611.21605.txt</code>（pdftotext -layout）、<code>2611.21605_tables.txt</code>、<code>2611.21605_key.txt</code>。<strong>方向标签：</strong>Agent × RL（视觉 agent + 强化学习 / CrossRPO）。<strong>代码与资源（论文页眉）：</strong><a href="https://github.com/huawei-lin/ViRA">github.com/huawei-lin/ViRA</a>；数据 <a href="https://huggingface.co/datasets/huaweilin/ViRA-Train">ViRA-Train</a>、<a href="https://huggingface.co/datasets/huaweilin/ViRA-Bench">ViRA-Bench</a>；模型 <a href="https://huggingface.co/huaweilin/ViRA-9B">ViRA-9B</a>、<a href="https://huggingface.co/huaweilin/ViRA-27B">ViRA-27B</a>。本次未独立核验这些仓库是否已公开上线。</p>
+
+<h3 id="p1-s2">2. 一句话定位</h3>
+<p>ViRA 把「同一问题、多张只在证据区域不同且答案不同的图」做成 contrast set，用 CrossRPO 在组内做相对策略优化、并显式奖励「整组都做对」，从训练信号上切断「靠常识猜对也拿分」的捷径；在约 3,500 条 ViRA-Train 上训练出的 ViRA-9B / ViRA-27B，于 ViRA-Bench 最大分辨率上把 set accuracy 做到 63.3%，对照逐版本 GRPO 的 59.3%（摘要；Table 3 / Table 17）。</p>
+
+<h3 id="p1-s3">3. 人话版</h3>
+<p>超高分辨率照片里，真正回答问题的那一小块常常只有几十个像素——比如街对面行人手里拿的是什么。模型吃不下整张 45 MP 的图，只能先看缩略图再决定放大哪里。麻烦在于：缩略图里那个小物件糊成一团时，常识已经给出了高频答案。一个人把小设备举到眼前，十有八九是手机。于是智能体不必看清也能把「手机」答对；强化学习如果只看最终对错，这次「蒙对」和真正读到证据是同一笔奖励。猜对往往还更便宜，因为不必调用 zoom。</p>
+<p>作者的办法像出「改错对照练习」。同一条问题、同一张街景，只把那只手里的物件改成计算器或遥控器，正确答案随之改变。只靠常识、始终回答「手机」的策略，整组里最多对一版。CrossRPO 先在同一版本的多次尝试之间比较（避免「这个版本上永远猜对」也能拿到正优势），再用其他版本是否也做对来加权：只有当你开始把三版都读对，当前这版的正确轨迹才拿到最大信用。</p>
+<h3 id="p1-s4">4. 背景与缺口</h3>
+<p>引言指出，现代相机动辄数十兆像素，但关键细节可能只有几十像素宽。以 Qwen3.5 把 32×32 像素编成一个视觉 token 计，45 MP 照片大约需要 44,000 个 token，模型因此截断输入并把大图缩小。Claude Haiku 5.5 的上限是 3.8 MP，45 MP 里宽 50 像素的细节会缩到约 15 像素。现有视觉智能体先看低分辨率全图再多次 zoom：一类走固定搜索，一类用监督或对最终答案的 RL（多为 GRPO）学习「往哪看」。</p>
+<p>缺口有两层。第一，答对不等于读过证据。图 1a 把 45 MP 街景里的手持设备分别做成手机、计算器和遥控器（约在 110 像素见方内）：无 zoom 时 Haiku 与 GPT-6-Luna 三版都答「smartphone」；DeepEyes、ZoomEye 能 zoom 仍给同一答案；给 Haiku 配上 zoom 并开到最高 thinking，它仍把遥控器认成手机。第二，单图上对最终答案做 RL，猜对和读对同一笔奖励。后来有工作奖励工具调用、裁剪覆盖或调用改善了答案，表扬的是「看过」而不是「读过」。DeepEyes 可放大到整个遥控器，却写确认那是手机；把同一裁剪单独再问，又能答出「TV remote」。这些方法都还是一次只评判一张图。</p>
+<h3 id="p1-s5">5. 核心 insight</h3>
+<p>单张图上，读和猜可以给出同一个答案，任何只定义在该图上的奖励都分不开二者。Contrast set 把这个问题变成可训练的联合事件：同一问题、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math> 个版本只在证据小区域不同且正确答案两两不同。若策略对证据区域「盲视」，则各版本上的答案分布相同；因为正确答案互异，各版本正确率之和不超过 1；若始终输出同一答案且 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>≥2，则 set accuracy 为 0。真正读证据的策略可以让每个版本的正确率都接近 1。</p>
+<p>由此得到两条原则。其一，优势必须在同一版本的多次 rollout 内比较，否则「只在原图上永远猜对」会在 pooled GRPO 中得到正优势（文中为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msqrt><mrow><mi>K</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msqrt></mrow></math>）。其二，要显式优化「整组全对」，但不能只用 set accuracy：其梯度在「有一个版本从未做对」时会消失。CrossRPO 因此最大化「各版本正确率之和 + 加权联合项」，并用与当前版本独立的交叉输入权重来估计联合项，保证「整组都靠常识给出同一答案」时优势全为零（Proposition A.27）。</p>
+<h3 id="p1-s6">6. 方法逐步拆解</h3>
+<p><strong>交互与奖励。</strong>智能体收到问题与被降到像素预算 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math> MP 的图像。每一轮要么作答，要么在当前视图上给框调用 zoom。工具始终从全分辨率原图裁切，再缩放到同一预算（附录 C.1）：裁剪偏大则缩小，偏小则每边最多放大 4 倍；框用 0–1000 坐标，边长至少扩到 32 像素。最多 6 次 zoom。一次 rollout 是完整多轮轨迹，奖励等于最终答案正确性，没有过程奖励。</p>
+<p><strong>目标与优势。</strong>Contrast set 为同一问题下 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math> 个只在证据处不同、答案两两不同的版本；智能体一次只看见一版。版本正确率为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>p</mi><mrow><mi>v</mi></mrow></msub></mrow></math>，set accuracy 为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mo>&#x0220F;</mo><mrow><mi>v</mi></mrow></msub><msub><mi>p</mi><mrow><mi>v</mi></mrow></msub></mrow></math>。对 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>≤3，目标是各版本正确率之和加上加权联合项（式 (2)）。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>=1 时权重为 0，退化为该图上的 RLOO；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>&gt;3 时联合项改为三元组正确率的平均（文本实验做到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>=16）。每个版本采 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>n</mi></mrow></math> 条 rollout。逐版本套 GRPO 不含联合项；把全部版本放进一组（pooled GRPO）则会让「只在一版上猜对」高于组均值。CrossRPO 保留一组一版本，组内用留一均值 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover><mrow><mi>c</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mi>v</mi><mo>&#x0002C;</mo><mo>&#x02212;</mo><mi>i</mi></mrow></msub></mrow></math>，再乘与当前版本独立的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>w</mi><mrow><mi>v</mi></mrow></msub></mrow></math>（其他版本经验正确率之积），得到式 (5)。仅当该版本内部有对有错时优势非零；因子 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mo>&#x0002B;</mo><mi>&#x003BB;</mi><msub><mi>w</mi><mrow><mi>v</mi></mrow></msub></mrow></math> 介于 1 与 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mo>&#x0002B;</mo><mi>&#x003BB;</mi></mrow></math> 之间，在其他版本全部做对时最大。永远回答「smartphone」的策略正确性恒为 1、0、0，全部优势为 0。</p>
+<p><strong>批尺度、保证与数据。</strong>按组用标准差缩放会消掉 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mo>&#x0002B;</mo><mi>&#x003BB;</mi><msub><mi>w</mi><mrow><mi>v</mi></mrow></msub></mrow></math>，因此改为对整个 batch 做均方根缩放（式 (7)），只改变步长。理论保证包括：梯度估计无偏（Theorem A.19）；不给常识捷径计信用；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>=1 回收 GRPO/RLOO，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>≥3 时联合项不能由成对奖励表达；随机搭配则联合项不再分离捷径（Proposition A.27、A.34、A.38）。数据上，原图来自 Wikimedia Commons，只编辑证据小区域并写出带四个选项的问题（先给位置、不点名被改属性）。ViRA-Bench：762 组、466 张 24–108 MP 照片，每组 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>=3；入选物件在缩到 1 MP 时长边至多 13 像素，全分辨率短边至少 28 像素，面积中位数为照片的 0.0075%；458 题问可见属性、209 需一步推理、95 涉及多个物件，全部经人工审核。第一跳覆盖率在变体与原图之间各预算相差至多 2.4 个百分点（附录 B.2），该检验不覆盖「读」。ViRA-Bench-Real：78 组、234 张，Nikon Z8 拍摄（8256×5504，45.4 MP），三张之间只换物件，面积中位数 0.0017%。ViRA-Train：6,457 个 contrast set（4,110 组三版本、2,347 组两版本）加 2,804 张单图，共 9,261 项，照片 21–120 MP，与 Bench 无近重复；其中 5,329 题关于文字、1,128 题关于物体。</p>
+<h3 id="p1-s7">7. 核心公式：变量、目标与直觉</h3>
+<p>对 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>≤3，目标（式 (2)）把各版本正确率与整组全对加在一起：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>J</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><munderover><mo>&#x02211;</mo><mrow><mi>v</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>K</mi></mrow></munderover><msub><mi>p</mi><mrow><mi>v</mi></mrow></msub><mo>&#x0002B;</mo><mi>&#x003BB;</mi><munderover><mo>&#x0220F;</mo><mrow><mi>v</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>K</mi></mrow></munderover><msub><mi>p</mi><mrow><mi>v</mi></mrow></msub><mo>&#x0002C;</mo><mspace width="2em" /><mi>&#x003BB;</mi><mo>&#x02265;</mo><mn>0</mn></mrow></math></div>
+<p>按乘法法则，版本 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>v</mi></mrow></math> 的梯度被「其他版本也做对的概率」放大（式 (3)）：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mo>&#x02207;</mo><mrow><mi>&#x003B8;</mi></mrow></msub><mi>J</mi><mo>&#x0003D;</mo><munderover><mo>&#x02211;</mo><mrow><mi>v</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>K</mi></mrow></munderover><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mn>1</mn><mo>&#x0002B;</mo><mi>&#x003BB;</mi><msub><mo>&#x0220F;</mo><mrow><mi>u</mi><mo>&#x02260;</mo><mi>v</mi></mrow></msub><msub><mi>p</mi><mrow><mi>u</mi></mrow></msub><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><msub><mo>&#x02207;</mo><mrow><mi>&#x003B8;</mi></mrow></msub><msub><mi>p</mi><mrow><mi>v</mi></mrow></msub></mrow></math></div>
+<p>该概率用与当前版本独立的交叉输入权重估计，组内再用 RLOO 的留一均值，得到式 (4)(5)：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>w</mi><mrow><mi>v</mi></mrow></msub><mo>&#x0003D;</mo><munder><mo>&#x0220F;</mo><mrow><mi>u</mi><mo>&#x02260;</mo><mi>v</mi></mrow></munder><msub><mover accent="true"><mrow><mi>p</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>u</mi></mrow></msub></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>A</mi><mrow><mi>v</mi><mo>&#x0002C;</mo><mi>i</mi></mrow></msub><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x0002B;</mo><mi>&#x003BB;</mi><msub><mi>w</mi><mrow><mi>v</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo stretchy="true" fence="true" minsize="1.2em" maxsize="1.2em">(</mo><msub><mi>c</mi><mrow><mi>v</mi><mo>&#x0002C;</mo><mi>i</mi></mrow></msub><mo>&#x02212;</mo><msub><mover><mrow><mi>c</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mi>v</mi><mo>&#x0002C;</mo><mo>&#x02212;</mo><mi>i</mi></mrow></msub><mo stretchy="true" fence="true" minsize="1.2em" maxsize="1.2em">)</mo></mrow></math></div>
+<p>集合上的梯度估计与批内统一尺度为</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mover accent="true"><mrow><mi>g</mi></mrow><mo>&#x0005E;</mo></mover><mo>&#x0003D;</mo><munderover><mo>&#x02211;</mo><mrow><mi>v</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>K</mi></mrow></munderover><munderover><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>n</mi></mrow></munderover><msub><mi>A</mi><mrow><mi>v</mi><mo>&#x0002C;</mo><mi>i</mi></mrow></msub><msub><mo>&#x02207;</mo><mrow><mi>&#x003B8;</mi></mrow></msub><mi>log</mi><msub><mi>P</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>o</mi><mrow><mi>v</mi><mo>&#x0002C;</mo><mi>i</mi></mrow></msub><mo>&#x02223;</mo><msub><mi>s</mi><mrow><mi>v</mi></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mover><mrow><mi>A</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mrow><mi>m</mi></mrow></msub><mo>&#x0003D;</mo><mfrac><mrow><msub><mi>A</mi><mrow><mi>m</mi></mrow></msub></mrow><mrow><msub><mi>s</mi><mrow><mi>&#x0212C;</mi></mrow></msub></mrow></mfrac><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>s</mi><mrow><mi>&#x0212C;</mi></mrow></msub><mo>&#x0003D;</mo><msup><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>M</mi></mrow></mfrac><msubsup><mo>&#x02211;</mo><mrow><mi>m</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>M</mi></mrow></msubsup><msubsup><mi>A</mi><mrow><mi>m</mi></mrow><mrow><mn>2</mn></mrow></msubsup><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><mrow><mn>1</mn><mo>&#x0002F;</mo><mn>2</mn></mrow></msup></mrow></math></div>
+<p class="gloss"><strong>变量表。</strong><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mrow><mi>v</mi></mrow></msub><mo>&#x0002C;</mo><msub><mi>y</mi><mrow><mi>v</mi></mrow></msub></mrow></math>：第 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>v</mi></mrow></math> 个图像版本及其正确答案，且 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>y</mi><mrow><mi>u</mi></mrow></msub><mo>&#x02260;</mo><msub><mi>y</mi><mrow><mi>v</mi></mrow></msub></mrow></math>。<br><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>o</mi><mrow><mi>v</mi><mo>&#x0002C;</mo><mi>i</mi></mrow></msub></mrow></math>：在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mrow><mi>v</mi></mrow></msub></mrow></math> 上第 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>i</mi></mrow></math> 条完整多轮 rollout。<br><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>c</mi><mrow><mi>v</mi><mo>&#x0002C;</mo><mi>i</mi></mrow></msub></mrow></math>：最终答案是否等于 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>y</mi><mrow><mi>v</mi></mrow></msub></mrow></math>，取值 0 或 1；奖励 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>r</mi><mo>&#x0003D;</mo><mi>c</mi></mrow></math>。<br><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>p</mi><mrow><mi>v</mi></mrow></msub></mrow></math>：版本 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>v</mi></mrow></math> 上答对的概率；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover accent="true"><mrow><mi>p</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>v</mi></mrow></msub></mrow></math> 为其 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>n</mi></mrow></math> 条 rollout 的均值。<br><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover><mrow><mi>c</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mi>v</mi><mo>&#x0002C;</mo><mo>&#x02212;</mo><mi>i</mi></mrow></msub></mrow></math>：同一版本除去第 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>i</mi></mrow></math> 条后的留一平均正确率。<br><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>w</mi><mrow><mi>v</mi></mrow></msub></mrow></math>：其他版本经验正确率的乘积。<br><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>：联合项系数，主实验取 0.5。<br><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>A</mi><mrow><mi>v</mi><mo>&#x0002C;</mo><mi>i</mi></mrow></msub></mrow></math>：CrossRPO 优势；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover><mrow><mi>A</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mrow><mi>m</mi></mrow></msub></mrow></math> 是对 batch 内 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>M</mi></mrow></math> 条优势做均方根缩放后的值。<br><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>P</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>o</mi><mo>&#x02223;</mo><mi>s</mi><mo stretchy="false">&#x00029;</mo></mrow></math>：当前策略下整条轨迹的概率。</p>
+<p>直觉可以记成一句：组内比较负责「不要奖励永远猜对的版本」，组间权重负责「把最多的信用留给能把整组解开的读证据轨迹」。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0 时式 (5) 就是逐版本 RLOO。</p>
+<h3 id="p1-s8">8. Toy example（本文自造算例，非论文数字）</h3>
+<p class="note">以下为自造算例，数字不是论文里的准确率或优势值，只用来把式 (5) 算清楚。</p>
+<p>问题：「街尽头那个行人手里拿的是什么？」三个版本：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mrow><mn>1</mn></mrow></msub></mrow></math> 手机、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mrow><mn>2</mn></mrow></msub></mrow></math> 咖啡杯、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mrow><mn>3</mn></mrow></msub></mrow></math> 遥控器，正确答案两两不同。取 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>n</mi></mrow></math>=4 条 rollout，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0.5。</p>
+<p><strong>状态 A：纯常识捷径。</strong>十二条轨迹全部回答「手机」，于是正确性为 4/4、0/4、0/4。各版本内部完全相同，CrossRPO 的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>A</mi><mrow><mi>v</mi><mo>&#x0002C;</mo><mi>i</mi></mrow></msub></mrow></math>=0，参数不更新。若改用把 12 条放进同一组的 pooled GRPO，组均值 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BC;</mi><mo>&#x0003D;</mo><mn>1</mn><mo>&#x0002F;</mo><mn>3</mn></mrow></math>，标准差 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C3;</mi><mo>&#x0003D;</mo><msqrt><mrow><mn>2</mn></mrow></msqrt><mo>&#x0002F;</mo><mn>3</mn></mrow></math>，原图上每条猜对轨迹的优势为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x02212;</mo><mn>1</mn><mo>&#x0002F;</mo><mn>3</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0002F;</mo><mo stretchy="false">&#x00028;</mo><msqrt><mrow><mn>2</mn></mrow></msqrt><mo>&#x0002F;</mo><mn>3</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msqrt><mrow><mn>2</mn></mrow></msqrt><mo>&#x02248;</mo><mn>1.41</mn></mrow></math>，捷径被强化——这正是 Proposition A.27 所禁止的。</p>
+<p><strong>状态 B：第二版偶尔读对。</strong>版本 1 仍 4/4 对，版本 2 有 1 条读对、3 条仍猜「手机」，版本 3 仍全错。此时 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>w</mi><mrow><mn>2</mn></mrow></msub><mo>&#x0003D;</mo><msub><mover accent="true"><mrow><mi>p</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mn>1</mn></mrow></msub><msub><mover accent="true"><mrow><mi>p</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mn>3</mn></mrow></msub><mo>&#x0003D;</mo><mn>1</mn><mo>&#x000B7;</mo><mn>0</mn><mo>&#x0003D;</mo><mn>0</mn></mrow></math>，那条唯一读对的轨迹得到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>A</mi><mrow><mrow><mn>2</mn><mo>&#x0002C;</mo><mi>i</mi></mrow></mrow></msub><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x0002B;</mo><mn>0</mn><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x02212;</mo><mn>0</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>1</mn></mrow></math>；同版本三条错的轨迹优势为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn><mo>&#x02212;</mo><mn>1</mn><mo>&#x0002F;</mo><mn>3</mn><mo>&#x0003D;</mo><mo>&#x02212;</mo><mn>1</mn><mo>&#x0002F;</mo><mn>3</mn></mrow></math>。其余两版本优势为 0。「在咖啡杯这一版上读对」已得到正信用，而原图上继续猜对不再得分。</p>
+<p><strong>状态 C：前两版已稳定读对，第三版刚出现 1/4 正确。</strong>此时 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>w</mi><mrow><mn>3</mn></mrow></msub><mo>&#x0003D;</mo><mn>1</mn></mrow></math>，第三版那条正确轨迹得到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>A</mi><mrow><mn>3</mn><mo>&#x0002C;</mo><mi>i</mi></mrow></msub><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x0002B;</mo><mn>0.5</mn><mo>&#x000B7;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x02212;</mo><mn>0</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>1.5</mn></mrow></math>，同版本错的轨迹为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.5</mn><mo>&#x000D7;</mo><mo stretchy="false">&#x00028;</mo><mn>0</mn><mo>&#x02212;</mo><mn>1</mn><mo>&#x0002F;</mo><mn>3</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo>&#x02212;</mo><mn>0.5</mn></mrow></math>。1.5 是这个自造组里出现过的最大优势：信用留给解开整组的读证据轨迹。</p>
+
+<h3 id="p1-s9">9. Baselines</h3>
+<p>主表按规模分组，并区分无工具、加 zoom 工具、已发布 zoom agent 与专有模型。</p>
+<ul>
+<li><strong>同族基座 ± 工具：</strong>Qwen3.5-9B、Qwen3.8-27B 及其 + tool。Δ 行是 ViRA 相对「基座 + zoom 工具」的增益。+ tool 最多 zoom 六次，衡量未经 CrossRPO、只把工具交给基座的上限。</li>
+<li><strong>整图细读模型：</strong>ZwZ2-9B / ZwZ2-27B、Vision-OPD-9B，各报无工具与 + tool。Table 23 中 Vision-OPD-9B + tool 在 Bench、1 MP 上只对 4.3% 的图像调用 zoom。</li>
+<li><strong>已发布 7–9B zoom agent</strong>（多基于 Qwen2.5-VL-7B，沿用各自工具与轮数）：Mini-o3（允许 32 轮）、DeepEyes、DeepEyesV2、Thyme、Pixel Reasoner、ZoomEye（无训练的裁剪树搜索）。</li>
+<li><strong>已发布 27–32B：</strong>LBS-27B（最多三次文本动作裁剪）、SenseNova-MARS-32B（crop 加两个搜索工具；离线运行，搜索无返回，六轮后必须作答）。</li>
+<li><strong>专有模型 + 作者工具：</strong>Claude Haiku 5.5（最大 3.8 MP）与 GPT-6-Luna（30.7 MP），经 API function calling 调用同一工具，跑 max / medium / no thinking。开源模型贪心解码；ViRA 与消融在 contrast-set 基准上对三次运行取均值。</li>
+</ul>
+<p>方法消融（Table 3 / Table 17）固定 Qwen3.5-9B、同一数据、奖励与步数，只改优势：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0 的逐版本 RLOO、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=1/2、随机搭档、逐版本 GRPO、pooled GRPO / RLOO、ConsistRoll，以及「每组只留一个版本」和「逐版本 GRPO × <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mo>&#x0002B;</mo><mi>&#x003BB;</mi><msub><mi>w</mi><mrow><mi>v</mi></mrow></msub></mrow></math>」。</p>
+<h3 id="p1-s10">10. 实验设置</h3>
+<p><strong>模型与数据。</strong>由 Qwen3.5-9B、Qwen3.8-27B 直接 RL 得到 ViRA-9B、ViRA-27B，训练时 thinking 关闭（Table 14）。先去掉基座在 12.8 MP、不 zoom 就能整组做对的 contrast set，以及八次尝试中至少七次全对或全错的单图，因为式 (5) 在一版上全对或全错时优势为零。ViRA-9B 训练 3,642 项（1,664 个 contrast set + 1,978 张单图），ViRA-27B 训练 3,401 项（1,338 + 2,063），分项见 Table 13。一个 contrast set 计一项：每版本 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>n</mi><mo>&#x0003D;</mo><mn>12</mn><mo>&#x0002F;</mo><mi>K</mi></mrow></math> 条，整组共 12 条，与 GRPO 单输入组大小相同。单图用于保持普通问答能力，并演示 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>=1 可与集合同批训练。</p>
+<p><strong>超参（Table 14，附录 C.4）。</strong>verl 0.10、vLLM 0.32 做 rollout；每步 16 项、每项 12 条；预算在 0.5–16.8 MP 对数均匀抽样，最多 6 次 zoom；clipped ratio，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003F5;</mi><mo>&#x0003D;</mo><mn>0.2</mn></mrow></math>，按 token 取均值；旧对数概率来自 vLLM；每步更新一次；AdamW，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B2;</mi><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><mn>0.9</mn><mo>&#x0002C;</mo><mn>0.999</mn><mo stretchy="false">&#x00029;</mo></mrow></math>，weight decay 0.01，学习率 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mo>&#x000D7;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>6</mn></mrow></msup></mrow></math> 恒定、无 warmup，全局梯度裁剪 1.0；bf16、fp32 梯度规约；无 KL、无熵奖励；温度 1.0、top-<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi></mrow></math>=1.0；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0.5。开放答案由 GPT-4o（gpt-4o-2024-11-20）按 Mini-o3 的 judge 提示打 0/1 分。各做一整遍：227 步（9B）与 212 步（27B），取最后 checkpoint。硬件 8 张 H200，12.7 与 29.6 小时（约 100 与 240 GPU-hours）；27B 使用 tensor parallel 2 与 sequence parallel 2。三次视觉运行的标准差在 Table 1/3 中 Not Reported。</p>
+<p><strong>评测。</strong>十个基准。ViRA-Bench（762 组）与 Real（78 组）在 0.5/1/2/4 MP 及各模型最大分辨率上报告 set accuracy 与每组 token（三版本、多轮提示加生成之和）。最大输入：Qwen3 族 16.8 MP，Qwen2.5-VL 系 12.8 MP，Haiku 3.8 MP，GPT-6-Luna 30.7 MP。另外八个单图基准在 1 MP 与最大分辨率报准确率：V<sup>∗</sup>（191）、HR-Bench 4K/8K（各 800）、MME-RealWorld-Lite（1,919）、TreeBench（405）、O3-Bench（照片中位数 19 MP）、MMStar 与 HallusionBench（中位数 0.18 与 0.53 MP，只报最大分辨率）。开源 + tool 基线的工具采用 DeepEyes 格式、裁剪不放大、每轮最多 2,048 token，与 ViRA「最多 4× 放大、每轮 4,096 token」并不完全相同。</p>
+<h3 id="p1-s11">11. 指标教学</h3>
+<ul>
+<li><strong>Set accuracy（越高越好）。</strong>一个 contrast set 只有三个版本全部答对才计成功。它直接对应「不能靠单一常识答案过关」：在 K=3、答案互异时，始终输出同一答案的策略得 0。这是主指标，也是联合项要最大化的对象。</li>
+<li><strong>Per-image accuracy（越高越好，Table 16 / Table 17 括号内）。</strong>把每个版本当独立题目计分。它可以远高于 set accuracy：已发布 7–9B agent 在 Bench 上单图可达 30%–51%，整组最多只解开 21.1%（§5.2，Table 16 与 Table 1）。二者并读才能看出「单张看着还行、一换证据就垮」。</li>
+<li><strong>Tokens per set（需与准确率一起看）。</strong>一组三个版本、多轮提示加生成的总 token。高分辨率或反复 zoom 会把它推高。CrossRPO 相对逐版本 GRPO 的一个实际优点是更少 zoom、更少 token。</li>
+<li><strong>O / A / B、Zoomed、On obj.、Zooms（Table 19 / Table 23）。</strong>O 常接近常识答案，A/B 才检验是否读了被替换的证据。Zoomed 是至少 zoom 一次的比例；On obj. 是最后一跳裁剪至少覆盖物件框一半面积的比例；Zooms 是每图平均 zoom 次数。作者用「On obj. 不降、但 A/B 准确率降得更明显」来论证联合项改善的是阅读而非寻找。</li>
+<li><strong>通用基准准确率（越高越好）。</strong>检查 contrast set 训练有没有伤害普通视觉问答，以及增益是否只存在于编辑图上。</li>
+</ul>
+<h3 id="p1-s12">12. 可核验结果</h3>
+<p>下列数字均回表或回正文核对，不是从图上目测。</p>
+<ol>
+<li><strong>63.3% vs 59.3% 核验通过，「GRPO」在表里是逐版本 GRPO。</strong>ViRA-9B（CrossRPO，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0.5）在 ViRA-Bench 最大分辨率的 set accuracy 为 63.3%，逐版本 GRPO 59.3%，pooled GRPO 52.6%，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0 为 58.7%（Table 3、Table 17；引言把四个数字写在一起）。Table 1 的 ViRA-9B Max 同为 63.3%（147K token）。</li>
+<li><strong>相对「基座 + 工具」的增益。</strong>ViRA-9B 相对 Qwen3.5-9B + tool，Bench 上从 0.5 MP 的 +17.6 升到 Max 的 +28.7（38.7 vs 21.1，63.3 vs 34.6）；Real 的 Max 为 77.4 vs 34.6（Table 1 Δ 行）。ViRA-27B 相对 Qwen3.8-27B + tool，Bench Max 为 71.5 vs 48.6，Real Max 为 76.5 vs 59.0。</li>
+<li><strong>同尺寸开源模型中的排序。</strong>十个基准上，ViRA-9B、ViRA-27B 分别是其尺度开源模型里最准的（十个中的十个与九个）。已发布 7–9B agent 整组最多 21.1%（Mini-o3 的 4 MP），尽管单图准确率有 30%–51%（Table 16）。ViRA-9B 的 Bench Max 63.3% 高于 Qwen3.8-27B + tool 的 48.6% 与 ZwZ2-27B + tool 的 44.5%；同表 LBS-27B 为 68.6%，不能写成超过所有 27B 开源 agent。</li>
+<li><strong>ViRA-27B 对专有模型：多数领先，并非处处领先。</strong>Bench 上 0.5/1/2/4/Max 为 64.0 / 68.4 / 71.2 / 72.9 / 71.5，均高于 Haiku max thinking 的 58.8 / 59.6 / 63.4 / 63.3 / 63.3 与 GPT-6-Luna max 的 46.2 / 47.4 / 56.4 / 55.6 / 26.6（Table 1）。Real 的 0.5 MP 上 ViRA-27B 为 72.6，Haiku 为 73.1，从 1 MP 起反超（75.2 vs 66.7）。GPT-6-Luna 在 Bench 上从 4 MP 的 55.6% 掉到 30.7 MP 时的 26.6%。按「有 1 MP 与 Max 则两处都领先」计，Table 2 上它对两个专有模型同时领先八个通用基准中的五个（V<sup>∗</sup>、MME-RealWorld-Lite、TreeBench、MMStar、HallusionBench）；HR-Bench 4K 的 1 MP、HR-Bench 8K 的 Max、以及 O3-Bench 两处并不超过 Haiku。</li>
+<li><strong>联合项与随机搭档。</strong>去掉联合项后，Bench 每个预算下降 4.6 到 7.4 个百分点（Table 3：31.3 / 41.2 / 50.0 / 52.9 / 58.7 vs 38.7 / 46.9 / 55.6 / 57.5 / 63.3）。通用基准上多数变化不超过 2 个百分点，例外是 O3-Bench 在 1 MP 下降 6.9（50.4 vs 43.5）。随机搭档为 33.8 / 42.1 / 47.5 / 51.7 / 57.3，接近 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0。</li>
+<li><strong>阅读而非寻找；token 与 GRPO 交叉。</strong>Table 19，Bench 1 MP：CrossRPO 的 O/A/B 为 77.4 / 68.6 / 67.2，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0 为 75.0 / 63.4 / 61.9；覆盖率 86.6% vs 88.3%，zoom 次数 1.07 vs 1.06。Table 17：CrossRPO 每组 12K–147K token；逐版本 GRPO 为 27K–233K，1 MP 时每图 zoom 2.52 次、On obj. 仅 52.1%，但 0.5 / 1 MP 的 set accuracy（44.0 / 50.2）更高；从 2 MP 起 CrossRPO 反超，并在全部通用基准上领先。不能只引用 Max 的 63.3 vs 59.3。</li>
+<li><strong>错误形态（Table 24）。</strong>Bench 共 2,286 张图。ViRA-9B 在 1 MP / Max 的错题率为 28.9% / 18.7%。1 MP 的错题中，21.0% 没有任何裁剪覆盖物件；正文称 78% 的错误发生在已经覆盖之后，其中给出原图答案的比例高于三错误选项均匀乱选的 33%（此类占全部错题的 36.1%，Max 为 41.0%）。1 MP 时 94% 的轨迹恰好 zoom 一次，打偏的框很少被纠正。</li>
+</ol>
+<h3 id="p1-s13">13. 真实表图阅读</h3>
+<p class="cap">表：Table 1 摘录。ViRA-Bench 与 ViRA-Bench-Real 的 set accuracy（%），括号内为每组 token。Max 为各模型最大输入分辨率。ViRA 行为三次运行均值。数字取自 layout 文本第 477–520 行附近，并与 Δ 行及正文叙述交叉核对。</p>
+<div class="tbl"><table>
+<thead>
+<tr><th>模型</th><th>Max MP</th><th>Bench 0.5</th><th>Bench 1</th><th>Bench 2</th><th>Bench 4</th><th>Bench Max</th><th>Real 0.5</th><th>Real 1</th><th>Real 2</th><th>Real 4</th><th>Real Max</th></tr>
+</thead>
+<tbody>
+<tr><td>Qwen3.5-9B + tool</td><td>16.8</td><td>21.1 (16K)</td><td>26.2 (22K)</td><td>31.4 (31K)</td><td>34.4 (45K)</td><td>34.6 (136K)</td><td>10.3 (22K)</td><td>16.7 (30K)</td><td>20.5 (36K)</td><td>23.1 (55K)</td><td>34.6 (141K)</td></tr>
+<tr><td>ZwZ2-9B + tool</td><td>16.8</td><td>25.3 (15K)</td><td>34.1 (18K)</td><td>36.0 (26K)</td><td>40.4 (40K)</td><td>44.2 (128K)</td><td>25.6 (17K)</td><td>21.8 (23K)</td><td>37.2 (30K)</td><td>35.9 (46K)</td><td>46.2 (131K)</td></tr>
+<tr><td>Mini-o3</td><td>12.8</td><td>17.2 (41K)</td><td>18.9 (59K)</td><td>17.3 (102K)</td><td>21.1 (165K)</td><td>18.8 (396K)</td><td>16.7 (200K)</td><td>26.9 (158K)</td><td>25.6 (298K)</td><td>23.1 (287K)</td><td>26.9 (781K)</td></tr>
+<tr><td>ZoomEye</td><td>12.8</td><td>12.6 (303K)</td><td>14.6 (393K)</td><td>16.4 (516K)</td><td>17.1 (696K)</td><td>20.5 (1.1M)</td><td>17.9 (314K)</td><td>17.9 (398K)</td><td>16.7 (529K)</td><td>20.5 (754K)</td><td>28.2 (1.2M)</td></tr>
+<tr><td>ViRA-9B</td><td>16.8</td><td>38.7 (12K)</td><td>46.9 (16K)</td><td>55.6 (26K)</td><td>57.5 (44K)</td><td>63.3 (147K)</td><td>31.2 (11K)</td><td>49.6 (15K)</td><td>57.7 (23K)</td><td>68.8 (41K)</td><td>77.4 (135K)</td></tr>
+<tr><td>Qwen3.8-27B + tool</td><td>16.8</td><td>26.5 (27K)</td><td>33.3 (32K)</td><td>41.1 (42K)</td><td>44.0 (59K)</td><td>48.6 (174K)</td><td>20.5 (30K)</td><td>30.8 (36K)</td><td>33.3 (44K)</td><td>44.9 (65K)</td><td>59.0 (181K)</td></tr>
+<tr><td>LBS-27B</td><td>16.8</td><td>42.8 (28K)</td><td>51.2 (34K)</td><td>57.3 (46K)</td><td>63.4 (69K)</td><td>68.6 (149K)</td><td>43.6 (30K)</td><td>48.7 (36K)</td><td>64.1 (48K)</td><td>69.2 (68K)</td><td>71.8 (147K)</td></tr>
+<tr><td>ViRA-27B</td><td>16.8</td><td>64.0 (50K)</td><td>68.4 (60K)</td><td>71.2 (81K)</td><td>72.9 (128K)</td><td>71.5 (409K)</td><td>72.6 (41K)</td><td>75.2 (50K)</td><td>79.1 (70K)</td><td>80.8 (109K)</td><td>76.5 (354K)</td></tr>
+<tr><td>Haiku 5.5, max thinking</td><td>3.8</td><td>58.8 (70K)</td><td>59.6 (71K)</td><td>63.4 (71K)</td><td>63.3 (86K)</td><td>63.3 (86K)</td><td>73.1 (58K)</td><td>66.7 (61K)</td><td>69.2 (64K)</td><td>67.9 (85K)</td><td>67.9 (85K)</td></tr>
+<tr><td>GPT-6-Luna, max thinking</td><td>30.7</td><td>46.2 (32K)</td><td>47.4 (37K)</td><td>56.4 (44K)</td><td>55.6 (70K)</td><td>26.6 (723K)</td><td>52.6 (28K)</td><td>43.6 (39K)</td><td>51.3 (47K)</td><td>50.0 (76K)</td><td>47.4 (877K)</td></tr>
+</tbody>
+</table></div>
+<p>token 与分辨率强相关：ViRA-9B 在 0.5–4 MP 为 12K–44K，Haiku max thinking 同期为 70K–86K，正文称约 2 到 6 倍；到了各自 Max，Haiku 停在 3.8 MP 的 86K，ViRA-9B 要吃 16.8 MP 的 147K。已发布 7–9B agent 更贵也更不准，ZoomEye 与 Mini-o3 的每组 token 远高于 Qwen3.5-9B + tool（Bench Max 34.6）。把预算拉到上限并不单调变好：ViRA-27B 在 Real 上从 4 MP 的 80.8 落到 Max 的 76.5，GPT-6-Luna 在 Bench Max 崩到 26.6%（723K）。</p>
+<p class="cap">表：Table 3 摘录。全部从 Qwen3.5-9B 出发、数据与奖励相同，只改优势。数字为 ViRA-Bench / ViRA-Bench-Real 的 set accuracy（%），三次运行均值。完整 18 列（含八个通用基准）见原表；此处保留 contrast set 主列，通用基准结论在第 14 节叙述。</p>
+<div class="tbl"><table>
+<thead>
+<tr><th>优势设定</th><th>B 0.5</th><th>B 1</th><th>B 2</th><th>B 4</th><th>B Max</th><th>R 0.5</th><th>R 1</th><th>R 2</th><th>R 4</th><th>R Max</th></tr>
+</thead>
+<tbody>
+<tr><td>CrossRPO (λ=0.5)</td><td>38.7</td><td>46.9</td><td>55.6</td><td>57.5</td><td>63.3</td><td>31.2</td><td>49.6</td><td>57.7</td><td>68.8</td><td>77.4</td></tr>
+<tr><td>λ=0（逐版本 RLOO）</td><td>31.3</td><td>41.2</td><td>50.0</td><td>52.9</td><td>58.7</td><td>23.5</td><td>41.9</td><td>56.8</td><td>65.4</td><td>70.1</td></tr>
+<tr><td>λ=1</td><td>33.4</td><td>44.2</td><td>51.3</td><td>56.1</td><td>56.6</td><td>32.9</td><td>49.6</td><td>59.0</td><td>67.1</td><td>69.2</td></tr>
+<tr><td>λ=2</td><td>40.9</td><td>47.9</td><td>53.8</td><td>55.7</td><td>58.2</td><td>52.1</td><td>59.0</td><td>68.8</td><td>69.7</td><td>74.8</td></tr>
+<tr><td>Random partners</td><td>33.8</td><td>42.1</td><td>47.5</td><td>51.7</td><td>57.3</td><td>32.5</td><td>48.3</td><td>52.1</td><td>65.0</td><td>71.4</td></tr>
+<tr><td>Per-version GRPO</td><td>44.0</td><td>50.2</td><td>53.4</td><td>56.3</td><td>59.3</td><td>55.6</td><td>66.2</td><td>74.4</td><td>73.5</td><td>75.6</td></tr>
+<tr><td>Pooled GRPO</td><td>38.0</td><td>44.9</td><td>51.6</td><td>53.9</td><td>52.6</td><td>44.9</td><td>53.8</td><td>59.8</td><td>65.4</td><td>70.1</td></tr>
+<tr><td>Pooled RLOO</td><td>37.2</td><td>43.7</td><td>52.2</td><td>55.7</td><td>61.0</td><td>44.9</td><td>58.1</td><td>68.4</td><td>70.9</td><td>75.6</td></tr>
+<tr><td>ConsistRoll</td><td>23.5</td><td>33.4</td><td>40.8</td><td>47.1</td><td>53.1</td><td>16.2</td><td>29.9</td><td>49.6</td><td>56.0</td><td>61.5</td></tr>
+</tbody>
+</table></div>
+<p>CrossRPO 在编辑图 Bench 的 2 MP 及以上最优，但在 Real 的 0.5–4 MP 上全面落后于逐版本 GRPO（55.6 / 66.2 / 74.4 / 73.5 vs 31.2 / 49.6 / 57.7 / 68.8），只在 Real Max 以 77.4 vs 75.6 反超。Pooled 两法在 Bench 全程落后，在 Real 低中分辨率却领先 CrossRPO。ConsistRoll 在两套基准的每个预算都最弱。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=2 在低预算很强（Real 0.5 MP 为 52.1），但 Bench Max 只有 58.2，且通用基准落后、token 翻倍。</p>
+<p class="cap">表：Table 17 与 Table 19 合读。ViRA-Bench 上 set accuracy（括号内 per-image accuracy）及每组 token；右侧为 1 MP 时 O/A/B 准确率、最后一跳覆盖率与每图 zoom 次数。均为三次运行均值。</p>
+<div class="tbl"><table>
+<thead>
+<tr><th>设定</th><th>0.5 MP</th><th>1 MP</th><th>2 MP</th><th>4 MP</th><th>Max</th><th>O / A / B（1 MP）</th><th>On obj.</th><th>Zooms</th></tr>
+</thead>
+<tbody>
+<tr><td>CrossRPO (λ=0.5)</td><td>38.7 (65.1) 12K</td><td>46.9 (71.1) 16K</td><td>55.6 (75.8) 26K</td><td>57.5 (78.2) 44K</td><td>63.3 (81.3) 147K</td><td>77.4 / 68.6 / 67.2</td><td>86.6</td><td>1.07</td></tr>
+<tr><td>λ=0（逐版本 RLOO）</td><td>31.3 (59.7) 11K</td><td>41.2 (66.8) 15K</td><td>50.0 (72.5) 24K</td><td>52.9 (74.7) 42K</td><td>58.7 (78.6) 144K</td><td>75.0 / 63.4 / 61.9</td><td>88.3</td><td>1.06</td></tr>
+<tr><td>λ=0，每组只留一版</td><td>31.1 (59.3) 10K</td><td>40.5 (67.3) 15K</td><td>49.3 (72.5) 23K</td><td>53.6 (74.7) 41K</td><td>58.1 (78.0) 147K</td><td>78.2 / 61.9 / 61.6</td><td>90.0</td><td>1.02</td></tr>
+<tr><td>Per-version GRPO</td><td>44.0 (67.4) 27K</td><td>50.2 (72.0) 37K</td><td>53.4 (74.4) 56K</td><td>56.3 (76.7) 87K</td><td>59.3 (79.2) 233K</td><td>77.8 / 68.7 / 69.4</td><td>52.1</td><td>2.52</td></tr>
+<tr><td>Pooled GRPO</td><td>38.0 (63.8) 18K</td><td>44.9 (69.9) 22K</td><td>51.6 (74.4) 33K</td><td>53.9 (75.6) 53K</td><td>52.6 (75.4) 157K</td><td>76.5 / 68.2 / 64.9</td><td>75.5</td><td>1.53</td></tr>
+<tr><td>ConsistRoll</td><td>23.5 (54.3) 24K</td><td>33.4 (61.6) 32K</td><td>40.8 (67.0) 48K</td><td>47.1 (70.6) 79K</td><td>53.1 (74.8) 274K</td><td>73.3 / 57.5 / 54.1</td><td>86.4</td><td>2.15</td></tr>
+</tbody>
+</table></div>
+<p>「每组只留一个版本」与 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0 在 Bench 上最多相差 0.7 个百分点（附录 G.4），说明把另外两版当作独立图像加入几乎不够；CrossRPO 相对「只留一版」领先 3.9 到 7.6 个百分点，增益来自联合项。逐版本 GRPO 在 1 MP 的 A/B 并不低于 CrossRPO，短板更在覆盖率、token 与通用基准。</p>
+<p class="cap">表：Table 23 摘录。ViRA-Bench、1 MP，带 zoom 工具的模型在原图与两个变体上的准确率，以及 zoom 行为。ViRA 为三次均值。「On obj.」指最后一跳覆盖物件的比例。</p>
+<div class="tbl"><table>
+<thead>
+<tr><th>模型（1 MP）</th><th>O</th><th>A</th><th>B</th><th>Zoomed</th><th>On obj.</th><th>Zooms</th></tr>
+</thead>
+<tbody>
+<tr><td>Qwen3.5-9B + tool</td><td>63.4</td><td>52.5</td><td>49.9</td><td>99.1</td><td>62.6</td><td>1.82</td></tr>
+<tr><td>DeepEyes</td><td>50.4</td><td>32.2</td><td>25.1</td><td>100.0</td><td>47.0</td><td>1.01</td></tr>
+<tr><td>DeepEyesV2</td><td>43.3</td><td>30.2</td><td>23.5</td><td>75.2</td><td>5.7</td><td>1.69</td></tr>
+<tr><td>ZoomEye</td><td>58.7</td><td>41.9</td><td>36.7</td><td>35.0</td><td>27.1</td><td>21.84</td></tr>
+<tr><td>ViRA-9B</td><td>77.4</td><td>68.6</td><td>67.2</td><td>99.9</td><td>86.6</td><td>1.07</td></tr>
+<tr><td>LBS-27B</td><td>82.0</td><td>73.5</td><td>72.7</td><td>100.0</td><td>73.8</td><td>1.96</td></tr>
+<tr><td>ViRA-27B</td><td>88.5</td><td>83.0</td><td>82.5</td><td>100.0</td><td>91.0</td><td>2.38</td></tr>
+<tr><td>Haiku 5.5, max thinking</td><td>85.2</td><td>74.9</td><td>77.2</td><td>100.0</td><td>75.9</td><td>2.74</td></tr>
+<tr><td>GPT-6-Luna, max thinking</td><td>77.3</td><td>71.1</td><td>70.5</td><td>98.9</td><td>73.8</td><td>2.48</td></tr>
+</tbody>
+</table></div>
+<p>ViRA-9B 相对基座 + 工具，O/A/B 分别高 14.0 / 16.1 / 17.3 个百分点，覆盖率从 62.6% 升到 86.6%，zoom 次数从 1.82 降到 1.07。DeepEyesV2 虽有 75.2% 的图像会 zoom，最后一跳只在 5.7% 上盖住物件。专有模型 zoom 两到三次，覆盖率（75.9% / 73.8%）仍低于 ViRA-9B 的 86.6% 与 ViRA-27B 的 91.0%。</p>
+<h3 id="p1-s14">14. Ablation 与缺失的 ablation</h3>
+<p>已做消融共享数据、奖励、工具与步数，隔离的是优势定义（附录 G.1）。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0.5 从 2 MP 起是 Bench 上最准的变体；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=1 在 Bench 每个预算都更低，Max 仅 56.6；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=2 低预算更好，但 Max 与全部通用基准更差，且每图 zoom 2.7 次、每组 34K–346K token。随机搭档证明必须对照同一问题的其他证据版本；「只留一版」证明额外图像本身几乎不够。把交叉输入因子乘到逐版本 GRPO 上，并不能超过原版逐版本 GRPO（Table 17）。ConsistRoll 在两套 contrast set 上全面落后，与「成对奖励表达不了 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>=3 联合项」一致。</p>
+<p>文本迁移（Table 4 / Table 5）在 ConFiQA 上用同一套优势、无图像无工具，训练 2,856 道「基座不看段落就能答对」的题，测试 1,660 题。整组三版本全对：CrossRPO 81.9±3.1，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0 为 81.0±1.3，pooled GRPO 79.6±1.8，pooled RLOO 80.2±1.7，基座 58.6。NQ-Swap 替换段与 FaithEval 上四种方法相差不超过 2.0 个百分点。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>=4/8/16 时 CrossRPO 的整组全对均值最高，逐版本准确率为 91.5% / 93.4% / 94.6%。作者称这些实验只说明联合项能迁到文本。</p>
+<p><strong>缺失或不充分之处。</strong>只训练了 Qwen3.5 / Qwen3.8 一族，没有与覆盖率或框面积奖励做正交实验。图像集合 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math> 最大为 3。题干含物件位置，没有去掉位置提示的对照。Real 只有 78 组，1/78≈1.3 个百分点，排序对小样本敏感。三次视觉运行未报告标准差。开放答案的 GPT-4o judge 没有人工一致性抽样（Not Reported）。</p>
+<h3 id="p1-s15">15. Claim vs Evidence</h3>
+<p><strong>对齐较好的声明。</strong>「最大分辨率 63.3%，对照 GRPO 的 59.3%」可在 Table 3/17 核对，引言还补了 pooled GRPO 52.6% 与 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0 的 58.7%，只需记住摘要中的 GRPO 是逐版本而非 pooled。「联合项不会强化整组靠常识给出同一答案」有证明，随机搭档给出实证对应。ViRA-9B 为同尺寸开源模型在十个基准上最准，与 Table 1、Table 2 的组内排序一致。「约 3,500 条」与 3,642 / 3,401 相符，且少于 Table 15 已报告训练量的已发布 agent（DeepEyes 47K、Thyme 至少 500K、ZwZ2 20.4K）。编辑痕迹「不指引第一跳搜索」有 Table 12 支持（覆盖率差在 −2.4 到 +1.2 个百分点；ViRA-9B 五个预算平均差为 0.0）。</p>
+<p><strong>需要收窄的声明。</strong>「多数基准上超过最高 thinking 的 Haiku 与 GPT-6-Luna」为真，但 Real 0.5 MP、O3-Bench 以及部分 HR-Bench 分辨率上并不超过 Haiku。把 63.3 vs 59.3 写成「全面优于 GRPO」不合适：逐版本 GRPO 在低分辨率和几乎整张 Real 表上领先，CrossRPO 的优势更集中在高分辨率编辑图、token 效率与通用基准。用编辑图训练再评测，仍有「认编辑痕迹」的剩余风险；Real 与第一跳检验作了缓解，但 Real 规模小，且第一跳检验不覆盖阅读。题干自带位置描述，会让搜索任务偏轻。总体不是过宣称，但摘要比表格更「顺」。</p>
+<h3 id="p1-s16">16. 贡献</h3>
+<p>按论文 Contributions 并对照实验，可概括为三条。第一，提出适用于任意集合大小（含单图）的 CrossRPO，证明更新无偏、不会强化整组靠常识作答的集合，并把 GRPO 与近年双输入方法收为其目标的特例。第二，构建超高分辨率 contrast set：ViRA-Train（9,261 项，含 6,457 个 contrast set 与 2,804 张单图）、ViRA-Bench（762 组编辑图）与实地拍摄的 ViRA-Bench-Real（78 组）。第三，用约 3,500 条数据训练 ViRA-9B / ViRA-27B，在同尺寸开源模型中取得领先，并展示联合项对阅读（而非仅仅找到物件）的作用；作者声明将公开数据、代码与模型。</p>
+
+<h3 id="p1-s17">17. 局限</h3>
+<p><strong>论文自述。</strong>编辑图可能留下影响「阅读」的痕迹；Real 只有 78 组，且为同一相机、室内、以海报标牌为主，缺少与 Bench 同规模的室外实地基准。题干描述了物件位置，搜索比无位置提示更容易。图像集合最多三版本，更大 K 只在文本上测过。构造 contrast set 的成本高于单图；相对 λ=0 的增益主要出现在 contrast set 上，单图权重为零，行为与 RLOO 相同。奖励只有准确率，不鼓励更紧的框或继续放大，ViRA-9B 通常只 zoom 一次且框偏大。只训练了一个基座家族。基线沿用各自工具与提示，专有模型走 API。文本实验规模很小。</p>
+<p><strong>阅读时还可看到的局限。</strong>三次主实验未给标准差；78 组 Real 上 1–2 个百分点的方法排序不稳定；开放题依赖 GPT-4o；ViRA 与部分 + tool 基线的 zoom 实现不完全相同。GPT-6-Luna 在最大分辨率上的崩塌被报告但未给出因果结论，记为 Not Verified。错误分析表明，即便覆盖了物件，变体上仍大量退回原图答案，「看见」之后的读与说仍是瓶颈，而当前奖励给不了这一步更细的信用。</p>
+<h3 id="p1-s18">18. 复现要点</h3>
+<p>要复现主结果，至少需要对齐：基座 Qwen3.5-9B / Qwen3.8-27B；按 Table 13 的来源与「12.8 MP 无工具未整组做对 / 单图八次尝试中对 1–6 次」筛选；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>=0.5，每项 12 条 rollout 且 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>n</mi><mo>&#x0003D;</mo><mn>12</mn><mo>&#x0002F;</mo><mi>K</mi></mrow></math>，每步 16 项，一整遍（227 / 212 步），学习率 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mo>&#x000D7;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>6</mn></mrow></msup></mrow></math>，clip <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003F5;</mi><mo>&#x0003D;</mo><mn>0.2</mn></mrow></math>，无 KL 与熵奖励，thinking 关闭，batch 级 RMS 缩放而不是按组标准差；zoom 必须从全分辨率原图裁切、每边最多 4×、预算对数均匀 0.5–16.8 MP、最多六次调用；开放答案用同一 GPT-4o 与 Mini-o3 提示。评测要报告 set accuracy 而不是只报单图准确率，并固定 0.5/1/2/4/Max 网格、贪心解码、三次种子。消融若改用逐版本 GRPO 的组内 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C3;</mi></mrow></math>，就不再是 CrossRPO，结果也会回到「低分辨率更强、更费 token」的另一条曲线。数据管线依赖多种闭源编辑与审核模型（Table 10），更可行的路径是使用作者声称将发布的数据集，再重跑训练与 Table 3 的优势替换。</p>
+
+<h3 id="p1-s19">19. 研究价值</h3>
+<p>这篇工作的价值不在「又一个会 zoom 的 27B 模型」，而在于把视觉智能体 RL 里长期被单图准确率掩盖的捷径，变成一个可证明、可消融、可用 set accuracy 直接测量的对象。对比组训练在 NLP 里并不新鲜，但把它做成任意 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math> 的相对策略优化、并处理 zoom 轨迹的信用分配，对 Agent × RL 是可迁移的。约 3,500 条、八卡一天量级就能拉开与同尺寸开源系统的差距，说明在正确的负例结构下，视觉 agent 后训练不必堆到十万级轨迹。Real 上逐版本 GRPO 的反超、以及「覆盖后仍答原图答案」的高比例，也说明联合项不是万用增益，阅读与框策略仍需更细的奖励。</p>
+
+<h3 id="p1-s20">20. 可执行迁移</h3>
+<p><strong>迁移一：在现有 GRPO/RLOO 视觉 agent 训练里加 contrast set 通道。</strong>数据侧为同一问题构造 K=2 或 3 个「只改证据、答案不同」的版本；实现侧保持「一组一个版本」的 RLOO 优势，乘上交叉输入因子，并把标准差缩放改成 batch RMS，否则权重会被消掉。建议默认 λ=0.5，并始终并排跑 λ=0 与「随机搭档」两个对照：若后两者贴近而 CrossRPO 拉不开，说明对照集没有共享那条捷径。度量上同时报 set accuracy、O/A/B、On obj. 与每组 token，不要只看单图准确率。</p>
+<p><strong>迁移二：先给 zoom 补过程度量，而不是立刻改奖励。</strong>ViRA-9B 的局限是一次大框。可在验证集上跟踪「最后一跳中物件长边的像素数」和「是否在裁剪上二次放大」（文中 1 MP 时 94% 只 zoom 一次）。若要改奖励，先把它当作分析指标跑完 λ 网格，再考虑对过框面积加很弱的惩罚，并检查 A/B 准确率与 On obj. 是否一升一降。接口上保持「框画在当前视图、裁切始终回全分辨率原图」；把题干里的位置提示做成可开关字段，单独测搜索难度。</p>
+<h3 id="p1-s21">21. 方向专用分析（Agent × RL：CrossRPO 与 GRPO/RLOO、contrast set 奖励与 zoom 信用分配）</h3>
+<p>从同策略 RL 看，CrossRPO 并没有改成离策略：rollout 仍来自当前 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow></msub></mrow></math>，损失仍是截断比为 0.2 的 clipped ratio，旧对数概率来自生成这些轨迹的 vLLM。它改的是优势的对照范围。GRPO/RLOO 的「相对」发生在同一输入的一组轨迹之间，正确猜测与正确阅读不可辨。Pooled GRPO 把范围扩到整组版本，却让原图上的常识答案相对变体上的错误答案「显得更好」。CrossRPO 把相对比较锁回同一版本（全对或全错则优势为零），再用独立于该版本的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>w</mi><mrow><mi>v</mi></mrow></msub></mrow></math> 把联合成功注入尺度。</p>
+<p>Contrast set 奖励能切断常识捷径，关键不在多给了一点 set bonus，而在于捷径在联合事件上的测度为零：始终同一答案时 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mo>&#x0220F;</mo><mrow><mi>v</mi></mrow></msub><msub><mi>p</mi><mrow><mi>v</mi></mrow></msub></mrow></math>=0，式 (5) 给出全零优势。随机搭档进一步说明，没有共享捷径的输入被捆在一起时，联合项只是平均正确率的再缩放。因此必须用同一问题下证据的最小替换来造负例。</p>
+<p>Zoom 的信用分配本文只解决了一半。最终奖励不含「框是否盖住证据」。CrossRPO 的约束是间接的：变体上最终答案必须随裁剪内容改变，否则整组奖励为 0。Table 19 显示联合项几乎不增加覆盖率，却提高 A/B 准确率，信用更多落在「读」而不是「找」。另一半尚未解决：没有对框尺度与二次放大的信用，ViRA-9B 学会一次宽松的 zoom；逐版本 GRPO 反而 zoom 更勤（2.52 次）但 On obj. 只有 52.1%。过程奖励与联合项正交（附录 G.3）。</p>
+<h3 id="p1-s22">22. Attack / Verification lens</h3>
+<p><strong>如何攻击结论。</strong>可以训练或提示一个专门检测编辑痕迹的头，只在 A/B 上改变行为、在 Real 上失效，以测试「阅读增益」有多少其实是「认编辑」。可以把题干中的位置描述去掉或换成误导性位置，看 set accuracy 与第一跳覆盖率是否同时垮掉。可以只比较 Real 的 0.5–4 MP，并强调逐版本 GRPO 在该区域全面领先，从而把「CrossRPO 优于 GRPO」收窄到「高分辨率编辑图 + 通用基准 + 更少 token」。还可以质疑 78 组 Real 的统计力度，以及 GPT-4o judge、贪心解码与单一模型族。专有模型对比须固定 thinking 级别与工具桥接方式。</p>
+<p><strong>如何独立核验。</strong>按「三版本全对」重算 Table 1 的 set accuracy，并平行计算 Table 16 的单图准确率。复现 Table 12 的第一跳覆盖率差，看是否仍落在约 −2.4 到 +1.2 个百分点。用同一批 3,642 项重跑 CrossRPO 与 λ=0、逐版本 GRPO、pooled GRPO，核验 63.3 / 58.7 / 59.3 / 52.6 是否同向。文本侧用 ConFiQA 的强先验协议核对 Table 4 的 81.9±3.1。若权重如约开放，再在 V<sup>∗</sup> 与 HR-Bench 上核对三次运行均值是否落在 Table 2。图上比例若无法在文本中定位，应标 Not Verified。</p>
+<h3 id="p1-s23">23. 记忆总结</h3>
+<p>ViRA 要解决的不是「会不会调用 zoom」，而是「对了并不等于读过」：单图最终答案 RL 会强化常识捷径。CrossRPO 在 contrast set 上做组内 RLOO，再用其他版本的正确率乘积加权，显式优化整组全对，并证明「整组靠同一常识答案」时优势为零。主结果要记四个数：ViRA-Bench Max 上 CrossRPO 63.3%，逐版本 GRPO 59.3%，pooled GRPO 52.6%，无联合项 58.7%（Table 3/17）。ViRA-9B / ViRA-27B 各用 3,642 与 3,401 项、八张 H200 上 12.7 与 29.6 小时训完；9B 领跑同尺寸开源，27B 在 Bench 全程超过最高 thinking 的 Haiku 与 GPT-6-Luna，但 Real 0.5 MP 与部分通用基准并非如此。联合项提高的是变体上的阅读，不是找到物件的频率；随机搭档会取消增益。逐版本 GRPO 在低分辨率和 Real 上往往更准，但更费 zoom 与 token，不能被摘要里的 59.3% 一笔带过。编辑图加实地小基准是必要的双重保险，78 组 Real 仍偏小；一次大框、题干含位置、只训 Qwen 家族，是复现和迁移时最先该碰的边界。</p>
+</section>
+<section class="paper" id="p2">
+<h2>论文 2｜MiSTiQ：用 MicroScaling 网格量化做极端 KV Cache 压缩</h2>
+<p><span class="tag">NEW</span><span class="tag">Inference Acceleration</span><span class="tag">KV cache 量化</span><span class="tag">MX / NVFP4</span></p>
+
+<h3 id="p2-s1">1. 基本信息</h3>
+<p><strong>标题：</strong>MiSTiQ: MicroScaling Trellis Quantization for Extreme KV Cache Compression。<strong>作者（PDF 题头）：</strong>Ofir Gordon<sup>1</sup>、Lior Dikstein<sup>1</sup>、Paul Balanca<sup>2</sup>、Idan Achituve<sup>1</sup>、Douglas Orr<sup>*2</sup>、Hai Victor Habi<sup>*1</sup>。星号标注为共同末位作者（Equal last authors）。<strong>单位：</strong><sup>1</sup>Arm AI Research (AAIR), Arm Ltd；<sup>2</sup>Graphcore Research。<strong>通讯作者（PDF）：</strong>Hai Victor Habi（haivictor.habi@arm.com）、Douglas Orr（douglaso@graphcore.ai）。<strong>来源：</strong>arXiv:2611.21216v1 [cs.LG]。PDF 题头写 Preprint. November 17, 2026；版本行写 16 Nov 2026。<strong>页数：</strong>26 页（含附录）。<strong>方向标签：</strong>Inference Acceleration（KV cache 量化 / 低比特注意力计算）。<strong>非 BACKFILL。</strong> <a href="https://arxiv.org/abs/2611.21216">摘要页</a> · <a href="https://arxiv.org/pdf/2611.21216.pdf">PDF</a>。正文承诺录用后公开代码，写作时未见代码链接。</p>
+
+<h3 id="p2-s2">2. 一句话定位</h3>
+<p>MiSTiQ 把网格编码存储和微缩放（MX）计算格式接到一起：用束搜索在 bitshift 网格上编码 KV cache，再用 MX-Hash 把重建值直接生成到目标 MX 元素网格上，从而在约 1.25 有效比特/元素的预算下，既少占显存，又不必先反量化到高精浮点再算注意力。</p>
+
+<h3 id="p2-s3">3. 人话版</h3>
+<p>可以把 KV cache 想成一本越写越厚的草稿纸。上下文一长、并发一批，它既占显存，解码时还要反复搬运；在投机解码、MLA 或共享前缀等场景里，解码甚至可能变成算力瓶颈。量化就是少用比特记每一个数。更狠的矢量量化一次给一组通道挑一个「允许的向量」，可是这本清单（codebook）随向量长度指数膨胀，硬件很快装不下；多数方法即便把码存瘦了，算注意力前仍要先解回高精浮点，低精度矩阵单元用不上。</p>
+<p>MiSTiQ 换了两套办法。存储不再靠大词典，而靠在有限状态的网格里选一条路：只记下每一步怎么拐，解码按规则恢复整段向量。这是 QTIP 一类思路，作者把它从权重搬到 KV，并用束搜索代替全量 Viterbi，以控制在线编码开销。计算则用 MX：若干低精度元素共用一个块尺度，可以先在元素网格上累加点积，再乘块尺度。关键不是「先随便量化再硬转成 MX」，而是先按块缩放，让网格哈希直接吐出已落在 MX 元素网格上的值。缓存里存路径比特与块尺度，读出已是可计算的 MX 张量。</p>
+
+<h3 id="p2-s4">4. 背景与缺口</h3>
+<p>长上下文与大 batch 同时推高 KV 的容量和内存流量。应对大致两条路：改结构（MQA、GQA、滑动窗口或混合注意力），或做训练后压缩。本文走量化，因为它不必重训即可接到已有模型上。</p>
+<p>KV 量化很早就利用键值分布不同：KIVI 对键按通道、对值按 token 量化；更低比特时，NSNQuant 用双归一化、通道中心化和 Hadamard，配可复用高斯码本且无需数据相关校准；VecInfer 用平滑和 Hadamard 改善码本利用率，并融合反量化与注意力。这些方法通常把缓存存成整数码，计算仍走高精通路。显式码本在每元素 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math> 比特、向量长 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi></mrow></math> 时有 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>2</mn><mrow><mrow><mi>k</mi><mi>V</mi></mrow></mrow></msup></mrow></math> 项，硬件很难装下。QTIP 用 bitshift 网格把有效量化维数和码本大小解耦，但原作面向权重、编码用 Viterbi。MX 格式用共享块尺度扩展低精度动态范围；先前 MX 用于 KV 的工作多在四比特及以上。作者认为，把「低于 2 有效比特的存储」和「直接重建到 MX 兼容格式」合在一起仍是缺口，并称就其所知 MiSTiQ 是首个专门针对 KV、同时满足这两点的量化器——此为论文声明，本文未做独立普查。</p>
+
+<h3 id="p2-s5">5. 核心 insight</h3>
+<p>第一，缩放和网格量化的顺序会影响重建误差。应先做 MX 块缩放，再对归一化值走网格；若先网格再转 MX，搜索就看不见最终的元素量化。</p>
+<p>第二，编码对象不是标准高斯，而是块归一化后的「MX-Gaussian」。若网格状态近似均匀，就可用逆变换抽样：把状态混洗成均匀分位数，经尺度条件的逆 CDF，再用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Q</mi><mi>E</mi></msub></mrow></math> 打到目标网格。这就是 MX-Hash：重建值从一开始就长在 MX 元素格式里。</p>
+<p>第三，KV 必须在线编码，全量 Viterbi 要保留 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>2</mn><mi>L</mi></msup></mrow></math> 个状态。作者改用束搜索，只留 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi></mrow></math> 条假设；解码端仍是确定性的状态恢复，不必再搜索。</p>
+<p>第四，当块尺度从粗的 UE8M0（2 的幂）换成更细的 UE5M3 或 NVFP4 的 E4M3 时，把尺度钉死再搜索会吃亏。他们在束内把尺度放松成连续变量，用闭式最小二乘逐步重拟合，再量化回尺度格式。</p>
+<p>第五，键比值更怕量化。固定总载荷下应给键更多转移比特；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi></mrow></math> 越大，转移预算改 1 比特，每元素载荷只变 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>c</mi><mo>&#x0002F;</mo><mi>V</mi></mrow></math>，分配可以更细。</p>
+
+<h3 id="p2-s6">6. 方法逐步拆解</h3>
+<p><strong>接到已有预处理。</strong>主实验把 MiSTiQ 当作 NSNQuant 工作流里码本量化器的即插替换，保留归一化与 Hadamard：归一化在 RoPE 前，量化在 RoPE 后。附录另给出与 VecInfer 预处理的结合。键通道先减去冻结的逐通道均值、再除以冻结标准差（按层、KV 头、键通道校准，标准差下限 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>10</mn><mrow><mrow><mo>&#x02212;</mo><mn>6</mn></mrow></mrow></msup></mrow></math>），Hadamard 后再量化；重建并逆变换后还原均值和尺度。</p>
+<p><strong>先按块求尺度，再进网格。</strong>长度 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>d</mi><mo>&#x0003D;</mo><mi>T</mi></mrow></math> 的向量切成大小 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>d</mi><mrow><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">x</mi></mrow></mrow></msub></mrow></math> 的块。参考尺度取块内最大绝对值除以元素格式最大值（附录写明 E2M1 为 6），再量化到所选尺度格式。UE8M0 用初始尺度并在搜索中固定；UE5M3 与 NVFP4 做联合尺度搜索。块之间尺度独立，网格状态和累积代价跨块延续。假定 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi></mrow></math> 整除块长，使每一步发射落在同一 MX 块内。</p>
+<p><strong>在 bitshift 网格上束搜索编码。</strong>沿用 QTIP 的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>L</mi><mo>&#x0002C;</mo><mi>k</mi><mo>&#x0002C;</mo><mi>V</mi><mo stretchy="false">&#x00029;</mo></mrow></math> 网格。后继由旧状态左移 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mi>V</mi></mrow></math> 位再写入新比特得到。束搜索用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>b</mi><mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub></mrow></math> 比特选起始状态（主实现为 8），每步至多保留 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi></mrow></math> 条，按局部平方误差累加排序。紧凑存储是各步转移标签加上起始状态。解码只做状态恢复、重建映射和拼接，不再搜索。</p>
+<p><strong>用 MX-Hash 代替大码本。</strong>状态经 32 位线性同余发生器和混合器打散后，取出符号位与 31 位幅度秩，变成开区间概率，经尺度条件逆 CDF，再用就近、偶舍入并饱和的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Q</mi><mi>E</mi></msub></mrow></math> 打到元素网格。混合器按格式、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi></mrow></math> 和搜索策略离线校准（标准设置为 48 个候选、32 条长 128 的训练向量和 256 条留出向量）。重建直接落在 E2M1 网格；附录 E 给出查找表逼近。</p>
+<p><strong>联合搜索路径和块尺度。</strong>把块尺度放松为连续变量，每步用「目标与发射的内积、发射的平方范数」做带正则的最小二乘，正则拉向搜索前的参考尺度，避免短前缀把更好路径挤出束。一块结束时去掉正则再拟合。为改尺度而不改已发出的量化元素，这里使用附录 D 的尺度无关 Clipped MX-Hash。</p>
+<p><strong>键值混合精度。</strong>键和值分开编码，转移预算可以不同，但共用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi></mrow></math> 和重建格式。高于约 2 比特的 UE8M0/UE5M3 用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math>、块长 32、键/值预算 8/6；同档 NVFP4 用块长 16、预算 7/5；低于 2 比特用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math>、块长 128、预算 9/6。分配对所有层固定。脚注指出，小块长硬件可通过复制尺度容纳更大的逻辑块。</p>
+
+<h3 id="p2-s7">7. 核心公式：变量、目标与直觉</h3>
+<p class="gloss"><strong>变量表。</strong><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>y</mi></mrow></math>：待量化的一段 KV 向量，长度 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>d</mi><mo>&#x0003D;</mo><mi>T</mi></mrow></math>。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>I</mi><mi>b</mi></msub></mrow></math>：第 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>b</mi></mrow></math> 个 MX 块的坐标集合，块长 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>d</mi><mrow><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">x</mi></mrow></mrow></msub></mrow></math>。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>s</mi><mi>b</mi><mrow><mo>&#x022C6;</mo></mrow></msubsup></mrow></math> / <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mi>b</mi></msub></mrow></math>：参考尺度及其量化结果，取值于尺度点集 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Q</mi><mi>S</mi></msub></mrow></math>。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mi>S</mi></msub></mrow></math>：元素格式的正值范围常数。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Q</mi><mi>E</mi></msub></mrow></math>：元素量化器，值域为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Q</mi><mi>E</mi></msub></mrow></math>。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>x</mi><mi>b</mi></msub><mo>&#x0003D;</mo><msub><mi>y</mi><mi>b</mi></msub><mo>&#x0002F;</mo><msub><mi>s</mi><mi>b</mi></msub></mrow></math>：归一化块；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover accent="true"><mrow><mi>x</mi></mrow><mo>&#x0005E;</mo></mover><mi>b</mi></msub></mrow></math> 落在元素网格上，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover accent="true"><mrow><mi>y</mi></mrow><mo>&#x0005E;</mo></mover><mi>b</mi></msub><mo>&#x0003D;</mo><msub><mi>s</mi><mi>b</mi></msub><msub><mover accent="true"><mrow><mi>x</mi></mrow><mo>&#x0005E;</mo></mover><mi>b</mi></msub></mrow></math>。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>u</mi></mrow></math>：网格状态；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi><mo stretchy="false">&#x00028;</mo><mi>u</mi><mo stretchy="false">&#x00029;</mo></mrow></math> 或 MX-Hash <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>h</mi><mrow><mi>&#x003A9;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>u</mi><mi>;</mi><mi>s</mi><mo stretchy="false">&#x00029;</mo></mrow></math>：状态到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi></mrow></math> 维重建的映射。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x02113;</mi><mi>t</mi></msub></mrow></math>：第 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi></mrow></math> 步平方误差。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>：联合尺度搜索的正则系数。<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>b</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math>：每元素有效比特。</p>
+<p>MX 的参考尺度和重建（论文式 (1)）：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mi>s</mi><mrow><mi>b</mi></mrow><mrow><mo>&#x022C6;</mo></mrow></msubsup><mo>&#x0003D;</mo><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><msub><mo>max</mo><mrow><mi>i</mi><mo>&#x02208;</mo><msub><mi>I</mi><mrow><mi>b</mi></mrow></msub></mrow></msub><mo>&#x0007C;</mo><msub><mi>y</mi><mrow><mi>i</mi></mrow></msub><mo>&#x0007C;</mo></mrow><mrow><msub><mi>C</mi><mrow><mi>S</mi></mrow></msub></mrow></mfrac></mstyle><mo>&#x0002C;</mo><mspace width="1em" /><msub><mi>s</mi><mrow><mi>b</mi></mrow></msub><mo>&#x0003D;</mo><msub><mi>Q</mi><mrow><mi>&#x003B1;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msubsup><mi>s</mi><mrow><mi>b</mi></mrow><mrow><mo>&#x022C6;</mo></mrow></msubsup><mo stretchy="false">&#x00029;</mo><mo>&#x02208;</mo><msub><mi>Q</mi><mrow><mi>S</mi></mrow></msub></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mover accent="true"><mrow><mi>y</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>b</mi><mi>i</mi></mrow></msub><mo>&#x0003D;</mo><msub><mi>s</mi><mrow><mi>b</mi></mrow></msub><mspace width="0.167em" /><msub><mi>Q</mi><mrow><mi>E</mi></mrow></msub><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><msub><mi>y</mi><mrow><mi>i</mi></mrow></msub></mrow><mrow><msub><mi>s</mi><mrow><mi>b</mi></mrow></msub></mrow></mfrac></mstyle><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><mo>&#x0002C;</mo><mspace width="1em" /><mi>i</mi><mo>&#x02208;</mo><msub><mi>I</mi><mrow><mi>b</mi></mrow></msub></mrow></math></div>
+<p>若 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mi>b</mi></msub><mo>&#x0003D;</mo><mn>0</mn></mrow></math>，该块重建为 0。式 (5) 把误差写回原空间：尺度只是正乘数，网格真正要逼近的是归一化向量，所以哈希必须对准 MX-Gaussian：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mo>&#x02016;</mo><msub><mi>y</mi><mrow><mi>b</mi></mrow></msub><mo>&#x02212;</mo><msub><mover accent="true"><mrow><mi>y</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>b</mi></mrow></msub><msubsup><mo>&#x02016;</mo><mrow><mn>2</mn></mrow><mrow><mn>2</mn></mrow></msubsup><mo>&#x0003D;</mo><msubsup><mi>s</mi><mrow><mi>b</mi></mrow><mrow><mn>2</mn></mrow></msubsup><mo>&#x02016;</mo><msub><mi>x</mi><mrow><mi>b</mi></mrow></msub><mo>&#x02212;</mo><msub><mover accent="true"><mrow><mi>x</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>b</mi></mrow></msub><msubsup><mo>&#x02016;</mo><mrow><mn>2</mn></mrow><mrow><mn>2</mn></mrow></msubsup></mrow></math></div>
+<p>束搜索每一步把新后继的局部误差加到前缀代价上（式 (4)），再只留最便宜的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi></mrow></math> 条：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mover><mrow><mi>J</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mrow><mi>t</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>h</mi><mo>&#x0002C;</mo><mi>v</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>J</mi><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>h</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0002B;</mo><msub><mi>&#x02113;</mi><mrow><mi>t</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>v</mi><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<p>MX-Hash 是「符号 × 逆 CDF × 元素量化」（式 (11)）。幅度秩先变成开区间概率（式 (10)），再进入尺度条件逆 CDF，使输出分布与「高斯块除以共享尺度」一致，且已打在元素网格上：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>p</mi><mrow><mi>&#x02113;</mi></mrow></msub><mo>&#x0003D;</mo><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><msub><mi>U</mi><mrow><mi>&#x02113;</mi></mrow></msub><mo>&#x0002B;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac></mrow><mrow><msup><mn>2</mn><mrow><mn>31</mn></mrow></msup></mrow></mfrac></mstyle></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>h</mi><mrow><mi>&#x003A9;</mi><mo>&#x0002C;</mo><mi>&#x02113;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>u</mi><mi>;</mi><mi>s</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>Q</mi><mrow><mi>E</mi></mrow></msub><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><msup><mrow><mo stretchy="false">&#x00028;</mo><mo>&#x02212;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo></mrow><mrow><msub><mi>&#x003B3;</mi><mrow><mi>&#x02113;</mi></mrow></msub></mrow></msup><msup><mi>F</mi><mrow><mo>&#x02212;</mo><mn>1</mn></mrow></msup><mo stretchy="false">&#x00028;</mo><msub><mi>p</mi><mrow><mi>&#x02113;</mi></mrow></msub><mi>;</mi><mi>s</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow></mrow></math></div>
+<p>联合尺度搜索对连续尺度的正则化平方误差求导，得到闭式更新（式 (39)）。一块结束时令 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math>，因为完整块误差已经可算：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mi>a</mi><mrow><mi>b</mi><mo>&#x0002C;</mo><mi>m</mi></mrow><mrow><mo>&#x022C6;</mo></mrow></msubsup><mo>&#x0003D;</mo><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><msub><mi>&#x003D5;</mi><mrow><mi>m</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>y</mi><mrow><mi>b</mi></mrow></msub><mo>&#x0002C;</mo><msub><mover accent="true"><mrow><mi>x</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>b</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002B;</mo><mi>&#x003BB;</mi><msubsup><mi>s</mi><mrow><mi>b</mi></mrow><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msubsup></mrow><mrow><msub><mi>&#x003D5;</mi><mrow><mi>m</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mover accent="true"><mrow><mi>x</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>b</mi></mrow></msub><mo>&#x0002C;</mo><msub><mover accent="true"><mrow><mi>x</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>b</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002B;</mo><mi>&#x003BB;</mi></mrow></mfrac></mstyle></mrow></math></div>
+<p>图注写 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>b</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math> 计入载荷、尺度和起始状态比特；Table 1 题注写有效比特包含载荷与量化元数据；Table 4 称为动态存储记账下的每元素均值。转移预算为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>c</mi></mrow></math> 时，载荷是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>c</mi><mo>&#x0002F;</mo><mi>V</mi></mrow></math>；起始状态摊到每标量是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>b</mi><mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo>&#x0002F;</mo><mi>T</mi></mrow></math>。正文没有把 2.25 / 1.25 拆成逐项加法公式，下文只引用论文给出的有效比特，不自行加总。</p>
+
+<h3 id="p2-s8">8. Toy example（本文自造算例，非论文数字）</h3>
+<p class="note">以下为讲解用的自造算例，数字不是论文实验或图表读数。</p>
+<p>设只有 4 维的一段向量 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>y</mi><mo>&#x0003D;</mo><mo stretchy="false">[</mo><mn>1.2</mn><mo>&#x0002C;</mo><mo>&#x02212;</mo><mn>0.4</mn><mo>&#x0002C;</mo><mn>0.8</mn><mo>&#x0002C;</mo><mo>&#x02212;</mo><mn>1.6</mn><mo stretchy="false">]</mo></mrow></math>，块长等于 4，整段共用同一尺度。为便于观察，自造一个比真实 E2M1 更粗的元素集合 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x0007B;</mo><mn>0</mn><mo>&#x0002C;</mo><mi>&#x000B1;</mi><mn>0.5</mn><mo>&#x0002C;</mo><mi>&#x000B1;</mi><mn>1</mn><mo>&#x0002C;</mo><mi>&#x000B1;</mi><mn>1.5</mn><mo>&#x0002C;</mo><mi>&#x000B1;</mi><mn>2</mn><mo stretchy="false">&#x0007D;</mo></mrow></math>，并取 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mi>S</mi></msub><mo>&#x0003D;</mo><mn>2</mn></mrow></math>。参考尺度 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>s</mi><mrow><mo>&#x022C6;</mo></mrow></msup><mo>&#x0003D;</mo><mn>1.6</mn><mo>&#x0002F;</mo><mn>2</mn><mo>&#x0003D;</mo><mn>0.8</mn></mrow></math>，假定尺度格式恰好能表示 0.8，则归一化向量是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x0003D;</mo><mo stretchy="false">[</mo><mn>1.50</mn><mo>&#x0002C;</mo><mo>&#x02212;</mo><mn>0.50</mn><mo>&#x0002C;</mo><mn>1.00</mn><mo>&#x0002C;</mo><mo>&#x02212;</mo><mn>2.00</mn><mo stretchy="false">]</mo></mrow></math>。</p>
+<p>再自造一个极小网格：每步发射 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>2</mn></mrow></math> 个数，共两步；只展示两个状态。假设已经含元素量化的「玩具 MX-Hash」给出：状态 0 发射 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mn>1.5</mn><mo>&#x0002C;</mo><mo>&#x02212;</mo><mn>0.5</mn><mo stretchy="false">&#x00029;</mo></mrow></math>，状态 1 发射 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mn>1.0</mn><mo>&#x0002C;</mo><mo>&#x02212;</mo><mn>2.0</mn><mo stretchy="false">&#x00029;</mo></mrow></math>。第一步的目标恰是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mn>1.50</mn><mo>&#x0002C;</mo><mo>&#x02212;</mo><mn>0.50</mn><mo stretchy="false">&#x00029;</mo></mrow></math>，状态 0 的平方误差为 0，状态 1 为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>0.5</mn><mn>2</mn></msup><mo>&#x0002B;</mo><msup><mn>1.5</mn><mn>2</mn></msup><mo>&#x0003D;</mo><mn>2.5</mn></mrow></math>。若束宽为 2，两条都留下。第二步目标是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mn>1.00</mn><mo>&#x0002C;</mo><mo>&#x02212;</mo><mn>2.00</mn><mo stretchy="false">&#x00029;</mo></mrow></math>。路径 0→1 的第二段误差为 0，总误差为 0；路径 0→0 的第二段误差仍是 2.5。编码器于是记下起始状态和两次转移比特，而不是存一张完整码本。解码端用块尺度 0.8 乘回元素，得到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover accent="true"><mrow><mi>y</mi></mrow><mo>&#x0005E;</mo></mover><mo>&#x0003D;</mo><mo stretchy="false">[</mo><mn>1.2</mn><mo>&#x0002C;</mo><mo>&#x02212;</mo><mn>0.4</mn><mo>&#x0002C;</mo><mn>0.8</mn><mo>&#x0002C;</mo><mo>&#x02212;</mo><mn>1.6</mn><mo stretchy="false">]</mo></mrow></math>，本玩具恰好零误差。</p>
+<p>真实系统里，哈希受 E2M1 网格和 MX-Gaussian 分位数约束，几乎不会这么巧；束搜索也只是近似，不保证全局最优。这个例子只想说明三件事：先缩放再编码、哈希直接吐出元素网格上的值、存储的是路径而不是词典。</p>
+
+<h3 id="p2-s9">9. Baselines</h3>
+<p>主表对比的是同一套 MX 计算格式约束下的 KV 矢量量化方法，另列 BF16 作为未量化参照（题注称其为 historical，不参与「最佳量化结果」着色）。</p>
+<ul>
+<li><strong>BF16（16.00 有效比特）：</strong>未量化 KV，提供三项指标的上限参照。</li>
+<li><strong>NSNQuant（Son 等，2026）：</strong>双归一化 + 通道中心化 + Hadamard，共享 256 项有符号高斯码本（30 次 Lloyd 迭代），64-token 窗口。作者把它的重建载荷再转到目标 MX 格式；码本拟合仍在 FP32 中完成，MX 转换不进入其训练目标。</li>
+<li><strong>VecInfer（Yao 等，2026）：</strong>RoPE 后的倒数平滑、全头 query/key Hadamard、值不旋转；向量长 4 时键/值码本为 1024/256 项，向量长 8 时为 4096/256 项。解码时转到 MX 的输出尺度不计入缓存比特。</li>
+<li><strong>Table 2 的自身变体：</strong>NSN VQ MX、Naive MX Trellis（先网格再转 MX）、MX Trellis Hash、MX Trellis Hash Joint。</li>
+<li><strong>Table 5：</strong>保留 VecInfer 预处理，只换量化器，用来分离「换编码」和「换预处理」。</li>
+</ul>
+<p>QTIP 是方法祖先，不是主表中的 KV 基线。基线依原论文实现，再把码本元素量化到目标 MX 元素格式。</p>
+
+<h3 id="p2-s10">10. 实验设置</h3>
+<p><strong>模型：</strong>Llama-3.1-8B-Instruct、Qwen3-8B。<strong>任务：</strong>WikiText-2 困惑度（不做自由生成）；LongBench 七项的未加权平均，任务为 Qasper、TriviaQA、GovReport、QMSum、MultiNews、SAMSum、TREC，覆盖问答、摘要和分类，分项见附录 Table 6/7；GSM8K 准确率，设定为偏解码的思维链生成。<strong>硬件：</strong>NVIDIA H100；除 GSM8K 用 4 卡外，其余每跑 1 卡。<strong>主量化设置：</strong>高于 2 有效比特时块长 32（NVFP4 为 16），低于 2 比特时块长 128；UE5M3 与 NVFP4 启用放松的联合尺度搜索。网格默认 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi><mo>&#x0003D;</mo><mn>1024</mn></mrow></math>，高比特档 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math>、低比特档 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math>，束宽 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>128</mn></mrow></math>。实现用 Triton 核，搜索期算术为 FP32。UE8M0 向上取整；UE5M3 就近、平局朝零；NVFP4 用 E4M3FN 块尺度、就近偶数舍入，并另有一个张量级全局尺度。低比特、块长 128 的 NVFP4 配置复用块长 16 校准得到的映射，正文称之为 NVFP-style。</p>
+<p><strong>Not Reported：</strong>主实验使用的具体 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>；WikiText-2 的上下文长度与 stride；GSM8K 的 shot 数、最大生成长度和采样温度；端到端时延、吞吐或注意力核加速比；大于 8B 的模型。</p>
+
+<h3 id="p2-s11">11. 指标教学</h3>
+<p><strong>WikiText-2 困惑度（越低越好）。</strong>衡量固定文本上的平均不确定度，不涉及自由生成，适合先看 KV 被量化后下一词分布是否仍准。</p>
+<p><strong>LongBench 七项未加权平均（越高越好）。</strong>覆盖问答、摘要和分类，用来看长上下文理解是否塌掉。不是 LongBench 全套；单项可能与均值不同向，须回 Table 6/7。</p>
+<p><strong>GSM8K 准确率（越高越好，表中为百分数）。</strong>思维链解题是很长的解码负荷，量化误差会逐步累积，用来补只看前向困惑度的盲区。</p>
+<p><strong>有效比特 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>b</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math>。</strong>它不是元素格式的名义位宽，而是把转移载荷、块尺度和起始状态等元数据摊到每个元素上的存储预算，便于在不同块尺度格式之间比较。</p>
+<p><strong>高斯分析中的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">M</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">E</mi></mrow><mo>&#x000B7;</mo><msup><mn>2</mn><mrow><msub><mi>b</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></msup></mrow></math>（越低越好，已按位宽校正）。</strong>用于在不同有效比特下比较量化器本身；只出现在 Figure 2，主模型表不用它。</p>
+
+<h3 id="p2-s12">12. 可核验结果</h3>
+<ol>
+<li>Table 1，约 1.25 有效比特、三种块尺度、两个模型：MiSTiQ 的 WikiText-2 困惑度与 GSM8K 均为所评量化方法中最好。例如 NVFP4 下，Llama 的困惑度为 11.469（NSNQuant 14.787，VecInfer 234.929，BF16 为 7.170），GSM8K 为 37.23（23.65 / 1.59 / 76.95）；Qwen3 的困惑度为 14.362（20.244 / 30.585 / 9.750），GSM8K 为 50.11（29.57 / 2.65 / 88.63）。</li>
+<li>Table 1，NVFP4、约 1.25 比特：MiSTiQ 的 LongBench 均值在两个模型上均为该格式、该比特档的最高——Llama 41.02（NSNQuant 37.92，VecInfer 1.64，BF16 为 48.50），Qwen3 33.06（31.34 / 10.21 / 41.07）。这与摘要「With NVFP4 … highest LongBench average on both models」在「相对所评基线、限定 NVFP4」的读法下一致。</li>
+<li>同一比特档、若跨格式比较：Qwen3 的 LongBench 最高其实是 UE5M3 上的 33.42，略高于 NVFP4 的 33.06；Llama 则是 NVFP4 的 41.02 高于 UE5M3 的 40.37。正文第 8 页写的是「With UE5M3 at this rate, it also achieves the highest LongBench average on both models」，指的是在 UE5M3 组内相对基线，而不是「UE5M3 在所有格式里绝对最高」。</li>
+<li>例外：UE8M0、约 1.25 比特时，Llama 的 LongBench 上 NSNQuant 为 38.23，高于 MiSTiQ 的 35.79。因此「1.25 比特全面最好」只对困惑度和 GSM8K 成立，对 LongBench 并不覆盖全部格式。</li>
+<li>约 2.25 比特不再是一边倒。Table 1 中，NVFP4 下 Llama 困惑度 NSNQuant 为 7.769，优于 MiSTiQ 的 7.879；UE5M3 下 Qwen3 的 LongBench 与 GSM8K 分别是 NSNQuant 的 41.16 / 81.50，优于 MiSTiQ 的 40.62 / 75.97。低比特优势更明显，接近 2 比特时码本方法仍有翻盘点。</li>
+<li>Table 2，UE5M3、约 1.30 有效比特的设计阶梯（Llama / Qwen3 困惑度）：NSN VQ MX 为 12.966 / 16.530，Naive MX Trellis 降到 11.530 / 15.682，MX Trellis Hash 为 11.195 / 15.431，再加联合尺度搜索到 10.699 / 14.942。最大一跳来自「改用网格」，哈希感知与联合尺度继续加分。</li>
+<li>Table 4，低于 1 比特：UE5M3 上 MiSTiQ 在 0.99 有效比特的困惑度为 32.136 / 42.248，低于同格式 NSNQuant 0.99 比特的 54.845 / 87.735；即便再压到 0.93 比特（45.496 / 59.141），仍低于 NSNQuant 在略高比特上的结果。VecInfer 在 1.00 比特已崩溃到数百量级困惑度。</li>
+<li>Table 5，把 MiSTiQ 插入 VecInfer 预处理、仍为 1.25 比特：相对原版 VecInfer 三项指标都改善，例如 UE5M3 上 Llama 困惑度从 232.335 降到 69.729，Qwen3 从 30.791 降到 15.494，Qwen3 的 GSM8K 从 2.50 升到 9.40。但 Llama 的 GSM8K 仍只有 1.97，LongBench 也只有 3.96，远差于主表里 NSNQuant 工作流上的 MiSTiQ。说明「换量化器」有用，预处理仍然关键。</li>
+</ol>
+
+<h3 id="p2-s13">13. 真实表图阅读</h3>
+<p>下面四张表的数字均抄自 PDF 文本，不从图上目测取值。Figure 4–6 只作定性阅读：正文写 MiSTiQ 在可比有效比特下困惑度更低，低于 1 比特时优势更明显；均匀载荷下 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math> 最好，但 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math> 能更细地给键加比特。</p>
+
+<p class="cap">Table 1（节录全部量化行）。WikiText-2 困惑度、LongBench 均值、GSM8K 准确率（%）。有效比特含载荷与量化元数据。蓝字规则见原表：每组内、每模型和指标的最佳量化结果（含并列）。</p>
+<div class="tbl"><table>
+<tr><th>块尺度</th><th>方法</th><th>有效比特</th><th>Llama PPL↓</th><th>Llama LB↑</th><th>Llama GSM8K↑</th><th>Qwen3 PPL↓</th><th>Qwen3 LB↑</th><th>Qwen3 GSM8K↑</th></tr>
+<tr><td>—</td><td>BF16</td><td>16.00</td><td>7.170</td><td>48.50</td><td>76.95</td><td>9.750</td><td>41.07</td><td>88.63</td></tr>
+<tr><td>UE8M0</td><td>VecInfer</td><td>2.25</td><td>10.985</td><td>42.24</td><td>23.12</td><td>10.687</td><td>38.15</td><td>68.76</td></tr>
+<tr><td>UE8M0</td><td>NSNQuant</td><td>2.24</td><td>7.806</td><td>47.19</td><td>64.97</td><td>10.386</td><td>40.39</td><td>80.67</td></tr>
+<tr><td>UE8M0</td><td>MiSTiQ</td><td>2.25</td><td>7.743</td><td>47.60</td><td>69.60</td><td>10.217</td><td>40.46</td><td>83.62</td></tr>
+<tr><td>UE5M3</td><td>VecInfer</td><td>2.50</td><td>8.022</td><td>43.58</td><td>54.13</td><td>10.275</td><td>38.62</td><td>75.74</td></tr>
+<tr><td>UE5M3</td><td>NSNQuant</td><td>2.24</td><td>7.808</td><td>47.62</td><td>67.17</td><td>10.370</td><td>41.16</td><td>81.50</td></tr>
+<tr><td>UE5M3</td><td>MiSTiQ</td><td>2.25</td><td>7.642</td><td>48.35</td><td>70.13</td><td>10.173</td><td>40.62</td><td>75.97</td></tr>
+<tr><td>NVFP4</td><td>VecInfer</td><td>2.25</td><td>10.782</td><td>42.70</td><td>27.00</td><td>10.526</td><td>39.60</td><td>70.58</td></tr>
+<tr><td>NVFP4</td><td>NSNQuant</td><td>2.24</td><td>7.769</td><td>47.89</td><td>64.59</td><td>10.395</td><td>40.00</td><td>80.59</td></tr>
+<tr><td>NVFP4</td><td>MiSTiQ</td><td>2.25</td><td>7.879</td><td>47.80</td><td>67.70</td><td>10.343</td><td>40.63</td><td>83.02</td></tr>
+<tr><td>UE8M0</td><td>VecInfer</td><td>1.25</td><td>258.713</td><td>1.20</td><td>1.97</td><td>35.042</td><td>6.48</td><td>2.20</td></tr>
+<tr><td>UE8M0</td><td>NSNQuant</td><td>1.24</td><td>15.029</td><td>38.23</td><td>22.90</td><td>20.457</td><td>30.96</td><td>27.14</td></tr>
+<tr><td>UE8M0</td><td>MiSTiQ</td><td>1.25</td><td>11.957</td><td>35.79</td><td>33.06</td><td>15.072</td><td>31.71</td><td>45.94</td></tr>
+<tr><td>UE5M3</td><td>VecInfer</td><td>1.25</td><td>232.335</td><td>1.22</td><td>1.90</td><td>30.791</td><td>11.43</td><td>2.50</td></tr>
+<tr><td>UE5M3</td><td>NSNQuant</td><td>1.24</td><td>14.968</td><td>38.15</td><td>23.12</td><td>20.319</td><td>32.16</td><td>29.04</td></tr>
+<tr><td>UE5M3</td><td>MiSTiQ</td><td>1.25</td><td>11.630</td><td>40.37</td><td>35.48</td><td>14.657</td><td>33.42</td><td>52.46</td></tr>
+<tr><td>NVFP4</td><td>VecInfer</td><td>1.25</td><td>234.929</td><td>1.64</td><td>1.59</td><td>30.585</td><td>10.21</td><td>2.65</td></tr>
+<tr><td>NVFP4</td><td>NSNQuant</td><td>1.24</td><td>14.787</td><td>37.92</td><td>23.65</td><td>20.244</td><td>31.34</td><td>29.57</td></tr>
+<tr><td>NVFP4</td><td>MiSTiQ</td><td>1.25</td><td>11.469</td><td>41.02</td><td>37.23</td><td>14.362</td><td>33.06</td><td>50.11</td></tr>
+</table></div>
+<p>约 1.25 比特时，VecInfer 在 Llama 上几乎崩溃，NSNQuant 尚能工作，MiSTiQ 再把困惑度拉下约 3 分、把 GSM8K 抬高十余点。约 2.25 比特时差距收窄，并出现第 12 节的反超。UE5M3 高比特档的 VecInfer 记的是 2.50 而非 2.25，不要与 2.24/2.25 混比。</p>
+
+<p class="cap">Table 2。UE5M3、约 1.30 有效比特下的量化器设计比较，指标为 WikiText-2 困惑度（越低越好）。</p>
+<div class="tbl"><table>
+<tr><th>变体</th><th>Llama-3.1-8B-Instruct</th><th>Qwen3-8B</th></tr>
+<tr><td>NSN VQ MX</td><td>12.966</td><td>16.530</td></tr>
+<tr><td>Naive MX Trellis</td><td>11.530</td><td>15.682</td></tr>
+<tr><td>MX Trellis Hash</td><td>11.195</td><td>15.431</td></tr>
+<tr><td>MX Trellis Hash Joint</td><td>10.699</td><td>14.942</td></tr>
+</table></div>
+<p>只把网格接到 MX 后面（Naive）已明显好于码本；让搜索看见最终元素网格（Hash）再降一截；联合尺度是在更细尺度格式上的第三刀。这也解释了主表为何在 UE5M3/NVFP4 上开联合搜索，而 UE8M0 仍用固定初始尺度。</p>
+
+<p class="cap">Table 4。低于 1 有效比特的 WikiText-2 困惑度。有效比特为动态存储记账下的每元素均值。</p>
+<div class="tbl"><table>
+<tr><th>块尺度</th><th>方法</th><th>有效比特</th><th>Llama PPL↓</th><th>Qwen3 PPL↓</th></tr>
+<tr><td>—</td><td>BF16</td><td>16.00</td><td>7.170</td><td>9.750</td></tr>
+<tr><td>UE8M0</td><td>VecInfer</td><td>1.00</td><td>693.850</td><td>409.782</td></tr>
+<tr><td>UE8M0</td><td>NSNQuant</td><td>0.99</td><td>52.257</td><td>80.740</td></tr>
+<tr><td>UE8M0</td><td>MiSTiQ</td><td>0.99</td><td>38.315</td><td>57.616</td></tr>
+<tr><td>UE8M0</td><td>MiSTiQ</td><td>0.93</td><td>57.510</td><td>79.069</td></tr>
+<tr><td>UE5M3</td><td>VecInfer</td><td>1.00</td><td>694.108</td><td>324.561</td></tr>
+<tr><td>UE5M3</td><td>NSNQuant</td><td>0.99</td><td>54.845</td><td>87.735</td></tr>
+<tr><td>UE5M3</td><td>MiSTiQ</td><td>0.99</td><td>32.136</td><td>42.248</td></tr>
+<tr><td>UE5M3</td><td>MiSTiQ</td><td>0.93</td><td>45.496</td><td>59.141</td></tr>
+</table></div>
+<p>到了 0.9x 比特，所有方法都远离 BF16，但网格方案下降更慢；UE5M3 的 0.99 比特明显好于 UE8M0 同档。0.93 比特的绝对困惑度已经很高，本表回答不了它能否用于真实生成。</p>
+
+<p class="cap">Table 6 节录：Llama-3.1-8B-Instruct 在约 1.25 有效比特下的 LongBench 分项（越高越好）。完整七项与 2.25 比特行见原表。</p>
+<div class="tbl"><table>
+<tr><th>块尺度</th><th>方法</th><th>GovReport</th><th>Qasper</th><th>QMSum</th><th>SAMSum</th><th>MultiNews</th><th>TriviaQA</th><th>TREC</th></tr>
+<tr><td>—</td><td>BF16（16.00）</td><td>34.52</td><td>44.68</td><td>25.20</td><td>43.92</td><td>27.02</td><td>91.65</td><td>72.50</td></tr>
+<tr><td>UE8M0</td><td>NSNQuant（1.24）</td><td>27.08</td><td>25.06</td><td>21.98</td><td>37.38</td><td>24.77</td><td>74.83</td><td>56.50</td></tr>
+<tr><td>UE8M0</td><td>MiSTiQ（1.25）</td><td>27.49</td><td>28.60</td><td>22.21</td><td>34.70</td><td>25.49</td><td>67.57</td><td>44.50</td></tr>
+<tr><td>UE5M3</td><td>NSNQuant（1.24）</td><td>28.07</td><td>26.38</td><td>22.67</td><td>36.19</td><td>25.10</td><td>72.13</td><td>56.50</td></tr>
+<tr><td>UE5M3</td><td>MiSTiQ（1.25）</td><td>29.95</td><td>29.44</td><td>22.46</td><td>40.23</td><td>25.59</td><td>79.40</td><td>55.50</td></tr>
+<tr><td>NVFP4</td><td>NSNQuant（1.24）</td><td>27.53</td><td>21.95</td><td>22.30</td><td>38.48</td><td>24.96</td><td>71.19</td><td>59.00</td></tr>
+<tr><td>NVFP4</td><td>MiSTiQ（1.25）</td><td>30.06</td><td>32.66</td><td>22.79</td><td>39.68</td><td>26.02</td><td>82.43</td><td>53.50</td></tr>
+</table></div>
+<p>均值赢家并不承包每一项。UE8M0 上 MiSTiQ 的拖累主要来自 TriviaQA（67.57 对 74.83）和 TREC（44.50 对 56.50）。NVFP4 上 TREC 仍是 53.50，低于 NSNQuant 的 59.00；Qasper 则从 21.95 升到 32.66。Table 7 中 Qwen3、同一设定下 SAMSum 为 34.36、高于 29.12，TriviaQA 为 66.40、低于 69.43。</p>
+
+<h3 id="p2-s14">14. Ablation 与缺失的 ablation</h3>
+<p>已做的消融大多给了表或图。Table 2 把码本、朴素网格、MX 感知哈希、联合尺度四级拆开。Figure 5 在均匀 1 比特载荷、UE5M3、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>d</mi><mrow><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">x</mi></mrow></mrow></msub><mo>&#x0003D;</mo><mn>128</mn></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi><mo>&#x0003D;</mo><mn>128</mn></mrow></math> 下扫向量长度；Figure 6 在载荷和为 1.5 比特/元素、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi><mo>&#x0003D;</mo><mn>1024</mn></mrow></math> 下比较 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math> 与 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math> 的键值分配。均匀载荷时 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math> 最好但低比特更需要 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math> 的更细分配。Figure 2 用标准高斯看了 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi></mrow></math>、网格长度和 MX 块长：最好结果出现在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math>；更长网格更好，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi><mo>&#x0003D;</mo><mn>1024</mn></mrow></math> 之后增益变小；更大 MX 块对纯高斯帮助不大。Table 3 对比高效查找表哈希：1.25 比特下，UE8M0 的 Llama 困惑度从 11.957 到 11.980，Qwen3 从 15.072 到 14.831；UE5M3 的 Llama 从 11.630 到 11.712，Qwen3 从 14.657 到 14.537。质量基本保住。Table 5 则说明换量化器救不回一套已在 1.25 比特塌掉的预处理。</p>
+<p>缺失也清楚。全文没有编码/解码时延、带宽节省或 MX 注意力核加速比，低精度计算的一半仍停留在格式论证。没有 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>、束宽或起始状态比特在主模型上的扫描。没有 70B 级或真实连续批服务里前缀复用、分页 KV 与网格状态对齐的开销。联合尺度相对固定尺度的增益只出现在 Table 2 的困惑度阶梯，没有单独对应到 LongBench/GSM8K。</p>
+
+<h3 id="p2-s15">15. Claim vs Evidence</h3>
+<p>对得上的部分：在约 1.25 有效比特、三种块尺度和两个 8B 模型上，WikiText-2 与 GSM8K 的优势有 Table 1 全程支撑；NVFP4 组内的 LongBench 均值最高同样有表为证；设计选择的逐步改进有 Table 2；低于 1 比特仍优于同设定基线有 Table 4。把它写成「码本量化器的即插替换」也有 NSNQuant 主实验和 VecInfer 的 Table 5 双重印证。</p>
+<p>措辞需对齐。摘要说 NVFP4 取得两个模型上最高的 LongBench 平均：若读成「在所评基线、NVFP4 格式内」，证据充分；若读成「所有格式里绝对最高」，则 Qwen3 上 UE5M3 的 33.42 高于 NVFP4 的 33.06，应以后者为准并以后文为准。摘要把困惑度和 GSM8K 的优势限制在约 1.25 比特，这是负责的；外推到 2.25 比特会被 Table 1 的反超打脸。UE8M0、1.25 比特下 Llama 的 LongBench 落后，说明平均分不能代替分项和格式条件。「首个把亚 2 比特存储与直接 MX 重建结合的专用 KV 量化器」是作者所知范围内的声明，本文无法独立核验该优先性声明。</p>
+<p>过宣称风险主要不在准确率数字，而在系统含义。论文强调低精度计算的好处，但实验评估的是量化后的语言质量，没有把「在 MX 上直接算注意力」翻译成可核对的速度或能效。质量结论站得住，服务层结论待补测。</p>
+
+<h3 id="p2-s16">16. 贡献</h3>
+<p>正文列出四条，可转述如下。（1）把束搜索引入网格量化，使网格方案能用于必须在线编码的 KV cache，而不必在每次写入时跑复杂度为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>O</mi><mo stretchy="false">&#x00028;</mo><msup><mn>2</mn><mrow><mi>L</mi></mrow></msup><mi>T</mi><mo>&#x0002F;</mo><mi>V</mi><mo stretchy="false">&#x00029;</mo></mrow></math> 的全量 Viterbi。（2）构造与块归一化元素边际分布相匹配的 QTIP 哈希变体（MX-Hash），让重建值直接落在目标 MX 元素格式上。（3）分析 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi></mrow></math>、块长和键值载荷等设计权衡，并给出键更敏感、应用混合精度载荷的实践选择。（4）在 Llama-3.1-8B-Instruct 与 Qwen3-8B 上，于多种块尺度和比特档报告 WikiText-2、LongBench 与 GSM8K 结果。另外，方法被明确写成可替换大多数矢量量化器的即插模块，</p>
+
+<h3 id="p2-s17">17. 局限</h3>
+<p><strong>论文自述。</strong>结论段希望把「网格存储 + MX 计算」延伸到权重，因为离线编码允许更重的搜索；同时也承认哈希建立在高斯假设上，未来应针对经验和权重/KV 的更广分布放松这一假设，例如改用适应经验分布的重建映射。</p>
+<p><strong>从实验看得更清楚的限制。</strong>只有两个 8B 指令模型，任务是困惑度、七项 LongBench 和 GSM8K，没有多模态、代码或超长上下文基准。约 1.25 比特时 GSM8K 相对 BF16 仍有巨大缺口（Llama 上 37.23 对 76.95，Qwen3 上 50.11 对 88.63），所谓「最高」是相对所评量化基线，不是接近无损。编码用束搜索，写入路径的计算量未测；解码虽轻，但服务系统还要把网格状态、块尺度和分页缓存对齐，这些工程成本未出现在表中。低比特 NVFP4 是 style 迁移而非对该块长的单独校准。代码尚未随预印本发布。</p>
+
+<h3 id="p2-s18">18. 复现要点</h3>
+<p>应严格按附录 A 对齐，而不是只抄主文默认值。主实现：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math>，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>b</mi><mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo>&#x0003D;</mo><mn>8</mn></mrow></math>，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi><mo>&#x0003D;</mo><mn>1024</mn></mrow></math>，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>128</mn></mrow></math>，搜索用 FP32 Triton 核；重建直接落在 E2M1 网格。高比特 UE8M0/UE5M3：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math>，块长 32，键/值转移 8/6，UE8M0 用初始尺度、UE5M3 用联合尺度。高比特 NVFP4：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math>，块长 16，预算 7/5，E4M3FN 加每张量全局尺度。低比特：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math>，块长 128，预算 9/6；其中 NVFP4 复用块长 16 的校准映射。哈希资源按元素格式、尺度格式、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi></mrow></math> 和搜索策略分别准备，运行时更大块直接复用已校准映射。基线必须「先按原方法拟合 FP32 码本，再在输出侧转 MX」，不要把 MX 约束喂回他们的码本目标，否则对比不公。校准细节（48 个混合器候选、训练/留出向量条数、NVFP4 高比特用 8/32 条长 1024 的向量等）也应照抄。尚缺的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math>、WikiText 切分和 GSM8K 解码配置需要实现者自行声明，否则难以逐点对齐 Table 1。</p>
+
+<h3 id="p2-s19">19. 研究价值</h3>
+<p>在推理加速谱系里，这篇工作卡在一个夹缝：一边是已经能把 KV 压到极低比特、但计算仍回高精的码本方法；另一边是硬件开始原生支持的 MX/NVFP4，却多在四比特以上讨论。它给出的不是又一张「再低 0.1 困惑度」的表，而是一条可复用的接口——用网格解决码本装不下的问题，用哈希让搜索目标与计算格式一致。对推理系统而言，1.25 比特仍能在 LongBench 上保住大部分均值（Llama NVFP4 上 41.02 对 BF16 的 48.50）这件事，意味着长上下文的显存墙还可以往下推；对做格式与内核的人，这说明「兼容某种元素格式」必须进入量化目标，而不能只做事后转换。价值主要在这条设计路线，而不在尚未提供的速度数字。</p>
+
+<h3 id="p2-s20">20. 可执行迁移</h3>
+<p><strong>建议一：若已有 NSNQuant 或同类「归一化 + Hadamard + 矢量量化」流水线，把码本替换做成可开关后端，先在 1.25 有效比特、UE5M3 或 NVFP4 上复现 Table 1 的三项指标。</strong>设置对齐附录：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math>，块长 128，键/值转移 9/6，束宽 128，开启联合尺度搜索。度量不要只报均值：同时记 WikiText-2、LongBench 七项分项和 GSM8K，并单列 TriviaQA/TREC。若只能改量化器、不能改预处理，先看 Table 5 的落差，再决定要不要把标准化和 Hadamard 一并迁过来。</p>
+<p><strong>建议二：部署前补一组论文没做的「存储—计算」对照。</strong>同一有效比特下比较：（a）网格解码后升到 BF16 再做注意力；（b）把 MX-Hash 输出留在 MX/NVFP4 上用对应张量核计算；（c）基线码本方法的「整数码 + 高精反量化」。度量至少包括每 token 的 KV 字节、解码阶段 HBM 流量、注意力核耗时，以及与质量表同一套的困惑度/LongBench。编码侧要单独报出束搜索写入开销，避免只优化了缓存体积、却把预填充或流式写入拖慢。</p>
+
+<h3 id="p2-s21">21. 方向专用分析（Inference Acceleration：KV 存储与低精度注意力计算）</h3>
+<p>KV 量化有两笔账。一笔是存储：每元素少几比特，长上下文和大 batch 就能多塞请求。另一笔是计算：若读出 K/V 仍要反量化到高精，省下的主要是容量和部分带宽，不是张量核上的低精度吞吐。MiSTiQ 同时碰这两笔账。存储上，网格用状态转移代替 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>2</mn><mrow><mrow><mi>k</mi><mi>V</mi></mrow></mrow></msup></mrow></math> 级码本，使 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math>、亚 2 比特、键值不等比特可实现。计算上，输出已在 E2M1 一类元素网格上，块尺度也是 UE8M0、UE5M3 或 NVFP4 的原生格式，理论上可以走「读缓存—在 MX 上做点积—乘块尺度」。</p>
+<p>硬件会反过来约束算法。码本受 SRAM 和查表限制，这是网格的动机；但束搜索要在写入路径上扩后继并做 top-B，复杂度为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>O</mi><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><mo stretchy="false">&#x00028;</mo><msup><mn>2</mn><mrow><msub><mi>b</mi><mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub></mrow></msup><mo>&#x0002B;</mo><mo stretchy="false">&#x00028;</mo><mi>T</mi><mo>&#x0002F;</mo><mi>V</mi><mo>&#x02212;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo><mi>B</mi><mo stretchy="false">&#x00029;</mo><mspace width="0.167em" /><msup><mn>2</mn><mrow><mi>k</mi><mi>V</mi></mrow></msup><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow></mrow></math>。很长的预填充或步步写 cache 时，这笔开销可能抵消部分带宽收益，论文却没有测量。共享前缀、分页 KV 和投机回滚也会打乱一段连续 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi><mo>&#x0003D;</mo><mn>1024</mn></mrow></math> 的网格，前缀命中时必须能从已有转移比特继续走状态。这些是搬进推理引擎时要设计的接口，不是格式选对就自动成立。</p>
+<p>有效比特与质量更像一条服务曲线。1.25 比特是主文最有说服力的工作点；0.93 比特仍能在困惑度上赢，但绝对值已经很高；2.25 比特则与强码本方法拉锯。部署应按目标 SLA 选点：要保长解码质量就不要只看 LongBench 均值；要冲容量，则可接受 1.25 比特的质量损失，并优先用可做联合尺度的 UE5M3/NVFP4。</p>
+
+<h3 id="p2-s22">22. Attack / Verification lens</h3>
+<p>独立核验应先复现 Table 1 在 1.25 比特、三种格式上的困惑度与 GSM8K，以及 Table 2 的四级阶梯；这是论文最硬的锚。若主结果只能在 NSNQuant 预处理下出现、换成 Table 5 的 VecInfer 预处理就大幅恶化，则贡献应写成「预处理 + 网格量化」，而不是网格单独万能。其次应核对 LongBench 均值是否由七项未加权平均得到：用 Table 6/7 逐项相加再除以 7，应能回到 Table 1（例如 Llama NVFP4 1.25 的 MiSTiQ：30.06+32.66+22.79+39.68+26.02+82.43+53.50=287.14，除以 7 为 41.02）。若只报告均值而隐藏 TREC 或 TriviaQA 的回退，应视为选择性汇报。</p>
+<p>攻击其结论的角度包括：换一个未出现的 70B 或 MoE 模型，看高斯哈希是否失配；把上下文拉到数万 token，看动态有效比特和网格分段是否变质；在真实注意力核上比较「MX 直接计算」与「先回 BF16」，检验计算收益是否存在；测量束搜索编码是否成为预填充瓶颈；检查低比特 NVFP-style 映射迁移有没有被当成该块长上的正式 NVFP4。凡是图 4–6 上没有印出的点，都不应被二次引用成精确数字。</p>
+
+<h3 id="p2-s23">23. 记忆总结</h3>
+<p>MiSTiQ 来自 Arm AI Research 与 Graphcore Research，通讯作者为 Hai Victor Habi 与 Douglas Orr，目标是同时解决「码本太大」和「量化后仍要回高精再算注意力」。</p>
+<p>存储单元是 bitshift 网格上的一条路径：束搜索编码，解码只做状态恢复；主设置为 16 比特状态、束宽 128、起始状态 8 比特。</p>
+<p>计算单元是 MX 块：先缩放再编码，MX-Hash 按 MX-Gaussian 逆 CDF 直接生成已量化元素；UE5M3/NVFP4 还在搜索中联合拟合块尺度。</p>
+<p>键比值敏感。低比特用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math>、键/值转移 9/6，高比特用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math> 和 8/6 或 7/5；有效比特约 1.25 或 2.25，包含载荷与元数据。</p>
+<p>Table 1 显示，约 1.25 比特时两个 8B 模型的困惑度和 GSM8K 全面优于所评基线；NVFP4 下 LongBench 均值也是该格式内最高（Llama 41.02，Qwen3 33.06）。</p>
+<p>不要推到所有格子：UE8M0 的 Llama LongBench 会输给 NSNQuant，2.25 比特上亦有反超；Qwen3 的 LongBench 跨格式最高点在 UE5M3 的 33.42。</p>
+<p>消融表明改用网格是最大增益，MX 感知哈希和联合尺度继续加分；同一量化器塞进 VecInfer 预处理能改善，但远达不到主表水平。</p>
+<p>低于 1 比特时优势仍在，但绝对困惑度已经很高；论文没有提供时延或 MX 注意力加速数字，系统收益待验证。</p>
+<p>迁移时应做可开关的量化后端，对齐附录的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi></mrow></math>、块长和键值预算，并补测「MX 上直接算注意力」相对「先反量化」的流量与核时。</p>
+<p>设计口令：少存靠网格路径，能算靠哈希直接打到 MX 网格上；先缩放、再搜索，而且搜索必须看见最终的元素格式。</p>
+
+</section>
+<section class="paper" id="p3">
+<h2>论文 3｜QASK-Edit：按 Query 与 Key Source 自适应稀疏注意力以加速视频编辑</h2>
+<p><span class="tag">NEW</span><span class="tag">Video Acceleration</span><span class="tag">训练免费稀疏注意力</span></p>
+
+<h3 id="p3-s1">1. 基本信息</h3>
+<p><strong>标题：</strong>QASK-Edit: Adaptive Sparse Attention Across Queries and Key Sources for Efficient Video Editing。<strong>作者（以 PDF 正文为准，共四人，不臆造他人）：</strong>Hengrui Liu、Wenbo Xu、Ziqi Sheng、Wei Lu。<strong>单位：</strong>School of Computer Science and Engineering, Sun Yat-sen University, Guangzhou, China（中山大学计算机学院）。<strong>来源：</strong>arXiv:2611.20704v1 [cs.CV]，PDF 印出日期 2026-11-16（未给出时刻），按本次规格属于 2026-11-17（周二）cs.CV 新投稿列表。<strong>页数：</strong>17 页（含 supplementary，页码至 S5）。<strong>方向标签：</strong>Video Acceleration（视频 DiT 编辑的训练免费稀疏注意力）。<strong>不标 BACKFILL。</strong> <a href="https://arxiv.org/abs/2611.20704">摘要页</a> · <a href="https://arxiv.org/pdf/2611.20704.pdf">PDF</a>。代码与项目主页：Not Reported。本地核验文件：<code>/workspace/papers_2026-11-18/2611.20704.pdf</code> 及其 txt / tables / key 摘录。</p>
+
+<h3 id="p3-s2">2. 一句话定位</h3>
+<p>QASK-Edit 把生成式视频编辑看成多源条件生成，在不更新权重的前提下，为每个 query tile 与每个 key source（源视频、参考图、音频、文本、生成中视频等）单独选择稀疏阈值：用注意力质量与子块分数离散度估计近似风险，在该源的风险预算内决定整块近似、热子块精确或全 token 精确，再把所有来源并进同一次 softmax。Table 1 上相对各编辑器发布的稠密流水线，端到端加速为 StreamEdit 1.46×、UniEdit-Flow 1.26×、MiniMax-H3 1.33×（摘要所称最高 1.46×即前者）；Table 4 推广到 Reference-to-Video 时为 Wan2.1-VACE-1.3B 1.36×、Phantom 1.32×。</p>
+
+<h3 id="p3-s3">3. 人话版</h3>
+<p>一次视频编辑像在装配线上改纪录片：每个 query 都要同时看原片、修改指令、参考图，以及正在生成的新片子。这些材料必须看清楚的程度差很多：改和服的那几帧要对上原片衣纹，远处的海浪往往只需一个摘要。同一个来源里，不同 query、头、层和去噪步要看的块数也在变。现有训练免费稀疏方法却常发一张统一工时卡：全体共享一个保留比例，或所有来源用同一个标准化门槛。</p>
+<p>QASK-Edit 把工时卡按来源拆开。先做廉价的块均值摘要，再估计「若只用摘要会错得多离谱」：既看这块大概占多少注意力质量，也看块内子块分数吵不吵。每个来源自带一笔风险预算，系统在候选门槛里挑尽量省算力、但残差风险仍不超过预算的方案。内部一致的块可以整块近似，暗藏局部热点的块则下钻到子块甚至原始 token。精确路径与近似路径按 token 个数加权，倒进同一次 softmax。预训练编辑器的权重完全不动。</p>
+
+
+<h3 id="p3-s4">4. 背景与缺口</h3>
+<p>扩散变换器把生成式视频编辑做强了，也把注意力的二次代价一起继承下来：条件输入与正在编辑的视频拼在一起，序列更长。已有路线包括按局部时空图案限制计算、用轻量分数选块、语义聚类成块，以及稀疏精确计算与低成本近似的混合方法。Sol-Attn 允许 query 相关的精确计算量，但仍用共享 β 标定；ISA 则先按固定比例预选上下文。</p>
+<p>缺口在于：这些方法通常默认一条稀疏规则可以同时服务不同条件来源和不同 query。第 3.1 节在 StreamEdit 与 MiniMax-H3 上做了预备分析：对每个 query tile、头、层、去噪步，在各来源内部按稠密注意力权重给块排序，记录覆盖该来源 90% 注意力质量所需的最少块数及其百分比，并报告均值和任务内标准差。结论是跨来源的均值需求在块数和百分比上都不一样，而且同一来源内部的任务内标准差常常与均值相当。固定比例或共享门槛会在某些 query–来源对上算得过多，在另一些对上又砍掉不该砍的条件信息。</p>
+
+
+<h3 id="p3-s5">5. 核心 insight</h3>
+<p>判断有两层。第一，生成式视频编辑是参考条件生成：每个 query 面对的是不同的 key source。源视频、生成中视频、文本、音频、参考图像的长度与被需要的程度都不一样，编辑前后期的关注点也可能切换。第二，即便限定在同一个来源，需求仍会随 tile、头、层和去噪步波动，因此给每个来源贴一个固定 β 仍然不够。</p>
+<p>于是稀疏阈值必须按 query tile × key source 独立标定；用来做决定的不是名义保留率，而是近似之后还剩多少风险。风险代理把块的估计注意力质量与子块分数离散度相乘：又重要又内部很吵的块才值得付精确计算，内部一致的块可以用均值代表，分数不起眼却藏着局部高峰的块则按子块找回热点。附录 B 写明这只是近似难度的代理，不是输出误差的可证明上界。预算 ε<sub>g</sub> 同时充当整块摘要是否可信的筛选阈值和该源残差风险总和的上限，避免再引入一套独立超参。</p>
+
+
+<h3 id="p3-s6">6. 方法逐步拆解</h3>
+<p><strong>（1）分块与代表。</strong>沿用 SPADE 的 SICS，对 query 与每个视频 key source 独立选择空间、时间或时空混合布局；value 跟随对应 key，其他模态用适合自身结构的划分（具体规则 Not Reported）。Table S1 中完整块、子块、二层子块分别含 128、32、16 个 token，三种父布局为 Spatial 1×8×16、Temporal 8×1×16、Mixed 4×2×16。query 使用 64 token 的 tile。对块与子块计算均值代表；二层子块均值只用于评估可靠性，不新增精确计算决策。</p>
+<p><strong>（2）打分与选门槛。</strong>由块与子块代表得到 s<sub>ij</sub>、a<sub>ic</sub> 和二层分数 b<sub>if</sub>，再在全体有效来源上用 token 数加权 softmax 估计 p̂<sub>ij</sub>，并以子块分数相对块分数的加权方差定义 u<sub>ij</sub>；整块近似风险是二者乘积。候选集 B={−1, 0, 0.5, 1, 1.5, 2, 3, 4}。对每个 query tile 与每个来源，先算 token 数加权的 μ<sub>i</sub>、σ<sub>i</sub>（视频来源可用全部视频块的统计），再令 t<sub>i</sub>(β)=μ<sub>i</sub>+βσ<sub>i</sub>。候选按降序检查，接受第一个满足 R<sub>i,g</sub>(β)≤ε<sub>g</sub> 的门槛。作者强调 R 对 β 不必单调，并称在可行候选里改挑残差最低者对质量没有明显提升、却略增延迟，故采用早停；具体差值 Not Reported。</p>
+<p><strong>（3）分层路由与统一注意力。</strong>若某子块被指定为受保护，则其所在整块全部按 token 分辨率计算（指定策略 Not Reported）。对其余块：u<sub>ij</sub>≤ε<sub>g(j)</sub> 则整块近似；否则若 s<sub>ij</sub>&gt;t<sub>i</sub>(β)，所有有效子块都走精确；再否则只把 a<sub>ic</sub>&gt;t<sub>i</sub>(β) 的热子块精确。若所有候选都不可行，则对 u<sub>ij</sub>&gt;ε<sub>g</sub> 的块以及含受保护子块的块做全 token 计算，其余整块近似。预算为零或被指定必须全算的来源始终使用原始 token。贡献只有三种：整块均值 KV、部分细化、全 token。所有来源的条目进入 T<sub>i</sub>，每条带键、值与重数 m<sub>b</sub>（原始 token 为 1，块代表为 n<sub>j</sub>，子块代表为 n<sub>c</sub>）。同一 tile 内的 query 共享路由图案，但每个原始 query 单独算经过 log m<sub>b</sub> 校正的 logit，并在同一 softmax 下聚合，再接回原去噪流水线。附录 A.3 称在 Triton 中融合了 KV 打包与各层均值、风险估计与掩码下标、以及写入 softmax 的重数校正；比较实验还共用 RoPE 与 query/key RMS 归一化融合。</p>
+
+
+<h3 id="p3-s7">7. 核心公式：变量、目标与直觉</h3>
+<p>i 是 query tile，j 是 KV 块，c 是子块，f 是二层子块；g(j) 是来源。n<sub>j</sub>、n<sub>c</sub>、n<sub>f</sub> 为有效 token 数，w<sub>c</sub>=n<sub>c</sub>/n<sub>j</sub>，ω<sub>f</sub>=n<sub>f</sub>/n<sub>c</sub>。d 是头维度。带横线的符号表示均值代表。</p>
+<p>块级与子块级相关性见公式 (1)。块分数概括整体相关，子块分数揭露被均值掩盖的局部响应：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>&#x0003D;</mo><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><msubsup><mover><mrow><mi>q</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mi>i</mi></mrow><mrow><mo>&#x022A4;</mo></mrow></msubsup><msub><mover><mrow><mi>k</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mi>j</mi></mrow></msub></mrow><mrow><msqrt><mrow><mi>d</mi></mrow></msqrt></mrow></mfrac></mstyle><mo>&#x0002C;</mo><mspace width="1em" /><msub><mi>a</mi><mrow><mi>i</mi><mi>c</mi></mrow></msub><mo>&#x0003D;</mo><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><msubsup><mover><mrow><mi>q</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mi>i</mi></mrow><mrow><mo>&#x022A4;</mo></mrow></msubsup><msub><mover><mrow><mi>k</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mi>c</mi></mrow></msub></mrow><mrow><msqrt><mrow><mi>d</mi></mrow></msqrt></mrow></mfrac></mstyle></mrow></math></div>
+<p>公式 (2) 在全部有效 key source 上归一化估计块注意力质量，并用 n<sub>j</sub> 计入其所代表的 token 数；公式 (3) 的离散度越大，说明子块响应越不一致。整块近似风险是二者乘积：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mover accent="true"><mrow><mi>p</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>&#x0003D;</mo><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><msub><mi>n</mi><mrow><mi>j</mi></mrow></msub><mi>exp</mi><mo stretchy="false">&#x00028;</mo><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow><mrow><msub><mo>&#x02211;</mo><mrow><mi>k</mi><mi>:</mi><msub><mi>n</mi><mrow><mi>k</mi></mrow></msub><mo>&#x0003E;</mo><mn>0</mn></mrow></msub><msub><mi>n</mi><mrow><mi>k</mi></mrow></msub><mi>exp</mi><mo stretchy="false">&#x00028;</mo><msub><mi>s</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow></mfrac></mstyle></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>u</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>&#x0003D;</mo><msub><mo>&#x02211;</mo><mrow><mi>c</mi><mo>&#x02208;</mo><msub><mi>C</mi><mrow><mi>j</mi></mrow></msub></mrow></msub><msub><mi>w</mi><mrow><mi>c</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>c</mi></mrow></msub><mo>&#x02212;</mo><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msup><mo stretchy="false">&#x00029;</mo><mrow><mn>2</mn></mrow></msup></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>&#x0003D;</mo><msub><mover accent="true"><mrow><mi>p</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>u</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></math></div>
+<p>路由阈值把 β 写回分数尺度（μ<sub>i</sub>、σ<sub>i</sub> 为 token 数加权统计）。每个来源在残差风险不超过预算时选择尽可能大的候选 β（降序早停）：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>t</mi><mrow><mi>i</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B2;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>&#x003BC;</mi><mrow><mi>i</mi></mrow></msub><mo>&#x0002B;</mo><mi>&#x003B2;</mi><msub><mi>&#x003C3;</mi><mrow><mi>i</mi></mrow></msub></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mtext>choose&#x000A0;the&#x000A0;largest&#x000A0;candidate&#x000A0;</mtext><mi>&#x003B2;</mi><mo>&#x02208;</mo><mi>B</mi><mtext>&#x000A0;s.t.&#x000A0;</mtext><msub><mi>R</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>g</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B2;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02264;</mo><msub><mi>&#x003B5;</mi><mrow><mi>g</mi></mrow></msub></mrow></math></div>
+<p>部分细化后，剩下的近似子块改用公式 (4) 的二层离散度。残差风险（公式 (5)(6)）按路由分段：整块近似用 u<sub>ij</sub>，全精确为 0，部分细化只累加未被选中子块的二层离散度并乘 p̂<sub>ij</sub>，再在来源 g 内求和：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mi>u</mi><mrow><mi>i</mi><mi>c</mi></mrow><mrow><mo stretchy="false">&#x00028;</mo><mn>2</mn><mo stretchy="false">&#x00029;</mo></mrow></msubsup><mo>&#x0003D;</mo><msub><mo>&#x02211;</mo><mrow><mi>f</mi><mo>&#x02208;</mo><msub><mi>F</mi><mrow><mi>c</mi></mrow></msub></mrow></msub><msub><mi>&#x003C9;</mi><mrow><mi>f</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>c</mi></mrow></msub><mo>&#x02212;</mo><msub><mi>b</mi><mrow><mi>i</mi><mi>f</mi></mrow></msub><msup><mo stretchy="false">&#x00029;</mo><mrow><mn>2</mn></mrow></msup></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">s</mi></mrow></mrow></msubsup><mo stretchy="false">&#x00028;</mo><mi>&#x003B2;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mover accent="true"><mrow><mi>p</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>i</mi><mi>j</mi></mrow></msub><mrow><mo stretchy="true" fence="true" form="prefix">&#x0007B;</mo><mtable><mtr><mtd columnalign="left"><msub><mi>u</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>&#x0002C;</mo></mtd><mtd columnalign="left"><msub><mi>A</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B2;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo>&#x02205;</mo><mo>&#x0002C;</mo></mtd></mtr><mtr><mtd columnalign="left"><mn>0</mn><mo>&#x0002C;</mo></mtd><mtd columnalign="left"><msub><mi>A</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B2;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>C</mi><mrow><mi>j</mi></mrow></msub><mo>&#x0002C;</mo></mtd></mtr><mtr><mtd columnalign="left"><msub><mo>&#x02211;</mo><mrow><mi>c</mi><mo>&#x02208;</mo><msub><mi>C</mi><mrow><mi>j</mi></mrow></msub><mi>&#x029F5;</mi><msub><mi>A</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B2;</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><msub><mi>w</mi><mrow><mi>c</mi></mrow></msub><msubsup><mi>u</mi><mrow><mi>i</mi><mi>c</mi></mrow><mrow><mo stretchy="false">&#x00028;</mo><mn>2</mn><mo stretchy="false">&#x00029;</mo></mrow></msubsup><mo>&#x0002C;</mo></mtd><mtd columnalign="left"><mtext>otherwise.</mtext></mtd></mtr></mtable></mrow></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>R</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>g</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B2;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mo>&#x02211;</mo><mrow><mi>j</mi><mi>:</mi><mi>g</mi><mo stretchy="false">&#x00028;</mo><mi>j</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>g</mi></mrow></msub><msubsup><mi>r</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">s</mi></mrow></mrow></msubsup><mo stretchy="false">&#x00028;</mo><mi>&#x003B2;</mi><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<p>公式 (7) 让近似项与精确项共享 softmax；log m<sub>b</sub> 把一个均值代表当成 m<sub>b</sub> 个相同 token，以保持配分函数一致：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>&#x02113;</mi><mrow><mi>t</mi><mi>b</mi></mrow></msub><mo>&#x0003D;</mo><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><msubsup><mi>q</mi><mrow><mi>t</mi></mrow><mrow><mo>&#x022A4;</mo></mrow></msubsup><msub><mi>&#x003BA;</mi><mrow><mi>b</mi></mrow></msub></mrow><mrow><msqrt><mrow><mi>d</mi></mrow></msqrt></mrow></mfrac></mstyle><mo>&#x0002B;</mo><mi>log</mi><msub><mi>m</mi><mrow><mi>b</mi></mrow></msub><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>o</mi><mrow><mi>t</mi></mrow></msub><mo>&#x0003D;</mo><msub><mo>&#x02211;</mo><mrow><mi>b</mi><mo>&#x02208;</mo><msub><mi>T</mi><mrow><mi>i</mi></mrow></msub></mrow></msub><mo>softmax</mo><mo stretchy="false">&#x00028;</mo><msub><mi>&#x02113;</mi><mrow><mi>t</mi></mrow></msub><msub><mo stretchy="false">&#x00029;</mo><mrow><mi>b</mi></mrow></msub><msub><mi>&#x003BD;</mi><mrow><mi>b</mi></mrow></msub></mrow></math></div>
+
+<h3 id="p3-s8">8. Toy example（本文自造算例，非论文数字）</h3>
+<p class="note"><strong>自造算例，数字不是论文里的。</strong>用来说明同一 query 对源视频 token 与文本 token 的需求不同。</p>
+<p>设某个 query tile 只面对两个来源：源视频 4 个块、每块 128 个 token；文本 2 个块、每块 16 个 token。已算好块相关性分数：源视频 s=1.20、0.20、0.10、0.00，文本 s=1.10、0.90。按公式 (2) 做跨来源的 token 数加权质量估计。e<sup>s</sup> 约为 3.3201、1.2214、1.1052、1.0000（源）与 3.0042、2.4596（文）；乘上块长后得到 424.97、156.34、141.46、128.00 与 48.07、39.35，总和 Z≈938.19。于是 p̂ 约为源 0.45297、0.16664、0.15078、0.13643，文 0.05123、0.04195。文本两块分数并不低，但因为短，联合注意力质量一共只占约 0.09318。若全体共享一个保留比例，文本很容易被源视频的中低分块稀释或误伤。</p>
+<p>再设子块离散度（自造）为：源 u=0.02、0.40、0.08、0.05，文 u=0.01、0.01。源视频第 2 块分数中等但内部很散；文本块短且内部一致。整块风险 r=p̂u 约为源 0.00906、0.06666、0.01206、0.00682（合计 0.09460），文 0.00051、0.00042（合计 0.00093）。若取 ε<sub>源</sub>=0.10、ε<sub>文</sub>=0（对应论文「零预算则始终用原始 token」），则文本直接全精确。源视频若把第 2 块也整块近似，单块就贡献 0.06666 的风险，容易逼近预算，于是只对热子块做精确计算，残差改走二层离散度。原则是：同一 query 必须按来源独立分配计算，分数不高但很吵的块往往更需要精确计算。</p>
+
+
+<h3 id="p3-s9">9. Baselines</h3>
+<p>主实验比较稠密注意力与五种训练免费稀疏方法，超参跟随各方法官方仓库；Table 4 的集合更窄。</p>
+<ul>
+<li><strong>Dense：</strong>各 backbone 发布的稠密流水线，是速度比的分母（1.00×）。它是「不稀疏」的参照，但不是所有指标上的最优，例如 MiniMax-H3 的 IVE 分数低于若干稀疏方法。</li>
+<li><strong>SpargeAttention / SpargeAttn（两种拼法并存）：</strong>三个编辑器上速度为 1.31×、1.21×、1.31×；在 R2V 上比 QASK-Edit 更快（1.44× 与 1.45×），但 OpenS2V 的 Open 分数明显低于稠密。</li>
+<li><strong>SVG2：</strong>以语义聚类与重排来构造块。编辑器上加速有限（1.12×、1.10×、1.08×），代表成块策略而非按源自适应门槛。</li>
+<li><strong>SVOO：</strong>论文引用为经离线稀疏剖析与在线 QK 共聚类的方法，只出现在编辑比较（1.29×、1.14×、1.19×）。MiniMax-H3 上其 IVE-long 为 0.6241，略高于 QASK-Edit 的 0.6236。</li>
+<li><strong>Sol-Attn：</strong>允许 query 相关的精确计算量，但用共享标准化截止 β 标定，是与「按源独立选 β」最直接的对照。编辑器上为 1.31×、1.11×、1.09×；R2V 上为 1.32× 与 1.29×。</li>
+<li><strong>ISA（LIVEditor）：</strong>先按固定比例预选上下文再按锐度分组，只出现在 Table 1。StreamEdit 与 UniEdit-Flow 上 FiVE-Acc 最高（0.5987、0.2689），但未编辑区域保真明显下降（如 StreamEdit 的 PSNR 21.00 对 Dense 的 23.42），加速也有限（1.03×、1.07×）；MiniMax-H3 上加速 1.29×，仍低于 QASK-Edit 的 1.33×。</li>
+</ul>
+<p>相关工作还提到 SPADE、SVG-EAR 等，但它们不是主表比较对象。R2V 比较未包含 ISA 与 SVOO，不能把 Table 4 的排序直接外推到这两名缺席者。</p>
+
+
+<h3 id="p3-s10">10. 实验设置</h3>
+<p><strong>模型与数据。</strong>三个视频编辑器为 StreamEdit（Self Forcing 变体）、UniEdit-Flow（官方基于 Wan2.1 的实现）与 MiniMax-H3。推广实验用 Wan2.1-VACE-1.3B 与 Phantom，编辑任务用 FiVE-Bench 与 IVE-Bench（Short / Long）。附录给出任务池 1,019 条：FiVE-Bench 419、IVE Short 400、IVE Long 200。源固定 β 的校准使用 24 个样本（采样种子 2026，FiVE 按类别 1–6 分层），并全部排除出评测。Table 1 未另行列出最终评测条数，精确 N 记为 Not Reported。风险预算敏感性在分层抽取的 200 条上做（Table S3：82+79+39）。R2V：每个模型–方法对评 330 条 OpenS2V 与 40 条 VACE-R2V 视频。</p>
+<p><strong>分辨率、硬件与种子。</strong>同一 backbone 内设置对所有方法一致。StreamEdit：832×480、16 fps，帧数随基准视频调整、最多 81 帧。UniEdit-Flow：最大像素面积 832×480，超出则等比例缩放后再把宽高向下取整为 16 的倍数。MiniMax-H3：256×256、固定 124 帧，官方 BF16 检查点经 torchao 量化到 INT8；参考变换器独占一枚 GPU，Qwen 编码器独占另一枚，视频与音频 VAE 再共享一枚。R2V 统一为 832×480、81 帧。硬件为 NVIDIA RTX 5880 Ada（48 GB）。编辑比较的生成种子为 2026，推广实验与风险预算消融为 42，采样种子 2026 与之分开。</p>
+<p><strong>超参与评测改动。</strong>64-token query tile、128-token KV 块、四份 32-token 子块；候选集 B 如上。默认风险预算见 Table S2：StreamEdit 为 0.10 / 0.10（参考 / 生成视频，无音频预算），UniEdit-Flow 为 0.02 / 0.02，MiniMax-H3 为 0.30 / 0.10，另加音频 0.10。消融时按 ε<sub>g</sub>=c·ε<sup>default</sup><sub>g</sub> 对同一编辑器的全部默认预算乘同一因子 c。OpenS2V-Eval 的 API 部分用 DeepSeek-V4.1-Flash 替换 GPT-4o，FiVE-Bench 的 VLM 用 Qwen3-VL 替换 Qwen2.5-VL，替换对所有方法一致。FiVE 第六类 10 个物体删除任务采用 StreamEdit 的 better-remove 标注：修改 10 条目标提示、8 条源物体标注、10 条目标物体标注，其余 409 条任务不变。速度按视频测量端到端时延，排除加载、编译与量化；绝对秒数、峰值显存和实际精确计算比例的主表 Not Reported。</p>
+
+
+<h3 id="p3-s11">11. 指标教学</h3>
+<ul>
+<li><strong>Speedup↑：</strong>相对 Dense 端到端流水线的加速。因为排除了加载 / 编译 / 量化，且 MiniMax-H3 还叠加 INT8 与降分辨率，跨编辑器比较加速比没有意义。</li>
+<li><strong>FiVE-Acc↑：</strong>FiVE-Bench 上基于 VLM 的编辑成功率，回答「改没改对」。它会受评测 VLM 替换和 10 条标注修订影响，也不测量未编辑区域是否被误伤。Table 1 用 0–1，Table 2 用百分数尺度，不要混读。</li>
+<li><strong>PSNR↑ / SSIM↑ / LPIPS↓：</strong>未编辑区域保真。PSNR、SSIM 越高越好，LPIPS 越低越好。ISA 在前两个编辑器上 FiVE-Acc 更高、但这三项更差，说明改成功和没改坏可以分家。</li>
+<li><strong>IVE-short↑ / IVE-long↑：</strong>IVE-Bench 官方 Total Score，分短、长子集报告。Table 1 用 0–1，Table 2 与敏感性图用分数点。IVE-Long 的预算权衡更清楚，其他分数可以非单调，不能只用一个总分下结论。</li>
+<li><strong>OpenS2V-Eval 的 Open / Single / Human↑：</strong>参考条件生成的聚合质量，0–100 分。Table 4 报 Open；Single 与 Human 的完整数字在 Table S4。因 GPT-4o 被替换，不宜直接对官方排行榜。</li>
+<li><strong>VACE-R2V Normalized Average↑：</strong>按 VACE 的做法对 VBench 指标归一化再平均。Table S5、S6 给出归一化前的原始维。动态程度衡量运动量，不是保真指标。</li>
+<li><strong>CLIP-I / DINO-I / CLIP-T：</strong>Table S7 的辅助参考一致性，与基准聚合分分开列表，不能当成总分替代。</li>
+<li><strong>注意力输出误差与精确块比例（Table 3）：</strong>相对源固定 β 基线，报误差下降 / 精确块比例下降。负的比例下降表示精确计算反而增加，用来检验在线标定是否按 query 需求加减预算。</li>
+</ul>
+
+
+<h3 id="p3-s12">12. 可核验结果</h3>
+<p>相对百分数为 Table 1 / Table 4 原文所附。</p>
+<ol>
+<li><strong>三个编辑器的加速（Table 1）。</strong>QASK-Edit 为 StreamEdit 1.46×（+46.02%）、UniEdit-Flow 1.26×（+26.44%）、MiniMax-H3 1.33×（+33.45%），均为该编辑器所报方法中最高；次高为 1.31×（SpargeAttention 与 Sol-Attn）、1.21×、1.31×。</li>
+<li><strong>StreamEdit（Table 1）。</strong>相对 Dense（FiVE-Acc 0.5826，PSNR 23.42，SSIM 0.7446，LPIPS 0.1199，IVE-short 0.6741，IVE-long 0.6840），QASK-Edit 为 0.5819（−0.13%）、23.20（−0.92%）、0.7409（−0.49%）、0.1237（−3.11%，LPIPS 升高即变差）、0.6613（−1.90%）、0.6861（+0.32%）。</li>
+<li><strong>UniEdit-Flow（Table 1）。</strong>FiVE-Acc 从 Dense 的 0.2028 升到 0.2470（+21.83%），IVE-short 0.6444（+0.27%）、IVE-long 0.6548（+0.50%）接近稠密；但 PSNR 从 25.16 降到 24.06（正文写下降 1.10 dB，表内相对 −4.37%），SSIM 0.7355（−2.27%），LPIPS 0.1534（−4.72%）。ISA 的 FiVE-Acc 更高（0.2689），PSNR 却只有 23.16，加速仅 1.07×。</li>
+<li><strong>MiniMax-H3（Table 1）。</strong>QASK-Edit 取得最高 IVE-short 0.6076（相对 Dense 0.5112 为 +18.86%），IVE-long 0.6236（+15.85%）接近最好基线 SVOO 的 0.6241；PSNR 与 Dense 同列 12.92（表内相对 +0.03%，更精确的绝对差因四舍五入 Not Verified），SSIM 0.5031（+0.27%），LPIPS 0.4482（+0.32%，此处正值表示变好）。FiVE-Acc 从 0.4879 降到 0.4572（−6.28%）。</li>
+<li><strong>按源独立选 β（Table 2(a)）。</strong>Shared-β 为每个 query tile 选一个同时满足所有来源预算的共享门槛，Full 则按源独立选。速度从 1.30× 升到 1.46×（StreamEdit）、1.19× 到 1.26×（UniEdit-Flow）、1.29× 到 1.33×（MiniMax-H3）。质量不是单向变好：StreamEdit 的 IVE-S 从 67.62 降到 66.13，MiniMax-H3 的 FiVE 从 41.54 升到 45.72（此表用百分数尺度）。</li>
+<li><strong>在线标定相对源固定 β（Table 2(b)、Table 3）。</strong>在 24 个排除出评测的样本上为每个来源校准固定 β，使其平均精确计算比例与 QASK-Edit 对齐。在线相对固定的质量差为：StreamEdit ΔFiVE +1.75、ΔIVE-S +0.26、ΔIVE-L +0.03；UniEdit-Flow −0.11、+0.62、+0.70；MiniMax-H3 −0.80、+0.50、+1.18（分数点）。Table 3 按所需块比例把 query 分成低 / 中 / 高需求（25% / 50% / 25%），九组上注意力输出误差下降 3.2%–17.3%；低需求组精确块比例下降（如 Q<sub>e</sub>→K<sub>o</sub> 为 6.5%），高需求组则为负值（−6.2%）。</li>
+<li><strong>R2V 推广（Table 4 与附录 D）。</strong>Wan2.1-VACE-1.3B 上 QASK-Edit 为 1.36×，Open 46.52（Dense 45.51，+2.22%，正文称升高 1.01 分），VACE-R2V 75.17（Dense 75.06，+0.13%）。Phantom 上为 1.32×，Open 48.02（Dense 46.80，+2.61%，升高 1.22 分），VACE-R2V 74.84（Dense 74.83，+0.01%）。摘要「最高 1.36×」对应 VACE 而非 Phantom。SpargeAttn 更快（1.44×、1.45×），但 Open 落到 43.46 与 45.66。</li>
+<li><strong>风险预算敏感性（Figure 4，不目测读点）。</strong>在 200 条分层子集上把默认预算乘 c。正文定性结论：更紧的预算通常变慢，更大的预算只能带来有限的额外加速；IVE-Long 的权衡更清楚，尤其在 MiniMax-H3 上，其他分数呈非单调。图横轴可见 0.25、0.5、1、2、4（对数轴，默认 c=1），附录又称「全部七种」设置，其余两个乘数在抽取文本中没有明确刻度，记为 Not Verified。</li>
+</ol>
+
+
+<h3 id="p3-s13">13. 真实表图阅读</h3>
+<p class="cap">表：Table 1（节选）。三个编辑模型上的质量与效率。QASK-Edit 行百分数为相对 Dense 的变化；LPIPS 的负百分数表示该指标变差。</p>
+<div class="tbl"><table>
+<tr><th>模型</th><th>方法</th><th>FiVE-Acc↑</th><th>PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>IVE-short↑</th><th>IVE-long↑</th><th>Speedup↑</th></tr>
+<tr><td>StreamEdit</td><td>Dense</td><td>0.5826</td><td>23.42</td><td>0.7446</td><td>0.1199</td><td>0.6741</td><td>0.6840</td><td>1.00×</td></tr>
+<tr><td></td><td>SpargeAttention</td><td>0.5725</td><td>23.38</td><td>0.7433</td><td>0.1205</td><td>0.6675</td><td>0.6864</td><td>1.31×</td></tr>
+<tr><td></td><td>Sol-Attn</td><td>0.5743</td><td>23.42</td><td>0.7445</td><td>0.1203</td><td>0.6708</td><td>0.6856</td><td>1.31×</td></tr>
+<tr><td></td><td>ISA</td><td>0.5987</td><td>21.00</td><td>0.7097</td><td>0.1520</td><td>0.6912</td><td>0.6967</td><td>1.03×</td></tr>
+<tr><td></td><td>QASK-Edit</td><td>0.5819 (−0.13%)</td><td>23.20 (−0.92%)</td><td>0.7409 (−0.49%)</td><td>0.1237 (−3.11%)</td><td>0.6613 (−1.90%)</td><td>0.6861 (+0.32%)</td><td>1.46× (+46.02%)</td></tr>
+<tr><td>UniEdit-Flow</td><td>Dense</td><td>0.2028</td><td>25.16</td><td>0.7526</td><td>0.1465</td><td>0.6427</td><td>0.6515</td><td>1.00×</td></tr>
+<tr><td></td><td>ISA</td><td>0.2689</td><td>23.16</td><td>0.7110</td><td>0.1810</td><td>0.6534</td><td>0.6517</td><td>1.07×</td></tr>
+<tr><td></td><td>QASK-Edit</td><td>0.2470 (+21.83%)</td><td>24.06 (−4.37%)</td><td>0.7355 (−2.27%)</td><td>0.1534 (−4.72%)</td><td>0.6444 (+0.27%)</td><td>0.6548 (+0.50%)</td><td>1.26× (+26.44%)</td></tr>
+<tr><td>MiniMax-H3</td><td>Dense</td><td>0.4879</td><td>12.92</td><td>0.5017</td><td>0.4496</td><td>0.5112</td><td>0.5383</td><td>1.00×</td></tr>
+<tr><td></td><td>SVOO</td><td>0.4788</td><td>13.15</td><td>0.5053</td><td>0.4373</td><td>0.6035</td><td>0.6241</td><td>1.19×</td></tr>
+<tr><td></td><td>QASK-Edit</td><td>0.4572 (−6.28%)</td><td>12.92 (+0.03%)</td><td>0.5031 (+0.27%)</td><td>0.4482 (+0.32%)</td><td>0.6076 (+18.86%)</td><td>0.6236 (+15.85%)</td><td>1.33× (+33.45%)</td></tr>
+</table></div>
+<p>1.46× 只出现在 StreamEdit。该模型几乎走平但 IVE-short 掉 1.90%；UniEdit-Flow 的 FiVE-Acc 大涨伴随保真下降；MiniMax-H3 的 IVE 大涨但 FiVE-Acc 下降 6.28%，PSNR 基准只有 12.92，不宜与 832×480 的模型比。ISA 更会改，也更会改坏，并且几乎没有速度。</p>
+
+<p class="cap">表：Table 2(a)。是否按 key source 独立选择标准化阈值。Full 为完整方法；质量列为百分数尺度，勿与 Table 1 的 0–1 混读。</p>
+<div class="tbl"><table>
+<tr><th>模型</th><th>路由</th><th>Speed↑</th><th>FiVE↑</th><th>IVE-S↑</th><th>IVE-L↑</th></tr>
+<tr><td>StreamEdit</td><td>Shared-β</td><td>1.30×</td><td>58.31</td><td>67.62</td><td>68.49</td></tr>
+<tr><td></td><td>Full</td><td>1.46×</td><td>58.19</td><td>66.13</td><td>68.61</td></tr>
+<tr><td>UniEdit-Flow</td><td>Shared-β</td><td>1.19×</td><td>24.70</td><td>64.44</td><td>65.59</td></tr>
+<tr><td></td><td>Full</td><td>1.26×</td><td>24.70</td><td>64.44</td><td>65.48</td></tr>
+<tr><td>MiniMax-H3</td><td>Shared-β</td><td>1.29×</td><td>41.54</td><td>60.13</td><td>61.24</td></tr>
+<tr><td></td><td>Full</td><td>1.33×</td><td>45.72</td><td>60.76</td><td>62.36</td></tr>
+</table></div>
+<p>按源独立标定在三个编辑器上都更快，质量增益却集中在 MiniMax-H3；StreamEdit 上 Full 的 IVE-S 反而低于 Shared-β。</p>
+
+<p class="cap">表：Table 4。推广到参考条件视频生成。质量列为 OpenS2V Open 与 VACE-R2V 归一化平均；相对变化为原文所附。</p>
+<div class="tbl"><table>
+<tr><th>模型</th><th>方法</th><th>Speedup↑</th><th>OpenS2V-Eval↑</th><th>VACE-R2V↑</th></tr>
+<tr><td>Wan2.1-VACE-1.3B</td><td>Dense</td><td>1.00×</td><td>45.51</td><td>75.06</td></tr>
+<tr><td></td><td>SVG2</td><td>1.22×</td><td>45.14</td><td>74.73</td></tr>
+<tr><td></td><td>SpargeAttn</td><td>1.44×</td><td>43.46</td><td>75.22</td></tr>
+<tr><td></td><td>Sol-Attn</td><td>1.32×</td><td>45.18</td><td>75.10</td></tr>
+<tr><td></td><td>QASK-Edit</td><td>1.36× (+36.00%)</td><td>46.52 (+2.22%)</td><td>75.17 (+0.13%)</td></tr>
+<tr><td>Phantom</td><td>Dense</td><td>1.00×</td><td>46.80</td><td>74.83</td></tr>
+<tr><td></td><td>SVG2</td><td>1.22×</td><td>47.35</td><td>74.54</td></tr>
+<tr><td></td><td>SpargeAttn</td><td>1.45×</td><td>45.66</td><td>75.58</td></tr>
+<tr><td></td><td>Sol-Attn</td><td>1.29×</td><td>46.51</td><td>74.79</td></tr>
+<tr><td></td><td>QASK-Edit</td><td>1.32× (+32.00%)</td><td>48.02 (+2.61%)</td><td>74.84 (+0.01%)</td></tr>
+</table></div>
+<p>只按速度排序则 SpargeAttn 会赢；若要求 Open 分不掉，QASK-Edit 更合适。VACE-R2V 上各方法几乎走平，SpargeAttn 甚至略高（75.22 / 75.58）。</p>
+
+<p class="cap">表：Table S2。编辑实验的默认源级风险预算 ε<sub>g</sub>。破折号表示该配置不用音频预算。</p>
+<div class="tbl"><table>
+<tr><th>Backbone</th><th>Reference video</th><th>Generated video</th><th>Audio</th></tr>
+<tr><td>StreamEdit</td><td>0.10</td><td>0.10</td><td>—</td></tr>
+<tr><td>UniEdit-Flow</td><td>0.02</td><td>0.02</td><td>—</td></tr>
+<tr><td>MiniMax-H3</td><td>0.30</td><td>0.10</td><td>0.10</td></tr>
+</table></div>
+<p>UniEdit-Flow 的默认预算比 StreamEdit 紧一个数量级，加速也最保守（1.26×）。MiniMax-H3 给参考视频 0.30、给生成视频与音频 0.10，默认值已按源区别对待。</p>
+
+<p class="cap">表：Table S4（节选，保留原文位数）。OpenS2V 三条轨道与 VACE-R2V 归一化平均，质量为 0–100 分。</p>
+<div class="tbl"><table>
+<tr><th>模型</th><th>方法</th><th>Speedup</th><th>Open</th><th>Single</th><th>Human</th><th>VACE-R2V Norm. Avg.</th></tr>
+<tr><td>Wan2.1-VACE-1.3B</td><td>Dense</td><td>1.00×</td><td>45.51</td><td>49.1354</td><td>49.7747</td><td>75.0641</td></tr>
+<tr><td></td><td>SpargeAttn</td><td>1.44×</td><td>43.46</td><td>44.7765</td><td>46.6589</td><td>75.2248</td></tr>
+<tr><td></td><td>QASK-Edit</td><td>1.36×</td><td>46.52</td><td>49.1497</td><td>50.1084</td><td>75.1665</td></tr>
+<tr><td>Phantom</td><td>Dense</td><td>1.00×</td><td>46.80</td><td>47.7525</td><td>51.0792</td><td>74.8262</td></tr>
+<tr><td></td><td>SpargeAttn</td><td>1.45×</td><td>45.66</td><td>46.3112</td><td>49.7007</td><td>75.5765</td></tr>
+<tr><td></td><td>QASK-Edit</td><td>1.32×</td><td>48.02</td><td>49.1804</td><td>53.1950</td><td>74.8444</td></tr>
+</table></div>
+<p>Table 4 的 75.06 / 75.17 与 74.83 / 74.84 是四舍五入，更精确的是 75.0641 对 75.1665、74.8262 对 74.8444。Phantom 上 QASK-Edit 的 Human 分 53.1950 高于 Dense 的 51.0792；SpargeAttn 在 Single / Human 上掉得比 Open 更明显。</p>
+
+<h3 id="p3-s14">14. Ablation 与缺失的 ablation</h3>
+<p>论文做了三类直接消融。第一，Source-specific routing（Table 2(a)）：共享 β 对独立 β，速度三项全升，质量随编辑器而异。第二，Online vs. calibrated source-fixed β（Table 2(b)）：IVE 在三个编辑器上均有小幅上升，FiVE-Acc 有升有降。第三，按需求分组的机制验证（Table 3）：在线标定降低输出误差，并在低需求组少算、高需求组多算。风险预算乘数扫描（Figure 4）更像敏感性分析，具体曲线点不从折线目测。</p>
+<p>缺失或只给定性句的部分包括：分层路由有没有单独关掉某一层、SICS 对固定布局、候选集 B 的疏密、风险代理是否必须同时用质量与离散度、融合与 log m<sub>b</sub> 各自的时延、早停对最小残差规则的数值表，以及受保护子块是否必要。Figure 3 因双栏条形图不宜逐格引用。也没有把 ISA 的固定比例预选接到 QASK 路由上做组合消融，因此很难把 1.46× 精确分解到各组件上。</p>
+
+
+<h3 id="p3-s15">15. Claim vs Evidence</h3>
+<p>对齐得比较好的声明有：「最高 1.46×」在 Table 1 的 StreamEdit 上成立，且三个编辑器上它确为所报方法中最快；「R2V 最高 1.36×」对应 VACE-1.3B，Phantom 为 1.32×，写法是 up to；「按源、按 query 分配有好处」有 Table 2 与 Table 3 支撑。附录 B 把风险称作代理而非证书，没有假装成理论保证。</p>
+<p>容易过宣称的是摘要中「在保持编辑质量与未编辑区域保真的同时」这一句。证据其实是「有竞争性、且随模型与基准而变」：UniEdit-Flow 的 PSNR 下降 1.10 dB、LPIPS 相对变差 4.72%；MiniMax-H3 的 FiVE-Acc 下降 6.28%；StreamEdit 的 IVE-short 下降 1.90%。正文第 4.2 节的措辞（competitive、model- and benchmark-dependent trade-offs）比摘要更老实。R2V 上若把「维持质量」读成全面领先也不成立：SpargeAttn 更快，VACE-R2V 甚至略高，只是 OpenS2V 各轨道掉得明显。MiniMax-H3 的设置是 256×256 + INT8 + 多 GPU 放置，把 1.33× 说成完整分辨率下的通用加速，超出了表格覆盖范围。评测器替换与 10 条 FiVE 标注修订在方法间是公平的，但绝对分数不宜与外部论文直接对比。加速排序的证据够硬，质量「保持」需要加条件，不宜当无损加速来引用。</p>
+
+<h3 id="p3-s16">16. 贡献</h3>
+<p>对照证据可收成三点。其一，把视频编辑重新表述为参考条件生成，并指出跨 key source、以及同一来源内跨 query 的注意力需求并不均匀，从而解释为何固定块数或固定比例选择有局限。其二，给出训练免费框架 QASK-Edit：用注意力质量与子块离散度估计近似风险，在源级预算下为每个 query tile 独立选门槛，并在块–子块层级上做整块近似、局部细化或全 token 计算，最后用带重数校正的共享 softmax 聚合。其三，在三个编辑器上给出可核验的加速与质量权衡，并在两个图像条件生成模型上展示同一套路由可以迁移。贡献的重心是分配策略而不是新的可训练模块。</p>
+
+<h3 id="p3-s17">17. 局限</h3>
+<p>论文没有单独的 Limitations 节。可以从正文与附录读出的限制如下。风险 R 只是代理，不是输出误差上界，早停策略在风险非单调时也不保证选到「同预算下误差最小」的路由。MiniMax-H3 为迁就算力降到 256×256 并做 INT8，另外两个编辑器也有最大面积或最大帧数限制，全分辨率与全精度下加速比会不会缩小，Not Reported。主结果不报绝对时延、显存和实际稀疏度，因而无法判断 1.46× 里有多少来自融合内核。FiVE 与 OpenS2V 的评测器被替换，10 条删除标注被改写，走官方评测脚本可能对不上表。缺代码与缺若干组件消融，使分层路由与风险代理的独立价值不易核实；受保护子块的指定规则和非视频模态的具体划分也没有操作级说明。方法并未在所有编辑器、所有指标上同时不降。</p>
+
+<h3 id="p3-s18">18. 复现要点</h3>
+<p>若要对齐 Table 1 / Table 4，同一 backbone 内必须让所有方法共用分辨率、帧数、量化、GPU 放置和生成种子（编辑 2026，推广 42）；速度只计每条视频的端到端生成，去掉加载、编译、量化。QASK-Edit 侧应对齐 64 / 128 / 32 / 16 的层级、Table S1 布局与 SICS 选布局、候选集 B 的降序早停、Table S2 的默认 ε<sub>g</sub>，以及公式 (7) 里带 log m<sub>b</sub> 的统一 softmax。源固定 β 的对照要在 24 个校准样本上匹配平均精确计算比例，且这些样本不得进入评测。风险预算扫描应使用同一份 200 条分层名单（Table S3 的 82 / 79 / 39 配额，最大余数法，采样种子 2026，生成种子 42），不要重抽。评测阶段必须复现两处替换（DeepSeek-V4.1-Flash、Qwen3-VL）以及 FiVE 第六类 10 条 better-remove 修订，否则分数会与表错位。没有开源实现时，融合内核只能以附录 A.3 为准，算子级等价性 Not Verified。</p>
+
+<h3 id="p3-s19">19. 研究价值</h3>
+<p>在视频 DiT 编辑里，条件来源天然比纯生成更多、也更不能互相替代：源视频管保真，文本和音频管编辑意图，生成中视频管时间一致。把稀疏注意力的决策单元从「一条序列、一个比例」改成「query×来源、一笔风险预算」，是可以迁移到其他参考条件生成任务上的问题定义，而不只是又一个内核技巧：关键不是要不要近似，而是近似预算如何在来源与 query 之间拆开。经验上，它给出了三编辑器加两生成器的可核验权衡，并提醒编辑加速必须同时报「改对了没有」和「没改坏没有」。用质量加权的离散度做可加的源级预算，是一个干净的工程启发式，尽管还不是误差证书。</p>
+
+<h3 id="p3-s20">20. 可执行迁移</h3>
+<p><strong>建议一：给每个条件来源单独暴露风险预算，而不是一个全局保留率。</strong>在已有编辑或参考条件生成流水线里，把注意力输入按 source 打标签，并给每个 g 提供 ε<sub>g</sub>。起步可借用 Table S2 的数量级（0.02 或 0.10），再在不超过 200 条分层子集上扫乘数 c，分别盯长视频综合分、未编辑区域保真和指令成功率。接受标准应预先写明指令分允许下降的百分点，并要求保真不低于选定基线；比较时延前先固定分辨率、量化和种子。</p>
+<p><strong>建议二：把统一 softmax、重数校正和按需求分组的误差审计做成必测项。</strong>路由模块应返回精确 token、子块代表、块代表三类条目，并在同一 softmax 里加 log m<sub>b</sub>，禁止把近似分支单独归一化后再硬加。除加速比外，至少再报相对稠密注意力的输出误差和精确块比例，并按 query 需求分低 / 中 / 高三组（对应 Table 3 的 25% / 50% / 25% 分位）。若低需求组没有少算、高需求组没有多算，说明在线标定没有工作。若短文本或音频频繁打到零预算或全精确，就应把它从共享统计里拆出。</p>
+
+
+<h3 id="p3-s21">21. 方向专用分析（Video Acceleration：训练免费稀疏注意力、query×key-source 自适应与质量–速度权衡）</h3>
+<p>训练免费是这条线的硬约束：编辑器往往已经训好甚至量化好，能换的是注意力实现而不是权重。QASK-Edit 把计算分配放在推理期的路由上，因此必须把路由和摘要的开销打进融合内核。相对 SVG2，它不只做语义成块；相对 SpargeAttn，它更不愿意用速度换 Open 分；相对 Sol-Attn，差别就是共享 β 对按源独立 β（Table 2(a)）；相对 ISA，它不做固定比例预选，也更顾及保真与速度。</p>
+<p>视频编辑作为条件生成，质量–速度权衡必须是二维的。加速最高的 StreamEdit 并不是质量改善最大的模型；IVE-short 改善最显眼的 MiniMax-H3（+18.86%）却在 FiVE-Acc 上付出 −6.28%，且运行在降分辨率和 INT8 上。R2V 上 1.36× 低于部分稀疏基线的速度，但换来 Open 分不跌。评测上要同时报端到端速度、稠密对齐误差、编辑成功和未编辑保真，不要用一个「最高 1.46× 且保持质量」的句子覆盖三套权衡。同一路由能迁到 VACE 与 Phantom，说明该方法并不绑定某一种编辑器结构，但仍依赖需人工设定的源级预算。</p>
+
+
+<h3 id="p3-s22">22. Attack / Verification lens</h3>
+<p>若要攻击其结论，优先打四处。第一，换回官方评测器（Qwen2.5-VL、GPT-4o）并去掉 10 条 better-remove 修订，看 FiVE-Acc 与 OpenS2V 的排序是否还在。第二，把 MiniMax-H3 拉回更高分辨率与 BF16，检查 1.33× 与 IVE 增益是否还在；若加速明显收缩，则当前数字更像低分辨率下的注意力占比结果。第三，补报绝对秒数、注意力耗时占比和实际精确 token 比例，防止 1.46× 被融合实现或非注意力部分的差异解释。第四，把 SpargeAttn 放进同一 Pareto 图：它在 R2V 上更快，若在编辑器上再扫一档更保守的超参，未必不能逼近 QASK 的前沿。</p>
+<p>独立核验建议：重实现公式 (2)–(7)，核对降序早停选出的 β 是否等于满足预算的最大候选，并记录 R(β) 是否真的非单调；按 Table 3 的分组重测输出误差，看低 / 高需求组的精确块比例符号是否再现；在文本或音频源上统计被整块近似的比例，验证短条件源没有被长视频源误伤。Figure 3、Figure 4 只作定性印证，不把条形图目测值写进对照表。没有官方代码前，若绝对分数与 Table 1 对不上，应先查评测器、标注修订和分辨率。</p>
+
+
+<h3 id="p3-s23">23. 记忆总结</h3>
+<div class="summary">
+<ul>
+<li>QASK-Edit 是中山大学计算机学院四人组的训练免费稀疏注意力，面向视频 DiT 编辑，不更新权重。</li>
+<li>关键洞察：注意力需求随 key source 与 query 同时变化，固定保留率或共享 β 会错配条件信息。</li>
+<li>做法是为每个 query tile × 来源，用质量乘离散度估计近似风险，在 ε<sub>g</sub> 预算内选最大可行 β，再在整块近似、热子块与全 token 之间选择，最后带 log m<sub>b</sub> 并进同一次 softmax。</li>
+<li>Table 1：相对 Dense 的端到端加速为 1.46× / 1.26× / 1.33×（StreamEdit / UniEdit-Flow / MiniMax-H3），是所报方法里各模型最快的。</li>
+<li>质量并非无损：UniEdit-Flow 的 PSNR 降 1.10 dB，MiniMax-H3 的 FiVE-Acc 降 6.28%，StreamEdit 的 IVE-short 降 1.90%；ISA 有时更会改但更伤保真、也几乎不加速。</li>
+<li>Table 2 显示按源独立选 β 普遍更快；Table 3 显示在线标定把精确计算转到高需求 query，误差下降 3.2%–17.3%。</li>
+<li>Table 4：同一框架迁到 VACE-1.3B 与 Phantom，加速 1.36× 与 1.32×，Open 分上升 1.01 与 1.22；SpargeAttn 更快但 Open 分更低。</li>
+<li>复现必须对齐 Table S2 默认预算、MiniMax 的 256×256+INT8、评测器替换和 10 条 FiVE 标注修订；主表没有绝对时延，代码 Not Reported。</li>
+<li>摘要「保持质量」需要加条件：它在三个编辑器上取得所比较方法中最高的端到端加速，但权衡随模型与指标而变。</li>
+<li>评测应在同一 backbone 内比端到端，并分开看编辑成功与未编辑保真，不要只用一个总分或最高加速倍数下结论。</li>
+</ul>
+</div>
+
+
+</section>
+<section id="verify">
+<h2>来源与验证报告</h2>
+<p>三篇全文均从 arXiv 下载 PDF 并用 <code>pdftotext -layout</code> 抽取后精读。数字以 PDF 文本为准；图上未给出精确数字的量一律不目测，标为 Not Verified。页面数学由 latex2mathml 预渲染为 MathML，无 CDN、无外部脚本。</p>
+<ul>
+<li>ViRA：<a href="https://arxiv.org/abs/2611.21605">arXiv:2611.21605</a> · <a href="https://arxiv.org/pdf/2611.21605.pdf">PDF</a> · CJK 6973 · 主要核对 Table 1/3/16/17/23</li>
+<li>MiSTiQ：<a href="https://arxiv.org/abs/2611.21216">arXiv:2611.21216</a> · <a href="https://arxiv.org/pdf/2611.21216.pdf">PDF</a> · CJK 6989 · 主要核对 Table 1/2/3/4/5/6/7</li>
+<li>QASK-Edit：<a href="https://arxiv.org/abs/2611.20704">arXiv:2611.20704</a> · <a href="https://arxiv.org/pdf/2611.20704.pdf">PDF</a> · CJK 6995 · 主要核对 Table 1/2/3/4 与 Table S4</li>
+</ul>
+<p>已知缺口已写入各篇正文：部分超参、绝对时延、仓库是否上线、个别图轴因双栏错位无法无歧义读取的数值，均标 Not Reported 或 Not Verified，未编造。</p>
+<p>本文件为 UTF-8 单页 HTML，内联 CSS，目录可跳转，表格可横向滚动。生成后用无头 Chrome 做离线渲染截图抽查。</p>
+</section>
+<footer>
+<p>Daily Top Papers Deep Dive · 2026-11-18 · Asia/Shanghai · 离线 MathML · 无外部脚本</p>
+</footer>
+</div>
+</body>
+</html>
