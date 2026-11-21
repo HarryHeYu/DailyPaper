@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Deep Dive 2026-11-19</title>
+<style>
+
+:root{--fg:#1a1a1a;--mut:#5b6472;--bg:#fbfaf7;--card:#fff;--ac:#9a3412;--ln:#e5e1d8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+font-family:"Noto Serif CJK SC","Source Han Serif SC","Songti SC","STSong","Georgia",serif;
+font-size:17px;line-height:1.8;letter-spacing:0}
+.wrap{max-width:820px;margin:0 auto;padding:28px 22px 80px}
+header h1{font-size:28px;line-height:1.35;margin:.2em 0;font-weight:700}
+.sub{color:var(--mut);font-size:15px}
+nav.toc{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:14px 20px;margin:22px 0}
+nav.toc ol{margin:.3em 0;padding-left:1.4em}nav.toc li{margin:.15em 0}
+nav.toc details summary{cursor:pointer;font-weight:600}
+nav.toc .secs{columns:2;font-size:14px;gap:12px}
+a{color:#1d4ed8;text-decoration:none;word-break:break-all}a:hover{text-decoration:underline}
+section.paper{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:8px 26px 26px;margin:30px 0}
+h2{font-size:23px;border-left:5px solid var(--ac);padding-left:12px;margin-top:1.4em;line-height:1.4}
+h3{font-size:18.5px;margin:1.55em 0 .5em;color:#7c2d12;border-bottom:1px dashed var(--ln);padding-bottom:4px}
+p{margin:.7em 0;text-align:start}
+.tag{display:inline-block;font-size:13px;padding:1px 9px;border-radius:999px;background:#fff1e6;color:#9a3412;border:1px solid #fdba74;margin-right:6px}
+.tag.bf{background:#eef2ff;color:#3730a3;border-color:#a5b4fc}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border:1px solid var(--ln);border-radius:8px}
+table{border-collapse:collapse;min-width:640px;width:100%;font-size:14.5px;line-height:1.6}
+th,td{border-bottom:1px solid var(--ln);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#f6f3ec;white-space:nowrap}tr:nth-child(even) td{background:#fcfbf8}
+.eq{overflow-x:auto;padding:10px 8px;margin:12px 0;background:#faf8f3;border-radius:6px}
+math{font-size:1.05em;font-family:"STIX Two Math","Cambria Math","Latin Modern Math","DejaVu Serif","Noto Serif",math,serif}
+math[display="block"]{display:block;margin:.35em 0}
+li{margin:.3em 0}
+.note{background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 16px;font-size:15px}
+footer{color:var(--mut);font-size:14px;margin-top:40px}
+.cap{font-size:14px;color:#5b6472;margin:14px 0 2px}
+.summary{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 18px}
+.gloss{font-size:15px}
+@media(max-width:640px){body{font-size:16px}nav.toc .secs{columns:1}section.paper{padding:6px 14px 18px}}
+
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Daily Top Papers Deep Dive · 2026-11-19</h1>
+<p class="sub">北京时间（Asia/Shanghai）例行检索与精读 · 方向：Reinforcement Learning / Inference Acceleration / Video Acceleration · 3 篇精读 · MathML 离线渲染 · 无外部脚本</p>
+</header>
+<nav class="toc">
+<ol>
+<li><a href="#overview">今日概览：检索、选题与去重</a></li>
+<li>
+<details>
+<summary><a href="#p1">论文 1｜ASH（RL）</a></summary>
+<ol class="secs">
+<li><a href="#p1-s1">1. 基本信息</a></li>
+<li><a href="#p1-s2">2. 一句话定位</a></li>
+<li><a href="#p1-s3">3. 人话版</a></li>
+<li><a href="#p1-s4">4. 背景与缺口</a></li>
+<li><a href="#p1-s5">5. 核心 insight</a></li>
+<li><a href="#p1-s6">6. 方法逐步拆解</a></li>
+<li><a href="#p1-s7">7. 核心公式：变量、目标与直觉</a></li>
+<li><a href="#p1-s8">8. Toy example（本文自造算例，非论文数字）</a></li>
+<li><a href="#p1-s9">9. Baselines</a></li>
+<li><a href="#p1-s10">10. 实验设置</a></li>
+<li><a href="#p1-s11">11. 指标教学</a></li>
+<li><a href="#p1-s12">12. 可核验结果</a></li>
+<li><a href="#p1-s13">13. 真实表图阅读</a></li>
+<li><a href="#p1-s14">14. Ablation 与缺失的 ablation</a></li>
+<li><a href="#p1-s15">15. Claim vs Evidence</a></li>
+<li><a href="#p1-s16">16. 贡献</a></li>
+<li><a href="#p1-s17">17. 局限</a></li>
+<li><a href="#p1-s18">18. 复现要点</a></li>
+<li><a href="#p1-s19">19. 研究价值</a></li>
+<li><a href="#p1-s20">20. 可执行迁移</a></li>
+<li><a href="#p1-s21">21. 方向专用分析</a></li>
+<li><a href="#p1-s22">22. Attack / Verification lens</a></li>
+<li><a href="#p1-s23">23. 记忆总结</a></li>
+</ol>
+</details>
+</li>
+<li>
+<details>
+<summary><a href="#p2">论文 2｜Spool（Inference Acceleration）</a></summary>
+<ol class="secs">
+<li><a href="#p2-s1">1. 基本信息</a></li>
+<li><a href="#p2-s2">2. 一句话定位</a></li>
+<li><a href="#p2-s3">3. 人话版</a></li>
+<li><a href="#p2-s4">4. 背景与缺口</a></li>
+<li><a href="#p2-s5">5. 核心 insight</a></li>
+<li><a href="#p2-s6">6. 方法逐步拆解</a></li>
+<li><a href="#p2-s7">7. 核心公式：变量、目标与直觉</a></li>
+<li><a href="#p2-s8">8. Toy example（本文自造算例，非论文数字）</a></li>
+<li><a href="#p2-s9">9. Baselines</a></li>
+<li><a href="#p2-s10">10. 实验设置</a></li>
+<li><a href="#p2-s11">11. 指标教学</a></li>
+<li><a href="#p2-s12">12. 可核验结果</a></li>
+<li><a href="#p2-s13">13. 真实表图阅读</a></li>
+<li><a href="#p2-s14">14. Ablation 与缺失的 ablation</a></li>
+<li><a href="#p2-s15">15. Claim vs Evidence</a></li>
+<li><a href="#p2-s16">16. 贡献</a></li>
+<li><a href="#p2-s17">17. 局限</a></li>
+<li><a href="#p2-s18">18. 复现要点</a></li>
+<li><a href="#p2-s19">19. 研究价值</a></li>
+<li><a href="#p2-s20">20. 可执行迁移</a></li>
+<li><a href="#p2-s21">21. 方向专用分析</a></li>
+<li><a href="#p2-s22">22. Attack / Verification lens</a></li>
+<li><a href="#p2-s23">23. 记忆总结</a></li>
+</ol>
+</details>
+</li>
+<li>
+<details>
+<summary><a href="#p3">论文 3｜FastFrames（Video Acceleration）</a></summary>
+<ol class="secs">
+<li><a href="#p3-s1">1. 基本信息</a></li>
+<li><a href="#p3-s2">2. 一句话定位</a></li>
+<li><a href="#p3-s3">3. 人话版</a></li>
+<li><a href="#p3-s4">4. 背景与缺口</a></li>
+<li><a href="#p3-s5">5. 核心 insight</a></li>
+<li><a href="#p3-s6">6. 方法逐步拆解</a></li>
+<li><a href="#p3-s7">7. 核心公式：变量、目标与直觉</a></li>
+<li><a href="#p3-s8">8. Toy example（本文自造算例，非论文数字）</a></li>
+<li><a href="#p3-s9">9. Baselines</a></li>
+<li><a href="#p3-s10">10. 实验设置</a></li>
+<li><a href="#p3-s11">11. 指标教学</a></li>
+<li><a href="#p3-s12">12. 可核验结果</a></li>
+<li><a href="#p3-s13">13. 真实表图阅读</a></li>
+<li><a href="#p3-s14">14. Ablation 与缺失的 ablation</a></li>
+<li><a href="#p3-s15">15. Claim vs Evidence</a></li>
+<li><a href="#p3-s16">16. 贡献</a></li>
+<li><a href="#p3-s17">17. 局限</a></li>
+<li><a href="#p3-s18">18. 复现要点</a></li>
+<li><a href="#p3-s19">19. 研究价值</a></li>
+<li><a href="#p3-s20">20. 可执行迁移</a></li>
+<li><a href="#p3-s21">21. 方向专用分析</a></li>
+<li><a href="#p3-s22">22. Attack / Verification lens</a></li>
+<li><a href="#p3-s23">23. 记忆总结</a></li>
+</ol>
+</details>
+</li>
+<li><a href="#verify">来源与验证报告</a></li>
+</ol>
+</nav>
+
+<section id="overview">
+<h2>今日概览：检索、选题与去重</h2>
+
+<h3>检索与范围</h3>
+<p>检索于 2026-11-19 09:12 起（北京时间，Asia/Shanghai）启动，为每日例行 Deep Dive，不是补漏（backfill）场次。当日为周四；当日 arXiv「new」清单按惯例在周四 00:00 America/New_York（北京时间 13:00）切换，检索开始时该日清单尚未发布。因此本轮可读的最新公告是周三 2026-11-18 00:00 America/New_York 那一批（稿件标注提交于 2026-11-17，约在 11-18 13:00 北京时间上线），距本轮检索约 20 小时，落在 24–72 小时窗口内。三篇均为该批次新稿，不使用 BACKFILL 标记。</p>
+<p>独立检索覆盖四个方向：强化学习 / 策略优化 / GRPO / RLVR / hinting / activation steering；Agent / multi-agent / tool use；视频生成加速 / 交互延迟 / 自回归视频扩散 / VAE 解码；推理加速 / 流式 VLM / KV cache / 滑动窗口 / Gated DeltaNet。来源以 arXiv list/new 与 RSS 为主，并做关键词补扫。原则上限域不限于 arXiv，但今日三篇入选者均为 arXiv 预印本，全文 PDF 可获取，表与附录可核验。</p>
+
+<h3>7 日去重</h3>
+<p>对照 <code>/workspace/AI_Deep_Dive_2026-11-12.html</code> 至 <code>2026-11-18.html</code> 以及既有精读清单，近 7 日内已作为主精读、本次禁止重复（无实质版本更新或关键碰撞）的条目如下：</p>
+<ul>
+<li>2026-11-18：ViRA / CrossRPO（2611.21605）、MiSTiQ（2611.21216）、QASK-Edit（2611.20704）</li>
+<li>2026-11-17：TIDE（2611.17924）、MMFlash（2611.18482）、Token2Tile（2611.17930）</li>
+<li>2026-11-16：TRACE（2611.15983）、LazyWeights（2611.17108）、JudgeMix（2611.16174）</li>
+<li>2026-11-15：TraceKV（2611.15569）、HeMeR（2611.16487）、OPSD4MAS（2611.16206）</li>
+<li>2026-11-14：LEAD-RL（2611.17041）、NOPO（2611.17287）、ESTRA（2611.10448）</li>
+<li>2026-11-13：ReTrace（2611.14492）、AutoScaffold（2611.14515）、B3（2611.14387）</li>
+<li>2026-11-12：MCPO（2611.14015）、REAL Loss（2611.14399）、SemanticKV（2611.11452）</li>
+</ul>
+<p>上述编号均未再次入选。</p>
+
+<h3>方向轮换说明</h3>
+<p>2026-11-18 已覆盖 Agent × Reinforcement Learning（ViRA / CrossRPO），以及 Inference Acceleration 与 Video Acceleration 各一篇。按四方向轮换，今日刻意选择 Reinforcement Learning、Inference Acceleration 与 Video Acceleration，不再单列一篇 Agent / Multi-Agent。这是轮换，不是该方向当日没有候选。</p>
+
+<h3>入选 3 篇</h3>
+<ul>
+<li><strong>ASH</strong>（<a href="https://arxiv.org/abs/2611.23124">2611.23124</a>，RL）：用在线可训练的激活转向向量，让 Hint-Augmented GRPO 在推理时不必再拼接提示。入选理由是全文与六张主表可核验，直接打在 GRPO 零梯度与训练–推理错配这两个正在被集中讨论的点上，且与近 7 日 RL 篇（TIDE、NOPO、MCPO、AutoScaffold）不重复。</li>
+<li><strong>Spool</strong>（<a href="https://arxiv.org/abs/2611.23228">2611.23228</a>，Inference Acceleration）：训练免费地维护混合 VLM 的滑动窗口循环状态，主表 20 项在线 p95 TTFT 与准确率、离线对照与组件显存均可逐格核对。入选因为它把「循环状态不能按帧删除」写成可实现的系统，而不是又一篇注意力稀疏。</li>
+<li><strong>FastFrames</strong>（<a href="https://arxiv.org/abs/2611.23226">2611.23226</a>，Video Acceleration）：把端到端逐帧延迟打进约 50 毫秒交互区，并公开剖析 VAE 与 KV 更新在临界路径中的占比。入选因为有完整 VBench 主表、分部件延迟附录，以及声称附代码与权重的项目页；与近 7 日视频篇（QASK-Edit、Token2Tile、TRACE、ESTRA、SemanticKV）问题设定不同，焦点是交互延迟而非稀疏注意力或编解码器调度。</li>
+</ul>
+
+<h3>考虑但未入选（摘）</h3>
+<p>同日公告中还有其他混合加速或 Agent 候选，但或与昨日 Agent 轮换冲突，或主表/附录不足以支撑 23 节核验，或与 7 日内主题过近。本次以三篇表证最完整、方向轮换最干净者为准，不扩写未入选清单的逐条分数。</p>
+
+<h3>字数统计（按正文 CJK 汉字计，不含公式与标签）</h3>
+<p id="overview-cjk">三篇精读正文汉字数（去掉标签后统计 CJK 统一汉字 U+4E00–U+9FFF 及扩展区，不含标点、拉丁字母、数字与公式）：ASH 6229 字，Spool 6087 字，FastFrames 6158 字，合计 18474 字。三篇均落在 4500–7000 的规格区间，并落在 6000–7000 的目标带。</p>
+</section>
+
+<section class="paper" id="p1">
+<h2>论文 1｜ASH：用 Activation Steering 把 Hint-Augmented GRPO 做对 <span class="tag">NEW</span><span class="tag">Reinforcement Learning</span></h2>
+<div class="summary">ASH 把「提示」从「降低题目难度」改写成「转向模型行为」：训练时同时对带提示题与原题做 GRPO，并用可训练转向向量拉大两类回答在原题条件下的概率间隔；推理时把向量注入中间层激活，不再往上下文里拼接提示。四模型、六基准上 pass@8 全面高于 GRPO 与 QUESTA / SAGE / HILL；相对最强既有 HA-GRPO（HILL），Qwen3-1.7B/4B-Base 六基准均值分别高 2.60 / 2.21 个百分点（摘要与 §6.3）。</div>
+<h3 id="p1-s1">1. 基本信息</h3>
+<p>标题：<em>Get Hint-Augmented GRPO Done Right Through Activation Steering</em>。方法名 ASH（Activation Steering for Hinting）。作者 Khiem Le、Ting Hua、Nitesh V. Chawla，单位 University of Notre Dame, IN, USA。预印本 arXiv:2611.23124v1 [cs.LG]，标注提交日期 2026-11-17，随 2026-11-18 00:00 America/New_York 的 cs.LG 公告上线。</p>
+<p>链接：<a href="https://arxiv.org/abs/2611.23124">abs</a> · <a href="https://arxiv.org/pdf/2611.23124.pdf">PDF</a>。PDF 共 19 页（正文至第 9 页结论，附录 A–G 含提示构造、定理证明、超参、训练动态、pass@k 讨论与失败案例）。</p>
+<p>代码与项目页：正文与附录均未给出 GitHub 或项目 URL，记为 Not Reported。实现基础写明为 verl（Sheng et al., 2025），基线采用各方法公开实现（Appendix C）。硬件为 2 张 NVIDIA A100 80GB（Appendix C）。AI 使用声明：作者用生成式工具润色部分文字并辅助编码，终稿由作者核验并承担责任。</p>
+<h3 id="p1-s2">2. 一句话定位</h3>
+<p>ASH 针对 GRPO 在「整组 rollout 全错、优势全零、梯度消失」时无法继续扩能力的失灵，以及现有 Hint-Augmented GRPO（HA-GRPO）在推理时得不到提示、训练–推理上下文不一致的问题：训练阶段用提示引出行为偏移，把其中与具体题目无关的成分写入一条可训练转向向量；推理时只注入该向量、不拼接提示，从而在竞赛数学与部分分布外基准上稳定抬高 pass@k。</p>
+<h3 id="p1-s3">3. 人话版</h3>
+<p>可以把 GRPO 想成「同一道题出一组答卷，只比较组内相对好坏」。若这组卷子全是零分，组内没有相对差异，参数就不会动——难题一旦超出当前模型能力，学习就停住了。已有做法是往题目后面贴一段提示（例如参考解答的前半段），让一部分答卷先拿到分，于是又有梯度。麻烦在于：考试（推理）时没有参考解答，也就贴不上这段提示。模型像是在「开卷训练、闭卷考试」，提示一撤，成绩会掉一大截。</p>
+<p>ASH 不再指望推理时还能看见提示。它在训练里同时给「带提示的题」和「原题」让模型作答，然后学一条加在某层激活上的向量，使得「在原题条件下，模型更像在带提示时那样写解答」。学完之后，这条向量可以随身携带：推理时加到激活里，相当于把「被提示后的解题习惯」注射回去，而不把提示文本放进上下文。论文还强调，原题与带提示题一起做 GRPO，本身会减弱模型对提示的依赖，是一种正则。</p>
+<h3 id="p1-s4">4. 背景与缺口</h3>
+<p>背景是用可验证奖励做强化学习（RLVR）来激发大模型推理，GRPO 已成为主流（DeepSeekMath / DeepSeek-R1 一系）。§3 指出其脆弱点：当问题对当前模型过难，G 条响应全部失败时，对所有 i 有 Ri 等于组均值，于是 Ai=0，进而 ∇θ J(θ;q)=0，能力扩张被卡住。</p>
+<p>HA-GRPO 用提示降低难度以恢复信号。相关工作列举了 QUESTA（取参考解答前 50% token 作为前缀）、SAGE（从模型自身抽取自适应提示，几乎加倍计算）、HILL（复制一份模型当提示提供者，同样近乎双倍代价），以及依赖专有教师模型构造层级提示的脚手架路线。作者认为这些工作主要打磨「怎么抽提示」，却忽略了推理时根本没有提示可拼接，造成训练–推理上下文不匹配，增益不稳定——例如 QUESTA 相对 GRPO 在 AIME24 / AIME25 与 Minerva 上甚至更差（§6.3）。</p>
+<p>激活转向（activation steering / representation engineering）通常离线从成对对比提示构造静态向量（Turner et al., 2023；Todd et al., 2024；Stolfo et al., 2025）。推理任务里，目标行为与随题变化的参考解答缠在一起，且必须跟着模型一起演化，静态向量不够用。ASH 的缺口补丁是：把转向向量做成在线可训练，并与联合 GRPO 耦合成同一步。</p>
+<h3 id="p1-s5">5. 核心 insight</h3>
+<p>核心 insight 是重新解释提示的功能：提示的价值不在于「把题变简单」本身，而在于它引起了一场可迁移的行为偏移；这场偏移里存在与具体题目无关的成分（更规范的推理节奏、更少跑题、更接近「被点拨后的解题方式」），可以被一条全局转向向量捕获。</p>
+<p>因此训练目标分成两段且顺序固定：先在已经生成的「提示答」与「原题答」上，用类 DPO 损失训练 v，拉大 πθv 在原题条件下对提示风格回答的相对似然；再对同一批回答分别在 q+ 与 q 上独立估优势、把两个 GRPO 损失相加更新 θ。推理时只做 ht(l) ← ht(l)+v，不再使用 hq。定理 1 把「带提示策略」与「原题加转向后策略」的期望奖励差距上界写成其 KL 的平方根，最小化 L(v;q) 被解释为把 πθv(·|q) 推向 πθ(·|q+)。</p>
+<h3 id="p1-s6">6. 方法逐步拆解</h3>
+<p>提示构造。ASH 直接沿用 QUESTA 的简单机制 F：取参考解答 zq 的前 50% token 作为 hq，再 q+=concat[q,hq]（式 (2)；示例见 Appendix A）。附录例子里，提示会保留「需使 N 整除 10d」这类关键中间命题，但不给最终计数。</p>
+<p>同一步内的采样。对每个训练问题，模型分别对 q+ 与 q 各生成 Ĝ 条回答（主实验 Ĝ=4），总生成预算与基线的 G=8 对齐（§6.1）。此阶段不按对错过滤，目的是隔离行为偏移，而不是先挑对的答案。</p>
+<p>训练转向向量。在选定层 l 把可训练向量 v 加到该层每个 token 的激活上（式 (3)），然后最小化式 (4) 的 DPO 风格损失：在原题 q 的条件下，提高转向后模型对「提示答」相对「原题答」的概率间隔。β 控制 πθv 相对 πθ 的偏离惩罚，主实验固定为 0.1（与原始 DPO 相同，Appendix C）。作者明确只对「下标对齐的成对回答」计算损失，而不是所有组合，以控制开销（§7、Appendix D）。</p>
+<p>联合 GRPO。v 更新之后，用同一批回答在 q+ 与 q 上分别做组内标准化得到 {A+i} 与 {Ai}，最小化 J(θ;q+)+J(θ;q)（式 (5)）。两路优势独立估计再相加，因此不会互相抢信号。联合训练被写成一种正则：减少模型把提示当拐杖，也把已经生成的原题回答用起来。</p>
+<p>共训顺序（Algorithm 1）。v 必须在 θ 之前更新：若先改模型再拟合 v，向量会对准「过时模型」，与实际生成这批回答的模型错位。优化 v 不改 θ，故无干扰。每步都重新拟合 v，使其跟踪模型生长。最后一步故意不更新 θ，以保持终止时 v 与当前模型的对应。v 初始化为 0。</p>
+<p>推理。给定新问题 q，把学到的 v* 注入同一层 l，使用 πθv*，上下文中不含提示。</p>
+<h3 id="p1-s7">7. 核心公式：变量、目标与直觉</h3>
+<p>GRPO 的组相对优势与（文中给出的简化）损失为：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>A</mi><mi>i</mi></msub><mo>&#x0003D;</mo><mfrac><mrow><msub><mi>R</mi><mi>i</mi></msub><mo>&#x02212;</mo><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi></mrow><mo stretchy="false">&#x00028;</mo><mo stretchy="false">&#x0007B;</mo><msub><mi>R</mi><mi>j</mi></msub><msubsup><mo stretchy="false">&#x0007D;</mo><mrow><mi>j</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>G</mi></mrow></msubsup><mo stretchy="false">&#x00029;</mo></mrow><mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">d</mi></mrow><mo stretchy="false">&#x00028;</mo><mo stretchy="false">&#x0007B;</mo><msub><mi>R</mi><mi>j</mi></msub><msubsup><mo stretchy="false">&#x0007D;</mo><mrow><mi>j</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>G</mi></mrow></msubsup><mo stretchy="false">&#x00029;</mo><mo>&#x0002B;</mo><mi>&#x003B5;</mi></mrow></mfrac></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>J</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mi>;</mi><mi>q</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo>&#x02212;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>G</mi></mrow></mfrac><msubsup><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>G</mi></mrow></msubsup><mfrac><mrow><mn>1</mn></mrow><mrow><mo stretchy="false">&#x0007C;</mo><msub><mi>o</mi><mi>i</mi></msub><mo stretchy="false">&#x0007C;</mo></mrow></mfrac><msubsup><mo>&#x02211;</mo><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mo stretchy="false">&#x0007C;</mo><msub><mi>o</mi><mi>i</mi></msub><mo stretchy="false">&#x0007C;</mo></mrow></msubsup><msub><mi>r</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>o</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><msub><mi>A</mi><mi>i</mi></msub></mrow></math></div>
+<p>其中重要性比率（相对「未更新」策略）为：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>r</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>o</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mfrac><mrow><msub><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>o</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x02223;</mo><mi>q</mi><mo>&#x0002C;</mo><msub><mi>o</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mo>&#x0003C;</mo><mi>t</mi></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow><mrow><mo stretchy="false">[</mo><msub><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>o</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x02223;</mo><mi>q</mi><mo>&#x0002C;</mo><msub><mi>o</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mo>&#x0003C;</mo><mi>t</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><msub><mo stretchy="false">]</mo><mrow><mrow><mi mathvariant="normal">n</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mspace width="0.167em" /><mi mathvariant="normal">u</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub></mrow></mfrac></mrow></math></div>
+<p>符号：πθ 是参数为 θ 的策略；q 为训练问题；oi 是第 i 条完整回答，oi,t 为其第 t 个 token；G 为组大小（基线取 8）；Ri∈{0,1} 为可验证奖励（对则 1）；ε 防止除零；rθ 是相对未更新策略的 token 比率。当全部 Ri 相等时分子为零，整组优势消失。</p>
+<p>提示题与转向注入：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mi>q</mi><mrow><mo>&#x0002B;</mo></mrow></msup><mo>&#x0003D;</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi></mrow><mo stretchy="false">[</mo><mi>q</mi><mo>&#x0002C;</mo><msub><mi>h</mi><mi>q</mi></msub><mo stretchy="false">]</mo><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>h</mi><mi>q</mi></msub><mi>:</mi><mo>&#x0003D;</mo><mi>F</mi><mo stretchy="false">&#x00028;</mo><mi>q</mi><mo>&#x0002C;</mo><msub><mi>z</mi><mi>q</mi></msub><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mover><mrow><mi>h</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mi>t</mi><mrow><mo stretchy="false">&#x00028;</mo><mi>l</mi><mo stretchy="false">&#x00029;</mo></mrow></msubsup><mo>&#x0003D;</mo><msubsup><mi>h</mi><mi>t</mi><mrow><mo stretchy="false">&#x00028;</mo><mi>l</mi><mo stretchy="false">&#x00029;</mo></mrow></msubsup><mo>&#x0002B;</mo><mi>v</mi><mo>&#x0002C;</mo><mspace width="2em" /><mo>&#x02200;</mo><mi>t</mi></mrow></math></div>
+<p>hq 由 F 从 (q,zq) 抽出；l 为注入层，主实验取各模型最中间一层（Appendix C，遵循 Zou et al., 2023，未做层扫描）；v 与该层激活同维。附录将式 (4) 收成序列级形式，直觉更清楚：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>L</mi><mo stretchy="false">&#x00028;</mo><mi>v</mi><mi>;</mi><mi>q</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo>&#x02212;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mover accent="true"><mrow><mi>G</mi></mrow><mo>&#x0005E;</mo></mover></mrow></mfrac><msubsup><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mover accent="true"><mrow><mi>G</mi></mrow><mo>&#x0005E;</mo></mover></mrow></msubsup><mi>log</mi><mi>&#x003C3;</mi><mo minsize="1.623em" maxsize="1.623em">(</mo><mi>&#x003B2;</mi><mi>log</mi><mfrac><mrow><msubsup><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow><mrow><mi>v</mi></mrow></msubsup><mo stretchy="false">&#x00028;</mo><msubsup><mi>o</mi><mi>i</mi><mrow><mo>&#x0002B;</mo></mrow></msubsup><mo>&#x02223;</mo><mi>q</mi><mo stretchy="false">&#x00029;</mo></mrow><mrow><msub><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msubsup><mi>o</mi><mi>i</mi><mrow><mo>&#x0002B;</mo></mrow></msubsup><mo>&#x02223;</mo><mi>q</mi><mo stretchy="false">&#x00029;</mo></mrow></mfrac><mo>&#x02212;</mo><mi>&#x003B2;</mi><mi>log</mi><mfrac><mrow><msubsup><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow><mrow><mi>v</mi></mrow></msubsup><mo stretchy="false">&#x00028;</mo><msub><mi>o</mi><mi>i</mi></msub><mo>&#x02223;</mo><mi>q</mi><mo stretchy="false">&#x00029;</mo></mrow><mrow><msub><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>o</mi><mi>i</mi></msub><mo>&#x02223;</mo><mi>q</mi><mo stretchy="false">&#x00029;</mo></mrow></mfrac><mo minsize="1.623em" maxsize="1.623em">)</mo></mrow></math></div>
+<p>σ 为 sigmoid，β=0.1。最小化它等价于在 Bradley-Terry 框架下拟合隐式奖励 rv(q,o)=β log(πθv(o|q)/πθ(o|q))，从而把 πθv(·|q) 推向以 πθ(·|q+) 为目标的分布（Appendix B）。模型更新目标为两路 GRPO 之和 J(θ;q+)+J(θ;q)。</p>
+<p>定理 1（性能差距上界）：奖励 R:O→{0,1} 有界时，</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mo minsize="1.2em" maxsize="1.2em">|</mo><msub><mi>&#x1D53C;</mi><mrow><mi>o</mi><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><msup><mi>q</mi><mrow><mo>&#x0002B;</mo></mrow></msup><mo stretchy="false">&#x00029;</mo></mrow></msub><mo stretchy="false">[</mo><mi>R</mi><mo stretchy="false">&#x00028;</mo><mi>o</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">]</mo><mo>&#x02212;</mo><msub><mi>&#x1D53C;</mi><mrow><mi>o</mi><mi>&#x0007E;</mi><msubsup><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow><mrow><mi>v</mi></mrow></msubsup><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><mi>q</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><mo stretchy="false">[</mo><mi>R</mi><mo stretchy="false">&#x00028;</mo><mi>o</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">]</mo><mo minsize="1.2em" maxsize="1.2em">|</mo><mo>&#x02264;</mo><msqrt><mrow><mn>2</mn><msub><mi>D</mi><mrow><mrow><mi mathvariant="normal">K</mi><mi mathvariant="normal">L</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><msup><mi>q</mi><mrow><mo>&#x0002B;</mo></mrow></msup><mo stretchy="false">&#x00029;</mo><mo>&#x02225;</mo><msubsup><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow><mrow><mi>v</mi></mrow></msubsup><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><mi>q</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo></mrow></msqrt></mrow></math></div>
+<p>证明路径是：期望奖励差 ≤ 两倍全变差距离，再用 Pinsker 不等式换成 KL 的平方根（Appendix B）。这是上界而不是保证「训练后差距一定缩小」的等式；作者写的是「期望」最小化 L 会减小右端。</p>
+<h3 id="p1-s8">8. Toy example（本文自造算例，非论文数字）</h3>
+<div class="note">以下为本文自造算例，数字不是论文中的准确率、优势或损失值，只用来把「全零奖励 → 无梯度」和转向损失的方向算清楚。</div>
+<p>设某道竞赛题当前模型完全不会。基线 GRPO 采 G=8，八条回答全错，Ri 全是 0，均值为 0，标准差为 0（加上 ε 后分母非零但分子仍为 0），于是八条 Ai=0，该题对 θ 没有更新。这就是论文说的 failure mode。</p>
+<p>现在改用 ASH 的预算：对带提示题与原题各采 Ĝ=4。假设提示是参考解答的前半段，四条提示答里有两条做对（奖励 1,1,0,0），四条原题答仍全错（0,0,0,0）。提示组均值为 0.5，两条对的优势为正、两条错的为负，J(θ;q+) 提供可用梯度；原题组仍全零，J(θ;q) 这一支仍是 0。联合训练至少保住了「有提示时把对的写法强化」这一路，同时又用原题组提醒模型不要完全离开无提示分布。</p>
+<p>转向损失方面，把一条提示答 o+ 与一条原题答 o 配成对。若尚未注入 v 时二者在原题 q 下的对数似然差不多，损失接近 −log σ(0)=log 2。优化 v 的目标是让 πθv(o+|q) 明显高于 πθv(o|q)，也就是「即使题目字面上没有提示，转向后的模型也更愿意写出提示风格的那条解答」。推理时不再出现 hq 这段文字，只把学到的 v 加进中间层。</p>
+<h3 id="p1-s9">9. Baselines</h3>
+<p>主表（Table 1）比较了四类对象，均为论文写明的基线，而不是外推。</p>
+<p>（1）Base：未经这轮 RL 的原始模型，即 Qwen3-1.7B/4B-Base 与 Llama-3.2-1B/3B-Instruct。</p>
+<p>（2）GRPO：标准组相对策略优化，每题 G=8，是 HA-GRPO 的直接对照。</p>
+<p>（3）QUESTA：HA-GRPO 代表，F 取参考解答前 50% token；ASH 的提示机制与之相同，因此差异主要来自联合训练与转向，而不是更强的提示抽取。</p>
+<p>（4）SAGE 与 HILL：更重的提示抽取，SAGE 从自身提取自适应提示，HILL 另复制一份模型当提示提供者。正文写二者「几乎加倍计算成本」；Appendix C 的训练时间表上，Qwen3-1.7B 的 SAGE / HILL 约为 18 / 20 小时，相对 GRPO 的约 10 小时接近 1.8–2.0 倍。</p>
+<p>没有把 DAPO、RLOO、PPO 等其他 RL 算法列入主表。ASH 在结论中称与 SAGE / HILL 正交、可兼容，但正文没有给出组合实验，记为未做。</p>
+<h3 id="p1-s10">10. 实验设置</h3>
+<p>训练数据。OpenR1-MATH-220k（Hugging Face, 2025），约 22 万道数学题，每题配 DeepSeek-R1 参考解答。因算力有限，从默认 94k 子集出发，用 Math-Verify 滤掉参考解答无法解析的题得到 64k，再随机取参考解答短于 4096 token 的 15k 题作为训练集（Appendix C）。平均奖励在训练中仍低于 0.5（Qwen3）或 0.3（Llama-3.2），说明子集仍然很难（Appendix D）。</p>
+<p>模型。Qwen3-1.7B-Base、Qwen3-4B-Base（Yang et al., 2025），Llama-3.2-1B-Instruct、Llama-3.2-3B-Instruct（Grattafiori et al., 2024）。</p>
+<p>生成预算。基线每题 8 条；ASH 为提示题 4 条加原题 4 条。训练提示前统一加指令：Please reason step by step, and put your final answer within a boxed field（原文为 boxed 命令）。训练温度 1.0。评估 pass@k 时 n=8、温度 0.6、top-p=0.95、随机种子固定为 0（Appendix E）。</p>
+<p>关键超参（Table 4）：max prompt length 1088（保证题目不被截断），max response length 4096（训练日志显示截断率低于 5%），step size 1e-6，warmup steps ratio 0.1，warmup style cosine，KL loss coefficient 0.0，clip ratio 上下均为 0.2，batch size 128，mini batch size 64，micro batch size per GPU 8，total epochs 1。转向层取最中间一层；β=0.1。</p>
+<p>计算。全部实验在 2×NVIDIA A100 80GB 上运行。Table 5：Qwen3-1.7B 上 GRPO / QUESTA / SAGE / HILL / ASH 各约 10 / 12 / 18 / 20 / 15 小时；Qwen3-4B 约为 20 / 24 / 36 / 40 / 30 小时。作者据此称 ASH 约为 GRPO 的 1.5 倍时间，明显少于 SAGE / HILL 的约 2 倍。</p>
+<p>测试集。竞赛数学：AMC、OlympiadBench、AIME24、AIME25；分布外：Minerva、GPQA-Diamond。跨域迁移另测 LogiQA 与 LiveCodeBench-v5（Table 3）。测试集规模与是否含图的题目过滤细则 Not Reported。</p>
+<h3 id="p1-s11">11. 指标教学</h3>
+<p>主指标是 pass@k（Chen et al., 2021）。定义是：对一道题独立生成 k 条回答，至少一条最终答案正确的概率。给定 n 次采样中有 c 次成功，无偏估计为：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">@</mi></mrow><mi>k</mi><mo>&#x0003D;</mo><msub><mi>&#x1D53C;</mi><mrow><mrow><mi mathvariant="normal">q</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi></mrow></mrow></msub><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mn>1</mn><mo>&#x02212;</mo><mfrac><mrow><mo minsize="2.047em" maxsize="2.047em">&#x00028;</mo><mfrac linethickness="0"><mrow><mi>n</mi><mo>&#x02212;</mo><mi>c</mi></mrow><mrow><mi>k</mi></mrow></mfrac><mo minsize="2.047em" maxsize="2.047em">&#x00029;</mo></mrow><mrow><mo minsize="2.047em" maxsize="2.047em">&#x00028;</mo><mfrac linethickness="0"><mrow><mi>n</mi></mrow><mrow><mi>k</mi></mrow></mfrac><mo minsize="2.047em" maxsize="2.047em">&#x00029;</mo></mrow></mfrac><mo stretchy="true" fence="true" form="postfix">]</mo></mrow></mrow></math></div>
+<p>k=1 时退化为温度采样下的平均成功率；k&gt;1 时衡量的是「正确推理路径是否存在于输出分布某处」，而不是它是不是最可能的那一条。作者在 Appendix E 强调，难题可能单次失败但仍有潜伏能力，传统单次准确率会漏掉这种扩张。为了在覆盖与成本之间折中，他们把评估限制在 k=8，并且取 n=8。需要注意：许多文献用 n≫k 再估计 pass@k；此处 n=k=8，估计仍是无偏的，但方差会比更大的 n 更高。正文主表只报 pass@8，完整 pass@1/2/4/8 放在 Figure 5，作者称各 k 上观察一致，但图中精确数值因无标签未做目测，记为 Not Verified。</p>
+<p>训练过程还跟踪平均回答长度、奖励、熵，以及转向损失 L(v;q) 与「正间隔频率」所定义的转向训练准确率（Appendix D / Figure 4）。这些是训练动态，不是测试指标。</p>
+<h3 id="p1-s12">12. 可核验结果</h3>
+<p>下列数字全部来自 PDF 正文或 Table 1–3、Appendix C，并注明出处。</p>
+<p>（1）相对 GRPO，ASH 在四个模型、六个测试基准的 pass@8 上全部更高（Table 1）。竞赛数学均值提升为 Qwen3-1.7B/4B-Base 的 3.84 / 5.29 个百分点，Llama-3.2-1B/3B-Instruct 的 5.66 / 5.90 个百分点；分布外为 5.79 / 3.61 与 4.05 / 3.46 个百分点（§6.3）。</p>
+<p>（2）相对既有 HA-GRPO，ASH 在 Qwen3-1.7B/4B-Base 上给出平均 2.60 / 2.21 个百分点（摘要与 §6.3；按六基准对 HILL 的算术平均可复得 2.60 与 2.21）。拆开看：竞赛数学 1.97 / 2.25，分布外 3.84 / 2.13；Llama 家族对应总体 2.17 / 2.14，数学 1.86 / 2.15，分布外 2.80 / 2.11（§6.3）。</p>
+<p>（3）QUESTA 相对 GRPO 并不稳定：在更具挑战的 AIME24 / AIME25 与 Minerva 上低于 GRPO（§6.3）。以 Qwen3-1.7B 为例，Table 1 中 AIME24 为 QUESTA 17.30 对 GRPO 21.44，AIME25 为 14.72 对 14.99，Minerva 为 47.69 对 48.99。HILL 更一致，但代价接近双倍。</p>
+<p>（4）训练–推理不匹配的幅度（Figure 3b，在训练数据上评测）：ASH 训练的模型若推理时去掉提示，pass@8 分别下降 21.33 与 08.13 个百分点（Qwen3-1.7B/4B-Base）；相应 QUESTA 缺口为 27.34 与 10.83。注入转向后 pass@8 回升 11.11 与 04.51 个百分点，约为缺口的一半（§6.2）。</p>
+<p>（5）去掉转向、只保留联合训练时，剩余相对 GRPO 的增益被归因于正则；转向本身在竞赛数学上贡献 3.78 / 4.55（Qwen）与 3.70 / 4.66（Llama）个百分点，在分布外贡献 1.72 / 2.66 与 3.13 / 2.92 个百分点。作者估计转向约占相对 GRPO 总增益的 68.9% / 83.1%（Qwen）与 68.6% / 80.2%（Llama）（§6.4，Table 2）。</p>
+<p>（6）数学上训出的向量不经继续训练即可迁移：LogiQA 上 pass@8 提升 9.12 / 7.23（Qwen）与 4.26 / 3.74（Llama）个百分点；LiveCodeBench-v5 上为 2.64 / 3.00 与 2.46 / 1.54（§6.5，Table 3）。</p>
+<p>（7）训练时间：ASH 约 1.5× GRPO，SAGE / HILL 约 2×（§7 与 Table 5）。Qwen3-1.7B 上 ASH 约 15 小时，HILL 约 20 小时。</p>
+<p>（8）单点例子：Qwen3-4B-Base 在 AIME24 上 Base / GRPO / HILL / ASH 的 pass@8 为 29.27 / 34.24 / 36.40 / 39.11；同模型 AIME25 为 25.75 / 32.43 / 34.95 / 37.31（Table 1）。</p>
+<h3 id="p1-s13">13. 真实表图阅读</h3>
+<p class="cap">Table 1（正文第 8 页）：四模型在六基准上的 pass@8。Average 左列为竞赛数学四基准均值，右列为 Minerva 与 GPQA-Diamond 均值。最佳结果原文加粗，均为 ASH。</p>
+<div class="tbl"><table>
+<thead><tr><th>模型</th><th>方法</th><th>AMC</th><th>OlympiadBench</th><th>AIME24</th><th>AIME25</th><th>数学均值</th><th>Minerva</th><th>GPQA-D</th><th>OOD 均值</th></tr></thead>
+<tbody>
+<tr><td>Qwen3-1.7B-Base</td><td>Base</td><td>55.77</td><td>46.48</td><td>10.24</td><td>13.84</td><td>31.58</td><td>39.10</td><td>39.79</td><td>39.45</td></tr>
+<tr><td></td><td>GRPO</td><td>56.06</td><td>50.14</td><td>21.44</td><td>14.99</td><td>35.66</td><td>48.99</td><td>61.10</td><td>55.05</td></tr>
+<tr><td></td><td>QUESTA</td><td>56.30</td><td>51.04</td><td>17.30</td><td>14.72</td><td>34.84</td><td>47.69</td><td>69.78</td><td>58.73</td></tr>
+<tr><td></td><td>SAGE</td><td>58.65</td><td>51.56</td><td>20.24</td><td>14.88</td><td>36.33</td><td>48.77</td><td>63.54</td><td>56.16</td></tr>
+<tr><td></td><td>HILL</td><td>59.13</td><td>52.75</td><td>21.72</td><td>16.51</td><td>37.53</td><td>49.23</td><td>64.76</td><td>57.00</td></tr>
+<tr><td></td><td>ASH</td><td>60.73</td><td>54.59</td><td>23.79</td><td>18.91</td><td>39.50</td><td>51.52</td><td>70.15</td><td>60.84</td></tr>
+<tr><td>Qwen3-4B-Base</td><td>Base</td><td>69.11</td><td>59.35</td><td>29.27</td><td>25.75</td><td>45.87</td><td>53.00</td><td>52.36</td><td>52.68</td></tr>
+<tr><td></td><td>GRPO</td><td>71.67</td><td>63.83</td><td>34.24</td><td>32.43</td><td>50.54</td><td>60.37</td><td>73.36</td><td>66.86</td></tr>
+<tr><td></td><td>HILL</td><td>77.10</td><td>65.85</td><td>36.40</td><td>34.95</td><td>53.58</td><td>60.49</td><td>76.19</td><td>68.34</td></tr>
+<tr><td></td><td>ASH</td><td>79.21</td><td>67.71</td><td>39.11</td><td>37.31</td><td>55.83</td><td>62.65</td><td>78.28</td><td>70.47</td></tr>
+<tr><td>Llama-3.2-1B-Instruct</td><td>Base</td><td>30.77</td><td>16.80</td><td>07.25</td><td>00.00</td><td>13.71</td><td>12.27</td><td>10.80</td><td>11.54</td></tr>
+<tr><td></td><td>GRPO</td><td>34.75</td><td>21.15</td><td>11.97</td><td>00.00</td><td>16.97</td><td>20.07</td><td>13.85</td><td>16.96</td></tr>
+<tr><td></td><td>HILL</td><td>41.02</td><td>25.14</td><td>13.10</td><td>03.83</td><td>20.77</td><td>20.91</td><td>15.52</td><td>18.21</td></tr>
+<tr><td></td><td>ASH</td><td>43.57</td><td>27.18</td><td>14.33</td><td>05.45</td><td>22.63</td><td>21.05</td><td>20.97</td><td>21.01</td></tr>
+<tr><td>Llama-3.2-3B-Instruct</td><td>Base</td><td>49.23</td><td>38.09</td><td>19.72</td><td>00.83</td><td>26.97</td><td>36.87</td><td>26.34</td><td>31.60</td></tr>
+<tr><td></td><td>GRPO</td><td>51.58</td><td>38.95</td><td>22.46</td><td>04.17</td><td>29.29</td><td>39.14</td><td>26.34</td><td>32.74</td></tr>
+<tr><td></td><td>HILL</td><td>57.06</td><td>44.80</td><td>24.24</td><td>06.06</td><td>33.04</td><td>39.88</td><td>28.31</td><td>34.09</td></tr>
+<tr><td></td><td>ASH</td><td>61.19</td><td>46.25</td><td>25.99</td><td>07.34</td><td>35.19</td><td>40.91</td><td>31.50</td><td>36.20</td></tr>
+</tbody></table></div>
+<p>为核对完整性，此处补全上表省略的 QUESTA / SAGE 行（均来自 Table 1）。Qwen3-4B-Base：QUESTA 的 AMC / OlympiadBench / AIME24 / AIME25 / 数学均值 / Minerva / GPQA-D / OOD 均值为 73.75 / 64.49 / 32.00 / 29.32 / 49.89 / 58.61 / 75.72 / 67.16；SAGE 为 76.25 / 64.75 / 33.61 / 32.15 / 51.69 / 60.28 / 75.75 / 68.02。Llama-3.2-1B-Instruct：QUESTA 为 38.06 / 24.00 / 10.86 / 00.00 / 18.23 / 18.20 / 16.10 / 17.15；SAGE 为 40.66 / 24.56 / 11.56 / 02.24 / 19.75 / 19.21 / 14.85 / 17.03。Llama-3.2-3B-Instruct：QUESTA 为 54.40 / 40.38 / 19.35 / 04.81 / 29.73 / 38.12 / 28.11 / 33.11；SAGE 为 55.60 / 43.87 / 21.16 / 05.58 / 31.55 / 38.37 / 28.29 / 33.33。可见 QUESTA 在两个 Llama 的 AIME24 上同样低于或接近 GRPO（10.86 对 11.97，19.35 对 22.46），与正文「增益不稳定」的判断一致。</p>
+<p>Table 2 比较同一 ASH 模型在「不用转向 / 使用转向」下的 pass@8。以 Qwen3-1.7B 数学均值为例，无转向 35.72、有转向 39.50；Qwen3-4B 为 51.28 对 55.83；Llama-3.2-3B 为 30.53 对 35.19。无转向时若干单基准已接近或仅略高于 GRPO，说明联合正则单独贡献有限，转向是主因（与 §6.4 叙述一致）。</p>
+<p>Table 3：Qwen3-1.7B 在 LogiQA 上无/有转向为 79.57 / 88.69，LiveCodeBench-v5 为 16.13 / 18.77；Qwen3-4B 为 81.87 / 89.10 与 30.47 / 33.47；Llama-3.2-1B 为 54.84 / 59.10 与 05.74 / 08.20；Llama-3.2-3B 为 68.20 / 71.94 与 19.35 / 20.89。</p>
+<p>Figure 3a 称 ASH 相对 GRPO 显著降低每 batch 过难（全零奖励）题目比例，但图中无印出的精确百分比，记为 Not Verified。Figure 4 显示长度、奖励、熵在训练末三分之一趋于饱和，ASH 三条曲线落在 GRPO 与 QUESTA 之间；L(v;q) 下降、转向准确率上升，但具体终值 Not Verified。Table 6 是失败案例：转向后 Qwen3-1.7B 把「四次幂」误读成平方且使用非法进制 b=2，答 2；Qwen3-4B 算出了正确的 b=18，却把答案报成 N=2401。作者假设这与单条全局向量容量有限有关。</p>
+<h3 id="p1-s14">14. Ablation 与缺失的 ablation</h3>
+<p>论文把「有无转向」当作隔离贡献的主消融（Table 2 / RQ3），并把联合训练相对 QUESTA 的缺口收窄（21.33 / 8.13 对 27.34 / 10.83）当作正则有效的证据（RQ1）。训练动态里 ASH 位于 GRPO 与 QUESTA 之间，也是同一叙事的旁证（Appendix D）。跨域 Table 3 是「只开关转向、不再训练」的迁移消融。</p>
+<p>明确缺失或未做的消融包括：未扫描注入层（直接取最中间一层以省算力）；未扫描 β（固定 0.1）；未把 ASH 的转向模块接到 SAGE / HILL 的更强提示器上，尽管结论称正交可兼容；未比较「提示比例」是否必须是 50%；未报告多随机种子或误差条（评估种子固定为 0）；未在主实验里改变 Ĝ 与配对方式（只在附录说明不用全组合）。这些缺失并不否定主结果，但会限制「设计选择是否稳健」的判断。Appendix D 还补充了一条与难度有关的观察：训练过程中平均响应奖励始终低于 0.5（两个 Qwen3）或 0.3（两个 Llama-3.2），说明 15k 子集并没有被滤成「已经会做」的简单题；在此前提下 ASH 仍能降低过难批次比例并抬高 pass@k，比「只在易题上刷分」更有说服力。转向损失下降、正间隔频率上升，则支持 v 确实在被优化，而不是一条随机向量。</p>
+<h3 id="p1-s15">15. Claim vs Evidence</h3>
+<p>对齐较好的声明。第一，「四个模型、六个基准的 pass@8 全面提升」与 Table 1 逐格一致，未发现反例。第二，「QUESTA 增益不稳定」有 AIME 与 Minerva 的直接反例支持。第三，「转向贡献了相对 GRPO 增益的大部分」与 Table 2 的有无对照以及作者给出的 68.9%–83.1% 比例一致。第四，训练时间「约 1.5× 而非 2×」与 Table 5 相符。</p>
+<p>需要收紧的声明。摘要写「将 Qwen3-1.7B-Base 与 Qwen3-4B-Base 的平均 pass@8 提高 2.60% 与 2.21%」，未在摘要里写明比较对象；正文 §6.3 说明这是相对既有 HA-GRPO 方法的平均增益，按六基准对 HILL 可复现这两个数。它不是相对 GRPO 的增益（相对 GRPO 明显更大），也不是「相对提升百分之几」的比率。文中百分数均以百分点方式陈述 pass@8 之差。</p>
+<p>「激活转向恢复了提示所解锁能力的约一半」只建立在训练数据、两个 Qwen 模型、Figure 3b 的 pass@8 回升上，不是测试集 Table 1 的直接分解。定理 1 是差距上界，不是实证保证。跨域「有效迁移」在 LogiQA 上幅度很大，在 LiveCodeBench-v5 上只有约 1.5–3 个点，编码侧更弱。失败案例表明转向也可能轻微偏离题意。单条全局向量加中间层这一设计，没有层或向量数目的对照，外推需谨慎。</p>
+<h3 id="p1-s16">16. 贡献</h3>
+<p>可从证据收成四点。其一，把 HA-GRPO 的核心问题从「如何抽取更好的提示」转到「如何在推理时无需提示仍保住提示带来的行为」，并给出可运行的在线转向方案。其二，联合在 q+ 与 q 上做 GRPO，既利用已生成样本，又构成可观测的正则（缺口相对 QUESTA 收窄，训练动态居中）。其三，在四模型六基准上取得对 GRPO 与三种 HA-GRPO 的一致 pass@8 优势，且数学上训出的向量能在逻辑问答与代码上开关见效。其四，成本落在 GRPO 与重提示方法之间（约 1.5×），并与更重提示器在原则上兼容——尽管兼容性本身尚未用表格验证。</p>
+<h3 id="p1-s17">17. 局限</h3>
+<p>论文自己写的局限（§7）主要是转向向量的训练开销。作者辩称：式 (4) 的隐式奖励不需要额外生成，只需对已有回答做并行 prefilling；且只对下标对齐的成对样本计损失。因此开销「实践中适中」，约为 1.5× GRPO。结论还指出当前只用一条全局向量，用任务或问题相关的向量扩展容量是未来工作。</p>
+<p>还可以从正文读出但未充分展开的限制：提示仍依赖参考解答 zq，训练不是无解法设定；F 取前 50% 可能泄露关键中间步骤（Appendix A 的例子几乎列出了全部分类）；评估 n=k=8、单一种子，缺少统计误差；模型尺度停在 4B，未触及更大推理模型；GPQA-Diamond 对 Llama-3.2-3B 的 GRPO 与 Base 同为 26.34，显示弱模型上分布外收益并不自动出现，ASH 将该项提到 31.50，但仍低；Table 6 说明转向会改写题意或交错最终答的对象。代码未发布，复现需自行在 verl 中实现注入与共训顺序。</p>
+<h3 id="p1-s18">18. 复现要点</h3>
+<p>要对齐 Table 1，需要：同一 15k 子集（94k→Math-Verify 64k→参考解答 &lt;4096 token 的随机 15k，随机种子 Not Reported）；指令模板与 boxed 答案；G=8 对 Ĝ=4+4 的预算对齐；Table 4 的长度、学习率、clip、batch 与 KL=0；中间层注入、β=0.1、v 先于 θ、最后一步不更新 θ；2×A100 80GB 或等算力；评估温度 0.6、top-p 0.95、n=8、种子 0。基线应使用各方法公开实现而非自行改写提示器。转向损失必须在「生成这批回答的那个 θ」上计算。若只在 q+ 上训练或在推理时忘记注入 v，结果应接近 Table 2 的「无转向」行，而不是主表 ASH 行。</p>
+<h3 id="p1-s19">19. 研究价值</h3>
+<p>在 RLVR / GRPO 已成为推理模型标配的背景下，零梯度的「过难题」是真实瓶颈，用提示修补又会引入训练–推理不一致。ASH 把这条不一致写成可优化的分布差距，并证明至少可以在激活空间里回收大约一半的提示增益，同时把其余增益留给「原题也一起训练」这种更朴素的正则。对做数学 RL 的团队，它提供了一条不加倍采样预算、不依赖在线教师模型的改进路径；对机械可解释性，它提供了一个「在 RL 过程中在线学习转向向量」的实例，而不是离线对比提示。跨域开关转向仍有效，说明学到的不完全是数学题的表面模板。</p>
+<h3 id="p1-s20">20. 可执行迁移</h3>
+<p>迁移一：在已有 HA-GRPO 流水线里加「原题并行 rollout + 联合 GRPO」，先不引入转向。预算保持总样本数不变（一半提示、一半原题）。若验证集在去提示后的跌幅明显收窄，说明正则本身就有用，成本只是实现分流。这对应 Table 2「无转向」相对纯提示方法的位置。</p>
+<p>迁移二：把类 DPO 的成对损失接到某一中间层的可加向量上，用「条件 A 下的回答」对「条件 B 下的回答」在无条件上下文中对齐。不必先做数学 RL：任何「训练时有工具/检索/思维链前缀、推理时没有」的错配，都可以先用一条全局向量做小规模试点，并像 Table 2 那样报告「注入 / 不注入」的成对数字。务必固定共训顺序，并单列失败案例（跑题、答非所问），因为 Table 6 显示这种向量会有副作用。</p>
+<h3 id="p1-s21">21. 方向专用分析（RL：GRPO / HA-GRPO / hint mismatch / activation steering）</h3>
+<p>GRPO 的梯度塌缩是结构性质：组内相对标准化在零方差奖励时给出零优势，与学习率无关。HA-GRPO 用 hq 人为制造组内方差，但把条件分布从 π(·|q) 换成了 π(·|q,hq)。ASH 承认这一点，不在推理时假装 hq 还在，而是学习一个与 q 无关的激活偏置去逼近 π(·|q+)。这与「把提示当额外 token 训练再在推理时丢掉」不同：丢掉 token 会造成离散的上下文错配，而加 v 是连续、可逆、可开关的干预，也因此才能在 Table 2 与 Table 3 里做干净的有无对照。</p>
+<p>与「直接把提示拼接进训练然后依赖泛化」相比，联合 GRPO 已经在做泛化压力，转向则把剩余的、可在激活里线性分离的偏移单独参数化。Figure 3b 显示两者都要：只靠联合训练仍留下两位数的缺口，只靠转向（若没有联合，论文未测）也可能会过拟合提示条件。当前实现的边界也很清楚：一条全局向量、一个中间层、一种 50% 前缀提示，对 Table 6 那种「读错题」没有专门的抑制项。</p>
+<h3 id="p1-s22">22. Attack / Verification lens</h3>
+<p>怀疑者会先打这几处。第一，要求多种子与 n≫8 的 pass@k 曲线，检验 2.21–2.60 这类小幅度平均增益是否稳定，尤其是 AIME 只有数十题、单点波动大。第二，在测试集上重复 Figure 3b 的「有提示 / 无提示 / 有转向」三柱，确认「回收一半」不是训练域特有。第三，换一种提示器（SAGE / HILL 或更短前缀）做 ASH，验证贡献是否真来自转向而非 QUESTA 式泄露。第四，检查 15k 子集是否与测试基准重叠或风格接近，以及 Math-Verify 过滤是否偏向易解析题。第五，把注入改到其他层或改成逐题向量，看 Table 6 类失败是否减少。第六，公开代码与 v 的训练曲线，排除实现细节（例如是否对 prompt token 也加 v）造成的不可复现性。若在这些压力下主序关系仍在，结论就更硬。</p>
+<h3 id="p1-s23">23. 记忆总结</h3>
+<ul>
+<li>ASH 用一条在线训练的激活转向向量，在推理时不必拼接提示，来修补 HA-GRPO 的训练–推理上下文错配。</li>
+<li>GRPO 在整组奖励全零时优势与梯度同时消失；提示可以恢复信号，但推理时没有参考解答可抽提示。</li>
+<li>每步先拟合 v 再更新 θ，最后一步不更新 θ，使向量始终对准当前生成该批回答的模型。</li>
+<li>提示机制沿用 QUESTA 的参考解答前 50% token；总采样预算与 G=8 对齐（4+4）。</li>
+<li>Table 1：四模型六基准 pass@8 全面高于 GRPO 与 QUESTA / SAGE / HILL；相对 HILL，Qwen3-1.7B/4B 六基准均值高 2.60 / 2.21 个百分点。</li>
+<li>相对 GRPO 的数学均值增益为 3.84 / 5.29 / 5.66 / 5.90 个百分点（Qwen 1.7B/4B，Llama 1B/3B）。</li>
+<li>转向约占相对 GRPO 增益的七到八成；去掉提示后的缺口约有一半被转向抬回（训练域、两个 Qwen）。</li>
+<li>数学上训出的向量在 LogiQA 与 LiveCodeBench-v5 上开关有效，无需再训练。</li>
+<li>代价约 1.5× GRPO，低于 SAGE / HILL 的约 2×；层与 β 未扫描；代码 Not Reported。</li>
+<li>已知失败模式是单条全局向量引起跑题或答错对象（Table 6），作者把扩容留作未来工作。</li>
+</ul>
+</section>
+<section class="paper" id="p2">
+<h2>论文 2｜Spool：面向混合视觉语言模型的低延迟流式推理 <span class="tag">NEW</span><span class="tag">Inference Acceleration</span></h2>
+<div class="summary">Spool 是训练免费的混合 VLM 流式推理框架：把 GDN / Mamba 等线性循环层对每一视频块的更新写成仿射变换并缓存，用线段树在窗口滑动时以对数代价重建循环状态，再用 KV tail filling 与 RoPE rebase 收回注意力页。在 5 个模型 × 4 个基准的 20 项在线测试中，p95 TTFT 全部最低，相对更快的 vLLM 基线几何平均 6.6 倍；在线准确率均值 52.8%，对 vLLM-Incremental 50.3%、vLLM-Omni 45.4%。离线则与基线基本持平（均值 54.4% 对 54.1% / 53.7%）。</div>
+<h3 id="p2-s1">1. 基本信息</h3>
+<p>标题：<em>Spool: Low-Latency Streaming Inference for Hybrid Vision-Language Models</em>。作者 Rui Ning、Om Chabra、Hari Balakrishnan，单位 MIT CSAIL（Massachusetts Institute of Technology, Cambridge, MA, USA）。通讯作者 Hari Balakrishnan，邮箱 hari@csail.mit.edu。预印本 arXiv:2611.23228v1 [cs.CV]，标注 2026-11-17，随 2026-11-18 公告上线。页眉写 Preprint，版权归作者。PDF 共 19 页（正文至第 12 页结论，附录 A–D 含幺半群证明、精度论证、状态误差与 p50 / CDF）。</p>
+<p>链接：<a href="https://arxiv.org/abs/2611.23228">abs</a> · <a href="https://arxiv.org/pdf/2611.23228.pdf">PDF</a>。致谢：Quanta Computer, Inc. 的 AIR Project 与 NSF Award 2616029。</p>
+<p>实现：第 4 节写明用 Python、PyTorch、Triton 与 Flash Linear Attention，加载预训练权重并用 Hugging Face processor 处理帧与提示。正文与附录未给出项目主页或源代码 URL，记为 Not Reported。资助与实现细节不能代替代码发布。</p>
+<h3 id="p2-s2">2. 一句话定位</h3>
+<p>Spool 解决混合 VLM（注意力层与 GDN / Mamba-2 等线性循环层交错）在滑动视频窗口上的一个服务问题：过期帧的 KV 可以删，但循环状态里没有「按帧可删的条目」，通常只能整窗重放。它缓存每块的仿射状态变换，用线段树组合，从提示锚点重建当前窗口的循环状态，再对注意力做尾部回填与位置重基，从而在不重训、不重放保留帧的前提下压低在线 TTFT 尾部。</p>
+<h3 id="p2-s3">3. 人话版</h3>
+<p>想象机器人或无障碍助手一直看着摄像头，只关心「最近两分钟」发生了什么，还得在问题到来时马上开口。纯注意力模型可以像翻笔记本一样撕掉旧页（驱逐过期 KV）。但混合模型还有一本「总账」：循环层把过去所有帧揉进一份固定大小的状态里。旧帧的笔记撕了，总账上却还记着旧账。若直接继续用这份总账，答案可能被已经离开窗口的内容干扰；若每次把窗口里剩下的帧重新过一遍模型，延迟会跳起来——论文在 Qwen3.5-9B、A100、128 帧窗口上测到，整窗重建中位时延 6.288 秒，而正常追加一块只需 0.215 秒，约 29.2 倍（Figure 3）。</p>
+<p>Spool 的办法是不存「每帧结束后的总账」（那份总账已经混有更早的帧），而存「这一帧把总账变成什么」的规则。这类规则是仿射的：新状态等于旧状态乘以一个矩阵再加上一个增量。规则可以结合，也可以从「系统提示算完后的锚点」开始，只把还留在窗口里的规则按顺序应用，得到一份不再含过期帧更新的总账。注意力那边则把空出来的页槽用新帧的 KV 填上，并偶尔把 RoPE 坐标整体平移，避免位置编号无限增长。</p>
+<h3 id="p2-s4">4. 背景与缺口</h3>
+<p>流式视频理解要求答案及时、处理跟得上帧、并且能在有限显存里跑长流。模型有上下文上限，系统因此保持「固定前缀（系统提示）+ 最近 N 帧的滑动窗口」。引言用 N=60 举例：第 61 帧到达时驱逐第 1 帧。vLLM、SGLang 的前缀缓存要求序列开头不变，窗口一起步，缓存就失效，必须重算剩余帧。</p>
+<p>注意力层可以按条驱逐 KV，但页式存储会在页内留下空洞；RoPE 又把位置编码写进了已缓存的 key，删 token 并不会自动把后面的位置重置（§2.3）。混合结构（Figure 2）把问题再加重一档：GDN / Mamba 把历史揉进固定状态，常规「每帧存一份 checkpoint」没有用，因为 checkpoint 已经含有应过期的信息（§1 Challenge 1）。</p>
+<p>vLLM-Omni 的增量 prefill 用「容量满时丢掉窗口最旧的一半」来降低重建频率，但论文指出三条缺点：满窗重建的尾部尖峰仍在；批量驱逐会丢掉本可保留的上下文；为批量驱逐预留容量等于不能持续用满预算（§2.4）。缺口因此是：在预训练混合骨干上、训练免费地，精确扣除过期块对循环状态的更新，同时廉价收回 KV 页，并把尾部延迟打下来。</p>
+<h3 id="p2-s5">5. 核心 insight</h3>
+<p>关键 insight 是：在层输入固定时，GDN（以及同类 SSM，衰减为标量或对角）的核心更新对状态是仿射的，一块里所有 token 的更新可以合成一次块级变换 Fi(S)=SAi+Bi，且 (Ai,Bi) 不依赖于进入该块时的状态，因此可以在正常 prefill 时顺便记下，之后作用到别的入口状态上。仿射变换结合律成立，从而能用线段树把 O(W) 的重放变成 O(log W) 次组合（W 为窗口块数）。</p>
+<p>作者同时划清边界：在每一循环层内部，对「已记录的状态更新」而言，扣除与重放是无损的；但这不等于与「整网重跑」等价，因为后层的输入特征是前层在过期帧仍在上下文时算出来的，过期帧可能通过这些缓存输入留下残差影响——类比注意力里驱逐 KV 后仍可能残留的跨层效应。§5.5 用相对 vLLM-Omni 的输出 KL 表明，有重建时 KL 大约稳住在 0.04，无重建则会累积。</p>
+<h3 id="p2-s6">6. 方法逐步拆解</h3>
+<p>状态与锚点。引擎先把固定系统提示 prefill 一次，把它的循环状态存成锚点 Sp。随后维护三类状态：循环状态、缓存的块变换、注意力 KV 页。工作窗口是半开区间 [a,b)。</p>
+<p>记录变换。块 b 进入窗口时，在正常 prefill 中构造 Ai（来自循环核已有的中间量），并由两端状态恢复 Bi=Sout−SinAi（§3.2）。在线路径仍用默认的 Sout 作为下一块的活状态，不走弯路。</p>
+<p>过期与重建。窗口满、新块到达时丢掉最旧的 (Aa,Ba)，从 Sp 起按时间顺序对保留块做 S←SAj+Bj（式 (5)）。朴素做法是线性扫一遍；Spool 把相邻块的仿射摘要存进线段树，利用结合律做区间查询，使重建为对数级（Challenge 2；附录定理 A.1 证明 (A,B) 在合并运算下构成非交换幺半群，单位元为 (I,0)）。为省显存，摘要默认用 BF16，并采用残差形式 (D,B)=(A−I,B)（推论 A.2）。</p>
+<p>精度。正文写明：摘要默认 BF16 存储，前缀锚点与活的循环状态保持 FP32；状态转移乘积把 FP32 状态拆成高低 BF16 分量并在 FP32 中累加（§4）。</p>
+<p>注意力侧：KV tail filling。过期 token 在页内留下空洞，不能靠释放整页收回。Spool 用新到达帧的 KV 填进这些槽，按页表把搬移计划下到物理地址，用一条 Triton grid 在所有注意力层、key 与 value 上拷贝（§3.4、§4）。</p>
+<p>RoPE rebasing。填槽只改存储位置、不改逻辑坐标。当位置将超出 RoPE 表时，对所有缓存坐标（含固定前缀）减同一个 Δ，并对 key 左乘 R(−Δ)；多轴 RoPE 对时间、高、宽分别做同样平移。式 (11) 表明相对位置差不变，从而注意力分数在精确算术下不变。</p>
+<p>作者强调：过期块的变换不再被应用，保留块的 token 不必再次穿过骨干。</p>
+<h3 id="p2-s7">7. 核心公式：变量、目标与直觉</h3>
+<p>单头、固定层输入下的逐步仿射更新为：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>s</mi><mi>t</mi></msub><mo>&#x0003D;</mo><msub><mi>A</mi><mi>t</mi></msub><msub><mi>s</mi><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msub><mo>&#x0002B;</mo><msub><mi>b</mi><mi>t</mi></msub></mrow></math></div>
+<p>一块内的 token 合成块级变换（式 (4)）：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>F</mi><mi>i</mi></msub><mo stretchy="false">&#x00028;</mo><mi>S</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>S</mi><msub><mi>A</mi><mi>i</mi></msub><mo>&#x0002B;</mo><msub><mi>B</mi><mi>i</mi></msub><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>A</mi><mi>i</mi></msub><mo>&#x02208;</mo><msup><mi>&#x0211D;</mi><mrow><msub><mi>d</mi><mi>k</mi></msub><mo>&#x000D7;</mo><msub><mi>d</mi><mi>k</mi></msub></mrow></msup><mo>&#x0002C;</mo><mspace width="0.278em" /><msub><mi>B</mi><mi>i</mi></msub><mo>&#x02208;</mo><msup><mi>&#x0211D;</mi><mrow><msub><mi>d</mi><mi>v</mi></msub><mo>&#x000D7;</mo><msub><mi>d</mi><mi>k</mi></msub></mrow></msup></mrow></math></div>
+<p>S∈Rdv×dk 是该头的循环状态；At 作用在已有记忆上，bt（或 Bi）写入新信息；dk、dv 为头维度，具体数值 Not Reported。Ai 是块内 token 矩阵的有序乘积，Bi 累积写入。从锚点重放保留块（式 (5)）：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>S</mi><mo>&#x02190;</mo><mi>S</mi><msub><mi>A</mi><mi>j</mi></msub><mo>&#x0002B;</mo><msub><mi>B</mi><mi>j</mi></msub><mo>&#x0002C;</mo><mspace width="2em" /><mi>j</mi><mo>&#x0003D;</mo><mi>a</mi><mo>&#x0002B;</mo><mn>1</mn><mo>&#x0002C;</mo><mi>&#x02026;</mi><mo>&#x0002C;</mo><mi>b</mi><mo>&#x02212;</mo><mn>1</mn></mrow></math></div>
+<p>相邻区间 [a,k) 与 [k,b) 的摘要合并（附录式 (6)）为：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>A</mi><mrow><mi>a</mi><mo>&#x0002C;</mo><mi>b</mi></mrow></msub><mo>&#x0003D;</mo><msub><mi>A</mi><mrow><mi>a</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub><msub><mi>A</mi><mrow><mi>k</mi><mo>&#x0002C;</mo><mi>b</mi></mrow></msub></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>B</mi><mrow><mi>a</mi><mo>&#x0002C;</mo><mi>b</mi></mrow></msub><mo>&#x0003D;</mo><msub><mi>B</mi><mrow><mi>a</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub><msub><mi>A</mi><mrow><mi>k</mi><mo>&#x0002C;</mo><mi>b</mi></mrow></msub><mo>&#x0002B;</mo><msub><mi>B</mi><mrow><mi>k</mi><mo>&#x0002C;</mo><mi>b</mi></mrow></msub></mrow></math></div>
+<p>结合律使线段树合法；非交换意味着必须按时间顺序合并，不能随意换块。RoPE 重基的不变性（式 (11) 的核心等式）为：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mi>q</mi><mi>i</mi><mrow><mi>&#x02032;</mi><mi>T</mi></mrow></msubsup><mi>R</mi><mo stretchy="false">&#x00028;</mo><mo stretchy="false">&#x00028;</mo><msub><mi>p</mi><mi>j</mi></msub><mo>&#x02212;</mo><mi>&#x00394;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mo stretchy="false">&#x00028;</mo><msub><mi>p</mi><mi>i</mi></msub><mo>&#x02212;</mo><mi>&#x00394;</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo><msub><mi>k</mi><mi>j</mi></msub><mo>&#x0003D;</mo><msubsup><mi>q</mi><mi>i</mi><mrow><mi>T</mi></mrow></msubsup><mi>R</mi><mo stretchy="false">&#x00028;</mo><msub><mi>p</mi><mi>j</mi></msub><mo>&#x02212;</mo><msub><mi>p</mi><mi>i</mi></msub><mo stretchy="false">&#x00029;</mo><msub><mi>k</mi><mi>j</mi></msub></mrow></math></div>
+<p>公共偏移 Δ 在相对位置里抵消。目标函数在系统层而不是训练损失：最小化查询到达至首个输出 token 的等待（TTFT），并在固定窗口表示下尽量保持答案质量。直觉：循环层要「撤销」的是一段线性变换，而不是一份已经混合的状态快照；能缓存的是变换，不是快照。</p>
+<h3 id="p2-s8">8. Toy example（本文自造算例，非论文数字）</h3>
+<div class="note">以下为自造数值算例，用来把仿射扣除算清楚，不是论文 Table 1 或 Figure 3 的测量值。</div>
+<p>假设某层某头状态是标量（仅便于心算），锚点 Sp=0。五块的变换依次为：F1(S)=0.5S+2，F2(S)=0.8S+1，F3(S)=S+3，F4(S)=0.5S+0，F5(S)=S+4。从锚点顺序应用后，活状态为 0→2→2.6→5.6→2.8→6.8。若此时到达 F6 且窗口长度是 5，必须去掉 F1。正确的窗口状态应从锚点只走 F2 到 F5：0→1→4→2→6。若错误地继续使用「含 F1 的 6.8」再加 F6，总账里仍有 F1 的贡献。差值 6.8 对 6，就是过期帧残留。</p>
+<p>线段树可以把 (F2∘F3) 与 (F4∘F5) 预先合并，过期时只需两次组合而不是四次逐步应用。自造的 KV 页：每页 4 个槽，过期 6 个 token 后第一页可释放，第二页留下两个空洞；把新帧的两条 KV 填进这两个槽，就能释放尾页。这些数字只说明机制，不代表任何基准分数。</p>
+<h3 id="p2-s9">9. Baselines</h3>
+<p>在线与离线主实验都对照 vLLM-Omni 提供的两条路径（§5.1）。</p>
+<p>（1）vLLM-Omni：原生按查询推理，查询到达时才 prefill 视频上下文。这是「每次从头算」的上界对照，p95 往往最慢（Table 1 中 BEYOND3D 上甚至到数百秒）。</p>
+<p>（2）vLLM-Omni + Incremental Prefill（表中写作 vLLM-Incremental）：流式路径，提前 prefill 到达的帧并在查询时复用前缀缓存；论文评测配置下，容量满时丢掉窗口最旧的一半（§2.4）。它通常是「更快的那个基线」，也是 6.6 倍几何平均所对比的对象。</p>
+<p>没有把 SGLang、StreamingVLM、InfiniteVL、SimpleStream 等列入同一张主表；相关工作在第 6 节讨论，但不是 Table 1–3 的数字对照。消融内部的对照是「无 Spool / 朴素缓存 / 线段树 / 再加 KV Filling」（Table 4 与 Figure 6），以及「有无状态重建」（Figure 7）。</p>
+<h3 id="p2-s10">10. 实验设置</h3>
+<p>模型。评测写明六个开源混合 VLM，覆盖规模与循环结构（§5.1）。GDN 路线：Qwen3.5 稠密 0.8B、9B、27B，以及 MoE 的 Qwen3.6-35B-A3B、Qwen3.5-122B-A10B。SSM 路线：Nemotron-Nano-12B-v2-VL（表中作 Nemotron-VL Nano-12B），注意力与 Mamba-2 交错，用来检验方法是否超出 GDN。需注意：引言举例曾出现 Nemotron 3.5 Super VL 这一名称，评测与表用的是 Nano-12B，本文以评测设置为准。在线主表（Table 1–2）是五模型二十项（不含 0.8B）；离线 Table 3 含 0.8B，共二十四项。摘要与结论把 6.6 倍与 2.3 个百分点写在「五个 VLM、二十项测试」上。</p>
+<p>基准。StreamingBench（流式多选，检验是否保住骨干理解）、PhoStream（移动场景长流开放问答）、FastBench（快速变化、短事件、需密采样）、Beyond3D / BEYOND3D（第一人称时空推理，物体被挪走后离开视野）。在线用各基准前五小时；离线用全基准，但 35B 与 122B 因 GPU 有限仍只用前五小时（§5.1）。</p>
+<p>在线协议。视频按墙钟速度流入，问题在预定时间戳到达；服务器一次处理一题，忙则丢题而不是排队，丢题计为答错；帧不丢、只缓冲（§5.2）。离线则尽快把问题时间戳之前的帧送完，再停下来等回答，以隔离表示质量与速度（§5.3）。两种设定使用同一有界帧窗口，但主表未写明该窗口的帧数；正文仅在 Figure 3 的重建代价实验写明 128 帧窗口，在 Figure 9 的逐层误差实验写明 64 帧保留窗口。Table 1–3 的窗口长度因此记为 Not Reported（不能把 128 或 64 自动套到主表）。</p>
+<p>硬件。在线实验对每个模型使用作者当时可用的最小 GPU：Qwen3.5-9B 与 Nemotron-VL Nano-12B 用 A100 40GB，Qwen3.5-27B 用 GH200，Qwen3.6-35B-A3B 用 B200，Qwen3.5-122B-A10B 用 B300。显存消融（Table 4）在单张 A100 40GB 上进行。帧率、每帧 token 数、精确 token 预算 Not Reported。</p>
+<h3 id="p2-s11">11. 指标教学</h3>
+<p>效率指标是 TTFT：从查询到达到第一个输出 token 的时间，单位秒，越低越好。主报 p95，用来抓住尾部；附录 Table 5 报 p50，并在 Figure 10 给出完整 CDF。作者强调增量 prefill 在典型（p50）问题上可以很快，但少数重建会拖垮 p95——这正是流式系统要看尾部的原因。几何平均速度倍数相对「该项上更快的那个基线」计算，括号内倍数也是如此；另报相对 vLLM-Omni 的倍数。</p>
+<p>质量指标：多选任务用准确率，开放任务用基准特定质量分，表中统一写成 % 并上箭头。在线准确率把「服务器正忙时被丢掉的问题」计为错误，因此延迟差会直接变成准确率差。离线准确率去掉墙钟压力，用来判断窗口状态维护是否伤质量。Figure 7 另用相对 vLLM-Omni 的输出 KL，以及 PhoStream 上「回溯性」问题的准确率增益，来刻画重建对保真的影响。</p>
+<h3 id="p2-s12">12. 可核验结果</h3>
+<p>（1）Table 1：20 项在线测试中 Spool 的 p95 TTFT 全部最低，相对更快基线的几何平均加速 6.6 倍，相对 vLLM-Omni 为 33.8 倍。16/20 项 p95 低于 1 秒，增量 prefill 只有 3 项低于 1 秒（§5.2）。最大倍数出现在 Qwen3.5-9B 的 PhoStream：0.34 秒对增量预填充的 12.22 秒（35.7 倍）。大模型上仍然可见：Qwen3.5-122B-A10B 的 StreamingBench 为 0.33 秒对 1.99 秒（6.0 倍）。BEYOND3D 上基线极慢（Omni 可到 191.42–298.61 秒），Spool 为 0.81–6.60 秒，倍数 1.4–7.2。</p>
+<p>（2）Table 2：在线准确率均值 Spool 52.8%，Incremental 50.3%，Omni 45.4%。BEYOND3D 上相对「该项更准的基线」提升 3.6–18.4 点（均值 9.5），例如 Nemotron-VL Nano-12B 为 30.32% 对 11.94%（+18.4）。其余基准落在 −2.5 到 +3.6 点。结论与摘要写的「平均 2.3 个百分点、相对该项更强基线」是作者汇总，与「52.8 对 50.3」的 2.5 点接近但不完全相同，本文同时保留两处原文，不另估 2.3 的逐项平均。</p>
+<p>（3）Table 3：无计时压力时，24 项中 Spool 相对更准基线落在 −1.6 到 +1.8 点，均值最高，为 54.4% 对 Incremental 54.1%、Omni 53.7%。作者据此判断在线优势主要来自「按时答完、少丢题」，而不是改变了模型看见的内容。</p>
+<p>（4）Figure 3：128 帧窗口、Qwen3.5-9B、单 A100，整窗重建中位 6.288 秒对正常追加 0.215 秒（29.2 倍）。</p>
+<p>（5）Figure 6 / Table 4：在 PhoStream、Qwen3.5 设定下，线段树相对朴素缓存降低每帧时延 4.7–14.8%，最大一档是 Nano-12B 从 93.1 降到 79.3 毫秒；再加上 KV filling 再降 2.9–5.6%，合计 7.4–17.4%。线段树增加峰值显存 2.25–4.37 GiB（表头写作 2.3–4.4），KV filling 相对「仅线段树」收回 0.38–1.77 GiB；完整系统相对朴素缓存平均多 9.2% 显存。</p>
+<p>（6）Figure 7：有重建时相对 Omni 的 KL 在 1024 个过期帧上大约保持 0.04，无重建则累积；回溯问题上，半个窗口过期后重建带来 2.4 点，超过两个窗口后为 3.8–4.7 点。</p>
+<p>（7）引言 Challenge 1 称 9B 模型缓存系数大约多 4.8 GiB 或 18% 显存；Table 4 中 9B 从无 Spool 的 27.33 到完整 32.16 GiB，增加约 4.83 GiB，与 4.8 GiB 叙述相符。</p>
+<p>（8）附录 Table 5：p50 上 Spool 在 18/20 项最低或并列最低，相对更快基线几何平均 1.9 倍，相对 Omni 32.2 倍。最大差距在 FastBench + Nano-12B：0.14 秒对 2.66 秒。Incremental 在 StreamingBench 的 Qwen3.5-27B 与 122B-A10B 上略快 0.01–0.02 秒。</p>
+<h3 id="p2-s13">13. 真实表图阅读</h3>
+<p class="cap">Table 1（第 10 页）：在线 p95 TTFT（秒，越低越好）。括号为相对该项更快基线的倍数。模型列为 Qwen3.5-9B、Nemotron-VL Nano-12B、Qwen3.5-27B、Qwen3.6-35B-A3B、Qwen3.5-122B-A10B。</p>
+<div class="tbl"><table>
+<thead><tr><th>基准</th><th>方法</th><th>9B</th><th>Nano-12B</th><th>27B</th><th>35B-A3B</th><th>122B-A10B</th></tr></thead>
+<tbody>
+<tr><td>PhoStream</td><td>vLLM-Omni</td><td>31.53</td><td>5.52</td><td>12.11</td><td>8.13</td><td>5.57</td></tr>
+<tr><td></td><td>vLLM-Incremental</td><td>12.22</td><td>2.23</td><td>5.79</td><td>2.44</td><td>2.02</td></tr>
+<tr><td></td><td>Spool</td><td>0.34 (×35.7)</td><td>0.17 (×13.0)</td><td>0.29 (×20.0)</td><td>0.91 (×2.7)</td><td>1.31 (×1.5)</td></tr>
+<tr><td>StreamingBench</td><td>vLLM-Omni</td><td>31.59</td><td>5.55</td><td>9.64</td><td>11.74</td><td>8.02</td></tr>
+<tr><td></td><td>vLLM-Incremental</td><td>11.70</td><td>2.24</td><td>4.51</td><td>1.84</td><td>1.99</td></tr>
+<tr><td></td><td>Spool</td><td>0.35 (×33.8)</td><td>0.17 (×13.3)</td><td>0.28 (×16.2)</td><td>0.25 (×7.4)</td><td>0.33 (×6.0)</td></tr>
+<tr><td>FastBench</td><td>vLLM-Omni</td><td>4.00</td><td>6.00</td><td>5.23</td><td>0.88</td><td>1.04</td></tr>
+<tr><td></td><td>vLLM-Incremental</td><td>0.90</td><td>4.03</td><td>2.71</td><td>0.31</td><td>0.45</td></tr>
+<tr><td></td><td>Spool</td><td>0.13 (×6.8)</td><td>0.14 (×28.2)</td><td>0.23 (×11.9)</td><td>0.15 (×2.1)</td><td>0.21 (×2.1)</td></tr>
+<tr><td>BEYOND3D</td><td>vLLM-Omni</td><td>60.55</td><td>191.42</td><td>298.61</td><td>287.89</td><td>258.73</td></tr>
+<tr><td></td><td>vLLM-Incremental</td><td>2.33</td><td>6.96</td><td>6.17</td><td>8.03</td><td>9.09</td></tr>
+<tr><td></td><td>Spool</td><td>0.81 (×2.9)</td><td>0.97 (×7.2)</td><td>1.82 (×3.4)</td><td>3.49 (×2.3)</td><td>6.60 (×1.4)</td></tr>
+</tbody></table></div>
+<p class="cap">Table 2 节选：在线准确率（%，越高越好）。括号为相对该项更准基线的百分点变化。完整五行模型同 Table 1。</p>
+<div class="tbl"><table>
+<thead><tr><th>基准</th><th>方法</th><th>9B</th><th>Nano-12B</th><th>27B</th><th>35B-A3B</th><th>122B-A10B</th></tr></thead>
+<tbody>
+<tr><td>PhoStream</td><td>Incremental</td><td>61.25</td><td>57.71</td><td>71.64</td><td>69.65</td><td>71.14</td></tr>
+<tr><td></td><td>Spool</td><td>64.27 (+3.0)</td><td>56.22 (−1.5)</td><td>69.15 (−2.5)</td><td>69.15 (−0.5)</td><td>71.14 (+0.0)</td></tr>
+<tr><td>StreamingBench</td><td>Incremental</td><td>84.24</td><td>77.50</td><td>86.88</td><td>83.75</td><td>88.13</td></tr>
+<tr><td></td><td>Spool</td><td>84.24 (+0.0)</td><td>75.00 (−2.5)</td><td>86.88 (+0.0)</td><td>82.50 (−1.3)</td><td>86.88 (−1.3)</td></tr>
+<tr><td>FastBench</td><td>更好基线*</td><td>32.35</td><td>30.39</td><td>40.20</td><td>35.95</td><td>37.91</td></tr>
+<tr><td></td><td>Spool</td><td>35.95 (+3.6)</td><td>30.72 (+0.3)</td><td>41.83 (+1.6)</td><td>35.29 (−0.7)</td><td>37.58 (−0.3)</td></tr>
+<tr><td>BEYOND3D</td><td>Incremental</td><td>22.93</td><td>11.94</td><td>24.74</td><td>12.40</td><td>10.08</td></tr>
+<tr><td></td><td>Spool</td><td>31.41 (+8.5)</td><td>30.32 (+18.4)</td><td>35.14 (+10.4)</td><td>19.04 (+6.6)</td><td>13.71 (+3.6)</td></tr>
+</tbody></table></div>
+<p>注：FastBench 上 9B / Nano-12B / 27B 的更准基线是 vLLM-Omni（32.35 / 30.39 / 40.20），35B 与 122B 是 Incremental（35.95 / 35.95）。上表「更好基线*」行仅用于 FastBench 对照，BEYOND3D 与其余两行的对照基线均为 Incremental（该项上通常也是更准者）。PhoStream 与 StreamingBench 的 Omni 完整数字见 PDF Table 2。</p>
+<p>Table 4 峰值显存（GiB）：无 Spool 5.53 / 27.33 / 27.06；朴素缓存 8.52 / 30.93 / 31.06；加线段树 10.77 / 33.93 / 35.43；再加 KV Filling 9.43 / 32.16 / 35.05（对应 Qwen3.5-0.8B / 9B / Nano-12B）。Figure 6 每帧时延（毫秒）三条柱为：0.8B 的 85.3 / 78.1 / 73.7，9B 的 106.7 / 101.7 / 98.8，Nano-12B 的 93.1 / 79.3 / 76.9（朴素 / 线段树 / +KV Filling）。Figure 10 为 CDF 形状，精确分位数以 Table 1 与 Table 5 为准，不从图上目测。Table 3 离线准确率按 0.8B / 9B / Nano-12B / 27B / 35B-A3B / 122B-A10B 六列完整抄录如下。PhoStream：Omni 为 41.59 / 60.87 / 50.66 / 69.00 / 69.65 / 72.14，Incremental 为 41.59 / 62.57 / 51.61 / 68.05 / 69.65 / 71.14，Spool 为 41.97（+0.4）/ 63.33（+0.8）/ 51.04（−0.6）/ 69.94（+0.9）/ 68.66（−1.0）/ 71.14（−1.0）。StreamingBench：Omni 为 72.32 / 83.64 / 81.41 / 86.06 / 80.63 / 86.88，Incremental 为 73.13 / 85.66 / 83.43 / 88.08 / 83.13 / 88.13，Spool 为 72.12（−1.0）/ 85.25（−0.4）/ 81.82（−1.6）/ 88.08（+0.0）/ 82.50（−0.6）/ 86.88（−1.3）。其中 −1.6 正是「落在 −1.6 到 +1.8 点」这一总括的下沿，出现在 Nano-12B 的 StreamingBench。FastBench：Omni 为 25.49 / 33.99 / 30.72 / 39.87 / 36.27 / 41.18，Incremental 为 27.78 / 35.62 / 30.39 / 40.52 / 36.60 / 42.16，Spool 为 27.78（+0.0）/ 35.62（+0.0）/ 31.37（+0.7）/ 41.83（+1.3）/ 35.95（−0.7）/ 42.16（+0.0）。BEYOND3D：Omni 为 28.76 / 37.90 / 34.58 / 49.14 / 37.97 / 37.77，Incremental 为 25.56 / 38.18 / 34.19 / 49.23 / 36.47 / 36.45，Spool 为 30.58（+1.8）/ 37.47（−0.7）/ 34.77（+0.2）/ 48.04（−1.2）/ 37.26（−0.7）/ 38.82（+1.0）。+1.8 的上沿来自 0.8B 的 BEYOND3D。离线 BEYOND3D 的差异远小于在线的 3.6–18.4 点，是「增益来自少丢题」最直接的表证。</p>
+<h3 id="p2-s14">14. Ablation 与缺失的 ablation</h3>
+<p>组件消融完整且与机制对应：朴素缓存 → 线段树 → KV filling，同时报时延与峰值显存（Figure 6、Table 4）。保真消融对比「有重建 / 无重建」的 KL 与回溯问题准确率（Figure 7），附录 Figure 8–9 进一步给出相对 vLLM 参考的 GDN 状态 Frobenius 误差（Beyond3D 全部 9,000 题；Figure 9 注明 64 帧窗口、Qwen3.5-9B 的 24 个 GDN 层）。这些误差曲线的精确终值多在图上，未在正文印出的数字记为 Not Verified。</p>
+<p>缺失或不完整之处：主实验窗口帧数、采样帧率未写死；没有把 Spool 与 StreamingVLM / SimpleStream 等训练或结构改造方法放在同一硬件与同一丢题协议下对比；0.8B 只出现在离线与显存消融，未进入 20 项在线 TTFT 表；RoPE rebase 的触发频率与 Δ 的选取没有单独消融表；跨 GPU、多并发流的扩展性 Not Reported。</p>
+<h3 id="p2-s15">15. Claim vs Evidence</h3>
+<p>站得住的部分。「20 项 p95 全部最低 + 几何平均 6.6 倍」与 Table 1 一致；16/20 项 p95&lt;1 秒也可以逐格核对（未低于 1 秒的主要是部分 BEYOND3D 与 122B PhoStream 的 1.31 秒等）。「离线基本持平、在线增益来自按时回答」与 Table 3 的窄带差异、Table 2 在 BEYOND3D 上的大涨和丢题计错规则相符。显存「可承受」有 Table 4 的 9.2%。KL 不累积的定性结论有 Figure 7a。</p>
+<p>需要收紧的部分。摘要「准确率平均提高 2.3 个百分点」是对更强基线的汇总，Table 2 里有多项为负（如 StreamingBench 上 Nano-12B −2.5、PhoStream 上 27B −2.5），平均被 BEYOND3D 的大正值拉起；若应用不涉及空间记忆类问题，在线准确率优势可能接近零甚至略降。不同模型用了不同级别 GPU，跨模型比较绝对秒数不公平，论文的公平单位是「同一模型上的方法对比」。层内精确、跨层残差这一限制被写进了摘要，但不能从主表直接看出残差有多大，只能依赖 KL 与附录误差图。「训练免费」指不改骨干权重，但工程上需要定制核与线段树，不是打开 vLLM 开关即可。主表窗口大小未给出，复现实验设置存在缺口。</p>
+<h3 id="p2-s16">16. 贡献</h3>
+<p>贡献可收成三条。第一，把混合 VLM 滑动窗口里「循环状态无法按帧删除」明确成仿射变换的组合与重放问题，并证明摘要构成幺半群，为线段树提供代数根据。第二，给出一套可实现的系统：变换缓存、线段树重建、KV 尾填、RoPE 重基，以及配套 Triton / Flash Linear Attention 核，在 GDN 与 Mamba-2 上都跑通。第三，用在线丢题协议把尾部延迟与任务准确率连起来：同样的表示质量，答得慢就会在真实流里丢分。离线持平是这条因果链的对照实验。</p>
+<h3 id="p2-s17">17. 局限</h3>
+<p>论文把主要局限写在机制内部：层内对已记录更新无损，但过期帧可通过前层算好的输入留下残差；他们用 KL 有界来说明残差不随窗口推进而放大。系统局限还包括：评测是单问题串行、忙则丢题，不是多租户排队；大模型离线只用前五小时；依赖预训练混合骨干，不覆盖纯 Transformer VLM 的窗口问题（后者本来就能删 KV）；代码未给出 URL。</p>
+<p>另外，从实验设置读出的限制有：窗口长度与帧率在主表缺失；硬件档位不一；开放域质量分的具体公式指向各基准，文中未复述；增量 prefill 基线采用「丢一半」策略，若对比「逐帧重建的 vLLM」优势会更大，若对比未来更好的循环检查点方法则未知。残差表示与 BF16 可能在极端长窗口引入数值误差，附录有误差曲线但正文未给可引用的层平均终值。</p>
+<h3 id="p2-s18">18. 复现要点</h3>
+<p>复现 Table 1–2 需要：对应的 Qwen3.5 / 3.6 与 Nemotron-Nano-12B-v2-VL 权重与官方 processor；vLLM-Omni 及官方 Incremental Prefill 路径；与论文相同的丢题协议（忙则丢、丢题算错、帧不丢）；同一有界窗口（但帧数需向作者确认，因主文未写死）；在线只跑各基准前五小时；按模型选用 A100 40GB / GH200 / B200 / B300 或承认绝对秒数会变、只比倍数。实现上必须从 Flash Linear Attention 的分块 GDN prefill 记录块摘要，锚点保持 FP32，摘要默认 BF16，RoPE 重基包含前缀。若关闭重建，应能看到 Figure 7 那种 KL 累积与回溯题掉点。显存数字应对齐单 A100 40GB 与 Table 4 的四行配置。</p>
+<h3 id="p2-s19">19. 研究价值</h3>
+<p>混合架构正在进入开源 VLM 的主流，服务栈若仍按「前缀不变」或「整窗重放」来设计，尾部延迟会先于平均延迟爆炸。Spool 说明：对线性循环层，过期不是无解的，只要缓存的是仿射更新而不是混合后的状态。它把流处理里熟知的结合律窗口聚合（论文引用 Reactive Aggregator、DABA）搬到了模型状态上，并且用在线基准证明「晚到的正确表示」在丢题规则下等于错误。对做推理系统的人，这是一条不改权重、专打尾部的路线；对做模型的人，它提醒在设计循环层时把「可组合、可撤销的更新」当作一等公民。</p>
+<h3 id="p2-s20">20. 可执行迁移</h3>
+<p>迁移一：在任何「状态对输入仿射」的服务里（GDN、部分线性注意力、对角 SSM），不要存每步状态快照，改为存 (A,B) 或残差 (A−I,B)，用线段树或分层摘要支持任意左边界推进。先在单一循环层上做正确性测试：重放结果应在 FP32 下与逐步更新一致，再考虑 BF16。这直接对应式 (4)(5) 与定理 A.1。</p>
+<p>迁移二：把评测从「离线准确率」改成「带墙钟与丢题的在线 TTFT + 准确率」。即使暂不实现 Spool，只需在现有 vLLM 增量路径上按问题时间戳丢题，就能暴露重建尖峰如何变成业务指标。对注意力页，优先实现「填洞」而不是每次 memcopy 整个保留上下文；对 RoPE 模型，把「整体平移坐标」做成周期维护，而不是让位置无限增长。这两步是 §3.4 的可拆卸部件，不必先上线段树。</p>
+<h3 id="p2-s21">21. 方向专用分析（Inference Acceleration：滑动窗口、KV 驱逐与 GDN 状态、无训练仿射缓存、TTFT 尾部）</h3>
+<p>推理加速在这里不是蒸馏或稀疏，而是滑动窗口服务。KV 驱逐对注意力是 O(1) 的条目删除，对循环状态则不成立，因为没有按帧索引。Spool 的缓存对象是训练免费的仿射变换，计算发生在 prefill 已有的中间量上，不增加前向次数。看均值 TTFT 会误判：Table 5 里 Incremental 的 p50 常常已经很小，有两项甚至略胜 Spool 0.01–0.02 秒，但 Table 1 的 p95 可差一个数量级——尾部才是窗口重建的签名。vLLM 两条基线代表两类常见工程选择：查询时全量 prefill，或用批量驱逐降低重建频率；Spool 要挑战的是第三种：「窗口左端必须能连续前进，而且不能为了前进而重放」。残差影响说明它仍是近似系统，近似误差的预算要用 KL 或下游题来设，而不是假设与整网重跑逐 token 相等。</p>
+<h3 id="p2-s22">22. Attack / Verification lens</h3>
+<p>审核路径建议如下。第一，向作者或代码确认 Table 1 的窗口帧数、帧率与 token 预算，改这些旋钮后 6.6 倍是否还在。第二，把丢题规则改成排队而非丢弃，看准确率优势是否大幅收窄——若收窄，则进一步支持「增益来自按时答完」。第三，在纯注意力骨干或关闭所有循环层的变体上跑同一套窗口，确认增益不是来自实现层面的额外增量 prefill 优化。第四，强制更频繁的 RoPE rebase 与更长过期历史，检查 KL=0.04 是否仍有界。第五，用同一块 GPU 重跑所有模型，排除硬件档位叙述以外的实现差异。第六，审计开放题评分脚本。若无代码，至少应公开块摘要核与评测驱动，否则 20 项全胜难以被第三方原样复现。</p>
+<h3 id="p2-s23">23. 记忆总结</h3>
+<ul>
+<li>Spool 是面向混合 VLM 滑动窗口的训练免费推理引擎，用缓存的仿射块变换重建循环状态，并给注意力做尾填与 RoPE 重基。</li>
+<li>循环层把历史揉进固定状态，过期帧没有可删条目；存每帧状态快照无用，因为快照已含应过期信息。</li>
+<li>块变换 Fi(S)=SAi+Bi 可结合，线段树把重建从线性降到对数级；层内对已记录更新无损，跨层可有残差。</li>
+<li>在线 5 模型 × 4 基准共 20 项：p95 TTFT 全部最低，相对更快 vLLM 基线几何平均 6.6 倍，16/20 项低于 1 秒。</li>
+<li>在线准确率均值 52.8% 对 Incremental 50.3%、Omni 45.4%；BEYOND3D 贡献了大部分涨幅（最高 +18.4 点）。</li>
+<li>离线 24 项落在 −1.6 到 +1.8 点，均值 54.4% 对 54.1% / 53.7%，说明在线优势主要来自少丢题。</li>
+<li>128 帧窗口上整窗重建中位 6.288 秒对追加 0.215 秒（29.2 倍）；主表窗口帧数 Not Reported。</li>
+<li>线段树用 2.3–4.4 GiB 换 4.7–14.8% 的每帧时延；完整系统相对朴素缓存平均多 9.2% 显存。</li>
+<li>有重建时输出 KL 约稳定在 0.04；回溯题在过期超过两窗后可再得 3.8–4.7 点。</li>
+<li>实现基于 PyTorch / Triton / Flash Linear Attention；源代码 URL Not Reported。</li>
+</ul>
+</section>
+<section class="paper" id="p3">
+<h2>论文 3｜FastFrames：把自回归视频生成做到交互级延迟 <span class="tag">NEW</span><span class="tag">Video Acceleration</span></h2>
+<div class="summary">FastFrames 把自回归视频扩散的端到端逐帧延迟打进交互区（≤50 毫秒，即 ≥20 RPS）。作者剖析发现 VAE 解码与 KV 缓存更新可占临界路径一半以上，于是用轻量 ConvNeXt 像素头替换 VAE 解码器（147 毫秒→1 毫秒），用小网络替换用于「洁净 KV」的整次 DiT（约 20 倍加速），再加系统优化。1.3B 的 FastFrames-S 在单枚 B200、832×480 上 36 毫秒/帧（约 28 RPS），VBench Total 84.23，对照快 7.6 倍的 Causal Forcing++（272 毫秒，84.11）；14.3B 的 FastFrames-L 在 8 枚 B200 上 45 毫秒（22.2 RPS）。</div>
+<h3 id="p3-s1">1. 基本信息</h3>
+<p>标题：<em>FastFrames: Video Generation at Interactive Latency</em>。作者 Gene Chou（Apple 与 Cornell University）、Guandao Yang、Fujun Luan、Lars Mescheder、Wei Dong、Stephan R. Richter、Vladlen Koltun（除第一作者外单位为 Apple）。脚注写明工作完成于 Gene 在 Apple 的实习期间。预印本 arXiv:2611.23226v1 [cs.CV]，标注 2026-11-17，随 2026-11-18 公告上线。PDF 共 19 页（正文至第 10 页结论，附录 A–E：局限、延迟剖析、像素头与 KV 修复网络的结构与训练、交互应用适配）。</p>
+<p>链接：<a href="https://arxiv.org/abs/2611.23226">abs</a> · <a href="https://arxiv.org/pdf/2611.23226.pdf">PDF</a>。项目页（论文写明含视频、代码与权重）：<a href="https://apple-aiml-research.github.io/ml-fastframes/">https://apple-aiml-research.github.io/ml-fastframes/</a>。致谢列出多名讨论者，未另列资助编号。</p>
+<h3 id="p3-s2">2. 一句话定位</h3>
+<p>FastFrames 是一族建立在 Wan 2.1 骨干上的少步自回归视频扩散模型，主张交互体验应看「输入到首帧 RGB 的端到端延迟」，而不是把一段批量生成时间摊成 FPS。它把常被当成固定配件的 VAE 解码与 KV 精炼从临界路径上换掉，再配合编译、切分注意力与上下文并行，使 1.3B 单卡与 14B 八卡在 480p 上跨过约 50 毫秒的人机交互阈值。</p>
+<h3 id="p3-s3">3. 人话版</h3>
+<p>如果一个模型「一秒钟生成 30 帧」，听起来是 30 FPS。但若这 30 帧是一次性成批出炉，用户按下方向键之后仍然要等满一秒才看到反应——这在交互里并不流畅。人机交互文献把大约 50–60 毫秒当作延迟可被察觉的阈值（论文引用 Annett、Deber、Forch 与 Miller 1968）。FastFrames 因此改报 RPS：每秒能做出多少次「响应」，一次响应就是一个自回归生成单元，不管它内部含几帧。50 毫秒正好对应 20 RPS。</p>
+<p>作者给当时最快的少步自回归模型 Causal Forcing++（CF++，Wan 2.1 1.3B）做了剖析：在单枚 B200、约 480p 上，生成一帧要 271.8 毫秒，其中两步扩散只有 83.2 毫秒（两轮各 41.6），一次专门写 KV 的 DiT 又是 41.6，VAE 解码却要 147 毫秒。也就是说，大半时间花在「配件」而不是去噪。FastFrames 把解码换成几个在低分辨率 token 网格上工作的 ConvNeXt 块加线性显像，把「再跑一次 DiT 写干净 KV」换成小修复网络，并把单次 DiT 从 41.6 打到 16.4 毫秒，整条路径变成约 36 毫秒。</p>
+<h3 id="p3-s4">4. 背景与缺口</h3>
+<p>自回归视频扩散按块生成、用 KV 缓存条件于过去，适合接入新的控制或观测，也被视为世界模拟、游戏与机器人预测的候选介质。近年来蒸馏与少步采样显著加速，已有工作按 FPS 声称实时，但 FPS 会把批量生成摊薄，不能回答「用户输入多久之后能看到效果」。</p>
+<p>相关工作分别打三条线：加速采样（训练免费求解器、分布匹配蒸馏、混合注意力、KV 压缩），加速 VAE（减参、去掉注意力与宽 3D 卷积，通常最多约 4 倍且常降质），以及系统层（流水线与批处理提吞吐但不降单帧延迟、FlashAttention、torch.compile、CUDA Graph、量化、序列/流水线并行）。作者的判断是：少步之后，迭代去噪已不再是延迟瓶颈，VAE 与 KV 精炼这些「被认为不可或缺的实现细节」反而占了临界路径的一半以上，且 VAE 单独就已超过 50 毫秒预算的 3 倍（§3.2）。缺口是在不牺牲 VBench 与观感的前提下，把这些配件换成轻量读出，并按端到端逐帧延迟——而不是摊销 FPS——来汇报。</p>
+<h3 id="p3-s5">5. 核心 insight</h3>
+<p>核心 insight 有两层。第一，度量必须改：定义延迟为「新输入信号到达」到「第一帧体现该信号的 RGB 被呈上」的时间，RPS=1000/Lms；交互目标是 ≤50 毫秒（≥20 RPS）。第二，剖析显示瓶颈在配件。像素解码不必是通用重建问题，可以是「冻结 DiT 的轻量读出」：单层线性已经能看出场景但模糊，三块因果 3D ConvNeXt 加线性反补丁即可在约 1 毫秒内保持细结构。KV 精炼不能裸删——否则会出现漂移与伪影（Figure 6）——但不必再付一次完整 DiT，用共享主干加逐层残差头即可。把这两项拿掉之后，系统优化才有空间把两次 DiT 塞进 50 毫秒预算。</p>
+<h3 id="p3-s6">6. 方法逐步拆解</h3>
+<p>预备。视频写成潜在块序列 z1:N，zi∈RC×T×H×W，每块 T 个潜在帧，每潜在帧对应 VAE 时间压缩因子 K 张 RGB。联合分布按自回归分解。生成更大块（如 Self-Forcing 一次三帧）更接近双向、更好优化；生成更小块（CF++ 与 FastFrames：一块 = 一个潜在帧）更快。SOTA 路径是把预训练双向教师改成自回归再做分布匹配蒸馏。CF++ 建在 Wan 2.1 1.3B 上；作者采用其两步扩散变体，称一步会明显降质且只再省约 15% 延迟（§3.1）。</p>
+<p>替换 VAE 解码器（§3.2）。Wan VAE 解码器 73.3M 参数、147 毫秒，却要在约 160 万时空位置上做稠密 3D 卷积（四张 480×832）。像素头始终在 Transformer 的低分辨率 21×30×52 token 网格上运行，由三个因果 3×3×3 深度卷积加通道 MLP 的 ConvNeXt 风格块组成，最后用线性层把每个 token 变成 4×16×16 的 RGB 补丁，拼成 84 帧 480×832，再按 Wan 约定丢掉前 3 帧得到 81 帧。参数 63.9M（附录精确到 63.87M），时延约 1 毫秒对 147 毫秒（正文亦写 147 倍）。先对冻结 DiT 的潜在用式 (1) 的重建损失拟合 VAE 输出，再在像素空间加对抗训练。对抗阶段用内部 10K 真实视频，冻结 DINOv3 ViT-S/16，在第 4/8/12 层各接空间与时间两个 token 级判别头（共六头），目标为 relativistic softplus，另有中心项与斜率惩罚（λcenter=0.01，λslope=0.25；在 25% clip 上用标准差 0.01 的高斯扰动估计 R1/R2）。生成器侧保留重建损失并截断对抗梯度。尝试低学习率微调 DiT 时出现不稳定，故主方案冻结 DiT。代价是：像素头必须按模型分别微调，不能像家族内 VAE 那样共享。</p>
+<p>更快的 KV 更新（§3.3）。各层缓存含 attention sink 与最近窗口。最后一步去噪的 KV 仍来自带噪输入，基线因此对预测的洁净潜在再跑一次 t=0 的 DiT，只用其 K/V、丢掉输出。两步扩散里这次精炼占 DiT 次数的三分之一。裸删或「训练模型去使用带噪缓存」都会造成明显伪影（附录 Figure 6）。替换网络：冻结的 DiT patch embedding + 四个从头训练的轻量 Transformer 块作为共享特征器，再加逐层修复头，用残差修正带噪 K/V。训练时用原始 DiT 精炼产生的教师信号；损失为 KV 重建（余弦 + 相对 ℓ2，附录称 value 权重大约三倍于 key）以及「后续块注意预测缓存 vs 目标缓存」的注意力输出损失。1.3B 上约 2 毫秒、14B 上约 6 毫秒（单 B200），分别约 20 倍与 12 倍快于基线精炼。</p>
+<p>系统优化（§3.4）。基线剖析已计入更快注意力后端与 torch.compile。进一步：持久 KV 缓冲、预计算 RoPE 与文本/时间条件、融合 QKV。因单帧 query 太少、GPU 吃不饱，把长度为 32,760 的 KV 切成 5 段各 6,552，softmax 合并，再降 13%。CUDA Graph 降低启动开销。1.3B 单卡 DiT 从 41.6 降到 16.4 毫秒，14B 从 89.2 降到 75.6 毫秒（约 2.5 倍与 1.2 倍）。八卡方面试过张量并行、头并行、KV 分片、联合划分与上下文并行（CP），仅 CP 的计算节省能压过通信；用 CUDA Graph 兼容的 NVLink symmetric-memory gather。1.3B 的 DiT 从 16.4 降到 5.8 毫秒，14B 从 75.6 降到 20.3 毫秒（2.8 倍与 3.7 倍）。</p>
+<p>两个产品级变体。FastFrames-S（1.3B）从两步 CF++ 检查点初始化，冻结 DiT，只训像素头与 KV 网络。FastFrames-L（表中 14.3B）需从双向 Wan 2.1 14B 出发，按 CF++ 配方改自回归、蒸馏为少步并做 DMD。二者都是两步扩散、每步一个潜在帧。</p>
+<h3 id="p3-s7">7. 核心公式：变量、目标与直觉</h3>
+<p>自回归分解为：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>p</mi><mo stretchy="false">&#x00028;</mo><msub><mi>z</mi><mrow><mn>1</mn><mi>:</mi><mi>N</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msubsup><mo>&#x0220F;</mo><mrow><mi>i</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>N</mi></mrow></msubsup><mi>p</mi><mo stretchy="false">&#x00028;</mo><msub><mi>z</mi><mi>i</mi></msub><mo>&#x02223;</mo><msub><mi>z</mi><mrow><mo>&#x0003C;</mo><mi>i</mi></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<p>响应率与延迟的关系（引言给出的定义）为：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">P</mi><mi mathvariant="normal">S</mi></mrow><mo>&#x0003D;</mo><mn>1</mn><mo>&#x0002F;</mo><msub><mi>L</mi><mrow><mi>s</mi></mrow></msub><mo>&#x0003D;</mo><mn>1000</mn><mo>&#x0002F;</mo><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">s</mi></mrow></mrow></msub></mrow></math></div>
+<p>Ls、Lms 分别是上述端到端延迟的秒与毫秒。50 毫秒对应 20 RPS。论文强调：一个生成单元只计一次响应，不把单元内的多帧算成多次。</p>
+<p>像素头的重建目标（正文式 (1)，附录式 (4) 给出系数）为：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mover accent="true"><mrow><mi>y</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">x</mi></mrow></mrow></msub><mo>&#x0002C;</mo><msub><mi>y</mi><mrow><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">A</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>&#x003BB;</mi><mn>1</mn></msub><msub><mi>L</mi><mn>1</mn></msub><mo>&#x0002B;</mo><msub><mi>&#x003BB;</mi><mrow><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub><mo>&#x0002B;</mo><msub><mi>&#x003BB;</mi><mrow><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub><mo>&#x0002B;</mo><msub><mi>&#x003BB;</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">p</mi></mrow></mrow></msub><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">p</mi></mrow></mrow></msub><mo>&#x0002B;</mo><msub><mi>&#x003BB;</mi><mrow><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi></mrow></mrow></msub><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi></mrow></mrow></msub></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi></mrow></mrow></msub><mo>&#x0003D;</mo><mn>0.5</mn><mspace width="0.167em" /><msub><mi>L</mi><mn>1</mn></msub><mo>&#x0002B;</mo><mn>5.0</mn><mspace width="0.167em" /><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub><mo>&#x0002B;</mo><mn>0.05</mn><mspace width="0.167em" /><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub><mo>&#x0002B;</mo><mn>0.05</mn><mspace width="0.167em" /><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">p</mi></mrow></mrow></msub><mo>&#x0002B;</mo><mn>0.50</mn><mspace width="0.167em" /><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi></mrow></mrow></msub></mrow></math></div>
+<p>空间与时间有限差分项定义为：</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub><mo>&#x0003D;</mo><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi></mrow><mo stretchy="false">&#x00028;</mo><mo stretchy="false">&#x0007C;</mo><msub><mi>&#x00394;</mi><mi>h</mi></msub><msub><mover accent="true"><mrow><mi>y</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">x</mi></mrow></mrow></msub><mo>&#x02212;</mo><msub><mi>&#x00394;</mi><mi>h</mi></msub><msub><mi>y</mi><mrow><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">A</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub><mo stretchy="false">&#x0007C;</mo><mo stretchy="false">&#x00029;</mo><mo>&#x0002B;</mo><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi></mrow><mo stretchy="false">&#x00028;</mo><mo stretchy="false">&#x0007C;</mo><msub><mi>&#x00394;</mi><mi>w</mi></msub><msub><mover accent="true"><mrow><mi>y</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">x</mi></mrow></mrow></msub><mo>&#x02212;</mo><msub><mi>&#x00394;</mi><mi>w</mi></msub><msub><mi>y</mi><mrow><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">A</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub><mo stretchy="false">&#x0007C;</mo><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>L</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">p</mi></mrow></mrow></msub><mo>&#x0003D;</mo><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi></mrow><mo stretchy="false">&#x00028;</mo><mo stretchy="false">&#x0007C;</mo><msub><mi>&#x00394;</mi><mi>t</mi></msub><msub><mover accent="true"><mrow><mi>y</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">x</mi></mrow></mrow></msub><mo>&#x02212;</mo><msub><mi>&#x00394;</mi><mi>t</mi></msub><msub><mi>y</mi><mrow><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">A</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub><mo stretchy="false">&#x0007C;</mo><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<p>系数 λ1=0.5，λMSE=5.0，λgrad=λtemp=0.05，λmotion=0.5。Lmotion 用 γ=10 加重 VAE 目标中运动区域的误差（附录式 (7)）。所有五项都在 ŷpix 与 yVAE 之间计算，视频值域 [−1,1]。对抗损失形式见正文式 (2)(3)，此处不重复展开；它不替代重建，而是在重建稳定后再提高锐度。</p>
+<p>直觉：把「通用 VAE 重建」改成「为固定 DiT 学一个读出头」，优化就可以在像素空间进行，也才扛得住 GAN；把「再评估一次骨干」改成「修 K/V 残差」，则是在两步采样里砍掉三分之一的 DiT 次数。</p>
+<h3 id="p3-s8">8. Toy example（本文自造算例，非论文数字）</h3>
+<div class="note">以下为自造算例，延迟数字是为了演示 RPS 与临界路径加法，不是 Table 1 的测量值。论文真实剖析见第 12–13 节。</div>
+<p>假设某条自造管线：两次去噪各 40 毫秒，一次 KV 精炼 40 毫秒，VAE 解码 120 毫秒，合计 240 毫秒。按定义 RPS=1000/240≈4.17，远低于 20 的交互目标。若只把扩散改成一步、其余不动，延迟变为 200 毫秒，RPS=5，仍然不够，而且论文还警告一步会降质。若把解码换成 2 毫秒的读出头、把精炼换成 3 毫秒的小网络，再把单次 DiT 优化到 18 毫秒，路径变成 18+18+3+2=41 毫秒，RPS≈24.4，跨过 20 的线。</p>
+<p>同一算例也可以说明为什么不能只报 FPS：若模型一次生成 4 张 RGB 却要等满 240 毫秒，FPS 可以写成 4/0.24≈16.7，看起来「接近实时」，但用户从按键到第一张可见帧仍是 240 毫秒。RPS 只计 4.17，不会被这 4 帧美化。这个对比是度量上的，不是论文表格。</p>
+<h3 id="p3-s9">9. Baselines</h3>
+<p>Table 1 把对照分成双向视频模型与自回归模型，全部使用同一套 VBench 提示与种子，默认单枚 B200，约 480p、各方法官方支持的尺寸，稳态且 KV 已满（对 AR）。</p>
+<p>双向组：Wan2.1 1.3B（30,444 毫秒）、Wan2.2 14.3B（117,734）、MiniMax-H3 33.1B（38,454）、HunyuanVideo1.5 8.3B（1,555,508）、LTX2.5 19.0B（11,264）。它们提供质量与延迟的宽参照，但 RPS 按「整段视频一次生成」计，与 AR 的「每步一个响应」不可混谈吞吐。</p>
+<p>自回归组：MAGI1.1 Distilled 23.9B、Helios Distilled 14.3B、Krea-Realtime 14.3B（1,675 毫秒，14B 级质量对照）、LongLive2.0 5.0B、CausVid 1.3B、Self-Forcing* 1.3B（717 毫秒；星号注明其原文延迟可能摊入了 KV 未满的廉价前段，本文按满缓存稳态重测）、Causal Forcing++ 1.3B（272 毫秒，直接前驱）。</p>
+<p>交互应用另对照 LingBot（1.3B / 14B 相机条件）与 RealWonder（1.3B 物理条件）的官方实现及官方 Ulysses 序列并行配置（Figure 5 右表），不是 VBench 主表的一部分。</p>
+<h3 id="p3-s10">10. 实验设置</h3>
+<p>主评测是标准文生视频，模型把当前生成帧当作下一步输入。FastFrames-S 与 L 均两步采样、每步一个潜在帧，分辨率主报告 832×480（480p）。延迟含扩散、KV 更新与像素渲染，AR 在预热且 KV 满后测稳态；双向模型预热后按官方原生片段长度生成（§4）。硬件默认 B200；八卡数字单独标明。附录 Table 2 补充 1280×720 与 H100。</p>
+<p>训练（附录 C–D）。像素头重建阶段：用 Self-Forcing 仓库中的 vidprom_filtered_extended.txt，对冻结 DiT 与 VAE 展开 150k 次，每次 rollout 做 4 步优化，32 枚 B200 训练约一周，验证损失与 PSNR / SSIM 缓慢持续改善（具体 PSNR / SSIM 数值 Not Reported）。随后在 8 枚 B200 上做对抗训练，每 GPU 5000 次 rollout、每次 4 步优化，数小时完成。对抗数据为内部 10K 真实视频。KV 网络同样冻结 DiT 与 VAE，用真正的 prime pass 做教师强制；第 0 帧保留真正的干净锚点，后续帧用修复后的 K/V。</p>
+<p>交互应用（附录 E）：用官方权重，按 §3 的程序各训一套像素头与 KV 网络，数据来自现场 rollout，不必大规模外源数据。LingBot 每步四次采样、一次生成四个潜在帧；RealWonder 三次采样、三个潜在帧。延迟测量含动作条件，分辨率同样 832×480、满 KV，B200。像素头在附录 C 写得很具体：21 帧潜在序列在 (21×30×52) 网格上产生 32,760 个 token，通道宽 1536；先做逐帧自适应平移/缩放与 1×1 通道投影，再接三个 ConvNeXt 风格因果 3D 残差块（两低分辨率块加一输出块），深度卷积为 3×3×3，点态 GELU 扩展倍数为 4。全部卷积保持在 DiT token 分辨率，没有可学习的时空上采样器、潜在适配器、位移分支或 RGB 后处理。最后把 1536 维线性映射为 4×16×16×3 的 RGB 并反补丁。该头在时间上因果，输出块只依赖当前与更早的潜在块。重建阶段「验证 PSNR / SSIM 持续改善」没有给出具体终值，故质量数字仍以 Table 1 的 VBench 为准。</p>
+<h3 id="p3-s11">11. 指标教学</h3>
+<p>质量用 VBench（Huang et al., 2024）的 Total、Quality、Semantic 三项，越高越好。所有方法同一提示与种子。Total 是综合；Quality 偏视觉质量，Semantic 偏语义与文本对齐。交互应用以定性演示与项目页视频为主，没有另报 VBench。</p>
+<p>速度用端到端逐帧（或逐生成单元）延迟，单位毫秒，越低越好，并换算 RPS=1000/Lms。绿色交互区是 ≤50 毫秒，黄色是 50 到 1000 毫秒（Table 1 说明）。务必与 FPS 区分：FPS 把一段批量时间摊到帧上；RPS 不把「一次生成多帧」算成多次响应。对 Self-Forcing，作者特别批评用整段平均（含 KV 未满的前段）来报延迟，并统一改成满缓存稳态、KV=32760（附录 B，与 Self-Forcing 及其后续工作的官方配置一致）。CF++ 原文对 1/2/4 步都报 270 毫秒且缺少分解，本文按剖析给出 271.8 / 272 毫秒量级的稳态测量。</p>
+<h3 id="p3-s12">12. 可核验结果</h3>
+<p>（1）剖析（Figure 2 / §3.1）：CF++ 单卡 B200、480p，端到端 271.8 毫秒；两步扩散 83.2（2×41.6），KV 写入 41.6，VAE 147。扩散只占约 30% 墙钟。FastFrames 对应配件为 KV 2 毫秒、两步 32.8（2×16.4）、像素头 1 毫秒，合计 35.8 毫秒，图注 7.6 倍。</p>
+<p>（2）Table 1 主结果：FastFrames-S 1.3B 单卡 36 毫秒，VBench Total / Quality / Semantic = 84.23 / 85.30 / 79.92；八卡 14 毫秒，分数相同。CF++ 为 272 毫秒、84.11 / 85.09 / 80.20。正文称 S 单卡 36 毫秒即 27.8 RPS，八卡 14 毫秒即 71.4 RPS；相对 CF++ 约 7.6 倍（272/36）。摘要写 28 RPS，是 27.8 的圆整。</p>
+<p>（3）FastFrames-L 14.3B 单卡 158 毫秒（6.33 RPS），八卡 45 毫秒（22.2 RPS），VBench 84.44 / 85.48 / 80.29。对照 Krea-Realtime 14.3B 为 1,675 毫秒、84.42 / 85.08 / 81.81。正文称单卡相对 Krea「超过 10 倍」（1675/158≈10.6，与 §3 开头「14B 比同参数最快开源 AR 快 10.6 倍」一致），八卡再相对优化后的单卡 3.5 倍（158/45）。</p>
+<p>（4）无一基线进入 50 毫秒。最快基线 CF++ 为 3.68 RPS，距 20 RPS 差 5.4 倍（§4）。</p>
+<p>（5）像素头相对 Wan VAE：73.3M / 147 毫秒对 63.9M / 1 毫秒；单线性层 4.7M / 0.06 毫秒但模糊（Figure 3）。训练显存：batch=1、81 帧、832×480，VAE 解码器更新约 68GB，像素头约 5GB（§3.2）。</p>
+<p>（6）系统优化：KV=32760 切五段再降 13%；DiT 41.6→16.4（1.3B）与 89.2→75.6（14B）；八卡 CP 后再到 5.8 与 20.3 毫秒。</p>
+<p>（7）交互应用（Figure 5 表）：LingBot 1.3B 官方 1GPU 1085、官方+Ulysses 2GPU 842（最快官方）、4GPU 865；FastFrames 1GPU 224、8GPU 52，相对 842 为 16 倍。LingBot 14B 官方 1GPU 3862、官方+Ulysses 8GPU 1373，FastFrames 1GPU 1263、8GPU 233（5.9 倍）。RealWonder 1.3B 官方 1GPU 1141，FastFrames 1GPU 153、8GPU 51（相对 1141 约 22 倍）。后两者因更多采样步、每步多潜在帧与额外条件，仍慢于 T2V 主模型。</p>
+<p>（8）附录 Table 2：FastFrames-S 在 B200 上 720p 为 127 毫秒，L 在 8×B200 上 720p 为 116 毫秒，均未进入 50 毫秒。H100 大约慢 25%–50%。例如 S 的单次 DiT：480p 时 B200 16 对 H100 25，720p 时 60 对 101。</p>
+<h3 id="p3-s13">13. 真实表图阅读</h3>
+<p class="cap">Table 1（第 7 页）：端到端延迟与 VBench。除另行标明外为单枚 B200、约 480p。FastFrames 四行与直接对照基线摘录如下；双向模型与其余 AR 见上文第 12 节及 PDF。</p>
+<div class="tbl"><table>
+<thead><tr><th>模型</th><th>规模 (B)</th><th>延迟 (ms) ↓</th><th>VBench Total</th><th>Quality</th><th>Semantic</th></tr></thead>
+<tbody>
+<tr><td>Wan2.1</td><td>1.3</td><td>30,444</td><td>83.80</td><td>84.56</td><td>80.73</td></tr>
+<tr><td>Wan2.2</td><td>14.3</td><td>117,734</td><td>84.65</td><td>85.41</td><td>81.60</td></tr>
+<tr><td>Krea-Realtime</td><td>14.3</td><td>1,675</td><td>84.42</td><td>85.08</td><td>81.81</td></tr>
+<tr><td>Self-Forcing*</td><td>1.3</td><td>717</td><td>84.10</td><td>84.84</td><td>81.13</td></tr>
+<tr><td>Causal Forcing++</td><td>1.3</td><td>272</td><td>84.11</td><td>85.09</td><td>80.20</td></tr>
+<tr><td>FastFrames-S</td><td>1.3</td><td>36</td><td>84.23</td><td>85.30</td><td>79.92</td></tr>
+<tr><td>FastFrames-S (8 GPU)</td><td>1.3</td><td>14</td><td>84.23</td><td>85.30</td><td>79.92</td></tr>
+<tr><td>FastFrames-L</td><td>14.3</td><td>158</td><td>84.44</td><td>85.48</td><td>80.29</td></tr>
+<tr><td>FastFrames-L (8 GPU)</td><td>14.3</td><td>45</td><td>84.44</td><td>85.48</td><td>80.29</td></tr>
+</tbody></table></div>
+<p class="cap">附录 Table 2：分部件延迟（毫秒）。S 为 1 GPU，L 为 8 GPU。VAE 是对照配件，不是 FastFrames 运行时路径。</p>
+<div class="tbl"><table>
+<thead><tr><th>部件</th><th>分辨率</th><th>B200</th><th>H100</th></tr></thead>
+<tbody>
+<tr><td>S · DiT 一次</td><td>832×480</td><td>16</td><td>25</td></tr>
+<tr><td>S · DiT 一次</td><td>1280×720</td><td>60</td><td>101</td></tr>
+<tr><td>S · KV 修复网</td><td>832×480</td><td>2</td><td>3</td></tr>
+<tr><td>S · KV 修复网</td><td>1280×720</td><td>5</td><td>7</td></tr>
+<tr><td>VAE（对照）</td><td>832×480</td><td>147</td><td>175</td></tr>
+<tr><td>VAE（对照）</td><td>1280×720</td><td>327</td><td>408</td></tr>
+<tr><td>S · 像素头</td><td>832×480</td><td>1</td><td>1</td></tr>
+<tr><td>S · 像素头</td><td>1280×720</td><td>2</td><td>3</td></tr>
+<tr><td>L · DiT 一次</td><td>832×480</td><td>20</td><td>30</td></tr>
+<tr><td>L · DiT 一次</td><td>1280×720</td><td>54</td><td>67</td></tr>
+<tr><td>L · KV 修复网</td><td>832×480</td><td>3</td><td>5</td></tr>
+<tr><td>L · KV 修复网</td><td>1280×720</td><td>7</td><td>12</td></tr>
+<tr><td>L · 像素头</td><td>832×480</td><td>1</td><td>1</td></tr>
+<tr><td>L · 像素头</td><td>1280×720</td><td>1</td><td>1</td></tr>
+</tbody></table></div>
+<p>可核对：S 在 480p、B200 上两次 DiT + KV 头 + 像素头 = 16+16+2+1=35，与正文 36 毫秒一致（可能含未单列的毫秒级开销）。720p 为 60+60+5+2=127，与附录叙述一致。L 的 8 卡 480p 为 20+20+3+1=44，接近 45；720p 为 54+54+7+1=116。</p>
+<p>Figure 1 是 VBench Total 对延迟的帕累托图，交互区画在 ≤50 毫秒；图上点的坐标以 Table 1 为准，不另目测。Figure 3 为像素头定性对比（头发、雨滴等细结构），无数值标签。Figure 4 定性比较 0 秒与 5 秒帧。Figure 6 为 KV 精炼消融的定性帧，说明裸删或「训练去适应带噪 KV」会出现主体变化、衣物或手指伪影；无定量分数。</p>
+<h3 id="p3-s14">14. Ablation 与缺失的 ablation</h3>
+<p>直接消融主要是定性与分量延迟，而不是一张「去掉某模块后的 VBench 表」。像素头：线性读出太糊，完整 ConvNeXt 头在观感上接近 VAE（Figure 3）；训练显存 68GB 对 5GB 支持了像素空间对抗。KV：Figure 6 表明精炼必要，修复网在观感上接近完整 DiT 精炼且快一个数量级。系统：切分 KV 再降 13%，compile 等已计入基线，CP 是唯一值得上的多卡策略，并给出 16.4→5.8 与 75.6→20.3 的 DiT 延迟。一步 vs 两步：文称一步明显降质且只再省 15%，但未给出一步模型的 VBench 数字，记为 Not Verified（降质幅度）/ 15% 为正文陈述。</p>
+<p>缺失的定量消融包括：像素头各损失项（L1/MSE/梯度/时间/运动/GAN）的逐项去掉对 VBench 的影响；PSNR / SSIM 只有「持续改善」没有表值；修复网的两项损失权重除「value 约三倍」外没有网格搜索表；未报告在完全相同 DiT 权重下「只换解码器 / 只换 KV 头 / 只做系统优化」各自贡献多少 VBench 与毫秒的完整因子实验（剖析是加性延迟，不是质量因子）。14B 与 1.3B 的训练配方不同（L 从双向重训），不能把 L 相对 Krea 的差异全部归因于配件替换。作为对照，Table 1 中其余自回归行也应一并记下，以免只盯着 CF++ 与 Krea：MAGI1.1 Distilled（23.9B）延迟 19,736 毫秒、VBench Total 82.04；Helios Distilled（14.3B）2,544 毫秒、83.43；LongLive2.0（5.0B）505 毫秒、83.65；CausVid（1.3B）662 毫秒、83.18。它们都未进入 50 毫秒，Total 也都不高于 FastFrames-S 的 84.23。双向组里质量最高的是 Wan2.2-14.3B 的 Total 84.65，但延迟是 117,734 毫秒；MiniMax-H3（33.1B）为 38,454 毫秒、84.43；HunyuanVideo1.5（8.3B）为 1,555,508 毫秒、83.18；LTX2.5（19.0B）为 11,264 毫秒、83.62。这些数字支持「交互区目前只有 FastFrames 跨过」，但不能用来宣称 14B 变体在三项 VBench 上都优于全部更慢的模型。</p>
+<h3 id="p3-s15">15. Claim vs Evidence</h3>
+<p>站得住的声明。「VAE 与 KV 更新占临界路径一半以上」在 147+41.6 对 271.8 上成立（约 69%）。「S 匹配近 8 倍更慢的 SOTA」对 Total（84.23 对 84.11）与 Quality（85.30 对 85.09）成立，延迟 36 对 272。无人进入 50 毫秒的基线陈述与 Table 1 一致。交互应用的 16 倍与 22 倍可以在 Figure 5 表里除出来。</p>
+<p>需要收紧的声明。摘要写 14B「显著更好的视觉质量与真实感」：Table 1 中 FastFrames-L 的 Total 只比 Krea-Realtime 高 0.02（84.44 对 84.42），Quality 高 0.40，但 Semantic 低 1.52（80.29 对 81.81）；相对双向 Wan2.2-14.3B 的 Total 84.65 反而略低。质量优势更多体现在定性与 Quality 项，而不是全面压过同规模开源 AR 的三项 VBench。「匹配质量」在 S 的 Semantic 上也不成立：79.92 低于 CF++ 的 80.20 与 Self-Forcing 的 81.13，Total 的微弱领先不能掩盖语义项回退。50 毫秒只在 480p 与高端 B200（L 还需八卡）上达到；720p 的 127 / 116 毫秒仍在交互区外。项目页声称有代码与权重，本精读以 PDF 为准，未在生成时核验仓库是否已上线，上线状态记为 Not Verified。</p>
+<h3 id="p3-s16">16. 贡献</h3>
+<p>贡献有四。第一，把交互视频生成的度量从摊销 FPS 扭到端到端 RPS / 50 毫秒阈值，并展示此前最快的少步 AR 仍差 5.4 倍。第二，用剖析证明瓶颈在 VAE 与 KV 精炼，给出可替换设计：按模型微调的轻量像素读出，以及教师强制的 KV 修复网。第三，在 Wan 2.1 的 1.3B 与 14B 上把 480p 延迟打进交互区（单卡 36 毫秒、八卡 45 毫秒），VBench Total 与对应基线持平或微升。第四，把同一套配件替换迁到相机条件与物理条件模型，取得 5.9–22 倍加速，其中两个 1.3B 应用在八卡上接近 50 毫秒（52 与 51）。</p>
+<h3 id="p3-s17">17. 局限</h3>
+<p>结论与附录 A 列出的局限相当清楚：评测主战场是 480p 文生视频与高端 GPU；720p 延迟显著上升，4K 更未进入交互区；设备端尚未证明；把动作条件接到不增加延迟的形式（例如把相机位姿拼在通道维而不是序列维）仍是未来工作；长期一致性与物理合理性有待加强。像素头不能在同家族模型间共享，每个骨干都要单训。LingBot / RealWonder 因更多步与每步多帧，1.3B 也要八卡才接近阈值。</p>
+<p>此外：对抗训练使用内部 10K 视频，外部复现该阶段数据不可得；一步采样的质量数字未给出；VBench 不能覆盖交互时的可控性与一致性；多卡只验证了 CP；量化等未进入主表。训练一周（32×B200）的重建阶段成本本身很高，尽管推理已很快。</p>
+<h3 id="p3-s18">18. 复现要点</h3>
+<p>要对齐 Table 1 的 S 行：从官方两步 CF++ 检查点出发，冻结 DiT，按附录 C 的 21×30×52 网格与 63.87M 因果 ConvNeXt 头训练重建（150k rollout、32×B200、每 rollout 4 步），再按 §3.2 做对抗；KV 网按附录 D（1536→768 共享茎、四块 8 头、零初始化残差，第 0 帧保留真锚点）。推理必须是两步、一块一潜在帧、满 KV=32760、稳态、B200、832×480，并计入修复网与像素头，而不是只报 DiT。编译、注意力后端应与剖析设定一致，否则 41.6 与 16.4 对不上。八卡需用上下文并行而非随便一种张量并行。评测用同一 VBench 提示与种子。L 行还需完整复现「双向→AR→少步 DMD」的 CF++ 配方，不能指望只换两个头。交互数字必须含官方步数与多帧块大小，不能用 T2V 的两步设定去复现 52 / 51 毫秒。</p>
+<h3 id="p3-s19">19. 研究价值</h3>
+<p>当少步蒸馏已经把去噪压到两步，视频生成的实时故事就不能再只讲「再少一步」。FastFrames 把工程视线转到一直被当成基础设施的解码器与缓存维护，并证明它们不仅可换，而且换完才能把人机交互的 50 毫秒门槛变成可讨论的目标。RPS 作为度量，对「一次吐很多帧但反应慢」的模型不留情面，这对应游戏与可操纵世界模型的真实约束。对做加速的人，它提供一份可逐项相加的临界路径账单；对做模型的人，它提示在设计 AR 生成单元时同时考虑步数、每步潜在帧数与条件注入方式，否则配件优化也会被结构成本吞掉。</p>
+<h3 id="p3-s20">20. 可执行迁移</h3>
+<p>迁移一：先给现有少步 AR 视频模型做与 Figure 2 同款的临界路径账单，强制分成「扩散 / KV 精炼 / 像素解码 / 其余」，用满缓存稳态，拒绝整段平均。若解码或额外 DiT 超过预算的一半，优先用「冻结骨干 + 低分辨率读出头」在像素空间微调，而不是先上更重的蒸馏。目标不必一步到 50 毫秒，只要账单可加、可复现。</p>
+<p>迁移二：若流水线里存在「再跑一次骨干只为写干净 KV」的步骤，用教师强制的残差修复网去替代，并像 Figure 6 那样至少做定性压力测试（裸删、训练适应带噪 KV、修复网）。把 value 误差权设得高于 key，第 0 帧保留真干净锚点。同时把评测改报 RPS=1000/Lms，并单独报 720p 与次旗舰 GPU（如 H100）数字，避免只在 480p + B200 上宣布进入交互区。</p>
+<h3 id="p3-s21">21. 方向专用分析（Video Acceleration：交互延迟与 FPS、VAE / KV 占临界路径、RPS=1000/Lms、50ms 阈值）</h3>
+<p>视频加速在这篇里的主轴是交互延迟，不是吞吐量。FPS 与 RPS 的分歧被写进引言：30 帧一批在一秒内出完是 30 FPS、1 RPS 量级的响应。50 毫秒阈值来自 HCI，不是深度学习惯例，对应 20 RPS。剖析是论证的支点：VAE 147 毫秒已经单独超出阈值 3 倍，KV 精炼与一步 DiT 同价（41.6），两者合计超过路径一半。于是优化顺序必须是「先拆配件，再压 DiT，最后才是多卡」。多卡 CP 把 S 送到 14 毫秒、L 送到 45 毫秒，但 720p 再次把 S 推回 127 毫秒，说明分辨率才是下一道结构墙。LingBot / RealWonder 则显示：如果生成单元仍是「三、四步 × 多个潜在帧」，再轻的头也要堆到八卡才擦线。方向性的教训是：交互视频的预算要从生成单元的定义一起设计，而不能指望只换解码器。</p>
+<h3 id="p3-s22">22. Attack / Verification lens</h3>
+<p>挑战者会问：同一套提示与种子是否对所有闭源或半开源基线都严格可复现；Self-Forcing 的 717 毫秒是否仍被原作者接受；Semantic 回退是否在人工评测里也可被「观感更好」覆盖；内部 10K 视频是否造成像素头过拟合到某种外观。还应要求：公开一步模型的 VBench；给出「只换解码 / 只换 KV / 只做系统」的质量–延迟因子表；在 H100 与 720p 上重报是否仍称交互；用外部显示器测量真实「按键到光子」而不只是 GPU 内核计时（CUDA Graph 内的 36 毫秒未必等于用户侧 36 毫秒）。若项目页代码在检查时尚不可用，则所有毫秒级主张都应视为不可独立复核，直到权重与计时脚本落地。</p>
+<h3 id="p3-s23">23. 记忆总结</h3>
+<ul>
+<li>FastFrames 把 AR 视频扩散的端到端逐帧延迟作为目标，交互门槛为 50 毫秒（20 RPS），度量是 RPS=1000/Lms 而非摊销 FPS。</li>
+<li>CF++ 在 B200、480p 上 271.8 毫秒，其中 VAE 147、KV 精炼 41.6、两步扩散 83.2，配件占一半以上。</li>
+<li>像素头是低分辨率因果 ConvNeXt 读出（63.9M，约 1 毫秒），需按模型单训，并可在像素空间做 GAN；不能像家族 VAE 那样共享。</li>
+<li>KV 修复网替代 t=0 的整次 DiT，1.3B / 14B 约 2 / 6 毫秒，大约 20 倍与 12 倍加速；裸删会漂移。</li>
+<li>系统优化把 1.3B 单次 DiT 从 41.6 打到 16.4 毫秒，八卡 CP 再到 5.8；14B 为 89.2→75.6→20.3。</li>
+<li>FastFrames-S：单卡 36 毫秒（27.8 RPS）、八卡 14 毫秒，VBench Total 84.23，对照 CF++ 的 272 毫秒与 84.11。</li>
+<li>FastFrames-L：单卡 158、八卡 45 毫秒（22.2 RPS），Total 84.44，对照 Krea 1675 毫秒与 84.42；Semantic 低于 Krea。</li>
+<li>720p 上 S 为 127 毫秒、L 八卡为 116 毫秒，未进交互区；H100 大约再慢 25%–50%。</li>
+<li>LingBot 1.3B 八卡 52 毫秒（16 倍）、RealWonder 八卡 51 毫秒（22 倍），因步数与多帧单元仍更重。</li>
+<li>项目页声称提供视频、代码与权重；PSNR/SSIM 与一步 VBench 等数字 Not Reported，仓库上线状态 Not Verified。</li>
+</ul>
+</section>
+
+<section id="verify">
+<h2>来源与验证报告</h2>
+<p>三篇全文均从 arXiv 下载 PDF，并用 <code>pdftotext -layout</code> 与按栏抽取核对。数字以 PDF 文本为准；图上未印出精确数字的量不目测，标为 Not Verified。论文未陈述的超参、窗口帧数、代码链接等标为 Not Reported。页面数学由 latex2mathml 预渲染为 MathML，无 CDN、无外部脚本、无在线字体依赖。</p>
+<ul id="verify-list">
+<li>ASH：<a href="https://arxiv.org/abs/2611.23124">arXiv:2611.23124</a> · <a href="https://arxiv.org/pdf/2611.23124.pdf">PDF</a> · CJK 6229 · 主要核对 Table 1/2/3/4/5 与 Figure 3 的正文陈述</li>
+<li>Spool：<a href="https://arxiv.org/abs/2611.23228">arXiv:2611.23228</a> · <a href="https://arxiv.org/pdf/2611.23228.pdf">PDF</a> · CJK 6087 · 主要核对 Table 1/2/3/4/5 与 Figure 6/7 的正文数字</li>
+<li>FastFrames：<a href="https://arxiv.org/abs/2611.23226">arXiv:2611.23226</a> · <a href="https://arxiv.org/pdf/2611.23226.pdf">PDF</a> · 项目页 <a href="https://apple-aiml-research.github.io/ml-fastframes/">ml-fastframes</a> · CJK 6158 · 主要核对 Table 1、附录 Table 2、Figure 2/5 的正文数字</li>
+</ul>
+<p>已知缺口已写入各篇正文，包括：ASH 与 Spool 未给出代码 URL；ASH 评估为单一种子且 n=k=8；Spool 主表窗口帧数未写明；FastFrames 的 PSNR/SSIM 与一步 VBench 未给出，项目仓库上线状态未在本文件生成时核验。未编造任何数字。</p>
+<p>本文件为 UTF-8 单页 HTML，内联 CSS，目录可跳转，表格可横向滚动。生成后用无头 Chrome 做离线渲染截图抽查。</p>
+</section>
+
+<footer>
+<p>Daily Top Papers Deep Dive · 2026-11-19 · Asia/Shanghai · 离线 MathML · 无外部脚本</p>
+</footer>
+</div>
+</body>
+</html>

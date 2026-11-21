@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Deep Dive 2026-11-20</title>
+<style>
+/* copied from 11-19 style */
+:root{--fg:#1a1a1a;--mut:#5b6472;--bg:#fbfaf7;--card:#fff;--ac:#9a3412;--ln:#e5e1d8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+font-family:"Noto Serif CJK SC","Source Han Serif SC","Songti SC","STSong","Georgia",serif;
+font-size:17px;line-height:1.8;letter-spacing:0}
+.wrap{max-width:820px;margin:0 auto;padding:28px 22px 80px}
+header h1{font-size:28px;line-height:1.35;margin:.2em 0;font-weight:700}
+.sub{color:var(--mut);font-size:15px}
+nav.toc{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:14px 20px;margin:22px 0}
+nav.toc ol{margin:.3em 0;padding-left:1.4em}nav.toc li{margin:.15em 0}
+nav.toc details summary{cursor:pointer;font-weight:600}
+nav.toc .secs{columns:2;font-size:14px;gap:12px}
+a{color:#1d4ed8;text-decoration:none;word-break:break-all}a:hover{text-decoration:underline}
+section.paper{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:8px 26px 26px;margin:30px 0}
+h2{font-size:23px;border-left:5px solid var(--ac);padding-left:12px;margin-top:1.4em;line-height:1.4}
+h3{font-size:18.5px;margin:1.55em 0 .5em;color:#7c2d12;border-bottom:1px dashed var(--ln);padding-bottom:4px}
+p{margin:.7em 0;text-align:start}
+.tag{display:inline-block;font-size:13px;padding:1px 9px;border-radius:999px;background:#fff1e6;color:#9a3412;border:1px solid #fdba74;margin-right:6px}
+.tag.bf{background:#eef2ff;color:#3730a3;border-color:#a5b4fc}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border:1px solid var(--ln);border-radius:8px}
+table{border-collapse:collapse;min-width:640px;width:100%;font-size:14.5px;line-height:1.6}
+th,td{border-bottom:1px solid var(--ln);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#f6f3ec;white-space:nowrap}tr:nth-child(even) td{background:#fcfbf8}
+.eq{overflow-x:auto;padding:10px 8px;margin:12px 0;background:#faf8f3;border-radius:6px}
+math{font-size:1.05em;font-family:"STIX Two Math","Cambria Math","Latin Modern Math","DejaVu Serif","Noto Serif",math,serif}
+math[display="block"]{display:block;margin:.35em 0}
+li{margin:.3em 0}
+.note{background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 16px;font-size:15px}
+footer{color:var(--mut);font-size:14px;margin-top:40px}
+.cap{font-size:14px;color:#5b6472;margin:14px 0 2px}
+.summary{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 18px}
+.gloss{font-size:15px}
+@media(max-width:640px){body{font-size:16px}nav.toc .secs{columns:1}section.paper{padding:6px 14px 18px}}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Daily Top Papers Deep Dive · 2026-11-20</h1>
+<p class="sub">RL · Agent / Multi-Agent · Video Acceleration · Inference Acceleration　｜　Asia/Shanghai　｜　三篇均为 NEW，无 BACKFILL</p>
+</header>
+<nav class="toc">
+<p><strong>目录</strong></p>
+<ol>
+<li><a href="#overview">今日概览：检索、选题与去重</a>
+  <ul>
+    <li><a href="#ov-search">检索与范围</a></li>
+    <li><a href="#ov-dedup">7 日去重</a></li>
+    <li><a href="#ov-rotate">方向轮换说明</a></li>
+    <li><a href="#ov-selected">入选 3 篇</a></li>
+    <li><a href="#ov-skipped">考虑但未入选（摘）</a></li>
+  </ul>
+</li>
+<li><details><summary>论文 1｜Depth Before Breadth（Agent × RL）</summary>
+<div class="secs"><ol><li><a href="#p1-s1">1. 基本信息</a></li>
+<li><a href="#p1-s2">2. 一句话定位</a></li>
+<li><a href="#p1-s3">3. 人话版</a></li>
+<li><a href="#p1-s4">4. 背景与缺口</a></li>
+<li><a href="#p1-s5">5. 核心 insight</a></li>
+<li><a href="#p1-s6">6. 方法逐步拆解</a></li>
+<li><a href="#p1-s7">7. 核心公式：变量、目标与直觉</a></li>
+<li><a href="#p1-s8">8. Toy example（本文自造算例，非论文数字）</a></li>
+<li><a href="#p1-s9">9. Baselines</a></li>
+<li><a href="#p1-s10">10. 实验设置</a></li>
+<li><a href="#p1-s11">11. 指标教学</a></li>
+<li><a href="#p1-s12">12. 可核验结果</a></li>
+<li><a href="#p1-s13">13. 真实表图阅读</a></li>
+<li><a href="#p1-s14">14. Ablation 与缺失的 ablation</a></li>
+<li><a href="#p1-s15">15. Claim vs Evidence</a></li>
+<li><a href="#p1-s16">16. 贡献</a></li>
+<li><a href="#p1-s17">17. 局限</a></li>
+<li><a href="#p1-s18">18. 复现要点</a></li>
+<li><a href="#p1-s19">19. 研究价值</a></li>
+<li><a href="#p1-s20">20. 可执行迁移</a></li>
+<li><a href="#p1-s21">21. 方向专用分析（Agent × RL：capability region / reverse-to-forward curriculum / paired advantages / 稀疏终局奖励）</a></li>
+<li><a href="#p1-s22">22. Attack / Verification lens</a></li>
+<li><a href="#p1-s23">23. 记忆总结</a></li></ol></div>
+</details></li>
+<li><details><summary>论文 2｜PQRS（Video Acceleration）</summary>
+<div class="secs"><ol><li><a href="#p2-s1">1. 基本信息</a></li>
+<li><a href="#p2-s2">2. 一句话定位</a></li>
+<li><a href="#p2-s3">3. 人话版</a></li>
+<li><a href="#p2-s4">4. 背景与缺口</a></li>
+<li><a href="#p2-s5">5. 核心 insight</a></li>
+<li><a href="#p2-s6">6. 方法逐步拆解</a></li>
+<li><a href="#p2-s7">7. 核心公式：变量、目标与直觉</a></li>
+<li><a href="#p2-s8">8. Toy example（本文自造算例，非论文数字）</a></li>
+<li><a href="#p2-s9">9. Baselines</a></li>
+<li><a href="#p2-s10">10. 实验设置</a></li>
+<li><a href="#p2-s11">11. 指标教学</a></li>
+<li><a href="#p2-s12">12. 可核验结果</a></li>
+<li><a href="#p2-s13">13. 真实表图阅读</a></li>
+<li><a href="#p2-s14">14. Ablation 与缺失的 ablation</a></li>
+<li><a href="#p2-s15">15. Claim vs Evidence</a></li>
+<li><a href="#p2-s16">16. 贡献</a></li>
+<li><a href="#p2-s17">17. 局限</a></li>
+<li><a href="#p2-s18">18. 复现要点</a></li>
+<li><a href="#p2-s19">19. 研究价值</a></li>
+<li><a href="#p2-s20">20. 可执行迁移</a></li>
+<li><a href="#p2-s21">21. 方向专用分析（Video Acceleration：聚类稀疏注意力、per-query routing、centroid compensation、720p DiT）</a></li>
+<li><a href="#p2-s22">22. Attack / Verification lens</a></li>
+<li><a href="#p2-s23">23. 记忆总结</a></li></ol></div>
+</details></li>
+<li><details><summary>论文 3｜NarrowSpec（Inference Acceleration）</summary>
+<div class="secs"><ol><li><a href="#p3-s1">1. 基本信息</a></li>
+<li><a href="#p3-s2">2. 一句话定位</a></li>
+<li><a href="#p3-s3">3. 人话版</a></li>
+<li><a href="#p3-s4">4. 背景与缺口</a></li>
+<li><a href="#p3-s5">5. 核心 insight</a></li>
+<li><a href="#p3-s6">6. 方法逐步拆解</a></li>
+<li><a href="#p3-s7">7. 核心公式：变量、目标与直觉</a></li>
+<li><a href="#p3-s8">8. Toy example（本文自造算例，非论文数字）</a></li>
+<li><a href="#p3-s9">9. Baselines</a></li>
+<li><a href="#p3-s10">10. 实验设置</a></li>
+<li><a href="#p3-s11">11. 指标教学</a></li>
+<li><a href="#p3-s12">12. 可核验结果</a></li>
+<li><a href="#p3-s13">13. 真实表图阅读</a></li>
+<li><a href="#p3-s14">14. Ablation 与缺失的 ablation</a></li>
+<li><a href="#p3-s15">15. Claim vs Evidence</a></li>
+<li><a href="#p3-s16">16. 贡献</a></li>
+<li><a href="#p3-s17">17. 局限</a></li>
+<li><a href="#p3-s18">18. 复现要点</a></li>
+<li><a href="#p3-s19">19. 研究价值</a></li>
+<li><a href="#p3-s20">20. 可执行迁移</a></li>
+<li><a href="#p3-s21">21. 方向专用分析（Inference Acceleration：推测解码、草稿宽度、接受率 vs TPOT、B200 vs GB10）</a></li>
+<li><a href="#p3-s22">22. Attack / Verification lens</a></li>
+<li><a href="#p3-s23">23. 记忆总结</a></li></ol></div>
+</details></li>
+<li><a href="#verify">来源与验证报告</a></li>
+</ol>
+</nav>
+<section id="overview">
+<h2>今日概览：检索、选题与去重</h2>
+<h3 id="ov-search">检索与范围</h3>
+<p>本次为 2026-11-20（Asia/Shanghai）的例行 Daily Top Papers Deep Dive，约 09:10 启动，并非补更或回溯专场。检索方向仍是强化学习（RL）、Agent / Multi-Agent、Video Acceleration、Inference Acceleration；来源不限于 arXiv，但今日入选三篇均来自 arXiv。独立检索覆盖 cs.LG / cs.AI / cs.CL / cs.CV / cs.MA / cs.DC 等分类的 new 与 recent 列表，并辅以关键词与全文可访问性核验。</p>
+<p>时点说明：当前为周五上午（上海时间）。arXiv 工作日公告通常在美东时间 20:00 左右发出。周四 11 月 19 日 20:00 America/New_York 约对应周五 11 月 20 日 09:00 Asia/Shanghai，因此本次运行已能读到该批次的 <code>new</code> 列表。昨日（11-19，约 09:12 Asia/Shanghai）运行时，该公告尚未发布，故昨日未覆盖今日这批稿件。</p>
+<p>入选三篇的 arXiv 摘要页均标注 Submitted on 18 Nov 2026，出现在上述周四晚间公告中，距本次运行约 24–48 小时，落在 24–72 小时窗口内。全文 PDF 均可下载，表格与关键附录可从正文文本核验。<strong>无 BACKFILL。</strong></p>
+<h3 id="ov-dedup">7 日去重</h3>
+<p>对照 <code>/workspace</code> 下 2026-11-13 至 2026-11-19 的 <code>AI_Deep_Dive_*.html</code> 以及 journal 已读清单，近 7 日已覆盖（不可再选，除非有实质更新或关键 collision）：ASH（2611.23124，RL）、Spool（2611.23228，Inference Acceleration）、FastFrames（2611.23226，Video Acceleration）、ViRA / CrossRPO（2611.21605，Agent × RL）、MiSTiQ（2611.21216，Inference）、QASK-Edit（2611.20704，Video）、TIDE（2611.17924，RL）、MMFlash（2611.18482，Inference）、Token2Tile（2611.17930，Video）、TRACE（2611.15983，Video）、LazyWeights（2611.17108，Inference）、JudgeMix（2611.16174，Agent）、TraceKV（2611.15569，Inference，BACKFILL）、HeMeR（2611.16487，Agent × Inference）、OPSD4MAS（2611.16206，Multi-Agent × RL）、LEAD-RL（2611.17041，Agent）、NOPO（2611.17287，RL）、ESTRA（2611.10448，Video，BACKFILL）。今日三篇 arXiv id 均不在该清单中。</p>
+<h3 id="ov-rotate">方向轮换说明</h3>
+<p>昨日（11-19）覆盖了 RL、Inference Acceleration 与 Video Acceleration，但没有独立的 Agent / Multi-Agent 论文。今日优先补上 Agent 方向，同时仍保持四个方向尽量轮换：以一篇 Agent × RL 覆盖智能体与强化学习，再配 Video Acceleration 与 Inference Acceleration 各一篇。</p>
+<h3 id="ov-selected">入选 3 篇</h3>
+<div class="tbl">
+<table>
+<thead><tr><th>方向</th><th>短名</th><th>标题</th><th>arXiv</th><th>标记</th></tr></thead>
+<tbody>
+<tr><td>Agent × RL</td><td>Depth Before Breadth</td><td>Depth Before Breadth: Reverse-to-Forward Curriculum with Advantage Decomposition for LLM Agent</td><td style="white-space:nowrap"><a href="https://arxiv.org/abs/2611.24697">2611.24697</a></td><td><span class="tag">NEW</span></td></tr>
+<tr><td>Video Acceleration</td><td>PQRS</td><td>Every Query Routes Itself: Accelerating Video Diffusion Transformers with Per-Query Routed Sparse Attention</td><td style="white-space:nowrap"><a href="https://arxiv.org/abs/2611.24479">2611.24479</a></td><td><span class="tag">NEW</span></td></tr>
+<tr><td>Inference Acceleration</td><td>NarrowSpec</td><td>NarrowSpec: Draft Hidden Width Need Not Match the Target in Speculative Decoding</td><td style="white-space:nowrap"><a href="https://arxiv.org/abs/2611.23835">2611.23835</a></td><td><span class="tag">NEW</span></td></tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><strong>Depth Before Breadth</strong>：把长程稀疏奖励拆成“进入能力区域”与“在区域内完成任务”两个子问题，并用成对优势函数与反向-再-正向课程训练 LLM agent；在 ALFWorld / WebShop 上有可核验的主表与消融，补上昨日缺席的 Agent 方向。</li>
+<li><strong>PQRS</strong>：训练免费的 per-query 路由稀疏注意力，针对 720p 视频扩散 Transformer；主表覆盖 Wan 与 HunyuanVideo 家族多个模型，并报告相对稠密注意力的速度与保真度。</li>
+<li><strong>NarrowSpec</strong>：论证特征条件草稿模型的隐宽度不必等于目标模型，并在 DFlash / EAGLE-3、Qwen3-8B / GPT-OSS-20B、B200 / GB10 上给出可核验的接受率与端到端加速。</li>
+</ul>
+<h3 id="ov-skipped">考虑但未入选（摘）</h3>
+<p>同批次还审阅了若干全文可下载的候选，但因主题重叠、表格可核验性或轮换需要未写入今日三席，其中包括：ViStep-RL（2611.24170，视觉 agent 的逐步 RL，与 Depth Before Breadth 同属 Agent × RL，今日已占一席）；Replay, Don’t Resample / MRPD（2611.24059，离策略专家整合）；Spark-H3（2611.24256，视频 DiT 的块稀疏注意力，与 PQRS 同向）；LoopCache（2611.24301，Looped Transformer 的自推测解码，主表偏少）；FACT（2611.23463，推测解码的训练与候选分配实验框架）；TRACE-MAS（2611.23362，多智能体故障诊断与修复）；Vanguard（2611.23917，视觉语言 agent 的推测式逐步判定）；DexAttention（2611.23512，分布式稀疏注意力系统）。上述论文均可作为后续日期的候选，前提是仍落在窗口且 7 日内未被覆盖。</p>
+</section>
+
+<section class="paper" id="p1">
+<h2 id="p1-title">论文 1｜Depth Before Breadth：先深度后广度的反向–正向课程与成对优势分解 <span class="tag">NEW</span><span class="tag">Agent / Multi-Agent</span></h2>
+<div class="summary">本文把稀疏终局奖励下的长程 LLM Agent 学习，写成扩张策略诱导的能力区：用成对优势分别给「走到更可解的终点」和「从该终点完成任务」记功，并先沿成功参考轨迹反向推进、再从原起点正向探索。Table 1 报告 Qwen2.5-1.5B/7B-Instruct 的 ALFWorld 总成功率 90.1%/96.1%、WebShop 成功率 80.2%/82.6%，总体高于同表 GRPO / GiGPO / CRPS，但并非所有子任务领先，且基线数字取自既有论文。</div>
+
+<h3 id="p1-s1">1. 基本信息</h3>
+<p>标题：<em>Depth Before Breadth: Reverse-to-Forward Curriculum with Advantage Decomposition for LLM Agent</em>。正文称方法为 Paired Advantage（PA），Appendix A 的 Algorithm 1 题为 “Training LLM agents with Depth Before Breadth”。作者：Siyuan Du、Yuxin Liu、Meng Tang、Haoran Li、Yechao Bai、Feiyang Pan、Jia He。标题页单位上标为 Siyuan Du、Haoran Li、Yechao Bai → Nanjing University；Yuxin Liu → Peking University；Meng Tang → University of Wales, Aberystwyth。Feiyang Pan 与 Jia He 无单位上标，记为 Not Reported。</p>
+<p>预印本 arXiv:2611.24697v1 [cs.AI]，页眉日期 2026-11-18。链接：<a href="https://arxiv.org/abs/2611.24697">abs</a> · <a href="https://arxiv.org/pdf/2611.24697.pdf">PDF</a>。共 18 页：正文至第 9 页结论与 Limitations，第 10–13 页为 AI 使用声明与参考文献，附录 A–C（第 14–18 页）含算法、Table 3、提示与案例。未见会议接收信息。全文未给出代码或项目 URL，记为 Not Reported。硬件为 4×NVIDIA H100（§4.1、Appendix B.1），两个尺度均用该配置。作者称生成式工具只辅助实现与润色，结果经两名作者核验。</p>
+
+<h3 id="p1-s2">2. 一句话定位</h3>
+<p>Depth Before Breadth 针对只用终局 0/1 奖励训练长程 LLM Agent 时「早期动作难记功、反向课程又被参考轨迹绑死」的问题：把目标改成扩张策略的能力区，用左优势比较前缀终点是否更好解、用右优势比较同一终点上的后缀是否完成任务，并先沿成功参考把原起点纳入能力区，再从原起点做在线探索，覆盖参考轨迹之外的状态。</p>
+
+<h3 id="p1-s3">3. 人话版</h3>
+<p>把当前策略看成一张「会做的地盘」。地盘内的状态，模型已较有把握把任务做完；地盘外还差一口气。长程任务的起点往往在很外面，整条轨迹只在最后给出成功或失败。若把这一分摊到几十步，早期搜错商品、走错房间很难被单独揪出。反向课程先从靠近终点处开局（例如已进入商品页，只差选规格和下单），学会后再把开局往前挪，从而沿着一条成功示范把地盘拉向起点。但它有两个漏洞：开局一前移，同一笔终局分数又被摊到更长的动作串上；训练几乎只在示范路上进行，策略走偏后碰到的路外状态未必被覆盖。</p>
+<p>本文的拆法是：在边界附近，真正难的常常不是「从这里一直走到终点」，而是「先花很少几步走进已经会做的区域」。于是 rollout 被切成前缀和后缀。前缀只回答「局面被带到了哪类终点」，后缀只回答「从这类终点能不能做完」。同一终点至少采两条后缀，用完成率估计该终点有多好解，再比较不同前缀——走对的拿正左优势，走错的拿负的。右优势只在同一终点内部比较后缀，避免把「走到好位置」和「在好位置上收尾做对」混成一个轨迹级分数。课程上先沿示范把地盘拉回原起点（深度），再让策略从原起点自己走、加长前缀（广度）。</p>
+
+<h3 id="p1-s4">4. 背景与缺口</h3>
+<p>引言指出，LLM Agent 已从单轮生成走向多步交互，GRPO 一类组内相对策略梯度是常见范式，但长程任务仍受奖励稀疏制约：失败轨迹逐步没有信号，成功轨迹也只有一个终局奖励要分摊到整段交互（§1）。课程学习是应对手段之一。经典反向课程从近目标状态起步再把起点推远（Florensa et al., 2017）；近期工作采用锚定在成功参考轨迹上的变体，先掌握近目标局部执行再回到原起点（文中举 Zhang &amp; Yang, 2026 等）。</p>
+<p>作者认为仍有两个结构问题。起点后移后，终局反馈又被拉长，早期动作依然难分离；训练起点绑在参考轨迹上，策略探索中的 off-reference 状态暴露不足（Ross et al., 2011）。缺口因而不是再引入过程奖励或额外标注，而是在仍然只用终局奖励的前提下，把「进入已可解区域」和「在区域内完成任务」分开记功，并在原起点练稳后继续向策略自己的状态分布扩张。</p>
+
+<h3 id="p1-s5">5. 核心 insight</h3>
+<p>关键观察在 §1 与 Figure 1：把训练起点沿成功参考往回移，不只是「题目变短」，同时会把能力区朝原起点扩张。该图将轨迹上 Pass@1 超过 80% 的起点定义为能力区，画出 checkpoint 20 / 40 / 60 三条曲线；到 ckp60，新边界大约位于「剩余步数约占轨迹 60%」处。紧贴边界的新起点可以距真正目标仍远，但往往只差很少几步就能走进已会做的区域。长程问题于是分成两个耦合子问题：（i）从刚出界的状态进入能力区——短视野；（ii）从进入后的状态完成任务——更长视野，但已被前期训练部分覆盖。同一分解也可用于策略自己 rollout 到达的近边界状态，从而不把训练锁在参考轨迹上。</p>
+<p>两个阈值必须分开：Figure 1 的 80% 只是该图的可视化定义；训练用的 η 在 Table 3 中为 ALFWorld 的 0.6 与 WebShop 的 0.78。§3.2 还写明，实践中并不显式计算近边界集合，也不给出数值 δ，只把反向课程的当前起点当作近似近边界上下文。</p>
+
+<h3 id="p1-s6">6. 方法逐步拆解</h3>
+<p>流程见 Figure 2 与 Algorithm 1。两阶段共用同一套 PA 更新，只改起始上下文和前缀长度。</p>
+<p>从近边界上下文采 n 条前缀（实验 n=8），长度由当前课程给定。终点按决策上下文去重得集合 E，重复计数为 m(e)。尽管每步含 <code>&lt;think&gt;</code> 与 <code>&lt;action&gt;</code>，去重只用动作序列（§3.1）。Appendix A 补充：终点依赖任务加交互历史，「观测相同」不等于「终点相同」；同一终点的后缀只采一次并复用，故每次迭代采 |E|N<sub>R</sub> 条而非 n N<sub>R</sub> 条。对每个终点采 N<sub>R</sub>≥2 条后缀（实验为 2），按式 (5) 估计完成率 V̂(e)。左优势（式 6）把 V̂(e) 与按前缀计数加权的组内均值比较；右优势（式 7）只在同一终点的后缀间比较，结果全同时右信号为 0，左信号仍可贡献。每条前缀从其终点的后缀中均匀抽一条拼接，前缀动作吃左优势、后缀动作吃右优势，用带裁剪的重要性比更新（式 8），优势在更新中保持固定。</p>
+<p>反向阶段假定每个训练任务有成功参考 τ*，从靠近末尾处出发，以步长 d 往起点回退，前缀长度取 ℓ=d+2。当前起点估计成功率达到 η 后再退一档；当「大多数训练任务」的原起点已进入能力区时结束反向。「大多数」未被量化，记为 Not Reported。正向阶段以原起点为锚，前缀长度从 d+2 起按单调日程增加（文中举例 ℓ<sub>i</sub>=d+2+iΔℓ）。若每组平均 |E| 在连续更新中趋于稳定，就增大前缀长度。实验中 d 与 Δℓ 均为 3（Table 3）。</p>
+
+<h3 id="p1-s7">7. 核心公式：变量、目标与直觉</h3>
+<p>任务 x∼D，轨迹为观测–动作序列，R(τ)∈{0,1}。决策上下文含任务、已有观测与此前动作。目标是期望终局奖励：</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>J</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>&#x1D53C;</mi><mrow><mi>x</mi><mi>&#x0007E;</mi><mi>&#x1D49F;</mi><mo>&#x0002C;</mo><mspace width="0.167em" /><mi>&#x003C4;</mi><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><mo stretchy="false">[</mo><mi>R</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">]</mo></mrow></math></div>
+<p class="cap">式 (1)。θ 为策略参数，τ 为完整交互。</p>
+<p>GRPO 风格优势把同一任务 n 条完整轨迹标准化，并把同一个轨迹级信号广播到每一步（式 2）。这正是要拆开的对象：早期「走到哪」和后期「怎么收尾」被绑在同一分数上。</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>A</mi><mrow><mo stretchy="false">&#x00028;</mo><mi>k</mi><mo stretchy="false">&#x00029;</mo></mrow></msup><mo>&#x0003D;</mo><mfrac><mrow><msup><mi>R</mi><mrow><mo stretchy="false">&#x00028;</mo><mi>k</mi><mo stretchy="false">&#x00029;</mo></mrow></msup><mo>&#x02212;</mo><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi></mrow><mo stretchy="false">&#x00028;</mo><mi>R</mi><mo stretchy="false">&#x00029;</mo></mrow><mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">d</mi></mrow><mo stretchy="false">&#x00028;</mo><mi>R</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0002B;</mo><mi>&#x003F5;</mi></mrow></mfrac></mrow></math></div>
+<p>能力区与近边界（式 3–4）：p<sub>π</sub>(c) 是从上下文 c 完成任务的概率，η∈(0,1) 为可靠性阈值，δ 满足 0&lt;δ&lt;min{η,1−η}。区域由当前策略诱导，不依赖状态空间几何。</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mrow><mi>&#x003B7;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003C0;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo stretchy="false">&#x0007B;</mo><mi>c</mi><mi>:</mi><msub><mi>p</mi><mrow><mi>&#x003C0;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>c</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02265;</mo><mi>&#x003B7;</mi><mo stretchy="false">&#x0007D;</mo></mrow></math></div>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>N</mi><mrow><mi>&#x003B7;</mi><mo>&#x0002C;</mo><mi>&#x003B4;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003C0;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo stretchy="false">&#x0007B;</mo><mi>c</mi><mi>:</mi><mo stretchy="false">&#x0007C;</mo><msub><mi>p</mi><mrow><mi>&#x003C0;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>c</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mi>&#x003B7;</mi><mo stretchy="false">&#x0007C;</mo><mo>&#x02264;</mo><mi>&#x003B4;</mi><mo stretchy="false">&#x0007D;</mo></mrow></math></div>
+<p>V̂(e) 是终点 e 上 N<sub>R</sub> 条后缀奖励的均值。左优势相对「前缀加权」基线，而不是对 |E| 个终点简单平均；右优势是该后缀相对同一终点其余后缀的留一均值。</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover accent="true"><mrow><mi>V</mi></mrow><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><mi>e</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><msub><mi>N</mi><mrow><mi>R</mi></mrow></msub></mrow></mfrac><msubsup><mo>&#x02211;</mo><mrow><mi>j</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><msub><mi>N</mi><mrow><mi>R</mi></mrow></msub></mrow></msubsup><msub><mi>R</mi><mrow><mi>e</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></msub></mrow></math></div>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>A</mi><mrow><mi>L</mi></mrow></msup><mo stretchy="false">&#x00028;</mo><mi>e</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mover accent="true"><mrow><mi>V</mi></mrow><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><mi>e</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>n</mi></mrow></mfrac><msub><mo>&#x02211;</mo><mrow><msup><mi>e</mi><mrow><mi>&#x02032;</mi></mrow></msup><mo>&#x02208;</mo><mi>E</mi></mrow></msub><mi>m</mi><mo stretchy="false">&#x00028;</mo><msup><mi>e</mi><mrow><mi>&#x02032;</mi></mrow></msup><mo stretchy="false">&#x00029;</mo><mover accent="true"><mrow><mi>V</mi></mrow><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><msup><mi>e</mi><mrow><mi>&#x02032;</mi></mrow></msup><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>A</mi><mrow><mi>R</mi></mrow></msup><mo stretchy="false">&#x00028;</mo><mi>e</mi><mo>&#x0002C;</mo><mi>j</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>R</mi><mrow><mi>e</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></msub><mo>&#x02212;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><msub><mi>N</mi><mrow><mi>R</mi></mrow></msub><mo>&#x02212;</mo><mn>1</mn></mrow></mfrac><msub><mo>&#x02211;</mo><mrow><msup><mi>j</mi><mrow><mi>&#x02032;</mi></mrow></msup><mo>&#x02260;</mo><mi>j</mi></mrow></msub><msub><mi>R</mi><mrow><mi>e</mi><mo>&#x0002C;</mo><msup><mi>j</mi><mrow><mi>&#x02032;</mi></mrow></msup></mrow></msub></mrow></math></div>
+<p>式 (8) 把裁剪后的相对优势分别作用在前缀步 t=0,…,ℓ−1 与后缀步 t=ℓ,…,T<sub>k</sub>−1，并按段长平均。重要性比如下，ε 在 Table 3 中为 clip ratio 0.2，另有 dual-clip 的 c=3.0；T<sub>k</sub> 为拼接后的动作数。</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C1;</mi><mrow><mi>t</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mfrac><mrow><msub><mi>&#x003C0;</mi><mrow><mi>&#x003B8;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>a</mi><mrow><mi>t</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub><mo>&#x02223;</mo><msub><mi>c</mi><mrow><mi>t</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow><mrow><msub><mi>&#x003C0;</mi><mrow><msub><mi>&#x003B8;</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>a</mi><mrow><mi>t</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub><mo>&#x02223;</mo><msub><mi>c</mi><mrow><mi>t</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow></mfrac></mrow></math></div>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>J</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>&#x1D53C;</mi><mrow><mo stretchy="true" fence="true" form="prefix">[</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>n</mi></mrow></mfrac><msubsup><mo>&#x02211;</mo><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>n</mi></mrow></msubsup><mfrac><mrow><mn>1</mn></mrow><mrow><mi>&#x02113;</mi></mrow></mfrac><msubsup><mo>&#x02211;</mo><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>0</mn></mrow><mrow><mi>&#x02113;</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msubsup><mo>min</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><msub><mi>&#x003C1;</mi><mrow><mi>t</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><msup><mi>A</mi><mrow><mi>L</mi></mrow></msup><mo stretchy="false">&#x00028;</mo><msub><mi>e</mi><mrow><mi>k</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">p</mi></mrow><mo stretchy="false">&#x00028;</mo><msub><mi>&#x003C1;</mi><mrow><mi>t</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mn>1</mn><mo>&#x02212;</mo><mi>&#x003F5;</mi><mo>&#x0002C;</mo><mn>1</mn><mo>&#x0002B;</mo><mi>&#x003F5;</mi><mo stretchy="false">&#x00029;</mo><msup><mi>A</mi><mrow><mi>L</mi></mrow></msup><mo stretchy="false">&#x00028;</mo><msub><mi>e</mi><mrow><mi>k</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><mo>&#x0002B;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><msub><mi>T</mi><mrow><mi>k</mi></mrow></msub><mo>&#x02212;</mo><mi>&#x02113;</mi></mrow></mfrac><msubsup><mo>&#x02211;</mo><mrow><mi>t</mi><mo>&#x0003D;</mo><mi>&#x02113;</mi></mrow><mrow><msub><mi>T</mi><mrow><mi>k</mi></mrow></msub><mo>&#x02212;</mo><mn>1</mn></mrow></msubsup><mo>min</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x00028;</mo><msub><mi>&#x003C1;</mi><mrow><mi>t</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><msup><mi>A</mi><mrow><mi>R</mi></mrow></msup><mo stretchy="false">&#x00028;</mo><msub><mi>e</mi><mrow><mi>k</mi></mrow></msub><mo>&#x0002C;</mo><msub><mi>j</mi><mrow><mi>k</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">p</mi></mrow><mo stretchy="false">&#x00028;</mo><msub><mi>&#x003C1;</mi><mrow><mi>t</mi><mo>&#x0002C;</mo><mi>k</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003B8;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mn>1</mn><mo>&#x02212;</mo><mi>&#x003F5;</mi><mo>&#x0002C;</mo><mn>1</mn><mo>&#x0002B;</mo><mi>&#x003F5;</mi><mo stretchy="false">&#x00029;</mo><msup><mi>A</mi><mrow><mi>R</mi></mrow></msup><mo stretchy="false">&#x00028;</mo><msub><mi>e</mi><mrow><mi>k</mi></mrow></msub><mo>&#x0002C;</mo><msub><mi>j</mi><mrow><mi>k</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo stretchy="true" fence="true" form="postfix">&#x00029;</mo></mrow><mo stretchy="true" fence="true" form="postfix">]</mo></mrow></mrow></math></div>
+<p>反向起点索引与正向前缀日程为：</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>r</mi><mrow><mi>i</mi></mrow></msub><mo>&#x0003D;</mo><mo>max</mo><mo stretchy="false">&#x0007B;</mo><mi>T</mi><mo>&#x02212;</mo><mn>1</mn><mo>&#x02212;</mo><mi>i</mi><mi>d</mi><mo>&#x0002C;</mo><mn>0</mn><mo stretchy="false">&#x0007D;</mo><mo>&#x0002C;</mo><mspace width="1em" /><mi>&#x02113;</mi><mo>&#x0003D;</mo><mi>d</mi><mo>&#x0002B;</mo><mn>2</mn></mrow></math></div>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x02113;</mi><mrow><mi>i</mi></mrow></msub><mo>&#x0003D;</mo><mi>d</mi><mo>&#x0002B;</mo><mn>2</mn><mo>&#x0002B;</mo><mi>i</mi><mi>&#x00394;</mi><mi>&#x02113;</mi></mrow></math></div>
+<p>一句话直觉：左项优化「如何走进更高 V̂ 的终点」，右项优化「到达后怎样把 0/1 做成 1」；某终点后缀全对或全错时右项关闭，左项仍能告诉前缀该不该去。</p>
+
+<h3 id="p1-s8">8. Toy example（本文自造算例，非论文数字）</h3>
+<div class="note">以下为本文自造的教学算例，任务设定、前缀分配和奖励都不是论文表格或图中的实测值，只用来把式 (5)–(7) 的计算方向走一遍。</div>
+<p>设想六步网购：「买一只中号红色马克杯」，参考轨迹为搜索 → 打开商品 A → 选红色 → 选中号 → 确认 → 下单。当前已把「商品页之后」练稳，开局放在搜索结果页，前缀长度为两步。采 n=8 条前缀，去重得三个终点，各采 N<sub>R</sub>=2 条后缀：e<sub>1</sub> 为正确商品页，m=4，两条后缀都买对，V̂=1；e<sub>2</sub> 为错误商品页，m=3，两条都失败，V̂=0；e<sub>3</sub> 仍停在筛选页，m=1，一条成功一条失败，V̂=0.5。前缀加权基线为 (4×1+3×0+1×0.5)/8=0.5625，故 A<sup>L</sup>(e<sub>1</sub>)=0.4375，A<sup>L</sup>(e<sub>2</sub>)=−0.5625，A<sup>L</sup>(e<sub>3</sub>)=−0.0625。e<sub>1</sub>、e<sub>2</sub> 上后缀结果相同，A<sup>R</sup>=0；e<sub>3</sub> 上成功后缀得 1，失败后缀得 −1。于是走到正确商品页的前缀获得正左优势，即使全对的后缀不再提供右信号；走进错误页的前缀被左优势惩罚；单例终点的 0.5 略低于组均，但成功与失败仍被右优势分开。若按普通 GRPO 把整条 0/1 广播到每一步，e<sub>1</sub> 上「点对商品」和「选对规格」会分享同一个正分，e<sub>3</sub> 也写不出 0.5 的中间估计——这正是 Figure 3b 要对比的情形。</p>
+
+<h3 id="p1-s9">9. Baselines</h3>
+<p>§4.1 分三类对照。Table 1 表注写明数字取自 GiGPO（Feng et al., 2025）与 CRPS（Zhang &amp; Yang, 2026），而非本文声明的独立复跑。闭源提示为 GPT-4o、Gemini-2.5-Pro。开源提示为同一骨架上的 Qwen2.5-Instruct、ReAct、Reflexion。轨迹级 RL 为 PPO、RLOO、GRPO。面向长程归因的是 step-level 分组的 GiGPO，以及参考轨迹上 reverse replay 的 CRPS（与反向阶段最接近的课程对照）。§4.1 同时写「所有 RL 方法使用相同骨干与训练设置」，与「结果取自既有论文」的张力放到第 15 节。表中方法记为 Ours / PA。</p>
+
+<h3 id="p1-s10">10. 实验设置</h3>
+<p>ALFWorld 含 3,827 个家居任务，六类 Pick / Look / Clean / Heat / Cool / Pick2。WebShop 以 HTML 模拟购物，文称超过 110 万商品与 12,000 条指令。骨干为 Qwen2.5-1.5B-Instruct 与 Qwen2.5-7B-Instruct。回合上限 50（ALFWorld）与 15（WebShop）；Table 3 另列 action budget 120 与 80，二者不是同一量。输出为先思考再恰好一个动作。WebShop 预填开场 <code>&lt;think&gt;</code> 标签，ALFWorld 则要求模型生成两个完整块（Appendix B.2）。</p>
+<p>§4.1 写每更新 16 个任务、每任务 8 条 rollout，PA 为 n=8 前缀、每不同终点 2 条后缀。Table 3 则列出 train batch size=32、n samples per prompt=8、ppo mini batch size=16。「16 tasks per update」与 batch size 32 并不自动一致，应视为文档冲突。Adam 学习率 10<sup>−6</sup>，constant 日程，梯度裁剪 1.0，每更新 1 个 epoch；rollout 温度 1.0、top-p 0.95，验证温度 0；无 KL、熵系数为 0。二元奖励训练时乘 10。d=Δℓ=3；η 为 0.6 与 0.78。ALFWorld 训练 100 次迭代，在 seen 变体共 140 题上评估；WebShop 150 次迭代，在 500 题 test split 上评估。Appendix B.1 又写两个环境都「每次 run 随机采 128 题，在 3 个配对种子上平均」，与 140 / 500 如何衔接未解释。Ours 的标准差是固定 checkpoint 上三个评估种子，不是多次训练方差。参考轨迹如何得到、环境如何重置到中间上下文，均未说明，记为 Not Reported。</p>
+
+<h3 id="p1-s11">11. 指标教学</h3>
+<p>ALFWorld 报告各类成功率（%）及总体 All，对应二元终局奖励。WebShop 同时给 task score 与 success rate（%）。正文未形式化定义 score；按该基准的常见用法，score 多反映属性匹配，success 对应完全匹配，因此会出现分数高于成功率（1.5B 的 Ours 为 88.6 分、80.2% 成功）。§4.2 把「成功率增益大于分数增益」解读为更多轨迹走完搜索–导航–选品全流程，这一解释依赖上述含义，定义需回到原基准。</p>
+<p>过程分析还用 V̂(e)（N<sub>R</sub>=2 时只能取 0 / 0.5 / 1）、每组不同终点数 |E|、打到该终点的前缀数 m(e)，以及累计环境步。Figure 1 的 Pass@1 用于沿参考轨迹画能力区，不是测试主指标。Figure 5a 的验证成功率与 Table 1 测试协议是否相同，文中未说明。</p>
+
+<h3 id="p1-s12">12. 可核验结果</h3>
+<p>摘要中的 90.1%/96.1% 与 80.2%/82.6% 与 Table 1 的 All、WebShop Succ. 一致，可以引用。</p>
+<ol>
+<li>ALFWorld 总体：Ours 在 1.5B / 7B 为 90.1±2.0% / 96.1±1.4%。相对 GRPO 的 72.8±3.6% / 77.6±5.2% 高 17.3 与 18.5 个百分点；相对 GiGPO 的 86.7±1.7% / 90.8±1.3% 高 3.4 与 5.3 个百分点，均与 §4.2 一致。</li>
+<li>并非六类全胜。1.5B Clean：Ours 84.2±4.23%，低于 GiGPO 的 94.8±3.8%；7B Cool：Ours 85.9±6.0%，低于 GiGPO 的 89.3±8.2%。其余五类在各尺度上由 Ours 取最高均值。1.5B Clean 的标准差写成 4.23，精度与同表其他 ±x.x 不一致，按原表抄录。</li>
+<li>分项（同一表）：1.5B Look 由 GiGPO 的 67.5±4.6% 升至 97.2±4.8%；Heat 为 100.0±0.0%。7B 的 Pick / Look / Clean / Heat 均为 100.0±0.0%，Pick2 为 92.4±2.6%，高于 GiGPO 的 79.2±6.6%。</li>
+<li>WebShop：1.5B 的 score / succ. 为 88.6±1.5 / 80.2±3.9，对照 GiGPO 83.1±1.6 / 65.0±3.2 与 CRPS 73.0 / 61.0。7B 为 92.5±1.1 / 82.6±1.2，对照 GiGPO 84.4±2.9 / 72.8±3.2 与 CRPS 82.0 / 74.0。§4.2「score 超出 GiGPO 8.1、成功率超出 CRPS 8.6 个百分点」对应 7B（92.5−84.4=8.1，82.6−74.0=8.6），不要接到 1.5B。</li>
+<li>Table 2（仅 WebShop 1.5B）：仅反向且无 PA 为 68.8%；反向+正向、无 PA 为 74.7%；两阶段课程但只在反向用 PA 为 76.6%；两阶段都用 PA 为 80.2%，相对仅反向高 11.4 个百分点。正文把末项写成 80.20%，与表中 80.2 为同一结果。</li>
+<li>Figure 3a（ALFWorld、7B）：末箱 PA 每步平均 93.8 个不同终点，GRPO 为 70.0，多 23.8；其中 V̂(e)=1 的为 68.0 对 55.5。首箱 PA 反而少 0.1 个。PA 保持每终点 2 条后缀，GRPO 观察到的每终点后缀数从 2.1 升到 3.7。</li>
+<li>Figure 3b（仅 m(e)=1）：PA 单例覆盖从约 70 降到 48.7，但 V̂=1 的从约 25 升到 32.2，V̂=0.5 的从约 13 降到 8.1；GRPO 单例从约 72 降到 24.6，V̂=1 的从约 34 降到 17.9。带 “about” 的起点按约数引用。</li>
+<li>Figure 4（WebShop |E|）：四阶段均值 4.08 / 2.21 / 6.68 / 4.92。反向晚期 |E|=1 占 46%；正向早期 |E|≥7 占 66%（图中 |E|=7 为 20%、|E|=8 为 46%）。正文讨论 Figure 5 时提到约 5.9 的参照，图中确有红虚线标在 5.9。</li>
+</ol>
+
+<h3 id="p1-s13">13. 真实表图阅读</h3>
+<p>Table 1 应整表看，不要只看 All。闭源提示行中，GPT-4o 的 ALFWorld All 为 48.0、WebShop Succ. 为 23.7，Gemini-2.5-Pro 为 60.3 与 35.9，远低于已训练的 RL 行。不宜据此宣称「7B PA 击败 GPT-4o」：闭源行是 Prompting，数字来自既有论文，协议是否对齐未经本文独立证明。提示基线同样很低（1.5B 的 Qwen2.5 All 仅 4.1%），方法差额应在 RL 行内部比较。CRPS 无标准差。加粗规则是「同一尺度每列最高均值」，故 1.5B Clean 与 7B Cool 的加粗在 GiGPO。</p>
+<div class="tbl"><table>
+<thead>
+<tr><th>尺度</th><th>方法</th><th>Pick</th><th>Look</th><th>Clean</th><th>Heat</th><th>Cool</th><th>Pick2</th><th>ALF All</th><th>WS Score</th><th>WS Succ.</th></tr>
+</thead>
+<tbody>
+<tr><td rowspan="6">1.5B</td><td>PPO</td><td>64.8±3.5</td><td>40.5±6.9</td><td>57.1±4.9</td><td>60.6±6.6</td><td>46.4±4.0</td><td>47.4±1.9</td><td>54.4±3.1</td><td>73.8±3.0</td><td>51.5±2.9</td></tr>
+<tr><td>RLOO</td><td>88.3±3.0</td><td>52.8±8.6</td><td>71.0±5.9</td><td>62.8±8.7</td><td>66.4±5.5</td><td>56.9±4.7</td><td>69.7±2.5</td><td>73.9±5.6</td><td>52.1±6.7</td></tr>
+<tr><td>GRPO</td><td>85.3±1.5</td><td>53.7±8.0</td><td>84.5±6.8</td><td>78.2±7.9</td><td>59.7±5.0</td><td>53.5±5.6</td><td>72.8±3.6</td><td>75.8±3.5</td><td>56.8±3.8</td></tr>
+<tr><td>CRPS</td><td>91.0</td><td>72.0</td><td>88.0</td><td>90.0</td><td>73.0</td><td>76.0</td><td>83.0</td><td>73.0</td><td>61.0</td></tr>
+<tr><td>GiGPO</td><td>94.4±5.9</td><td>67.5±4.6</td><td>94.8±3.8</td><td>94.4±7.8</td><td>79.8±4.7</td><td>76.4±5.4</td><td>86.7±1.7</td><td>83.1±1.6</td><td>65.0±3.2</td></tr>
+<tr><td>Ours</td><td>97.9±3.7</td><td>97.2±4.8</td><td>84.2±4.23</td><td>100.0±0.0</td><td>80.3±4.0</td><td>86.4±4.6</td><td>90.1±2.0</td><td>88.6±1.5</td><td>80.2±3.9</td></tr>
+<tr><td rowspan="6">7B</td><td>PPO</td><td>92.3±4.0</td><td>64.0±8.4</td><td>92.5±2.4</td><td>89.5±7.0</td><td>80.3±2.0</td><td>68.8±8.3</td><td>80.4±2.7</td><td>81.4±3.1</td><td>68.7±5.1</td></tr>
+<tr><td>RLOO</td><td>87.6±4.3</td><td>78.2±8.3</td><td>87.3±5.8</td><td>81.3±7.6</td><td>71.9±5.2</td><td>48.9±8.4</td><td>75.5±4.6</td><td>80.3±3.2</td><td>65.7±4.0</td></tr>
+<tr><td>GRPO</td><td>90.8±5.1</td><td>66.1±6.7</td><td>89.3±5.4</td><td>74.7±6.9</td><td>72.5±5.4</td><td>64.7±7.3</td><td>77.6±5.2</td><td>79.3±2.8</td><td>66.1±3.7</td></tr>
+<tr><td>CRPS</td><td>91.0</td><td>80.0</td><td>86.0</td><td>83.0</td><td>80.0</td><td>71.0</td><td>86.0</td><td>82.0</td><td>74.0</td></tr>
+<tr><td>GiGPO</td><td>97.7±1.6</td><td>82.7±7.9</td><td>98.8±1.6</td><td>83.7±7.2</td><td>89.3±8.2</td><td>79.2±6.6</td><td>90.8±1.3</td><td>84.4±2.9</td><td>72.8±3.2</td></tr>
+<tr><td>Ours</td><td>100.0±0.0</td><td>100.0±0.0</td><td>100.0±0.0</td><td>100.0±0.0</td><td>85.9±6.0</td><td>92.4±2.6</td><td>96.1±1.4</td><td>92.5±1.1</td><td>82.6±1.2</td></tr>
+</tbody>
+</table></div>
+<p class="cap">Table 1 主要 RL 行摘录。闭源与提示行见上文。标准差按原表；CRPS 无标准差。Ours 的 ± 为固定 checkpoint 上三评估种子。</p>
+<div class="tbl"><table>
+<thead><tr><th>Curriculum</th><th>Rev. PA</th><th>Fwd. PA</th><th>WebShop Succ. (%)</th></tr></thead>
+<tbody>
+<tr><td>Reverse only</td><td>–</td><td>–</td><td>68.8</td></tr>
+<tr><td>Reverse + Forward</td><td>–</td><td>–</td><td>74.7</td></tr>
+<tr><td>Reverse + Forward</td><td>✓</td><td>–</td><td>76.6</td></tr>
+<tr><td>Reverse + Forward</td><td>✓</td><td>✓</td><td>80.2</td></tr>
+</tbody>
+</table></div>
+<p class="cap">Table 2：WebShop、Qwen2.5-1.5B-Instruct，无标准差。可见增量依次为加入正向（68.8→74.7）、反向启用 PA（→76.6）、正向也启用 PA（→80.2）。没有「仅正向、无反向」行，也没有把左右优势拆开的行。</p>
+<p>Figure 4 柱上百分比：反向早期 |E|=1 / 2–4 / 5–6 / 7 约为 12% / 45% / 31% / 9%（合计 97%，其余未标或为四舍五入）；反向晚期 |E|=1 升至 46%，|E|=2–4 为 43%，|E|=5–6 为 10%；正向早期以 |E|=8（46%）和 |E|=7（20%）为主；正向晚期回落到均值 4.92，|E|=8 / 7 / 5–6 / 2–4 为 10% / 16% / 32% / 37%。这与「先沿参考塌缩、再向外铺开」一致。Figure 5 无数值表：5a 横轴为累计环境步 0–300k，三条曲线为 PA+Reverse+Forward、Reverse+Forward、GRPO Baseline，正文称匹配预算下 PA 验证成功率更高，终端精确百分比 Not Verified，不在此估读；5b 称反向后期每组约 2.21 个不同终点，PA 通常每步消耗更少环境步，曲线末端印刷标注不够清晰，不抄录。</p>
+
+<h3 id="p1-s14">14. Ablation 与缺失的 ablation</h3>
+<p>已做的主要是 Table 2 的课程×PA 开关，以及 Figure 3–5 相对 GRPO 或「有课程但无 PA」的过程对照。Figure 5 三条臂覆盖完整方法、两阶段但不拆优势、以及轨迹级 GRPO，但未把 Table 2 四行都画进效率图，也没有「只做正向」曲线。</p>
+<p>未做的对照包括：没有在 ALFWorld 或 7B 上重复 Table 2；没有单独关掉左或右优势；没有扫描 N<sub>R</sub>、η、d、Δℓ；没有「无成功参考、只用正向」或参考质量变化；没有改终点去重规则或「后缀是否复用」的代价对照。η 在两环境取不同值却无敏感性分析。这不否定已有的 11.4 个点，但限制了「两个组件都必要且可迁移」的强度。</p>
+
+<h3 id="p1-s15">15. Claim vs Evidence</h3>
+<p>对齐较好的部分：摘要与 Table 1 在两个尺度、两个基准的总体成功率上一致。§4.2 对 GRPO、GiGPO 的差值计算正确，并主动报告 Clean（1.5B）与 Cool（7B）两处例外。Table 2 支持「课程阶段和成对优势都有贡献」。Figure 3–4 为「PA 维持更宽、且部分可解终点能被右优势利用」提供了过程证据。</p>
+<p>需要收紧的部分。第一，「优于有竞争力的智能体 RL 方法」成立在总体列上，但不覆盖每一子任务；WebShop 1.5B 相对 GiGPO 的成功率差距达 15.2 个百分点，明显大于 ALFWorld 总体的 3.4 个点。第二，表注写基线取自既有论文，同时正文写「相同骨干与训练设置」「匹配的评估协议」；若数字是引用而非复跑，匹配程度取决于原始设定，本文无复现表。第三，Ours 的 ± 是评估种子方差，CRPS 无标准差，不能直接比较训练稳定性，也未见显著性检验。第四，Figure 5 的效率结论只有曲线、没有数值表，终端值 Not Verified。第五，「大多数训练任务」达标才切换正向，缺少比例；参考来源未报告。不可把 Figure 1 的 80% 与训练 η 混用。</p>
+
+<h3 id="p1-s16">16. 贡献</h3>
+<p>按作者三条贡献并按其证据强度转述。第一，用策略诱导的能力区看待反向课程，并指出长程任务中嵌着「进入能力区」的短视野问题；Figure 1 是示意证据。第二，给出只用终局奖励的成对优势与反向再到正向的课程；Algorithm 1 与式 (5)–(8) 构成可实施的更新。第三，在 ALFWorld、WebShop 与两个 Qwen2.5 尺度上，总体指标超过同表强基线，并用终点覆盖与阶段 |E| 说明能力区在匹配交互预算下更宽。边界是：实验限于两个文本基准和单一模型族，方法依赖成功参考与中间状态重置。</p>
+
+<h3 id="p1-s17">17. 局限</h3>
+<p>论文自行指出（第 9 页）：反向训练需要成功参考，后缀采样需要从中间上下文重启；二者不可用时方法受限。若后缀全部失败，左右优势都会消失。从已知解附近起步可降低该风险，但若可解上下文始终落在已采前缀够不到处，扩张可能停滞。</p>
+<p>还可补充：参考生成协议未给出，能力区可能部分记住的是示范支持集。终点只按动作序列去重，在随机环境或「同一动作、不同观测」时可能误合并。消融只覆盖 WebShop 1.5B，主表又有子任务逆转，外推到软件工程、GUI 或多代理缺少直接证据。文档中 16 与 32 的批次陈述、140/500 与「每 run 128 题」的评估陈述，以及公式中奖励为 {0,1}、训练时又乘 10，都会增加复现歧义。代码未发布。</p>
+
+<h3 id="p1-s18">18. 复现要点</h3>
+<p>已写明的旋钮：骨干 Qwen2.5-1.5B/7B-Instruct；4×H100；n=8、N<sub>R</sub>=2；d=Δℓ=3；η=0.6 / 0.78；奖励二元、训练乘 10；clip 0.2 / dual-clip 3.0；无 KL、无熵奖励；Adam 10<sup>−6</sup>、constant、grad clip 1.0、1 epoch；迭代 100 / 150；最大轮数 50 / 15；长度以 Table 3 为准（max model len 12288 / 15360）。评估应同时记录 140 seen / 500 test 的官方划分，以及「128 题×3 个评估种子、固定 checkpoint」这一表注协议，并写清实际采用哪一种。</p>
+<p>实现上必须能把环境重置到参考或前缀终点，否则后缀采样不成立。终点键先按论文做：同一任务下的动作序列。后缀按终点复用，更新时再给每条前缀随机绑定一条。课程切换用表中的 η，而不是 Figure 1 的 80%；「大多数任务达标」需自行规定可记录的比例。批次上同时记录「16 tasks per update」与 batch size 32。没有官方代码，参考轨迹来源必须单独记入日志。</p>
+
+<h3 id="p1-s19">19. 研究价值</h3>
+<p>主要价值在问题重构：把稀疏终局奖励下的长程智能体，写成扩张策略自己的可解区域，并在边界附近把长程拆成短视野进入与区内完成，从而不必先引入过程奖励模型。反向之后必须再正向，是对「只沿示范做课程会被分布偏移伤害」的一次可测回应，Figure 4 用 |E| 的先降后升把「先深度、后广度」画了出来。对实践者，它提供了一套不改奖励、只改 rollout 结构与优势计算的组件，可挂在现有 GRPO 栈上对照。另一面也很清楚：没有代码、两个基准、依赖示范与重置，更像一份强的方法原型，而不是可直接上生产的配方。</p>
+
+<h3 id="p1-s20">20. 可执行迁移</h3>
+<p>迁移一：若已在用 GRPO 训练多步工具或购物/家居类 Agent，不必先换奖励模型。保持组大小，把轨迹在当前视野 ℓ 处切开；按动作序列归并前缀终点，对每个不同终点再滚 N<sub>R</sub>=2 条后缀（预算按 |E|N<sub>R</sub> 计）；用式 (6)(7) 分别写前缀与后缀优势，再套原有 clip 更新。先在已有验证集上对比「轨迹级 GRPO」与「只改优势、先不改课程」，看单例终点是否出现 0.5 的中间估计。前提是环境能重置到前缀终点；若不能，不要用「从日志里续写」冒充同策略后缀。</p>
+<p>迁移二：若已在用示范做反向课程，把「原起点成功率越过 η」当作切换开关，进入正向阶段：从原起点采样，当前缀终点种类数连续若干更新不再增加时，把 ℓ 加一个固定步长。用 |E| 直方图做课程仪表盘：反向后期若 |E|=1 比例很高，说明能力区已沿示范塌缩，这时才适合放开广度；若反向阶段 |E| 一直散且原起点成功率上不去，应先检查参考质量或 η，而不是急着加长前缀。两个环境不要盲目共用同一 η：论文自己就用了 0.6 与 0.78。</p>
+
+<h3 id="p1-s21">21. 方向专用分析（Agent × RL：capability region / reverse-to-forward curriculum / paired advantages / 稀疏终局奖励）</h3>
+<p>这是单智能体、语言界面上的长程 RL，不是多智能体博弈；方向标签中的 Multi-Agent 只表示它落在 Agent 训练谱系，论文没有多代理实验。它面对的结构是稀疏终局 0/1、部分可观测、开放文本动作、视野可达数十轮。GRPO 把组内相对优势广播到整段轨迹，整组全败时优势为零；PA 并不直接解决整组全败（若所有终点的后缀都是 0，左优势同样全零），它解决的是更细的一件事：即使组内已有成败差别，也不要把「进入可解终点」和「在终点上做对」写成同一个标量。这与 GiGPO 依赖跨轨迹重复状态对齐、CRPS 沿示范重放是近邻但不同构：PA 显式构造「共享终点上的多条后缀」，同时估计终点价值与后缀优势。</p>
+<p>能力区 C<sub>η</sub>(π) 随策略移动，不是环境里预先画好的子目标图。课程因此不是按任务难度排序，而是按「当前策略已经可靠的上下文」往外推。反向阶段用成功参考给出有序的近边界序列，代价是宽度被压到示范邻域（Figure 4 中反向晚期均值 |E|=2.21，近半数组塌到单终点）。正向阶段把锚点改回原起点并加长前缀，代价是 |E| 回升、后缀采样点变多；作者用反向已形成的短后缀能力来主张这不一定增加总环境步（Figure 5 的定性结论）。实践含义是：示范课程可以把终局奖励拉近到可学的短视野，但若不接正向阶段，部署时一旦偏离示范仍会走出能力区。尚未回答的问题包括：多代理中「终点」应如何定义，以及在不可重置的真实网站或工具环境里，后缀估计还能不能做无偏。</p>
+
+<h3 id="p1-s22">22. Attack / Verification lens</h3>
+<p>优先核查协议与数字来源，而不是摘要里已能对上 Table 1 的四个百分数。应要求提供：基线是引用还是复跑、评估是 140/500 全量还是每次 128 题、Ours 的 ± 是否只来自固定 checkpoint、以及 Clean 的 ±4.23 是否为排版残留。没有代码时，参考轨迹、重置接口、终点哈希和课程切换日志都不可省。方法失效模式已写在 Limitations：后缀全失败则信号消失；前缀一直走不到可解上下文则扩张停滞。更苛刻的检验包括：把参考换成次优或带噪示范，看能力区是否学会错误支持集；在评估中加入示范外扰动起点，看正向阶段是否带来离轨鲁棒性；检查是否通过缩短交互或利用判定漏洞抬高成功率。WebShop 预填思考标签、ALFWorld 不预填，对照实验应保持包装一致。作者用生成式工具辅助写代码，在无公开仓库时更需要可检查的训练日志与种子。</p>
+
+<h3 id="p1-s23">23. 记忆总结</h3>
+<ul>
+<li>Depth Before Breadth 用策略诱导的能力区重构长程 Agent RL：先进入已可解上下文，再在其中完成任务。</li>
+<li>左优势比较不同前缀终点的经验完成率，右优势只在同一终点的后缀之间比较；后缀全同则右信号为 0。</li>
+<li>课程必须先反向（沿成功参考把原起点纳入能力区）再正向（从原起点加长前缀，覆盖示范外状态）。</li>
+<li>实验用 Qwen2.5-1.5B/7B-Instruct，n=8、N<sub>R</sub>=2，训练在 4×H100 上；η 为 0.6 / 0.78，d=Δℓ=3。</li>
+<li>Table 1：ALFWorld 总体 90.1%/96.1%，WebShop 成功 80.2%/82.6%，对得上摘要；1.5B Clean 与 7B Cool 不及 GiGPO。</li>
+<li>基线数字取自 GiGPO 与 CRPS 论文；Ours 的标准差是固定 checkpoint 的三评估种子，不是训练重复。</li>
+<li>Table 2（仅 WebShop 1.5B）从仅反向 68.8% 到完整方法 80.2%，两阶段与 PA 都有增量。</li>
+<li>Figure 4：|E| 均值沿 4.08→2.21→6.68→4.92 先塌缩再展开，是「先深度后广度」的过程证据。</li>
+<li>方法依赖成功参考和中间状态重置；参考来源与代码均为 Not Reported。</li>
+<li>这是单智能体文本环境上的稀疏奖励方法，不要外推成多智能体或不可重置的真实工具环境。</li>
+</ul>
+</section>
+<section class="paper" id="p2">
+<h2 id="p2-title">论文 2｜PQRS：让每个 Query 自己路由 Key 簇，加速视频 DiT 稀疏注意力 <span class="tag">NEW</span><span class="tag">Video Acceleration</span></h2>
+<h3 id="p2-s1">1. 基本信息</h3>
+<p>标题：<em>Every Query Routes Itself: Accelerating Video Diffusion Transformers with Per-Query Routed Sparse Attention</em>。方法名 PQRS（Per-Query Routed Sparse Attention）。作者（题头顺序）：Zhen Huang、Shuwei Li、Ruizhe Yao、Xinrui Chen、Danyi Liu、Haoyuan Liang、Zhiyu Ye、Qiuyan Sun、Bingwei Chen、Yiyuan Li、Xu Zhou、Haohuan Fu。单位：Zhen Huang、Shuwei Li、Xinrui Chen、Danyi Liu、Haoyuan Liang、Zhiyu Ye、Qiuyan Sun、Haohuan Fu 为 Tsinghua University；Ruizhe Yao 为 Harbin Institute of Technology, Shenzhen；Bingwei Chen、Yiyuan Li、Xu Zhou 为 Sangfor Technologies。题头标注 Zhen Huang 与 Shuwei Li 为 Equal contribution，Xu Zhou 与 Haohuan Fu 为 Corresponding authors。给出的邮箱为 z-huang26@mails.tsinghua.edu.cn 与 haohuan@tsinghua.edu.cn。</p>
+<p>预印本 arXiv:2611.24479v1 [cs.CV]，标注 2026-11-18。PDF 共 17 页（正文至第 8 页结论，附录 A–D：实现细节、实验设置、基线配置、补充结果；含 Table 1–8 与 Figure 1–11）。未写会议接收信息。链接：<a href="https://arxiv.org/abs/2611.24479">abs</a> · <a href="https://arxiv.org/pdf/2611.24479.pdf">PDF</a>。全文未给出代码仓库或项目页，Code / Project = Not Reported。</p>
+<h3 id="p2-s2">2. 一句话定位</h3>
+<p>PQRS 是一种无需训练的视频扩散 Transformer 稀疏注意力：只对 Key 做聚类，让每个 Query 按自己的质心分数选择 Key 簇，对未选簇做质心补偿，再用按簇为主序的核把不规则选择打包成稠密任务，从而在四款 720p 视频 DiT 上同时做到更接近稠密输出、也更快。</p>
+<h3 id="p2-s3">3. 人话版</h3>
+<p>720p、约五秒的视频扩散，token 数可以到几万。Wan2.1 在 81 帧、720p 时 <em>N</em> = 75,600，引言写明在单枚 H100 上一条五秒片段大约要 28 分钟，而自注意力占其中大部分。稀疏注意力的想法很直接：只精确计算那些真正扛住大部分注意力质量的 token 对。问题是，哪些对值得算？</p>
+<p>一类流行做法先把内容相近的 Query 和 Key 各自聚成簇，再让「同一个 Query 簇里的所有 Query 共用一份 Key 簇清单」。这样清单整整齐齐，正好喂给按块稀疏的 GPU 核。但共用也有代价：簇里那个和均值不太一样的 Query，会被塞一份并不适合它的 Key 列表。PQRS 的判断是：这份共用本身才是精度损失的来源，而不是「分了簇」这件事。于是它不再聚 Query，让每个 Query 自己点单；没点到的 Key 簇，用该簇的 Key/Value 均值做廉价补偿。点单结果因 Query 而异，不能再指望「一整块 Query 对同一串 Key」。作者把遍历顺序反过来：按 Key 簇走，把选了同一组簇的 Query 装进同一个稠密任务，并用上一步去噪留下的 log-sum-exp 当作固定的 softmax 偏置，一次过完，避免在线 softmax 反复缩放。</p>
+<h3 id="p2-s4">4. 背景与缺口</h3>
+<p>相关工作把视频 DiT 稀疏注意力分成几路。静态方法利用时空局部性，使用按头的空间/时间掩码、滑动窗或能量衰减掩码；动态方法在线估计块重要性，或只在少数步搜索掩码再复用。聚类方法（SVG2、SVOO、AdaCluster、HyperVAttention、SCOPE 等）按内容把相似 token 排成连续块，在免训练方法里目前保真最好。SVG-EAR、PISA、Sol-Attn 则对未选块做近似而非直接丢掉。可训练路由也存在，但不是本文比较对象。</p>
+<p>这些免训练聚类方法几乎都把「一份 Key 选择」共享给一个 Query 块或 Query 簇，以便映射到块稀疏核。TRA 可以给每个 Query 不同预算，执行时仍是块稀疏掩码；SparsePR 按 Query 对 Key 簇的响应重新分组。本文认为缺口在于：共享选择会限制精度，而把 Query 簇切细又会抬高 k-means 成本、打乱核的 tile 效率。PQRS 要同时拿掉 Query 侧聚类、保住精度，并用新的执行顺序把不规则选择跑快。</p>
+<h3 id="p2-s5">5. 核心 insight</h3>
+<p>第一，精度瓶颈在「共享」而不在「聚类」。固定 Key 簇与密度，把 Query 簇从粗切到每个 Query 单独一簇，召回上升、补偿后的输出误差下降；即便用 Oracle（簇内真实注意力质量的平均）来选簇，共享选择仍然比不上「用质心分数做逐 Query 路由」。第二，逐 Query 路由并不更贵：它省掉 Query 侧 k-means，只需每个 Query 对 Key 质心打一次分。对 Wan2.1-T2V-14B、720p（<em>N</em> = 75,600）、<em>C<sub>k</sub></em> = 592、<em>ρ</em> = 0.22，该路由成本只相当于稀疏注意力计算的 1.8%。相对双边聚类，只要 <em>I<sub>q</sub> C<sub>q</sub> &gt; C<sub>k</sub></em>（SVG2 常用 <em>I<sub>q</sub></em> = 2，即 <em>C<sub>q</sub></em> &gt; 296），逐 Query 路由更便宜。第三，硬件要的是「同一 tile 里的 Query 看同一组 Key」，不必事先把 Query 绑在一起再选择；可以先让每个 Query 自己选，再把选择相同的 Query 桶在一起。</p>
+<h3 id="p2-s6">6. 方法逐步拆解</h3>
+<p>一次注意力、一个头，PQRS 按 Algorithm 1 走三步，再由第 4.2 节的按簇为主序核执行精确项。</p>
+<p><strong>只对 Key 聚类。</strong>每次稀疏注意力调用，在 QK 归一化与 RoPE 之后，对每个头的 Key 做 k-means，得到 <em>C<sub>k</sub></em> = 592 个簇及其均值 <em>k̄<sub>c</sub></em>、Value 均值 <em>v̄<sub>c</sub></em> 和规模 |<em>K<sub>c</sub></em>|。首次稀疏调用跑 50 次迭代，后续同一层（任一 CFG 分支）从上一轮质心暖启动，只跑 2 次。按 Key 均值的余弦相似度贪心把簇打成宽度 <em>G</em> = 4 的组，并把 <em>K</em>、<em>V</em> 重排成组内连续。</p>
+<p><strong>逐 Query 路由。</strong>用一次矩阵乘 <em>Z</em> = <em>Q K̄<sup>⊤</sup></em> / √<em>D</em> 得到每个 Query 对每个 Key 簇的 logit <em>z<sub>ic</sub></em>，再按式 (1) 的形式（把簇级均值换成该 Query 自己的 logit）得到估计质量 <em>P̂<sub>ic</sub></em>。Query <em>i</em> 按分数从高到低加入簇，直到累计质量至少为 <em>p</em> = 0.848，并且所选 Key 数至少为 <em>f N</em>（<em>f</em> = 0.10，沿用 SVG2 官方实现的 floor）。阈值用二分而不是排序。选择记成每组一个 <em>G</em> 位编码。</p>
+<p><strong>质心补偿加精确计算。</strong>未选簇用已算好的 <em>z<sub>ic</sub></em> 与 <em>v̄<sub>c</sub></em> 写入 FP32 累加器 (<em>u<sub>i</sub></em>, <em>l<sub>i</sub></em>) 作为初值；被选簇则对真实 Key/Value 做稠密计算。最后 <em>ô<sub>i</sub></em> = <em>u<sub>i</sub></em> / <em>l<sub>i</sub></em>。</p>
+<p><strong>按簇为主序的执行。</strong>核按 Key 簇（实际是组）遍历，按（组，编码）把 Query 分桶，同一桶共享完全相同的成员选择，作为最多 128 个 Query 的稠密任务，避免「取并集」或「掩掉未选项」。偏置 <em>m<sub>i</sub></em> 在开核前固定为同一层、同一 CFG 分支上一步的 LSE（第一步稀疏调用沿用最后一次稠密 FlashAttention 返回的 LSE）。各任务计算 <em>P</em> = exp(<em>s<sub>ij</sub></em> − <em>m<sub>i</sub></em>)，用原子加把 (<em>PV</em>, <em>P</em>1) 写入累加器。若 <em>l<sub>i</sub></em> 落在 (10<sup>−30</sup>, 10<sup>30</sup>) 之外，该行用单行在线 softmax 重算；主机不同步。HunyuanVideo 只稀疏「视频 Query 对视频 Key」，有效文本 Key 另走一次 FlashAttention，再用 LSE 精确合并。</p>
+<h3 id="p2-s7">7. 核心公式：变量、目标与直觉</h3>
+<p>单头、<em>N</em> 个 token，行向量为 <em>q<sub>i</sub></em>、<em>k<sub>j</sub></em>、<em>v<sub>j</sub></em>。注意力 logit 与稠密概率、输出为：</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>&#x0003D;</mo><msub><mi>q</mi><mi>i</mi></msub><msubsup><mi>k</mi><mi>j</mi><mrow><mo>&#x022A4;</mo></mrow></msubsup><mo>&#x0002F;</mo><msqrt><mrow><mi>D</mi></mrow></msqrt><mo>&#x0002C;</mo><mspace width="1em" /><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>&#x0003D;</mo><msup><mi>e</mi><mrow><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></msup><mo>&#x0002F;</mo><msub><mo>&#x02211;</mo><mrow><msup><mi>j</mi><mrow><mi>&#x02032;</mi></mrow></msup></mrow></msub><msup><mi>e</mi><mrow><msub><mi>s</mi><mrow><mi>i</mi><msup><mi>j</mi><mrow><mi>&#x02032;</mi></mrow></msup></mrow></msub></mrow></msup></mrow></math></div><div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>o</mi><mi>i</mi></msub><mo>&#x0003D;</mo><msub><mo>&#x02211;</mo><mi>j</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>v</mi><mi>j</mi></msub></mrow></math></div><p>掩码 <em>M</em> ∈ {0,1}<sup><em>N</em>×<em>N</em></sup>。密度是被精确计算的 Query–Key 对比例，召回是掩码保住的注意力质量：</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C1;</mi><mo>&#x0003D;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><msup><mi>N</mi><mn>2</mn></msup></mrow></mfrac><msub><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></msub><msub><mi>M</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></math></div><div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>r</mi><mi>i</mi></msub><mo>&#x0003D;</mo><msub><mo>&#x02211;</mo><mi>j</mi></msub><msub><mi>M</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></math></div><p>SVG2 用 Query/Key 簇均值得到簇级 logit，并估计 Query 簇 <em>Q<sub>n</sub></em> 落在 Key 簇 <em>K<sub>c</sub></em> 上的质量（式 (1)）：</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover><mrow><mi>z</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mi>n</mi><mi>c</mi></mrow></msub><mo>&#x0003D;</mo><msub><mover><mrow><mi>q</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mi>n</mi></msub><msubsup><mover><mrow><mi>k</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mi>c</mi><mrow><mo>&#x022A4;</mo></mrow></msubsup><mo>&#x0002F;</mo><msqrt><mrow><mi>D</mi></mrow></msqrt></mrow></math></div><div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover accent="true"><mrow><mi>P</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>n</mi><mi>c</mi></mrow></msub><mo>&#x0003D;</mo><mfrac><mrow><mo stretchy="false">&#x0007C;</mo><msub><mi>K</mi><mi>c</mi></msub><mo stretchy="false">&#x0007C;</mo><msup><mi>e</mi><mrow><msub><mover><mrow><mi>z</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mi>n</mi><mi>c</mi></mrow></msub></mrow></msup></mrow><mrow><msubsup><mo>&#x02211;</mo><mrow><mi>c</mi><msup><mi>\</mi><mi>&#x02032;</mi></msup><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><msub><mi>C</mi><mi>k</mi></msub></mrow></msubsup><mo stretchy="false">&#x0007C;</mo><msub><mi>K</mi><mrow><mi>c</mi><msup><mi>\</mi><mi>&#x02032;</mi></msup></mrow></msub><mo stretchy="false">&#x0007C;</mo><msup><mi>e</mi><mrow><msub><mover><mrow><mi>z</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mi>n</mi><mi>c</mi><msup><mi>\</mi><mi>&#x02032;</mi></msup></mrow></msub></mrow></msup></mrow></mfrac></mrow></math></div><p>再取累计分数达到 <em>p</em> 的最少 Key 簇集合 <em>S<sub>n</sub></em>，同一 Query 簇共享一行掩码（式 (2)）：</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>n</mi><mo stretchy="false">&#x00028;</mo><mi>i</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>n</mi><mo stretchy="false">&#x00028;</mo><msup><mi>i</mi><mrow><mi>&#x02032;</mi></mrow></msup><mo stretchy="false">&#x00029;</mo><mi>&#x027F9;</mi><msub><mi>M</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>:</mi></mrow></msub><mo>&#x0003D;</mo><msub><mi>M</mi><mrow><msup><mi>i</mi><mrow><mi>&#x02032;</mi></mrow></msup><mo>&#x0002C;</mo><mi>:</mi></mrow></msub></mrow></math></div><p>SVG-EAR 的质心补偿（式 (3)）对未选簇 <em>c</em> 用 Query 自己的 logit <em>z<sub>ic</sub></em> = <em>q<sub>i</sub> k̄<sub>c</sub><sup>⊤</sup></em> / √<em>D</em> 和 Value 均值 <em>v̄<sub>c</sub></em> 代替该簇全部真实键值。直觉：选中的头用精确 softmax 项，尾巴用「一个质心代表整簇」。PQRS 保留该式，只把共享集合 <em>S<sub>n(i)</sub></em> 换成 Query 自己的 <em>S<sub>i</sub></em>：</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover accent="true"><mrow><mi>o</mi></mrow><mo>&#x0005E;</mo></mover><mi>i</mi></msub><mo>&#x0003D;</mo><mfrac><mrow><msub><mo>&#x02211;</mo><mi>j</mi></msub><msub><mi>M</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msup><mi>e</mi><mrow><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></msup><msub><mi>v</mi><mi>j</mi></msub><mo>&#x0002B;</mo><msub><mo>&#x02211;</mo><mrow><mi>c</mi><mo>&#x02209;</mo><msub><mi>S</mi><mrow><mi>n</mi><mo stretchy="false">&#x00028;</mo><mi>i</mi><mo stretchy="false">&#x00029;</mo></mrow></msub></mrow></msub><mo stretchy="false">&#x0007C;</mo><msub><mi>K</mi><mi>c</mi></msub><mo stretchy="false">&#x0007C;</mo><msup><mi>e</mi><mrow><msub><mi>z</mi><mrow><mi>i</mi><mi>c</mi></mrow></msub></mrow></msup><msub><mover><mrow><mi>v</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mi>c</mi></msub></mrow><mrow><msub><mo>&#x02211;</mo><mi>j</mi></msub><msub><mi>M</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msup><mi>e</mi><mrow><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></msup><mo>&#x0002B;</mo><msub><mo>&#x02211;</mo><mrow><mi>c</mi><mo>&#x02209;</mo><msub><mi>S</mi><mrow><mi>n</mi><mo stretchy="false">&#x00028;</mo><mi>i</mi><mo stretchy="false">&#x00029;</mo></mrow></msub></mrow></msub><mo stretchy="false">&#x0007C;</mo><msub><mi>K</mi><mi>c</mi></msub><mo stretchy="false">&#x0007C;</mo><msup><mi>e</mi><mrow><msub><mi>z</mi><mrow><mi>i</mi><mi>c</mi></mrow></msub></mrow></msup></mrow></mfrac></mrow></math></div><p>为把「估计误差」和「共享代价」分开，Oracle 用簇内真实质量平均（式 (4)）：</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>P</mi><mrow><mi>n</mi><mi>c</mi></mrow><mrow><mo>&#x0002A;</mo></mrow></msubsup><mo>&#x0003D;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mo stretchy="false">&#x0007C;</mo><msub><mi>Q</mi><mi>n</mi></msub><mo stretchy="false">&#x0007C;</mo></mrow></mfrac><msub><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x02208;</mo><msub><mi>Q</mi><mi>n</mi></msub></mrow></msub><msub><mo>&#x02211;</mo><mrow><mi>j</mi><mo>&#x02208;</mo><msub><mi>K</mi><mi>c</mi></msub></mrow></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></math></div><p>路由成本相对稀疏注意力的 4<em>ρ N</em><sup>2</sup><em>D</em> FLOPs（不计双方都要做的 Key 聚类）为式 (5)–(7)。逐 Query 只需 2<em>N C<sub>k</sub> D</em> 的质心打分：</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">o</mi><mo>&#x02212;</mo><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub><mo>&#x0003D;</mo><mfrac><mrow><mn>2</mn><msub><mi>I</mi><mi>q</mi></msub><mi>N</mi><msub><mi>C</mi><mi>q</mi></msub><mi>D</mi><mo>&#x0002B;</mo><mn>2</mn><msub><mi>C</mi><mi>q</mi></msub><msub><mi>C</mi><mi>k</mi></msub><mi>D</mi></mrow><mrow><mn>4</mn><mi>&#x003C1;</mi><msup><mi>N</mi><mn>2</mn></msup><mi>D</mi></mrow></mfrac><mo>&#x02248;</mo><mfrac><mrow><msub><mi>I</mi><mi>q</mi></msub><msub><mi>C</mi><mi>q</mi></msub></mrow><mrow><mn>2</mn><mi>&#x003C1;</mi><mi>N</mi></mrow></mfrac></mrow></math></div><div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mo>&#x02212;</mo><mi mathvariant="normal">q</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">y</mi></mrow></mrow></msub><mo>&#x0003D;</mo><mfrac><mrow><mn>2</mn><mi>N</mi><msub><mi>C</mi><mi>k</mi></msub><mi>D</mi></mrow><mrow><mn>4</mn><mi>&#x003C1;</mi><msup><mi>N</mi><mn>2</mn></msup><mi>D</mi></mrow></mfrac><mo>&#x0003D;</mo><mfrac><mrow><msub><mi>C</mi><mi>k</mi></msub></mrow><mrow><mn>2</mn><mi>&#x003C1;</mi><mi>N</mi></mrow></mfrac></mrow></math></div><div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mfrac><mrow><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">o</mi><mo>&#x02212;</mo><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub></mrow><mrow><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mo>&#x02212;</mo><mi mathvariant="normal">q</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">y</mi></mrow></mrow></msub></mrow></mfrac><mo>&#x02248;</mo><mfrac><mrow><msub><mi>I</mi><mi>q</mi></msub><msub><mi>C</mi><mi>q</mi></msub></mrow><mrow><msub><mi>C</mi><mi>k</mi></msub></mrow></mfrac></mrow></math></div><p>核内把每行偏置固定为 <em>m<sub>i</sub></em>，令 <em>P</em> = exp(<em>s<sub>ij</sub></em> − <em>m<sub>i</sub></em>)。偏置在 <em>u<sub>i</sub></em> / <em>l<sub>i</sub></em> 中精确抵消，只决定 FP32 累加器的动态范围。记 <em>δ<sub>i</sub></em> = LSE<sub>i</sub><sup>(t)</sup> − <em>m<sub>i</sub></em>，安全区为</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x0007C;</mo><msub><mi>&#x003B4;</mi><mi>i</mi></msub><mo stretchy="false">&#x0007C;</mo><mo>&#x0003C;</mo><mi>ln</mi><mo stretchy="false">&#x00028;</mo><msup><mn>10</mn><mrow><mn>30</mn></mrow></msup><mo stretchy="false">&#x00029;</mo><mo>&#x02248;</mo><mn>69.08</mn></mrow></math></div><p>最终 <em>ô<sub>i</sub></em> = <em>u<sub>i</sub></em> / <em>l<sub>i</sub></em>，并缓存 LSE<sub>i</sub><sup>(t)</sup> = <em>m<sub>i</sub></em> + ln <em>l<sub>i</sub></em> 供下一步使用。理想偏置是当前步 LSE，但开核前未知；作者依靠去噪步之间 LSE 足够稳，用上一步的值做预测。</p>
+<h3 id="p2-s8">8. Toy example（本文自造算例，非论文数字）</h3>
+<div class="note">以下为自造算例，用来说明「共享选择」如何漏掉离群 Query、以及质心补偿与按编码分桶在做什么。簇分数、召回与延迟都不是论文表格或图中的测量值。</div>
+<p>设 6 个 Query、8 个等规模 Key 簇，目标累计质量 <em>p</em> = 0.80。若按双边聚类，q1–q3 被分进同一 Query 簇，簇均值选出 {K1, K2, K3}，估计质量 0.40 + 0.25 + 0.20 = 0.85，看起来达标。但 q3 自己的质量其实是 K5 = 0.35、K1 = 0.30、K2 = 0.15、K3 = 0.10。共享清单只覆盖 0.30 + 0.15 + 0.10 = 0.55，把 q3 最重要的 K5 留给了补偿。逐 Query 路由会为 q3 依次收入 K5、K1，再收入 K2，累计 0.80，召回对齐该行自己的分布。未选的 K3–K4、K6–K8 仍用 |<em>K<sub>c</sub></em>| exp(<em>z<sub>ic</sub></em>) <em>v̄<sub>c</sub></em> 进入分子分母，不把尾巴直接清零。</p>
+<p>执行上，若把相近的四个 Key 簇编成一组、用 4 位码表示成员，q1 与 q2 若都选了前两个成员，会得到同一编码（例如 1100），从而共享一个最多 128 行的稠密任务，而不是先对整组取并集再打掩码。这个分桶故事对应 Figure 4 的示意，但此处的 0.55 / 0.80 不是图中读数。</p>
+<h3 id="p2-s9">9. Baselines</h3>
+<p>主表五个免训练稀疏注意力基线，均使用官方配置，除统一的稠密热身，以及密度超参按附录 Table 6 调整：（1）SVG，静态/头部分布式时空掩码一路，密度超参改为 sparsity 0.37（官方值在 Wan 上为 0.30、HunyuanVideo 为 0.25），目标是在 Wan2.1-T2V-14B 上端到端加速约 1.5 倍；（2）SVG2，双边聚类加簇级打分，top-p 保持官方 0.90；（3）SVOO，另一聚类方法，top-p 为 0.90（HunyuanVideo 0.88），与官方一致；（4）PISA，分段稀疏，密度改为 0.355（官方 0.125），同样为了对齐约 1.5 倍加速；在 HunyuanVideo 上因内核不接受掩码、需去掉 padding，且文档建议把最后一块当 attention sink，若有效文本跨过一块则只有最后一块保证精确，作者写明这对 PISA 略为不利；（5）SVG-EAR，与 PQRS 使用同类质心补偿，但选择仍在 Query 簇内共享；为匹配 PQRS 密度，把 top-p 从官方 0.85 降到 0.80。稠密对照是 PyTorch SDPA（FlashAttention-2 后端）。AdaCluster、HyperVAttention、SCOPE、TRA、SparsePR 只在相关工作中出现，未进入 Table 1，不能当作已比较。</p>
+<h3 id="p2-s10">10. 实验设置</h3>
+<p>四款 720p 模型：Wan2.1-T2V-14B、Wan2.1-I2V-14B、Wan2.2-T2V-A14B、HunyuanVideo-T2V-13B。T2V 随机抽 50 条经优化改写的 VBench 提示；I2V 抽 50 对 VBench++ 图像–提示，图像裁成 16:9。全部方法在单枚 NVIDIA H100 上按各模型官方采样配置生成。PQRS 对四模型共用一套超参：<em>C<sub>k</sub></em> = 592，<em>p</em> = 0.848，<em>f</em> = 0.10，<em>G</em> = 4，无需按模型校准或训练。</p>
+<p>Table 5：Wan2.1-T2V 为 81 帧（16 fps）、<em>N</em> = 75,600、50 步、UniPC shift 5.0、CFG 5.0，稠密步为 1–10，稠密块为 40 层中的第一层；Wan2.1-I2V 同分辨率与 token 数，40 步，稠密步 1–8；Wan2.2-T2V-A14B 为 40 步、UniPC shift 12.0、两专家 CFG 4.0 / 3.0，稠密步 1–8，每个专家的第一块保持稠密，并且所有方法都把两专家卸载到 CPU、文本编码器和 VAE 留在 GPU；HunyuanVideo 为 129 帧（24 fps）、<em>N</em> = 118,800、50 步、Euler shift 7.0、embedded guidance 6.0，稠密步 1–10，每一类 stream 的第一块保持稠密，每步只需一次 Transformer 前向。所有方法都在前 20% 去噪步以及每个 Transformer 栈的第一块使用稠密注意力。非注意力算子共用 SVG/SVOO 的融合 Triton 核（作者修复了一处把零填充列计入方差的 LayerNorm 错误），因此时延差来自注意力本身。输入为 BF16；attend 与补偿核用 CuTe / CUTLASS 写给 H100，选择与任务构建用 CUDA，其余阶段用 Triton。</p>
+<h3 id="p2-s11">11. 指标教学</h3>
+<p>PSNR、SSIM、LPIPS 都是「同一提示、同一随机种子下，稀疏视频相对稠密视频」的帧级相似性：先对每帧比较，再对帧平均，再对视频平均。SSIM 用 11×11 均匀窗，LPIPS 用 VGG 骨干。它们度量的是贴近稠密输出的程度，不是「更好看」。VBench 0.1.5 以 custom-input、默认预处理运行，不参照稠密视频；正文把它在五个维度上取平均后写入 Table 1：subject consistency、background consistency、motion smoothness、aesthetic quality、imaging quality，分维度见 Table 4。密度是稀疏注意力调用里被精确计算的 Query–Key 对比例，不含补偿项。端到端延迟是整段生成墙钟，加速比相对同一管线的稠密注意力。注意 Figure 1 的 27.61 dB / 33.58 dB 是图中展示样本的 PSNR，附录 D.4 说明 Figure 8–11 的时延采用 Table 1 均值；主结论应读 Table 1 的 50 条平均，而不是单张宣传图。</p>
+<h3 id="p2-s12">12. 可核验结果</h3>
+<p>（1）Table 1，Wan2.1-T2V-14B：PQRS 的 PSNR / SSIM / LPIPS 为 28.86 / 0.909 / 0.094，密度 22.0%，时延 960 s，加速 1.75×（稠密 1682 s）。最接近的稀疏基线 SVG-EAR 为 27.19 / 0.884 / 0.116，密度 21.7%，1032 s（1.63×）。VBench 上 PQRS 为 83.70%，稠密 83.64%，PISA 为 83.78%（五项平均略高，但 PSNR 只有 24.05）。摘要把 28.86 圆整为 28.9 dB。</p>
+<p>（2）同表，Wan2.1-I2V-14B：PQRS 为 29.97 / 0.917 / 0.097，密度 21.6%，781 s，1.74×（稠密 1362 s）；SVG-EAR 为 28.06 / 0.889 / 0.117，838 s（1.62×）。VBench 上 PQRS 与稠密同为 83.74%。</p>
+<p>（3）Wan2.2-T2V-A14B：PQRS 为 23.47 / 0.814 / 0.170，密度 22.5%，856 s，1.66×（稠密 1424 s），是四模型里相对稠密 PSNR 最低、加速也最小的一档；SVG-EAR 为 22.25 / 0.779 / 0.194，923 s（1.54×）。VBench 上 PQRS 与稠密同为 84.26%。</p>
+<p>（4）HunyuanVideo-T2V-13B：PQRS 为 35.44 / 0.961 / 0.053，密度 19.6%，809 s，2.10×（稠密 1701 s）。摘要圆整为 35.4 dB。SVG-EAR 为 32.95 / 0.948 / 0.068，929 s（1.83×）。VBench 上 PQRS 84.48%，稠密 84.45%，PISA 84.46%。</p>
+<p>（5）Table 2 在 Wan2.1-T2V-14B 上交叉「共享 / 逐 Query」与「是否补偿」：无补偿时逐 Query 已比共享高 0.9 dB（25.81 对 24.91）；补偿给共享加 1.7 dB（到 26.61），给逐 Query 加 3.1 dB（到 28.86）。两块增益互相加强。</p>
+<p>（6）Figure 3(c) 写明：在质心打分下，召回的 P1 分位从 <em>C<sub>q</sub></em> = 64 时的 0.560 升到逐 Query 的 0.865；中位数以上曲线几乎重合。动机实验固定 <em>C<sub>k</sub></em> = 592、<em>ρ</em> = 0.22，轨迹来自 8 条提示。</p>
+<p>（7）Figure 6：组宽 <em>G</em> = 4 最快，一次稀疏调用（Wan2.1-T2V-14B 全部 40 头，对 3 条提示、3 个去噪步、39 层取平均）为 100.6 ms；取消分组（<em>G</em> = 1）为 143.8 ms，约 1.4 倍更慢，且几乎全在 attend，组外阶段在扫描中变化不到 4 ms。<em>G</em> = 4 时，碰到某组的 Query 平均选中 2.3 个成员；<em>G</em> = 6 时平均任务只填满 128 行里的 77%。</p>
+<p>（8）Table 8（沿稠密轨迹记录的 Q、K、V，351 次调用平均，密度会略高于 Table 1）：PQRS 墙钟 97.8 ms，单次调用加速 3.52×（bootstrap 95% 区间 [3.45, 3.59]），attend 66.0 ms，核外 31.8 ms（占 32.5%）。若不用缓存 LSE 而走精确偏置预计算，墙钟升到 163.3 ms，加速降为 2.14×，其中 exact-offset pass 就要 53.3 ms。这解释了端到端 1.66×–2.10× 远小于单次注意力 3.52×：还有 20% 稠密步、第一块稠密，以及 VAE 等非注意力开销。</p>
+<h3 id="p2-s13">13. 真实表图阅读</h3>
+<p class="cap">Table 1（第 8 页）：四模型上的质量与效率。稀疏方法中加粗为最优、下划线为次优。此处转录全部 PQRS 与稠密行，以及各模型上 PSNR 次优的 SVG-EAR；其余基线见第 12 节。</p>
+<div class="tbl"><table>
+<thead><tr><th>模型</th><th>方法</th><th>PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>VBench↑</th><th>密度</th><th>时延↓</th><th>加速↑</th></tr></thead>
+<tbody>
+<tr><td>Wan2.1-T2V-14B</td><td>Dense</td><td>–</td><td>–</td><td>–</td><td>83.64%</td><td>100%</td><td>1682s</td><td>1.00×</td></tr>
+<tr><td>Wan2.1-T2V-14B</td><td>SVG-EAR</td><td>27.19</td><td>0.884</td><td>0.116</td><td>83.58%</td><td>21.7%</td><td>1032s</td><td>1.63×</td></tr>
+<tr><td>Wan2.1-T2V-14B</td><td>PQRS</td><td>28.86</td><td>0.909</td><td>0.094</td><td>83.70%</td><td>22.0%</td><td>960s</td><td>1.75×</td></tr>
+<tr><td>Wan2.1-I2V-14B</td><td>Dense</td><td>–</td><td>–</td><td>–</td><td>83.74%</td><td>100%</td><td>1362s</td><td>1.00×</td></tr>
+<tr><td>Wan2.1-I2V-14B</td><td>SVG-EAR</td><td>28.06</td><td>0.889</td><td>0.117</td><td>83.59%</td><td>21.2%</td><td>838s</td><td>1.62×</td></tr>
+<tr><td>Wan2.1-I2V-14B</td><td>PQRS</td><td>29.97</td><td>0.917</td><td>0.097</td><td>83.74%</td><td>21.6%</td><td>781s</td><td>1.74×</td></tr>
+<tr><td>Wan2.2-T2V-A14B</td><td>Dense</td><td>–</td><td>–</td><td>–</td><td>84.26%</td><td>100%</td><td>1424s</td><td>1.00×</td></tr>
+<tr><td>Wan2.2-T2V-A14B</td><td>SVG-EAR</td><td>22.25</td><td>0.779</td><td>0.194</td><td>84.19%</td><td>22.6%</td><td>923s</td><td>1.54×</td></tr>
+<tr><td>Wan2.2-T2V-A14B</td><td>PQRS</td><td>23.47</td><td>0.814</td><td>0.170</td><td>84.26%</td><td>22.5%</td><td>856s</td><td>1.66×</td></tr>
+<tr><td>HunyuanVideo-T2V-13B</td><td>Dense</td><td>–</td><td>–</td><td>–</td><td>84.45%</td><td>100%</td><td>1701s</td><td>1.00×</td></tr>
+<tr><td>HunyuanVideo-T2V-13B</td><td>SVG-EAR</td><td>32.95</td><td>0.948</td><td>0.068</td><td>84.38%</td><td>19.8%</td><td>929s</td><td>1.83×</td></tr>
+<tr><td>HunyuanVideo-T2V-13B</td><td>PQRS</td><td>35.44</td><td>0.961</td><td>0.053</td><td>84.48%</td><td>19.6%</td><td>809s</td><td>2.10×</td></tr>
+</tbody></table></div>
+<p class="cap">Table 2（第 9 页）：在 Wan2.1-T2V-14B 上拆开选择粒度与质心补偿。共享选择使用 <em>C<sub>q</sub></em> = 592，最后一行即主表中的 PQRS。</p>
+<div class="tbl"><table>
+<thead><tr><th>选择</th><th>补偿</th><th>密度</th><th>PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th></tr></thead>
+<tbody>
+<tr><td>Shared</td><td>否</td><td>22.5%</td><td>24.91</td><td>0.842</td><td>0.151</td></tr>
+<tr><td>Shared</td><td>是</td><td>21.9%</td><td>26.61</td><td>0.874</td><td>0.123</td></tr>
+<tr><td>Per-query</td><td>否</td><td>22.4%</td><td>25.81</td><td>0.861</td><td>0.134</td></tr>
+<tr><td>Per-query</td><td>是</td><td>22.0%</td><td>28.86</td><td>0.909</td><td>0.094</td></tr>
+</tbody></table></div>
+<p class="cap">Table 7 / Figure 7（附录，Wan2.1-T2V-14B）：三条预算曲线。加速比相对稠密 1682 s。PQRS 在 <em>p</em> = 0.75 / 0.848 / 0.90 时密度为 17.6% / 22.0% / 26.0%，时延 933 / 960 / 989 s（1.80× / 1.75× / 1.70×），PSNR 28.39 / 28.86 / 29.43。正文写：<em>p</em> = 0.75 的点位于所有基线点的左上方，且相对各基线的配对 bootstrap 95% PSNR 增益区间不含零；区间端点本身 Not Reported。SVG-EAR 官方 top-p = 0.85 时 PSNR 为 27.31，仍低于 PQRS 最省的 28.39。</p>
+<div class="tbl"><table>
+<thead><tr><th>方法</th><th>设置</th><th>密度</th><th>时延</th><th>加速</th><th>PSNR</th><th>SSIM</th><th>LPIPS</th></tr></thead>
+<tbody>
+<tr><td>SVG2</td><td>0.80 / 0.90 / 0.95</td><td>22.3% / 31.4% / 50.8%</td><td>994 / 1091 / 1268s</td><td>1.69× / 1.54× / 1.33×</td><td>24.66 / 25.73 / 26.67</td><td>0.836 / 0.858 / 0.875</td><td>0.157 / 0.138 / 0.123</td></tr>
+<tr><td>SVG-EAR</td><td>0.75 / 0.80 / 0.85</td><td>19.3% / 21.7% / 25.2%</td><td>1017 / 1032 / 1081s</td><td>1.65× / 1.63× / 1.56×</td><td>27.00 / 27.19 / 27.31</td><td>0.880 / 0.884 / 0.886</td><td>0.120 / 0.116 / 0.114</td></tr>
+<tr><td>PQRS</td><td>0.75 / 0.848 / 0.90</td><td>17.6% / 22.0% / 26.0%</td><td>933 / 960 / 989s</td><td>1.80× / 1.75× / 1.70×</td><td>28.39 / 28.86 / 29.43</td><td>0.903 / 0.909 / 0.916</td><td>0.100 / 0.094 / 0.088</td></tr>
+</tbody></table></div>
+<p class="cap">Table 8（第 15 页）：Wan2.1-T2V-14B 单次稀疏注意力调用（全部 40 头）的墙钟拆解，单位毫秒。密度因输入取自稠密轨迹而略高于 Table 1。</p>
+<div class="tbl"><table>
+<thead><tr><th>方法</th><th>墙钟</th><th>加速（95% 区间）</th><th>密度</th><th>Attend</th><th>核外（占比）</th></tr></thead>
+<tbody>
+<tr><td>Dense (SDPA)</td><td>329.1</td><td>1.00×</td><td>100%</td><td>329.1</td><td>–</td></tr>
+<tr><td>SVG-EAR</td><td>122.7</td><td>2.82× [2.76, 2.88]</td><td>22.9%</td><td>71.9</td><td>50.8 (41.4%)</td></tr>
+<tr><td>PQRS</td><td>97.8</td><td>3.52× [3.45, 3.59]</td><td>23.2%</td><td>66.0</td><td>31.8 (32.5%)</td></tr>
+<tr><td>PQRS, exact offsets</td><td>163.3</td><td>2.14× [2.09, 2.19]</td><td>23.2%</td><td>65.9</td><td>97.4</td></tr>
+</tbody></table></div>
+<p>Figure 1 展示样本：Wan2.1 样本 PSNR 27.61 dB、时延 28.0 min 对 16.0 min（1.75×）；HunyuanVideo 样本 PSNR 33.58 dB、28.4 min 对 13.5 min（2.10×）。时延与 Table 1 均值一致（1682 s ≈ 28.0 min，960 s = 16.0 min，1701 s ≈ 28.4 min，809 s ≈ 13.5 min），但两枚 PSNR 低于表平均 28.86 与 35.44，图注已标明是 shown samples。Figure 5 的分位曲线没有在正文给出逐步读数，除「修复阈值 69 nats、少于 0.01% 的行越过阈值、几乎都在最后两步」外，其余点记为 Not Verified。Figure 8–11 给出接近各模型 PSNR 中位数的样本（排除 Figure 1 与涉及版权角色的提示）：28.57、30.20、23.38、35.34 dB，时延采用 Table 1 均值。</p>
+<h3 id="p2-s14">14. Ablation 与缺失的 ablation</h3>
+<p>已做的消融比较完整。Table 2 把选择粒度与补偿做成 2×2，说明两者都单独涨点、并且补偿在逐 Query 留下的「轻尾巴」上更有效。Figure 6 扫描 <em>G</em> = 1–6，输出只因浮点求和顺序而不同，因为路由规则与估计器都不依赖 <em>G</em>。Figure 3 在固定 Key 簇与密度下扫描 <em>C<sub>q</sub></em>，并同时报告质心打分与 Oracle。Table 7 给出三条预算。Table 3 报告行修复比例：Wan2.1-T2V / I2V / Wan2.2 的行级比例为 3.2×10<sup>−5</sup>、3.9×10<sup>−5</sup>、3.3×10<sup>−5</sup>，至少修复一行的调用占比为 8.7%、9.1%、9.3%；HunyuanVideo 总共只有 11 行、3 次调用被修复。Table 8 把缓存 LSE 与精确偏置预计算直接对比。</p>
+<p>缺失或不完整之处：没有把 AdaCluster、HyperVAttention、SCOPE、TRA、SparsePR 放进主表；没有在 A100 或其他卡上报告端到端数字，核是为 H100 写的；没有给出显存占用；没有把稀疏注意力与蒸馏、特征缓存、量化做组合实验（相关工作称为正交）；没有更长于约五秒、或非 720p 的主结果；没有把 <em>C<sub>k</sub></em>、<em>p</em>、<em>f</em> 做成完整网格（<em>p</em> 只在 Wan2.1-T2V 上扫了三档）；可训练路由方法未比较。正文提到提高 SVG2 的 <em>C<sub>q</sub></em> 从 50 到 400 会把 PSNR 抬高 3.9 dB、同时把加速从 1.90× 降到 1.25×，该句带 SVG2 引用，是否为本文独立复测记为部分 Not Verified。</p>
+<h3 id="p2-s15">15. Claim vs Evidence</h3>
+<p>摘要与结论称：PQRS 是所评稀疏方法中最快、也最接近稠密输出的，Wan2.1-T2V 达到 28.9 dB、HunyuanVideo 达到 35.4 dB，端到端加速 1.66×–2.10×；在 VBench 上相对稠密「未检测到退化」。Table 1 支持前半句：四模型上 PQRS 的 PSNR、SSIM、LPIPS 与端到端加速均为稀疏方法最优，圆整与表中 28.86、35.44 一致，加速极值正好来自 Wan2.2 的 1.66× 与 HunyuanVideo 的 2.10×。</p>
+<p>需要收窄的是 VBench。「未检测到退化」说的是相对稠密，不是「在五项平均上压过所有稀疏基线」。PISA 在 Wan2.1-T2V 上为 83.78%（PQRS 83.70%），在 Wan2.2 上为 84.32%（PQRS 84.26%）。这些差异幅度很小，且 VBench 不对照稠密视频，不能单独用来宣称生成质量提升。50 条提示的 Table 1 未给置信区间；预算曲线上的 bootstrap 只出现在 Figure 7 的文字说明里。Figure 1 的样本 PSNR 低于表平均，若直接当数据集结论会偏悲观。基线密度超参经过调整（SVG-EAR 降 top-p 以对齐密度，SVG 与 PISA 为了对齐约 1.5×），比较更公平，但也不是各方法官方默认预算下的原样复制。PISA 在 HunyuanVideo 上的文本块处理被作者承认为略不利。速度数字建立在「双方都用融合核」之上，作者明确提醒：SVG 家族官方加速有时把稠密管线留在原始 Diffusers 算子上，会把融合收益也算进去。</p>
+<h3 id="p2-s16">16. 贡献</h3>
+<p>作者在引言列出三点：（1）把聚类稀疏注意力的精度代价定位在共享选择，而不是聚类本身；（2）提出免训练的 PQRS：每个 Query 独立路由 Key 簇，其余用质心补偿，并配上能在单次遍历里以 tile 效率执行不规则选择的按簇为主序核；（3）在四款 720p 视频 DiT 上，相对五个免训练基线取得最好的 PSNR、SSIM 与 LPIPS，同时也最快，端到端加速 1.66× 到 2.10×，VBench 上未检出相对稠密的退化。贡献陈述与 Table 1 的「相对稠密的保真 + 加速」一致，但对 VBench 的解读应保持第 15 节的限定。</p>
+<h3 id="p2-s17">17. 局限</h3>
+<p>论文没有独立的 Limitations 小节，以下为正文与附录中可见的约束，以及阅读后的补充。评测只覆盖两个家族的四款 720p 模型、各 50 条提示、单枚 H100、约五秒长度（81 或 129 帧）；Wan2.2 还包含专家 CPU 卸载这一共享开销。前 20% 步与每栈第一块始终走稠密注意力，因此「稀疏」不是全流程稀疏。核与 TMA / wgmma 路径面向 H100，跨设备可移植性未验证。显存、多卡、更长视频与非 720p 的主结果 Not Reported。没有代码或项目页，第三方无法直接复核分桶核与原子加实现。VBench 只用了五个维度的平均，不是完整套件。PSNR 系列只说明贴近稠密教师，不保证在人类偏好上更好。相关工作中的若干聚类或逐 Query 方法未进入主表。这些都限制了把 1.66×–2.10× 直接外推到生产管线的把握。</p>
+<h3 id="p2-s18">18. 复现要点</h3>
+<p>若复现主表，应固定：单枚 H100；官方采样（Table 5 的步数、采样器、shift、guidance）；720p；前 20% 步与第一块稠密；非注意力侧使用同一套融合核；PQRS 使用 <em>C<sub>k</sub></em> = 592、<em>p</em> = 0.848、<em>f</em> = 0.10、<em>G</em> = 4，四模型不改。k-means 首次 50 次迭代、其后 2 次暖启动，须在 QK 归一化与 RoPE 之后对每个头单独做。LSE 缓存必须按「同一层、同一 CFG 分支」对齐；Wan2.2 里只有在最后一次稠密步活跃的专家拿得到稠密 LSE，另一专家的首次稀疏调用要用选中 Key 的预计算精确偏置，并把该次 k-means 跑满 50 次。HunyuanVideo 只稀疏视频对视频，密度也只统计这一块；文本侧保持稠密，并用 LSE 合并。指标按帧对齐稠密视频再两级平均，VBench 0.1.5、custom-input。基线超参不要偷偷改回官方默认后再和 Table 1 对打。行修复应在设备侧判断列表是否为空，避免主机同步。没有官方代码是目前最大的复现风险。</p>
+<h3 id="p2-s19">19. 研究价值</h3>
+<p>它把「为了迁就块稀疏核而先绑定 Query」这一习以为常的工程选择，重新写成一个可测量的精度成本，并用动机实验表明：切细 Query 簇会涨点，但真正的上限是每个 Query 自己选；这条路在 FLOPs 上甚至更便宜。真正难的是执行，而不是再加一个模块。把 KV-outer 遍历、按选择编码分桶、以及跨步 LSE 固定偏置组合在一起，让不规则掩码不必退回在线 softmax 的多次缩放或额外预计算。对视频加速方向，这提供了一条「免训练、一套超参打四模型、在更低密度上同时赢质量和墙钟」的对照点，尤其适合已经在用 SVG2 / SVG-EAR 一类聚类稀疏注意力的 720p DiT 推理栈。</p>
+<h3 id="p2-s20">20. 可执行迁移</h3>
+<p>迁移一：若现有栈已经是双边聚类（SVG2 风格），先不要急着把 <em>C<sub>q</sub></em> 加到更大。用与 Figure 3 相同的协议——固定 Key 簇与目标密度，把 Query 簇一直细化到 <em>C<sub>q</sub></em> = <em>N</em>——只看召回的低分位（尤其 P1）和补偿后的相对输出误差。若 P1 仍明显低于中位数，说明共享清单在欠覆盖离群 Query。这时应改成逐 Query 路由，而不是继续为 Query 侧 k-means 付钱。可用式 (7) 先算一笔账：当 <em>I<sub>q</sub> C<sub>q</sub> &gt; C<sub>k</sub></em> 时，逐 Query 打分已经更便宜。</p>
+<p>迁移二：一旦选择变成逐行不规则，不要把「取并集再掩码」或「在线 softmax 多次缩放」当作默认执行。按 Key 组遍历，用 <em>G</em> 位编码把相同子集的 Query 分桶（先扫 <em>G</em>，本文在 H100、40 头的 Wan2.1-T2V 上是 4 最快），并把上一步同一层、同一 CFG 分支的 LSE 当作固定偏置；同时保留 <em>l<sub>i</sub></em> 越界则单行重算的修理路径。Table 8 说明，若改回精确偏置预计算，单次调用加速会从 3.52× 掉到 2.14×。配套上保留 token floor 与前 20% 稠密热身，先在「相对稠密的 PSNR / SSIM / LPIPS + 端到端墙钟」上验收，不要只报 VBench 五项平均的微小波动。</p>
+<h3 id="p2-s21">21. 方向专用分析（Video Acceleration：聚类稀疏注意力、per-query routing、centroid compensation、720p DiT）</h3>
+<p>静态掩码假设「光栅顺序上邻近的 token 更该互相看」，但视频潜在空间里，响应同一组 Key 的 token 常常并不相邻。聚类稀疏注意力用内容相似性重排，这是它相对滑动窗或能量衰减掩码的关键优势，也是本文选择在这条线上改进、而不是另开静态掩码的原因。现有聚类方法为了迁就块稀疏核，几乎都做两件事：Query 与 Key 都聚类，以及一个 Query 簇共享一份 Key 清单。PQRS 证明第二件才是精度税，于是取消 Query 聚类，只保留 Key 簇作为「选择粒度」。</p>
+<p>逐 Query 路由的分数仍是对 Key 质心的 softmax 质量估计，不是对全部真实 Key 扫一遍；它和 SVG2 的式 (1) 同构，只是把 <em>q̄<sub>n</sub></em> 换成 <em>q<sub>i</sub></em>。质心补偿则负责没被选中的质量尾巴：SVG-EAR 已经表明补偿有效，但 Table 2 进一步说明，补偿在「选择已经按行对准」时多赚 3.1 dB，在共享选择下只赚 1.7 dB。直觉是，共享清单会把某些 Query 的高分簇错推给估计器，而质心近似最适合「质量本来就轻」的尾巴。</p>
+<p>720p DiT 的 token 规模让这些设计不再是微优化：Wan 系 75,600、HunyuanVideo 118,800，自注意力接近二次。端到端仍然只有 1.66×–2.10×，是因为热身、首块稠密和 VAE 等部件还在；真正注意力核上，Table 8 给出 3.52×。评价上，训练免校准的加速必须同时看「相对稠密教师」的 PSNR/SSIM/LPIPS 和「无参照」的 VBench：前者敏感、能排方法，后者防止只是在复制稠密瑕疵时看起来很像。PQRS 的主叙事建立在前者的大幅度领先，以及后者与稠密持平。</p>
+<h3 id="p2-s22">22. Attack / Verification lens</h3>
+<p>验证时应把 Figure 1 样本 PSNR 与 Table 1 平均拆开，并核对时延是否只是把 1682 / 960 / 1701 / 809 秒写成了分钟。检查密度定义是否只计入精确对、是否把补偿当成「也算计算了」。核对基线是否使用 Table 6 的调整超参，以及 HunyuanVideo 上 PISA 的 sink/padding 处理。LSE 跨步复用是数值风险点：作者给出 69 nats 阈值、行修复比例和 Figure 5 的稳定性描述，复现时至少要记录被修复行数是否同阶。没有开源核对，原子加与分桶核的正确性只能靠「相对稠密 PSNR」间接约束。评测规模是 50 条提示，Table 1 无区间，小样本波动可能吞掉 VBench 上零点几个百分点的差异。最后，PSNR 对教师的贴近可以被「更强的补偿把误差抹平」部分解释，所以 Table 2 的 2×2 拆分是必要的健全性检查，而不能只看主表一行。</p>
+<h3 id="p2-s23">23. 记忆总结</h3>
+<div class="summary">
+<ul>
+<li>PQRS 是免训练的视频 DiT 稀疏注意力：只聚类 Key，每个 Query 按自己的质心分数选簇，未选簇用质心补偿。</li>
+<li>精度损失来自 Query 簇共享一份 Key 清单，而不是来自聚类本身；Oracle 打分也补不回这笔共享税。</li>
+<li>召回的收益集中在低分位：P1 从 <em>C<sub>q</sub></em> = 64 时的 0.560 升到逐 Query 的 0.865（固定 <em>C<sub>k</sub></em> = 592，<em>ρ</em> = 0.22）。</li>
+<li>逐 Query 打分在 Wan2.1 720p 上只占稀疏注意力 FLOPs 的 1.8%；当 <em>I<sub>q</sub> C<sub>q</sub> &gt; C<sub>k</sub></em> 时比双边聚类更便宜。</li>
+<li>执行是按簇为主序：<em>G</em> = 4 分组、按编码分桶、用上一步 LSE 做固定 softmax 偏置，越界行再单行重算。</li>
+<li>四模型共用 <em>C<sub>k</sub></em> = 592、<em>p</em> = 0.848、<em>f</em> = 0.10；前 20% 步与第一块保持稠密；单枚 H100，720p。</li>
+<li>Table 1：PQRS 在 PSNR/SSIM/LPIPS 与端到端加速上全面领先，加速为 1.75× / 1.74× / 1.66× / 2.10×，PSNR 为 28.86 / 29.97 / 23.47 / 35.44。</li>
+<li>VBench 五项平均与稠密持平或略高，但并不处处高于 PISA；它不能单独当成「画质更好」的证据。</li>
+<li>Table 2 显示逐 Query 与补偿互相加强（+0.9 dB 与在逐 Query 上 +3.1 dB）；不用缓存 LSE 时，单次调用加速从 3.52× 降到 2.14×。</li>
+<li>全文未给代码或项目页；显存、非 H100、更长视频的主结果 Not Reported。</li>
+</ul>
+</div>
+</section>
+<section class="paper" id="p3">
+<h2 id="p3-title">论文 3｜NarrowSpec：推测解码的草稿隐宽度不必对齐目标模型 <span class="tag">NEW</span><span class="tag">Inference Acceleration</span></h2>
+<div class="summary">相对自训全宽草稿，NarrowSpec 把 DFlash / EAGLE-3 残差隐宽度收到一半或四分之一后，在温度 0、batch 1、SPEED-Bench 880 条上，B200 端到端 1.06–1.12 倍、GB10 为 1.13–1.44 倍（Table 3、25）。半宽 AL 代价至多 3.0%，四分之一宽 2.1–5.4%；batch 扫描最高 1.21 倍。</div>
+
+<h3 id="p3-s1">1. 基本信息</h3>
+<p>标题：<em>NarrowSpec: Draft Hidden Width Need Not Match the Target in Speculative Decoding</em>。作者 Alagappan Valliappan（通讯，页脚匕首标注，邮箱 avalliappan@nvidia.com）、Ankit More、Dheevatsa Mudigere、Jatin Mitra，单位均为 NVIDIA。标题页未再给出实验室细分，记为 Not Reported。</p>
+<p>预印本 <a href="https://arxiv.org/abs/2611.23835">arXiv:2611.23835v1</a> [cs.CL]，标注日期 2026-11-18；PDF 见 <a href="https://arxiv.org/pdf/2611.23835.pdf">pdf</a>。全文 29 页：正文至第 13 页结论，参考文献随后，附录 A–J 在第 17–29 页（层展开、折叠数值、权重、训练、分项、batch/上下文、算子剖析、GB10、H100、量化）。页眉未标注会议名，按预印本处理。</p>
+<p>代码与项目主页：正文与附录未给出 NarrowSpec 自身的仓库或模型卡 URL，记为 Not Reported。训练使用 SpecForge，推理使用 SGLang 0.5.18 nightly；参考文献给出 SpecForge 地址 <a href="https://github.com/sgl-project/SpecForge">https://github.com/sgl-project/SpecForge</a>，此为工具引用，不能代替本文代码发布。</p>
+
+<h3 id="p3-s2">2. 一句话定位</h3>
+<p>对读取目标隐状态的特征条件草稿，残差流不必做成与目标相同的宽度：把它收到一半或四分之一、在边界加适配器，并在 DFlash 借用词表头时于加载时折叠，可以在接受长度基本保住的前提下压低每次投机迭代里的草稿开销，从而降低每输出 token 时间（TPOT）。</p>
+
+<h3 id="p3-s3">3. 人话版</h3>
+<p>推测解码像「助理先打草稿、主编一次批改」：小模型提出若干候选 token，目标模型一次前向成批核对，只收下最长正确前缀。批改（verify）通常更贵，助理又快又准，摊到每个落地 token 上的时间才会下降。</p>
+<p>DFlash、EAGLE-3 这类「看着主编隐状态写稿」的助理，习惯把笔记本（残差隐宽度）做成和主编一样宽。本文的回答是：本子可以改成一半甚至四分之一宽，读写这条残差流的投影会一起变窄；只在接入目标隐状态、对目标词表打分的接口上加线性适配器。DFlash 借用冻结词表头，训练时先把窄状态抬回全宽再打分，上线时把两段线性映射合成一个更窄的头，logits 只在浮点舍入上有差别。头数、头维和 MLP 中间维不动，因此注意力核和草稿 KV 体积不随宽度缩小。</p>
+<h3 id="p3-s4">4. 背景与缺口</h3>
+<p>式 (1) 把解码延迟拆成两条路：提高接受长度 AL，或降低一次投机迭代的代价 Titer。提高 AL 的路线（EAGLE 类隐状态条件化、Medusa / MTP 额外头、候选树等）往往会在草稿或验证侧加活。直接降 Titer 的路线则缩短草稿上下文（MagicDec、LongSpec、SpecExtend、windowed drafting）、用更少层做自投机、裁剪词表投影（FR-Spec、VocabTrim、NanoSpec），或稀疏化验证、更早停草稿（§8）。这些方法多半只动一个部件，残差隐宽度通常仍直接做成目标宽度。</p>
+<p>最接近的先行工作只覆盖一部分：SlimSpec 用低秩瓶颈压缩词表投影，层内残差仍是全宽（§5.3、§8）；Gemma 4 的 MTP 草稿把 Transformer 做成 256 或 1,024 宽，但没有比较备选宽度，也未测量代价与收益。缺口是：在冻结目标上训练的特征条件草稿里，宽度能去掉多少、AL 会掉多少、端到端能换回多少，需要在并行草稿（DFlash）与自回归草稿（EAGLE-3）、稠密与 MoE 目标上一起量清楚。</p>
+<h3 id="p3-s5">5. 核心 insight</h3>
+<p>第一，草稿的每个块都读写同一条残差流，把这条流收窄，等于同时缩小注意力投影、MLP、接入目标特征的投影、写草稿 KV 的投影，以及通向词表的投影（附录 Figure 6）。宽度是「整网一起瘦」的轴，不是只砍一个头或只砍 MLP。</p>
+<p>第二，在固定提案长度 k 时，一次迭代里草稿要跑的位置数目由宽度和 k 决定，而不是由本轮实际接受了多少 token 决定（DFlash 每轮都草拟满块；EAGLE-3 在 SGLang 里用 CUDA graph 把第一步 pad 到 8，并且七步都会跑）。于是式 (1) 可以比较干净地拆开：Titer 主要由宽度决定，AL 主要由训练决定。</p>
+<p>第三，借用的词表头不必永远停在目标宽度。训练时的输出适配器与冻结头都是线性的，中间没有非线性（最终 norm 在适配器之前），加载时折叠成 V×dd 的单一 GEMM，代数上精确，有限精度下只差舍入（附录 B）。折叠让借来的头也能按 2 倍或 4 倍变窄，并在 DFlash 上贡献草稿体节省的 38–44%（§5、App. F）。</p>
+<h3 id="p3-s6">6. 方法逐步拆解</h3>
+<p>记目标与草稿隐宽度为 dt、dd，词表大小为 V。中间残差流不必是 dt 维，本文取</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>d</mi><mi>d</mi></msub><mo>&#x02208;</mo><mo stretchy="false">&#x0007B;</mo><msub><mi>d</mi><mi>t</mi></msub><mo>&#x0002F;</mo><mn>2</mn><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><msub><mi>d</mi><mi>t</mi></msub><mo>&#x0002F;</mo><mn>4</mn><mo stretchy="false">&#x0007D;</mo></mrow></math></div>
+<p>两家族都不改头数、头维和 MLP 中间大小，故注意力与草稿 KV 条目尺寸不变（§2）。</p>
+<p>DFlash 是块并行草稿（Figure 1、Table 1）。k 取发布块大小：Qwen3-8B 为 16，GPT-OSS-20B 为 8。每轮对 k 个位置做一次前向（上一轮留下的 bonus token 加 k−1 个 mask），经 5 层（Qwen）或 8 层（GPT-OSS）提出 k−1 个 token。它从目标 5 层取隐状态，由每轮一次的 context pre-pass 写入草稿 KV，并借用目标的 embedding 与词表投影。</p>
+<p>EAGLE-3 是单层解码器按步自回归（Figure 3），k=7，共提出 7 个 token。第一步读刚接受的 token（含 bonus），把 3 层目标隐状态从 3dt 经 fc 压到 dd，只有 bonus 位置继续链式生成；第 2–7 步用草稿自己的上一 token 与隐状态，每步把 embedding 与隐状态拼成 2dd。它借用目标 embedding，但在修剪词表上自训词表头（32,000 / 151,936 与 64,000 / 201,088），再经查找表映回目标 id。</p>
+<p>窄草稿按自身宽度从零训练，与目标宽度张量相遇处加适配器。两家族的 fc 都先把抽取的目标隐状态（5dt 或 3dt）映到 dd。Token embedding 来自目标 V×dt 表，再经 dt→dd 输入适配器。DFlash 打分用冻结的 Wlm，训练时加输出适配器 Wout，先抬维再算 logits；EAGLE-3 的词表头本身在 dd 上训练，不需要输出适配器。</p>
+<p>DFlash 若按训练图直接跑，每轮都要先走 Wout 再走全宽 Wlm。最终 norm 在 Wout 之前，两段之间没有非线性，加载时一次合成</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>W</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">m</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>W</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><msub><mi>h</mi><mi>d</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>W</mi><mrow><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub><msub><mi>h</mi><mi>d</mi></msub></mrow></math></div><div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>W</mi><mrow><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub><mo>&#x0003D;</mo><msub><mi>W</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">m</mi></mrow></mrow></msub><msub><mi>W</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo>&#x02208;</mo><msup><mi>&#x0211D;</mi><mrow><mi>V</mi><mo>&#x000D7;</mo><msub><mi>d</mi><mi>d</mi></msub></mrow></msup></mrow></math></div>
+<p>上线只跑一次从 dd 到 V 的 GEMM。两目标词表投影都保持 BF16；折叠改变浮点运算顺序，logits 不必按位相同，但在半宽 Qwen3-8B 与 3,405 个真实状态上，折叠路径相对 FP64 甚至略近（Table 10）。EAGLE-3 可在导出时把输入适配器乘进 embedding，得到自己的 V×dd 表（半宽 BF16 约 0.6 GB）；显存紧时可改为七步各跑一次适配器。DFlash 的输入适配器每轮只跑一次，作者保留目标 embedding，付出 4.2–7.2 µs（相对别处节省的 212–351 µs，Table 23）。</p>
+<p>DFlash 上宽度进入四条路径：唯一新增的输入适配器、把 5dt 映到 dd 的 fc、被折叠掉因而上线不跑的输出适配器，以及读取 fc 输出、写入固定尺寸 KV 的 context K/V 投影（§2.4）。EAGLE-3 则主要在 fc 与折叠后的 embedding 表上体现宽度，自有头和解码投影都在 dd 上跑。</p>
+<h3 id="p3-s7">7. 核心公式：变量、目标与直觉</h3>
+<p>解码（不含 prefill）的每输出 token 时间写成</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>T</mi><mi>P</mi><mi>O</mi><mi>T</mi><mo>&#x0003D;</mo><mfrac><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi></mrow></mrow></msub></mrow><mrow><mi>A</mi><mi>L</mi></mrow></mfrac><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi></mrow></mrow></msub><mo>&#x02248;</mo><msub><mi>t</mi><mrow><mrow><mi mathvariant="normal">v</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">y</mi></mrow></mrow></msub><mo>&#x0002B;</mo><msub><mi>t</mi><mrow><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub></mrow></math></div>
+<p>AL 是接受长度。主面板用整个集合的「完成 token 总数 / 验证步总数」做池化，长回复权更大。Titer 是一次投机迭代的代价，近似为 tverify 与 tdraft 之和。降低 TPOT 只有两条：提高 AL，或降低 Titer。本文把宽度当作降低 Titer 的旋钮，并同时报告 AL 代价，避免「草稿更快但老被拒」的虚快。</p>
+<p>折叠的训练路径是</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>h</mi><mrow><mrow><mi mathvariant="normal">u</mi><mi mathvariant="normal">p</mi></mrow></mrow></msub><mo>&#x0003D;</mo><msub><mi>W</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><msub><mi>h</mi><mi>d</mi></msub></mrow></math></div><div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">s</mi></mrow><mo>&#x0003D;</mo><msub><mi>W</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">m</mi></mrow></mrow></msub><msub><mi>h</mi><mrow><mrow><mi mathvariant="normal">u</mi><mi mathvariant="normal">p</mi></mrow></mrow></msub></mrow></math></div>
+<p>两段都是线性映射，加载时合成 Wfold。直觉是：与其每步把激活抬回 dt 再读 V×dt 的大头，不如把抬维一次性吸进更窄的 V×dd 权重。附录 B 用归一化 RMS 与 top-1 对 FP64 的一致率检查舍入；折叠可能改变近平局处的 argmax，但验证仍只用目标自己的概率，输出分布不会因折叠而系统性偏移。操作目标是：在匹配数据预算下选一个 dd，使 TPOT 相对自训全宽草稿下降，并把 AL 损失控制在可接受范围。宽度是训练前的架构选择，文中没有另写可微的「宽度损失」。</p>
+<h3 id="p3-s8">8. Toy example（本文自造算例，非论文数字）</h3>
+<div class="note">以下算例是为讲清「Titer 下降 vs AL 下降」和折叠合成而构造的，数值不是论文表中的测量结果，不能当作实验证据。</div>
+<p>假设验证完全不随草稿宽度变化，tv=3.00 ms。全宽草稿 td=1.20 ms，接受长度 A=4.00，则 Titer=4.20 ms，</p>
+<div class="eq"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>T</mi><mi>P</mi><mi>O</mi><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></mrow></msub><mo>&#x0003D;</mo><mfrac><mrow><msub><mi>t</mi><mi>v</mi></msub><mo>&#x0002B;</mo><msub><mi>t</mi><mi>d</mi></msub></mrow><mrow><mi>A</mi></mrow></mfrac></mrow></math></div>
+<p>得到 TPOTfull=4.20/4.00=1.050 ms。半宽把草稿降到 t′d=0.80 ms，若 AL 只掉 2% 到 A′=3.92，则 Titer=3.80 ms，TPOTnarrow=3.80/3.92≈0.969 ms，相对全宽约 1.08 倍。若同一套更快的迭代碰上 15% 的 AL 跌幅（A′=3.40），TPOT 变成 3.80/3.40≈1.118 ms，反而不如全宽（约 0.94 倍）。这个对比用来理解后文 Table 16 里「四分之一宽 DFlash-Qwen 在 RAG 类上迭代更快、但 AL 掉得太多，TPOT 变成 0.95 倍」的机制，并非复述该表数字。</p>
+<p>折叠的微型矩阵：设 V=2、dt=2、dd=1，Wout=[1; 2]（2×1），Wlm 取 2×2 单位阵，hd=3。未折叠先算 hup=[3; 6]，再得 logits=[3; 6]；折叠后 Wfold=Wlm Wout=[1; 2]，一次乘就得到同样的 [3; 6]。真实服务在 BF16 里会多两次舍入，不必按位相等；这只说明代数上「先抬维再投影」和「合成后再投影」是同一件事。</p>
+
+<h3 id="p3-s9">9. Baselines</h3>
+<p>主对照是同一 cell、同一数据与 token 预算、从零训出的全宽草稿（dd=dt）。Table 3 的加速比都相对它，这是宽度实验真正控制住的基线。</p>
+<p>发布全宽草稿只作训练参考：DFlash 用 z-lab/Qwen3-8B-DFlash-b16 与 z-lab/gpt-oss-20b-DFlash；EAGLE-3 用 RedHatAI 的 Qwen3-8B-speculator.eagle3 与 gpt-oss-20b-speculator.eagle3（Table 2、20）。它们与本文全宽架构相同，但数据与配方不同，差距应读成训练差异。</p>
+<p>MLP-only 切片（Table 8）保持全宽，只按宽度因子切开 MLP 中间维，权重是未训练切片，只比延迟。概念对照还有只压缩词表头的方法（SlimSpec 的低秩头，以及 FR-Spec / VocabTrim / NanoSpec）。Table 7 表明：四个 cell 的三个里，即使把头或整个 MLP 的时间完全去掉，也达不到四分之一宽对草稿延迟的削减（§5.3）。训练过的 MLP-only 或 head-only 对照留作未来工作。</p>
+<p>附录 J 在 DFlash-Qwen 上加入同宽草稿的 NVFP4 W4A4 训练后量化，用来看量化能否代替或叠加收窄。</p>
+<h3 id="p3-s10">10. 实验设置</h3>
+<p>四个 cell：DFlash 与 EAGLE-3，分别对接 Qwen3-8B（NVFP4 稠密躯干 / BF16 lm_head，dt=4,096，V=151,936）和 GPT-OSS-20B（MXFP4 MoE / BF16 稠密头，dt=2,880，V=201,088）。每格三个变体：全宽、半宽、四分之一宽。深度、中间维、头几何、词表、数据顺序与种子固定，只改 residual hidden_size 并加适配器（Table 2）。</p>
+<p>训练数据来自 Nemotron-Post-Training-v2（英文）与 CodeAlpaca 的用户轮次，助手回复由目标在温度 0 重新生成。每目标约 80 万条（Qwen 799,936 条 / 每 epoch 587M token；GPT-OSS 788,544 条 / 1.04B token）。评测提示不进训练集，同一 cell 共用同一份数据。训练在 4 张 B200 上用 SpecForge 从零开始：DFlash 6 个 epoch（Qwen 报告第 5 个、2.94B token，因该 epoch 各宽度持出损失最低；GPT-OSS 报告第 6 个、6.26B），EAGLE-3 3 个 epoch（1.76B / 3.13B）。AdamW，余弦调度、4% warmup，梯度裁剪 1.0，序列最长 3,072。DFlash 所有宽度都用学习率 6e-4；EAGLE-3 随每次减半加倍学习率，并按宽度选初始化（Table 13）。比较的是匹配数据预算，不是收敛。</p>
+<p>主推理在一张 NVIDIA B200（SM100，148 SM，8 TB/s HBM3e）上 TP=1，SGLang 0.5.18 nightly，分页 KV、CUDA graph、overlap scheduling，radix cache 关闭。同一契约在 DGX Spark 的一张 GB10 上复测（SM121，与 CPU 共享 128 GB LPDDR5x，273 GB/s）。GB10 尽量沿用 B200 设置：因 TRT-LLM MHA 仅支持 SM100，目标注意力改为 FlashInfer（Qwen）或 FA4（GPT-OSS），KV page size 随后端，SGLang 静态显存比例因与操作系统共享而降到 0.5（Table 24）。DFlash-Qwen 另在一张 H100（3.35 TB/s HBM3）上复现；Hopper 不能跑 NVFP4，目标改为 FP8 发布版，注意力 FA3，KV 为 BF16（App. I）。</p>
+<p>主评测为 SPEED-Bench 定性划分：11 类各 80 条共 880 条，温度 0 与 1、种子 7，最多 4,096 个新 token，上下文 32,768，batch 1，全部变体跑完 880 条。另有 GSM8K、MATH-500、AIME25、HumanEval、MBPP、LiveCodeBench、MT-Bench、Alpaca，各 80 条（AIME25 为 30），上下文 4,096、最多 1,024 个新 token。Batch 扫描改用 512 条 throughput 提示，与 880 条面板不同分布（App. E）。</p>
+<h3 id="p3-s11">11. 指标教学</h3>
+<p>AL（acceptance length）：每次验证提交的 token 数。面板上的池化 AL 是「完成 token 总数 ÷ 验证步总数」，长样本权更大。∆AL 相对本文全宽草稿，正值表示接受更长。</p>
+<p>Titer 是一次投机迭代时间。Table 3 去掉每轮第一次 decode（日志含 prefill，App. G），且该轮至少 8 步。Batch 扫描则取「整批 B 个请求都在跑」的步骤均值，并丢掉每块头尾各两步及超过中位数两倍的步骤（至多 0.9%，几乎只在 B=1）。两种估计器不可直接混比绝对值。</p>
+<p>TPOT = Titer / AL，是不含 prefill 的每输出 token 时间。TPOT 加速比包含 AL 变化，Titer 加速比只看迭代。草稿份额是全宽设定下 tdraft / (tdraft+tverify)，用来解释收窄最多能省多少。</p>
+<p>Table 29 的带宽占用是 GEMM 的 BF16 权重字节除以核时间、再除以峰值带宽（B200 8 TB/s，GB10 273 GB/s）。没有核能真正打满峰值，重要的是随宽度变化的趋势。注意力核几乎不随宽度变快，这可解释长上下文下收益变薄。</p>
+<h3 id="p3-s12">12. 可核验结果</h3>
+<p>（1）B200、温度 0、batch 1、880 条（Table 3）：半宽端到端 1.06–1.09 倍，四分之一宽 1.06–1.12 倍，与摘要区间一致。半宽 ∆AL 至多 −2.99%（EAGLE-3-Qwen），两格不降：DFlash-Qwen +0.84%、EAGLE-3-GPT-OSS +2.11%；作者把单次训练的正值读成持平。四分之一宽 ∆AL 为 −5.44%、−3.56%、−3.71%、−2.11%，落在 2.1–5.4%。Titer 随变窄单调变快，最高 1.16 倍（EAGLE-3-Qwen 四分之一宽）。最快档依 cell 而变：DFlash-Qwen 是半宽（1.09 倍），DFlash-GPT-OSS 与 EAGLE-3-Qwen 是四分之一宽（1.07 与 1.12 倍）；EAGLE-3-GPT-OSS 两档 TPOT 都是 0.902 ms（1.09 倍）：半宽靠更好的 AL，四分之一宽靠更便宜的迭代。</p>
+<p>（2）GB10 同一契约（Table 4 / 完整 Table 25）：半宽 1.13–1.23 倍，四分之一宽 1.20–1.44 倍，摘要区间成立，且四分之一宽在四格都最快。AL 代价与 B200 相差不超过 1.8 个百分点（DFlash-Qwen 四分之一宽在 GB10 为 −6.17%，B200 为 −5.44%）。</p>
+<p>（3）草稿变快、验证几乎不动（Table 5）：半宽草稿 1.25–1.46 倍，四分之一宽 1.43–1.75 倍；tverify 每格都在 1% 以内。GB10 上四分之一宽草稿相对全宽是 3.44–3.87 倍（Table 27、§7）。</p>
+<p>（4）B200 batch 扫描（Table 9，512 条 throughput 提示）：B=1 到 512，半宽最高 1.16 倍，四分之一宽最高 1.21 倍（DFlash-Qwen、B=128），且都不低于持平。GB10 从 B=32 到各卡最大可运行 batch，DFlash-Qwen 四分之一宽为 1.16–1.19 倍，EAGLE-3-Qwen 在 B=32 为 1.21 倍（Table 30）；Qwen3-8B 在 GB10 放不下 B=512。摘要「两边最高 1.21 倍、扫描中没有更慢的窄草稿」与这两张表一致。该扫描的接受代价与 Table 3 最多可差 4.5 个百分点，AL 仍以 Table 3 为准。</p>
+<p>（5）八基准（§4.2、Table 19）：三个 cell 里半宽 AL 在每个基准上都在全宽的 2.2% 以内，DFlash-Qwen 更在 8 个里的 5 个高于全宽；EAGLE-3-Qwen 半宽在每个基准上代价为 4.3–6.2%，重于面板上的 3.0%。四分之一宽在任一基准上的 AL 代价不超过 7.4%。温度 0 套件池化加速为半宽 1.06–1.09 倍、四分之一宽 1.06–1.10 倍。两个温度下每个基准都更快，最小是温度 1 时 DFlash-GPT-OSS 半宽在 AIME25 上的 1.02 倍。</p>
+<p>（6）上下文（Table 22）：B200、batch 1，从 8k 到 32k，任何 cell 的 Titer 加速变化不超过 1.6%。</p>
+<p>（7）H100 上的 DFlash-Qwen（Table 31）：半宽 ∆AL +0.70%，四分之一宽 −4.42%，两端到端都是 1.11 倍，对照 B200 的 1.09 与 1.06 倍。绝对 AL 比 B200 低 8.6–9.7%；配置同时换了 FP8 目标、FA3 与 BF16 KV，无法拆开 GPU 与服务配置的效应。</p>
+<p>（8）量化叠加（Table 33，仅 DFlash-Qwen、B200、温度 0、batch 1）：全宽 W4A4 相对全宽 BF16 为 1.07 倍、AL −2.36%；半宽 BF16 已是 1.09 倍且 AL 不降。二者在半宽叠加最好，W4A4 半宽相对全宽 BF16 为 1.11 倍；四分之一宽再量化只把迭代加快 1.02 倍并掉 3.42% AL，相对同宽 BF16 是 0.99 倍。</p>
+<h3 id="p3-s13">13. 真实表图阅读</h3>
+<p class="cap">表 A｜转写 Table 3（B200，温度 0，batch 1，880 条）。AL 为完成 token / 验证步；Titer、TPOT 单位 ms；加速比相对本文全宽草稿。发布行是训练参考。</p>
+<div class="tbl"><table>
+<thead><tr><th>家族 / 目标</th><th>宽度</th><th>AL</th><th>∆AL</th><th>Titer</th><th>TPOT</th><th>Titer 加速</th><th>TPOT 加速</th></tr></thead>
+<tbody>
+<tr><td>DFlash / Qwen3-8B</td><td>full 4,096</td><td>4.298</td><td>—</td><td>3.585</td><td>0.834</td><td>1.00×</td><td>1.00×</td></tr>
+<tr><td></td><td>half 2,048</td><td>4.334</td><td>+0.84%</td><td>3.313</td><td>0.764</td><td>1.08×</td><td>1.09×</td></tr>
+<tr><td></td><td>quarter 1,024</td><td>4.064</td><td>−5.44%</td><td>3.197</td><td>0.787</td><td>1.12×</td><td>1.06×</td></tr>
+<tr><td></td><td>stock z-lab</td><td>4.304</td><td>+0.14%</td><td>3.584</td><td>0.833</td><td>1.00×</td><td>1.00×</td></tr>
+<tr><td>DFlash / GPT-OSS-20B</td><td>full 2,880</td><td>4.376</td><td>—</td><td>3.342</td><td>0.765</td><td>1.00×</td><td>1.00×</td></tr>
+<tr><td></td><td>half 1,440</td><td>4.309</td><td>−1.53%</td><td>3.115</td><td>0.724</td><td>1.07×</td><td>1.06×</td></tr>
+<tr><td></td><td>quarter 720</td><td>4.220</td><td>−3.56%</td><td>3.002</td><td>0.712</td><td>1.11×</td><td>1.07×</td></tr>
+<tr><td></td><td>stock z-lab</td><td>4.309</td><td>−1.53%</td><td>3.339</td><td>0.776</td><td>1.00×</td><td>0.99×</td></tr>
+<tr><td>EAGLE-3 / Qwen3-8B</td><td>full 4,096</td><td>3.583</td><td>—</td><td>4.236</td><td>1.181</td><td>1.00×</td><td>1.00×</td></tr>
+<tr><td></td><td>half 2,048</td><td>3.476</td><td>−2.99%</td><td>3.796</td><td>1.092</td><td>1.12×</td><td>1.08×</td></tr>
+<tr><td></td><td>quarter 1,024</td><td>3.450</td><td>−3.71%</td><td>3.652</td><td>1.058</td><td>1.16×</td><td>1.12×</td></tr>
+<tr><td></td><td>stock RedHatAI</td><td>2.846</td><td>−20.6%</td><td>4.209</td><td>1.478</td><td>1.01×</td><td>0.80×</td></tr>
+<tr><td>EAGLE-3 / GPT-OSS-20B</td><td>full 2,880</td><td>3.705</td><td>—</td><td>3.651</td><td>0.987</td><td>1.00×</td><td>1.00×</td></tr>
+<tr><td></td><td>half 1,440</td><td>3.783</td><td>+2.11%</td><td>3.414</td><td>0.902</td><td>1.07×</td><td>1.09×</td></tr>
+<tr><td></td><td>quarter 720</td><td>3.627</td><td>−2.11%</td><td>3.275</td><td>0.902</td><td>1.12×</td><td>1.09×</td></tr>
+<tr><td></td><td>stock RedHatAI</td><td>3.413</td><td>−7.88%</td><td>3.654</td><td>1.072</td><td>1.00×</td><td>0.92×</td></tr>
+</tbody>
+</table></div>
+<p>读表：Titer 都随变窄下降，但 TPOT 不一定在最窄处最好——DFlash-Qwen 四分之一宽 Titer 1.12 倍，AL 掉 5.44% 后 TPOT 只剩 1.06 倍，低于半宽 1.09 倍。发布 EAGLE-3 在 Qwen 上 AL 落后 20.6%、TPOT 仅 0.80 倍，不能当成宽度失败。</p>
+<p class="cap">表 B｜转写 Table 25（GB10，温度 0，batch 1；Table 4 是其摘要）。单位 ms。</p>
+<div class="tbl"><table>
+<thead><tr><th>家族 / 目标</th><th>宽度</th><th>AL</th><th>∆AL</th><th>Titer</th><th>TPOT</th><th>Titer 加速</th><th>TPOT 加速</th></tr></thead>
+<tbody>
+<tr><td>DFlash / Qwen3-8B</td><td>full 4,096</td><td>4.156</td><td>—</td><td>41.810</td><td>10.060</td><td>1.00×</td><td>1.00×</td></tr>
+<tr><td></td><td>half 2,048</td><td>4.149</td><td>−0.17%</td><td>34.718</td><td>8.368</td><td>1.20×</td><td>1.20×</td></tr>
+<tr><td></td><td>quarter 1,024</td><td>3.899</td><td>−6.17%</td><td>31.025</td><td>7.956</td><td>1.35×</td><td>1.26×</td></tr>
+<tr><td>DFlash / GPT-OSS-20B</td><td>full 2,880</td><td>4.395</td><td>—</td><td>46.232</td><td>10.520</td><td>1.00×</td><td>1.00×</td></tr>
+<tr><td></td><td>half 1,440</td><td>4.306</td><td>−2.02%</td><td>40.142</td><td>9.323</td><td>1.15×</td><td>1.13×</td></tr>
+<tr><td></td><td>quarter 720</td><td>4.224</td><td>−3.89%</td><td>37.143</td><td>8.794</td><td>1.24×</td><td>1.20×</td></tr>
+<tr><td>EAGLE-3 / Qwen3-8B</td><td>full 4,096</td><td>3.487</td><td>—</td><td>50.923</td><td>14.604</td><td>1.00×</td><td>1.00×</td></tr>
+<tr><td></td><td>half 2,048</td><td>3.381</td><td>−3.02%</td><td>40.761</td><td>12.054</td><td>1.25×</td><td>1.21×</td></tr>
+<tr><td></td><td>quarter 1,024</td><td>3.389</td><td>−2.81%</td><td>34.440</td><td>10.162</td><td>1.48×</td><td>1.44×</td></tr>
+<tr><td>EAGLE-3 / GPT-OSS-20B</td><td>full 2,880</td><td>3.733</td><td>—</td><td>52.660</td><td>14.108</td><td>1.00×</td><td>1.00×</td></tr>
+<tr><td></td><td>half 1,440</td><td>3.745</td><td>+0.33%</td><td>42.894</td><td>11.453</td><td>1.23×</td><td>1.23×</td></tr>
+<tr><td></td><td>quarter 720</td><td>3.634</td><td>−2.65%</td><td>38.168</td><td>10.504</td><td>1.38×</td><td>1.34×</td></tr>
+</tbody>
+</table></div>
+<p>读表：绝对值大约是 B200 的 10 倍量级（全宽 DFlash-Qwen 的 TPOT 从 0.834 ms 到 10.060 ms），与 273 GB/s 对 8 TB/s 的带宽差距同向。最大格是 EAGLE-3-Qwen 四分之一宽的 1.44 倍；额外收益来自草稿核在 GB10 上仍接近峰值带宽（§7、Table 29）。</p>
+<p class="cap">表 C｜摘录 Table 5 与 Table 6：B200 上「草稿瘦、验证不瘦」，以及词表头随宽度的变化（µs / 迭代）。</p>
+<div class="tbl"><table>
+<thead><tr><th>Cell</th><th>宽度</th><th>tdraft (ms)</th><th>相对全宽</th><th>tverify (ms)</th><th>head+argmax (µs)</th></tr></thead>
+<tbody>
+<tr><td>DFlash-Qwen</td><td>full / half / qtr</td><td>0.906 / 0.634 / 0.517</td><td>— / −30.0% / −43.0%</td><td>2.578 / 2.576 (−0.09%) / 2.590 (+0.44%)</td><td>218.5 / 111.6（1.96×） / 65.4（3.34×）</td></tr>
+<tr><td>DFlash-GPT-OSS</td><td>full / half / qtr</td><td>0.956 / 0.724 / 0.641</td><td>— / −24.3% / −32.9%</td><td>2.216 / 2.227 (+0.53%) / 2.202 (−0.62%)</td><td>179.0 / 99.3（1.80×） / 58.5（3.06×）</td></tr>
+<tr><td>EAGLE-3-Qwen</td><td>full / half / qtr</td><td>1.439 / 0.989 / 0.827</td><td>— / −31.3% / −42.5%</td><td>2.735 / 2.718 (−0.61%) / 2.719 (−0.57%)</td><td>342.1 / 210.0（1.63×） / 132.7（2.58×）</td></tr>
+<tr><td>EAGLE-3-GPT-OSS</td><td>full / half / qtr</td><td>1.134 / 0.911 / 0.793</td><td>— / −19.7% / −30.1%</td><td>2.598 / 2.622 (+0.92%) / 2.581 (−0.65%)</td><td>441.2 / 264.9（1.67×） / 173.0（2.55×）</td></tr>
+</tbody>
+</table></div>
+<p>读表：验证波动不超过 1%。DFlash-Qwen 的头加 argmax 从 218.5 µs 降到四分之一宽的 65.4 µs。EAGLE-3-GPT-OSS 是例外：单层很小，词表头占草稿体节省的 81%（Table 23）。</p>
+<p>Figure 4 是八基准 AL 柱状图，图上没有可读柱高，柱高记为 Not Verified；伴随数字已在第 12 节引用。Figure 5 是 B200 上 per-user 与 per-GPU 吞吐曲线，点为 B=1, 32, 64, 128, 256, 512（从右到左）；轴上具体 tokens/s 刻度未写出，记为 Not Verified。文字结论：四格里两条窄宽度在每个 batch 都不低于全宽，最小是 EAGLE-3-GPT-OSS 半宽在 B=64 的 1.00 倍，落在其 AL 区间内（Table 21）。</p>
+<p>Table 16：半宽在全部类别、全部 cell 上都更快（1.03–1.11 倍）。四分之一宽除 DFlash-Qwen 外至少 1.02 倍，但该类在 multilingual 上为 1.00 倍，在 RAG 上为 0.95 倍——14.8% 的 AL 代价压过了 1.11 倍的迭代加速。这 14.8%（配对 bootstrap 95% 区间 −22.2% 到 −6.3%）主要来自 80 条里超过 3,072 训练长度的 7 条：它们少接受 38% 的 token，其余 73 条只少 2.5%。池化 AL 让长回复权重过大。</p>
+
+<h3 id="p3-s14">14. Ablation 与缺失的 ablation</h3>
+<p>已做对照包括：四 cell × 三宽度；温度 0/1（Table 14、26，温度 1 的 TPOT 加速相对温度 0 移动不超过 0.03 倍）；11 个类别与八基准；B200 / GB10 /（仅 DFlash-Qwen）H100；batch 与上下文扫描；算子时延剖析（Table 7、23、28）；折叠核对（Table 10）；MLP-only 未训练切片（Table 8）；DFlash-Qwen 的 NVFP4 量化（Table 33）；以及 EAGLE-3-Qwen 在扫描提示上对 k∈{1,3,5,7} 的扫参。</p>
+<p>Table 8：要在 B=1 追上半宽，MLP-only 需比全宽高出 2.1–10.6% 的 AL；追上四分之一宽则需 0.7–7.5%。切片能省下与收窄几乎相同的 MLP 时间（DFlash-Qwen 半宽为 120 对 122 µs），但不碰词表头和注意力投影，只抓住草稿体节省的 41–55%。EAGLE-3-GPT-OSS 上 MLP 已接近小 GEMM 地板，切片相对全宽不更快（约 2% 噪声内）。固定核形状不保证训练后的小 MLP 看到同一运行时成本，这些时延是估计。</p>
+<p>k 扫参：在那些提示上，全宽最优 k=3，两个窄宽是 5；若按事后最优 k 比较，收窄收益降到半宽 1.03 倍、四分之一宽 1.05 倍，对照同一运行里 k=7 的 1.08 与 1.11 倍。最优 k 依赖事先并不知道的接受情况，这不是服务器可预知的设置。未在 GPT-OSS 或更大 batch 上扫 k。</p>
+<p>未完成的消融包括：训练过的 MLP-only / head-only 对照；对已经量化的目标头做折叠（Q(Wlm Wout) 一般不等于 Q(Wlm)Wout，App. B.1）；更多种子与训到收敛；真正训练并评测窄 MTP 草稿；其他 pair、大 batch、量化感知训练，以及远超 32k 的上下文。</p>
+<h3 id="p3-s15">15. Claim vs Evidence</h3>
+<p>摘要称：温度 0、batch 1 下，半宽或四分之一宽使端到端解码在 B200 加快 1.06–1.12 倍、在 GB10 加快 1.13–1.44 倍。Table 3 与 Table 25 的端点与此相符：B200 为 1.06 倍（DFlash-Qwen 四分之一宽与 DFlash-GPT-OSS 半宽）到 1.12 倍（EAGLE-3-Qwen 四分之一宽）；GB10 为 1.13 倍（DFlash-GPT-OSS 半宽）到 1.44 倍（EAGLE-3-Qwen 四分之一宽）。</p>
+<p>「从 batch 32 到各 GPU 能放下的最大 batch，收窄最高达 1.21 倍，且没有比全宽更慢的窄草稿」：B200 的 1.21 倍出现在 Table 9 的 DFlash-Qwen 四分之一宽、B=128；GB10 的 1.21 倍出现在 Table 30 的 EAGLE-3-Qwen 四分之一宽、B=32。该判断只覆盖这两张扫描表的 cell 级 TPOT，不是每一个提示类别。Table 16 里 DFlash-Qwen 四分之一宽在 RAG 上为 0.95 倍，是容易被读过头的反例，附录已写出。</p>
+<p>「减半代价至多 3.0% 接受，四对里有两对不降；四分之一宽代价 2.1–5.4%」与 Table 3 的面板池化 ∆AL 相符。这是单次训练、单一种子、匹配预算而非收敛；正的 ∆AL 被作者明确读成持平。类别层面可以更差（RAG −14.8%，训练长度外的长样本被池化放大）。八基准上 EAGLE-3-Qwen 半宽的 4.3–6.2% 也重于面板上的 3.0%。</p>
+<p>H100 的 1.11 倍不宜当成纯硬件定律：服务配置同时从 NVFP4+TRT-LLM MHA+FP8 KV 改成了 FP8+FA3+BF16 KV，绝对 AL 还低了 8.6–9.7%，论文无法拆开这些因素（App. I）。发布草稿行只说明本文全宽有竞争力（DFlash 的 z-lab 在温度 0 上 AL 差距在 1.6% 以内），不能解释宽度效应；RedHatAI 的 Qwen EAGLE-3 落后 20.6%，来自数据与配方。</p>
+<h3 id="p3-s16">16. 贡献</h3>
+<p>把草稿残差隐宽度立成可测量的设计轴，而不是继承目标宽度的默认值，并在 DFlash 与 EAGLE-3、稠密与 MoE、两档收窄上用匹配数据预算完成对照。</p>
+<p>给出借用词表头的折叠做法：加载时把输出适配器与冻结头合成 V×dd 投影，代数精确，有限精度下与未折叠路径在面板温度 0 的成对运行中 token 一致，AL 差在 0.03% 以内（App. B）。</p>
+<p>用阶段与算子剖析、以及 B200 / GB10 / H100 的带宽对照，说明收益取决于草稿占迭代的份额、以及变窄后 GEMM 还能多接近峰值带宽；并补充 batch、上下文、类别、量化和 k 的边界条件。</p>
+
+<h3 id="p3-s17">17. 局限</h3>
+<p>论文自述：每个变体一次训练、一种子、匹配数据预算而非收敛，换预算可能改变 AL 代价；只测了两家族、两目标，草稿占迭代份额很小的目标收益会更小；上下文扫描止于 32k，收窄不缩小 KV 注意力，更长上下文下收益预期会变薄；MLP-only 消融用未训练切片且只比延迟。</p>
+<p>补充：主加速相对的是作者自训全宽草稿，不是任意已发布草稿；折叠增加一份常驻 V×dd 头（半宽 DFlash-Qwen 约多 0.61 GB，约一张 B200 显存的 0.3%），EAGLE-3 半宽若折叠 embedding，净服务权重甚至大于全宽（Table 11 为 1.28× 与 1.55×）；GB10 与 B200 的目标注意力后端不同，H100 配置不齐；未发布本文代码与窄草稿权重（Not Reported）；温度 1 下各变体采样不同文本，分项 AL 含采样噪声（App. D）；GPT-OSS 聊天模板会写入当天日期，同一权重跨日 AL 最多可差 0.8%，作者要求同日比较。</p>
+<h3 id="p3-s18">18. 复现要点</h3>
+<p>必须按自身宽度从零训练，不能把全宽权重直接截断当窄草稿。同一 cell 要共用数据、顺序、epoch 数与调度形状；EAGLE-3 必须按宽度重选学习率与 initializer_range（Table 13），DFlash 则可以用同一 6e-4。报告的 checkpoint 要与论文一致：DFlash-Qwen 用第 5/6 个 epoch，其余用最后一个。</p>
+<p>服务侧需要引擎支持窄 hidden_size、边界适配器，以及 DFlash 的加载期折叠（SGLang 用 torch.mm 一次合成并存成 BF16）。不要对已经量化的目标头做折叠后指望与「先量化再乘适配器」一致。评测应同时报 AL、Titer 与 TPOT，并写明 Titer 是否去掉 prefill 步。GPT-OSS 比较必须在同一天进行。Batch 扫描不要直接套用 880 条面板的 AL。量化若要叠加，先折叠再把 Wfold 量化一次（App. J）。</p>
+<p>硬件需按表写清：B200 上目标注意力为 TRT-LLM MHA，草稿注意力 FA4；GB10 换后端且 memory fraction 为 0.5；H100 用 FP8 目标。训练用 4×B200。代码仓库未提供，复现需自行在 SpecForge 与 SGLang 0.5.18 nightly 上补齐窄宽度路径。</p>
+<h3 id="p3-s19">19. 研究价值</h3>
+<p>它把一个长期被默认掉的超参数——特征条件草稿的残差宽度——变成可以和上下文、层数、词表维并列讨论的轴，并用端到端 TPOT 而不是只报 AL 来结算。折叠给所有借用目标词表头的草稿（含尚未评测的内置 MTP 层）提供了一条不必改验证器的实现路径。跨 B200 与 GB10 的对比说明：同一套窄草稿在带宽更低、核更长的设备上更接近按字节比例加速，这对边缘或工作站部署更有经济意义。</p>
+
+<h3 id="p3-s20">20. 可执行迁移</h3>
+<p>迁移一：新训特征条件草稿时，不要默认 hidden_size=dt。在 B200 这类高带宽数据中心 GPU 上，先把半宽当作默认尝试——面板上是 1.06–1.09 倍，四格里两格 AL 不降，另外两格为 1.5% 与 3.0%。在 GB10 这类低带宽 GPU 上，四分之一宽在本文四格、两个温度下都是最快档（1.20–1.44 倍）。选定后必须在新宽度上重扫学习率与初始化，并一次改好引擎里的窄残差与适配器路径。</p>
+<p>迁移二：只要草稿借用目标词表头（DFlash 或内置 MTP），就在加载时折叠，让词表投影与躯干一起变窄。先在 BF16 头上合成，再决定是否量化 Wfold；不要对已经 4-bit 的目标头直接折叠。EAGLE-3 一类自训头本来就在 dd 上，无需折叠，但半宽若再折叠 embedding 表会增加常驻显存，显存紧时应改为运行时适配器（同一份 dt×dd 权重，DFlash 上单次 4.2–7.2 µs）。量化可以与半宽叠加（DFlash-Qwen 上 1.11 倍），到四分之一宽时收益接近消失甚至略亏，不要假设「越窄越该再量化」。</p>
+<h3 id="p3-s21">21. 方向专用分析（Inference Acceleration：推测解码、草稿宽度、接受率 vs TPOT、B200 vs GB10）</h3>
+<p>推测解码的结算式就是 TPOT=Titer/AL。只追 AL 往往会给草稿或验证加活；只追 Titer 若伤害 AL，端到端也可能更慢。本文在 k 固定时让 Titer 随宽度下降，再看 AL 会不会把这笔账吃回去。Table 3 里 DFlash-Qwen 是现成例子：四分之一宽 Titer 1.12 倍，AL −5.44% 后 TPOT 只剩 1.06 倍，反而输给半宽 1.09 倍。Table 16 的 RAG 是反例：迭代 1.11 倍不够补偿 14.8% 的 AL，TPOT 落到 0.95 倍。服务上应同时监控这两项。</p>
+<p>与目标宽度脱钩之后，头数和头维仍固定，注意力与草稿 KV 不瘦。因此长上下文只能慢慢变薄（8k 到 32k，Titer 加速最多动 1.6%），不能靠宽度去打 KV-bound 场景。这与 MagicDec、windowed drafting 等轴正交，论文认为可以组合，但没有做窗口化实验；已做的组合只有 EAGLE-3 自带的修剪词表，修剪后再收窄仍能继续缩小那张头（Table 6）。</p>
+<p>DFlash 与 EAGLE-3 的 batch 行为不同。DFlash 每请求处理 k 个位置，草稿 GEMM 看到 kB 个 token，与验证侧同量级；DFlash-Qwen 的草稿份额从 B=1 的 25.4% 升到 B=512 的 31.4%，收益随 batch 升高或维持。EAGLE-3 第一步也覆盖约 8 个位置，但其余六步每请求只草 1 个 token，多数 GEMM 只看到 B，验证 MLP 更早进入计算受限，草稿份额从 34.2% 降到 B=256 的 23.8%，收益随之回落（Table 9）。迁到 MoE 目标时还要加上「小 batch 只点亮部分专家」的折点（GPT-OSS 在 B=32 附近）。</p>
+<p>B200 与 GB10 的差别，核心是变窄后还能保持多少峰值带宽。Table 29 在 DFlash-Qwen、batch 1：1,245 MB 的词表投影在两张卡、三个宽度都还在峰值的 73–85%；B200 上较小的 FC2、QKV、输出投影在四分之一宽时核只有 5–11 µs，占用分别掉到 33%、30%、19%，五类核合计从 69% 降到 47%。GB10 上同样的核在四分之一宽仍跑 46–226 µs，占用维持 79–84%（最小输出投影为 67%），合计 83% 到 81%。于是四分之一宽草稿在 B200 只比全宽快 1.43–1.75 倍，在 GB10 是 3.44–3.87 倍。SGLang 是共同底座，但 GB10 换了目标注意力后端并降低了显存份额，比较应落在宽度比和草稿份额上。</p>
+<h3 id="p3-s22">22. Attack / Verification lens</h3>
+<p>验证协议仍是标准推测解码：温度 0 只接受目标 argmax，各变体在数值非确定性之内应吐出目标贪心输出；温度 1 用拒绝采样保持目标分布，但各草稿提议不同，接受差异含采样噪声。折叠不能改变输出分布，只能改变提议。附录 B 在 3,405 个状态上，折叠与未折叠相对 FP64 的 top-1 一致率为 97.2% 与 97.0%，两者互相一致 99.1%，所有失误都是近平局（折叠路径失误的最大 margin 为 0.10 logit，全体中位 margin 为 0.51）。同一对半宽与四分之一宽 DFlash-Qwen 检查点在 880 条、温度 0 的成对运行中输出 token 完全一致，AL 差在 0.03% 以内。</p>
+<p>测量陷阱包括：GPT-OSS 模板写入日期，跨日比较最多可移动 0.8% AL；贪心输出会随 batch 因核数值而变，只能在同一 B 下比宽度；分析器与未分析运行的宽度比一致到 0.2–0.9%，但 Nsight 可能漏掉 GPU 外时间，大 batch 阶段和可比未分析 Titer 低至 13%，加速比必须来自未分析运行；池化 AL 会被超长样本主导；按测试提示事后选 k 会高估可部署收益；单一种子使 AL 上升不能当稳定增益。本文保证的是目标分布的无损解码，前提是验证器未被改掉，且折叠后的头没有用错已经量化的权重。</p>
+<h3 id="p3-s23">23. 记忆总结</h3>
+<div class="summary">
+<ul>
+<li>特征条件草稿的残差隐宽度不必等于目标宽度；半宽或四分之一宽是训练前的架构选择，不是部署时的临时裁剪。</li>
+<li>B200、温度 0、batch 1、880 条 SPEED-Bench 上，相对自训全宽草稿的 TPOT 为 1.06–1.12 倍；GB10 为 1.13–1.44 倍（Table 3、25）。</li>
+<li>半宽 AL 代价至多 3.0%，四格中两格不降；四分之一宽为 2.1–5.4%。单次种子的小幅上升应读成持平。</li>
+<li>Batch 扫描中最高 1.21 倍，cell 级没有更慢的窄草稿；但 DFlash-Qwen 四分之一宽在 RAG 类上是 0.95 倍，池化被 7 条超长样本放大。</li>
+<li>结算式是 TPOT=Titer/AL：验证几乎不随宽度动；AL 掉太多时，更快的迭代也会输。</li>
+<li>DFlash 借用词表头时，加载折叠 Wfold=Wlm Wout，logits 只差舍入，该头贡献草稿体节省的 38–44%。</li>
+<li>注意力头几何不变，KV 与注意力核不瘦；8k 到 32k 的 Titer 加速变化不超过 1.6%。</li>
+<li>低带宽 GPU 上收益更大：变窄后的 GEMM 在 GB10 仍接近峰值带宽，在 B200 上许多短核会掉占用。</li>
+<li>数据中心卡先试半宽并重扫学习率；低带宽卡再试四分之一宽。量化与半宽可叠加，与四分之一宽则可能不划算。</li>
+<li>本文未给出 NarrowSpec 代码或窄草稿权重（Not Reported）；复现需在 SpecForge 与 SGLang 中自行接好窄宽度与折叠。</li>
+</ul>
+</div>
+</section>
+<section id="verify">
+<h2>来源与验证报告</h2>
+<p>文件路径：<code>/workspace/AI_Deep_Dive_2026-11-20.html</code>。编码 UTF-8（无 BOM），内联 CSS，无外部样式 / 脚本 / 字体 / CDN / MathJax / KaTeX。公式以离线 MathML 渲染（latex2mathml），全文共 31 处 math 节点。目录锚点与正文 id 已交叉核对，无悬空链接。横向表格使用 <code>div.tbl</code> 包裹。</p>
+<h3>字数（按正文 CJK 汉字计，不含公式与标签）</h3>
+<div class="tbl"><table>
+<thead><tr><th>区块</th><th>CJK 汉字</th><th>区间要求</th></tr></thead>
+<tbody>
+<tr><td>概览</td><td>673</td><td>无硬性上下限</td></tr>
+<tr><td>论文 1 Depth Before Breadth</td><td>6298</td><td>4500–7000</td></tr>
+<tr><td>论文 2 PQRS</td><td>6034</td><td>4500–7000</td></tr>
+<tr><td>论文 3 NarrowSpec</td><td>6882</td><td>4500–7000</td></tr>
+<tr><td>本验证节</td><td>439</td><td>—</td></tr>
+</tbody>
+</table></div>
+<p>残留 TeX 扫描命中 0 处（检查美元符号、frac、sum、mathbf 等模式）。</p>
+<h3>来源与数字核验</h3>
+<ul>
+<li>三篇 PDF 均可从 arXiv 下载：<a href="https://arxiv.org/abs/2611.24697">2611.24697</a>、<a href="https://arxiv.org/abs/2611.24479">2611.24479</a>、<a href="https://arxiv.org/abs/2611.23835">2611.23835</a>。正文用 pdftotext -layout 提取，主表数字回对提取文本；双栏错行处重新按页提取。图中无印刷刻度的读数一律记 Not Verified，不目测柱高。</li>
+<li>Depth Before Breadth：摘要中的 ALFWorld 90.1%/96.1% 与 WebShop 80.2%/82.6% 已与 Table 1（Qwen2.5-1.5B/7B-Instruct）核对一致。Feiyang Pan 与 Jia He 的单位上标缺失，记 Not Reported。代码 / 项目 URL、参考轨迹如何收集、数值阈值 δ：Not Reported。Figure 5 曲线端点：Not Verified。Table 1 部分基线取自 GiGPO / CRPS 原文，本文未独立复跑，已在正文标明。</li>
+<li>PQRS：主结果以 Table 1 / VBench 表为准；Figure 1 的 27.61 dB / 33.58 dB 与 16.0 / 13.5 min 仅为展示样本，未当作全表平均。代码 / 项目页：Not Reported。非 H100、非 720p、更长视频的主结果：Not Reported。Figure 5 分位曲线逐点、Figure 7 区间端点：Not Verified 或 Not Reported。</li>
+<li>NarrowSpec：摘要中的 B200 1.06–1.12× 与 GB10 1.13–1.44× 已对照 Table 3 / 相关主表。窄草稿权重与项目页：Not Reported。Figure 4 柱高、Figure 5 tokens/s 刻度：Not Verified。文中亦指出：摘要关于“扫描中无更慢窄草稿、最高 1.21×”的表述覆盖 cell 级扫描；个别设定（如 Table 16 中 DFlash-Qwen 四分之一宽在 RAG 上 0.95×）需单独阅读，已在精读中写出。</li>
+</ul>
+<p>Headless Chrome 截图（页头与目录、公式块、宽表）保存在 <code>/workspace/papers_2026-11-20/shots/</code>，用于确认 MathML 与表格在无 CDN 条件下可见。</p>
+</section>
+<footer>
+<p>生成本地单文件 HTML，供离线阅读。数学公式为内联 MathML，不依赖 CDN。数字均尽量回溯到论文正文或表格；无法核验处已标明 Not Reported / Not Verified。</p>
+</footer>
+</div>
+</body>
+</html>

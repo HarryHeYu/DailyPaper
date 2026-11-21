@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Daily AI Research Radar — 2026-11-20</title>
+<style>
+
+:root{
+  --bg:#f6f1e8;
+  --paper:#fffdf8;
+  --ink:#1c1916;
+  --muted:#57534e;
+  --line:#e4d8c4;
+  --link:#0b57d0;
+  --linkv:#6b21a8;
+  --s:#9a3412;
+  --a:#1e3a5f;
+  --b:#3f3f46;
+  --chip:#f0e6d6;
+  --warn:#9f1239;
+  --ok:#166534;
+  --toc:#2b2118;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Source Han Serif SC","Noto Serif CJK SC","Songti SC","STSong","Georgia","Times New Roman",serif;
+  font-size:17.5px;
+  line-height:1.85;
+}
+.wrap{max-width:860px;margin:0 auto;padding:0 22px 80px}
+header.mast{
+  padding:36px 0 10px;
+  border-bottom:2px solid var(--ink);
+}
+header.mast h1{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC","Helvetica Neue",sans-serif;
+  font-weight:700;
+  font-size:1.85rem;
+  line-height:1.35;
+  margin:0 0 8px;
+  letter-spacing:.02em;
+}
+.sub{color:var(--muted);font-size:.95rem;font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif}
+nav#toc{
+  position:sticky;top:0;z-index:20;
+  background:rgba(246,241,232,.96);
+  backdrop-filter:saturate(1.2) blur(8px);
+  border-bottom:1px solid var(--line);
+  margin:0 -22px;
+  padding:8px 22px;
+}
+nav#toc strong{display:block;font-size:.8rem;letter-spacing:.08em;color:var(--toc);font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif}
+nav#toc ol{
+  list-style:none;margin:4px 0 0;padding:0;
+  display:flex;flex-wrap:wrap;gap:4px 12px;
+  font-size:.82rem;
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+}
+nav#toc a{color:var(--link);text-decoration:none}
+nav#toc a:hover{text-decoration:underline}
+h2{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:1.38rem;
+  margin:2.2em 0 .6em;
+  padding-top:.4em;
+  border-top:1px solid var(--line);
+  color:var(--toc);
+}
+h3{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:1.16rem;margin:1.5em 0 .4em;color:var(--s);
+}
+h4{font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;font-size:1.02rem;margin:1.15em 0 .3em;color:var(--a)}
+p{margin:.7em 0}
+a{color:var(--link);text-decoration-thickness:1px;text-underline-offset:2px}
+a:visited{color:var(--linkv)}
+.lead{font-size:1.02rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 16px}
+.chip{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:.78rem;background:var(--chip);border:1px solid var(--line);
+  border-radius:999px;padding:2px 10px;color:var(--muted)
+}
+article.paper{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:22px 24px 28px;
+  margin:1.4em 0 2em;
+  box-shadow:0 1px 0 rgba(43,33,24,.04);
+}
+.meta, .meta p, .meta li{
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-size:.92rem;line-height:1.55;color:var(--muted)
+}
+.meta h3{color:var(--ink);margin-top:0}
+.meta ul{padding-left:1.1em}
+.badge{
+  display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;
+  padding:1px 7px;border-radius:4px;margin-right:6px;vertical-align:middle;
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+}
+.badge.S{background:#9a3412;color:#fff}
+.badge.A{background:#1e3a5f;color:#fff}
+.badge.B{background:#3f3f46;color:#fff}
+table{
+  border-collapse:collapse;width:100%;margin:12px 0 16px;
+  font-size:.88rem;font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  line-height:1.45;
+}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#f3ece1}
+.table-wrap{overflow-x:auto;margin:10px 0 16px}
+details.paper{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:0;margin:1em 0}
+details.paper>summary{
+  cursor:pointer;list-style:none;padding:14px 18px;
+  font-family:"Source Han Sans SC","Noto Sans CJK SC","PingFang SC",sans-serif;
+  font-weight:650;font-size:1.02rem;
+}
+details.paper>summary::-webkit-details-marker{display:none}
+details.paper[open]>summary{border-bottom:1px solid var(--line)}
+details.paper .inner{padding:6px 22px 22px}
+.note{background:#f8f1e3;border-left:3px solid #b45309;padding:8px 12px;margin:12px 0;color:#44403c}
+.warn{background:#fff1f2;border-left:3px solid var(--warn);padding:8px 12px;margin:12px 0}
+.ok{color:var(--ok);font-weight:650}
+.fail{color:var(--warn);font-weight:650}
+.formula{font-family:"Cambria Math","Times New Roman",serif;background:#faf7f2;padding:2px 4px;border-radius:3px}
+ol.rank, ul.plain{padding-left:1.25em}
+footer{margin-top:3em;padding-top:1em;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+@media print{
+  nav#toc{position:static;background:none;border:0}
+  body{background:#fff;font-size:11pt}
+  article.paper, details.paper{break-inside:avoid;box-shadow:none}
+  a{color:#000;text-decoration:underline}
+  .wrap{max-width:none}
+}
+
+
+</style>
+<style>math{font-size:1.08em}.math-display{overflow-x:auto;margin:.8em 0;text-align:center}.math-display math{display:block}code.tex{color:#b45309}</style></head>
+<body>
+<div class="wrap">
+<header class="mast" id="sec-header">
+<h1>Daily AI Research Radar &amp; Idea Miner</h1>
+<p class="sub">日期：2026-11-20（星期五，Asia/Shanghai） · 语料：arXiv 周四 2026-11-19 新公告批次（周五上午约 08:21 已上线，无需等待 09:00）· 全文自包含，公式为页内 MathML</p>
+</header>
+<nav id="toc">
+<strong>目录</strong>
+<ol>
+<li><a href="#sec-exec">执行摘要</a></li>
+<li><a href="#sec-important">Today's Most Important Paper</a></li>
+<li><a href="#sec-top3">Top 3 必读</a></li>
+<li><a href="#sec-top5">Top 5</a></li>
+<li><a href="#sec-rl">RL Highlights</a></li>
+<li><a href="#sec-agent">Agent / Multi-Agent Highlights</a></li>
+<li><a href="#sec-video">Video Acceleration Highlights</a></li>
+<li><a href="#sec-s">Tier S</a></li>
+<li><a href="#sec-a">Tier A</a></li>
+<li><a href="#sec-b">Tier B</a></li>
+<li><a href="#sec-ideas">Idea Mining</a></li>
+<li><a href="#sec-collision">Collision Detection</a></li>
+<li><a href="#sec-reading">Reading Priority</a></li>
+<li><a href="#sec-watch">Candidate Watchlist</a></li>
+<li><a href="#sec-stats">今日统计</a></li>
+<li><a href="#sec-sources">Sources / Links</a></li>
+<li><a href="#sec-audit">Depth Audit</a></li>
+</ol>
+</nav>
+<section id="sec-exec">
+<h2>执行摘要</h2>
+<div class="chips">
+<span class="chip">Candidate Pool: 52</span>
+<span class="chip">Formal Papers: 7</span>
+<span class="chip">RL: 3</span>
+<span class="chip">Agent / Multi-Agent: 5</span>
+<span class="chip">Video Acceleration: 3</span>
+<span class="chip">Unlearning: 0</span>
+<span class="chip">Tier S/A/B: 2/3/2</span>
+</div>
+<p class="lead">今日主数据是周四 2026-11-19 的 arXiv 新公告批次（ID 自 2611.23240 起，与昨日已覆盖的周三批次 2611.21791–2611.23226 无重叠），周五约 08:21 Asia/Shanghai 已可抓取，无需等到 09:00，亦无 BACKFILL。三条主线都很密。强化学习上，Depth Before Breadth 把长程智能体学习改写成扩张策略诱导的能力区域，用成对优势分开“走到更可解的上下文”和“从那里收官”，再配先反向、后前向的课程，在 ALFWorld / WebShop、Qwen2.5-1.5B/7B 上整体成功率达到 90.1%/96.1% 与 80.2%/82.6%，超过同设定 GRPO 与 GiGPO。MRPD 则对准多专家合并这一工程瓶颈：按专家自己的训练顺序回放日志，重算策略梯度并蒸馏最终专家，学生 Overall 58.6，合并只需专家训练算力的约七分之一，消融表明顺序比样本数量更重要。ECA 给搜索增强模型补上训练期的证据势信用，7B 上相对 GRPO 的宏平均 EM 提高 4.80 个百分点。智能体上，ActiveForager 让流式视频理解在“看近、看回、等待”之间按需选择，并在 Video-Holmes 上把 Qwen3-VL-8B 的零样本准确率从 23.57% 提到 47.14%；SCH 用状态-证据分离做长程上下文交接，机制对照里修订恢复把 Pass@1 从 80.0% 做到 86.9%，同时对完整系统对比的显著性保持克制。视频加速上，ShelfKV 指出多轮推理里被 KV 修剪挤出的是图像而不是容量，PQRS 用逐查询路由的稀疏注意力在 Wan2.1 与 HunyuanVideo 上做到 1.75× / 2.10× 端到端加速，且更接近稠密输出。机器遗忘今日只有观察项，未进入正式集合。</p>
+</section>
+<section id="sec-important">
+<h2>Today's Most Important Paper</h2>
+<p><strong>Depth Before Breadth: Reverse-to-Forward Curriculum with Advantage Decomposition for LLM Agent</strong>（<a href="https://arxiv.org/abs/2611.24697">arXiv:2611.24697</a>）。选择它不是因为分数更高，而是因为它同时打在用户最高优先级里的 LLM 强化学习与智能体：稀疏终局奖励下，失败轨迹没有信号、成功轨迹又把同一个分数广播到整条多轮交互，这正是近日 OMA、GiGPO、Gaze-RL 持续面对的问题。这篇论文给出的不是更密的过程奖励，而是可复述的能力区域、成对优势分解，以及“先沿成功参考钉住、再扩到策略自身分布”的课程。建议先看 §3 的左右优势与式 (8)、Table 1 的双尺度主结果、Table 2 的课程/PA 消融，以及 Figure 3–4 的终点覆盖。它也有清楚的失败模式：没有成功参考或不能从中间状态重启时，反向阶段无法启动；Clean/Cool 上并未全面压过 GiGPO。未来研究价值在于：能否把“终点上下文”换成搜索证据集合或测试状态，接到同日的 ECA 与更真实的工具环境。</p>
+</section>
+<section id="sec-top3">
+<h2>Top 3 必读</h2>
+<ol class="rank">
+<li><strong>Depth Before Breadth</strong>（<a href="https://arxiv.org/abs/2611.24697">2611.24697</a>，Tier S，RL / Agent）：长程 LLM 智能体的信用分配与课程，主表与消融完整。</li>
+<li><strong>Replay, Don't Resample (MRPD)</strong>（<a href="https://arxiv.org/abs/2611.24059">2611.24059</a>，Tier S，RL / Agent）：用专家训练日志按序合并多域学生，成本约七分之一，并给出“日志是课程”的可复核证据。有代码。</li>
+<li><strong>ActiveForager</strong>（<a href="https://arxiv.org/abs/2611.24267">2611.24267</a>，Tier A，Agent × 流式视频）：按需选择看近、看回或等待，SDAM 隔离历史视觉，TUPO 抑制工具崩塌。有代码。</li>
+</ol>
+</section>
+<section id="sec-top5">
+<h2>Top 5</h2>
+<ol class="rank">
+<li>Depth Before Breadth（2611.24697）</li>
+<li>MRPD（2611.24059）</li>
+<li>ActiveForager（2611.24267）</li>
+<li><strong>ECA</strong>（<a href="https://arxiv.org/abs/2611.23824">2611.23824</a>，Tier A，RL）：为搜索轨迹提供证据专用的训练期信用，7B 上 +4.80 EM，并能压住重复查询。</li>
+<li><strong>ShelfKV</strong>（<a href="https://arxiv.org/abs/2611.23769">2611.23769</a>，Tier A，Video / 多模态加速）：多轮推理 VLM 里被挤出的是图像；按需读入在匹配显存下可恢复大部分后轮精度，但解码会变慢。</li>
+</ol>
+<p class="note">排序在形式化之后重排，不以档位自动决定名次。PQRS 与 SCH 进入正式集合，但分列视频加速与长程上下文的 B 档，不挤占 Top 5。</p>
+</section>
+<section id="sec-rl">
+<h2>RL Highlights</h2>
+<p>今日强化学习不是“又一个 GRPO 变体日”，而是两条互补的线。一条是训练长程智能体本身：Depth Before Breadth 用终点经验价值给前缀打分，ECA 用证据势给搜索步打分，两者都在对抗全零或过粗的终局优势。另一条是训练之后如何合并：MRPD 证明专家日志按时间顺序回放，可以在不重新进环境的情况下接近单域专家上限。若只读一篇算法，读 Depth Before Breadth；若只读一篇会改变训练系统流程的，读 MRPD。</p>
+</section>
+<section id="sec-agent">
+<h2>Agent / Multi-Agent Highlights</h2>
+<p>智能体主线今天同时出现在训练、推理期交互和上下文管理上。Depth Before Breadth 与 ECA 处理训练信号；ActiveForager 把流式视频理解写成一个会选择工具的智能体，而不是一个更大的视觉编码器；SCH 则把“当前解释”和“可再召回的观察”分开，避免摘要把后来还用得上的证据扔掉。观察列表里还有 COPD（黑盒教师的交际式在策略蒸馏）、GUARD 与 Piccolo / BaseRSI（递归自我改进）以及 Safe-to-Omit 的多智能体延迟，但与近日 RSI / harness 论文重叠较多，未再占正式名额。</p>
+</section>
+<section id="sec-video">
+<h2>Video Acceleration Highlights</h2>
+<p>视频与多模态加速今天有三条可分开的路径。ActiveForager 减的是流式理解里主上下文的视觉 token，并换来更好的后向/前瞻准确率，但正文几乎不报端到端 FPS。ShelfKV 针对多轮推理 VLM 的 KV 缓存：保护图像、按需换入，精度明显回升，解码在大 batch 下会变慢，必须把延迟一起看。PQRS 是更经典的视频扩散稀疏注意力，给出了四模型、可对照的 PSNR 与 H100 墙钟，Wan2.1-T2V 1.75×、HunyuanVideo 2.10×，且比同密度的 SVG-EAR 更接近稠密输出。同日 Spark-H3、NullTok、SGVC、LookAway 进入观察列表，避免与近几日 ScoutCache / FastFrames / PCRG 的正式分析重复。</p>
+</section>
+<section id="sec-s">
+<h2>Tier S（全文精读，默认展开）</h2>
+<article class="paper" data-fulltext="yes" data-id="2611.24697" data-tier="S" id="p-2611.24697">
+<div class="meta">
+<p><strong>Authors:</strong> Siyuan Du, Yuxin Liu, Meng Tang, Haoran Li, Yechao Bai, Feiyang Pan, Jia He</p>
+<p><strong>Affiliation:</strong> Nanjing University（Siyuan Du、Haoran Li、Yechao Bai）；Peking University（Yuxin Liu）；University of Wales, Aberystwyth（Meng Tang）。Feiyang Pan 与 Jia He 在作者行未标注单位（未核实）。</p>
+<p><strong>Date / Venue / Status:</strong> arXiv 2611.24697v1，submitted 18 Nov 2026，出现在周四 2026-11-19 arXiv 新公告批次（cs.AI）。非正式发表。提交日与公告日接近，按当日 New submissions 收录，不作 BACKFILL。</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.24697">arXiv:2611.24697</a> · <a href="https://arxiv.org/pdf/2611.24697">PDF</a> · <a href="https://arxiv.org/html/2611.24697">HTML</a></p>
+<p><strong>Code Availability:</strong> 摘要、评论栏与全文检索均未给出公开代码或项目页，记为未提供（未核实后续仓库）。</p>
+</div>
+<h3><span class="badge S">S</span> Depth Before Breadth: Reverse-to-Forward Curriculum with Advantage Decomposition for LLM Agent</h3>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>这篇论文要解决的是：用稀疏终局奖励训练长程 LLM 智能体时，失败轨迹几乎没有学习信号，成功轨迹又要把同一个对错分数广播到整条多轮交互上，信用分配和探索都很难。作者把问题改写成“扩大策略自己的能力区域”——即当前策略已经能较可靠完成任务的那一批决策上下文。他们发现，能力边界附近往往只需再走几步就能进入更可解的状态，于是把长程学习拆成两件耦合的事：先走到更可解的上下文，再从那里把任务做完。</p>
+<p>对应的方法叫 Paired Advantage（成对优势）加上先反向、后前向的课程。前缀动作按“所到达终点的经验完成率相对组内平均是否更高”来计分，后缀动作只在同一终点内部比较成败。反向阶段顺着成功参考轨迹从靠近终点处往起点退，先把可解区域钉住；前向阶段再从原始起点做策略自己的滚动，把区域扩到参考轨迹之外。在 ALFWorld 与 WebShop 上，用 Qwen2.5-1.5B/7B-Instruct，整体成功率分别达到 90.1%/96.1% 与 80.2%/82.6%，超过同设定下的 GRPO 与 GiGPO。</p>
+</section>
+<h4>背景与研究缺口</h4>
+<section class="analysis" data-part="background">
+<p>LLM 智能体已经从单轮生成走到多轮、带状态的环境交互，GRPO 一类的组相对策略梯度也成了智能体强化学习的常见默认选项。难点在于奖励几乎只在回合结束时给出一个二元结果。所有失败 rollout 在每一步都是零信号；即便成功，也只有一个终局奖励要分给整条轨迹里的每一次思考与动作。动作空间是开放文本，观察又是部分可观测的网页或房间描述，这种稀疏反馈会让策略既不知道早期搜索或导航错在哪，也不敢离开已经走过的成功路径。</p>
+<p>现有补救大致有两条。一条仍在轨迹级做相对优势，如 PPO、RLOO、GRPO，把同一个 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mrow><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo></mrow></msup></mrow></math></span> 广播到该轨迹的所有动作，早期“走到可解状态”的动作和后期“把任务做完”的动作被绑在一起。另一条尝试更细的信用，例如 GiGPO 做步级分组，CRPS 用反向回放。它们能缓解一部分长程归因，但没有显式回答一个更结构的问题：当前策略到底已经能从哪些上下文可靠收官？若能力区域已经覆盖某条参考轨迹的后半段，却还没有覆盖起点，继续从起点做完整 rollout，会反复在前半段交学费。反过来，若只沿着参考轨迹做反向课程，策略又可能挤在参考路径上，离线状态一出现就不会走。缺的是一个同时处理“进入可解区域”和“在区域内收官”、并能从参考轨迹扩到策略自身分布的机制。</p>
+</section>
+<h4>核心洞察</h4>
+<section class="analysis" data-part="insight">
+<p>关键不是再发明一种更密的过程奖励，而是承认：策略自己诱导出一个能力区域 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>C</mi><mi>η</mi></msub><mo stretchy="false">(</mo><mi>π</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">{</mo><mi>c</mi><mi>:</mi><msub><mi>p</mi><mi>π</mi></msub><mo stretchy="false">(</mo><mi>c</mi><mo stretchy="false">)</mo><mo>≥</mo><mi>η</mi><mo stretchy="false">}</mo></mrow></math></span>，真正有信息的训练上下文往往就在这条可靠阈值附近。长程任务因此可以拆成“前缀把智能体送到更好的终点上下文”和“后缀从该上下文完成任务”。用终点处的经验完成率比较前缀、用同一终点内的后缀成败比较收官动作，再用先沿着成功参考往后再向前探索的课程去扩大这个区域，稀疏终局奖励就够用了。</p>
+</section>
+<h4>方法深读：从输入到输出</h4>
+<section class="analysis method" data-part="method">
+<p>输入是任务 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi><mi>~</mi><mi>𝒟</mi></mrow></math></span>，智能体在每一步收到观察 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>o</mi><mi>t</mi></msub></mrow></math></span>、输出文本动作 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>a</mi><mi>t</mi></msub></mrow></math></span>，轨迹 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>τ</mi><mo>=</mo><mo stretchy="false">{</mo><mo stretchy="false">(</mo><msub><mi>o</mi><mi>t</mi></msub><mo>,</mo><msub><mi>a</mi><mi>t</mi></msub><mo stretchy="false">)</mo><mo stretchy="false">}</mo></mrow></math></span> 只有终局奖励 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>R</mi><mo stretchy="false">(</mo><mi>τ</mi><mo stretchy="false">)</mo><mo>∈</mo><mo stretchy="false">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">}</mo></mrow></math></span>。决策上下文 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>c</mi><mi>t</mi></msub><mo>=</mo><mo stretchy="false">(</mo><msub><mi>o</mi><mrow><mo>≤</mo><mi>t</mi></mrow></msub><mo>,</mo><msub><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo>,</mo><mi>x</mi><mo stretchy="false">)</mo></mrow></math></span>，策略为 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>a</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>c</mi><mi>t</mi></msub><mo stretchy="false">)</mo></mrow></math></span>，目标是最大化 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo><mo>=</mo><mi>𝔼</mi><mo stretchy="false">[</mo><mi>R</mi><mo stretchy="false">(</mo><mi>τ</mi><mo stretchy="false">)</mo><mo stretchy="false">]</mo></mrow></math></span>。行为策略 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mrow><msub><mi>θ</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub></mrow></msub></mrow></math></span> 在能力边界附近的起点采样 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi></mrow></math></span> 条轨迹，每条被切成前缀与后缀：前缀决定到达哪个终点上下文 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>e</mi></mrow></math></span>，后缀决定能否从 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>e</mi></mrow></math></span> 完成任务。</p>
+<p>前缀按终点上下文去重。作者特意只用可执行的 <code>&lt;action&gt;</code> 序列判断两个前缀是否落到同一 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>e</mi></mrow></math></span>，忽略 <code>&lt;think&gt;</code> 里的措辞差异，避免把同一环境状态拆成许多表面不同的终点。记 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>I</mi><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo></mrow></math></span> 为到达 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>e</mi></mrow></math></span> 的前缀下标，<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>m</mi><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">|</mo><mi>I</mi><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo><mo stretchy="false">|</mo></mrow></math></span>，<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>ℰ</mi></mrow></math></span> 为独特终点集合。对每个 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>e</mi></mrow></math></span>，再从该上下文采样 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>N</mi><mi>R</mi></msub><mo>≥</mo><mn>2</mn></mrow></math></span> 条后缀，用经验完成率 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>V</mi></mrow><mo>^</mo></mover><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><msub><mi>N</mi><mi>R</mi></msub></mrow></mfrac><msub><mo>∑</mo><mi>j</mi></msub><msub><mi>R</mi><mrow><mi>e</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow></math></span> 估计 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>e</mi></mrow></math></span> 处的可解程度。左优势把终点和“按前缀计数加权的组内平均完成率”比较：</p>
+<p></p><div class="math-display"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mi>L</mi></msup><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo><mo>=</mo><mover accent="true"><mrow><mi>V</mi></mrow><mo>^</mo></mover><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo><mo>−</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>n</mi></mrow></mfrac><munder><mo>∑</mo><mrow><msup><mi>e</mi><mi>′</mi></msup><mo>∈</mo><mi>ℰ</mi></mrow></munder><mi>m</mi><mo stretchy="false">(</mo><msup><mi>e</mi><mi>′</mi></msup><mo stretchy="false">)</mo><mover accent="true"><mrow><mi>V</mi></mrow><mo>^</mo></mover><mo stretchy="false">(</mo><msup><mi>e</mi><mi>′</mi></msup><mo stretchy="false">)</mo></mrow></math></div>
+<p>它奖励那些把智能体送到更高完成率终点的前缀，即使这些前缀自己还没有看到最终成功。右优势只在同一终点的后缀之间比较：<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mi>R</mi></msup><mo stretchy="false">(</mo><mi>e</mi><mo>,</mo><mi>j</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>R</mi><mrow><mi>e</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><mfrac><mrow><mn>1</mn></mrow><mrow><msub><mi>N</mi><mi>R</mi></msub><mo>−</mo><mn>1</mn></mrow></mfrac><msub><mo>∑</mo><mrow><msup><mi>j</mi><mi>′</mi></msup><mo>≠</mo><mi>j</mi></mrow></msub><msub><mi>R</mi><mrow><mi>e</mi><mo>,</mo><msup><mi>j</mi><mi>′</mi></msup></mrow></msub></mrow></math></span>。若同一终点的所有后缀结果相同，右信号为零，但该终点仍可通过左信号对前缀产生梯度。这是一个反直觉却关键的设计：全部失败的终点并不是“没有信息”，只要组里还有完成率更高的终点，到达低价值终点的前缀就会被惩罚。</p>
+<p>更新时，为每条前缀从其终点均匀抽一条后缀拼成完整轨迹，前缀段用 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mi>L</mi></msup></mrow></math></span>、后缀段用 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mi>R</mi></msup></mrow></math></span>，各自做 PPO 风格的重要性比裁剪（见公式一节）。两个阶段共用同一目标，差别只在前缀从哪来、有多长。反向阶段假定任务有一条成功参考 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>τ</mi><mo>*</mo></msup></mrow></math></span>，从靠近末端的上下文 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mi>c</mi><mrow><mi>T</mi><mo>−</mo><mn>1</mn></mrow><mo>*</mo></msubsup></mrow></math></span> 出发，以固定步长 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>d</mi></mrow></math></span> 沿参考往回走；在当前位置 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>c</mi><mi>i</mi></msub></mrow></math></span> 采样长度为 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>ℓ</mi><mi>i</mi></msub><mo>=</mo><mi>d</mi><mo>+</mo><mn>2</mn></mrow></math></span> 的前缀，做成分对优势更新，直到该点的估计成功概率达到可靠性阈值 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>η</mi></mrow></math></span>，再退到更早的参考上下文。当大多数训练任务的原始起点已进入 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>C</mi><mi>η</mi></msub><mo stretchy="false">(</mo><mi>π</mi><mo stretchy="false">)</mo></mrow></math></span> 时，反向阶段结束。此时策略往往已能从起点可靠求解训练任务，但能力区域仍可能集中在参考轨迹周围。</p>
+<p>前向阶段改以原始起点 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>c</mi><mn>0</mn></msub><mo>=</mo><mo stretchy="false">(</mo><msub><mi>o</mi><mn>0</mn></msub><mo>,</mo><mi>x</mi><mo stretchy="false">)</mo></mrow></math></span> 为锚，前缀长度从与最终反向阶段对齐的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>ℓ</mi><mn>0</mn></msub><mo>=</mo><mi>d</mi><mo>+</mo><mn>2</mn></mrow></math></span> 起，按 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>ℓ</mi><mi>i</mi></msub><mo>=</mo><mi>d</mi><mo>+</mo><mn>2</mn><mo>+</mo><mi>i</mi><mi>Δ</mi><mi>ℓ</mi></mrow></math></span> 递增。这些前缀可能到达参考之外的上下文，再用同一套成对优势把它们纳入扩大中的能力区域。课程何时往前加长，并不靠手工指定 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>δ</mi></mrow></math></span>，而是监视每组独特终点数 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">|</mo><mi>ℰ</mi><mo stretchy="false">|</mo></mrow></math></span> 的均值：当它在连续更新中稳定，说明当前前缀长度下的终点多样性已经平台化，再把前缀加长 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Δ</mi><mi>ℓ</mi></mrow></math></span>，让策略去找可能跨过能力边界的新终点。实现上 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi><mo>=</mo><mn>8</mn></mrow></math></span>、<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>N</mi><mi>R</mi></msub><mo>=</mo><mn>2</mn></mrow></math></span>，ALFWorld 的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>η</mi><mo>=</mo><mn>0.6</mn></mrow></math></span>，WebShop 的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>η</mi><mo>=</mo><mn>0.78</mn></mrow></math></span>，两阶段步长都是 3。训练关闭 KL 损失与熵奖励，使用双裁剪（clip ratio 0.2，dual-clip <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>c</mi><mo>=</mo><mn>3.0</mn></mrow></math></span>），终局二元奖励再乘以 10 作为训练尺度。</p>
+<p>从输入到输出的依赖可以按一次更新来走：先确定当前课程阶段与起点（反向是参考上的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mi>c</mi><mi>i</mi><mo>*</mo></msubsup></mrow></math></span>，前向是 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>c</mi><mn>0</mn></msub></mrow></math></span> 加当前前缀长度），采样 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi></mrow></math></span> 条前缀并按动作序列归并终点，再对每个非终止终点重启环境、采两条后缀、得到 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>V</mi></mrow><mo>^</mo></mover><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo></mrow></math></span> 与成对优势，最后把随机配对的后缀接回前缀、用式 (8) 更新策略参数，并按 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>p</mi><mi>π</mi></msub><mo stretchy="false">(</mo><msub><mi>c</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mo>≥</mo><mi>η</mi></mrow></math></span> 或 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">|</mo><mi>ℰ</mi><mo stretchy="false">|</mo></mrow></math></span> 是否稳定来决定课程是否迈步。状态是文本决策上下文，动作是带思考标签的文本，策略是同一套 LLM，轨迹是多轮交互，优势是终点级与后缀级的相对量而不是学习到的 critic。信用分配因此是结构上的分解，而不是额外标注。一个容易忽略的实现细节是：终点去重只用可执行动作，这会把“想得不一样但点了同一个按钮”的前缀合并，从而让 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>V</mi></mrow><mo>^</mo></mover><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo></mrow></math></span> 估计的是环境状态价值，而不是语言表层价值。若不去重，左优势会把措辞差异误当成不同能力边界，课程也就失去“区域”的含义。</p>
+</section>
+<h4>关键公式与目标</h4>
+<section class="analysis" data-part="formula">
+<p>组相对基线（用于对照）把轨迹级优势广播到所有动作：</p>
+<p></p><div class="math-display"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mrow><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo></mrow></msup><mo>=</mo><mfrac><mrow><msup><mi>R</mi><mrow><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo></mrow></msup><mo>−</mo><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi></mrow><mo stretchy="false">(</mo><mi>R</mi><mo stretchy="false">)</mo></mrow><mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">d</mi></mrow><mo stretchy="false">(</mo><mi>R</mi><mo stretchy="false">)</mo><mo>+</mo><mi>ϵ</mi></mrow></mfrac></mrow></math></div>
+<p>本文的目标把同一条拼好的轨迹拆成两段裁剪目标。记 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>ρ</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>π</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>a</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo>∣</mo><msub><mi>c</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo stretchy="false">)</mo><mo>/</mo><msub><mi>π</mi><mrow><msub><mi>θ</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub></mrow></msub><mo stretchy="false">(</mo><msub><mi>a</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo>∣</mo><msub><mi>c</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo stretchy="false">)</mo></mrow></math></span>，前缀步 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>ℓ</mi><mo>−</mo><mn>1</mn></mrow></math></span> 使用 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mi>L</mi></msup><mo stretchy="false">(</mo><msub><mi>e</mi><mi>k</mi></msub><mo stretchy="false">)</mo></mrow></math></span>，后缀步 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>t</mi><mo>=</mo><mi>ℓ</mi><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>T</mi><mi>k</mi></msub><mo>−</mo><mn>1</mn></mrow></math></span> 使用 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mi>R</mi></msup><mo stretchy="false">(</mo><msub><mi>e</mi><mi>k</mi></msub><mo>,</mo><msub><mi>j</mi><mi>k</mi></msub><mo stretchy="false">)</mo></mrow></math></span>：</p>
+<p></p><div class="math-display"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo><mo>=</mo><mi>𝔼</mi><mo maxsize="1.623em" minsize="1.623em">[</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>n</mi></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mfrac><mrow><mn>1</mn></mrow><mrow><mi>ℓ</mi></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>ℓ</mi><mo>−</mo><mn>1</mn></mrow></munderover><mo>min</mo><mo maxsize="1.2em" minsize="1.2em">(</mo><msub><mi>ρ</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><msup><mi>A</mi><mi>L</mi></msup><mo>,</mo><mspace width="0.278em"></mspace><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">p</mi></mrow><mo stretchy="false">(</mo><msub><mi>ρ</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo>,</mo><mn>1</mn><mo>−</mo><mi>ϵ</mi><mo>,</mo><mn>1</mn><mo>+</mo><mi>ϵ</mi><mo stretchy="false">)</mo><msup><mi>A</mi><mi>L</mi></msup><mo maxsize="1.2em" minsize="1.2em">)</mo><mo>+</mo><mfrac><mrow><mn>1</mn></mrow><mrow><msub><mi>T</mi><mi>k</mi></msub><mo>−</mo><mi>ℓ</mi></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mi>ℓ</mi></mrow><mrow><msub><mi>T</mi><mi>k</mi></msub><mo>−</mo><mn>1</mn></mrow></munderover><mo>min</mo><mo maxsize="1.2em" minsize="1.2em">(</mo><msub><mi>ρ</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><msup><mi>A</mi><mi>R</mi></msup><mo>,</mo><mspace width="0.278em"></mspace><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">p</mi></mrow><mo stretchy="false">(</mo><msub><mi>ρ</mi><mrow><mi>t</mi><mo>,</mo><mi>k</mi></mrow></msub><mo>,</mo><mn>1</mn><mo>−</mo><mi>ϵ</mi><mo>,</mo><mn>1</mn><mo>+</mo><mi>ϵ</mi><mo stretchy="false">)</mo><msup><mi>A</mi><mi>R</mi></msup><mo maxsize="1.2em" minsize="1.2em">)</mo><mo maxsize="1.623em" minsize="1.623em">]</mo></mrow></math></div>
+<p>与 GRPO 的差别在于：优势不再是整条轨迹共享的一个标量，而是按“到达了哪个终点”和“从该终点如何收官”分开估计。关键超参是终点采样数 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>N</mi><mi>R</mi></msub></mrow></math></span>、反向步长 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>d</mi></mrow></math></span>、前向增量 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Δ</mi><mi>ℓ</mi></mrow></math></span> 与可靠性阈值 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>η</mi></mrow></math></span>。</p>
+</section>
+<h4>手造 Toy Example</h4>
+<section class="analysis" data-part="toy">
+<p>设某任务采 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi><mo>=</mo><mn>2</mn></mrow></math></span> 条前缀，分别到达不同终点 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>e</mi><mn>1</mn></msub><mo>,</mo><msub><mi>e</mi><mn>2</mn></msub></mrow></math></span>，故 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>m</mi><mo stretchy="false">(</mo><msub><mi>e</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mi>m</mi><mo stretchy="false">(</mo><msub><mi>e</mi><mn>2</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mn>1</mn></mrow></math></span>。每个终点采 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>N</mi><mi>R</mi></msub><mo>=</mo><mn>2</mn></mrow></math></span> 条后缀：<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>e</mi><mn>1</mn></msub></mrow></math></span> 两次都成功，<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>V</mi></mrow><mo>^</mo></mover><mo stretchy="false">(</mo><msub><mi>e</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mn>1</mn></mrow></math></span>；<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>e</mi><mn>2</mn></msub></mrow></math></span> 一成一败，<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>V</mi></mrow><mo>^</mo></mover><mo stretchy="false">(</mo><msub><mi>e</mi><mn>2</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mn>0.5</mn></mrow></math></span>。前缀加权基线是 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>·</mo><mn>1</mn><mo>+</mo><mn>1</mn><mo>·</mo><mn>0.5</mn><mo stretchy="false">)</mo><mo>/</mo><mn>2</mn><mo>=</mo><mn>0.75</mn></mrow></math></span>，于是 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mi>L</mi></msup><mo stretchy="false">(</mo><msub><mi>e</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mn>0.25</mn></mrow></math></span>、<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mi>L</mi></msup><mo stretchy="false">(</mo><msub><mi>e</mi><mn>2</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mo>−</mo><mn>0.25</mn></mrow></math></span>。对 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>e</mi><mn>1</mn></msub></mrow></math></span>，两条后缀结果相同，右优势为 0，但仍有左优势推高通向 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>e</mi><mn>1</mn></msub></mrow></math></span> 的前缀。对 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>e</mi><mn>2</mn></msub></mrow></math></span>，成功后缀的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mi>R</mi></msup><mo>=</mo><mn>1</mn><mo>−</mo><mn>0</mn><mo>=</mo><mn>1</mn></mrow></math></span>，失败后缀为 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>0</mn><mo>−</mo><mn>1</mn><mo>=</mo><mo>−</mo><mn>1</mn></mrow></math></span>。GRPO 若把整条轨迹当作一个样本，一旦两条完整轨迹一成一败，优势只是“整条成功对整条失败”，无法说出“前缀走错了终点”还是“终点对了但收官失败”。成对优势把这两件事拆开，这正是后文单例终点分析里 PA 能给出 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>V</mi></mrow><mo>^</mo></mover><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0.5</mn></mrow></math></span>、而 GRPO 只能看到 0 或 1 的原因。</p>
+</section>
+<h4>基线对照</h4>
+<section class="analysis" data-part="baseline">
+<p>对照分三族。闭源提示：GPT-4o、Gemini-2.5-Pro。无参数更新的提示智能体：Qwen2.5-Instruct、ReAct、Reflexion。强化学习：轨迹级的 PPO、RLOO、GRPO，以及针对长程信用的 GiGPO（步级分组）与 CRPS（反向回放）。同骨干、同设定下最强的可比较基线是 GiGPO；CRPS 的数字引自原论文、未给标准差。闭源模型只作提示参照，不参与同尺度训练对比。</p>
+</section>
+<h4>实验设置</h4>
+<section class="analysis" data-part="setup">
+<p><strong>RQ1（主结果）：</strong>在相同骨干与训练协议下，成对优势加反向-前向课程能否超过轨迹级 RL 与现有长程信用方法？<strong>RQ2（机制）：</strong>PA 是否真的扩大了前缀终点覆盖、并在单例终点上给出中间价值？<strong>RQ3（消融）：</strong>反向、前向与两个阶段的 PA 各自贡献多少？<strong>RQ4（代价）：</strong>额外的后缀采样会不会把环境交互预算用爆？</p>
+<p>模型为 Qwen2.5-1.5B-Instruct 与 Qwen2.5-7B-Instruct。环境是 ALFWorld（3827 个家务任务，六类：Pick、Look、Clean、Heat、Cool、Pick2；评测用 seen 类别与实例变体共 140 题）和 WebShop（超 110 万商品、12000 条用户指令，评测测试集 500 题）。回合上限分别为 50 和 15 轮，输出格式为 <code>&lt;think&gt;</code> 再 <code>&lt;action&gt;</code>。所有 RL 方法：每步 16 个任务、每任务 8 条 rollout；本文再从中采 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi><mo>=</mo><mn>8</mn></mrow></math></span> 条前缀、每个独特终点 2 条后缀。优化器 Adam，学习率 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mn>10</mn><mrow><mo>−</mo><mn>6</mn></mrow></msup></mrow></math></span>，常数调度，梯度裁剪 1.0，温度 1.0、top-p 0.95。训练在 4 张 NVIDIA H100 上进行，ALFWorld 100 次迭代，WebShop 150 次迭代；每次运行随机采样 128 个任务，三个匹配随机种子平均。本文方法的标准差来自固定检查点上的三次评测种子；部分基线数字引自 GiGPO 与 CRPS 论文。</p>
+</section>
+<h4>结果与实验分析</h4>
+<section class="analysis results" data-part="results">
+<p><strong>RQ1 主表。</strong>在 1.5B 尺度，提示基线整体很弱：Qwen2.5 在 ALFWorld All 仅 4.1%、WebShop 成功 5.2%；Reflexion 也只有 21.8% 与 21.9%。GRPO 把 ALFWorld All 提到 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>72.8</mn><mi>±</mi><mn>3.6</mn></mrow></math></span>、WebShop 成功 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>56.8</mn><mi>±</mi><mn>3.8</mn></mrow></math></span>；GiGPO 再升到 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>86.7</mn><mi>±</mi><mn>1.7</mn></mrow></math></span> 与 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>65.0</mn><mi>±</mi><mn>3.2</mn></mrow></math></span>。本文方法达到 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>90.1</mn><mi>±</mi><mn>2.0</mn></mrow></math></span> 与 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>80.2</mn><mi>±</mi><mn>3.9</mn></mrow></math></span>，相对 GRPO 分别高 17.3 与 23.4 个百分点，相对 GiGPO 高 3.4 与 15.2 个百分点。WebShop 分数为 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>88.6</mn><mi>±</mi><mn>1.5</mn></mrow></math></span>，同样高于 GiGPO 的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>83.1</mn><mi>±</mi><mn>1.6</mn></mrow></math></span>。7B 尺度上，本文 ALFWorld All 为 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>96.1</mn><mi>±</mi><mn>1.4</mn></mrow></math></span>、WebShop 成功 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>82.6</mn><mi>±</mi><mn>1.2</mn></mrow></math></span>、分数 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>92.5</mn><mi>±</mi><mn>1.1</mn></mrow></math></span>，相对 GRPO（<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>77.6</mn><mi>±</mi><mn>5.2</mn></mrow></math></span> / <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>66.1</mn><mi>±</mi><mn>3.7</mn></mrow></math></span>）高 18.5 与 16.5 个百分点，相对 GiGPO（<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>90.8</mn><mi>±</mi><mn>1.3</mn></mrow></math></span> / <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>72.8</mn><mi>±</mi><mn>3.2</mn></mrow></math></span>）高 5.3 与 9.8 个百分点。最强结果出现在 7B 的 Pick/Look/Clean/Heat：四类均达到 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>100.0</mn><mi>±</mi><mn>0.0</mn></mrow></math></span>。最弱的是 1.5B 的 Clean（<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>84.2</mn><mi>±</mi><mn>4.23</mn></mrow></math></span>，低于 GiGPO 的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>94.8</mn><mi>±</mi><mn>3.8</mn></mrow></math></span>）以及 7B 的 Cool（<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>85.9</mn><mi>±</mi><mn>6.0</mn></mrow></math></span>，低于 GiGPO 的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>89.3</mn><mi>±</mi><mn>8.2</mn></mrow></math></span>）。作者据此认为方法在不同交互结构的任务上总体有效，但并没有在每一个子类上都压过最强步级分组基线。闭源提示中 Gemini-2.5-Pro 的 ALFWorld All 为 60.3%、WebShop 成功 35.9%，仍明显低于经过 RL 的 1.5B 模型，说明这两项基准的难点主要在多轮交互策略而不是纯语言能力。</p>
+<p><strong>RQ2 机制。</strong>图 3 在 ALFWorld、Qwen2.5-7B 上比较 PA 与 GRPO 的前缀终点覆盖。两者从同一检查点、同一数据初始化，PA 对每个非终止终点采恰好两条后缀。随着训练进行，PA 保持更宽的终点集合；在只被一条前缀到达的单例终点上，GRPO 只能看到一个二元结果、无法给出中间价值，而 PA 的两条后缀在一成一败时给出 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>V</mi></mrow><mo>^</mo></mover><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0.5</mn></mrow></math></span>。文中还报告：从最早到最晚的分组，PA 的单例覆盖从约 70 降到 48.7，但价值为 1 的单例从约 25 升到 32.2，价值 0.5 的从约 13 降到 8.1；GRPO 则同时失去覆盖（约 72 到 24.6）和高价值终点（约 34 到 17.9）。这支持“先比较终点、再比较收官”确实在扩大可解区域，而不是只是把成功集中到更少的路径上。图 4 把 WebShop 的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">|</mo><mi>ℰ</mi><mo stretchy="false">|</mo></mrow></math></span> 分成四个阶段：反向阶段把均值从 4.08 压到 2.21，<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">|</mo><mi>ℰ</mi><mo stretchy="false">|</mo><mo>=</mo><mn>1</mn></mrow></math></span> 的比例在后期反向达到 46%，说明策略先把 rollout 收束到参考附近的可靠终点；前向早期均值回到 6.68，66% 的组达到 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">|</mo><mi>ℰ</mi><mo stretchy="false">|</mo><mo>≥</mo><mn>7</mn></mrow></math></span>，后期稳定在 4.92。能力区域是先锚定、再向外扩，而不是一开始就广撒网。</p>
+<p><strong>RQ3 与 RQ4。</strong>表 2 在 WebShop、1.5B 上做组件消融：仅反向且不用 PA 为 68.8%；加上前向升到 74.7%；再只在反向启用 PA 到 76.6%；两阶段都用 PA 达到 80.2%，比仅反向基线高 11.4 个百分点。前向扩张和成对优势都不是装饰。图 5 则表明，尽管前向阶段每组大约 5.9 个独特终点、每个非终止终点还要采两条后缀，PA 在匹配的累计环境步数下验证成功率仍更高；后期反向时 8 条前缀平均只到 2.21 个终点，需要采后缀的终点并不多，而反向已经练出的短收官又限制了前向阶段的无效长轨迹。因此额外分支并不必然推高每步环境交互。作者只定性写道 PA 每步环境步数通常少于基线，没有在正文给出逐步的绝对步数表，这一点应记为证据强度一般。</p>
+<p>把这些数字放回研究问题里：主结果支持“整体成功率可以超过最强同设定基线”，但不支持“每一类家务任务都更强”。WebShop 上的相对增益明显大于 ALFWorld（1.5B 上对 GiGPO 的成功率为 +15.2 对 +3.4），这与购物任务更依赖早期搜索是否走进可购买的商品页、因而更吃前缀信用的直觉相符，但论文没有做“把同一批失败案例按前缀错误还是后缀错误分类”的误差分析，这个解释仍是推测。CRPS 在 1.5B / 7B 的 ALFWorld All 为 83.0 / 86.0、WebShop 成功 61.0 / 74.0，低于本文，但其数字无标准差、且是转引，只能作弱对照。训练协议里奖励缩放为 10、关闭 KL 与熵，意味着优化几乎完全依赖成对优势本身；若优势在全后缀失败时消失，更新就会停，这与作者承认的失败模式一致。评测方面，ALFWorld 用的是 140 个 seen 变体而非完全 held-out 的 unseen 官方划分说明中的全部细节，推广边界需要读者自行收窄。</p>
+</section>
+<h4>图表阅读</h4>
+<section class="analysis" data-part="figures">
+<div class="table-wrap">
+<table>
+<thead><tr><th>方法（1.5B / 7B）</th><th>ALFWorld All</th><th>WebShop Score</th><th>WebShop Succ.</th></tr></thead>
+<tbody>
+<tr><td>GRPO</td><td>72.8±3.6 / 77.6±5.2</td><td>75.8±3.5 / 79.3±2.8</td><td>56.8±3.8 / 66.1±3.7</td></tr>
+<tr><td>GiGPO（最强同设定基线）</td><td>86.7±1.7 / 90.8±1.3</td><td>83.1±1.6 / 84.4±2.9</td><td>65.0±3.2 / 72.8±3.2</td></tr>
+<tr><td>Ours（PA + 课程）</td><td>90.1±2.0 / 96.1±1.4</td><td>88.6±1.5 / 92.5±1.1</td><td>80.2±3.9 / 82.6±1.2</td></tr>
+</tbody>
+</table>
+</div>
+<p>表 1 取主列；完整六类分解见原文。图 3–4 应连着看：先看终点覆盖是否变宽，再看 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">|</mo><mi>ℰ</mi><mo stretchy="false">|</mo></mrow></math></span> 是否经历“收束再展开”。图 5 把验证成功对准累计环境步，用来回答“多采后缀是否更贵”。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>WebShop 1.5B 配置</th><th>Reverse PA</th><th>Forward PA</th><th>Succ. (%)</th></tr></thead>
+<tbody>
+<tr><td>仅反向</td><td>–</td><td>–</td><td>68.8</td></tr>
+<tr><td>反向 + 前向</td><td>–</td><td>–</td><td>74.7</td></tr>
+<tr><td>反向 + 前向</td><td>✓</td><td>–</td><td>76.6</td></tr>
+<tr><td>反向 + 前向（全文）</td><td>✓</td><td>✓</td><td>80.2</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<h4>消融、主张与证据、局限</h4>
+<section class="analysis" data-part="claim">
+<p>去掉前向课程会损失 5.5 个百分点（80.2 对 74.7 的反向+前向但无 PA 之后，再对照 68.8 的仅反向），说明“先钉住再扩展”不是可有可无的训练顺序。去掉 PA、只保留课程，最高停在 74.7，说明课程提供的是更合适的起点分布，真正把“走到哪”和“如何收官”分开的是成对优势。作者主张：稀疏终局奖励加上能力区域扩张，足以在 ALFWorld 与 WebShop 上超过轨迹级 RL 和强长程基线。实验实际表明的是：在这两个基准、两个 Qwen2.5 尺度、匹配的 8-rollout 协议下，方法的整体成功率与 WebShop 分数全面领先，且消融与终点统计与机制叙述一致。尚未被证明的是：在没有成功参考或不能从中间上下文重置的环境（例如许多真实工具调用与软件工程任务）中，反向阶段是否还能启动；以及 Clean/Cool 上相对 GiGPO 的落后，究竟是任务结构不匹配、参考质量问题，还是超参（如 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>η</mi></mrow></math></span>）未调。作者自己列出的局限很坦率：反向依赖成功参考，后缀采样要能从中间上下文重启；若所有采样后缀都失败，左右优势都会消失；靠近已知解起步能降低这种风险，但若可解上下文落在已采样前缀够不到的地方，扩张可能停滞。此外，主表部分基线数字来自先前论文而非完全复现，CRPS 没有标准差；训练效率一节缺少逐步环境步的绝对表。奖励是缩放后的二元终局奖励，没有过程奖励或学习型奖励模型，hackability 相对较低，但对“差一点就成功”的轨迹仍然不敏感。</p>
+</section>
+<h4>贡献</h4>
+<section class="analysis" data-part="contrib">
+<p>贡献类型：New Mechanism（能力区域 + 成对优势）与 Objective（前缀/后缀分开的裁剪目标）以及 Empirical Finding（反向锚定后再前向扩张、终点覆盖与代价并不必然恶化）。不是新基准或新数据集。</p>
+</section>
+<h4>研究价值与迁移</h4>
+<section class="analysis" data-part="migration">
+<p>对 RL/Agent 主线的价值很直接：它给“稀疏终局奖励下的长程 LLM 智能体”提供了一个可操作的信用结构，而不必先训练过程奖励模型。可迁移的机制是“按到达终点的经验价值给前缀打分、按终点内相对成败给后缀打分，并用参考轨迹把训练起点放在能力边界附近”。</p>
+<p>原问题是家务与购物这类可重置、有成功示范的交互。迁移问题可以是：在搜索增强或软件工程智能体上，若把“检索到的证据集合 / 测试是否变绿”看作终点上下文，能否用同样的成对优势减少全零组？最小实验是：在 Search-R1 或 SWE-bench 的子集上，用同一骨干比较 GRPO、GiGPO 与“以证据状态或测试结果为终点”的 PA；若环境不能任意重置，可用保存的前缀状态或 teacher-forced 前缀近似重启。模型可用 Qwen2.5-7B 或同级指令模型，基线至少包括 GRPO 与 GiGPO，指标用严格 EM 或 Pass@1，并记录独特终点数与全零组比例。可证伪假设：若终点定义对最终成功没有预测力，则 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>A</mi><mi>L</mi></msup></mrow></math></span> 会退化成噪声，PA 不应显著超过 GRPO。计算成本主要是每终点两条后缀，反向阶段通常更短；风险是参考轨迹质量以及与今日 ECA、既往 Outcome-Mass Alignment / Gaze-RL 的机制重叠。更合适的发表去向是强调智能体 RL 信用分配的会议轨道，而不是再做一个 ALFWorld 刷分短文。计算上，反向阶段 rollout 更短，前向阶段虽然终点变多，但已有的收官策略会截断无效长轨迹；主要额外成本是每终点两条后缀和中间状态重启，在可保存模拟器里通常可接受，在不能重置的真实网站上会显著更贵。碰撞风险来自同日的 ECA（用证据似然做搜索步信用）以及近日的 Outcome-Mass Alignment、Gaze-RL：都在拆长程信用，但终点集合与证据集合不是同一个对象，仍有组合空间。</p>
+</section>
+<h4>五句总结</h4>
+<section class="analysis" data-part="summary">
+<p>这篇论文把长程智能体 RL 改写为扩张策略诱导的能力区域，而不是再堆更密的过程奖励。成对优势把“走到更可解的上下文”和“从那里收官”分成两个相对信号。课程先沿成功参考向后钉住可解区域，再向前扩到策略自己到达的离线状态。ALFWorld 与 WebShop 上两个尺度都超过 GRPO 与 GiGPO，但 Clean/Cool 并非全胜，且方法依赖参考与可重置。最值得带走的，是用终点经验价值做前缀信用、并用 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">|</mo><mi>ℰ</mi><mo stretchy="false">|</mo></mrow></math></span> 稳定与否来推进课程这一套可检验的设计。</p>
+</section>
+</article>
+<article class="paper" data-fulltext="yes" data-id="2611.24059" data-tier="S" id="p-2611.24059">
+<div class="meta">
+<p><strong>Authors:</strong> Zhenrui Yue<sup>*</sup>, Gongxiaohui Chen<sup>*</sup>, Huimin Zeng, Honglei Zhuang, Jiashuo Sun, Zhen Han, Dong Wang（* 共同一作）。通讯：Zhenrui Yue、Dong Wang（&lt;{zhenrui3, dwang24}@illinois.edu&gt;）。</p>
+<p><strong>Affiliation:</strong> University of Illinois Urbana-Champaign（Zhenrui Yue、Huimin Zeng、Jiashuo Sun、Dong Wang）；ANL（Gongxiaohui Chen；原文仅给出缩写 ANL，通常对应 Argonne National Laboratory，但未在页眉展开，记为原文缩写）；Honglei Zhuang 为 Independent Researcher；Zhen Han 为 Amazon。</p>
+<p><strong>Date / Venue / Status:</strong> arXiv 2611.24059v1，submitted 18 Nov 2026，文内预印本日期 November 19, 2026，出现在周四 2026-11-19 arXiv 新公告批次（cs.LG / cs.AI）。非正式发表。按当日 New submissions 收录，不作 BACKFILL。</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.24059">arXiv:2611.24059</a> · <a href="https://arxiv.org/pdf/2611.24059">PDF</a> · <a href="https://arxiv.org/html/2611.24059">HTML</a> · 代码：<a href="https://github.com/Yueeeeeeee/MRPD">github.com/Yueeeeeeee/MRPD</a></p>
+<p><strong>Code Availability:</strong> 论文写明代码位于 github.com/Yueeeeeeee/MRPD。仓库内容与复现完整度未在本报告中逐一核验。</p>
+</div>
+<h3><span class="badge S">S</span> Replay, Don't Resample: Off-Policy Consolidation of Long-Horizon RL Experts</h3>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>前沿模型的后期训练常常是：先在每个领域用强化学习训一个专家，再把这些专家并成一个学生。现在流行的做法是 multi-teacher on-policy distillation（MOPD）：学生必须在每个环境里重新采样，教师再给每个 token 打分。这很贵，而且学生会继承最终专家已经漂掉的行为。作者指出，专家自己的 RL 日志里其实已经有合并所需的东西——按学习顺序排好的轨迹、采样概率和奖励。</p>
+<p>他们提出 MRPD：按专家原来的训练顺序回放这些日志，在记录轨迹上重算策略梯度，并在记录前缀上把学生拉向最终专家的下一 token 分布。回放虽然来源是离策略的，但因为学生始终跟着当时的记录策略走，重要性比大多落在裁剪区间内，所以过程是准在策略的。合并时既不采样、也不调用环境或奖励模型，在三个长程智能体域（推理、搜索、SQL）上得到最好的学生，整体平均 58.6，超过在线 RL 与同一批专家上的 MOPD，而合并成本大约只有训这些专家的七分之一。</p>
+</section>
+<h4>背景与研究缺口</h4>
+<section class="analysis" data-part="background">
+<p>用可验证奖励做强化学习，已经是把语言模型变成会用工具的长程智能体的标准路径。一旦领域变多，实验室往往先训单域专家，再合并。参数合并（uniform soup、TIES）几乎免费，但常常在某些域塌掉。在策略蒸馏则更强：学生在环境里采样，教师在这些新前缀上提供 token 级 KL 或奖励，Kimi K3、DeepSeek-V4 一类系统都走这条路。代价是明确的：每一步都要等最长的那条轨迹，工具调用和教师前向叠在一起；并且教师是最终专家，学生会把最终专家已经学歪的行为（例如搜索把回合用满）一起学过来。</p>
+<p>日志通常在训练结束就被扔掉。并发的 REGEN 开始回收单域 GRPO 的 rollout，但把它池化成一个数据集，用离线的优势加权似然来训。这就把“专家是怎么学会的”变成了“专家最后留下了哪些样本”。缺的是把日志当成课程：早期批次来自接近初始化的策略，晚期批次才接近最终专家。若学生按这个顺序走，它面对的记录策略始终跟自己很近，离策略数据也可以用在策略的裁剪更新来消化。若不按顺序、把 300 步洗成一锅，学生会同时遇到所有阶段的轨迹，训练-推理间隙会一直很大。MRPD 要检验的正是：顺序本身是不是比数据量或奖励形式更重要。</p>
+</section>
+<h4>核心洞察</h4>
+<section class="analysis" data-part="insight">
+<p>专家强化学习已经为合并付过一次环境交互的账。真正该再利用的不是最终检查点里的静态样本，而是按时间排好的训练日志。顺着这条课程回放，重要性比可以对着记录策略来算，学生会保持准在策略；再在同样的前缀上蒸馏最终专家的分布，就能同时保留“当时是怎么学会的”和“最后学会了什么”。日志是课程，不是数据混合。</p>
+</section>
+<h4>方法深读：从输入到输出</h4>
+<section class="analysis method" data-part="method">
+<p>设定有 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>D</mi></mrow></math></span> 个域，每个域有环境、工具和二元奖励 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>R</mi><mo>∈</mo><mo stretchy="false">{</mo><mo>−</mo><mn>1</mn><mo>,</mo><mo>+</mo><mn>1</mn><mo stretchy="false">}</mo></mrow></math></span>。所有模型从同一个监督检查点 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 出发。域 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>d</mi></mrow></math></span> 的专家用强化学习训 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>K</mi></mrow></math></span> 步，最终教师记为 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mi>π</mi><mi>T</mi><mi>d</mi></msubsup></mrow></math></span>。专家在第 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math></span> 步用记录策略 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mi>π</mi><mrow><mi>k</mi><mo>,</mo><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow><mi>d</mi></msubsup></mrow></math></span> 采样一批轨迹，执行工具、打分，再更新得到 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mi>π</mi><mi>k</mi><mi>d</mi></msubsup></mrow></math></span>。每条样本存下 token <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false">)</mo></mrow></math></span>、只覆盖模型生成 token 的损失掩码 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>M</mi></mrow></math></span>（工具输出不进损失）、奖励 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>R</mi></mrow></math></span>，以及采样对数概率 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>log</mi><msubsup><mi>π</mi><mrow><mi>k</mi><mo>,</mo><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow><mi>d</mi></msubsup><mo stretchy="false">(</mo><msub><mi>y</mi><mi>t</mi></msub><mo>∣</mo><mi>x</mi><mo>,</mo><msub><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo stretchy="false">)</mo></mrow></math></span>。全部专家日志组成学生的回放缓冲。</p>
+<p>MRPD 同样走 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>K</mi></mrow></math></span> 步。第 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math></span> 步取各专家第 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math></span> 个训练步的批次并起来，做一次优化。学生因此按时间顺序消费专家经验：先靠近 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span>，再靠近最终专家。凡是涉及重要性比的目标，都对着当时的记录策略计算 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>r</mi><mi>t</mi></msub><mo>=</mo><msub><mi>π</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>y</mi><mi>t</mi></msub><mo>∣</mo><mi>x</mi><mo>,</mo><msub><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo stretchy="false">)</mo><mo>/</mo><msubsup><mi>π</mi><mrow><mi>k</mi><mo>,</mo><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow><mi>d</mi></msubsup><mo stretchy="false">(</mo><msub><mi>y</mi><mi>t</mi></msub><mo>∣</mo><mi>x</mi><mo>,</mo><msub><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo stretchy="false">)</mo></mrow></math></span>。这正是专家自己那次裁剪更新里的比，只是把专家换成了学生。因为回放保持时间顺序，学生与 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mi>π</mi><mrow><mi>k</mi><mo>,</mo><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow><mi>d</mi></msubsup></mrow></math></span> 的间隙大部分时间落在裁剪范围内，所以数据虽是离策略采来的，更新过程仍是准在策略的。这是反直觉处：通常离策略数据最怕的是比率炸裂，这里用“跟着专家的学习轨迹走”把炸裂压住，而不是再引入保守的行为克隆约束。</p>
+<p>目标由两项组成。策略梯度项与 GRPO 相同，优势是同一 prompt 的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>g</mi></mrow></math></span> 个样本组标准化后的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>A</mi></mrow><mo>^</mo></mover><mo>=</mo><mo stretchy="false">(</mo><mi>R</mi><mo>−</mo><mover><mrow><mi>R</mi></mrow><mo stretchy="true">¯</mo></mover><mo stretchy="false">)</mo><mo>/</mo><mo stretchy="false">(</mo><msub><mi>σ</mi><mi>R</mi></msub><mo>+</mo><mi>ϵ</mi><mo stretchy="false">)</mo></mrow></math></span>，再对 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>r</mi><mi>t</mi></msub></mrow></math></span> 做双侧裁剪；全对或全错的 prompt 没有梯度，也没有额外 KL 惩罚。蒸馏项在每个被掩码覆盖的记录前缀 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>s</mi><mi>t</mi></msub><mo>=</mo><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><msub><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo stretchy="false">)</mo></mrow></math></span> 上，把学生拉向该域最终专家：<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>ℓ</mi><mrow><mrow><mi mathvariant="normal">K</mi><mi mathvariant="normal">L</mi></mrow></mrow></msub><mo stretchy="false">(</mo><msub><mi>s</mi><mi>t</mi></msub><mo stretchy="false">)</mo><mo>=</mo><mi>β</mi><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">K</mi><mi mathvariant="normal">L</mi></mrow><mo maxsize="1.2em" minsize="1.2em">(</mo><msub><mi>π</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><mo>·</mo><mo>∣</mo><msub><mi>s</mi><mi>t</mi></msub><mo stretchy="false">)</mo><mspace width="0.167em"></mspace><mo fence="false" stretchy="false">‖</mo><mspace width="0.167em"></mspace><msubsup><mi>π</mi><mi>T</mi><mi>d</mi></msubsup><mo stretchy="false">(</mo><mo>·</mo><mo>∣</mo><msub><mi>s</mi><mi>t</mi></msub><mo stretchy="false">)</mo><mo maxsize="1.2em" minsize="1.2em">)</mo></mrow></math></span>。KL 可以只在记录 token 上做有偏估计并走进优势与裁剪（sampled-token），也可以在词表上闭式计算、直接最小化且不经过裁剪（dense）。默认是 dense 反向 KL，用 top-<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math></span> 个 token 加一个尾质量原子，<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi><mo>=</mo><mn>256</mn></mrow></math></span>，<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>β</mi><mo>=</mo><mn>1</mn></mrow></math></span>。完整目标在记录批次而不是 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mi>θ</mi></msub></mrow></math></span> 自己的样本上取期望，第一项把专家当时的训练目标接到学生身上，第二项在每个位置把学生拉向最终专家。</p>
+<p>变体用来分离机制：只用 sampled-token 蒸馏；去掉蒸馏只留 PG（离线 GRPO）；去掉 PG 只留蒸馏；两项都去掉则退化为对全部记录做 NLL（SFT）或只对 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>R</mi><mo>=</mo><mn>1</mn></mrow></math></span> 的样本做 NLL（offline RAFT）；以及把 dense 项改成前向 KL。代价上，MRPD 每一步只有学生更新和各专家在本域记录批次上的一次前向，没有学生生成和工具调用。状态是带工具观察的多轮前缀，动作是模型 token，策略是共享的学生 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mi>θ</mi></msub></mrow></math></span>，轨迹来自专家日志，奖励是可验证的二元结果，信用来自组相对优势，蒸馏则提供稠密的 token 级教师信号。</p>
+<p>一次更新的数据流是：读出第 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math></span> 步三个域的日志批次并拼接，对学生做前向得到 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mi>θ</mi></msub></mrow></math></span> 在记录 token 上的概率以及（若用 dense KL）在 top-<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math></span> 原子上的分布，对各专家只在本域记录前缀上做一次前向以提供教师分布，然后用记录的旧对数概率计算比率与组相对优势，反向传播式 (3)。没有环境步进，也没有学生自己的解码循环。掩码 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>M</mi></mrow></math></span> 把检索到的文档、SQL 结果或代码输出排除在损失之外，避免学生去模仿环境文本。默认选择 dense 反向 KL 而不是 MOPD 常用的 sampled-token 估计，是因为后者要穿过重要性比和裁剪：一旦学生暂时走出记录策略的邻域，最需要纠正的 token 反而得不到梯度；闭式 KL 不经过裁剪，能把学生拉回教师邻域。这也解释了后文打乱顺序时，没有 KL 的设定掉点更狠。超参上 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>β</mi></mrow></math></span> 默认取 1，表 4 显示 0.1 到 3 的变化只带来不到一个 Overall 点的摆动，说明方法对蒸馏强度并不脆弱；真正敏感的是批次顺序，而不是这一系数。工具输出被掩码还带来一个实现上的好处：学生不会在 SQL 结果或检索段落上浪费梯度，PG 与 KL 都集中在模型自己该负责的 token 上。</p>
+</section>
+<h4>关键公式与目标</h4>
+<section class="analysis" data-part="formula">
+<p>第 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>k</mi></mrow></math></span> 步最大化</p>
+<p></p><div class="math-display"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>J</mi><mrow><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">R</mi><mi mathvariant="normal">P</mi><mi mathvariant="normal">D</mi></mrow></mrow></msub><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>𝔼</mi><mrow><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mo stretchy="false">{</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false">}</mo><mo stretchy="false">)</mo><mi>~</mi><msub><mi>D</mi><mi>k</mi></msub></mrow></msub><mo maxsize="1.623em" minsize="1.623em">[</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>g</mi></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>g</mi></munderover><mfrac><mrow><mn>1</mn></mrow><mrow><mo stretchy="false">|</mo><msub><mi>M</mi><mi>i</mi></msub><mo stretchy="false">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>t</mi><mo>∈</mo><msub><mi>M</mi><mi>i</mi></msub></mrow></munder><mo maxsize="1.623em" minsize="1.623em">(</mo><mo>min</mo><mo maxsize="1.2em" minsize="1.2em">(</mo><msub><mi>r</mi><mrow><mi>i</mi><mo>,</mo><mi>t</mi></mrow></msub><msub><mover accent="true"><mrow><mi>A</mi></mrow><mo>^</mo></mover><mi>i</mi></msub><mo>,</mo><mspace width="0.278em"></mspace><msub><mover><mrow><mi>r</mi></mrow><mo stretchy="true">¯</mo></mover><mrow><mi>i</mi><mo>,</mo><mi>t</mi></mrow></msub><msub><mover accent="true"><mrow><mi>A</mi></mrow><mo>^</mo></mover><mi>i</mi></msub><mo maxsize="1.2em" minsize="1.2em">)</mo><mo>−</mo><mi>β</mi><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">K</mi><mi mathvariant="normal">L</mi></mrow><mo maxsize="1.2em" minsize="1.2em">(</mo><msub><mi>π</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><mo>·</mo><mo>∣</mo><msub><mi>s</mi><mrow><mi>i</mi><mo>,</mo><mi>t</mi></mrow></msub><mo stretchy="false">)</mo><mspace width="0.167em"></mspace><mo fence="false" stretchy="false">‖</mo><mspace width="0.167em"></mspace><msubsup><mi>π</mi><mi>T</mi><mi>d</mi></msubsup><mo stretchy="false">(</mo><mo>·</mo><mo>∣</mo><msub><mi>s</mi><mrow><mi>i</mi><mo>,</mo><mi>t</mi></mrow></msub><mo stretchy="false">)</mo><mo maxsize="1.2em" minsize="1.2em">)</mo><mo maxsize="1.623em" minsize="1.623em">)</mo><mo maxsize="1.623em" minsize="1.623em">]</mo></mrow></math></div>
+<p>其中 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mover><mrow><mi>r</mi></mrow><mo stretchy="true">¯</mo></mover><mrow><mi>i</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">p</mi></mrow><mo stretchy="false">(</mo><msub><mi>r</mi><mrow><mi>i</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>,</mo><mn>1</mn><mo>−</mo><msub><mi>ϵ</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi></mrow></mrow></msub><mo>,</mo><mn>1</mn><mo>+</mo><msub><mi>ϵ</mi><mrow><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">i</mi></mrow></mrow></msub><mo stretchy="false">)</mo></mrow></math></span>，专家训练使用 clip <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">(</mo><mn>0.2</mn><mo>,</mo><mn>0.28</mn><mo stretchy="false">)</mo></mrow></math></span>、学习率 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mn>10</mn><mrow><mo>−</mo><mn>6</mn></mrow></msup></mrow></math></span>、无 KL 惩罚。与 MOPD 的差别是：期望里的轨迹来自日志 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>D</mi><mi>k</mi></msub></mrow></math></span> 而不是学生当场采样，比率对着 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msubsup><mi>π</mi><mrow><mi>k</mi><mo>,</mo><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow><mi>d</mi></msubsup></mrow></math></span> 而不是学生的旧策略，教师分布也只在记录前缀上查询。</p>
+</section>
+<h4>手造 Toy Example</h4>
+<section class="analysis" data-part="toy">
+<p>设想两个域、各两步日志。第 1 步专家还接近 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span>，记录概率高，学生从同一初始化出发，重要性比接近 1，PG 项几乎就是专家当时的更新。第 2 步专家已经变强，若学生也按顺序走完了第 1 步，它仍靠近第 2 步的记录策略，裁剪很少触发，同时 dense KL 开始把剩余质量拉向最终专家。若把两步洗乱，学生在第 1 次更新就可能碰到第 2 步的“已经很强的专家轨迹”，比率大量出界，PG 被裁掉，只剩（或甚至没有）蒸馏项可学，这正是后文“打乱顺序损失更大、尤其在去掉 KL 时”的微型版本。奖励在全对或全错的组内不提供梯度，这些组要靠蒸馏项才能动。</p>
+</section>
+<h4>基线对照</h4>
+<section class="analysis" data-part="baseline">
+<p>无训练：<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span>、均匀 soup、TIES（density 0.2，<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>λ</mi><mo>=</mo><mn>1</mn></mrow></math></span>）。在线 RL（三域同时，每域每步 24 prompt <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>×</mo></mrow></math></span> 8 样本，共 576 条，300 步）：RAFT、GRPO、PPO。在策略蒸馏：MOPD，以及加任务奖励的 MOPD+GRPO。单域 GRPO / PPO 专家作为上限参考，不参与学生排名。最强需击败的训练学生基线是 MOPD 与 MOPD+GRPO；最强训练免费基线是 TIES。</p>
+</section>
+<h4>实验设置</h4>
+<section class="analysis" data-part="setup">
+<p><strong>RQ1：</strong>同一批专家日志上，MRPD 能否在更低成本下超过在线 RL 与 MOPD？<strong>RQ2：</strong>增益主要来自轨迹本身，还是来自 PG 与蒸馏两项？<strong>RQ3：</strong>日志的顺序、数量与 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>β</mi></mrow></math></span> 谁更重要？<strong>RQ4：</strong>回放是否真的保持准在策略（训练-推理间隙与裁剪比例）？</p>
+<p>三个智能体域：推理是 ReTool 设定的竞赛数学加 Python 沙箱，最多 16 次代码、16k token；搜索是 Search-R1 设定，E5 检索 Wikipedia，最多 8 次搜索；SQL 是 Spider 与 BIRD，只读 SQLite，最多 8 轮，按执行对错计分。训练提示分别为 DAPO-Math-17k、NQ+HotpotQA、Spider 训练集。所有模型从 Qwen3-4B 经 ReTool SFT 冷启动后的 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 出发。专家是单域 GRPO：每步 64 prompt <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>×</mo></mrow></math></span> 8 样本，学习率 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mn>10</mn><mrow><mo>−</mo><mn>6</mn></mrow></msup></mrow></math></span>，clip <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo stretchy="false">(</mo><mn>0.2</mn><mo>,</mo><mn>0.28</mn><mo stretchy="false">)</mo></mrow></math></span>，无 KL，异步训练 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>K</mi><mo>=</mo><mn>300</mn></mrow></math></span> 步。默认回放批次为 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>3</mn><mo>×</mo><mn>64</mn><mo>×</mo><mn>8</mn><mo>=</mo><mn>1536</mn></mrow></math></span> 条/步，学生也走 300 步并沿用专家超参。评测在 300 步后、十六个 held-out 集上进行：AIME 2024/2025 与 AMC 2023 用 32 样本平均准确率，Minerva、OlympiadBench、MATH-500 用 4 样本；七个搜索集用 exact match；Spider dev/test 与 BIRD dev 用 4 样本执行准确率。Overall 是三个域平均的再平均。训练与计时均在 8 张 H100 上。</p>
+</section>
+<h4>结果与实验分析</h4>
+<section class="analysis results" data-part="results">
+<p><strong>RQ1 主结果与成本。</strong>表 1 中 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 的 Overall 仅 28.2，均匀 soup 到 46.1，TIES 已经到 56.8，说明免费合并并不弱。在线 RAFT / GRPO / PPO 为 51.5 / 52.5 / 52.6，反而低于 TIES，也远低于单域 GRPO 专家的 59.3 与 PPO 专家的 57.4。MOPD 与 MOPD+GRPO 达到 58.1 与 58.2。MRPD 以 58.6 成为最好的训练学生，并且是唯一在三个域都进入前两名的学生：推理 63.7（MOPD 略高，为 63.8）、搜索 42.0（TIES 最好，为 42.6）、SQL 70.1（甚至略高于该域 GRPO 专家的 69.6）。相对三个在线 RL，MRPD 至少高出约 6 个点；相对同一批专家上的 MOPD，它略强，但成本差距很大。8 张 H100 上，MOPD+GRPO 300 步要 29.4 小时，在线 GRPO 22.1、PPO 24.1，MRPD 为 9.2 小时。三个专家自己分别用了 30、32 与 4.5 小时，合并只占其训练算力的 14%，约七分之一。MRPD 单步平均 110 秒（更新 79、专家前向 24、读下一批日志 6），最长不超过 173 秒；MOPD+GRPO 单步平均 350 秒，其中 340 秒是生成，最长一步 878 秒（文中另一处写到 1887 秒属于 PPO 的极端慢 rollout）。若把回放改成与在线方法等量的 576 条/步，全程只需 3.7 小时，单步 44 秒，约为 MOPD+GRPO 的八分之一、在线 GRPO/PPO 的六分之一。表 4 显示这个数据匹配设定只让 Overall 下降 0.2，仍有 63.6 / 41.6 / 70.1 的域平均。</p>
+<p><strong>RQ2 轨迹与两项损失。</strong>最干净的对照是：同样按顺序回放、把两项都去掉。表 3 中，对全部记录做 SFT 得到 57.5，只对正确样本做 RAFT 得到 57.6，只留 PG 的离线 GRPO 为 57.7。它们已经超过所有在线 RL，离线 RAFT 相对在线 RAFT 的 51.5 高出 6.1 个点。作者的解释是：每一步日志都来自在该域走得更远的专家，而不是来自同时打三个域、更慢爬升的学生。蒸馏项贡献最大：单独用 sampled-token KL 到 57.7，dense 反向 KL 到 58.2；再加 PG 分别升到 58.2 与 58.6。因此默认 MRPD 比日志 SFT 高 1.1–1.2 个点，大约走完了通往专家上限的三分之二。时间动态也不同：dense KL 单独学得最快，100/200/300 步为 57.9 / 58.4 / 58.2，后期停滞；加上 PG 后起得慢一些，但 300 步时更高。前向与反向 KL 单独几乎打平（58.3 与 58.2），加上 PG 后反向升到 58.6、前向降到 57.8，差距出现在最后 100 步。作者猜想这时学生已靠近专家，剩余误差落在自己的高概率 token 上，寻求众数的反向 KL 更能容纳 PG 的更新。</p>
+<p><strong>RQ3 与 RQ4，以及一个失败继承现象。</strong>表 4 是关键证据：把 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>β</mi></mrow></math></span> 从 1 改到 3、0.3、0.1，Overall 只掉 0.5 到 0.7；把每步样本从 1536 减到 576，只掉 0.2；把 300 步打乱，dense KL 掉 0.6，sampled-token 掉 1.0。去掉 KL 后打乱的惩罚更大，表 3 中 SFT / RAFT / PG-only 分别掉 3.8 / 2.6 / 3.1。打乱并不会让学生一开始更慢：200 步时打乱甚至与顺序持平或略高（dense 为 58.1 对 57.8），但随后 100 步几乎停滞，顺序回放却还能再涨 0.8 到 1.4。于是“顺序比数量或奖励更重要”不是口号，而是同日志上的可重复差值。MOPD 在搜索上最弱（40.6），图 5 显示最终搜索专家约 60% 的轨迹打满回合上限，MOPD 的学生从第 50 步起就有约 80% 打满；回放在记录前缀上蒸馏，不重新采样那些已经漂掉的长轨迹，因而没有继承这条曲线。训练-推理对数概率差在顺序回放中大多落在裁剪区间，最多约 4% 的 token 被裁剪，并随日志靠近最终专家而缩小；打乱回放则一直维持高间隙。熵方面，MRPD 从 0.38 走到 0.36，没有崩也没有被蒸馏抬飞。第二次独立的 MRPD 跑到 58.5，与主结果 58.6 接近。最弱的地方也很清楚：搜索上 TIES 仍然略高；方法依赖学生与专家共享同一 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span>，换初始化尚未做；规模停在 4B 稠密模型、三域、单次主运行。训练奖励曲线（图 3）不能用来给方法排名：回放看到的是专家日志的平均奖励，在线方法看到的是自己 rollout 的奖励；两者都从约 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>−</mo><mn>0.4</mn></mrow></math></span> 起步，MOPD 因最终专家从第一步就给 token 级信号而升得最快，约 30 步过 0.2，回放日志约 75 步才过 0.2，最后 50 步三者都在约 0.34，在线 GRPO/PPO 则只到 0.14 与 0.19。真正用来比较的是 held-out 表。</p>
+</section>
+<h4>图表阅读</h4>
+<section class="analysis" data-part="figures">
+<div class="table-wrap">
+<table>
+<thead><tr><th>方法</th><th>Reasoning</th><th>Search</th><th>SQL</th><th>Overall</th><th>300 步墙钟（8×H100）</th></tr></thead>
+<tbody>
+<tr><td>SFT Init / Soup / TIES</td><td>47.3 / 56.6 / 60.0</td><td>22.4 / 29.4 / 42.6</td><td>14.9 / 52.5 / 67.7</td><td>28.2 / 46.1 / 56.8</td><td>—</td></tr>
+<tr><td>在线 RAFT / GRPO / PPO</td><td>57.2 / 50.3 / 53.1</td><td>34.1 / 39.7 / 38.3</td><td>63.2 / 67.4 / 66.3</td><td>51.5 / 52.5 / 52.6</td><td>— / 22.1 h / 24.1 h</td></tr>
+<tr><td>MOPD / MOPD+GRPO</td><td>63.8 / 63.4</td><td>40.6 / 41.4</td><td>69.9 / 69.7</td><td>58.1 / 58.2</td><td>29.4 h（+GRPO）</td></tr>
+<tr><td>MRPD（本文）</td><td>63.7</td><td>42.0</td><td>70.1</td><td>58.6</td><td>9.2 h（576/步为 3.7 h）</td></tr>
+<tr><td>单域 PPO / GRPO 专家</td><td>63.6 / 65.2</td><td>— / 43.0</td><td>68.8 / 69.6</td><td>57.4 / 59.3</td><td>专家合计 66.5 h</td></tr>
+</tbody>
+</table>
+</div>
+<p>在线 RL 的推理域平均来自主表 Average 行；搜索 TIES 42.6 为各学生中最高。图 4 比较墙钟与单步最长耗时，图 5 画搜索打满回合的比例，图 6–7 对应间隙与 KL。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>表 4 设定（dense KL + PG）</th><th>Reasoning</th><th>Search</th><th>SQL</th><th>Overall <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Δ</mi></mrow></math></span></th></tr></thead>
+<tbody>
+<tr><td>默认 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>β</mi><mo>=</mo><mn>1</mn></mrow></math></span>，1536/步，按序</td><td>63.7</td><td>42.0</td><td>70.1</td><td>—</td></tr>
+<tr><td>576/步（数据匹配）</td><td>63.6</td><td>41.6</td><td>70.1</td><td>−0.2</td></tr>
+<tr><td>300 步打乱</td><td>63.2</td><td>41.4</td><td>69.4</td><td>−0.6</td></tr>
+<tr><td><span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>β</mi><mo>=</mo><mn>0.1</mn></mrow></math></span></td><td>62.5</td><td>41.7</td><td>69.5</td><td>−0.7</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<h4>消融、主张与证据、局限</h4>
+<section class="analysis" data-part="claim">
+<p>去掉顺序（打乱）比去掉三分之二的样本更伤，尤其在没有 dense KL 的时候，这是全文最强的机制证据。去掉蒸馏项后只剩 57.5–57.7，去掉 PG 则停在 58.2 左右，两项都有贡献但蒸馏更大。作者主张三句：回放轨迹本身已经贡献了大部分增益；PG 与蒸馏都有用；顺序比数量或奖励更重要。实验实际表明的是：在共享 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span>、Qwen3-4B、三个可验证奖励域、300 步这一设定下，这些主张都被同日志对照支持，而且第二次运行的 58.5 与主结果接近。尚未被证明的是：若学生与专家不是同一初始化，准在策略性质是否还在；若换成更大模型或 MoE，成本优势与顺序效应是否仍在；以及搜索上 TIES 略优是否意味着合并在检索任务上另有结构。作者的局限写得很清楚：所有实验都从同一 SFT 检查点出发，没有试过“学生来自别的检查点”或“专家来自别的检查点”；规模限于 4B、三域、多数配置单次运行。额外还应记下：在线方法用 576 条/步、MRPD 默认 1536，主成本对比虽也给了数据匹配的 3.7 小时，但主精度表对应的是 1536 设定；奖励是可验证二元，hackability 低，但搜索打满回合这一漂移说明可验证奖励仍可能学到不良回合结构，只是 MRPD 因为不重新采样而没有把它放大。若有人只看 Overall 的 0.4–0.5 点优势，可能觉得相对 MOPD 几乎打平；真正改变决策的是成本与机制：同样接近专家上限，却不必再付一轮环境交互，并且不会把最终搜索专家的回合膨胀继承过来。</p>
+</section>
+<h4>贡献</h4>
+<section class="analysis" data-part="contrib">
+<p>贡献类型：New Mechanism / Objective（按专家训练顺序回放并组合 PG 与最终专家 dense KL）与 Empirical Finding（日志是课程；顺序大于数量；合并成本约七分之一）。同时提供系统路径：合并阶段不再调用环境。代码已给出。</p>
+</section>
+<h4>研究价值与迁移</h4>
+<section class="analysis" data-part="migration">
+<p>对 RL 与智能体主线，这篇论文改变的是“多专家如何变成一个通才”的默认流程。可迁移机制是：把已有 RL 运行的日志当作有序课程，在记录策略上重算裁剪策略梯度，并在同一前缀上蒸馏最终专家。原问题是推理、搜索与 SQL 三个可验证域的合并。新问题可以是：把近日的单域智能体 RL 专家（例如用 Depth Before Breadth、FlashREINFORCE 或异步协议训出的工具使用专家）的日志按序回放，看在不能共享同一冷启动、或域数更多时，顺序效应是否还在。最小实验是两到三个域的 7B 级专家，比较“按序 MRPD、打乱、池化后的离线 GRPO、以及 MOPD”，主指标用各域 held-out 平均与总体平均，辅以裁剪比例、训练-推理对数概率差和墙钟。可证伪假设：若学生初始化与记录策略差到大多数比率被裁掉，而 dense KL 又不足以把学生拉回邻域，则按序回放不应再明显好于打乱。计算上，回放没有生成与工具调用，成本优势在更长视野下理应放大，但专家前向（尤其是 dense 词表 KL）会随模型变大而上升。碰撞来自 MOPD、并发的 REGEN，以及同日的 COPD / 在策略蒸馏理论分析；差异在于 MRPD 强调时间顺序与准在策略，而不是再采学生轨迹。一个更具体的下一实验是：把 FlashREINFORCE 一类异步单轨迹协议里本来就会写下的日志直接交给 MRPD，检验“没有组内兄弟样本时，按序回放加 dense KL 是否仍能合并多域专家”。若异步日志的记录策略跳动更大，裁剪比例会成为关键中间指标。</p>
+</section>
+<h4>五句总结</h4>
+<section class="analysis" data-part="summary">
+<p>MRPD 不让学生重新进环境，而是按专家学习过的顺序回放训练日志。策略梯度在记录轨迹上重算，最终专家的分布在记录前缀上蒸馏，过程保持准在策略。三个长程智能体域上它得到最好的学生，合并大约只需专家训练算力的七分之一。同日志消融表明：轨迹本身贡献大部分增益，顺序比样本数量更重要。最需要警惕的前提是学生与专家共享同一初始化，以及目前规模仍停在 4B。</p>
+</section>
+</article>
+</section>
+<section id="sec-a">
+<h2>Tier A</h2>
+<details class="paper" id="2611.24267">
+<summary><span class="badge A">A</span> Look Closer, Look Back, or Wait for Agentic Streaming Video Understanding</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.24267" data-tier="A" id="p-2611.24267">
+<div class="meta">
+<p><strong>Authors:</strong> Pengyu Li, Zhitao Gao, Lingling Zhang<sup>†</sup>, Wenxuan Huang, YiCheng Xiao, Chen Zheng, Jun Liu（† 通讯）。</p>
+<p><strong>Affiliation:</strong> Xi’an Jiaotong University（Pengyu Li、Zhitao Gao、Lingling Zhang、Jun Liu）；East China Normal University（Wenxuan Huang）；Institute of Automation, Chinese Academy of Sciences（YiCheng Xiao）；Open University of China（Chen Zheng）。</p>
+<p><strong>Date / Venue / Status:</strong> arXiv 2611.24267v1，submitted 18 Nov 2026，出现在周四 2026-11-19 新公告批次（cs.CV）。非正式发表。不作 BACKFILL。</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.24267">arXiv:2611.24267</a> · <a href="https://arxiv.org/pdf/2611.24267">PDF</a> · <a href="https://arxiv.org/html/2611.24267">HTML</a> · 代码：<a href="https://github.com/TiezMind/ActiveForager">github.com/TiezMind/ActiveForager</a></p>
+<p><strong>Code Availability:</strong> 全文给出 github.com/TiezMind/ActiveForager。仓库完整度未逐一核验。</p>
+</div>
+<h3><span class="badge A">A</span> Look Closer, Look Back, or Wait for Agentic Streaming Video Understanding</h3>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>流式视频问答有严格的内存和延迟限制。只看最近几帧，当前感知清楚，但历史会丢；把过去帧也塞进上下文，又会稀释对当前场景的注意并引发幻觉。现有级联系统往往在不确定时再去检索历史，却处理不好当前帧模糊、或关键线索还没出现这两种情况。ActiveForager 做一个流式视频智能体：默认只维持干净的短工作窗，需要时才在四种动作里选——直接回答、放大最近高分辨率帧、从记忆中召回并让共享权重的子智能体隔离验证、或者等待后续帧。</p>
+<p>为防止历史证据干扰当前视觉 token，作者加上 Stream-Decoupled Attention Mask（SDAM）。策略用 TUPO 训练：只有当工具带来的证据真的提高了正确答案的似然、并且最终答对时，才给工具奖励，从而避免工具崩塌。在 OVO-Bench 上，方法在更少的主上下文视觉 token 下同时提升实时感知、历史回溯和前瞻响应；在 Video-Holmes 上还把 Qwen3-VL-8B 的零样本多跳准确率从 23.57% 提到 47.14%，约为一倍。</p>
+</section>
+<h4>背景、洞察与管道</h4>
+<section class="analysis method" data-part="method">
+<p>流式设定里，主上下文若持续堆积历史帧，注意力会被拉走。作者的洞察是：工作窗应当保持短而干净，额外证据只按需采集，并且历史视觉与当前视觉在注意力上要隔开。管道是：对每个查询，策略先写简短诊断再选 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>a</mi><mn>1</mn></msub><mo>∈</mo><mo stretchy="false">{</mo><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">Z</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">I</mi><mi mathvariant="normal">n</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow><mo>,</mo><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">t</mi></mrow><mo stretchy="false">}</mo></mrow></math></span>。ZoomIn 读 CPU 环形缓冲里的高分辨率裁剪或密帧；Recall 按时间重叠与变化分数排序历史片段，子智能体在干净 KV 缓存中隔离验证，只在状态为 Found 时返回短事实卡加一帧锚点；Wait 有界地推迟决策。SDAM 在所有层阻断最近帧与额外证据之间的直接注意；当 Recall 成功时，答案 token 不再直接看最近窗，而是看验证过的历史锚点，避免把两段视觉混在一起。</p>
+<p>TUPO 先用 SFT 初始化交互格式，再用反事实工具效用做强化学习。冻结参考模型比较加证据前后正确答案 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>y</mi><mo>*</mo></msup></mrow></math></span> 的对数似然，按答案长度归一化得到 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Δ</mi><msub><mi>I</mi><mi>i</mi></msub></mrow></math></span>；正的工具奖励还要求最终答对、且诊断文本与所选动作匹配。总奖励为 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>R</mi><mi>i</mi></msub><mo>=</mo><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">c</mi></mrow></mrow></msub><mo>+</mo><msub><mi>λ</mi><mrow><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">g</mi></mrow></mrow></msub><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">I</mi><mi mathvariant="normal">G</mi></mrow></mrow></msub><mo>+</mo><msub><mi>λ</mi><mrow><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo>−</mo><msub><mi>λ</mi><mrow><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><msub><mi>C</mi><mi>i</mi></msub></mrow></math></span>，优势是组中心化但不做方差标准化，并按轮次而不是按 token 数均衡路由轮与合成轮，避免长答案吞掉路由更新。这与“只要最终对了就奖励所有工具调用”相反，正是为了阻止工具崩塌。</p>
+</section>
+<h4>实验与结果</h4>
+<section class="analysis results" data-part="results">
+<p>骨干为 Qwen2.5-VL-7B 与 Qwen3-VL-8B，主基准 OVO-Bench 覆盖 Real-Time（RT）、Backward Tracing（BT）与 Forward Active Responding（FAR）。对照包括 Flash-VStream、Dispider、StreamForest、HERMES，以及高分辨率下的 OASIS、StreamScout-R，还有预算对齐的 SimpleStream-4f。另在 StreamingBench 与 Video-Holmes 上做零样本迁移。表 1 的预算约束设定（<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mn>224</mn><mn>2</mn></msup></mrow></math></span> 工作窗）中，Qwen2.5-7B 的 Overall 从 SimpleStream 的 51.41 升到预训练智能体 55.41、再到 TUPO 的 62.57；Qwen3-8B 从 57.85 到 60.47 再到 67.85。高分辨率 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mn>672</mn><mn>2</mn></msup></mrow></math></span> 下，Qwen3-8B 的 ActiveForager Overall 为 71.30，主上下文视觉 token 约 2354，而 OASIS 一类级联会用到 10,000。作者称相对先前级联至少少 64% 的主上下文视觉 token。Table 2 显示 StreamingBench 在 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mn>224</mn><mn>2</mn></msup></mrow></math></span> 上，Qwen2.5 从 50.83 到 66.11（+15.28），Qwen3 从 60.28 到 68.61；<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mn>672</mn><mn>2</mn></msup></mrow></math></span> 上增益分别为 +28.89 与 +18.61。Video-Holmes 上 Qwen3 从 23.57 到 47.14。</p>
+<p>表 3 消融把四种工具拆开：在同一已训练的 Qwen2.5-VL-7B 检查点上，只回答为 51.41，只加 ZoomIn 到 56.75（+5.34），只加 Recall 到 54.63，只加 Wait 到 54.02，四者齐全到 62.57（+11.16）。证据门控与 SDAM 也不是装饰：朴素把 8 帧拼进去会把 Overall 降到 49.14（−2.27），说明乱加历史有害；加上 EvidenceCard、门控与 SDAM 后回到 62.57，HLD 从 86.56 升到 99.46。图 3 显示标准 GRPO 与只鼓励历史工具的 PARA-GRPO 会出现严重工具崩塌，TUPO 能维持三种觅食工具并把验证宏准确率做得最高。效率上，方法强调的是主上下文视觉 token 与任务精度，而非单独给出端到端 FPS；延迟相关数字需看附录，正文主表没有完整的墙钟对照，这一点在效率分解里应标为未报告。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>指标</th><th>基线（SimpleStream-4f, Qwen3-8B, <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mn>224</mn><mn>2</mn></msup></mrow></math></span>）</th><th>ActiveForager (TUPO)</th><th>变化</th></tr></thead>
+<tbody>
+<tr><td>OVO-Bench Overall</td><td>57.85</td><td>67.85</td><td>+10.00</td></tr>
+<tr><td>Video-Holmes Overall</td><td>23.57</td><td>47.14</td><td>+23.57</td></tr>
+<tr><td>主上下文视觉 token（同设定 TUPO）</td><td>255.5</td><td>409.2</td><td>仍远低于 10k 级联</td></tr>
+<tr><td>端到端延迟 / FPS / FLOPs / 显存</td><td>Not Reported</td><td>Not Reported</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<h4>贡献、局限、迁移与是否值得深读</h4>
+<section class="analysis" data-part="claim">
+<p>贡献是 New Mechanism（四路按需觅食 + SDAM + 反事实工具效用奖励）与 Empirical Finding（乱拼接历史会伤精度；TUPO 能阻止工具崩塌）。局限包括：主表效率指标以视觉 token 为主，缺少与级联系统对齐的端到端延迟；FAR 使用官方因果探测评分，跨论文比较需小心协议；长时直播中记忆归档与验证子智能体的摊销成本仍不够透明。对 Video 与 Agent 交叉主线很有价值：它不是把视频生成变快，而是把流式理解做成一个可选择“看近、看回、还是等待”的智能体。</p>
+<p>最小迁移实验：把 SCH 的状态-证据分离接到 EvidenceCard，检验更长视频上 Recall 是否还能找回早期片段而不污染当前窗。基线用 SimpleStream 与去掉 SDAM 的拼接。可证伪假设：若关掉反事实效用、只保留最终正确奖励，工具调用会重新崩塌到单一动作。Worth Deep Reading: YES，尤其应看图 3 的训练动态、表 3 的工具拆解和 SDAM 定义。</p>
+</section>
+</article>
+</div>
+</details>
+<details class="paper" id="2611.23824">
+<summary><span class="badge A">A</span> Evidence-Based Credit Assignment for Search-Augmented Language Models</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.23824" data-tier="A" id="p-2611.23824">
+<div class="meta">
+<p><strong>Authors:</strong> Wen Wang<sup>*</sup>, Jindong Wang<sup>†</sup>, Jiahua Bao, Tu Yongsiqi, Yihao Liu, Junwei He, Wenkui Fan（* 共同相关标注见原文，† 通讯）。</p>
+<p><strong>Affiliation:</strong> University of the Chinese Academy of Sciences（Wen Wang、Junwei He）；Tencent（Wen Wang、Jindong Wang）；Harbin Institute of Technology（Jiahua Bao）；Renmin University of China（Tu Yongsiqi）；Peking University（Yihao Liu）；Beijing Institute of Technology（Wenkui Fan）。</p>
+<p><strong>Date / Venue / Status:</strong> arXiv 2611.23824v1，submitted 18 Nov 2026，出现在周四 2026-11-19 新公告批次（cs.AI）。非正式发表。Comments：16 pages, 4 figures，含补充材料。不作 BACKFILL。</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.23824">arXiv:2611.23824</a> · <a href="https://arxiv.org/pdf/2611.23824">PDF</a> · <a href="https://arxiv.org/html/2611.23824">HTML</a></p>
+<p><strong>Code Availability:</strong> 摘要、评论栏与全文检索未给出公开代码（未核实）。</p>
+</div>
+<h3><span class="badge A">A</span> Evidence-Based Credit Assignment for Search-Augmented Language Models</h3>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>搜索增强语言模型用终局答案奖励做强化学习时，一条轨迹里每一次检索都拿到同一个对错分数。更糟的是，若一组 rollout 全部答错，组中心化优势会变成零，即使有的轨迹已经检索到了有用文档。ECA 在训练时额外引入一个只服务于信用分配的信号：用冻结的当前策略，在“只含问题与去重后已检索文档、不含思考和查询文本”的证据提示上，看参考答案的似然提高了多少，从而把检索的信息增益从措辞变化里隔离出来。</p>
+<p>作者比较了两种回报：ECA-Step 累加逐步裁剪后的势函数增量，ECA-Horizon 保留望远镜式的全程势差，并配上交叉折组标准化、新颖性门控和搜索局部的 token 赋值。在七个 Search QA 基准上，ECA-Horizon 相对纯结果 GRPO 的严格宏平均 EM 在 Qwen2.5-3B/7B-Instruct 上分别提高 1.03 与 4.80 个百分点，并在 MultiHop-RAG 的 816 道多跳推理题上零样本迁移。</p>
+</section>
+<h4>背景、洞察与方法管道</h4>
+<section class="analysis" data-part="background">
+<p>Search-R1 一类方法让模型在推理中穿插检索，只用最终答案是否匹配来做 GRPO / RLOO，从而不必标注每一步检索。问题是结果奖励没有分辨“这次搜索是否带来了新证据”。全失败组尤其致命：相对优势塌缩，那些其实已经搜到桥接实体的轨迹也无法学习。GiGPO 用状态分组缓解一部分方差，但仍缺少对检索内容的中间监督。</p>
+<p>核心洞察是：文档对参考答案的似然贡献，可以在一个去掉思维链和查询措辞的证据专用提示上单独测量。设 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>Φ</mi><mi>i</mi></msub><mo stretchy="false">(</mo><mi>D</mi><mo stretchy="false">)</mo></mrow></math></span> 为冻结策略在只含问题与文档集合 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>D</mi></mrow></math></span> 的提示下，对规范别名 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>y</mi><mo>*</mo></msup></mrow></math></span> 的对数似然。一次新检索把 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>D</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></math></span> 变成 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>D</mi><mi>k</mi></msub></mrow></math></span>，势差就估计这次搜索的信息增量。ECA-Step 把逐步增量裁剪后累加，ECA-Horizon 保留从当前证据到回合结束的望远镜差，避免逐步裁剪切断远程贡献。新颖性门控在 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>D</mi><mi>k</mi></msub><mo>=</mo><msub><mi>D</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></math></span> 时不给正信用，以抑制重复查询。该信号只在训练期计算，推理成本不变。</p>
+</section>
+<h4>实验设置与结果</h4>
+<section class="analysis results" data-part="results">
+<p>主实验在七个 Search QA 集（NQ、TriviaQA、PopQA、HotpotQA、2Wiki、MuSiQue、Bamboogle）上报告问题级严格 EM 的宏平均，测试共 51,713 题。骨干为 Qwen2.5-3B-Instruct 与 7B-Instruct，对照包括未训练 Base、自行训练的 GRPO / RLOO / GiGPO（带标准差），以及文献中的 Search-R1、ZeroSearch、TIPS 等转引结果。消融固定 3B、<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>λ</mi><mo>=</mo><mn>0.1</mn></mrow></math></span>。零样本转移到 MultiHop-RAG Inference-816。</p>
+<p>表 1 与表 2 给出关键数字：3B 上 GRPO 宏平均 EM 为 37.19，ECA-Step 38.05，ECA-Horizon 38.22，相对 GRPO 的 +1.03 与摘要一致；7B 上 GRPO 为 37.82，ECA-Horizon 为 42.62，即 +4.80。值得注意的是 7B 的 GRPO 并没有比 3B 的 GRPO 高多少，ECA-Horizon 的增益主要出现在更大模型上。表 2 还显示，若只对查询文本而不是证据文档打分（query only），3B EM 降到 35.27，低于 GRPO；若把证据信用广播到整段对话（broadcast），为 36.42，同样掉到基线以下。这说明“证据专用提示 + 搜索局部赋值”不是细节，而是方法成立的条件。表 3 的零样本转移上，3B 的 ECA-Step 达到 84.68 EM，超过 GRPO 的 80.02 与 RLOO 的 83.46；7B 的 ECA-Horizon 达到 89.22，超过 GRPO 的 82.84、GiGPO 的 87.25 与 RLOO 的 88.11。</p>
+<p>行为分析同样具体。所有 RL 方法都会用满 4.00 个动作和 3.00 次搜索（Base 在 3B 上平均 2.28 次搜索）。但纯结果 RL 用重复查询来填预算：3B 的重复查询回合比例从 Base 的 23.86% 升到 GRPO 的 42.40% 和 RLOO 的 54.07%；ECA-Step / ECA-Horizon 将其压到 30.26% 与 24.84%。配对题目上，ECA-Horizon 相对 Base 在 3B 把 12,340 道原先错误的题改对（回归 2,166），7B 为 8,861 对 2,158。ECA-Horizon 生成的策略 token 也更少（200.9 对 ECA-Step 的 257.1）。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>方法</th><th>3B 宏 EM</th><th>7B 宏 EM</th><th>MultiHop-RAG 3B / 7B</th></tr></thead>
+<tbody>
+<tr><td>GRPO</td><td>37.19</td><td>37.82</td><td>80.02 / 82.84</td></tr>
+<tr><td>RLOO</td><td>—</td><td>—</td><td>83.46 / 88.11</td></tr>
+<tr><td>GiGPO (w/std)</td><td>—</td><td>—</td><td>65.93 / 87.25</td></tr>
+<tr><td>ECA-Horizon</td><td>38.22</td><td>42.62</td><td>82.48 / 89.22</td></tr>
+</tbody>
+</table>
+</div>
+<p>表中未填的宏平均避免从错位的列中猜数；3B/7B 的 +1.03/+4.80 与 37.19/42.62 来自正文与表 2 的明确陈述。</p>
+</section>
+<h4>贡献、局限、迁移与是否值得深读</h4>
+<section class="analysis" data-part="claim">
+<p>贡献是 New Mechanism（训练期、证据专用的辅助信用）与 Empirical Finding（全失败组可被中间证据信号打破，重复查询可被新颖性门控压下）。局限同样明确：评测仍限于搜索问答，还没有做到代码或通用工具；<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>Φ</mi><mi>i</mi></msub><mo stretchy="false">(</mo><mi>D</mi><mo stretchy="false">)</mo></mrow></math></span> 需要训练期额外的 teacher-forced 前向；单一规范别名的似然不能完美代表“桥接实体”类中间文档，文档 ID 去重也检测不到跨条目的近重复文本。3B 主基准上相对 GRPO 只有约 1 个点，虽有行为指标支持，但效应在小模型上偏瘦。</p>
+<p>迁移实验可以直接接到今日的 Depth Before Breadth：把“证据集合”当作终点上下文，左优势看 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Φ</mi></mrow></math></span> 是否提高，右优势仍用终局 EM。最小实验是在同一 Search QA 协议上比较 GRPO、ECA-Horizon 与“ECA 势作为终点价值的 PA”。可证伪假设：若去掉证据专用提示、改回对完整对话前缀打分，增益应消失（已有 query-only 消融支持这一方向）。Worth Deep Reading: YES——公式与消融清楚，适合做长程检索信用的对照实现，但若只关心大盘点提升，7B 上的 +4.80 比 3B 更值得看。对 RL 主线的价值在于：它给出一种不必标注逐步检索、又能避免全零优势的训练期信号，而且推理开销不变。</p>
+</section>
+</article>
+</div>
+</details>
+<details class="paper" id="2611.23769">
+<summary><span class="badge A">A</span> Keep the Reasoning, Read the Image: On-Demand Visual KV for Multi-Turn Reasoning VLMs</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.23769" data-tier="A" id="p-2611.23769">
+<div class="meta">
+<p><strong>Authors:</strong> Ziyi Wang<sup>*</sup>, Xiyue Zhang<sup>*</sup>, Bing Hu, Guangmin Song, Chenyi Zhang, Li Wang（* 共同一作）。</p>
+<p><strong>Affiliation:</strong> Zhejiang University（Ziyi Wang、Xiyue Zhang、Bing Hu）；Zhejiang Sci-Tech University（Guangmin Song）；University of Canterbury（Chenyi Zhang）；Wenzhou Business College（Li Wang）。单位按首页标注归并，版面有图文交叉，归并时已对照作者上标。</p>
+<p><strong>Date / Venue / Status:</strong> arXiv 2611.23769v1，submitted 18 Nov 2026，出现在周四 2026-11-19 新公告批次（cs.CV）。非正式发表。不作 BACKFILL。</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.23769">arXiv:2611.23769</a> · <a href="https://arxiv.org/pdf/2611.23769">PDF</a> · <a href="https://arxiv.org/html/2611.23769">HTML</a></p>
+<p><strong>Code Availability:</strong> 摘要与全文检索未给出公开代码（未核实）。</p>
+</div>
+<h3><span class="badge A">A</span> Keep the Reasoning, Read the Image: On-Demand Visual KV for Multi-Turn Reasoning VLMs</h3>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>会长时间思考的视觉语言模型，常靠 KV 保留策略在推理变长时把缓存控制在可承受范围。作者发现，这种修剪在多轮对话里牺牲的是图像：图像和推理共享一个预算，推理一变长，视觉条目就被挤出。一道 CharXiv 图问题，若先问，相对完整缓存只掉 8 分左右；若放在一轮推理之后再问，会掉约 24 分。问题不是容量不够，而是图像没有被保护：同样多的名额若只是加进共享预算，恢复远不如留出一个不可驱逐的视觉储备。</p>
+<p>据此他们提出训练无关的 ShelfKV：所有视觉 KV 放在 CPU“架子”上永不删除，每步解码只把当前查询得分最高的视觉条目换进 GPU“书桌”上那些文本条目得分最低的注意力槽。图像不会被驱逐，却只在被读取时占用注意力槽。在对话设定里，它把最强宿主策略 DBTrimKV 在匹配 GPU 内存下最多提高 20.3 个点，并且在 DBTrimKV 使用约两倍内存时仍领先 8.7 个点。</p>
+</section>
+<h4>背景、洞察与方法</h4>
+<section class="analysis method" data-part="method">
+<p>多轮推理 VLM 的 KV 保留原本是为了让很长的思维链塞进有限 GPU 缓存。已有策略按注意力、近因或冗余来删历史 token，并没有把“图像区域”和“正在增长的推理”区分开。核心洞察是：图像需要被保护，但不需要每一步都占着注意力槽。ShelfKV 叠在现有宿主策略之上：宿主继续决定哪些文本 KV 留在 GPU；全部视觉条目另存一份在 CPU，并用低维草图（默认 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>r</mi><mo>=</mo><mn>32</mn></mrow></math></span>、4 bit）按当前查询打分，把高分视觉条目与书桌上最低分的文本条目交换。这样 GPU 条目数保持与对照设置匹配，但注意力读到的是当前问题真正需要的那一块图像。反直觉之处在于：把同样的槽位永远留给一块固定视觉储备，不如按需把槽位让给当前查询所要的区域；而推理文本却不应该也放到架子上按需读，因为后续步骤会反复用到它。</p>
+</section>
+<h4>实验与结果</h4>
+<section class="analysis results" data-part="results">
+<p>主实验用 Qwen3-VL-8B-Thinking 与 4B-Thinking，宿主策略为 R-KV 与 DBTrimKV，评测包括 CharXiv 追问、自由多轮 CharXiv 对话（计第 2–4 轮）、MMMU-Pro 与 MMDU。表 1 在 DBTrimKV、8B 上：宿主 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi><mo>=</mo><mn>256</mn></mrow></math></span> 时 CharXiv 追问 61.3%，<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi><mo>=</mo><mn>512</mn></mrow></math></span> 为 73.0%，<span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi><mo>=</mo><mn>1024</mn></mrow></math></span> 为 78.0%；ShelfKV 在 386 个 GPU 条目/头时达到 84.0%，在 259 条目时为 81.7%。81.7 相对 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi><mo>=</mo><mn>256</mn></mrow></math></span> 的 61.3 大约高 20.4 点，与摘要“最多 20.3 点”一致；81.7 相对 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi><mo>=</mo><mn>512</mn></mrow></math></span> 的 73.0 恰为 +8.7，对应“宿主用两倍内存时仍领先 8.7 点”。自由对话上 ShelfKV 为 85.0，对照 DBTrimKV 在 1024 条目的 79.4；MMDU 分为 4.9 对 4.5。与匹配 GPU 内存的固定视觉储备相比，追问从 79.0 到 84.0，对话从 81.9 到 85.0。单轮 MMMU-Pro 的优势最小（56.7 对 55.3），符合“只有后轮问题需要推理没用过的区域时，保护图像才划算”。R-KV 宿主上增益同样存在，但绝对精度仍明显低于完整缓存，因为弱宿主会把推理文本也删掉。</p>
+<p>表 2–3 补充机制。只要 32 个不可驱逐的视觉条目，CharXiv 就能从 61.3 升到 74.3；64 个到 81.0，再加大储备收益不稳定。随机挑选与宿主挑选在 CharXiv 上接近（78.2 对 79.0），但在 MMMU-Pro 上随机只有 35.7、宿主挑选 55.3，说明“保护哪些区域”在问题写在图里的任务上更关键。若把推理也放到架子上按需读，MMMU-Pro 掉 5.3 点，碰到生成长度上限的比例从 7.7% 升到 19.0%。代价方面，表 4 在 80 GB A100 上：batch 1 时 CharXiv 单步 48.3 ms，对照 R-KV 在 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>B</mi><mo>=</mo><mn>384</mn></mrow></math></span> 的 41.0 ms；batch 64 时则是 103.2 ms 对 41.8 ms。ShelfKV 换来的是更小的 GPU 缓存，不是更快的解码，峰值显存与宿主相近（约 20.8–21.4 GB 对 21.1–22.8 GB）。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>指标</th><th>DBTrimKV 宿主</th><th>ShelfKV</th><th>变化</th></tr></thead>
+<tbody>
+<tr><td>CharXiv 追问（约 256–259 条目/头）</td><td>61.3</td><td>81.7</td><td>+20.4</td></tr>
+<tr><td>CharXiv 追问（宿主 512 vs ShelfKV 259）</td><td>73.0</td><td>81.7</td><td>+8.7，内存约减半</td></tr>
+<tr><td>解码延迟 batch 1 / 64（A100，R-KV 宿主）</td><td>41.0 / 41.8 ms</td><td>48.3 / 103.2 ms</td><td>变慢，尤其大 batch</td></tr>
+<tr><td>FLOPs / FPS</td><td>Not Reported</td><td>Not Reported</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<h4>贡献、局限、迁移与是否值得深读</h4>
+<section class="analysis" data-part="claim">
+<p>贡献是 Empirical Finding（多轮里被挤出的是图像，不是容量）加上 New Mechanism（CPU 货架 + 按需换入的训练无关视觉 KV）。局限很重要：它用解码时间换 GPU 内存，并不减少总内存，预填充峰值不变，每步更慢；它只保护预填充时已经给出的图像；在单轮或短对话、以及宿主已经留住所需区域时，方法几乎没有好处；HR-Bench 4K 的细小目标上，所有压缩缓存（包括本文）仍比完整缓存低 3.5 到 6.0 点。Worth Deep Reading: YES，尤其应看图 1 的“先问还是推理后再问”对比、表 1 与表 4 的精度-延迟权衡。迁移上，可与同日 LookAway（先写笔记再把视频 KV 藏起）以及 ActiveForager 的短工作窗结合：让流式视频的历史帧享受同样的“保护但不常驻注意力”待遇。最小实验是在多轮视频问答里比较共享预算修剪、固定视觉储备与 ShelfKV，指标用后轮准确率、GPU 条目数和毫秒级解码延迟。若后轮问题并不依赖推理未使用过的区域，ShelfKV 不应再显著优于固定储备，这一条可以直接证伪“按需读取总是更好”。</p>
+</section>
+</article>
+</div>
+</details>
+</section>
+<section id="sec-b">
+<h2>Tier B</h2>
+<details class="paper" id="2611.24479">
+<summary><span class="badge B">B</span> Every Query Routes Itself: Accelerating Video Diffusion Transformers with Per-Query Routed Sparse Attention</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.24479" data-tier="B" id="p-2611.24479">
+<div class="meta">
+<p><strong>Authors:</strong> Zhen Huang<sup>*</sup>, Shuwei Li<sup>*</sup>, Ruizhe Yao, Xinrui Chen, Danyi Liu, Haoyuan Liang, Zhiyu Ye, Qiuyan Sun, Bingwei Chen, Yiyuan Li, Xu Zhou<sup>†</sup>, Haohuan Fu<sup>†</sup>（* 共同一作，† 通讯）。</p>
+<p><strong>Affiliation:</strong> Tsinghua University（Zhen Huang、Shuwei Li、Xinrui Chen、Danyi Liu、Haoyuan Liang、Zhiyu Ye、Qiuyan Sun、Haohuan Fu）；Harbin Institute of Technology, Shenzhen（Ruizhe Yao）；Sangfor Technologies（Bingwei Chen、Yiyuan Li、Xu Zhou）。</p>
+<p><strong>Date / Venue / Status:</strong> arXiv 2611.24479v1，submitted 18 Nov 2026，出现在周四 2026-11-19 新公告批次（cs.CV）。非正式发表。不作 BACKFILL。</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.24479">arXiv:2611.24479</a> · <a href="https://arxiv.org/pdf/2611.24479">PDF</a> · <a href="https://arxiv.org/html/2611.24479">HTML</a></p>
+<p><strong>Code Availability:</strong> 摘要与全文检索未给出公开代码（未核实）。</p>
+</div>
+<h3><span class="badge B">B</span> Every Query Routes Itself: Accelerating Video Diffusion Transformers with Per-Query Routed Sparse Attention</h3>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>视频扩散变换器的推理成本主要来自超长 token 序列上的自注意力。Wan2.1 在 720p、81 帧时要处理 75,600 个 token，一段五秒视频在单张 H100 上稠密注意力要约 28 分钟。现有基于聚类的稀疏注意力往往把查询和键都聚类，并让同一查询簇共享一份键簇选择。作者证明：在键簇和密度固定时，把查询簇分得越细越准，最准时其实是每个查询自己选，根本不必对查询聚类。</p>
+<p>PQRS 因此只聚类键，让每个查询独立选择键簇，并用簇质心补偿未选中的部分。为了在没有共享键列表的情况下仍然跑得快，它按键簇遍历、把选择相同的查询收成稠密任务，并用上一去噪步留下的 softmax 偏移一次性合并。在 Wan 与 HunyuanVideo 家族的四个 T2V/I2V 模型上，它是所比较稀疏方法里最快、也最接近稠密输出的一个。</p>
+</section>
+<h4>核心方法与主要结果</h4>
+<section class="analysis results" data-part="results">
+<p>方法是训练无关的。实现上四个模型共用 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>C</mi><mi>k</mi></msub><mo>=</mo><mn>592</mn></mrow></math></span> 个键簇、路由阈值 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p</mi><mo>=</mo><mn>0.848</mn></mrow></math></span>、地板 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>f</mi><mo>=</mo><mn>0.10</mn></mrow></math></span>，并在前 20% 去噪步和每个 Transformer 堆叠的第一块保持稠密注意力。评测用 50 条 VBench 增强提示（T2V）和 50 对 VBench++ 图像-提示（I2V），在单张 H100 上按各模型官方采样配置计端到端延迟。表 1 的关键数字：Wan2.1-T2V-14B 上 PQRS 的 PSNR 28.86 dB、SSIM 0.909、LPIPS 0.094，密度 22.0%，延迟 960 秒、加速 1.75×（稠密 1682 秒）；同密度附近的 SVG-EAR 为 27.19 dB / 1032 秒 / 1.63×。HunyuanVideo-T2V-13B（129 帧）上 PQRS 为 35.44 dB、809 秒、2.10×（稠密 1701 秒）。Wan2.1-I2V 为 29.97 dB、1.74×；Wan2.2-T2V-A14B 为 23.47 dB、1.66×。VBench 与稠密几乎持平。消融写明：即使不做质心补偿，逐查询选择也比共享选择高 0.9 dB；补偿加在逐查询上再涨 3.1 dB，高于加在共享选择上的 1.7 dB。单次稀疏注意力调用在 Wan2.1-T2V 上为 97.8 ms，相对稠密 329.1 ms 加速 3.52×，密度 23.2%。图 1 里单条样本的 16.0 分钟 / 1.75× 与主表一致，但样本 PSNR 27.61 低于 50 条平均的 28.86，比较时应看表 1。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>指标（Wan2.1-T2V-14B）</th><th>Dense</th><th>SVG-EAR</th><th>PQRS</th></tr></thead>
+<tbody>
+<tr><td>PSNR (dB)</td><td>—</td><td>27.19</td><td>28.86</td></tr>
+<tr><td>端到端延迟</td><td>1682 s</td><td>1032 s</td><td>960 s（1.75×）</td></tr>
+<tr><td>注意力密度</td><td>100%</td><td>21.7%</td><td>22.0%</td></tr>
+<tr><td>VBench</td><td>83.64%</td><td>83.58%</td><td>83.70%</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<h4>贡献、局限与关联</h4>
+<section class="analysis" data-part="claim">
+<p>贡献是 New Mechanism（逐查询路由的训练无关稀疏注意力）加明确的端到端加速数字。局限：加速来自注意力稀疏，不是逐步蒸馏或缓存，2.10× 仍把 28 分钟量级的生成降到十几分钟，还不是交互式；与同日 Spark-H3、近几日 ScoutCache / FastFrames / PCRG 都在视频扩散加速赛道上，差别是“选择应当按查询而不是按查询簇共享”。没有公开代码。为何重要：它用可复现的 PSNR-延迟表说明，更细的选择不必更慢。Potential use 是作为视频 DiT 推理的即插即用注意力核。Worth Deep Reading: MAYBE，若正在做稀疏注意力内核或要与 ScoutCache 对照，应看表 1 与选择-补偿交叉消融。与 Spark-H3 同日出现，两者都报告训练无关的视频 DiT 稀疏注意力，但 PQRS 给出的是四模型端到端墙钟，更适合作为今日视频加速线的对照锚点。</p>
+</section>
+</article>
+</div>
+</details>
+<details class="paper" id="2611.24357">
+<summary><span class="badge B">B</span> Semantic Context Handoff with On-Demand Evidence for Long-Horizon Agents</summary>
+<div class="inner">
+<article class="paper" data-fulltext="yes" data-id="2611.24357" data-tier="B" id="p-2611.24357">
+<div class="meta">
+<p><strong>Authors:</strong> Guolong Zheng, Chen Hou, Xu Yang, Jianshan Zhang, Tao Huang</p>
+<p><strong>Affiliation:</strong> Minjiang University，Fuzhou, China。通讯邮箱见论文首页 {gzheng, houchen, xu.yang, jszhang, huang-tao}@mju.edu.cn。</p>
+<p><strong>Date / Venue / Status:</strong> arXiv 2611.24357v1，submitted 18 Nov 2026，出现在周四 2026-11-19 新公告批次（cs.AI）。非正式发表 / preprint。不作 BACKFILL。</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.24357">arXiv:2611.24357</a> · <a href="https://arxiv.org/pdf/2611.24357">PDF</a> · <a href="https://arxiv.org/html/2611.24357">HTML</a></p>
+<p><strong>Code Availability:</strong> 摘要与全文检索未给出公开代码（未核实）。</p>
+</div>
+<h3><span class="badge B">B</span> Semantic Context Handoff with On-Demand Evidence for Long-Horizon Agents</h3>
+<h4>人话版：这篇论文到底干了什么？</h4>
+<section class="analysis" data-part="human">
+<p>长程 LLM 智能体若一直把完整动作-观察历史塞进提示，上下文会线性膨胀，既贵也可能更差。已有方法常留下压缩后的结论、丢掉更早的观察，可这些观察后来又可能被需要。SCH 的中心抽象是状态与证据分离：一份紧凑的语义状态只保存智能体当前的解释，支持性的动作-观察证据另行可寻址，并在后续执行证明它重新相关时再进入上下文，而不另训检索模型、也不再做一轮摘要。</p>
+</section>
+<h4>方法要点与实验发现</h4>
+<section class="analysis results" data-part="results">
+<p>在冻结的 150 题 DeepSeek SWE-bench 对照里，作者先固定状态机、动作接口、控制器限制和证据预算，只改历史证据的选择规则。表 1：最近窗恢复 80.89±2.04%，BM25 为 83.33±1.34%，仅主动状态出处为 80.00±1.33%，修订感知的 SCH 为 86.89±1.39%。摘要里“从 80.0% 到 86.9%、token 与时间基本不变”指的就是这一对照（209.8k 对 208.6k tokens/task，233.8 对 237.1 秒），而不是对最强完整系统基线的比较。三次运行的配对结果为 15–4、14–4、14–4，McNemar <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p</mi></mrow></math></span> 为 0.0192、0.0309、0.0309。表 2 的完整系统比较中，SCH 仍是最高的 86.89±1.39% Pass@1（391/450），并在 token 与墙钟上最低：208.6k tokens/task、237.1 秒。相对任务表现最强的基线 PACT（83.78±1.68%，367.9k，400.2 秒），SCH 少用 43.3% 的 token、少花 40.8% 的时间；但三次运行的 McNemar <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p</mi><mo>=</mo><mn>0.359</mn></mrow></math></span>，作者把这 3.11 点的精度差记为描述性结果，并不宣称统计上显著的配对优势。Full History 仅 68.00%，却要 1713.3k tokens 与 633.6 秒。表 3 显示方法能转到 AppWorld 与 MiniMax 模型：MiniMax AppWorld 上 SCH 为 86.33%（360/417），高于 Full History 的 84.41%，并少用 34.6% token、少花 37.4% 时间；但在 MiniMax SWE-bench 上 PACT 以 75.33% 略高于 SCH 的 74.00%，SCH 仍然更省（491.0k 对 723.3k tokens，231.5 对 368.9 秒）。</p>
+</section>
+<h4>贡献、局限与关联</h4>
+<section class="analysis" data-part="claim">
+<p>贡献是 New Mechanism（状态-证据分离与修订时重新激活已完成工作的出处）加一套把精度和代价同时报告、且对统计显著性保持克制的实验。局限：主结论高度依赖可冻结的 SWE-bench 协议与特定模型；跨模型时出现过无效状态增量；没有公开代码。它与近日 CarryOn、Falsification-Gated Memory、以及同日 ActiveForager 的 EvidenceCard 都在处理“什么该留下、什么该按需召回”，但 SCH 针对的是软件工程式长轨迹而不是视频窗。Worth Deep Reading: MAYBE——若关注长程上下文管理，应直接看表 1 的机制对照和作者对表 2 显著性的自我限制，避免把 86.9% 误读成对 PACT 的显著性胜利。</p>
+<p>为什么它仍然值得放进正式集合：长程智能体的上下文管理经常只报压缩比或只报分数，SCH 把 Pass@1、token 与墙钟放在同一张表里，并且把“机制对照”和“完整系统对照”分开写。这让人可以清楚地说，86.9% 对 80.0% 是修订感知恢复的贡献，43% 的 token 节省则是相对 PACT 的系统结果。迁移时最小实验可以把这一分离接到工具使用轨迹：当智能体需要修改先前结论时，是否能从证据库召回早期观察而不把完整历史重新提示进去。</p>
+</section>
+</article>
+</div>
+</details>
+</section>
+<section id="sec-ideas">
+<h2>Idea Mining</h2>
+<p>以下四条来自今日正式论文的机制交叉，而不是关键词拼接。它们都可以写成最小实验，并且都能被已有消融部分证伪。</p>
+<h3>Idea 1：用 ECA 的证据势作为 Depth Before Breadth 的终点价值</h3>
+<ul>
+<li><strong>Inspiration:</strong> 今日 Depth Before Breadth 的成对优势，以及 ECA 的证据专用势函数 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Φ</mi><mo stretchy="false">(</mo><mi>D</mi><mo stretchy="false">)</mo></mrow></math></span>。</li>
+<li><strong>Research Gap:</strong> PA 的终点目前是环境上下文或动作序列；搜索或工具轨迹里，表面动作相同并不等于证据状态相同。ECA 能给检索打中间分，但没有把“走到更高价值证据集”和“从该证据集给出答案”分成前缀/后缀优势，也没有反向课程。</li>
+<li><strong>Hypothesis:</strong> 若以去重后的证据集合为终点、用 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>Φ</mi><mo stretchy="false">(</mo><mi>D</mi><mo stretchy="false">)</mo></mrow></math></span> 估计 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>V</mi></mrow><mo>^</mo></mover><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo></mrow></math></span>，左优势会优先奖励能提高参考答案似然的检索前缀，即使整组最终都答错；右优势仍用终局 EM。这应同时降低全零组比例与重复查询率。</li>
+<li><strong>Proposed Method:</strong> 在 Search-R1 协议上实现 PA，终点键用文档 ID 集合而非完整对话前缀；后缀是从该证据集继续推理并作答。对比 ECA-Horizon（无课程、无前缀优势）与普通 GRPO。</li>
+<li><strong>Minimum Viable Experiment:</strong> Qwen2.5-3B-Instruct，七个 Search QA 中的两个多跳集加 NQ，固定 3 次搜索预算，训练步数与 ECA 对齐。</li>
+<li><strong>Model / Dataset / Baseline / Metric:</strong> Qwen2.5-3B-Instruct；HotpotQA / 2Wiki / NQ；GRPO、ECA-Horizon、无证据去重的 PA；宏 EM、重复查询率、全零组比例。</li>
+<li><strong>Expected Contribution:</strong> 验证“终点”能否从环境状态迁移到证据状态，而不引入逐步人工标注。</li>
+<li><strong>Novelty / Feasibility / Compute:</strong> ★★★★☆ / ★★★★☆ / ★★★☆☆</li>
+<li><strong>Risk / Collision / Venue:</strong> 证据集合对最终成功若没有预测力，左优势会变成噪声；与 ECA、Gaze-RL、OMA 相邻但终点定义不同。ICLR / ACL / 智能体 RL 工坊。</li>
+</ul>
+<h3>Idea 2：在算法异构的智能体专家上检验 MRPD 的顺序效应</h3>
+<ul>
+<li><strong>Inspiration:</strong> 今日 MRPD “顺序大于数量”，以及 Depth Before Breadth / FlashREINFORCE 这类结构不同的智能体 RL 专家。</li>
+<li><strong>Research Gap:</strong> MRPD 的所有专家与学生都来自同一 <span class="math"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>π</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 和同一套 GRPO。真实合并场景里，专家可能分别来自成对优势课程、异步单轨迹协议或普通 GRPO，初始化也不一定共享。</li>
+<li><strong>Hypothesis:</strong> 只要日志里保存了记录概率，按各专家自己的时间顺序交错回放，仍能把裁剪比例压在低位，并优于把所有专家日志池化或打乱；若初始化差得过大，dense KL 会比 PG 项更关键。</li>
+<li><strong>Proposed Method:</strong> 训两个域的专家（例如搜索 + SQL，或 ALFWorld + WebShop），算法各不相同，然后比较按序 MRPD、打乱、池化离线 GRPO 与 MOPD。</li>
+<li><strong>Minimum Viable Experiment:</strong> 7B 级指令模型，每域 150–300 步，记录比率与裁剪比例。</li>
+<li><strong>Model / Dataset / Baseline / Metric:</strong> Qwen2.5-7B-Instruct；WebShop 或 Search-R1 + 一个 SQL/工具域；上述四种合并；域平均分数、Overall、裁剪比例、墙钟。</li>
+<li><strong>Expected Contribution:</strong> 弄清“日志是课程”是否依赖同算法、同初始化。</li>
+<li><strong>Novelty / Feasibility / Compute:</strong> ★★★☆☆ / ★★★★☆ / ★★★★☆</li>
+<li><strong>Risk / Collision / Venue:</strong> 计算量大于 Idea 1；与 MRPD 自己的局限陈述、REGEN、MOPD、COPD 相邻。系统/RL 会议。</li>
+</ul>
+<h3>Idea 3：给流式视频工作窗加上 ShelfKV 式的历史帧货架</h3>
+<ul>
+<li><strong>Inspiration:</strong> ActiveForager 的短工作窗与 EvidenceCard，ShelfKV 的“保护视觉、按需换入”，以及观察列表中的 LookAway。</li>
+<li><strong>Research Gap:</strong> ActiveForager 靠召回和 SDAM 避免历史帧污染当前窗，但历史视觉一旦离开主上下文，再读仍要走工具循环。ShelfKV 证明图像被推理挤出是保护问题，可它还没有做到流式多帧、也没有与工具路由耦合。</li>
+<li><strong>Hypothesis:</strong> 把归档帧的 KV 放在 CPU 货架上，Recall 时按查询换入而非重新编码，可以在保持 SDAM 隔离的同时降低后向追踪的视觉 token 与延迟；若后轮问题并不依赖未使用区域，收益应接近零。</li>
+<li><strong>Proposed Method:</strong> 在 ActiveForager 的环形缓冲上为历史段维护可换入的视觉 KV，保留证据门控；对照原始 Recall（重编码）和固定视觉储备。</li>
+<li><strong>Minimum Viable Experiment:</strong> Qwen2.5-VL-7B，OVO-Bench 的 BT / HLD 与一个多轮视频问答子集。</li>
+<li><strong>Model / Dataset / Baseline / Metric:</strong> Qwen2.5-VL-7B；OVO-Bench BT 与 StreamingBench；SimpleStream、ActiveForager、ActiveForager+ShelfKV；BT 准确率、主上下文视觉 token、毫秒级换入延迟。</li>
+<li><strong>Expected Contribution:</strong> 把“按需读图像”从静态多轮 VLM 推到流式视频智能体。</li>
+<li><strong>Novelty / Feasibility / Compute:</strong> ★★★★☆ / ★★★☆☆ / ★★★☆☆</li>
+<li><strong>Risk / Collision / Venue:</strong> 实现复杂，且与 LookAway、CanopyKV、近日 ScoutCache（生成缓存，问题不同）相邻。CV / 多模态系统会议。</li>
+</ul>
+<h3>Idea 4：在修订触发时把 SCH 恢复的证据定义为新的 PA 终点</h3>
+<ul>
+<li><strong>Inspiration:</strong> SCH 的修订感知证据恢复，以及 Depth Before Breadth 把训练信号系在终点上下文上。</li>
+<li><strong>Research Gap:</strong> SCH 目前是推理期上下文管理，没有用恢复事件做强化学习信用。智能体在软件工程里经常需要推翻先前结论，这类修订点很可能是信用分配该加码的位置。</li>
+<li><strong>Hypothesis:</strong> 当修订被触发并成功恢复早期证据时，把该恢复状态当作新的终点、给通向它的前缀以正的左优势，会提高后来才能用到早期观察的任务成功率，而不必回放完整历史。</li>
+<li><strong>Proposed Method:</strong> 在可重置的 SWE 子集上，把 SCH 的状态机接到 PA 训练环：普通步仍用终局 Pass@1，修订-恢复步额外计算左优势。</li>
+<li><strong>Minimum Viable Experiment:</strong> 150 题量级的冻结 SWE 子集，对照 SCH 仅推理、GRPO 无 SCH、以及两者简单叠加。</li>
+<li><strong>Model / Dataset / Baseline / Metric:</strong> 开源 7B/14B 代码模型；SWE-bench 子集；上述三种；Pass@1、token/task、修订后恢复的证据年龄。</li>
+<li><strong>Expected Contribution:</strong> 把上下文交接从系统设计推进到可学习的信用事件。</li>
+<li><strong>Novelty / Feasibility / Compute:</strong> ★★★★☆ / ★★★☆☆ / ★★★★☆</li>
+<li><strong>Risk / Collision / Venue:</strong> 修订事件稀疏，优势估计方差大；与 CarryOn、Falsification-Gated Memory、Experience-Handoff 相邻。智能体 / SE 与 RL 交叉轨道。</li>
+</ul>
+</section>
+<section id="sec-collision">
+<h2>Collision Detection</h2>
+<p><strong>Collision Warning: YES</strong>。今日正式论文与近 7 日正式集合、以及同日观察项有多处相邻，但没有一篇被完全占住。</p>
+<ul>
+<li><strong>Depth Before Breadth</strong> 与 GiGPO、CRPS，以及 11 月 14 日 Outcome-Mass Alignment、11 月 13 日 Dense Rewards in GRPO、11 月 19 日 Gaze-RL 都在拆长程信用；差别是本文显式定义能力区域，并用前缀终点价值而非注视或 token 落地场。</li>
+<li><strong>MRPD</strong> 与 MOPD、并发 REGEN、11 月 18 日 FlashREINFORCE（异步单轨迹）、同日 COPD / 在策略蒸馏理论分析相邻；差别是按专家训练顺序回放、不重新采样，并强调准在策略。</li>
+<li><strong>ECA</strong> 与 GRPO/GiGPO 过程奖励、Gaze-RL 的落地场相邻；差别是训练期、证据专用提示，不改变推理。</li>
+<li><strong>ActiveForager</strong> 与 11 月 18 日 ALIVE、11 月 14 日 SAVE，以及流式生成向的 Condition Shifting / FastFrames 相邻；它做的是理解侧的按需交互，不是生成加速。</li>
+<li><strong>ShelfKV</strong> 与 MMFlash、同日 LookAway / CanopyKV 都涉及视觉 KV；LookAway 是写完笔记后藏起视频，ShelfKV 是把图像保护在 CPU 并按需换入，设定是多轮推理对话。</li>
+<li><strong>PQRS</strong> 与同日 Spark-H3、近日 ScoutCache、FastFrames、PCRG 同属视频扩散加速；PQRS 的主张是选择必须按查询进行，而不能在查询簇内共享。</li>
+<li><strong>SCH</strong> 与 CarryOn、Falsification-Gated Memory、TraceKV、Experience-Handoff 都处理记忆与交接；SCH 强调修订时恢复已完成工作的出处，并把统计显著性写得很克制。</li>
+</ul>
+<p>观察列表中的 GUARD、Piccolo、BaseRSI 与 11 月 16–17 日 Experience-Handoff / ModHarness-RL / Actor-Judge-Teacher 重叠更多，故未再形式化。</p>
+</section>
+<section id="sec-reading">
+<h2>Reading Priority</h2>
+<ul>
+<li><strong>READ NOW:</strong> Depth Before Breadth — 先看 §3 成对优势与式 (8)、Table 1、Table 2、Figure 3–4。MRPD — 先看式 (1)–(3)、Table 1、Table 3–4 的顺序/数量消融，以及 Figure 4 的墙钟与 Figure 5 的搜索漂移。</li>
+<li><strong>READ THIS WEEK:</strong> ActiveForager（Table 1–3、SDAM 定义、图 3 的工具崩塌）、ECA（证据专用提示、Table 2 消融与重复查询图）、ShelfKV（图 1 的先后轮对比、Table 1 与 Table 4 延迟）。</li>
+<li><strong>SAVE:</strong> PQRS（Table 1 与选择-补偿交叉）、SCH（Table 1 机制对照和 Table 2 的显著性自我限制），以及观察列表中的 Spark-H3、LookAway、COPD、NullTok、SGVC。</li>
+<li><strong>SKIP:</strong> 今日未形式化的普通应用型投稿；与近 7 日正式论文高度重复、又无新实验的 RSI / harness 短稿，除非出现重大改版。机器遗忘两篇仅作次优先观察，不必为凑覆盖去深读。</li>
+</ul>
+</section>
+<section id="sec-watch">
+<h2>Candidate Watchlist</h2>
+<p>下列论文进入 52 篇候选池，但今日不 Formalize。链接均为当日新公告中的真实条目。</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2611.23673">2611.23673 COPD</a>：通过自然语言向黑盒教师求助，再对无顾问的学生做在策略自蒸馏，与 OPSD4MAS / MRPD 相邻。</li>
+<li><a href="https://arxiv.org/abs/2611.24170">2611.24170 ViStep-RL</a>：长程视觉智能体的逐步 RL，与今日 ActiveForager / ECA 的中间信用问题相关。</li>
+<li><a href="https://arxiv.org/abs/2611.23476">2611.23476 GUARD</a>、<a href="https://arxiv.org/abs/2611.24651">2611.24651 Piccolo</a>、<a href="https://arxiv.org/abs/2611.24578">2611.24578 BaseRSI</a>：递归自我改进与 harness 内化，与近日 RSI 正式论文碰撞较多。</li>
+<li><a href="https://arxiv.org/abs/2611.23397">2611.23397</a> 在策略蒸馏目标的理论分析；可作阅读 MRPD / COPD 的配套。</li>
+<li><a href="https://arxiv.org/abs/2611.24512">2611.24512 SibPO</a>：用独立 siblings 给视频世界模型后训练一个正定目标。</li>
+<li><a href="https://arxiv.org/abs/2611.23570">2611.23570 Safe to Omit</a>：多智能体何时可安全跳过助手消息以换延迟。</li>
+<li><a href="https://arxiv.org/abs/2611.23362">2611.23362 TRACE-MAS</a>、<a href="https://arxiv.org/abs/2611.23588">2611.23588 ARISE</a>：多智能体故障诊断与企业智能体自演化记忆。</li>
+<li><a href="https://arxiv.org/abs/2611.24256">2611.24256 Spark-H3</a>、<a href="https://arxiv.org/abs/2611.23352">2611.23352 SGVC</a>、<a href="https://arxiv.org/abs/2611.23881">2611.23881 NullTok</a>：视频扩散稀疏注意力、流式生成压缩、训练无关的长视频 token 选择。</li>
+<li><a href="https://arxiv.org/abs/2611.24259">2611.24259 LookAway</a>、<a href="https://arxiv.org/abs/2611.24373">2611.24373 CanopyKV</a>：推理时是否还要一直看着视频 / 主动视觉推理中的 KV 保留，与 ShelfKV 对照价值高。</li>
+<li><a href="https://arxiv.org/abs/2611.23917">2611.23917 Vanguard</a>、<a href="https://arxiv.org/abs/2611.23483">2611.23483 SpecLook</a>、<a href="https://arxiv.org/abs/2611.23463">2611.23463 FACT</a>：视觉-语言智能体或投机解码中的“何时相信草稿”。</li>
+<li><a href="https://arxiv.org/abs/2611.24184">2611.24184 VideoACE</a>：高帧率动作上的智能体视频理解基准。</li>
+<li><a href="https://arxiv.org/abs/2611.24205">2611.24205</a>、<a href="https://arxiv.org/abs/2611.24654">2611.24654 CurvDelta</a>：今日仅有的机器遗忘相关项，保持观察、不进入正式档。</li>
+<li>其余高分但更偏具身、世界模型或系统基础设施的条目见候选池 JSON，不在此重复。</li>
+</ul>
+</section>
+<section id="sec-stats">
+<h2>今日统计</h2>
+<ul>
+<li>Candidate Pool：52（全部来自周四 2026-11-19 新公告，含真实 arXiv 链接）</li>
+<li>Formal Papers：7</li>
+<li>RL：3（Depth Before Breadth、MRPD、ECA）</li>
+<li>Agent / Multi-Agent：5（上述三篇加上 ActiveForager、SCH；有重叠计数）</li>
+<li>Video Acceleration：3（ActiveForager、ShelfKV、PQRS）</li>
+<li>Unlearning：0 篇正式，2 篇观察</li>
+<li>Tier S / A / B：2 / 3 / 2</li>
+<li>Today's Most Important Paper：Depth Before Breadth（2611.24697）</li>
+<li>Best Research Idea：用 ECA 的证据势作为 Depth Before Breadth 的终点价值</li>
+<li>Collision Warning：YES</li>
+<li>BACKFILL：无。语料已在 08:21 Asia/Shanghai 确认上线。</li>
+</ul>
+</section>
+<section id="sec-sources">
+<h2>Sources / Links</h2>
+<ul>
+<li>arXiv new listings（2026-11-20 08:21 抓取）：<a href="https://arxiv.org/list/cs.LG/new">cs.LG</a>、<a href="https://arxiv.org/list/cs.AI/new">cs.AI</a>、<a href="https://arxiv.org/list/cs.CL/new">cs.CL</a>、<a href="https://arxiv.org/list/cs.CV/new">cs.CV</a>、<a href="https://arxiv.org/list/cs.MA/new">cs.MA</a>、<a href="https://arxiv.org/list/cs.RO/new">cs.RO</a>、<a href="https://arxiv.org/list/cs.DC/new">cs.DC</a>、<a href="https://arxiv.org/list/eess.IV/new">eess.IV</a>。列表页抬头均为 “Showing new listings for Thursday, 19 November 2026”。</li>
+<li>Hugging Face Daily Papers（交叉核对，非主语料）：<a href="https://huggingface.co/papers">huggingface.co/papers</a></li>
+<li>正式论文 PDF 均来自 <code>https://arxiv.org/pdf/ID.pdf</code>，用 pdftotext 抽取正文与表格。</li>
+<li>候选池机器可读文件：<code>/workspace/radar/work-2026-11-20/lists/candidate_pool.json</code></li>
+</ul>
+</section>
+<section id="sec-audit">
+<h2>Depth Audit</h2>
+<p>以下为对正式论文的程序性深度审计（中文字符不含标题、表格、元数据与链接）。审计脚本为 <code>/workspace/radar/work-2026-11-20/audit.py</code>，结果同时写入 <code>/workspace/radar/work-2026-11-20/audit_result.json</code>。</p>
+<div id="audit-table-slot">
+<p>all_pass=<strong class="ok">true</strong>；tier_s_pass=<strong class="ok">true</strong>；缺失必要章节：无；未完成占位：无。</p>
+<table>
+<thead><tr><th>id</th><th>tier</th><th>CJK body</th><th>Method</th><th>Results</th><th>tables</th><th>nums</th><th>fulltext</th><th>pass</th></tr></thead>
+<tbody>
+<tr><td>2611.24697 Depth Before Breadth</td><td>S</td><td>4937</td><td>1084</td><td>995</td><td>2</td><td>118</td><td>yes</td><td><span class="ok">PASS</span></td></tr><tr><td>2611.24059 MRPD</td><td>S</td><td>4641</td><td>1043</td><td>990</td><td>2</td><td>126</td><td>yes</td><td><span class="ok">PASS</span></td></tr><tr><td>2611.24267 ActiveForager</td><td>A</td><td>1245</td><td>371</td><td>318</td><td>1</td><td>46</td><td>yes</td><td><span class="ok">PASS</span></td></tr><tr><td>2611.23824 ECA</td><td>A</td><td>1237</td><td>0</td><td>344</td><td>1</td><td>50</td><td>yes</td><td><span class="ok">PASS</span></td></tr><tr><td>2611.23769 ShelfKV</td><td>A</td><td>1204</td><td>265</td><td>347</td><td>1</td><td>54</td><td>yes</td><td><span class="ok">PASS</span></td></tr><tr><td>2611.24479 PQRS</td><td>B</td><td>702</td><td>0</td><td>217</td><td>1</td><td>55</td><td>yes</td><td><span class="ok">PASS</span></td></tr><tr><td>2611.24357 SCH</td><td>B</td><td>725</td><td>0</td><td>233</td><td>0</td><td>55</td><td>yes</td><td><span class="ok">PASS</span></td></tr>
+</tbody>
+</table>
+<p>Tier S 通过条件：正文中文 3500–5000，方法 ≥1000，实验结果 ≥900，至少两张表，全文阅读。两篇 S 均通过。Tier A 要求正文 1200–2000，Tier B 要求 650–1100。七篇均通过。审计方法：用 BeautifulSoup 取 article.paper 内 .analysis 节点，删除表格、链接标签与 .meta 后统计 CJK 统一汉字；Method / Results 分别统计 data-part=method 与 data-part=results。</p>
+</div>
+</section>
+</div>
+</body>
+</html>
