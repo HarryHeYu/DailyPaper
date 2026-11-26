@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Deep Dive 2026-11-25</title>
+<style>
+
+/* consistent with 11-23 / 11-20 */
+:root{--fg:#1a1a1a;--mut:#5b6472;--bg:#fbfaf7;--card:#fff;--ac:#9a3412;--ln:#e5e1d8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+font-family:"Noto Serif CJK SC","Source Han Serif SC","Songti SC","STSong","Georgia",serif;
+font-size:17px;line-height:1.8;letter-spacing:0}
+.wrap{max-width:820px;margin:0 auto;padding:28px 22px 80px}
+header h1{font-size:28px;line-height:1.35;margin:.2em 0;font-weight:700}
+.sub{color:var(--mut);font-size:15px}
+nav.toc{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:14px 20px;margin:22px 0}
+nav.toc ol{margin:.3em 0;padding-left:1.4em}nav.toc li{margin:.15em 0}
+nav.toc details summary{cursor:pointer;font-weight:600}
+nav.toc .secs{columns:2;font-size:14px;gap:12px}
+a{color:#1d4ed8;text-decoration:none;word-break:break-all}a:hover{text-decoration:underline}
+section.paper{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:8px 26px 26px;margin:30px 0}
+h2{font-size:23px;border-left:5px solid var(--ac);padding-left:12px;margin-top:1.4em;line-height:1.4}
+h3{font-size:18.5px;margin:1.55em 0 .5em;color:#7c2d12;border-bottom:1px dashed var(--ln);padding-bottom:4px}
+p{margin:.7em 0;text-align:start}
+.tag{display:inline-block;font-size:13px;padding:1px 9px;border-radius:999px;background:#fff1e6;color:#9a3412;border:1px solid #fdba74;margin-right:6px}
+.tag.bf{background:#eef2ff;color:#3730a3;border-color:#a5b4fc}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border:1px solid var(--ln);border-radius:8px}
+table{border-collapse:collapse;min-width:640px;width:100%;font-size:14.5px;line-height:1.6}
+th,td{border-bottom:1px solid var(--ln);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#f6f3ec;white-space:nowrap}tr:nth-child(even) td{background:#fcfbf8}
+.eq{overflow-x:auto;padding:10px 8px;margin:12px 0;background:#faf8f3;border-radius:6px}
+math{font-size:1.05em;font-family:"STIX Two Math","Cambria Math","Latin Modern Math","DejaVu Serif","Noto Serif",math,serif}
+math[display="block"]{display:block;margin:.35em 0}
+li{margin:.3em 0}
+.note{background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 16px;font-size:15px}
+footer{color:var(--mut);font-size:14px;margin-top:40px}
+.cite{color:var(--mut);font-size:14px}
+ul,ol{padding-left:1.4em}
+code,kbd{font-family:"SF Mono","Menlo","Consolas",monospace;font-size:0.92em}
+
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Daily Top Papers Deep Dive · 2026-11-25</h1>
+<p class="sub">Asia/Shanghai · 方向：Agent / Multi-Agent × RL · Inference Acceleration · Video Acceleration · 3 篇 · 非 BACKFILL · 离线 MathML</p>
+</header>
+<nav class="toc">
+<ol>
+<li><a href="#overview">今日概览：检索、选题与去重</a></li>
+<li><a href="#p1">论文 1｜Harnesses as Compositional Generalizers（Agent × RL）</a>
+<details><summary>本节目录</summary>
+<div class="secs">
+<ol>
+<li><a href="#p1-s1">基本信息</a></li>
+<li><a href="#p1-s2">一句话定位</a></li>
+<li><a href="#p1-s3">人话版</a></li>
+<li><a href="#p1-s4">背景与缺口</a></li>
+<li><a href="#p1-s5">核心 insight</a></li>
+<li><a href="#p1-s6">方法逐步拆解</a></li>
+<li><a href="#p1-s7">核心公式</a></li>
+<li><a href="#p1-s8">Toy example</a></li>
+<li><a href="#p1-s9">Baselines</a></li>
+<li><a href="#p1-s10">实验设置</a></li>
+<li><a href="#p1-s11">指标教学</a></li>
+<li><a href="#p1-s12">可核验结果</a></li>
+<li><a href="#p1-s13">真实表图阅读</a></li>
+<li><a href="#p1-s14">Ablation</a></li>
+<li><a href="#p1-s15">Claim vs Evidence</a></li>
+<li><a href="#p1-s16">贡献</a></li>
+<li><a href="#p1-s17">局限</a></li>
+<li><a href="#p1-s18">复现要点</a></li>
+<li><a href="#p1-s19">研究价值</a></li>
+<li><a href="#p1-s20">可执行迁移</a></li>
+<li><a href="#p1-s21">方向专用分析</a></li>
+<li><a href="#p1-s22">Attack / Verification</a></li>
+<li><a href="#p1-s23">记忆总结</a></li>
+</ol>
+</div>
+</details></li>
+<li><a href="#p2">论文 2｜Grammar-as-a-Draft（Inference Acceleration）</a>
+<details><summary>本节目录</summary>
+<div class="secs">
+<ol>
+<li><a href="#p2-s1">基本信息</a></li>
+<li><a href="#p2-s2">一句话定位</a></li>
+<li><a href="#p2-s3">人话版</a></li>
+<li><a href="#p2-s4">背景与缺口</a></li>
+<li><a href="#p2-s5">核心 insight</a></li>
+<li><a href="#p2-s6">方法逐步拆解</a></li>
+<li><a href="#p2-s7">核心公式</a></li>
+<li><a href="#p2-s8">Toy example</a></li>
+<li><a href="#p2-s9">Baselines</a></li>
+<li><a href="#p2-s10">实验设置</a></li>
+<li><a href="#p2-s11">指标教学</a></li>
+<li><a href="#p2-s12">可核验结果</a></li>
+<li><a href="#p2-s13">真实表图阅读</a></li>
+<li><a href="#p2-s14">Ablation</a></li>
+<li><a href="#p2-s15">Claim vs Evidence</a></li>
+<li><a href="#p2-s16">贡献</a></li>
+<li><a href="#p2-s17">局限</a></li>
+<li><a href="#p2-s18">复现要点</a></li>
+<li><a href="#p2-s19">研究价值</a></li>
+<li><a href="#p2-s20">可执行迁移</a></li>
+<li><a href="#p2-s21">方向专用分析</a></li>
+<li><a href="#p2-s22">Attack / Verification</a></li>
+<li><a href="#p2-s23">记忆总结</a></li>
+</ol>
+</div>
+</details></li>
+<li><a href="#p3">论文 3｜CodecOPSD（Video Acceleration）</a>
+<details><summary>本节目录</summary>
+<div class="secs">
+<ol>
+<li><a href="#p3-s1">基本信息</a></li>
+<li><a href="#p3-s2">一句话定位</a></li>
+<li><a href="#p3-s3">人话版</a></li>
+<li><a href="#p3-s4">背景与缺口</a></li>
+<li><a href="#p3-s5">核心 insight</a></li>
+<li><a href="#p3-s6">方法逐步拆解</a></li>
+<li><a href="#p3-s7">核心公式</a></li>
+<li><a href="#p3-s8">Toy example</a></li>
+<li><a href="#p3-s9">Baselines</a></li>
+<li><a href="#p3-s10">实验设置</a></li>
+<li><a href="#p3-s11">指标教学</a></li>
+<li><a href="#p3-s12">可核验结果</a></li>
+<li><a href="#p3-s13">真实表图阅读</a></li>
+<li><a href="#p3-s14">Ablation</a></li>
+<li><a href="#p3-s15">Claim vs Evidence</a></li>
+<li><a href="#p3-s16">贡献</a></li>
+<li><a href="#p3-s17">局限</a></li>
+<li><a href="#p3-s18">复现要点</a></li>
+<li><a href="#p3-s19">研究价值</a></li>
+<li><a href="#p3-s20">可执行迁移</a></li>
+<li><a href="#p3-s21">方向专用分析</a></li>
+<li><a href="#p3-s22">Attack / Verification</a></li>
+<li><a href="#p3-s23">记忆总结</a></li>
+</ol>
+</div>
+</details></li>
+<li><a href="#verify">来源与验证报告</a></li>
+</ol>
+</nav>
+<section id="overview">
+<h2>今日概览：检索、选题与去重</h2>
+
+<h3>检索与范围</h3>
+<p>检索时间为 2026-11-25 早晨（Asia/Shanghai，星期三）。按 arXiv 周日–周四 20:00 America/New_York（当日为 EST，UTC−5）的公告节奏，周二 24 November 2026 的 new listings 已在周二 09:00 Asia/Shanghai 前后对外公布；周三 25 November 批次要到约今日 09:00 才可能切换。保存的学科列表页在 08:24 已显示 “Showing new listings for Tuesday, 24 November 2026”。随后对 cs.LG 的轮询一直持续到约 09:20，页面仍未切到 Wednesday, 25 November 2026。因此今日主语料是已经完整放出的<strong>周二新批次</strong>，<strong>不是 BACKFILL</strong>，也没有把昨日用过的周一批次再写一遍。</p>
+<p>同一批 new 页面的解析计数为：cs.LG 220、cs.AI 172、cs.CL 131、cs.CV 407、cs.MA 17、cs.DC 21、cs.RO 161；若再计入同期抓取的 eess.IV 16 与 cs.MM 3，去重后共 1148 篇，arXiv 编号大约落在 2611.27997–2611.31240。三篇入选稿的 Atom 记录更新时间为 2026-11-25 01:16:09Z（09:16 Asia/Shanghai）。前两篇 abs 标注 Submitted on 20 Nov 2026，第三篇为 23 Nov 2026，均在周二窗口公布，距检索时约 24 小时量级，落在 24–72 小时新鲜窗口内。arXiv HTML 三篇均可访问，并与 PDF（<code>pdftotext -layout</code>）交叉核对表格与公式。</p>
+
+<h3>7 日去重</h3>
+<p>近 7 日 Deep Dive 主文为：11-18 ViRA / MiSTiQ / QASK-Edit；11-19 ASH / Spool / FastFrames；11-20 Depth Before Breadth / PQRS / NarrowSpec；11-21 Budget Internalization / Evolving Agent Harnesses / D³-Cache；11-23 G-MTP / TRQ / Aggron；11-24 CreditFilter / Hindsight Forcing / ALD。今日三篇 2611.28298、2611.28349、2611.31184 均不在上述主文中，也未见需要破例重读的实质更新。11-22 无文件。</p>
+
+<h3>方向轮换说明</h3>
+<p>昨日（11-24）覆盖了 Reinforcement Learning、Video Acceleration 与 Inference Acceleration，<strong>未单列 Agent</strong>。按四方向轮换，今日必须有一篇可核验的 Agent 论文，并分别配上 Inference 与 Video。今日第一篇因此选在 Agent / Multi-Agent × RL 的交叉处：它研究的是神经符号 harness 在 RL / SFT 后训练下的组合泛化，而不是再做一篇 token 级信用分配。第二篇 GaaD 也不是 ALD 的续作——ALD 改的是推测解码起草阶段的层并行，GaaD 是把文法当作第二起草者，往现成草稿行里填强迫 token。第三篇 CodecOPSD 针对条件 token 的冗余，与昨日 Hindsight Forcing 的跨 chunk 信用回传不是同一条问题。</p>
+<p>同日语料里还有其他合格的 RL 或视频加速稿（例如雷达日报中的 SAEPO、HorizonFlow），但 Deep Dive 的三个席位按上述轮换锁定；三篇全文与主表均可核验，未触发备用名单替换。</p>
+
+<h3>入选 3 篇</h3>
+<ol>
+<li><strong>Language Model Harnesses can be Compositional Generalizers</strong>（2611.28298，Agent × RL）：在 RLM 一类把上下文外置、并可程序化调用子智能体的 harness 上做后训练，论证短任务与合成替代环境可以迁移到更长、跨域甚至递归的任务。主表 4–6 与附录题干重叠表都完整，适合补上昨日空缺的 Agent 席位。</li>
+<li><strong>Grammar-as-a-Draft（GaaD）</strong>（2611.28349，Inference Acceleration）：把文法强迫 token 与 MTP / DFlash / n-gram 的草稿合并为一行，校验时跳过 GRAMMAR 的 logits。六张表覆盖接受长度、三因子加速、Rust 复现、输出是否相同、混合流量和宿主规划成本；同时把“放弃无损保证”写进正文。</li>
+<li><strong>CodecOPSD</strong>（2611.31184，Video Acceleration）：用 H.264 运动与残差剪条件 token，再以 on-policy 自蒸馏适配 DiT。16 种条件的主表、人评、间隙消融，以及 MiniMax-H3 与 Cosmos3 扩展都可核对。标题与正文均使用 CodecOPSD，以避免和更早的 OPSD 训练方法混淆。</li>
+</ol>
+<p>今日三篇均为周二批次新稿，概览、页眉与来源报告均标注为<strong>非 BACKFILL</strong>。公式已用本机 <code>latex2mathml</code> 转为 MathML，页面不依赖 CDN、MathJax 或 KaTeX，可离线阅读。</p>
+</section>
+
+<section class="paper" id="p1">
+<h2>论文 1｜Language Model Harnesses can be Compositional Generalizers：在神经符号 harness 里把组合泛化做成可训练的局部策略 <span class="tag">NEW</span> Agent / Multi-Agent × RL</h2>
+
+<h3 id="p1-s1">1. 基本信息</h3>
+
+<p><strong>标题：</strong>Language model harnesses can be Compositional Generalizers<br>
+<strong>作者：</strong>Alex L. Zhang, Souradip Chakraborty, Omar Khattab（MIT CSAIL；通讯 altzhang@mit.edu）<br>
+<strong>arXiv：</strong><span class="cite">来源：<a href="https://arxiv.org/abs/2611.28298">abs</a> · <a href="https://arxiv.org/pdf/2611.28298">pdf</a> · <a href="https://arxiv.org/html/2611.28298">html</a> · 12 页正文，含附录共 63 页 · 提交 2026-11-20 · cs.CL</span><br>
+<strong>代码：</strong><a href="https://github.com/alexzhang13/harness-cg">github.com/alexzhang13/harness-cg</a>；SFT 轨迹 <a href="https://huggingface.co/datasets/a1zhang/synthetic-rlm-sft-data">a1zhang/synthetic-rlm-sft-data</a>（论文脚注；仓库可运行性 Not Verified）<br>
+<strong>方向：</strong>Agent / Multi-Agent × Reinforcement Learning</p>
+<h3 id="p1-s2">2. 一句话定位</h3>
+
+<p>这篇论文要论证的不是“再给智能体加一个工具”，而是：如果 harness 能把全局新任务切成局部仍可解的语言模型调用（作者称为 locally in-distribution，LID），那么只需在短任务或合成替代环境上训练根策略，就可以组合出更长、跨域甚至递归的求解行为。</p>
+<h3 id="p1-s3">3. 人话版</h3>
+
+<p>想象一个项目经理（根模型）并不把整份卷宗塞进自己的工作记忆，而是把材料放在共享文件夹里，自己只写一段可执行的分工脚本：先切段、再派若干短上下文同事去标注、最后在代码里汇总。同事每次看到的都是他们本来就会做的短任务；经理每次看到的，也只是“如何分工”这类相对稳定的程序，而不是不断膨胀的聊天记录。训练时，你甚至不必让经理在真实的百万字卷宗上熬夜——可以先用一本结构相似、材料更便宜的假卷宗，教会他那套分工脚本。换一本更厚或题材不同、但分解结构相近的真卷宗时，这套脚本仍能复用。这就是文中的 Recursive Language Model（RLM）路径，相对 ReAct 那种把全部轨迹当作提示词往上堆的做法。</p>
+<h3 id="p1-s4">4. 背景与缺口</h3>
+
+<p>现代语言模型作为智能体部署时，几乎总是待在某种 harness 里。主流“trajectory-as-a-prompt”设计（ReAct 及其后裔）让编排模型在每一步看到不断变长的历史。作者指出，这等于把长度外推和轨迹分布外推的负担，重新压回 Transformer 本身：训练时常要在目标环境上滚完整轨迹，换一个 harness 或领域又得重新收集数据。经验上，即便子问题单独可解，输入一变长或换一套用词，模型仍会退化，多轮里还会出现 context rot。</p>
+<p>缺口因此是双重的。第一，组合泛化在纯神经网络里仍然不可靠，不能指望“把更长的任务再拿来训一遍”就能便宜地外推。第二，现有的 coding agent 抽象——上下文外置、程序化工具调用、子智能体——已经被广泛使用，但缺少一个可检验的说法：这些抽象究竟如何降低泛化负担，以及它们能否被强化学习真正学到、并迁移到训练时没见过的长任务和跨域任务。作者把讨论放在文本级分解，而不是回路级的神经机制解释。</p>
+<h3 id="p1-s5">5. 核心 insight</h3>
+
+<p>核心判断是：harness 的价值在于把全局 OOD 任务改写成一组局部仍“像训练分布里会出现的提示”的调用。LID 并不要求每条局部提示都在训练集里出现过，只要求根策略写出的分解，能把子调用送到模型已经靠谱的能力范围内。只要根轨迹在更长或跨域任务上仍然相似，并且被委派的子任务确实执行正确，组合泛化就不再完全依赖 Transformer 对超长提示的外推。</p>
+<p>由此推出训练策略：不必总在真实长程环境上对整条 rollout 做 RL。可以针对 harness 里某一个语言模型（通常是根模型）构造合成替代环境，甚至用假工具 / 假子调用，专门训练它的分解程序；真实工具在评估时再接回去。若分解程序本身也能被当成子 harness 递归调用，新学会的求解器又可以成为更大任务里的可复用组件。</p>
+<h3 id="p1-s6">6. 方法逐步拆解</h3>
+
+<p><strong>第一步，固定可比较的 harness 抽象，而不是做任务特化脚手架。</strong>基座 Transformer 代表把全部上下文当作提示的路径；评测超出窗口时对它使用 YaRN。Pi-mono 代表带终端、压缩和子智能体的 ReAct 循环，并把长上下文外置到文件。LM + REPL（CodeAct）保留程序化工具调用和上下文外置，但去掉程序化子智能体与输出截断，用来消融“会写代码”是否足够。RLM 同时使用上下文外置和程序化子智能体；正文采用 depth=1，以便与常见 coding agent 的子智能体调用对齐。</p>
+<p><strong>第二步，在可控的短任务上做 RL，再看长任务和跨域任务。</strong>长度泛化（表 1）只在短划分上训练，评测同一任务族的 2–64 倍更长划分：MRCRv2 从 32K–64K、2-needle 到 2M–4M、8-needle（64×），Ada-LEval 从 8K 到 128K（16×），其余为 2–8×。策略泛化（表 2）则换领域、保留分解结构，例如 OOLONG 的 trec-coarse（32K）迁到 spam（132K），OBLIQ 的写作类比迁到数学类比。除 Pi 对根和子智能体都计损失外，RLM 的损失只落在根轨迹，子调用 token 不进损失，类似于 Recursive Agent Optimization、且没有额外的委派奖励。</p>
+<p><strong>第三步，诊断 LID：根轨迹是否被复用，子任务是否真的做对。</strong>作者用加权 Jaccard 等 token 级相似度，比较训练成功轨迹与长评测轨迹；并在有中间标签的任务（如 OOLONG）上直接计算被委派子任务的准确率。图 5 还把每条长评测轨迹与最邻近的三条训练轨迹的奖励加以对照，用来说明“根轨迹像”并不自动等于“奖励能迁过去”——Pi 在 OOLONG 上就是反例。</p>
+<p><strong>第四步，surrogate harness training。</strong>对表 3 的八个更脏、更难的长基准，作者用 Opus 5.5（经 Claude Code）阅读公开的非评测划分与若干基座 RLM 轨迹，提出候选 LM 程序，再构造上下文不重叠、但同一套程序也能解的合成环境。BrowseComp-Plus、ExpertLongBench、OBLIQ 上的子调用可换成预置的 oracle 假回答。然后把候选程序当作提示，让 RLM 在合成环境里打轨迹，用 GPT-5-mini 评判加环境奖励筛样，得到 8,015 条仅根轨迹的合成 rollout，以及 LongReason 上 1,465 条子智能体轨迹。RLM-27B 是对 Qwen3.8-27B 做全参数 SFT 的产物；作为对照，也在同一批合成环境上、关掉提示，直接做 RL。</p>
+<p><strong>第五步，递归组合。</strong>从 RLM-27B 能解（avg@3 为 97.5%）而 Qwen3.8-27B 不稳（57.7%）的 87 个任务中，随机抽四个排成元任务：必须按顺序解对才能解锁下一题。默认设置把四题拼在同一条根轨迹里；进一步用替代训练教模型“先解当前题，再对剩余任务启动子 RLM”，把已学会的求解器递归装回去。</p>
+<h3 id="p1-s7">7. 核心公式</h3>
+
+<p>正文把 LID 主要当作经验现象来写，定量分解放在附录 D。把根策略写成 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mi>H</mi></msub></mrow></math>，局部执行（含子调用）写成 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mi>L</mi></msub></mrow></math>，任务 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x0002C;</mo><mi>c</mi><mo stretchy="false">&#x00029;</mo></mrow></math> 上的期望奖励为</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>J</mi><mi>p</mi></msub><mo>&#x0003D;</mo><msub><mi>&#x1D53C;</mi><mrow><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x0002C;</mo><mi>c</mi><mo stretchy="false">&#x00029;</mo><mi>&#x0007E;</mi><mi>p</mi></mrow></msub><mspace width="0.167em" /><msub><mi>&#x1D53C;</mi><mrow><mi>z</mi><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mi>H</mi></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><munder><munder><mrow><msub><mi>&#x1D53C;</mi><mrow><mi>y</mi><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mi>L</mi></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><mi>z</mi><mo>&#x0002C;</mo><mi>c</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><mo stretchy="false">[</mo><mi>R</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x0002C;</mo><mi>y</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">]</mo></mrow><mo>&#x23DF;</mo></munder><mrow><msub><mi>Q</mi><mi>x</mi></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x0002C;</mo><mi>c</mi><mo stretchy="false">&#x00029;</mo></mrow></munder></mrow></math></div>
+<p>这是附录式 (5)：根模型只负责写出分解 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi></mrow></math>，真正得分是局部执行的价值 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Q</mi><mi>x</mi></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x0002C;</mo><mi>c</mi><mo stretchy="false">&#x00029;</mo></mrow></math>。训练任务 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x0002C;</mo><mi>c</mi><mo stretchy="false">&#x00029;</mo></mrow></math> 与测试任务 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><msup><mi>x</mi><mi>&#x02032;</mi></msup><mo>&#x0002C;</mo><msup><mi>c</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00029;</mo></mrow></math> 的差距可以拆成</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>J</mi><mn>1</mn></msub><mo>&#x02212;</mo><msub><mi>J</mi><mn>2</mn></msub><mo>&#x0003D;</mo><munder><munder><mrow><mo minsize="1.2em" maxsize="1.2em">(</mo><msub><mi>&#x1D53C;</mi><mrow><mi>z</mi><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mi>H</mi></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><msub><mi>Q</mi><mi>x</mi></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x0002C;</mo><mi>c</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><msub><mi>&#x1D53C;</mi><mrow><mi>z</mi><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mi>H</mi></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><msup><mi>x</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00029;</mo></mrow></msub><msub><mi>Q</mi><mi>x</mi></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x0002C;</mo><mi>c</mi><mo stretchy="false">&#x00029;</mo><mo minsize="1.2em" maxsize="1.2em">)</mo></mrow><mo>&#x23DF;</mo></munder><mrow><mtext>(A)&#x000A0;root&#x000A0;controller&#x000A0;shift</mtext></mrow></munder><mo>&#x0002B;</mo><munder><munder><mrow><msub><mi>&#x1D53C;</mi><mrow><mi>z</mi><mi>&#x0007E;</mi><msub><mi>&#x003C0;</mi><mi>H</mi></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><msup><mi>x</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00029;</mo></mrow></msub><mo minsize="1.2em" maxsize="1.2em">[</mo><msub><mi>Q</mi><mi>x</mi></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x0002C;</mo><mi>c</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><msub><mi>Q</mi><mrow><msup><mi>x</mi><mi>&#x02032;</mi></msup></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x0002C;</mo><msup><mi>c</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00029;</mo><mo minsize="1.2em" maxsize="1.2em">]</mo></mrow><mo>&#x23DF;</mo></munder><mrow><mtext>(B)&#x000A0;execution&#x000A0;/&#x000A0;sub-call&#x000A0;shift</mtext></mrow></munder></mrow></math></div>
+<p>式 (7) 的意思很直白：(A) 是根控制器有没有写出“测试任务也用得上”的分解；(B) 是同样的分解在测试上下文里，子调用是否还能执行好。LID 要同时压低这两项。附录给出的保证（式 (13)）把测试奖励下界写成</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>J</mi><mi>q</mi></msub><mo>&#x02265;</mo><msub><mi>R</mi><mrow><mo>max</mo></mrow></msub><mo>&#x02212;</mo><msub><mi>&#x003F5;</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></mrow></msub><mo>&#x02212;</mo><msub><mi>R</mi><mrow><mo>max</mo></mrow></msub><msub><mi>&#x003F5;</mi><mi>H</mi></msub><mo>&#x02212;</mo><msub><mi>&#x003F5;</mi><mi>L</mi></msub></mrow></math></div>
+<p>即测试表现至少是：最大可达奖励，减去训练误差、根抽象偏移，再减去局部执行偏移。变量直觉：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003F5;</mi><mi>H</mi></msub></mrow></math> 小，说明根轨迹在新任务上仍像训练时学会的程序；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003F5;</mi><mi>L</mi></msub></mrow></math> 小，说明被派出去的子任务仍然在模型能力圈内。训练时 RLM 的损失只加在根助手 token 上，正是在直接优化 (A) 这一侧，而把 (B) 交给已有能力和 LID 分解。</p>
+<p><span class="cite">来源：<a href="https://arxiv.org/abs/2611.28298">abs</a> · <a href="https://arxiv.org/pdf/2611.28298">pdf</a> · <a href="https://arxiv.org/html/2611.28298">html</a> · 附录 D.1–D.2，式 (5)(7)(13)</span></p>
+<h3 id="p1-s8">8. Toy example</h3>
+
+<p>以 OOLONG 为例。短训练划分大约是 32K token、trec-coarse 标注；长评测划分把同类问题 bulk 到 256K。纯 Transformer 必须在更长的提示里“自己再学一遍如何扫完全文”。RLM 的根模型若在短任务上已经学会“按行切块、批量调用子模型做六分类、再在 REPL 里汇总”，那么到 256K 时它只需把同一段程序多跑几轮。子调用每次只看到一行或一小段，输入分布几乎没变。表 19 给出直接证据：OOLONG 上被委派的单行标注，训练准确率从 86.1% 到 85.6%，评测从 81.7% 到 83.7%，两边都维持在可用水平。跨域时把 trec-coarse 换成 spam，评测子任务准确率甚至从 70.6% 升到 87.3%。相反，若根模型学成“只读固定几页、或手写一长串中间列表”，提示再像，奖励也会在更长输入上掉下去——这正是 Pi 在图 5 中的失败模式。</p>
+<h3 id="p1-s9">9. Baselines</h3>
+
+<ul>
+<li><strong>Base Transformer + YaRN：</strong>代表 trajectory-as-a-prompt；长上下文靠模型窗口或 YaRN 硬撑，是“没有外部化上下文”的下界。</li>
+<li><strong>Pi（base / 短任务 RL）：</strong>现代 coding agent 的最小抽象（ReAct + 子智能体 + 文件外置）。用来检验“会派子智能体”是否已经足够。</li>
+<li><strong>LM + REPL：</strong>会写代码、能外置上下文，但不能程序化地扇出子智能体。用来分离“程序化求解”和“语义子任务组合”。</li>
+<li><strong>RLM（base）以及 + RL（短任务 / 合成任务）：</strong>同一 harness 下的基座、短任务 RL 和合成环境 RL，用来把训练数据来源与 harness 本身分开。</li>
+<li><strong>参考点 GPT-6 Astra + RLM：</strong>图 3 中的前沿参考，不是同参数量对照，只提供长度外推的上限直觉。</li>
+</ul>
+<p>主表 4 里所有后训练模型都放进同一套 RLM 评测，避免把“换了模型”和“换了 harness”混在一起。</p>
+<h3 id="p1-s10">10. 实验设置</h3>
+
+<p>默认 RL 配置见表 7，在 prime-rl 中运行。算法为 GRPO；优化器 AdamW，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B2;</mi><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><mn>0.9</mn><mo>&#x0002C;</mo><mn>0.999</mn><mo stretchy="false">&#x00029;</mo></mrow></math>，学习率恒为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>5</mn><mi>×</mi><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>5</mn></mrow></msup></mrow></math>，权重衰减 0.01，梯度范数上限 1，BF16，完整 activation checkpointing。Qwen3-30B-A3B-Instruct-2507 用 LoRA（rank 32，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B1;</mi><mo>&#x0003D;</mo><mn>64</mn></mrow></math>，作用在注意力与 MLP 投影）；Qwen3.8-27B 改为全参数微调，短任务 RL 学习率降到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>5</mn><mi>×</mi><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>6</mn></mrow></msup></mrow></math>、batch size 96。默认 batch size 64、每题 4 条 rollout，训练序列长 8,192（Ada-LEval 提到 20,480，OBLIQ Twitter→WildChat 提到 24,576）。损失只计算根助手 token，子调用排除；温度 1，关闭 thinking；每段补全上限 8,192；最大 off-policy 步数为 8。长度泛化与短任务混合均训练 1,000 步，按验证奖励选检查点。硬件：长度 / 策略泛化实验在单台 8×H100 上，四张训练、四张推理。</p>
+<p>RLM-27B 不是 RL，而是对合成轨迹做一整轮全参数 SFT：打包长度 32,768，AdamW 学习率 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>5</mn><mi>×</mi><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>6</mn></mrow></msup></mrow></math>，余弦衰减到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mi>×</mi><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>6</mn></mrow></msup></mrow></math>（3 步 warmup），零权重衰减，梯度裁剪 1，FP32 优化，全局 batch size 8，同样 8×H100。评测表 3 覆盖 LongReason（n=794，约 118K）到 BrowseComp-Plus（n=830，共享语料约 456M）等八个套件；harness 默认 40 轮上限（链式元任务另有 80 轮预算）。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.28298">abs</a> · <a href="https://arxiv.org/pdf/2611.28298">pdf</a> · <a href="https://arxiv.org/html/2611.28298">html</a> · 表 3、表 7，附录 A</span></p>
+<h3 id="p1-s11">11. 指标教学</h3>
+
+<p><strong>任务分数 / 平均分：</strong>各基准自带指标，表 4 的 Avg. 是八个评测集的未加权平均。不要把 26.9% 读成“绝对百分点”——它是相对同一 harness 下 Qwen3.8-27B 基座的相对提升（58.5 对 46.1）。</p>
+<p><strong>回合、子调用、Delegates、Turn Cap：</strong>表 5 统计根回合数、平均子调用次数、至少一次委派的轨迹占比，以及撞上 40 轮上限的占比。Turn Cap 高通常表示循环或拖沓，而不是“更努力”。</p>
+<p><strong>Token 用量：</strong>根与子调用的输入 / 输出要分开读。摘要中的“约 2 倍更少”指推理期总 token；第 4.2 节另报根输入约 6 倍更少、回合约 3 倍更少，三套分母不同。</p>
+<p><strong>Partial / Full solve：</strong>四题链式元任务里，partial 是单题通过率，full 是四题全对的元任务比例；置信区间以元任务为独立单位。</p>
+<p><strong>加权 Jaccard 与子任务准确率：</strong>前者只说明根程序像不像，后者才说明局部计算是否可靠。</p>
+<h3 id="p1-s12">12. 可核验结果</h3>
+
+<ol>
+<li><strong>短训到长评测：</strong>图 3 在六个可控长度环境上显示，RLM 的评测奖励更贴近训练奖励，基座 Transformer 则常常训得好、迁不走。外推倍数按表 1 为 2–64×。具体曲线高度以图为准，正文未把每个环境的终值写成单行数字。</li>
+<li><strong>策略迁移：</strong>图 4 在三个领域完全不同、分解结构相似的任务上，RLM 的评测奖励同样更跟得上训练奖励；Pi 与 LM+REPL 在需要稠密处理的 OBLIQ 上偏弱。</li>
+<li><strong>主结果，Qwen3.8-27B 同 harness：</strong>表 4 中 RLM 基座均分 46.1，短任务 RL 到 48.5（+2.4），合成环境 RL 到 52.9（+6.8），SFT 得到的 RLM-27B 到 58.5（+12.4 分，相对 +26.9%）。CTC 从 19.1 到 39.8，ExpertLongBench（ELB）从 53.1 到 71.2，LooGLE 从 51.4 到 82.0。BrowseComp-Plus 从 64.8 到 64.9，几乎持平，收益主要在轨迹效率。</li>
+<li><strong>效率：</strong>表 5 中 Qwen3.8-27B 的 RLM 基座为 18.4 回合、根 263K/5K、子调用 443K/10K（合计约 721K token），Turn Cap 32.9%。RLM-27B 降到 6.5 回合（约 3× 更少）、根 44K/3K、子调用 276K/62K（合计约 385K，约 1.87× 更少，与摘要“∼2× fewer tokens”一致），Delegates 升至 97.4%，Turn Cap 降至 1.1%。根输入 263K→44K，约 6×，与第 4.2 节文字一致。</li>
+<li><strong>较弱基座上的不对称：</strong>Qwen3-30B-A3B 的短任务 RL 把均分从 15.3 提到 22.3（+7.0），合成 RL 到 25.0；token 用量下降。作者明确写：弱模型更倾向少委派、改走程序化解法，强模型则更稳定地扇出子智能体。因此“短任务 RL 一定更省 token”不成立。</li>
+<li><strong>递归组合：</strong>表 6 中 RLM-27B 默认 full solve 为 55.2%±2.2；只加递归提示反而降到 47.2%±2.2；加上递归合成数据的 SFT 后升到 77.5%±1.8（partial 84.4%±1.4）。2000 条链。</li>
+<li><strong>更宽的真实任务混合并不能替代针对性合成：</strong>表 10 在去掉已进训练集的 BrowseComp-Plus 与 OBLIQ 后，Qwen3-30B-A3B 的宽混合均分 31.6，只略高于合成 RL 的 31.0 和短任务 RL 的 27.1。</li>
+<li><strong>子任务可靠性：</strong>表 19 显示多数带标签的委派子任务在训练 / 评测两侧都保持高分；但也有反例：OBLIQ Writing→Math 的文档打分 AUC×100，评测从 70.0 降到 67.3。</li>
+</ol>
+<p><span class="cite">来源：<a href="https://arxiv.org/abs/2611.28298">abs</a> · <a href="https://arxiv.org/pdf/2611.28298">pdf</a> · <a href="https://arxiv.org/html/2611.28298">html</a> · 表 4、5、6、10、19，图 3、4</span></p>
+<h3 id="p1-s13">13. 真实表图阅读</h3>
+
+<div class="tbl"><table><thead><tr><th>方法（Qwen3.8-27B，RLM）</th><th>LongReason</th><th>LooGLE</th><th>CTC</th><th>BC+</th><th>OOLONG</th><th>CorpusQA</th><th>OBLIQ</th><th>ELB</th><th>Avg.</th></tr></thead><tbody>
+<tr><td>RLM（base）</td><td>85.3</td><td>51.4</td><td>19.1</td><td>64.8</td><td>33.3</td><td>48.4</td><td>13.5</td><td>53.1</td><td>46.1</td></tr>
+<tr><td>+ RL（短任务）</td><td>87.7</td><td>52.4</td><td>18.7</td><td>64.6</td><td>46.6</td><td>45.5</td><td>18.7</td><td>53.8</td><td>48.5</td></tr>
+<tr><td>+ RL（合成任务）</td><td>90.7</td><td>60.1</td><td>20.8</td><td>67.5</td><td>49.5</td><td>58.1</td><td>20.0</td><td>56.4</td><td>52.9</td></tr>
+<tr><td>RLM-27B（合成 SFT）</td><td>90.1</td><td>82.0</td><td>39.8</td><td>64.9</td><td>43.2</td><td>61.6</td><td>15.2</td><td>71.2</td><td>58.5</td></tr>
+</tbody></table></div>
+<p class="cite">表 4 摘录（Qwen3.8-27B 块）。数字抄自 arXiv HTML 表格，与 PDF 对齐。Avg. 为八集未加权平均。OOLONG 列对应表 3 的 OOLONG-Real。</p>
+<div class="tbl"><table><thead><tr><th>方法</th><th>回合</th><th>子调用</th><th>Delegates</th><th>Turn Cap</th><th>根 token（in/out）</th><th>子调用 token（in/out）</th></tr></thead><tbody>
+<tr><td>RLM（base）</td><td>18.4</td><td>87.3</td><td>43.2%</td><td>32.9%</td><td>263K / 5K</td><td>443K / 10K</td></tr>
+<tr><td>+ RL（短任务）</td><td>16.9</td><td>214.1</td><td>42.4%</td><td>25.4%</td><td>292K / 7K</td><td>743K / 25K</td></tr>
+<tr><td>+ RL（合成任务）</td><td>16.1</td><td>27.4</td><td>45.2%</td><td>19.0%</td><td>392K / 10K</td><td>383K / 29K</td></tr>
+<tr><td>RLM-27B</td><td>6.5</td><td>98.5</td><td>97.4%</td><td>1.1%</td><td>44K / 3K</td><td>276K / 62K</td></tr>
+</tbody></table></div>
+<p class="cite">表 5 摘录（Qwen3.8-27B）。Token 为评测轨迹平均值。短任务 RL 使子调用和总 token 上升，与较弱的 Qwen3-30B 趋势相反。</p>
+<div class="tbl"><table><thead><tr><th>模型</th><th>默认 Partial / Full</th><th>+ 递归提示 Partial / Full</th><th>+ SFT（递归合成）Partial / Full</th></tr></thead><tbody>
+<tr><td>Qwen3.8-27B</td><td>38.4±1.7 / 19.3±1.7</td><td>32.5±1.5 / 12.4±1.4</td><td>32.1±1.4 / 9.9±1.3</td></tr>
+<tr><td>RLM-27B</td><td>74.5±1.4 / 55.2±2.2</td><td>63.3±1.7 / 47.2±2.2</td><td>84.4±1.4 / 77.5±1.8</td></tr>
+</tbody></table></div>
+<p class="cite">表 6。95% 正态置信区间，以 2000 个元任务为独立单位。</p>
+<p><strong>图 3。</strong>六条训练 / 评测奖励曲线是长度泛化的主证据。要点不是某一时刻的绝对高度，而是 RLM 的评测曲线能跟着训练曲线走，基座 Transformer 常常不能。图中另有 GPT-6 Astra + RLM 作为前沿参考，不可与 27B/30B 直接比参数效率。</p>
+<p><strong>图 5。</strong>把长评测轨迹与最近邻训练轨迹的奖励画在一起：上下文外置的 harness 更容易复用根轨迹，但 Pi 在 OOLONG 上出现“轨迹相似、奖励不迁移”。这张图用来限制“相似度高 = 已经组合泛化”的过度解读。</p>
+<p><strong>表 12（附录 B.9）必须和主结果一起读。</strong>CTC 各划分的三词 Jaccard J3 为 0.965–1.000，且 H13 等于全部真实题数——每道真题都与训练题干共享至少一个 13 词精确片段。ELB 的 J3=0.748、H13=350/350。相反，LongReason、OBLIQ math、BrowseComp-Plus 的 H13=0。作者写明：这不单独构成污染度量，但它意味着“26.9% 平均提升”不能被读成八个基准上同等干净的零样本迁移。</p>
+<h3 id="p1-s14">14. Ablation</h3>
+
+<p>训练数据来源是主消融。对 Qwen3.8-27B，短任务 RL 只加 2.4 分且更费 token；合成环境上的无提示 RL 加 6.8 分、七个任务中七个上升，但“没有明显效率收益”，行为也与带教师提示的 SFT 不同；SFT 的 RLM-27B 同时拿到分数和效率。因此，合成环境本身有用，但“有没有提示轨迹、用 SFT 还是 RL”会收敛到不同策略。</p>
+<p>表 8 把短任务混合拆成单环境训练：在本任务短划分上训练通常最强，但迁移不均，说明模型不只是“更会用 harness”，而是学到了可迁移的任务族行为。表 10–11 的宽混合（约 20 个真实任务族，训 1,000 步）在 Qwen3-30B-A3B 上把六集均分推到 31.6，只略强于合成 RL 的 31.0，说明“把更多真实短任务搅在一起”并不能自动解决表 3 那种更脏的长任务。附录图 7 去掉 RLM 的 orchestration hint 后，总体趋势仍在，但 MRCRv2 会学到不可泛化、并出现上下文窗口问题——提示并非无关紧要的包装。</p>
+<h3 id="p1-s15">15. Claim vs Evidence</h3>
+
+<p><strong>成立得比较实的部分：</strong>在表 1 的受控长度轴和表 2 的策略轴上，RLM 的训练—评测一致性强于基座 Transformer，这个定性结论有图 3、图 4 和根轨迹相似度、子任务准确率两套诊断支撑。把 RLM-27B 与同一 harness 的 Qwen3.8-27B 相比，表 4 与表 5 的分数、回合、token、Turn Cap 是对得上的；26.9%、约 3× 回合、约 2× 总 token、约 6× 根输入，都可以从这两张表直接算出或与第 4.2 节文字对上。</p>
+<p><strong>需要收窄的部分：</strong>摘要把 26.9% 写在“CTC-Bench 与 ExpertLongBench 等”之后，但 26.9% 是八集平均的相对提升，不是这两个基准单独的相对提升（CTC 为 39.8/19.1−1≈108%，ELB 为 71.2/53.1−1≈34%）。合成环境是在了解目标任务族、并看到非评测划分与基座轨迹之后，由 Opus 5.5 设计的，属于针对性教学，不是通用自动课程。表 12 显示 CTC、ELB、OOLONG-Real、CorpusQA 的题干重叠偏高，LongReason / OBLIQ / BrowseComp-Plus 则低——平均分被不同污染风险的集合绑在一起。递归实验的 87 个任务是按 RLM-27B 已会、基座不会来选的，77.5% 不能外推到任意任务链。图 3、图 4 的纵轴终值在正文中没有逐点表列。</p>
+<p><strong>证据不足或未报：</strong>多种子稳定性 Not Reported；Pi / LM+REPL 在表 4 的八集上没有与 RLM-27B 同配方后训练的完整对照；GPT-5-mini 作筛样评判的一致性 Not Reported。</p>
+<h3 id="p1-s16">16. 贡献</h3>
+
+<ul>
+<li>把 harness 抽象（上下文外置、程序化工具、子智能体）重新表述为对 LID 的结构设计，并用长度、策略两条轴给出可比较的 RL 证据。</li>
+<li>提出并实施 surrogate harness training：用合成环境甚至假子调用，定向训练 harness 内单个模型（主要是根策略），得到 RLM-27B。</li>
+<li>展示递归子 harness 可以把新学会的分解再组合，使四题链式 full solve 从 55.2% 升到 77.5%。</li>
+<li>提供轨迹相似度、子任务准确率和题干重叠统计，让“组合泛化”不只停留在口号。</li>
+</ul>
+<h3 id="p1-s17">17. 局限</h3>
+
+<p>RL 学到的 harness 行为不必是可组合的：同样的短任务混合，在弱模型和强模型上会走到少委派或费 token 的不同策略。Pi 与 LM+REPL 在需要稠密语义处理的任务上明显弱于 RLM，说明“会写代码或会派子智能体”不够。合成数据依赖对目标任务族的事先理解、专有教师模型和评判模型；假子调用在训练和真实延迟之间仍有差距（表 13–14 的 wall-clock 也不总是合成更快，例如 Qwen3.8-27B 在 CorpusQA 上合成均值是真实的 1.52 倍）。题干重叠在部分基准上偏高。主实验关闭 thinking，深度固定为 1。代码与数据链接已给出，但本报告未做可运行性审计。</p>
+<h3 id="p1-s18">18. 复现要点</h3>
+
+<p>先复现表 7 的 prime-rl 配置：GRPO、根 token 才计损失、LoRA 对 Qwen3 / 全参对 Qwen3.8、1,000 步短任务混合。长度泛化必须严格使用表 1 的短训 / 长评划分，并给基座 Transformer 加上 YaRN。要复现 RLM-27B，需要那 8,015+1,465 条轨迹和 32,768 打包 SFT 配方，而不是再跑一遍短任务 RL。评测要固定 40 轮上限，并把根 / 子调用 token、Delegates、Turn Cap 与分数一起报。若做递归实验，需按附录 B.11 构造解锁工具，并分清“只加提示”和“再 SFT”两个臂。验证 LID 时不要只看根轨迹相似度，要同时报子任务准确率，并核对表 12 的题干重叠。</p>
+<h3 id="p1-s19">19. 研究价值</h3>
+
+<p>它把“智能体泛化难”从模型尺度问题，部分改写成系统设计问题：只要局部提示落在能力圈内，长程训练数据就可以被更便宜的短任务或合成替代物替换。这对正在用 RL 训练 coding agent 的人很实际——与其只在 SWE-bench 一类完整轨迹上堆计算，不如先问：根模型真正要学的是哪一段程序。附录里的差距分解也为后续理论工作留了把手。</p>
+<h3 id="p1-s20">20. 可执行迁移</h3>
+
+<ol>
+<li><strong>针对根策略做替代环境，而不是一上来滚真实长程轨迹。</strong>先写出你希望根模型产生的工具程序模板，再用假检索 / 假子调用生成几千条根轨迹做 SFT，最后在真实工具上评测回合数、Turn Cap 和分数。直接可对照的是本文表 4 对表 5 的读法：没有效率指标，分数提升可能只是更会“耗预算”。</li>
+<li><strong>把“会解单任务”升级成“可递归调用的子 harness”。</strong>若生产系统已经能稳定解一类工单，不要把多工单拼进同一上下文；用显式 handoff 开一条新的 RLM 调用。表 6 显示只加自然语言提示会伤害成功率，需要专门的递归轨迹，而不是一句 system prompt。</li>
+</ol>
+<h3 id="p1-s21">21. 方向专用分析</h3>
+
+<p>这是一篇 Agent×RL 论文，但后训练并不全是 RL：最强产物 RLM-27B 是 SFT，RL 被用来揭示“短任务可以外推”以及“无提示合成 RL 也能涨点但不省 token”。对智能体研究，真正可迁移的是 LID 设计原则——上下文外置加上程序化扇出，比把轨迹当作提示更利于组合。对 RL 研究，它提醒：奖励上升不等于学到可组合的根策略，初始策略会决定委派程度，损失记在哪一层（根还是子调用）会改变你优化的是式 (7) 的 (A) 还是 (B)。depth=1、关闭 thinking，也意味着这还不是对深度递归或多步推理预算的完整答案。</p>
+<h3 id="p1-s22">22. Attack / Verification</h3>
+
+<p>最需要盯住的是合成数据与评测之间的泄漏。表 12 已显示 CTC、ELB 等集合的题干 n-gram 重叠很高；验证时应要求作者同时报告低重叠子集（LongReason、OBLIQ math、BrowseComp-Plus）上的增益，并做“打乱合成程序模板 / 换成无关合成环境”的负对照。轨迹由带提示的教师生成、再经 GPT-5-mini 筛选，存在奖励黑客和评判偏差风险；应公开筛样通过率、人工抽检和去掉评判模型后的 RL-only 对照（文中已有合成 RL，但行为不同）。假子调用可能让根模型学会依赖“永远正确的同事”，在真实子调用变差时崩溃——可用故意降低子模型质量的压力测试。评测若只报均分、不报 Turn Cap 与 token，也可能掩盖靠耗尽回合“碰答案”的策略。</p>
+<h3 id="p1-s23">23. 记忆总结</h3>
+
+<ul>
+<li>LID：让每次模型调用看到的提示仍落在可靠能力圈内，而不是让 Transformer 硬啃超长轨迹。</li>
+<li>RLM = 上下文外置 + 程序化子智能体；损失默认只加在根轨迹。</li>
+<li>短任务 RL 可以迁到 2–64× 更长，以及共享分解结构的新领域；基座 Transformer 迁得更差。</li>
+<li>“根轨迹像”不够，还要看子任务准不准；Pi 在 OOLONG 上是反例。</li>
+<li>短任务 RL 在弱模型上 +7.0 分，在 Qwen3.8-27B 上只 +2.4 分，且后者更费 token。</li>
+<li>替代训练用合成环境甚至假子调用教根程序；RLM-27B 是 8,015 条根轨迹上的 SFT。</li>
+<li>同 harness 下均分 46.1→58.5（相对 +26.9%），回合 18.4→6.5，总 token 约 721K→385K。</li>
+<li>CTC / ELB 等集合题干重叠偏高，26.9% 不能当成八个同等干净的零样本结果。</li>
+<li>递归提示不够，递归 SFT 才把链式 full solve 从 55.2% 拉到 77.5%。</li>
+<li>宽混合真实短任务不能替代针对性合成环境；要同时看分数和效率。</li>
+</ul>
+</section>
+<section class="paper" id="p2">
+<h2>论文 2｜Grammar-as-a-Draft：把文法当成第二起草者，让每一步推测解码接受更多 token <span class="tag">NEW</span> Inference Acceleration</h2>
+
+<h3 id="p2-s1">1. 基本信息</h3>
+
+<p><strong>标题：</strong>Grammar-as-a-Draft: More Tokens per Speculative Decoding Step on Grammar-Constrained Structured Outputs<br>
+<strong>作者：</strong>John Zhang（通讯 johnqiangzhang@google.com）, Silky Arora；单位 Google<br>
+<strong>arXiv：</strong><span class="cite">来源：<a href="https://arxiv.org/abs/2611.28349">abs</a> · <a href="https://arxiv.org/pdf/2611.28349">pdf</a> · <a href="https://arxiv.org/html/2611.28349">html</a> · 12 页，4 图 6 表 · 提交 2026-11-20 · cs.CL / cs.AI</span><br>
+<strong>实现：</strong><a href="https://github.com/vllm-project/vllm-torchtpu/pull/3321">vllm-torchtpu PR #3321</a>（论文声明；PR 中未在论文出现的数字不写入下文）。独立 Rust 运行时写作时未公开。<br>
+<strong>方向：</strong>Inference Acceleration（结构化输出上的推测解码）</p>
+<h3 id="p2-s2">2. 一句话定位</h3>
+
+<p>GaaD 不训练新的起草模型，而是把文法引擎已经确定的字符串写成草稿行里的 GRAMMAR 槽：与任意 drafter 拼成一行，校验时对这些槽直接接受、不算 logits，从而在 JSON 等强约束输出上提高每步接受长度；代价是放弃标准推测解码的无损分布保证。</p>
+<h3 id="p2-s3">3. 人话版</h3>
+
+<p>你要模型填一份格式极其刻板的人物卡：键名、引号、冒号、缩进几乎全部被正则写死，真正能自由发挥的只有十个值字段。普通推测解码里，便宜起草者并不知道这份表格长什么样，于是它常在键名或空格上猜错，整段草稿被一刀砍掉；与此同时，文法引擎其实早就知道下一串字符必须是什么。GaaD 的做法是让调度器在发去校验之前，先把“起草者的猜测”和“文法强迫的 token”合并成一行：猜对的标成文法槽，猜偏了就切断，再用强迫 token 把这一行填到更宽。校验器对文法槽不再提问。结果是每走一步能落下更多 token。但文法锁定的是文本，不是分词；一旦你提交了规范分词，后面的自由字段也可能跟不提交时不一样。</p>
+<h3 id="p2-s4">4. 背景与缺口</h3>
+
+<p>结构化输出（JSON schema、正则、工具调用格式）和推测解码已经成为服务引擎里的标配。常见接法是：drafter 先提案，目标模型一次前向校验，并在每个草稿位置用 XGrammar 一类引擎给出的 bitmask 做语法掩码。问题是 drafter 看不到文法。在键、分隔符、缩进这些确定片段上，它经常提出非法或另一种拼写的 token，草稿被拒；而正确的字符串其实已经在宿主的文法状态里。</p>
+<p>已有的 jump-forward 解码会把强迫字符串另做一次变长 prefill。在 vLLM on TPU 这种提前编译形状的引擎上，这意味着新的 shape、额外编译或填充，并且和 drafter 争夺同一批位置。缺口因此很具体：如何在不增加新内核、不在关键路径上编译的前提下，把文法强迫的 token 变成推测解码已经会处理的草稿行，并与 MTP、DFlash、n-gram 这类现成 drafter 组合。</p>
+<h3 id="p2-s5">5. 核心 insight</h3>
+
+<p>文法是一个不需要 logits 的第二起草者。把强迫 token 写进草稿行，校验步骤本来就会跑；标记为 GRAMMAR 的槽不必与目标模型比较，因而也不必计算这些位置的 LM head。行宽 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math> 可以大于 drafter 的份额 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>K</mi><mi>M</mi></msub></mrow></math>：模型只填自己那几格，文法把剩下的填满。为了让文法状态与上一轮已接受 token 对齐，带文法草稿的步骤必须同步——宿主要等上一步的 token 读回后再规划下一行。作者同时强调：这不是免费的无损加速。接受概率为 1 的文法槽，会把强迫字符串的规范分词写进上下文，从而改变该点及其后的输出分布。</p>
+<h3 id="p2-s6">6. 方法逐步拆解</h3>
+
+<p><strong>文法自己的草稿。</strong>仅当文法从当前状态只允许唯一续写字符串时，才进入 jump-forward：取最长强迫字符串，用分词器的规范编码切开，并逐 token 检查文法是否按序接受。任一 token 被拒，或根本没有强迫字符串，则文法不起草。草稿在第一个出现多个合法续写的位置结束，并截断到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math>。</p>
+<p><strong>与模型 drafter 逐位合并。</strong>Drafter 仍提出 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>K</mi><mi>M</mi></msub><mo>&#x02264;</mo><mi>K</mi></mrow></math> 个 token，并且看不到文法。规划器从已提交的文法状态出发，对每一位询问：若双方提出同一 token，保留并标 GRAMMAR；若该位自由且模型 token 被文法允许，标 MODEL，留给校验；若模型与强迫 token 不一致、或不被允许，立即停止采纳后续模型 token——后面的提案是在错误分词路径上继续的；然后从当前状态继续追加强迫 token，直到行满或不再强迫。被拒绝的 MODEL 槽仍会废掉其后所有槽，包括排在它后面的 GRAMMAR。</p>
+<p><strong>何时规划、如何校验。</strong>一行的两个输入（上一步接受后的文法状态、本步 drafter 提案）只在上一步结束后才都在宿主上。因此异步调度无法在飞行中的步骤里计算下一跳的 jump 字符串。实现上按 batch 保守处理：只要一批里有结构化请求，整批同步。校验时 LM head 只对 MODEL 槽和 bonus 槽计算；GRAMMAR 被贪心 / 随机拒绝采样器直接接受。目标模型在最后接受位置之后的 bonus token，仍在文法掩码下采样。</p>
+<p><strong>实现边界。</strong>vllm-torchtpu 基于 vLLM 0.33，改动调度器、步进循环、推测元数据和拒绝采样器，不新增内核，形状在启动时编译。仍在 prefill、推理解析器认为文法尚未生效、需要 logprob 或存在 / 频率 / 重复惩罚、或文法已终止的请求上跳过 GaaD。</p>
+<h3 id="p2-s7">7. 核心公式</h3>
+
+<p>正文几乎不用展示公式，但加速被明确分解成三个可测因子。接受长度</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>&#x003C4;</mi><mo>&#x0003D;</mo><mfrac><mrow><mtext>output&#x000A0;tokens</mtext></mrow><mrow><mtext>target&#x000A0;forward&#x000A0;passes</mtext></mrow></mfrac></mrow></math></div>
+<p>按 EAGLE 的习惯，分子包含每步接受的草稿加上 bonus token，在请求间求和。墙钟时间是“输出 token 数 / <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math> × 每个请求步的墙钟”。于是相对 drafter-alone 的加速比为</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">p</mi></mrow><mo>&#x0003D;</mo><munder><munder><mrow><mfrac><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">G</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">D</mi></mrow></mrow></msub></mrow></mfrac></mrow><mo>&#x23DF;</mo></munder><mrow><mtext>tokens</mtext></mrow></munder><mo>&#x000D7;</mo><munder><munder><mrow><mfrac><mrow><msub><mi>&#x003C4;</mi><mrow><mrow><mi mathvariant="normal">G</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">D</mi></mrow></mrow></msub></mrow><mrow><msub><mi>&#x003C4;</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></mfrac></mrow><mo>&#x23DF;</mo></munder><mrow><mi>&#x003C4;</mi></mrow></munder><mo>&#x000D7;</mo><munder><munder><mrow><mfrac><mrow><msubsup><mi>t</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></mrow><mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">p</mi></mrow></mrow></msubsup></mrow><mrow><msubsup><mi>t</mi><mrow><mrow><mi mathvariant="normal">G</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">D</mi></mrow></mrow><mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">p</mi></mrow></mrow></msubsup></mrow></mfrac></mrow><mo>&#x23DF;</mo></munder><mrow><mtext>per&#x000A0;step</mtext></mrow></munder></mrow></math></div>
+<p>表 2 就是这三项的实测。第一项来自分词漂移：GaaD 输出字符数与对照臂相差在 1% 以内，但 token 更少，因子稳定在 1.31–1.38。第二项是接受长度比，稳定在 2.62–2.81。第三项处处小于 1，并且是随 batch 增大而衰减的唯一来源。变量直觉：<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math> 是行宽，实验里 GaaD 取 8；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>K</mi><mi>M</mi></msub></mrow></math> 是 drafter 份额，MTP 为 3，DFlash 与 n-gram 为 7。评测配置不用图 2 示意里的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>7</mn></mrow></math>。</p>
+<p><span class="cite">来源：<a href="https://arxiv.org/abs/2611.28349">abs</a> · <a href="https://arxiv.org/pdf/2611.28349">pdf</a> · <a href="https://arxiv.org/html/2611.28349">html</a> · 第 5.2 节，表 2</span></p>
+<h3 id="p2-s8">8. Toy example</h3>
+
+<p>图 2 给了一个具体的 Qwen 分词场景。光标停在自由字段 <code>name</code> 的值里。Drafter 提出 <code>Harry</code>、<code> Potter</code>、以及结束值的 <code>",</code>，这些位置文法并不强迫，故标为 M，由目标模型决定名字在哪结束。一旦写出结束引号，文法强迫换行；模型也提出了换行，于是该位变成 G。下一步模型想写两个空格，文法要三个空格，双方分歧，模型部分到此结束。剩下的槽由强迫的缩进和 <code>"house"</code> 键填满。如果前面某个 M 被拒，后面那些看起来“注定正确”的 G 也会被一起扔掉。示意行宽是 7，实验是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math>、MTP 用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>K</mi><mi>M</mi></msub><mo>&#x0003D;</mo><mn>3</mn></mrow></math>。</p>
+<h3 id="p2-s9">9. Baselines</h3>
+
+<ul>
+<li><strong>各 drafter 单独、取其惯用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><msub><mi>K</mi><mi>M</mi></msub></mrow></math>，并在每一点选用同步 / 异步中更快的调度：</strong>这是表 1 的 best-vs-best 对照，避免把 GaaD 跟一个故意变慢的基线比。</li>
+<li><strong>MTP 单独且 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math>（异步）：</strong>只加宽行、不加文法草稿，用来说明“变宽”本身不加速。</li>
+<li><strong>GaaD 但 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><msub><mi>K</mi><mi>M</mi></msub></mrow></math>：</strong>只有文法草稿、不加宽，用来分离两个改动。</li>
+<li><strong>独立 Rust 运行时中的 MTP 单独：</strong>同一套权重、分词器、XGrammar 和工作负载，引擎其余部分都不同；用来说明结果不只属于 vllm-torchtpu。</li>
+</ul>
+<p>未与 EAGLE 等其他 drafter 直接对比速度，也没有把 jump-forward 的变长 prefill 当作主表对照臂（第 1 节只在设计上说明它与 GaaD 的关系）。</p>
+<h3 id="p2-s10">10. 实验设置</h3>
+
+<p>平台是一片 TPU v7x（四芯片、八 TensorCore，拓扑 2x2x1）。张量并行：0.8B 与 4B 为 1，35B-A3B 为 4，397B-A17B-FP8 为 8。Drafter：MTP 配 Qwen3.5-0.8B / 35B-A3B（vllm-torchtpu）以及 0.8B / 397B-A17B-FP8（Rust）；DFlash（z-lab 检查点，块大小 16）与 n-gram 配 Qwen3-4B（仅 vllm-torchtpu）。对照臂 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><msub><mi>K</mi><mi>M</mi></msub></mrow></math> 为 MTP=3、DFlash/n-gram=7；GaaD 一律 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math> 并保持原 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>K</mi><mi>M</mi></msub></mrow></math>。</p>
+<p>工作负载是 JSON character-profile 基准：50 条提示循环到 256 个请求（表 1）、64 个（输出对照）或 128 个（Rust）。正则约束一个含 11 个固定键的 JSON 对象（其中 <code>wand</code> 是嵌套对象）、固定缩进；十个值字段为四个枚举、一个数字、五个自由文本。贪心解码，最多 256 个输出 token，关闭前缀缓存。vllm-torchtpu 先完整跑一遍以编译和预热，再在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x02264;</mo><mn>4</mn></mrow></math> 时计 3 次、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x02265;</mo><mn>16</mn></mrow></math> 时计 5 次，取中位数。表 1 的 39 个点中，重复运行中位差异 3.2%，97% 的点低于 10%，例外出现在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>64</mn></mrow></math>。Rust 点是单次 <code>vllm bench serve</code>、128 请求。表 1 测量时整引擎关闭异步调度；由于本负载全部是结构化请求，与“按批同步”规则调度等价。</p>
+<h3 id="p2-s11">11. 指标教学</h3>
+
+<p><strong><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math>：</strong>每步目标模型前向能落下的输出 token 数（含 bonus）。它几乎不随 batch 变，是“草稿质量”指标，不是墙钟。</p>
+<p><strong>Speedup：</strong>同一批请求、同一最大并发 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi></mrow></math> 下，对照臂墙钟除以 GaaD 墙钟。因为分词不同，不要用 tokens/s 比较结构化臂。</p>
+<p><strong>Tokens 因子：</strong>对照臂输出 token 数 / GaaD 输出 token 数。大于 1 表示 GaaD 用更粗的规范分词写完同样的字符。</p>
+<p><strong>Per-step 因子：</strong>对照臂每个请求步的墙钟 / GaaD 的对应值。小于 1 表示 GaaD 单步更慢或一步里摊到的请求更少。</p>
+<p><strong>Plain TPOT 与 Structured request：</strong>混合流量里，前者是不受约束请求的每输出 token 时间（各臂文本相同），后者是结构化请求的平均完成时间（TPOT×平均输出长度）。</p>
+<p><strong>Identical：</strong>与 drafter-alone 在相同调度下是否 token 级完全一致。</p>
+<h3 id="p2-s12">12. 可核验结果</h3>
+
+<ol>
+<li><strong>接受长度：</strong>表 1 中 drafter 单独 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math>=1.30–2.06；加 GaaD 后 MTP 到 5.26–5.43，DFlash 到 4.11–4.13，n-gram 到 3.61–3.64，且各 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi></mrow></math> 几乎不变。Qwen3.5-0.8B 的 MTP 从 2.06 到 5.43，35B-A3B 从 1.99 到 5.31。</li>
+<li><strong>Best-vs-best 加速：</strong><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math> 时为 2.68×（MTP 0.8B）、2.81×（MTP 35B）、2.66×（DFlash）、2.75×（n-gram）；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math> 为 1.44–2.09×；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>64</mn></mrow></math> 为 1.14–1.70×。n-gram 在大 batch 上保留得最多（1.70×）。</li>
+<li><strong>三因子分解：</strong>表 2 中 tokens 因子 1.31–1.38，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math> 因子 2.62–2.81，per-step 从 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math> 的 0.73–0.80 降到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>64</mn></mrow></math> 的 0.31–0.46。例如 MTP 0.8B、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math>：1.38×2.64×0.73=2.68。</li>
+<li><strong>加宽本身无益：</strong>同样异步调度下，MTP 单独 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math> 相对 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math> 只有 0.81–0.95×（0.8B）和 0.67–0.89×（35B）。对同一 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math>，GaaD 仍快 1.49–3.58×。只加文法不加宽（<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><msub><mi>K</mi><mi>M</mi></msub></mrow></math>）为 1.03–2.52×，且处处慢于 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math> 的 GaaD。</li>
+<li><strong>Rust 复现：</strong>表 3，MTP+GaaD 相对 MTP 单独，0.8B 在并发 1/16/64/128 为 2.23× / 1.68× / 1.37× / 1.22×；397B-A17B-FP8 在 1/8/32 为 2.02× / 1.86× / 1.69×。两边都走规范分词时，并发 1 的输出 token 数相差不超过 0.3%；0.8B 上 128/128 条文本相同，397B 上 82/128 相同。</li>
+<li><strong>输出并不相同：</strong>表 4 在 vllm-torchtpu 上 64 条请求全部 0/64 identical，token 少 24–28%（如 MTP 0.8B、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math>：10,274 / 7,421）。枚举字段一致率 85–96%，数字仅 47–69%，自由文本 50–74%。fp32 参考下 GaaD 文本更可能的请求为 31/64，中位差为 0；均 log-likelihood 为 −178.58 对 −178.51（0.8B）以及 −137.51 对 −135.03（4B）。未测任务准确率。</li>
+<li><strong>混合流量：</strong>表 5，按批同步规则，25–50% 结构化时，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math> 整任务 1.18–1.23× 更快，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>64</mn></mrow></math> 为 1.03–1.13×；结构化请求 2.2–3.2× 更快。纯文本 TPOT 在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math> 上升 7% 与 36%，在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>64</mn></mrow></math> 上升 21% 与 42%。0% 结构化、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>64</mn></mrow></math> 时按批规则是 0.81×，作者归咎于把 3 个草稿垫到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math>，而非 GaaD 算法本身。</li>
+<li><strong>规划开销很小：</strong>表 6，MTP+GaaD、0.8B，规划每步 0.136 / 0.910 / 2.743 ms（<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>1</mn><mo>&#x0002F;</mo><mn>16</mn><mo>&#x0002F;</mo><mn>64</mn></mrow></math>），约占步进墙钟的 1.0–1.3%。</li>
+</ol>
+<p><span class="cite">来源：<a href="https://arxiv.org/abs/2611.28349">abs</a> · <a href="https://arxiv.org/pdf/2611.28349">pdf</a> · <a href="https://arxiv.org/html/2611.28349">html</a> · 表 1–6，第 5.2–5.7 节</span></p>
+<h3 id="p2-s13">13. 真实表图阅读</h3>
+
+<div class="tbl"><table><thead><tr><th>Drafter</th><th>模型</th><th>B</th><th>τ 单独</th><th>τ +GaaD</th><th>best vs best</th><th>同 K=8</th><th>K=K_M</th></tr></thead><tbody>
+<tr><td>MTP</td><td>Qwen3.5-0.8B</td><td>1</td><td>2.06</td><td>5.43</td><td>2.68×</td><td>3.39×</td><td>1.85×</td></tr>
+<tr><td>MTP</td><td>Qwen3.5-0.8B</td><td>16</td><td>2.06</td><td>5.40</td><td>1.59×</td><td>1.96×</td><td>1.26×</td></tr>
+<tr><td>MTP</td><td>Qwen3.5-0.8B</td><td>64</td><td>2.05</td><td>5.41</td><td>1.14×</td><td>1.49×</td><td>1.03×</td></tr>
+<tr><td>MTP</td><td>Qwen3.5-35B-A3B</td><td>1</td><td>1.99</td><td>5.31</td><td>2.81×</td><td>3.58×</td><td>–</td></tr>
+<tr><td>MTP</td><td>Qwen3.5-35B-A3B</td><td>64</td><td>1.99</td><td>5.26</td><td>1.21×</td><td>1.81×</td><td>–</td></tr>
+<tr><td>DFlash</td><td>Qwen3-4B</td><td>1</td><td>1.57</td><td>4.13</td><td>2.66×</td><td>–</td><td>2.48×</td></tr>
+<tr><td>DFlash</td><td>Qwen3-4B</td><td>64</td><td>1.57</td><td>4.12</td><td>1.27×</td><td>–</td><td>1.26×</td></tr>
+<tr><td>n-gram</td><td>Qwen3-4B</td><td>1</td><td>1.30</td><td>3.64</td><td>2.75×</td><td>–</td><td>2.52×</td></tr>
+<tr><td>n-gram</td><td>Qwen3-4B</td><td>64</td><td>1.30</td><td>3.62</td><td>1.70×</td><td>–</td><td>1.43×</td></tr>
+</tbody></table></div>
+<p class="cite">表 1 摘录（vllm-torchtpu，256 请求）。“–”为原文未测。B=4 只测了部分配置，此处从略，完整行见原表。</p>
+<div class="tbl"><table><thead><tr><th>Drafter / 模型</th><th>B</th><th>对照调度</th><th>Tokens</th><th>τ 因子</th><th>Per step</th><th>加速比</th></tr></thead><tbody>
+<tr><td>MTP / 0.8B</td><td>1</td><td>sync</td><td>1.38</td><td>2.64</td><td>0.73</td><td>2.68×</td></tr>
+<tr><td>MTP / 0.8B</td><td>64</td><td>sync</td><td>1.38</td><td>2.64</td><td>0.31</td><td>1.14×</td></tr>
+<tr><td>MTP / 35B-A3B</td><td>1</td><td>sync</td><td>1.32</td><td>2.66</td><td>0.80</td><td>2.81×</td></tr>
+<tr><td>MTP / 35B-A3B</td><td>64</td><td>async</td><td>1.32</td><td>2.65</td><td>0.35</td><td>1.21×</td></tr>
+<tr><td>DFlash / 4B</td><td>1</td><td>async</td><td>1.31</td><td>2.62</td><td>0.77</td><td>2.66×</td></tr>
+<tr><td>n-gram / 4B</td><td>1</td><td>sync</td><td>1.32</td><td>2.81</td><td>0.74</td><td>2.75×</td></tr>
+<tr><td>n-gram / 4B</td><td>64</td><td>sync</td><td>1.31</td><td>2.79</td><td>0.46</td><td>1.70×</td></tr>
+</tbody></table></div>
+<p class="cite">表 2 摘录。三因子乘积等于加速比。衰减全部发生在 Per step 列。</p>
+<div class="tbl"><table><thead><tr><th>B</th><th>结构化占比</th><th>Engine sync 加速</th><th>Per batch 加速</th><th>Plain TPOT 单独/GaaD (ms)</th><th>结构化请求 单独/GaaD (ms)</th></tr></thead><tbody>
+<tr><td>1</td><td>0%</td><td>1.18×</td><td>0.92×</td><td>2.01 / 2.21</td><td>–</td></tr>
+<tr><td>1</td><td>100%</td><td>3.31×</td><td>3.15×</td><td>–</td><td>898 / 285</td></tr>
+<tr><td>16</td><td>25%</td><td>1.20×</td><td>1.18×</td><td>3.95 / 4.23</td><td>1109 / 346</td></tr>
+<tr><td>16</td><td>50%</td><td>1.28×</td><td>1.23×</td><td>4.72 / 6.44</td><td>1330 / 502</td></tr>
+<tr><td>64</td><td>0%</td><td>0.58×</td><td>0.81×</td><td>2.68 / 2.91</td><td>–</td></tr>
+<tr><td>64</td><td>25%</td><td>1.02×</td><td>1.03×</td><td>7.91 / 9.57</td><td>2264 / 960</td></tr>
+<tr><td>64</td><td>50%</td><td>1.35×</td><td>1.13×</td><td>14.80 / 21.03</td><td>4185 / 1932</td></tr>
+<tr><td>64</td><td>100%</td><td>1.10×</td><td>1.16×</td><td>–</td><td>5332 / 4428</td></tr>
+</tbody></table></div>
+<p class="cite">表 5 摘录（Qwen3.5-0.8B，MTP，256 请求）。GaaD 列为按批同步。注意 0% 且 B=64 时整引擎同步会慢到 0.58×。</p>
+<p><strong>图 1。</strong>左边是 jump-forward 作为变长 micro-prefill：每个跳跃长度可能是新 shape，还与草稿抢位置。右边是 GaaD：强迫 token 写进已编译好的 token bucket。这是设计动机图，不含速度数字。</p>
+<p><strong>图 4。</strong>把表 1 的 best-vs-best 加速对 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi></mrow></math> 作图，直观显示大 batch 衰减。读图时记住 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math> 并没有掉，掉的是每请求步的相对耗时。</p>
+<p><strong>第 5.5 节的一次算术核对：</strong>MTP+GaaD 在 0.8B、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>64</mn></mrow></math> 只需 5,516 个请求步，对照为 20,125（少 3.65×），但墙钟只快 1.14×，意味着每个请求步慢了约 3.19×。其中更宽的行单独只解释约 1.31×，其余可能来自同步宿主开销，或 GaaD 对“自由字段更长、文法可草稿更少”的长请求缩短不够，导致尾部不满批。作者承认未完全归因。</p>
+<h3 id="p2-s14">14. Ablation</h3>
+
+<p>两个核心消融已经写在表 1 的后两列：去掉加宽或去掉文法草稿，都会变慢；只加宽甚至变慢。调度规则是另一组消融。表 5 表明，在全结构化负载上两种同步规则接近，所以表 1 的数字对按批规则也成立；但在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi><mo>&#x0003D;</mo><mn>64</mn></mrow></math>、50% 结构化时，按批规则慢于整引擎同步（15.5 秒对 13.0 秒每遍），作者未给出归因。分词消融则是跨引擎的：Rust 从第一个 token 就进入规范分词，GaaD 很少改输出，加速仍在（并发 1 时 2.02–2.23×），说明即便剔除 tokens 因子 1.31–1.38，接受长度本身仍能换来墙钟收益。</p>
+<h3 id="p2-s15">15. Claim vs Evidence</h3>
+
+<p><strong>站得住的：</strong>在这份 JSON 人物卡、贪心解码、TPU v7x 上，GaaD 稳定提高接受长度，并在两套引擎里都带来加速。三因子表把“更快”拆成更短的 token 序列、更高的接受长度、以及更贵的单步，避免把分词漂移全算进算法胜利。混合流量里结构化请求变快、同批纯文本变慢，也有表 5 的直接数字。</p>
+<p><strong>必须一起读的限制：</strong>GaaD 明确放弃无损保证。vllm-torchtpu 上 64/64 输出与对照臂不同；质量讨论只做到“都符合正则、fp32 下似然差不多”，没有任务准确率，也没有采样实验。工作负载对 GaaD 友好：11 个键和固定缩进占了输出的大部分，更长的自由字段会留下更少可草稿位置。大 batch 加速衰减未完全解释。0% 结构化时实现仍可能拖慢纯文本。Rust 运行时未发布，不能作为可复现基线。</p>
+<p><strong>不要从摘要里推出的结论：</strong>2.66–2.81× 只属于 batch size 1 的 best-vs-best；batch size 64 低至 1.14×。3.31× / 3.15× 出现在表 5 的 batch size 1、100% 结构化，对照是异步 MTP，不是表 1 的“更快调度”定义，故比表 1 的 2.68× 更大，不可混用。</p>
+<h3 id="p2-s16">16. 贡献</h3>
+
+<ul>
+<li>提出 GaaD：把文法强迫 token 与任意 drafter 合并为一行带出处标记的草稿，校验时跳过 GRAMMAR 的 logits，无需新内核或关键路径编译。</li>
+<li>在 vllm-torchtpu 与独立 Rust 运行时中实现，并与 MTP、DFlash、n-gram 组合。</li>
+<li>提供跨 batch 的 best-vs-best 主表、三因子分解、加宽 / 不加宽消融、混合流量和宿主规划成本。</li>
+<li>把 tokenization drift 说清楚，并用 fp32 参考确认：两种合法分词都可以出现，GaaD 固定走规范分词。</li>
+</ul>
+<h3 id="p2-s17">17. 局限</h3>
+
+<p>第 7 节列得很清楚。混合流量会抬高同批纯文本的 TPOT（vllm-torchtpu 上 7–42%，Rust 上再乘 1.07–1.47）；若产品更在乎纯文本延迟，账不能只算结构化请求。不是无损：强制规范分词会改变后续值；采样下，宿主在校验前丢掉文法禁止的草稿，还会把自由 MODEL 槽的分布改成目标模型的掩码分布（vLLM 的结构化路径在没有 GaaD 时也会丢这种草稿）。范围限于一个基准、贪心解码、0.8B 到 397B、一片 TPU v7x；DFlash 只在 vllm-torchtpu。作者预计规范分词更接近训练文本、不应系统性伤质量，但没有任务指标来证明这一点。</p>
+<h3 id="p2-s18">18. 复现要点</h3>
+
+<p>硬件需要对齐 TPU v7x 四芯片切片与所述张量并行。软件应对齐 vLLM 0.33 的 torchtpu 后端、XGrammar，以及 PR 中的调度 / 拒绝采样改动。工作负载必须是同一份 character-profile 正则（11 键、固定缩进），贪心、256 token 上限、关闭前缀缓存。对照臂必须是“惯用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>K</mi><mi>M</mi></msub></mrow></math> + 该点更快的调度”，不要只比同步或只比 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math> 的 MTP。报告时同时给出 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math>、墙钟、输出 token 数和 identical 比例，并分开 tokens / <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math> / per-step。若在 GPU 上复现，静态形状与同步开销都会变，不能直接搬表 1 的加速比。不要把 PR 讨论区里的未发表数字写进论文对照。</p>
+<h3 id="p2-s19">19. 研究价值</h3>
+
+<p>它指出了一个被“文法掩码 + 普通推测解码”遮住的效率来源：确定片段根本不必问模型。对 TPU 这类静态形状加速器，把 jump-forward 从变长 prefill 改写成定宽草稿行，是更贴合硬件的系统选择。同时，它把社区里常被默认的“推测解码 = 无损”敲出一个缺口：一旦接受规则对某些槽变成概率 1，加速和分布保真就不再能同时宣称。</p>
+<h3 id="p2-s20">20. 可执行迁移</h3>
+
+<ol>
+<li><strong>在 JSON / 工具调用路径上先做“文法第二起草者”，不要先训更大的 drafter。</strong>统计你的负载里有多少 token 落在键名、括号和固定缩进上；若占比高，把 jump 字符串编码进现有草稿行并跳过这些位置的 LM head，通常比把行宽盲目加大更划算。上线必须加两条回归：token 级是否与旧路径相同，以及枚举 / 数值字段的一致率（本文是 85–96% 对 47–74%）。</li>
+<li><strong>混合流量按批同步时，单独预算纯文本 TPOT。</strong>用与表 5 相同的切分（0 / 25 / 50 / 100% 结构化，扫并发）决定是否把结构化请求隔离到单独池。若隔离成本高于 7–42% 的 TPOT 损伤，再考虑同池。同时检查实现有没有把纯文本草稿垫到更宽的草稿行列。</li>
+</ol>
+<h3 id="p2-s21">21. 方向专用分析</h3>
+
+<p>相对昨日的 ALD（在起草阶段做自适应层并行、削减 verifier 空转），GaaD 不改模型内部层流，也不提高“模型草稿”本身的命中率；它增加的是文法确定的那一段接受长度。两者正交：ALD 解决的是起草计算图，GaaD 解决的是结构化约束已经知道的 token。和 EAGLE / MTP / DFlash 的关系也是组合而非替代——表 1 的对照是“同一 drafter 最好的配置”，不是“GaaD 对战某一种超级 drafter”。对推理系统研究，更有启发的是同步调度与静态 shape 的约束：正确的文法草稿以放弃异步为代价，收益会随 batch 被宿主开销吃掉。</p>
+<h3 id="p2-s22">22. Attack / Verification</h3>
+
+<p>验证应先复现“输出合法但不相同”。若有人声称 GaaD 无损，表 4 的 0/64 已经否证。质量验收不能只看正则是否匹配，要在下游工具调用或信息抽取任务上比字段级准确率，并分别统计枚举与自由文本。采样路径需要单独测：丢弃非法草稿会改变拒绝采样的残差，可能被用来偏向某些值。对抗性 schema——例如在强迫片段里布置多种合法分词、或把关键字段紧挨着缩进——可能放大漂移。安全上，规范分词若与模型偏好的细粒度分词不同，或许会改变拒绝词附近的条件分布；本文没有做红队评估。混合流量测试应防止只展示结构化加速、隐瞒纯文本 TPOT。</p>
+<h3 id="p2-s23">23. 记忆总结</h3>
+
+<ul>
+<li>GaaD：文法是第二起草者，强迫 token 写进草稿行，标为 GRAMMAR，校验时不算 logits。</li>
+<li>可与 MTP / DFlash / n-gram 组合，不新增内核，形状启动时编译。</li>
+<li>行宽 K=8，MTP 的 K_M=3，DFlash/n-gram 的 K_M=7；示意里的 K=7 不是实验配置。</li>
+<li>τ 从 1.30–2.06 升到约 3.6–5.4，且几乎不随 batch 下降。</li>
+<li>B=1 加速 2.66–2.81×，B=64 只剩 1.14–1.70×；衰减全在 per-step 因子。</li>
+<li>部分加速来自分词更粗（tokens 因子 1.31–1.38）；Rust 里两边都规范分词时仍有约 2×。</li>
+<li>不是无损：vllm-torchtpu 上 64/64 输出不同，自由字段一致率只有大约一半到七成。</li>
+<li>混合流量里结构化请求可快 2.2–3.2×，同批纯文本 TPOT 升高 7–42%。</li>
+<li>规划本身很便宜（约 1% 步进时间），大 batch 变慢更多来自行宽和同步。</li>
+<li>只在一个对 GaaD 友好的 JSON 基准、贪心解码、TPU v7x 上得到这些数字。</li>
+</ul>
+</section>
+<section class="paper" id="p3">
+<h2>论文 3｜CodecOPSD：用经典视频编码信号剪条件 token，再靠 on-policy 自蒸馏把 DiT 适配回去 <span class="tag">NEW</span> Video Acceleration</h2>
+
+<h3 id="p3-s1">1. 基本信息</h3>
+
+<p><strong>标题：</strong>On-Policy Codec Distillation for Efficient All-in-One Video Generation（正文简称 CodecOPSD；不要写成与旧文易混的“只叫 OPSD”）<br>
+<strong>作者：</strong>Boyang Wang（Virginia / Adobe 实习）, Kevin Blackburn-Matzen, Oindrila Saha, Matheus Gadelha<sup>†</sup>, Zezhou Cheng<sup>†</sup>（Adobe Research 与 University of Virginia；† equal advising）<br>
+<strong>arXiv：</strong><span class="cite">来源：<a href="https://arxiv.org/abs/2611.31184">abs</a> · <a href="https://arxiv.org/pdf/2611.31184">pdf</a> · <a href="https://arxiv.org/html/2611.31184">html</a> · 30 页 · 提交 2026-11-23 · cs.CV</span><br>
+<strong>项目页：</strong><a href="https://kiteretsu77.github.io/CodecOPSD_website/">kiteretsu77.github.io/CodecOPSD_website</a>（可打开核验，数字仍以论文为准）<br>
+<strong>方向：</strong>Video / Multimodal Acceleration</p>
+<h3 id="p3-s2">2. 一句话定位</h3>
+
+<p>CodecOPSD 先用 H.264 的运动向量和残差，把条件视频 / 图像里“没有新信息”的 VAE token 丢掉，再用教师（能看见被丢掉的 token）在学生自己的去噪轨迹上做 on-policy 自蒸馏，从而在 16 种条件上平均剪掉约 66% 的条件 token，并尽量贴近稠密教师的质量。</p>
+<h3 id="p3-s3">3. 人话版</h3>
+
+<p>做可控视频生成时，用户会一次扔来肖像、素描、深度、姿态、运动轨迹、要修补的区域……这些东西都会被编成 token，和噪声潜变量排成一条很长的序列。注意力随条件数平方变贵，但其中大量区域其实是静止背景或被前一帧预测干净的内容。这恰好是视频编码器做了几十年的事：记下“这块从哪儿来”（运动向量）和“还剩多少新东西”（残差）。CodecOPSD 先把这些像素级信号汇总到每个 3D VAE token 上，再按阈值或优先级丢掉低能量的 token。只剪还不够——原模型没见过“缺块”的条件，直接剪会跑偏。于是作者让同一个基座模型分饰两角：教师仍看见全部条件，学生只看见留下的部分，并在学生自己滚出来的去噪状态上对齐速度场。推理时只跑学生，教师退场。</p>
+<h3 id="p3-s4">4. 背景与缺口</h3>
+
+<p>现有加速多半打在去噪器本身：少步采样、FlashAttention、量化、特征缓存、稀疏注意力。作者想做一件正交的事：从源头减少条件 token。条件信号高度可压缩，静态背景在每帧重复，一条运动路径只占少量像素。H.264 等经典编码器能在 CPU 上实时给出运动与残差，且不依赖某一种深度特征。</p>
+<p>缺口有两层。第一，codec 信号在像素 / 宏块尺度，而 DiT 的 token 覆盖 32×32 像素、跨 8 帧，直接套用并不显然，还要对不同模态做映射和修修补补。第二，训练免费的剪枝会留下明显质量缺口；普通 SFT（在加噪真值上做流匹配）也关不牢这个缺口。需要一种能让模型学会“codec 图案”、同时不把学生推到不可推断区域的适配方式。</p>
+<h3 id="p3-s5">5. 核心 insight</h3>
+
+<p>两点合在一起才构成方法。其一，对生成模型来说，“哪些条件 token 是新的”几乎就是视频压缩问题，不必再训练一个昂贵的 saliency 或 DINO 选择器。其二，教师与学生的信息差必须可推断且大小合适：丢掉的 token 作为教师的特权信息，既要足够让教师给得出现稠密指导，又不能让学生面对 90% 空洞而学不会。On-policy 很关键——监督加在学生自己 rollout 的高噪声状态上，而不是加在与学生轨迹脱节的加噪真值上。条件 token 不反看噪声 token 的架构，还让 KV cache 成为自然收益：剪掉的条件不必再占缓存。</p>
+<h3 id="p3-s6">6. 方法逐步拆解</h3>
+
+<p><strong>从 codec 到 token 分数。</strong>H.264 把帧分为 I 帧（帧内预测，有残差、无运动）与 P 帧（块匹配得到运动向量 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>m</mi><mi>t</mi></msub><mo stretchy="false">&#x00028;</mo><mi>p</mi><mo stretchy="false">&#x00029;</mo></mrow></math> 和残差 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>r</mi><mi>t</mi></msub><mo stretchy="false">&#x00028;</mo><mi>p</mi><mo stretchy="false">&#x00029;</mo></mrow></math>）。每个 DiT 条件 token <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>c</mi><mi>i</mi></msub></mrow></math> 覆盖像素集合 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x1D4AB;</mi><mi>i</mi></msub></mrow></math> 与 8 帧集合 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x02131;</mi><mi>i</mi></msub></mrow></math>。把更细的 16×16 到 4×4 块信号按条件分辨率缩放后，汇总为运动分 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>M</mi><mi>i</mi></msub></mrow></math> 与残差分 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>R</mi><mi>i</mi></msub></mrow></math>。</p>
+<p><strong>两种剪枝。</strong>阈值模式在高运动镜头更难压、近静态镜头更好压的观察上，为每条视频找平衡：若 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>M</mi><mi>i</mi></msub><mo>&#x02265;</mo><msub><mi>&#x003C4;</mi><mi>m</mi></msub></mrow></math> 或 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>R</mi><mi>i</mi></msub><mo>&#x0003E;</mo><msub><mi>&#x003C4;</mi><mi>r</mi></msub></mrow></math> 则保留。优先级模式把归一化分数合成能量 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>E</mi><mi>i</mi></msub></mrow></math>，按能量从低到高丢，便于固定预算。训练时学生走阈值模式（附录表 S2 的固定阈值）；图 5 的率失真分析走优先级排序。</p>
+<p><strong>送进 DiT。</strong>每种条件先渲染成图像或视频，用同一个冻结 VAE 编码，再按掩码逐元素相乘。保留的 token 拼在噪声潜变量 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>x</mi><mrow><mi>&#x003C3;</mi></mrow></msub></mrow></math> 后面；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>x</mi><mrow><mi>&#x003C3;</mi></mrow></msub></mrow></math> 本身不剪，且每个保留 token 仍用原来的 3D RoPE 坐标，无需改结构。对 MiniMax-H3 这类还要把参考送进 VLM 的模型，同一套 codec 信号也会丢掉 VLM 的视觉 token（ViT 仍看完整图，丢掉的是进入语言模型之前的输出）。</p>
+<p><strong>On-Policy Codec Distillation。</strong>学生与教师共享冻结基座 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>v</mi><mrow><mi>&#x003B8;</mi></mrow></msub></mrow></math>，学生多一个只作用在条件 token 投影上的可训练 LoRA <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003D5;</mi></mrow></math>（不对噪声潜变量或 VLM token）。教师看见保留集与丢掉集的并，学生只看见保留集。学生先无梯度地沿推理采样器的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math> 个噪声水平 rollout，再在前 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>N</mi></mrow></math> 个高噪声状态上，用双方速度场的均方误差训练 LoRA。损失不出现真值视频。推理只跑学生。</p>
+<h3 id="p3-s7">7. 核心公式</h3>
+
+<p>每个 token 的两个标量（式 (1)）为</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>M</mi><mi>i</mi></msub><mo>&#x0003D;</mo><msub><mo>max</mo><mrow><mi>t</mi><mo>&#x02208;</mo><msub><mi>&#x02131;</mi><mi>i</mi></msub></mrow></msub><msub><mo>max</mo><mrow><mi>p</mi><mo>&#x02208;</mo><msub><mi>&#x1D4AB;</mi><mi>i</mi></msub></mrow></msub><mo fence="false" stretchy="false">&#x02016;</mo><msub><mi>m</mi><mi>t</mi></msub><mo stretchy="false">&#x00028;</mo><mi>p</mi><mo stretchy="false">&#x00029;</mo><mo fence="false" stretchy="false">&#x02016;</mo><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>R</mi><mi>i</mi></msub><mo>&#x0003D;</mo><msub><mo>max</mo><mrow><mi>t</mi><mo>&#x02208;</mo><msub><mi>&#x02131;</mi><mi>i</mi></msub></mrow></msub><msub><mo>mean</mo><mrow><mi>p</mi><mo>&#x02208;</mo><msub><mi>&#x1D4AB;</mi><mi>i</mi></msub></mrow></msub><mo minsize="1.2em" maxsize="1.2em">|</mo><msub><mi>r</mi><mi>t</mi></msub><mo stretchy="false">&#x00028;</mo><mi>p</mi><mo stretchy="false">&#x00029;</mo><mo minsize="1.2em" maxsize="1.2em">|</mo></mrow></math></div>
+<p>直觉：一段 token 里只要有一处明显运动，或某一帧的平均残差够大，就可能携带“新信息”。阈值规则（式 (2)）是</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>b</mi><mi>i</mi></msub><mo>&#x0003D;</mo><mrow><mo stretchy="true" fence="true" form="prefix">&#x0007B;</mo><mtable><mtr><mtd columnalign="left"><mn>1</mn><mo>&#x0002C;</mo></mtd><mtd columnalign="left"><mtext>if&#x000A0;</mtext><msub><mi>M</mi><mi>i</mi></msub><mo>&#x02265;</mo><msub><mi>&#x003C4;</mi><mi>m</mi></msub><mtext>&#x000A0;or&#x000A0;</mtext><msub><mi>R</mi><mi>i</mi></msub><mo>&#x0003E;</mo><msub><mi>&#x003C4;</mi><mi>r</mi></msub><mo>&#x0002C;</mo></mtd></mtr><mtr><mtd columnalign="left"><mn>0</mn><mo>&#x0002C;</mo></mtd><mtd columnalign="left"><mtext>otherwise.</mtext></mtd></mtr></mtable></mrow></mrow></math></div>
+<p>优先级能量（式 (3)）为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>E</mi><mi>i</mi></msub><mo>&#x0003D;</mo><msub><mover><mrow><mi>R</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mi>i</mi></msub><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x0002B;</mo><mi>&#x003BB;</mi><msub><mover><mrow><mi>M</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mi>i</mi></msub><mo stretchy="false">&#x00029;</mo></mrow></math>，其中横线表示归一化到 [0,1]，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math> 是运动权重。掩码后的输入序列（式 (4)）是</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msup><mover><mrow><mi>&#x1D49E;</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mrow><mo stretchy="false">&#x00028;</mo><mi>j</mi><mo stretchy="false">&#x00029;</mo></mrow></msup><mo>&#x0003D;</mo><msup><mi>b</mi><mrow><mo stretchy="false">&#x00028;</mo><mi>j</mi><mo stretchy="false">&#x00029;</mo></mrow></msup><mo>&#x02299;</mo><msup><mi>&#x1D49E;</mi><mrow><mo stretchy="false">&#x00028;</mo><mi>j</mi><mo stretchy="false">&#x00029;</mo></mrow></msup><mo>&#x0002C;</mo><mspace width="1em" /><mi>&#x1D4AE;</mi><mo>&#x0003D;</mo><mo minsize="1.2em" maxsize="1.2em">[</mo><msub><mi>x</mi><mi>&#x003C3;</mi></msub><mi>;</mi><mtext>&#x000A0;</mtext><msup><mover><mrow><mi>&#x1D49E;</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mrow><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo></mrow></msup><mi>;</mi><mo>&#x02026;</mo><mi>;</mi><msup><mover><mrow><mi>&#x1D49E;</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mrow><mo stretchy="false">&#x00028;</mo><mi>J</mi><mo stretchy="false">&#x00029;</mo></mrow></msup><mo minsize="1.2em" maxsize="1.2em">]</mo></mrow></math></div>
+<p>教师与学生的速度场（正文式 (5)）为</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>v</mi><mrow><mi>&#x00054;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x0002C;</mo><mi>&#x003C3;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>v</mi><mi>&#x003B8;</mi></msub><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x0002C;</mo><mi>&#x003C3;</mi><mi>;</mi><mover><mrow><mi>&#x1D49E;</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mo>&#x0222A;</mo><msup><mi>&#x1D49E;</mi><mo>&#x022C6;</mo></msup><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>v</mi><mrow><mi>&#x00053;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x0002C;</mo><mi>&#x003C3;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>v</mi><mrow><mi>&#x003B8;</mi><mo>&#x0002C;</mo><mi>&#x003D5;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x0002C;</mo><mi>&#x003C3;</mi><mi>;</mi><mover><mrow><mi>&#x1D49E;</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<p>学生无梯度 rollout（式 (6)）与 on-policy 损失（式 (7)）为</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>x</mi><mrow><mi>k</mi><mo>&#x0002B;</mo><mn>1</mn></mrow></msub><mo>&#x0003D;</mo><msub><mi>x</mi><mi>k</mi></msub><mo>&#x0002B;</mo><mo stretchy="false">&#x00028;</mo><msub><mi>&#x003C3;</mi><mrow><mi>k</mi><mo>&#x0002B;</mo><mn>1</mn></mrow></msub><mo>&#x02212;</mo><msub><mi>&#x003C3;</mi><mi>k</mi></msub><mo stretchy="false">&#x00029;</mo><mspace width="0.167em" /><msub><mi>v</mi><mrow><mi>&#x00053;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mi>k</mi></msub><mo>&#x0002C;</mo><msub><mi>&#x003C3;</mi><mi>k</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mspace width="1em" /><msub><mi>x</mi><mn>1</mn></msub><mo>&#x0003D;</mo><mi>&#x003F5;</mi><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><msub><mi>&#x003C3;</mi><mn>1</mn></msub><mo>&#x0003D;</mo><mn>1</mn></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">O</mi><mi mathvariant="normal">P</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">D</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>&#x003D5;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mi>&#x1D53C;</mi><mrow><mi>&#x1D49E;</mi><mo>&#x0002C;</mo><mi>&#x003F5;</mi></mrow></msub><mo minsize="1.623em" maxsize="1.623em">[</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mo stretchy="false">&#x0007C;</mo><mi>&#x1D4A9;</mi><mo stretchy="false">&#x0007C;</mo></mrow></mfrac><munder><mo>&#x02211;</mo><mrow><mi>k</mi><mo>&#x02208;</mo><mi>&#x1D4A9;</mi></mrow></munder><mo fence="false" stretchy="false">&#x02016;</mo><msub><mi>v</mi><mrow><mi>&#x00053;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mi>k</mi></msub><mo>&#x0002C;</mo><msub><mi>&#x003C3;</mi><mi>k</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><msub><mi>v</mi><mrow><mi>&#x00054;</mi></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mi>k</mi></msub><mo>&#x0002C;</mo><msub><mi>&#x003C3;</mi><mi>k</mi></msub><mo stretchy="false">&#x00029;</mo><msubsup><mo fence="false" stretchy="false">&#x02016;</mo><mn>2</mn><mn>2</mn></msubsup><mo minsize="1.623em" maxsize="1.623em">]</mo></mrow></math></div>
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x1D4A9;</mi></mrow></math> 是被监督的高噪声状态集合。内部 22B 模型在 30 步采样中 rollout 并监督前 8 步；蒸馏 8 步版本则监督每一步。训练不用 CFG，推理再用。</p>
+<p><span class="cite">来源：<a href="https://arxiv.org/abs/2611.31184">abs</a> · <a href="https://arxiv.org/pdf/2611.31184">pdf</a> · <a href="https://arxiv.org/html/2611.31184">html</a> · 第 3.2–3.4 节，式 (1)–(7)</span></p>
+<h3 id="p3-s8">8. Toy example</h3>
+
+<p>设想一个几乎静止的客厅，只有一只狗沿地板走过。分割、深度、姿态等条件在大部分空间-时间块上残差接近 0、运动向量接近 0，对应 token 被丢掉；狗附近和它扫过的轨迹块留下。VAE 仍按完整网格编码，但送进 DiT 的序列短了一截，RoPE 坐标还指向原来的位置，模型知道“缺的是哪一块”而不是“世界被挤紧了”。若完全不做蒸馏，模型可能把被剪掉的静区理解成“这里没有物体约束”，开始改背景。教师在同样的噪声状态下仍能看见那些静区 token，于是把“背景应当保持”的速度场教给学生。图 5 还显示：稀疏条件（轨迹、框）可以免费丢掉 80–94%，稠密条件只有 26–71%——客厅里的轨迹几乎整段可压，深度图则要保守得多。</p>
+<h3 id="p3-s9">9. Baselines</h3>
+
+<ul>
+<li><strong>Teacher：</strong>稠密条件、不剪 token，是质量和速度的参照。</li>
+<li><strong>Random：</strong>每个条件按同样比例均匀随机丢，用于说明“只减预算”不够。</li>
+<li><strong>Reduced Resolution：</strong>把条件按更低分辨率编码，这是可控生成里常见的减 token 方法。</li>
+<li><strong>DINO attention：</strong>保留 DINOv3 CLS 最关注的 token，代表语义重要性。</li>
+<li><strong>Saliency（DeepGaze）：</strong>保留预测人类注视密度最高的 token。</li>
+<li><strong>上述方法的 SFT 版，以及 SFT+Codec：</strong>同样步数、同样平均丢弃率下，用流匹配在真值上继续训，用来对比 on-policy 蒸馏。</li>
+</ul>
+<p>表 1 要求各方法平均丢弃率同为约 66%。扩展实验另与 Training-Free Codec（发布权重直接吃剪过的 token）和少步模型叠加比较。</p>
+<h3 id="p3-s10">10. 实验设置</h3>
+
+<p>主试验台是作者的多条件视频模型：从预训练 22B 文图到视频 DiT 出发，不加载 6B 音频分支，实际加载约 16B。条件 token 不关注噪声 token，故支持 KV cache。第一阶段用文本与 16 种条件（分割、框、身份、素描、边缘、深度、法向、人体姿态、稀疏 / 稠密跟踪、模糊、灰度、首末帧插值、续写、修复、外绘）的混合做稠密 LoRA（rank 320，约 20 亿参数，50,000 步，48 GPU，全局 batch 48）。每个样本使用 1 到 5 种条件。第二阶段各微调方法从该稠密模型出发，再训 2K 步（16 张 H200，训练分辨率 49 帧、480×640，全局 batch 16）。CodecOPSD 用 AdamW，学习率 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>10</mn><mrow><mrow><mo>&#x02212;</mo><mn>4</mn></mrow></mrow></msup></mrow></math>；学生 rollout 与教师目标都不使用 CFG。主评测采样 30 步，训练时监督前 8 步。图 1、图 4 与部分附录改用该模型的 8 步蒸馏版：稠密 LoRA 可直接当教师，学生再 CodecOPSD 2K 步并监督全部 8 步。</p>
+<p>测试片段从 VidGen-1M 的 2,000 条池中随机抽，带真值并离线准备条件。主推理 512×768、81 帧；图 4 的计时是 512×896、121 帧、8 步、单张 H200。表 1 与表 3 各 400 条（1–4 种条件），图 4 为 200 条（1–5 种），表 2 为 100 条，图 5 为每条件 50 条。Codec 选择在 Intel Xeon Platinum 8275CL 的 6 核 CPU 上计时，可与 VAE、文本编码器并行。扩展实验改到各域基准，详见第 4.5 节。</p>
+<h3 id="p3-s11">11. 指标教学</h3>
+
+<p><strong>FID / FVD / LPIPS：</strong>相对真值的质量与保真，越低越好。它们不直接测量“有没有听条件”。</p>
+<p><strong>条件跟随：</strong>身份用 DINOv3 余弦；分割用 mIoU；深度用 si-RMSE；法向用平均角度误差；Canny 边缘用 F1；修/外绘用 mPSNR；姿态用 PCK@0.1；轨迹用 TrajErr；灰度用 ΔE<sub>00</sub>。只在携带该条件的片段上计算。</p>
+<p><strong>VBench：</strong>无真值时的感知维度；表 2 用了成像、美学、运动平滑、闪烁、背景一致、整体一致。</p>
+<p><strong>人类研究：</strong>20 名评分者、384 个回答，盲测 A/B，报“同等或更好”的比例。</p>
+<p><strong>免费丢弃带：</strong>图 5 把教师 3 个种子的变异画成 ±2σ 带，质量仍落在带内的最大丢弃率称为 free drop。</p>
+<p><strong>去噪加速与 KV 缓存：</strong>加速比是稠密教师去噪墙钟 / 方法墙钟，不自动包含 VAE 或 codec 预处理。缓存缩小比例是条件 KV 的显存对比。</p>
+<h3 id="p3-s12">12. 可核验结果</h3>
+
+<ol>
+<li><strong>平均剪枝率 66%：</strong>附录表 S5 在表 1 测试集上，每条样本平均 8,853 个条件 token，丢掉 5,858 个（66%）。运动轨迹可丢 95%，框 92%，身份 86%；灰度 41%，插值 / 续写 41%。这是阈值模式、无固定预算的结果；其他基线被调到相近的平均丢弃率。</li>
+<li><strong>表 1，训练免费：</strong>Codec 在 12 项指标中的 8 项为训练免费组最优，含 FID 24.5、FVD 132.3、LPIPS 0.307（教师为 22.4 / 118.0 / 0.273）。预处理 1.13 秒 / 例，对比 DINO 23.8 秒、Saliency 75.0 秒。Reduced Res. 明显崩溃（FID 56.3，FVD 381.1）。</li>
+<li><strong>表 1，微调后：</strong>CodecOPSD 在 12 项中 10 项为微调组最优，并贴近教师：FID 23.0、FVD 113.8（教师 118.0，此项更好）、LPIPS 0.278，PCK 0.911（教师 0.912），灰度 ΔE<sub>00</sub> 6.53（教师 6.63）。SFT+Codec 为 FID 23.8、FVD 130.9，关不完缺口。分割 mIoU 上 SFT+DINO 为 0.885，略高于 CodecOPSD 的 0.883，是少数例外之一。</li>
+<li><strong>速度与显存（图 4，8 步，1–5 个条件）：</strong>无 KV cache 时加速从 1.54× 升到 2.30×；有 cache 时仍为 1.15–1.37×，KV cache 缩小 62–73%。摘要中的“去噪约 2×、缓存最多减约 73%”与这条曲线一致，2× 是代表值而非每一格都精确等于 2。</li>
+<li><strong>感知与人评（表 2）：</strong>VBench 各维度相对教师的变化不超过 1.0 点，总体成像 67.7（±0.0）、美学 54.3（+0.4）。人评中 92% 认为条件跟随同等或更好，88% 认为画质同等或更好（“约 90%”是图注概括）。</li>
+<li><strong>率失真（图 5）：</strong>稠密条件免费丢弃 26–71%，稀疏条件 80–94%。超过免费带后进入有损区，说明 66% 是跨模态平均，不是每个模态都能丢这么多。</li>
+<li><strong>教师—学生间隙（表 3）：</strong>默认设定 FID / FVD 为 23.0 / 113.8；把教师也按学生阈值的一半去剪（更小间隙）变为 23.7 / 123.9；让学生丢 90%（更大间隙）变为 23.8 / 124.3。两组在 9 项中至少 8 项更差。</li>
+<li><strong>扩展模型：</strong>MiniMax-H3 Ref2VA 在 237 条 OmniVBench 上丢掉 DiT 条件 token 的 71.6%、VLM 的 36.2%，去噪 1.87×，总体分下降不超过 0.6；图 6 上沿参考数 / 帧数 / 分辨率增长，最高写到 3.72×。MiniMax-H3-Image 在 GEdit 上参考 token 1,401→685（−51%），在 OmniContext 上 2,940→1,287（−56%），VLM 评判均值 100.0% 与 100.3%；图 6 下 1 张图 1.36×、12 张 2.99×，1024² 为 2.25×，2048² 为 3.06×；2048² 且 ≥12 张图时稠密模型在 141 GB H200 上 OOM，该方法仍能放下 16 张。Cosmos3-Nano 上视频到音频丢 70%、2.30×，续写丢 89%、1.93× 且 Physics-IQ 同为 50.6，动作误差 2.16±0.06 到 2.21 cm。</li>
+</ol>
+<p><span class="cite">来源：<a href="https://arxiv.org/abs/2611.31184">abs</a> · <a href="https://arxiv.org/pdf/2611.31184">pdf</a> · <a href="https://arxiv.org/html/2611.31184">html</a> · 表 1–6，图 4–6，附录表 S5</span></p>
+<h3 id="p3-s13">13. 真实表图阅读</h3>
+
+<div class="tbl"><table><thead><tr><th>方法</th><th>Prep (s)</th><th>FID↓</th><th>FVD↓</th><th>LPIPS↓</th><th>DINOv3↑</th><th>mIoU↑</th><th>si-RMSE↓</th><th>Angle↓</th><th>F1↑</th><th>mPSNR↑</th><th>PCK↑</th><th>TrajErr↓</th><th>ΔE00↓</th></tr></thead><tbody>
+<tr><td>Teacher</td><td>0</td><td>22.4</td><td>118.0</td><td>0.273</td><td>0.288</td><td>0.888</td><td>0.647</td><td>4.72</td><td>0.445</td><td>20.93</td><td>0.912</td><td>13.54</td><td>6.63</td></tr>
+<tr><td>Random</td><td>~0</td><td>29.2</td><td>161.2</td><td>0.351</td><td>0.278</td><td>0.782</td><td>0.959</td><td>7.44</td><td>0.286</td><td>17.88</td><td>0.870</td><td>15.73</td><td>8.65</td></tr>
+<tr><td>Reduced Res.</td><td>~0</td><td>56.3</td><td>381.1</td><td>0.663</td><td>0.269</td><td>0.288</td><td>3.740</td><td>30.05</td><td>0.066</td><td>10.73</td><td>0.286</td><td>38.42</td><td>27.35</td></tr>
+<tr><td>DINO</td><td>23.8</td><td>28.8</td><td>151.1</td><td>0.368</td><td>0.284</td><td>0.838</td><td>1.053</td><td>8.13</td><td>0.321</td><td>18.21</td><td>0.891</td><td>11.69</td><td>9.59</td></tr>
+<tr><td>Saliency</td><td>75.0</td><td>30.0</td><td>148.5</td><td>0.401</td><td>0.286</td><td>0.796</td><td>1.470</td><td>11.88</td><td>0.294</td><td>15.69</td><td>0.895</td><td>13.91</td><td>13.01</td></tr>
+<tr><td>Codec（免费）</td><td>1.13</td><td>24.5</td><td>132.3</td><td>0.307</td><td>0.284</td><td>0.734</td><td>0.868</td><td>6.05</td><td>0.393</td><td>19.89</td><td>0.836</td><td>13.90</td><td>6.93</td></tr>
+<tr><td>SFT, Codec</td><td>1.13</td><td>23.8</td><td>130.9</td><td>0.297</td><td>0.284</td><td>0.796</td><td>0.767</td><td>5.80</td><td>0.404</td><td>19.83</td><td>0.890</td><td>11.03</td><td>7.24</td></tr>
+<tr><td>CodecOPSD</td><td>1.13</td><td>23.0</td><td>113.8</td><td>0.278</td><td>0.289</td><td>0.883</td><td>0.706</td><td>5.44</td><td>0.417</td><td>20.43</td><td>0.911</td><td>7.80</td><td>6.53</td></tr>
+</tbody></table></div>
+<p class="cite">表 1 摘录。同一平均丢弃率（约 66%）。SFT+Random / DINO / Saliency / Reduced Res. 行见原表；此处保留教师、训练免费组和最关键的 SFT+Codec 与 CodecOPSD。</p>
+<div class="tbl"><table><thead><tr><th>条件数</th><th>成像</th><th>美学</th><th>运动平滑</th><th>闪烁</th><th>背景一致</th><th>整体一致</th><th>同等跟随%</th><th>同等画质%</th></tr></thead><tbody>
+<tr><td>1</td><td>73.4 (−0.2)</td><td>54.1 (+0.4)</td><td>99.0 (±0.0)</td><td>97.1 (+0.1)</td><td>94.4 (+0.2)</td><td>25.9 (+0.1)</td><td>84</td><td>95</td></tr>
+<tr><td>2</td><td>68.8 (+0.1)</td><td>54.9 (+1.0)</td><td>98.6 (±0.0)</td><td>96.6 (+0.1)</td><td>93.9 (+0.1)</td><td>25.3 (−0.1)</td><td>92</td><td>84</td></tr>
+<tr><td>4</td><td>66.7 (−0.3)</td><td>53.9 (+0.6)</td><td>98.5 (±0.0)</td><td>96.3 (±0.0)</td><td>94.1 (−0.3)</td><td>25.2 (−0.3)</td><td>94</td><td>91</td></tr>
+<tr><td>全部</td><td>67.7 (±0.0)</td><td>54.3 (+0.4)</td><td>98.7 (±0.0)</td><td>96.7 (±0.0)</td><td>93.9 (±0.0)</td><td>25.4 (−0.1)</td><td>92</td><td>88</td></tr>
+</tbody></table></div>
+<p class="cite">表 2 摘录。括号为相对稠密教师的变化。人类研究共 384 个回答。</p>
+<div class="tbl"><table><thead><tr><th>设定</th><th>FID↓</th><th>FVD↓</th><th>LPIPS↓</th><th>DINOv3↑</th><th>si-RMSE↓</th><th>F1↑</th><th>mPSNR↑</th><th>PCK↑</th><th>TrajErr↓</th></tr></thead><tbody>
+<tr><td>更小间隙</td><td>23.7</td><td>123.9</td><td>0.290</td><td>0.290</td><td>0.793</td><td>0.406</td><td>20.26</td><td>0.853</td><td>12.04</td></tr>
+<tr><td>本文（codec 间隙）</td><td>23.0</td><td>113.8</td><td>0.278</td><td>0.289</td><td>0.706</td><td>0.417</td><td>20.43</td><td>0.911</td><td>7.80</td></tr>
+<tr><td>更大间隙（学生丢 90%）</td><td>23.8</td><td>124.3</td><td>0.287</td><td>0.288</td><td>0.798</td><td>0.404</td><td>19.48</td><td>0.906</td><td>9.90</td></tr>
+</tbody></table></div>
+<p class="cite">表 3。间隙由丢弃率控制：更小间隙意味着教师也被部分剪枝；更大间隙让学生只见 10% 条件 token。</p>
+<p><strong>图 1。</strong>展示图同时写了两个不要混用的数字：主示例“丢掉 89% 条件 token、3.1× 更快”（对应 8 步蒸馏设定下的一个具体组合），以及扩展到其他模型时“最高 8.4×”。8.4× 只出现在展示图对 MiniMax-H3 Ref2VA 极端设定的标注和总图注里，主文表格与图 6 写明的最高去噪加速是 3.72×；附录 G.3 另有与少步模型叠加后相对 50 步发布模型的 9.19× / 11.20× / 约 21.9×，分母不同。本文把 8.4× 视为展示图主张，不以主表精确值引用。</p>
+<p><strong>图 4。</strong>横轴是条件个数。无 cache 时教师随条件变慢、本文增长更缓；有 cache 时绝对加速变小，但省下的 KV 显存随条件增加更可观，高点 73%。</p>
+<p><strong>表 4（Ref2VA）。</strong>总体 1.87×、DiT 丢 71.6%、VLM 丢 36.2%。分任务并不均匀：Style 只丢 44.3% / 1.13×，Structure 丢 79.7% / 2.21×，Cross 2.55×。读“没有总体分掉过 0.6”时要注意单任务仍有更大波动，例如 Motion 的 Physical 为 −1.2，Narrative 的 Reference Fidelity 为 −2.7。</p>
+<h3 id="p3-s14">14. Ablation</h3>
+
+<p>表 3 是最干净的机制消融：间隙过大或过小都不如 codec 给出的默认间隙，支持“特权信息要可推断且大小合适”。表 1 则消融了选择器与训练目标：同样 2K 步，SFT 加任何选择器都不如 CodecOPSD，说明缺口主要来自训练方式，而不只是选了哪些 token。附录还比较特权教师、监督 1 个状态对 8 个状态等，正文把结论收在默认设定。扩展实验里，Training-Free Codec 在 Ref2VA 上丢掉 82–92% 后会出现转向、动作重开、脸偏离姿态等失败，而 CodecOPSD 在同一批留下的 token 上贴近教师——这是“必须训练”的定性消融。少步模型与第三方 LoRA 可在不额外训练的情况下叠加，但那是兼容性演示，不是表 1 的受控对比。</p>
+<h3 id="p3-s15">15. Claim vs Evidence</h3>
+
+<p><strong>站得住的：</strong>在作者的 16 条件模型上，66% 平均丢弃率有表 S5 的行列和；CodecOPSD 在多数质量与跟随指标上贴近或略优于教师，并明显好于随机、降分辨率和 SFT+Codec。速度方面，图 4 给出随条件数变化的区间，73% 的缓存缩减是该曲线的上端。移植到 MiniMax-H3 与 Cosmos3 时，质量大体落在教师附近或种子噪声带内，加速随分辨率、帧数、参考数增加。</p>
+<p><strong>需要收窄的：</strong>“几乎不掉质”不是所有格子都为零差。深度 si-RMSE 从教师的 0.647 到 0.706，法向角从 4.72 到 5.44，轨迹误差从 13.54 到 7.80（此项更好），分割从 0.888 到 0.883。人评是“同等或更好”，没有单独报“更好”的比例，也存在偏好平局的可能。主试验台是内部 22B 模型，外部无法直接复现表 1。图 1 的 89%、3.1× 与 8.4× 和正文平均 66%、约 2×、图 6 的 3.72× 不是同一设置。图 4 用 8 步蒸馏模型计时，表 1 的质量是 30 步设定，不宜把质量和 2.30× 当成同一推理配置的成对数字。</p>
+<p><strong>未报或未独立核验：</strong>主表多种子标准差（Cosmos 表 6 对教师有 ±2σ，学生多为单点）；项目页视频为定性展示；内部数据池细节不完整。</p>
+<h3 id="p3-s16">16. 贡献</h3>
+
+<ul>
+<li>把标准 H.264 的运动向量和残差映射为 VAE token 掩码，并给出阈值与优先级两种剪枝。</li>
+<li>提出 CodecOPSD：教师把被剪 token 当作特权信息，在学生自己的去噪轨迹上做自蒸馏。</li>
+<li>在 16 种条件的内部视频模型上验证，并扩展到 MiniMax-H3 Ref2VA、MiniMax-H3-Image 与 Cosmos3 的多任务生成。</li>
+<li>在相同平均丢弃率下对照多种 token 剪枝与 SFT，并提供率失真、间隙消融和 KV cache 收益。</li>
+</ul>
+<h3 id="p3-s17">17. 局限</h3>
+
+<p>附录 J 写了几条很具体的限制。运动轨迹上，一个点在首次出现后若保持静止，其后续 token 可能被丢掉，剩下的证据会让模型分不清“静止”和“被遮挡 / 被抹掉”。框、轨迹、模糊等细节模态需要改 codec 设定（表 S2），不是完全无调参。方法依赖可渲染成图像 / 视频的条件；纯文本或非视觉控制不在范围内。主模型与部分训练数据内部，外部复现重心应放在开源的 MiniMax / Cosmos 扩展。与少步蒸馏、稀疏注意力正交，但本文没有在主表上给出与这些方法的完整因子设计。</p>
+<h3 id="p3-s18">18. 复现要点</h3>
+
+<p>先复现 codec 映射：块级运动 / 残差 → 按 32×32×8 的 token 网格做 max / mean，再使用表 S2 阈值。选择器应与 VAE 并行，并报告 CPU 耗时。训练必须把 LoRA 限制在条件投影，教师冻结且看见丢掉的 token，学生走自己的 sampler 轨迹；监督步数要与推理采样器对齐（30 步里的前 8 步，或蒸馏模型的全部步）。评测要同时报质量、各条件跟随、丢弃率、去噪时间和 KV 大小，并写明分辨率、帧数、步数、是否蒸馏模型。移植到 MiniMax-H3 时，DiT 与 VLM 视觉 token 要用同一套 codec 信号，但丢弃率会不同（表 4：71.6% 对 36.2%）。不要用展示图的 8.4× 代替图 6 或表 4 的配置化数字。</p>
+<h3 id="p3-s19">19. 研究价值</h3>
+
+<p>它把“条件 token 太贵”从架构问题改写成可以利用几十年压缩研究的选择问题，并且证明选择器本身可以很便宜（CPU、1.13 秒），真正要花计算的是让模型适应残缺条件。On-policy、带特权信息的自蒸馏，为其他“训练免费剪枝看起来不错、微调后仍有缺口”的模态（图像参考、音频条件、机器人观察）提供了一条可搬的训练模板。</p>
+<h3 id="p3-s20">20. 可执行迁移</h3>
+
+<ol>
+<li><strong>在多条件视频服务里，先上 codec 剪枝再决定是否蒸馏。</strong>用表 S5 的模态差异做预算：轨迹 / 框可按 80%+ 丢，深度 / 灰度更保守。先看 Training-Free 是否已经落在可接受质量带；若出现附录那种转向或动作重开，再按 2K 步 CodecOPSD 适配条件 LoRA。上线要把 codec 预处理与 VAE 并行，并单独报 KV 显存。</li>
+<li><strong>把间隙当成要扫的超参，而不是越大越好。</strong>复用表 3 的两个对照：教师也适度剪枝（间隙过小）和学生极端只留 10%（间隙过大）。选使教师仍明显强于学生、但学生从保留 token 能推断被删区域的工作点。不要为了展示加速直接把丢弃率推到 90%。</li>
+</ol>
+<h3 id="p3-s21">21. 方向专用分析</h3>
+
+<p>相对昨日的 Hindsight Forcing（少步自回归视频扩散里用潜空间直通桥回传跨 chunk 信用），CodecOPSD 不改采样器的时间信用，而改条件序列长度。它与少步蒸馏是乘法关系：附录 G.3 在 768×1344 的例子上，codec 再给 FastH3-Omni / Pika H3 Flex / SolarRenderer 提供 1.50× / 1.46× / 1.79×，相对 50 步发布模型则变成 9.19× / 11.20× / 约 21.9×。对视频加速路线，这意味着“减步数”和“减条件 token”应一起记账，但分母必须写清。对 all-in-one 可控生成，条件不关注噪声、从而可 KV cache，是收益能落到显存上的架构前提；若未来模型改回全双向注意，加速曲线会更接近图 4 左侧，而不是有 cache 的右侧。</p>
+<h3 id="p3-s22">22. Attack / Verification</h3>
+
+<p>验证应分开“选择器是否选对”和“蒸馏是否只是记忆教师”。负对照包括：打乱运动 / 残差、用随机丢弃但保持相同预算（表 1 已做）、以及把阈值推过图 5 的免费带，质量应进入有损区。轨迹模态的静点 / 遮挡混淆是已承认的失败模式，应用含长时间静止后突然移动的序列做压力测试。展示图里的 89% 与 8.4× 必须能回溯到具体分辨率、帧数、步数和是否叠加少步模型；否则视为未充分规格化的主张。人评要报告打破平局后的偏好，而不仅是“同等或更好”。若条件图本身被对抗性扰动（在残差上添加人眼不可见但能改变保留集的图案），剪枝可能系统性地丢掉身份或姿态关键块——本文未做此类鲁棒性评估。</p>
+<h3 id="p3-s23">23. 记忆总结</h3>
+
+<ul>
+<li>CodecOPSD = H.264 信号剪条件 token + 教师看见被剪 token 的 on-policy 自蒸馏。</li>
+<li>分数是每 token 的最大运动和最大帧均残差；阈值保动态平衡，优先级保固定预算。</li>
+<li>16 种条件、平均丢掉 66%（5858/8853）；轨迹可丢 95%，灰度大约 41%。</li>
+<li>表 1 上 CodecOPSD 多数指标贴近教师，并明显优于随机、降分辨率和 SFT+Codec。</li>
+<li>图 4：无 cache 加速 1.54–2.30×，有 cache 1.15–1.37×，KV 最多减 73%。</li>
+<li>人评 92% / 88% 认为跟随与画质同等或更好；VBench 变化不超过 1.0 点。</li>
+<li>间隙过大或过小都更差，codec 默认间隙是工作点，不是越狠越好。</li>
+<li>可转到 MiniMax-H3 与 Cosmos3；主文最高配置化加速是 Ref2VA 3.72×、图像 2048² 的 3.06×、音频 2.30×。</li>
+<li>图 1 的 89%、3.1×、8.4× 与上述平均 / 主表不是同一设置，引用时要分开。</li>
+<li>与少步蒸馏正交且可叠加；静点轨迹和部分模态的 codec 设定仍是已知短板。</li>
+</ul>
+</section>
+<section id="verify">
+<h2>来源与验证报告</h2>
+<p>本报告所有关键数字均回源至各篇 PDF（<code>pdftotext -layout</code>）与 arXiv HTML 表格，不引用未核验的二手摘要，也不把摘要四舍五入后当作表中精确值。检索、去重与选题过程见文首「今日概览」。三篇均为 2026-11-24 周二新稿窗口，非 BACKFILL。HTML 为 UTF-8 单文件，公式离线渲染为 MathML。</p>
+
+<h3>论文 1 · Harnesses as Compositional Generalizers（2611.28298）</h3>
+<ul>
+<li><strong>来源：</strong><a href="https://arxiv.org/abs/2611.28298">abs</a>、<a href="https://arxiv.org/pdf/2611.28298">pdf</a>（200，5,384,517 字节）、<a href="https://arxiv.org/html/2611.28298">html</a>。工作副本：<code>/workspace/daily-deep-dive-2026-11-25/2611.28298/paper.pdf</code>。</li>
+<li><strong>抽取：</strong>pdftotext -layout（约 268,499 字节）+ arXiv HTML 正文与附录表。表 1–6、7、10、12、19 及附录 D 公式以 HTML 表格 / 公式为主，并与 PDF 对齐。</li>
+<li><strong>核验范围：</strong>作者单位与代码链接、表 7 训练配置、表 1–3 环境定义、表 4–6 主结果与链式实验、表 5 / 16–18 的回合与 token、表 10 宽混合、表 12 题干重叠、表 19 子任务准确率、附录 D 式 (5)(7)(13)。图 3–5 为曲线图，本文转述图注与正文对曲线趋势的文字，不另行读像素终值。</li>
+<li><strong>抽查数字：</strong>RLM-27B 均分 58.5 对基座 46.1（相对 +26.9%）；回合 6.5 对 18.4；根输入 44K 对 263K；表 6 的 55.2% 与 77.5%；表 12 中 CTC 的 H<sub>13</sub> 等于各划分题数。</li>
+<li><strong>残余风险：</strong>多种子未报；部分基准题干重叠高，已在 Claim vs Evidence 写明；图 3/4 终值未列表化；GitHub 与 Hugging Face 数据未做可运行性审计（Not Verified）。</li>
+</ul>
+
+<h3>论文 2 · Grammar-as-a-Draft（2611.28349）</h3>
+<ul>
+<li><strong>来源：</strong><a href="https://arxiv.org/abs/2611.28349">abs</a>、<a href="https://arxiv.org/pdf/2611.28349">pdf</a>（200，548,910 字节）、<a href="https://arxiv.org/html/2611.28349">html</a>。工作副本：<code>/workspace/daily-deep-dive-2026-11-25/2611.28349/paper.pdf</code>。</li>
+<li><strong>抽取：</strong>pdftotext 可能漏表题，故全部 6 张表以 HTML 为准并回 PDF 核对数字。方法与限制取自 HTML 第 3、5、7 节。</li>
+<li><strong>核验范围：</strong>Google 单位与通讯作者、TPU v7x 与张量并行、K=8 / K<sub>M</sub> 设定、表 1–6 全部单元格、三因子乘积（如 1.38×2.64×0.73=2.68）、表 4 的 0/64 与 token 数、混合流量与规划耗时、tokenization drift 的 fp32 似然。</li>
+<li><strong>抽查数字：</strong>MTP 0.8B 的 τ 2.06→5.43；B=1 / 64 加速 2.68× / 1.14×；Rust 2.23× 与 2.02×；表 4 的 10,274 / 7,421；表 6 的 0.136 ms（1.0%）。</li>
+<li><strong>残余风险：</strong>单一 JSON 基准、仅贪心解码；大 batch 衰减未完全归因；Rust 运行时未发布；实现 PR 未在本报告中逐行审计。未把 PR 讨论区数字写入精读。</li>
+</ul>
+
+<h3>论文 3 · CodecOPSD（2611.31184）</h3>
+<ul>
+<li><strong>来源：</strong><a href="https://arxiv.org/abs/2611.31184">abs</a>、<a href="https://arxiv.org/pdf/2611.31184">pdf</a>（200，20,030,176 字节）、<a href="https://arxiv.org/html/2611.31184">html</a>、项目页。工作副本：<code>/workspace/daily-deep-dive-2026-11-25/2611.31184/paper.pdf</code>。</li>
+<li><strong>抽取：</strong>pdftotext -layout + HTML 主表 1–6、附录表 S1/S5 与第 3 节公式 (1)–(7)。图 1 展示数字与主表分开引用。</li>
+<li><strong>核验范围：</strong>作者单位、内部 22B/16B 加载设定、16 种条件名单、表 1 全行、表 2 人评 92% / 88%、表 3 间隙、表 4–6 扩展、表 S5 的 5,858/8,853=66%、图 4 的 1.54–2.30× 与 62–73%、图 6 的 3.72× 与 3.06×。</li>
+<li><strong>抽查数字：</strong>Teacher FID 22.4 / CodecOPSD 23.0 / FVD 118.0 对 113.8；Prep 1.13 s；GEdit 1,401→685；Cosmos 音频 70%、2.30×，Physics-IQ 50.6 对 50.6。</li>
+<li><strong>残余风险：</strong>图 1 的 8.4× 未在主表给出对应配置，已标注为展示图主张；图 4 计时与表 1 质量的采样步数不同；主模型内部，外部复现应转向 MiniMax / Cosmos 设定；项目页未用于取数。</li>
+</ul>
+
+<h3>检索与页面核对</h3>
+<p>arXiv 列表页在 08:24–09:20 Asia/Shanghai 均显示 Tuesday, 24 November 2026，未切换到周三批次。入选三篇 HTML 与 PDF 均可解码。本文件编码为 UTF-8；构建后用正则检查残留 TeX 定界符，并用 headless Chrome 截取页眉、公式区和宽表。目录锚点与 23 个小节一一对应。中文字符数按去掉 HTML 标签后的 CJK 统一码统计，目标每篇 4500–7000。</p>
+</section>
+
+<footer>
+<p>Daily Top Papers Deep Dive · 2026-11-25 · Asia/Shanghai · 非 BACKFILL · 公式由 latex2mathml 离线转为 MathML，无外部脚本。</p>
+</footer>
+</div>
+</body>
+</html>

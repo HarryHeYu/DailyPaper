@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Daily AI Research Radar — 2026-11-25</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#edf1f4;color:#172b3a;font:17px/1.95 system-ui,"Noto Sans CJK SC",sans-serif}main{max-width:1100px;margin:auto;padding:32px 40px;background:#fff}header{border-bottom:5px solid #127b83;padding-bottom:25px}h1{font-size:39px;line-height:1.3}h2{margin-top:55px;border-bottom:2px solid #d4e6e9;padding-bottom:10px}h3{margin-top:30px}h4{font-size:18px;color:#176b72}a{color:#086a9b;text-underline-offset:3px}p{margin:15px 0}nav{background:#eef6f7;padding:20px;border-radius:10px}nav a{display:inline-block;margin:3px 10px}.kicker,.meta{font-size:14px;color:#4e6470}.badge{display:inline-block;padding:2px 9px;border-radius:4px;background:#dff1ec;color:#0b6552}.notice{border-left:5px solid #c28b20;background:#fff8e7;padding:14px 20px}.paper{border:1px solid #ccdadf;border-radius:10px;padding:25px;margin:25px 0}.paper h3{margin-top:0}.analysis p{text-align:justify}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.65;margin:20px 0}th,td{border:1px solid #cedbe0;padding:10px;vertical-align:top}th{background:#edf5f6}details>summary{cursor:pointer;font-weight:bold;padding:15px;background:#edf5f6}.pass{color:#0a7358}.fail{color:#a52c25}.evidence{font-size:14px;color:#45616d}footer{border-top:1px solid #ccdade;font-size:14px;margin-top:40px}code{word-break:break-all}.scroll{overflow-x:auto}@media(max-width:700px){main{padding:20px 16px}.paper{padding:15px}h1{font-size:29px}table{font-size:12px}}@media print{body{background:white}main{max-width:none}.paper{break-inside:auto}nav{display:none}}
+</style>
+<style>math{font-size:1.08em}.math-display{overflow-x:auto;margin:.8em 0;text-align:center}.math-display math{display:block}code.tex{color:#b45309}</style></head>
+<body>
+<main>
+<header id="sec-header">
+<p class="kicker">DAILY AI RESEARCH RADAR &amp; IDEA MINER · 2026-11-25</p>
+<h1>把结果对错写成<br/>语义学分</h1>
+<p>2026-11-25 · Asia/Shanghai（UTC+8）· 星期三 · RL / Agent / Video 三主线同优先</p>
+<p class="badge">HTML_GENERATED_OK · 周二新批次（非 BACKFILL）</p>
+<p class="notice">语料说明：北京时间 08:24（Asia/Shanghai）起，cs.LG / cs.AI / cs.CL / cs.CV / cs.MA / cs.RO / cs.DC / eess.IV / cs.MM 的 arXiv <code>/new</code> 均显示 <strong>Showing new listings for Tuesday, 24 November 2026</strong>。今日以此为唯一主语料，不是 BACKFILL。昨日 11-24 报告使用的是周一 11-23 批次的 BACKFILL，其五篇正式论文（SOAR、BATON、Breaking the Long Horizon、Belief-State Management、VMSA）按冷却规则不再展开。写稿期间后台持续轮询周三 11-25 新公告，至本报告组装时仍为周二批次。Candidate Pool 48 篇均能在该日 New submissions 原始页面中找到，已按 arXiv id 去重。</p>
+</header>
+
+<nav id="toc">
+<strong>目录</strong>
+<a href="#sec-exec">Executive Summary</a>
+<a href="#sec-important">Most Important</a>
+<a href="#sec-top3">Top 3</a>
+<a href="#sec-top5">Top 5</a>
+<a href="#sec-rl">RL</a>
+<a href="#sec-agent">Agent</a>
+<a href="#sec-video">Video</a>
+<a href="#sec-s">Tier S</a>
+<a href="#sec-a">Tier A</a>
+<a href="#sec-b">Tier B</a>
+<a href="#sec-ideas">Idea Mining</a>
+<a href="#sec-collision">Collision</a>
+<a href="#sec-reading">Reading Priority</a>
+<a href="#sec-watch">Candidate Pool</a>
+<a href="#sec-stats">统计</a>
+<a href="#sec-sources">Sources</a>
+<a href="#sec-audit">Depth Audit</a>
+</nav>
+
+<section id="sec-exec">
+<h2>Executive Summary</h2>
+<p>今日统计（正式论文可多标签，重叠已在文中说明）：</p>
+<ul>
+<li>Candidate Pool: 48</li>
+<li>Formal Papers: 6</li>
+<li>RL: 3（SAEPO、Dimension Is Free，以及含共享状态 MaxRL 的 SMB Bench）</li>
+<li>Agent / Multi-Agent: 2（SMB Bench、VideoJSON）</li>
+<li>Video Acceleration: 2（HorizonFlow、Plan Big / BigSmall）。VideoJSON 是超长视频智能体记忆，索引墙钟无精确秒数，不计入 Video Acceleration</li>
+<li>Unlearning: 0（候选池中有 BEND 等，但无足够新机制进入正式分析）</li>
+<li>Other: 0 正式</li>
+<li>Tier S / A / B: 1 / 2 / 3</li>
+</ul>
+<p>三条主线分别发生了什么。RL 线上最重要的是 SAEPO：它把冻结稀疏自编码器变成 GRPO/GSPO 的 token 级学分插件，在三个基座模型上提高数学平均，OLMo-3-7B 最大提升 6.63 个百分点，并用反转信号和最小编辑实验证明方向不是装饰。同一天还有一篇把政策梯度与演化策略的账单写成“有效维度免费、有效视界收费”的分析，以及一篇在训练前预测评委漏洞会先被哪一种 hack 的工作（仅入候选）。Agent 线上，SMB Bench 把延迟后果做成 90 天批发模拟器和密封测试：多数前沿模型在改变的季度里跑不赢固定采购规则，短程 RL 能改善行为，但密封店仍然亏损。Video 线上，HorizonFlow 只用 600 次迭代、51 A100 小时就把少步蒸馏的 VBench 总分做到 85.64，超过高成本基线，真正省的是训练计算；Plan Big 则在推理侧用 14B 规划、1.3B 涂色得到 3.02 倍 DiT 加速且语义几乎不降。整体不是“又一批涨点卡”，而是学分、延迟后果和少步视频三条机制同时变清楚。</p>
+</section>
+
+<section id="sec-important">
+<h2>Today's Most Important Paper · SAEPO</h2>
+<p>今日最重要的论文是 <a href="https://arxiv.org/abs/2611.29936">SAEPO（2611.29936）</a>。排名不由 Tier 自动决定，而是因为它直接打在当前 RL for LLM 最硬的缺口上：结果奖励只有对错，却被广播到每一个 token。SAEPO 没有再训练过程奖励模型，而是用通用语料上预训练的冻结 SAE，在同一道题的对错轨迹之间做不按位置对齐的语义对比，把对比分加到原有优势上。证据不是单点涨分：三骨干、两种目标、数学与代码平均同向提高，反转信号会显著变差，受控编辑使语义分和续写成功率同向移动，额外墙钟主要来自生成变长而不是 SAE 本身。HorizonFlow 的训练效率同样惊人，但就与读者当前研究的机制接近程度而言，SAEPO 更值得先读完。</p>
+</section>
+
+<section id="sec-top3">
+<h2>Top 3 必读</h2>
+<ol>
+<li><strong>SAEPO</strong>（2611.29936，Tier S，RL）：先看方法第 3.3 节、表 1、表 2 和受控编辑表 3–4，再看表 5–6 的墙钟与训练准确率。</li>
+<li><strong>HorizonFlow</strong>（2611.29431，Tier A，Video）：先看 Chunk Evenness 的定义、表 1 主结果、表 3 消融，以及附录表 S5（A100 墙钟）和 S8（卡顿）。</li>
+<li><strong>SMB Bench / Delayed Consequences</strong>（2611.28158，Tier A，Agent）：先看任务筛选协议、16 模型表 5，再看验证店与密封店表 8 的失败案例。</li>
+</ol>
+</section>
+
+<section id="sec-top5">
+<h2>Top 5 · 深度分层不等于综合排名</h2>
+<ol>
+<li>SAEPO（2611.29936）</li>
+<li>HorizonFlow（2611.29431）</li>
+<li>Measuring and Teaching Language Model Agents to Act on Delayed Consequences（2611.28158）</li>
+<li>Plan Big, Paint Small（2611.28402）</li>
+<li>VideoJSON（2611.28167）或 Dimension Is Free（2611.29795），取决于你更关心长视频记忆还是 PG/ES 的视界账单</li>
+</ol>
+</section>
+
+<section id="sec-rl">
+<h2>RL Highlights</h2>
+<p>今日 RL 的主线是学分，而不是又一个新的 GRPO 变体。SAEPO 证明：冻结的通用 SAE 特征足以在问题内部区分“更像成功解法的 token”。Dimension Is Free 则从方差角度解释了为什么终端学分会为填充 token 付钱，而逐步学分或更短的有效视界会让政策梯度重新便宜。候选池里还有 AnchorCredit、Attention PRM、Verifiable On-Policy Distillation、Which Loopholes Get Found 和 ARC，它们分别从输出字段锚定、注意力过程奖励、可验证蒸馏、评委漏洞预测和同步 rollout 调度接近同一问题。今天没有把 Unlearning 做成正式分析：有扩散遗忘相关工作，但机制增量不足以挤掉上述 RL 论文。</p>
+</section>
+
+<section id="sec-agent">
+<h2>Agent / Multi-Agent Highlights</h2>
+<p>Agent 主线分成两类。一类是延迟后果：SMB Bench 显示，即使是前沿模型，在客户会因缺货而离开的 90 天世界里，也经常跑不赢固定规则；短程共享状态 RL 能减少撤销覆盖和严重亏损季度，却还不能在密封店上稳定盈利。另一类是记忆与 harness：VideoJSON 主张分钟级 JSON 加写程序查询，就能在多个超长视频基准上超过专用记忆图；VTree、Autoresearch harness 拆解、以及多智能体辩论中的内部渗透攻击则留在观察名单。长视界问题在这里不再抽象：10 步可能只是平滑订货，100 步后客户关系已经变了。</p>
+</section>
+
+<section id="sec-video">
+<h2>Video / Efficient Video AI Highlights</h2>
+<p>视频加速今天同时出现了“训练更便宜”和“推理更大模型用得更少”。HorizonFlow 把少步蒸馏的训练账单从成千 A100 小时砍到约 51 小时，VBench 总分不降反升，推理墙钟与其他 4 步方法接近（10.6 秒/片，相对 50–100 步教师约 16 倍）。Plan Big 不训练新学生，只让 14B 做规划、1.3B 做涂色，DiT 时间从 24.50 秒降到 8.11 秒（3.02 倍），语义区间覆盖零。同一公告里还有 Draft Forcing、Mass Forcing、On-Policy Codec Distillation 和若干视觉 token 剪枝，撞题风险高，故只正式展开前两篇有清晰墙钟或训练成本证据的工作。VideoJSON 虽处理超长视频，但缺少可引用的精确索引秒数，按规则不计入 Video Acceleration。</p>
+</section>
+
+<section id="sec-s">
+<h2>Tier S</h2>
+
+<article class="paper" data-id="2611.29936" data-tier="S" data-fulltext="yes" id="p-2611.29936">
+<h3>SAEPO: Sparse-Autoencoder-Guided Credit Assignment for Policy Optimization</h3>
+<div class="meta">
+<p><strong>Authors:</strong> Yusong Zhao, Zihao Zhao, Zirui Zhang, Tunyu Zhang, Ziyan Wang, Yi Wang, Chengzhi Mao, Hao Wang</p>
+<p><strong>Affiliation:</strong> 通讯邮箱为 illinois.edu，其余单位未核实</p>
+<p><strong>Date / Venue / Status:</strong> arXiv 2611.29936v1，Submitted on 23 Nov 2026，cs.AI；出现在 Tuesday, 24 November 2026 的 New submissions。License: CC BY 4.0</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.29936">abs</a> · <a href="https://arxiv.org/pdf/2611.29936">PDF</a> · <a href="https://arxiv.org/html/2611.29936">HTML</a> · Project / Code：正文与摘要页均未提供，标为未核实</p>
+<p><strong>Full text:</strong> 已阅读 arXiv HTML 全文（方法、实验、附录 C/F/G 与全部 17 张表）。</p>
+</div>
+
+<div class="analysis" data-part="body">
+<h4>人话版：这篇论文到底干了什么？</h4>
+<p>GRPO 和 GSPO 这类用可验证结果奖励训练推理模型的方法，通常只知道一整条答案对还是错，却把同一个分数广播到这条轨迹里的每一个 token。于是关键推导步骤和“我们可以看出”这样的套话拿到一样的学分。SAEPO 的做法是：先用在通用语料上预训练并冻结的稀疏自编码器，把每个生成 token 的隐状态变成稀疏语义特征；再在同一道题的正确轨迹和错误轨迹之间做不要求位置对齐的软对齐，得到一个“这个 token 更像成功解答还是更像失败解答”的语义分数；最后把它标准化后加到原来的结果优势上。验证器、重要性比率、裁剪和 KL 都不变，推理时也不需要 SAE。作者把它插进 GRPO 和 GSPO，在 Qwen3-1.7B-Base、Qwen3-4B-Base 和 OLMo-3-7B-Base 上评了六个数学基准和两个代码基准，数学平均最多提高 6.63 个百分点，代码平均最多提高 5.57 个百分点，并且在匹配墙钟预算下训练准确率爬升更快。它重要，是因为它把可解释的稀疏特征直接写成了可插拔的 token 级学分，而不是再训练一个过程奖励模型。</p>
+
+<h4>Background &amp; Research Gap</h4>
+<p>结果可验证的强化学习（RLVR）已经成为提升大语言模型数学与代码推理的主流配方。对每一道题，策略采样一组完整解答，由规则验证器给出对错，再像 GRPO（Shao et al., 2024）或序列比率版本的 GSPO（Zheng et al., 2025）那样，用组内归一化后的标量优势去更新策略。这条路的吸引力在于不必标注逐步推理，但代价也很清楚：监督只在轨迹末端出现，却必须被广播进每一个 token 的策略梯度。KTAE（Sun et al., 2025）已经指出，GRPO/DAPO 风格的方法把同一条轨迹里的所有 token 看成贡献相同；OAR 和 GTPO/GRPO-S 也把这个问题表述为长链推理上的粗粒度学分。</p>
+<p>一个具体反例足够说明失败模式。假设一道几何题采样了八条轨迹，其中三条最终答案正确。正确轨迹里既有“圆的内接四边形对角互补”这样的关键步骤，也有“接下来我们考虑”这类话语标记；错误轨迹里也可能写对了“内接”和“对角”，却在最后把公式用错。结果优势会给整条正确轨迹的每一个 token 同样的正分，给整条错误轨迹同样的负分。于是正确轨迹里的套话被强化，错误轨迹里其实有用的中间概念被一并惩罚。现有 token 级改进并没有真正解决“语义对齐”：有的依赖位置或启发式重加权，有的需要额外的过程标注或可学习奖励头。SAEPO 想回答的缺口是：能不能只用当前策略在同一道题上的对错轨迹，以及一个冻结的、非任务特异的稀疏特征空间，就构造出问题局部、且不必按位置对齐的 token 级学分，并作为插件接到现有目标上。</p>
+
+<h4>Core Insight</h4>
+<p>同一道题的正确轨迹和错误轨迹，会在不同位置表达相近的中间概念。如果先把 token 隐状态映射到稀疏、近乎单语义的 SAE 特征，再用温度软对齐比较“这个 token 更像正确组还是更像错误组”，就能得到一个只依赖问题内部对比、而不依赖逐步标注的局部信号。把该信号加到原来的结果优势上，广播式学分就变成了有方向的 token 级塑造；全对或全错的题目则自动退回纯结果更新。反直觉之处在于：SAE 是在 FineWeb-Edu 上针对基座模型预训练的，并不是数学专用特征器，却能在数学和代码 RL 中稳定复用。</p>
+</div>
+
+<div class="analysis method" data-part="method">
+<h4>Method Deep Dive：从 Input 到 Output</h4>
+<p><strong>输入。</strong>对每个问题 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>q</mi></mrow></math></span>，当前策略 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mrow><msub><mi>&#x003B8;</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub></mrow></msub></mrow></math></span> 采样 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>G</mi></mrow></math></span> 条完整轨迹 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x0007B;</mo><msub><mi>o</mi><mrow><mi>q</mi><mi>g</mi></mrow></msub><msubsup><mo stretchy="false">&#x0007D;</mo><mrow><mi>g</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>G</mi></mrow></msubsup></mrow></math></span>。每条轨迹有生成 token 下标集合 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x1D4A5;</mi><mrow><mi>q</mi><mi>g</mi></mrow></msub></mrow></math></span>，以及目标层隐状态 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>H</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x02208;</mo><msup><mi>&#x0211D;</mi><mrow><mi>d</mi></mrow></msup></mrow></math></span>。验证器给出标量结果奖励 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>r</mi><mrow><mi>q</mi><mi>g</mi></mrow></msub></mrow></math></span>（数学为正确性加格式奖励，代码为全部单测通过）。同时备有一个在 RL 之前训好、全程冻结的 BatchTopK SAE 编码器 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>f</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">c</mi></mrow></mrow></msub></mrow></math></span>。</p>
+<p><strong>步骤 1：按对错切分。</strong>用最终答案对错把组拆成正确集 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x1D49E;</mi><mi>q</mi></msub></mrow></math></span> 和错误集 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x02110;</mi><mi>q</mi></msub></mrow></math></span>。数学里只有格式分、答案仍错的轨迹算错误。若某一侧为空，这道题在本轮没有对比，不产生 SAE 信号，只保留原来的结果优势。这一设计避免了在全对或全错组里硬造对比。</p>
+<p><strong>步骤 2：编码为稀疏特征。</strong>对每个生成位置 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi></mrow></math></span>，计算 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003D5;</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x0003D;</mo><msub><mi>f</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">c</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>H</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02208;</mo><msup><mi>&#x0211D;</mi><mrow><mi>n</mi></mrow></msup></mrow></math></span>。Qwen3-1.7B 使用第 21 层、隐维 2048、32 倍扩展得到 65536 个潜在特征，目标平均稀疏度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math></span>；4B 用第 27 层、<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math></span>、81920 维；OLMo-3-7B 用第 21 层、<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math></span>。SAE 在对应基座模型的 FineWeb-Edu 激活上用 EleutherAI sparsify 与 Adam（学习率 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>4</mn></mrow></msup></mrow></math></span>）训练，之后冻结。</p>
+<p><strong>步骤 3.1：跨轨迹语义对齐。</strong>作者不按位置对齐，因为同一中间结论可能出现在不同步。对轨迹 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>g</mi></mrow></math></span> 的 token <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi></mrow></math></span>，以及同题另一条轨迹 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>h</mi><mo>&#x02260;</mo><mi>g</mi></mrow></math></span> 中的每个 token <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>u</mi></mrow></math></span>，用余弦相似度除以温度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span> 做 softmax，得到对齐权重 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>&#x003C9;</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi><mo>&#x0002C;</mo><mi>u</mi></mrow><mrow><mo stretchy="false">&#x00028;</mo><mi>h</mi><mo stretchy="false">&#x00029;</mo></mrow></msubsup></mrow></math></span>，再对 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>h</mi></mrow></math></span> 上的余弦加权求和，得到该 token 与整条 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>h</mi></mrow></math></span> 的匹配分 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>m</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow><mrow><mo stretchy="false">&#x00028;</mo><mi>h</mi><mo stretchy="false">&#x00029;</mo></mrow></msubsup></mrow></math></span>。然后分别对正确组（去掉自身）和错误组求平均，得到 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>s</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow><mrow><mo>&#x0002B;</mo></mrow></msubsup></mrow></math></span> 与 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>s</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow><mrow><mo>&#x02212;</mo></mrow></msubsup></mrow></math></span>。默认 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi><mo>&#x0003D;</mo><mn>0.05</mn></mrow></math></span>。</p>
+<p><strong>步骤 3.2：语义分数。</strong><span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>S</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x0003D;</mo><msub><mi>&#x003C1;</mi><mi>q</mi></msub><mo stretchy="false">[</mo><msubsup><mi>s</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow><mrow><mo>&#x0002B;</mo></mrow></msubsup><mo>&#x02212;</mo><msubsup><mi>s</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow><mrow><mo>&#x02212;</mo></mrow></msubsup><mo stretchy="false">]</mo></mrow></math></span>，其中平衡系数 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C1;</mi><mi>q</mi></msub><mo>&#x0003D;</mo><mn>2</mn><mo>min</mo><mo stretchy="false">&#x00028;</mo><mo stretchy="false">&#x0007C;</mo><msub><mi>&#x1D49E;</mi><mi>q</mi></msub><mo stretchy="false">&#x0007C;</mo><mo>&#x0002C;</mo><mo stretchy="false">&#x0007C;</mo><msub><mi>&#x02110;</mi><mi>q</mi></msub><mo stretchy="false">&#x0007C;</mo><mo stretchy="false">&#x00029;</mo><mo>&#x0002F;</mo><mo stretchy="false">&#x00028;</mo><mo stretchy="false">&#x0007C;</mo><msub><mi>&#x1D49E;</mi><mi>q</mi></msub><mo stretchy="false">&#x0007C;</mo><mo>&#x0002B;</mo><mo stretchy="false">&#x0007C;</mo><msub><mi>&#x02110;</mi><mi>q</mi></msub><mo stretchy="false">&#x0007C;</mo><mo stretchy="false">&#x00029;</mo></mrow></math></span> 会压低极不均衡的对错比。正分表示该 token 更像正确轨迹里的概念，负分则相反。</p>
+<p><strong>步骤 4：优势塑造。</strong>原始 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math></span> 的尺度随 batch 变化，因此在一个更新批次里对所有已定义分数做标准化，得到 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover><mrow><mi>S</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub></mrow></math></span>；未打分 token 置零。最终优势为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>A</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x0003D;</mo><msubsup><mi>A</mi><mrow><mi>q</mi><mi>g</mi></mrow><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msubsup><mo>&#x0002B;</mo><mi>&#x003B1;</mi><msub><mover><mrow><mi>S</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub></mrow></math></span>，默认 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B1;</mi><mo>&#x0003D;</mo><mn>2</mn></mrow></math></span>。把这个 token 级优势代回 GRPO 的 token 比率目标或 GSPO 的序列比率目标即可。验证器、比率构造、裁剪和相对参考策略的 KL（系数 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B2;</mi><mo>&#x0003D;</mo><mn>0.02</mn></mrow></math></span>）一律不动。推理时不跑 SAE。</p>
+<p><strong>一个反直觉设计。</strong>人们容易以为必须用数学语料训练 SAE，或在 RL 中微调它。作者反而用通用语料预训练并冻结。附录显示，RL 结束后数学轨迹上的重建余弦只从 0.957 降到 0.932–0.940，top-1000 活跃特征仍保留 94.3%–97.1%。另一个反直觉点是：软对齐允许一个 token 同时和多条轨迹的不同位置匹配，而硬对齐（表 10）会把六基准平均从 38.68 降到 37.41，且 AIME25 掉到 0.0。方法因此承认“同一概念不必出现在同一时间步”。</p>
+<p><strong>RL 形式化。</strong>状态是问题加已生成前缀；动作是下一个 token；策略是 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mi>&#x003B8;</mi></msub></mrow></math></span>；轨迹是完整解答；奖励是稀疏、规则型的结果奖励（数学 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">c</mi></mrow></mrow></msub><mo>&#x0002B;</mo><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub></mrow></math></span>，格式分为 0 或 0.1；代码为 0/1）。优势是组内归一化的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>A</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msup></mrow></math></span> 加上标准化语义项。学分分配发生在 token 级，但语义项本身来自问题组内的对错对比，而不是逐步真值。KL 对着冻结参考策略。该信号仍可能被黑客利用——如果模型学会在错误轨迹里避免激活“正确组常见概念”，或在正确轨迹里堆砌这些概念——但受控最小编辑实验表明，引入局部错误会降低语义分，修复错误会提高语义分。计算上，对齐要对每个 token 扫描同题其他轨迹的全部位置，复杂度随 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>G</mi></mrow></math></span> 和生成长度上升；作者把这项放在策略更新之前，用已经算好的隐状态做一次冻结编码，不必反传 SAE。GSPO 版本只是把塑造后的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>A</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub></mrow></math></span> 在序列比率目标里按轨迹使用：因为 GSPO 的比率是整句几何平均，token 级优势并不会变成逐步比率，而是改变这条轨迹被加权的方向与幅度。换言之，同一套语义分既能改写 GRPO 的逐步更新，也能改写 GSPO 的整句更新，真正被替换的只有广播式 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>A</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msup></mrow></math></span>。</p>
+</div>
+
+<div class="analysis" data-part="body">
+<h4>关键公式 / Objective</h4>
+<p>结果优势沿用 GRPO 风格的组内标准化：</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mi>A</mi><mrow><mi>q</mi><mi>g</mi></mrow><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msubsup><mo>&#x0003D;</mo><mfrac><mrow><msub><mi>r</mi><mrow><mi>q</mi><mi>g</mi></mrow></msub><mo>&#x02212;</mo><msubsup><mi>&#x003BC;</mi><mi>q</mi><mrow><mi>r</mi></mrow></msubsup></mrow><mrow><msubsup><mi>&#x003C3;</mi><mi>q</mi><mrow><mi>r</mi></mrow></msubsup><mo>&#x0002B;</mo><msub><mi>&#x003F5;</mi><mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub></mrow></mfrac></mrow></math></div>
+<p>当组内奖励标准差过小时置零。语义分数与塑造后的优势为</p>
+<div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>S</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x0003D;</mo><msub><mi>&#x003C1;</mi><mi>q</mi></msub><mo minsize="1.2em" maxsize="1.2em">[</mo><msubsup><mi>s</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow><mrow><mo>&#x0002B;</mo></mrow></msubsup><mo>&#x02212;</mo><msubsup><mi>s</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow><mrow><mo>&#x02212;</mo></mrow></msubsup><mo minsize="1.2em" maxsize="1.2em">]</mo><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>A</mi><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x0003D;</mo><msubsup><mi>A</mi><mrow><mi>q</mi><mi>g</mi></mrow><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msubsup><mo>&#x0002B;</mo><mi>&#x003B1;</mi><msub><mover><mrow><mi>S</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>q</mi><mi>g</mi><mo>&#x0002C;</mo><mi>t</mi></mrow></msub><mo>&#x0002E;</mo></mrow></math></div>
+<p>直觉是：<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C1;</mi><mi>q</mi></msub></mrow></math></span> 避免“七对一错”时错误轨迹主宰对比，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>s</mi><mrow><mo>&#x0002B;</mo></mrow></msup><mo>&#x02212;</mo><msup><mi>s</mi><mrow><mo>&#x02212;</mo></mrow></msup></mrow></math></span> 给出方向，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B1;</mi></mrow></math></span> 控制语义项相对结果项的权重。与 baseline 的关键区别不是换了一个新的策略目标，而是只改优势：GRPO 仍用 token 级重要性比率，GSPO 仍用序列级几何平均比率。关键超参数是 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B1;</mi><mo>&#x0003D;</mo><mn>2</mn></mrow></math></span>、<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi><mo>&#x0003D;</mo><mn>0.05</mn></mrow></math></span>、钩子层（1.7B 为第 21 层）和稀疏度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math></span>。当 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B1;</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math></span> 时退化为原算法。</p>
+
+<h4>可手工推演的 Toy Example</h4>
+<p>设 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>G</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math></span>，某几何题采到两条正确、两条错误轨迹。正确轨迹 A 在某步写出 token“interior”，错误轨迹 C 在另一位置也写了相近的“内角”概念，错误轨迹 D 则充满套话。对 A 中的“interior”，它与 C 的匹配分可能中等、与 D 较低，但与另一条正确轨迹 B 中的“内接”很高，于是 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>s</mi><mrow><mo>&#x0002B;</mo></mrow></msup></mrow></math></span> 大于 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>s</mi><mrow><mo>&#x02212;</mo></mrow></msup></mrow></math></span>，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi><mo>&#x0003E;</mo><mn>0</mn></mrow></math></span>。同一条正确轨迹里的“we”与对错轨迹的套话都相似，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>s</mi><mrow><mo>&#x0002B;</mo></mrow></msup></mrow></math></span> 与 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>s</mi><mrow><mo>&#x02212;</mo></mrow></msup></mrow></math></span> 接近，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math></span> 接近 0；标准化后还可能为负。若把四条轨迹全部改为正确，则 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x02110;</mi><mi>q</mi></msub></mrow></math></span> 为空，本步不产生 SAE 项，更新退回纯 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>A</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msup></mrow></math></span>。这个例子说明：SAEPO 奖励的是“在成功解法中更常见的概念”，而不是“处于正确轨迹中的任意 token”。</p>
+
+<h4>Baseline Comparison</h4>
+<p>对照包括：Vanilla GRPO / GSPO（最直接的结果广播基线）；KTAE（token 级学分）；THR（2026 年的 token 级方法）；GTPO。作者强调在每个骨干和每个优化器块内比较。最强可比较基线并不固定：Qwen3-1.7B 数学平均上，GRPO 块是 THR 的 36.72，GSPO 块是 THR 的 37.12；OLMo-3-7B 的 GRPO 块则是 KTAE 的 38.75。GTPO 在多组设置中大幅落后（例如 1.7B 上 GRPO+GTPO 数学平均仅 27.50），更像失败对照而不是最强对手。SAEPO 在所有骨干、两种优化器和两类任务的平均指标上超过上述学分方法。</p>
+</div>
+
+<div class="analysis results" data-part="results">
+<h4>Experiment Setup</h4>
+<p>模型为 Qwen3-1.7B-Base、Qwen3-4B-Base 与 OLMo-3-7B-Base，全参数微调，不用 LoRA。数学训练数据是 DeepScaleR-Preview-Dataset 的 40315 道竞赛题，与六个评测基准及 AIME25 无交叉（训练池中的 AIME 限于 2024 年前）。代码训练用 DeepCoder-Preview-Dataset 中 TACO、SYNTHETIC-1 和 LiveCodeBench-v5 的训练划分。采样 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>G</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math></span>、温度 1.0；评测为贪心解码。最大生成长度数学 8192、代码 4096。优化器用 AdamW，学习率 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>5</mn></mrow></msup></mrow></math></span> 恒定，KL 系数 0.02，种子 42。1.7B 每步 32 题（256 条轨迹）共 250 步，4B/7B 每步 8 题共 1000 步，因而都消耗 64000 条轨迹。主结果报告最后一个检查点，不按方法挑最好点。数学奖励 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo>&#x0003D;</mo><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">c</mi></mrow></mrow></msub><mo>&#x0002B;</mo><msub><mi>R</mi><mrow><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub></mrow></math></span>，用 math_verify 核对 boxed 答案。单卡 NVIDIA RTX PRO 6000 Blackwell（约 97 GB）：7B 约 80 小时，4B 约 36 小时，1.7B 约 14 小时（含 8.1 GPU-hour 的 SAE 预训练）。</p>
+<p>评测基准：MATH-500、GSM8K、AIME25、AMC、Minerva Math、OlympiadBench，以及 LiveCodeBench-v5 与 LeetCode Dataset v0.3.1（228 道留出题，需全部单测通过）。报告未加权平均。</p>
+
+<h4>Results：按研究问题看证据</h4>
+<p><strong>RQ1：把 SAEPO 插入 GRPO/GSPO，能否在匹配采样预算下提高数学和代码平均，并超过现有 token 级学分方法？</strong> Setup 即上节的三骨干、两优化器、六加二基准。Observation（表 1）：Qwen3-1.7B 上，GRPO 数学平均从 35.56 升到 38.68，GSPO 从 36.63 升到 39.55；相对最强学分基线 THR（36.72 / 37.12）仍高出约 2 个百分点。Qwen3-4B 上，GRPO 从 48.43 到 49.97，GSPO 从 47.73 到 50.15。OLMo-3-7B 上提升最大：GRPO 从 35.29 到 41.92（+6.63），并超过最强基线 KTAE 的 38.75；GSPO 从 41.71 到 43.07。代码侧，4B 的 GRPO 平均从 12.11 到 17.68（+5.57），主要来自 LeetCode 的 10.96 到 22.81。Interpretation：平均收益在三骨干上同向，而且不是只打赢“裸”GRPO。绝对值上 1.7B 的 AIME25 仍是 3.3 或 6.7，说明难题样本很少、单次评测噪声大；相对提升应和绝对水平分开看。最弱结果也很清楚：1.7B 上 GSPO+SAEPO 的 LCB-v5 为 5.02，低于 vanilla GSPO 的 5.73；4B 上 GRPO+SAEPO 的 LCB-v5 为 12.54，略低于 vanilla 的 13.26。代码收益集中在 LeetCode，并不均匀。把最强结果（OLMo-7B 数学 +6.63，4B 代码平均 +5.57）和这些局部回退放在一起，更能看清交易：平均分提高并不等于每个子集都提高。</p>
+<p><strong>RQ2：语义分数是否对局部步骤对错敏感，还是只是结果标签的另一种写法？</strong> Setup：从 976 道训练题中筛出可编辑轨迹，由 Qwen3-32B 做最小编辑（在正确步骤中引入一处可验证错误，或修好一处错误），盲评确认后得到 304 次引入错误和 120 次修复；编辑跨度外的 token 保持不变。然后重算语义分，并用编辑点后的前缀各采样 32 条续写估计成功率。Observation（表 3–4）：引入错误使编辑处语义分平均下降 0.58（95% CI <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">[</mo><mo>&#x02212;</mo><mn>0.70</mn><mo>&#x0002C;</mo><mo>&#x02212;</mo><mn>0.47</mn><mo stretchy="false">]</mo></mrow></math></span>），续写成功率从 0.74 降到 0.17（95% 的编辑会下降）；修复错误使语义分上升 0.16（CI <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">[</mo><mn>0.06</mn><mo>&#x0002C;</mo><mn>0.25</mn><mo stretchy="false">]</mo></mrow></math></span>），成功率从 0.15 升到 0.32（62% 的编辑会上升）。Interpretation：语义分平均上顺着局部对错移动，而且这些编辑确实改变了最终做对的概率。它不是简单复制整条轨迹的对错——图 5 也显示，正确轨迹里的停用词仍可拿负分，错误轨迹里的“面积”“棱锥”等概念仍可拿正分。但修复侧样本量更小、成功率提升也不对称，说明“改对一步”并不保证能救回整道题。</p>
+
+<div class="scroll">
+<table>
+<caption>表 1 摘录（原文 Table 1）：六数学基准未加权平均（%）。数字来自 arXiv HTML 表 1。</caption>
+<thead><tr><th>Backbone</th><th>Method</th><th>Math Avg.</th><th>Code Avg.</th></tr></thead>
+<tbody>
+<tr><td>Qwen3-1.7B-Base</td><td>Vanilla GRPO</td><td>35.56</td><td>8.47</td></tr>
+<tr><td>Qwen3-1.7B-Base</td><td>GRPO + THR（块内最强基线）</td><td>36.72</td><td>6.38</td></tr>
+<tr><td>Qwen3-1.7B-Base</td><td>GRPO + SAEPO</td><td>38.68</td><td>9.11</td></tr>
+<tr><td>Qwen3-1.7B-Base</td><td>Vanilla GSPO / GSPO + THR / GSPO + SAEPO</td><td>36.63 / 37.12 / 39.55</td><td>7.69 / 6.50 / 8.21</td></tr>
+<tr><td>OLMo-3-7B-Base</td><td>Vanilla GRPO / KTAE / SAEPO</td><td>35.29 / 38.75 / 41.92</td><td>8.25 / 8.43 / 10.32</td></tr>
+</tbody>
+</table>
+</div>
+
+
+<div class="scroll">
+<table>
+<caption>表 2（原文 Table 2）：Qwen3-1.7B-Base + GRPO 的机制消融，六数学基准平均（%）。</caption>
+<thead><tr><th>Method</th><th>MATH-500</th><th>AMC</th><th>Avg.</th></tr></thead>
+<tbody>
+<tr><td>Vanilla GRPO</td><td>63.2</td><td>26.5</td><td>35.56</td></tr>
+<tr><td>Raw-Embedding Contrast</td><td>64.2</td><td>26.5</td><td>36.53</td></tr>
+<tr><td>Reverse SAEPO Signal</td><td>37.8</td><td>9.6</td><td>25.48</td></tr>
+<tr><td>GRPO + SAEPO</td><td>65.6</td><td>34.9</td><td>38.68</td></tr>
+</tbody>
+</table>
+</div>
+<div class="scroll">
+<table>
+<caption>表 5–6 摘录（原文）：1.7B 墙钟与匹配预算下的训练准确率。数字来自 arXiv HTML。</caption>
+<thead><tr><th>测量</th><th>Vanilla GRPO</th><th>SAEPO (GRPO)</th></tr></thead>
+<tbody>
+<tr><td>每步合计 / 250 步墙钟 / 峰值显存</td><td>81.4 s / 5.66 h / 17.3 GB</td><td>92.0 s / 6.39 h / 18.4 GB</td></tr>
+<tr><td>其中 SAE 提取 + 对齐</td><td>—</td><td>0.77 s + 0.34 s</td></tr>
+<tr><td>训练准确率 @ 2 h / @ 5.66 h</td><td>16.9 / 22.2</td><td>25.8 / 28.7</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Table / Figure Reading</h4>
+<p>表 5 给出 1.7B 上每步墙钟：vanilla GRPO 81.4 秒，SAEPO 92.0 秒；其中 SAE 特征提取 0.77 秒、语义对齐 0.34 秒，合计 1.11 秒，只占原步时的约 1.4%。其余变慢主要来自生成变长。250 步总墙钟从 5.66 小时到 6.39 小时，峰值显存从 17.3 GB 到 18.4 GB。表 6 在匹配 RL 墙钟下比较训练集准确率：2 小时时 GRPO 为 16.9、SAEPO 为 25.8；5.66 小时为 22.2 对 28.7。作者称 SAEPO 约 1.35 小时就能达到 vanilla GRPO 最终的训练准确率。必须强调这是训练准确率，不是表 1 的评测基准；它说明样本效率，但不能单独拿来宣称下游涨点更快。图 3 的训练曲线用于支持“早期爬升更快”；图 4 的特征热图显示高分特征多是学科词，低分特征多是连词和标点。表 15 用三个种子重复 1.7B 的 GRPO：SAEPO 均值为 39.32±0.58，vanilla 为 36.03±0.41，THR 为 36.77±0.22，方向稳定，但种子数仍然偏少。</p>
+</div>
+
+<div class="analysis" data-part="body">
+<h4>Ablation</h4>
+<p>表 2 是最关键的机制消融（1.7B + GRPO）。用原始隐状态对比替代 SAE 特征，六基准平均只有 36.53，略高于 vanilla 的 35.56，但远低于 SAEPO 的 38.68，且 AIME25 掉到 0.0：稀疏特征空间不是可有可无的包装。把语义分符号反转，平均暴跌到 25.48，低于不做塑造：方向错了比没有信号更糟。表 7 换钩子层：第 21 层最好（38.68），第 15 层只有 35.92，甚至略低于 vanilla，说明不是越浅或越深越好。表 8 扫稀疏度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math></span>：<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>8</mn></mrow></math></span> 为 38.68，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math></span> 为 36.54，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>32</mn></mrow></math></span> 为 38.50 但 GSM8K 和 AIME25 波动大。表 9 用同一批数学 rollout 比较编码器：SAE 40.12，普通自编码器 38.50，MLP 只有 35.40，支持稀疏性本身有贡献。表 11–13：<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B1;</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math></span> 降到 35.77，过强会伤害；<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi><mo>&#x0003D;</mo><mn>0.02</mn></mrow></math></span> 平均 39.32 反而略高于默认 0.05 的 38.68，说明默认超参并非处处最优；去掉平衡系数 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B3;</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math></span> 降到 36.90。</p>
+
+<h4>Claim vs Evidence</h4>
+<p><strong>Authors Claim：</strong>SAEPO 是可插拔的 token 级学分模块，能在多种骨干和两种目标上提升数学与代码平均，并提供可解释、对局部对错敏感的语义信号，同时额外计算很小。</p>
+<p><strong>Experiments Actually Show：</strong>在三个基座模型和匹配的 64000 条轨迹预算下，数学未加权平均确实全面提高，最大绝对提升出现在 OLMo-3-7B 的 GRPO（+6.63）。代码平均也提高，但 LCB-v5 上有两次小幅回退。受控编辑实验支持语义分平均上随局部对错变化。墙钟开销主要不是 SAE 前向，而是更长的生成。三种子重复只覆盖 1.7B+GRPO 的数学平均。</p>
+<p><strong>What Is Not Yet Proven：</strong>没有工具调用、长视界智能体或多轮环境中的证据；没有证明 FineWeb-Edu SAE 对任意领域都够用（4B 的重建余弦只有 0.799，明显弱于 1.7B 的 0.960）；没有与训练好的过程奖励模型做直接比较；也没有在指令微调模型或更大稠密模型上验证。AIME25 的离散分数（0.0/3.3/6.7/10.0）不宜单独解读为能力跃迁。</p>
+
+<h4>Contribution</h4>
+<p>类型：New Mechanism（冻结 SAE 特征上的问题内软对齐学分）+ Empirical Finding（通用语料 SAE 可在数学/代码 RL 中复用，反转信号会显著变差）。它不是新的验证器，也不是新基准。</p>
+
+<h4>Limitation</h4>
+<p>作者在结论中把扩展到其他可验证领域、其他 SAE 架构和其他优化算法列为未来工作，正文没有独立的 Limitations 节。额外限制包括：依赖组内同时出现对错轨迹，简单题或过难的组会频繁退回广播优势；语义分是相关而非因果，受控编辑由另一个模型提出，可能偏向“容易改写的算术步”；代码未发布，复现成本不低；单卡、单一数据顺序、评测多为贪心解码，可能高估稳定性。</p>
+
+<h4>Research Value</h4>
+<p>对当前 RL for LLM 的价值在于：它给出一种不训练 PRM、不改目标函数的学分插件，并且用最小编辑和反转信号证明方向是机制的一部分。对智能体和长视界任务，更有迁移价值的是“在同一任务的成功/失败轨迹之间做稀疏特征对比”，而不是数学基准上的两三个点。</p>
+
+<h4>Migration / Research Transfer</h4>
+<p><strong>Original Problem → Transferable Mechanism。</strong>原问题是结果奖励过于稀疏，无法区分轨迹内部哪些 token 该强化。可迁移机制是：冻结一个通用稀疏特征器，在同一任务实例的成功与失败轨迹之间做不对齐的语义对比，并用该对比去塑造优势。</p>
+<p><strong>New Research Question。</strong>在延迟后果的智能体环境里（例如今日的 SMB Bench：今天的缺货会在数周后表现为客户流失），能否用状态或动作片段的 SAE/稀疏特征对比，把季度利润这样的稀疏回报写回数天前的下单动作，而不是只在轨迹末端做 RLOO/GRPO？</p>
+<p><strong>Method Modification。</strong>把“token”换成“一天的工具调用或状态摘要”，把正确/错误改成“同起始状态下高回报续写 vs 低回报续写”，保留软对齐与 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B1;</mi></mrow></math></span> 塑造，验证器改为环境回报或规则化的经营指标。</p>
+<p><strong>Minimum Experiment。</strong>模型用 Qwen3.8 或同等 7B–27B 工具智能体；数据集用 SMB Bench 的共享状态续写（论文已有 Day-60 panel 与 MaxRL 设定）；基线为原文的 CISPO/MaxRL 与连续美元 RLOO；指标为验证店与密封测试店的季度利润、缺货千克数、以及保护承诺是否中途撤销。先在固定起始状态下做 4 次更新、每步 16 条续写，比较加入特征学分前后的密封店利润差。可证伪假设：若特征学分不能在密封店上相对纯结果 RL 提高利润，或只减少“看起来像成功轨迹的措辞”而不减少缺货，则机制没有迁过去。估计计算成本中等（原文学共享状态 MaxRL 花费 605.82 美元量级），撞题风险来自 AnchorCredit、Attention PRM 和一批过程奖励工作，应用场景需强调延迟经营后果而非数学逐步分。</p>
+<p><strong>Risk。</strong>经营轨迹比数学解更长、更异构，SAE 可能对齐到文风而不是决策；环境非平稳时“成功组”会漂移。</p>
+
+<h4>五句话总结</h4>
+<p>SAEPO 用冻结 SAE 在同一道题的对错轨迹之间做软对齐，把结果优势改写成 token 级语义学分。它不改验证器和策略目标，推理也不需要 SAE。三骨干、两优化器上的数学平均都提高，OLMo-7B 的 GRPO 最大提升 6.63 个百分点；代码平均提高但 LCB 有回退。反转信号会明显变差，受控编辑支持局部对错与语义分同向变化。最值得借的不是数学涨点，而是把问题内稀疏特征对比当成一种可插拔的学分模块。</p>
+</div>
+</article>
+
+</section>
+
+<section id="sec-a">
+<h2>Tier A</h2>
+<article class="paper" data-id="2611.28158" data-tier="A" data-fulltext="yes" id="p-2611.28158">
+<h3>Measuring and Teaching Language Model Agents to Act on Delayed Consequences</h3>
+<details><summary>展开 / 收起分析</summary>
+<div class="meta">
+<p><strong>Authors:</strong> Shardul Bansal, Seth Schilbe, Jarrod Barnes　<strong>Affiliation:</strong> 未核实</p>
+<p><strong>Date / Venue / Status:</strong> arXiv 2611.28158v1，Submitted on 19 Nov 2026，列入 Tuesday, 24 November 2026 New submissions</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.28158">abs</a> · <a href="https://arxiv.org/pdf/2611.28158">PDF</a> · <a href="https://arxiv.org/html/2611.28158">HTML</a> · 数据集 <a href="https://huggingface.co/datasets/oro-agents/smb-bench">oro-agents/smb-bench</a> · 代码仓库未核实</p>
+<p><strong>Full text:</strong> 已阅读 HTML 全文（基准设计、16 模型排行、共享状态 RL、密封测试与限制）。</p>
+</div>
+<div class="analysis" data-part="body">
+<h4>人话版：这篇论文到底干了什么？</h4>
+<p>语言模型智能体越来越多地被要求管理持续多日的运营，而不是做完一道单轮题。今天少订货，货架空了会藏住流失的进店需求；今天短交，几周后客户订单会悄悄变小；紧急补货又会抽干现金流。作者推出 SMB Bench：一个校准过的 90 天批发模拟器，包含 18 个成对因果任务和 859 次前沿模型轨迹，用来问一个更窄的问题——什么样的经验和学习信号，能让智能体在没见过的店铺里，注意到、归因并作用于自己决策的延迟后果。16 个模型的排行显示，多数前沿系统在“环境已改变”的季度里跑不赢一条固定采购规则；只有 GPT-6 Astra 和 Gemini 4 Carbon 在改变季度上显著超过该规则。随后他们对 Qwen3.8 做共享状态的短程 MaxRL：验证店利润从 +1216 美元升到 +2419 美元，密封测试店仍整体亏损（−4495 对未训练的 −5984），但缺货和中途撤销保护承诺明显减少。这篇工作的价值不在于又一个代理排行榜，而在于把“延迟后果”做成可审计、可训练、并且会在密封店上暴露协调失败的问题。</p>
+<h4>Background &amp; Research Gap</h4>
+<p>现有智能体基准多半奖励短期正确或工具调用成功。经营环境的麻烦是：关键后果在时间上错位，观测还会被自己的行为审查——空货架让你看不见本该发生的需求。若只用单步代理奖励（例如当天有货），模型很容易 Goodhart。作者用 42 个候选机制在 168 个审计世界里筛选，只接纳能在至少 4/6 家店造成不低于 0.25% 基准营收损伤、且通过捷径检查的任务。最终留下供应商冲击、反应型客户账户和稳态对照。缺口因此很具体：不是“智能体能不能下单”，而是它能不能在 90 天视界里，把数周后的客户流失归因到今天的覆盖决策。</p>
+<h4>Core Insight 与方法流水线</h4>
+<p>核心判断是：延迟后果必须先被环境因果地实现，再被写成可对比的学习信号。流水线是：校准 90 天批发世界 → 智能体每天用 SQL 和订单工具行动并写备忘 → 用相对固定采购规则的季度利润评分 → 在共享的 Day-60 状态上做短程续写 RL，而不是从零开局刷完整季度。Agent 结构可写成：输入（当日库存、订单、账户与工具结果）→ 规划（模型在 &lt;think&gt; 中做预测与解释）→ 记忆（受限制的笔记）→ 工具（SQL、下单）→ 环境推进一天 → 反馈（库存、缺货、现金流）→ 更新（评测时冻结，训练时对共享前缀做 MaxRL）。状态是店铺日历状态加笔记；长视界问题在 10 步也许只是订货平滑，在 100 步后客户可能已经流失，在 90 天约等于 90 个决策日之后，错误会沿库存和账户复合。失败传播的典型例子是密封店里未训练模型最差的一季：一次对缺货的错误解释触发 31 次撤销覆盖，造成 441 kg 缺货和 3913 美元量级的单季亏损。</p>
+</div>
+<div class="analysis method" data-part="method">
+<p>训练方面，商店 1–4 用于转录与起始状态，商店 5 做验证和提示词打磨，商店 6 只在战役结束时评一次。共享状态二元 MaxRL 为 4 次更新、每次 16 条续写，学习率 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>3</mn><mo>&#x000D7;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>5</mn></mrow></msup></mrow></math></span>，温度 1.0，优化器为 CISPO（<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>c</mi><mrow><mo>max</mo></mrow></msub><mo>&#x0003D;</mo><mn>4.0</mn></mrow></math></span>），花费 605.82 美元；对照的连续美元 RLOO 更贵（1229.56 美元）且附录指出存在幸存者偏差。奖励来自季度经营结果，稀疏、环境给出、可被代理指标黑客化；作者因此把评测提示与训练提示分开，并在附录讨论单步代理奖励的 Goodhart。</p>
+</div>
+<div class="analysis results" data-part="results">
+<h4>Experiment Setup 与主要结果</h4>
+<p><strong>RQ1：前沿模型是否已经能在改变的世界里超过固定规则？</strong> 16 个模型、18 个任务、共 859 次计分运行。表 5：固定采购规则全任务平均 +6412 美元；GPT-6 Astra +7749、Gemini 4 Carbon +7703，改变季度相对固定规则分别为 +1337 和 +1291 美元，95% 区间下限大于 0。Claude Fable 5.2 全任务 +7275，但改变季度区间穿过 0。Grok 4.7 为 −4722，DeepSeek V4.1 Flash 为 −3036，许多更小或更便宜的模型在改变季度上落后固定规则超过 1 万美元。Inference 成本也很高：Astra 每次运行 213 美元。结论是：领先模型能在部分改变季度里创造价值，但“整体强”并不等于“会处理延迟后果”；固定规则仍是必须超过的强基线。</p>
+<p><strong>RQ2：共享状态 RL 能否把这种行为教给较弱的 Qwen 智能体，并迁移到密封店？</strong> 验证店（表 3、表 8）：评测提示下未训练均值 +1216 美元（12 次中 11 次有效，一次供应商冲击在第 75 天因连续工具错误终止，按预宣告记 −25000），训练后 +2419 且 12/12 完成。密封店 Business 6：未训练 −5984 美元、缺货 75 kg，训练后 −4495 美元、缺货 58 kg，差值约 +1489±1133 美元。行为上，Day-0 满覆盖从 10/12 升到 12/12，中途撤销覆盖从每季 5.8 次降到 1.0 次，亏损超过 1 万美元的季度从 25% 降到 8%。但密封店整体仍亏损，且供应商冲击季里仍有 420 kg 缺货的失败种子。提示词本身的贡献也很大：从 Starting Qwen 的大额亏损，到加入 SQL 缺货校正和安全限制后才转正，说明“学会延迟后果”和“学会环境接口”缠在一起。</p>
+<div class="scroll">
+<table>
+<caption>表 5/8 摘录：排行与密封测试（美元/季）。数字来自原文 HTML 表。</caption>
+<thead><tr><th>系统</th><th>关键结果</th></tr></thead>
+<tbody>
+<tr><td>Fixed Buying Rule</td><td>18 任务平均 +6412</td></tr>
+<tr><td>GPT-6 Astra / Gemini 4 Carbon</td><td>+7749 / +7703；改变季度显著优于固定规则</td></tr>
+<tr><td>Grok 4.7</td><td>−4722</td></tr>
+<tr><td>Qwen3.8 密封店 未训练 → 训练</td><td>−5984 → −4495；缺货 75 kg → 58 kg</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="analysis" data-part="body">
+<h4>Contribution、Limitation、Research Value 与最小迁移实验</h4>
+<p>贡献类型：New Benchmark/Dataset + Empirical Finding（多数前沿模型不赢固定规则；短程共享状态 RL 改善行为但密封店仍亏损）。限制：模拟器仍是批发库存，不是开放网页或真实公司；评测提示在验证店上打磨，存在提示过拟合风险；密封店样本量是 12 个季度；RL 只在 Day-60 附近续写，不是完整 90 天在线学习；单位与代码完整性需自行核对。对 Agent RL 的价值很高：它把 credit assignment 的对象从“哪一步推理对了”换成“哪一次下单在数周后造成客户流失”。最小实验可以是：在同一批共享状态上比较纯结果 MaxRL 与今日 SAEPO 式的成功/失败轨迹特征对比，看密封店利润和撤销覆盖次数是否继续下降。Worth Deep Reading: YES，尤其是任务筛选协议、表 5 和密封测试的失败案例。</p>
+</div>
+</details></article>
+<article class="paper" data-id="2611.29431" data-tier="A" data-fulltext="yes" id="p-2611.29431">
+<h3>HorizonFlow: Few-Step Video Distillation in 600 Iterations</h3>
+<details><summary>展开 / 收起分析</summary>
+<div class="meta">
+<p><strong>Authors:</strong> Xianglong Guo, Haobo Xu, Zanyi Wang, Zhen Lei, Chang Yu　<strong>Affiliation:</strong> 未核实</p>
+<p><strong>Date / Venue / Status:</strong> arXiv 2611.29431v1，Submitted on 22 Nov 2026，21 pages，列入 Tuesday, 24 November 2026 New submissions</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.29431">abs</a> · <a href="https://arxiv.org/pdf/2611.29431">PDF</a> · <a href="https://arxiv.org/html/2611.29431">HTML</a> · Code: <a href="https://github.com/XIANGLONGGUO/HorizonFlow-repo">GitHub</a></p>
+<p><strong>Full text:</strong> 已阅读 HTML 全文（方法第 4 节、实验第 5 节、附录成本表 S5 与 stutter 表）。</p>
+</div>
+<div class="analysis" data-part="body">
+<h4>人话版：这篇论文到底干了什么？</h4>
+<p>少步视频蒸馏里，DMD 一类目标常常很快把单帧外观和布局学好，运动却滞后，还容易在潜在块的四帧里出现周期性卡顿。HorizonFlow 认为问题出在 DMD 梯度没有把外观、布局和运动分开：静态部分信噪比高，运动部分又缺两种信号。它在普通 DMD 上加了两个修正。Chunk Evenness 在像素空间测量四帧相位上的运动是否均匀，并且只纠正“比训练视频更不均匀”的多余卡顿，同时拒绝靠冻结或模糊取巧。Semantic Commitment 则用来稳住语义和时间承诺，避免少步学生在外观收敛后仍然改布局或丢运动。整个学生只训练 600 次迭代、8.4k 样本、约 51 A100 小时，在 Wan2.1-T2V-1.3B 的 VBench 上得到 85.64 的总分，超过 50 步教师的 82.81，也超过 FastWan、CoDMD、rCM 和 Self-Forcing；严重卡顿比例从数个百分点降到 0.3%。推理 4 步、832×480、81 帧在一块 A100 上约 10.6 秒，与其他少步方法同一量级，真正省下的是训练计算。</p>
+<h4>Background &amp; Research Gap 与 Core Insight</h4>
+<p>少步蒸馏希望把 50 步教师压到 3–4 步。已有方法要么堆百万级样本（rCM 报告 2.56M 样本、约 16k A100 小时），要么仍留下可见的块状卡顿。作者把 DMD 梯度拆开看，发现布局和外观的信噪比远高于运动，于是每帧质量会在几百次迭代内先收敛，运动还在噪声里。缺口是：如何在极小训练预算下，专门把“运动是否均匀、语义是否守住”补进更新，而不是再砸数据。核心洞察是把校正写成对伪目标的位移：<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover><mrow><mi>x</mi></mrow><mo stretchy="false">&#x0007E;</mo></mover><mo>&#x0002B;</mo><msub><mi>&#x00394;</mi><mrow><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub><mo>&#x0002B;</mo><msub><mi>&#x00394;</mi><mrow><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">C</mi></mrow></mrow></msub></mrow></math></span>，并且 CE 只惩罚超过训练集的不均匀，避免把视频冻住。</p>
+<h4>Method 流水线</h4>
+<p>输入是教师与噪声；学生按 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>1</mn><mo>&#x0002C;</mo><mn>2</mn><mo>&#x0002C;</mo><mn>3</mn><mo>&#x0002C;</mo><mn>4</mn></mrow></math></span> 步从纯噪声滚动。先算标准 DMD 更新，再在随机时间窗上解码灰度帧，用相邻帧 RMS 差构造四个相位均值，定义均匀度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>E</mi><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msubsup><mo>&#x02211;</mo><mrow><mi>p</mi><mo>&#x0003D;</mo><mn>0</mn></mrow><mrow><mn>3</mn></mrow></msubsup><mo stretchy="false">&#x00028;</mo><msub><mi>a</mi><mi>p</mi></msub><mo>&#x0002F;</mo><mover><mrow><mi>a</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mo>&#x02212;</mo><mn>1</mn><msup><mo stretchy="false">&#x00029;</mo><mn>2</mn></msup></mrow></math></span>。相对训练视频滑动平均 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover><mrow><mi>E</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mrow><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow></mrow></msub></mrow></math></span> 计算多余不均匀 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>e</mi></mrow></math></span>，仅当 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>e</mi><mo>&#x0003E;</mo><mn>0</mn></mrow></math></span> 时沿 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mo>&#x02207;</mo><mi>z</mi></msub><mi>E</mi></mrow></math></span> 走几步，且只有降低 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>E</mi></mrow></math></span>、同时保持运动量和高频能量的步骤被接受，形成 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x00394;</mi><mrow><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">E</mi></mrow></mrow></msub></mrow></math></span>。Semantic Commitment 在此基础上加入对语义/时间承诺的校正 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x00394;</mi><mrow><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">C</mi></mrow></mrow></msub></mrow></math></span>。两者与 DMD 一起更新学生和 critic，1:1 交替，共 600 次迭代，学生与 critic 都从教师初始化，不用单独的初始化阶段。7 卡 A100、batch 14，AdamW，学生学习率 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>5</mn></mrow></msup></mrow></math></span>。这个设计还有一层工程上的取舍：作者没有再上 rCM 那种 4:1 的 critic/学生更新比，表 S5 显示那种配方每次学生更新要 180–225 秒，而他们的 1:1 配方约为 87 秒，这才使 600 次迭代在 51 A100 小时内跑完。Semantic Commitment 针对的是 DMD 梯度里运动分量信噪比低、布局却先被改写的问题；消融里单独加 SC 总分 84.07，甚至略低于 plain DMD 的 84.62，必须和 CE 一起才能把总分推到 85.57，并让严重卡顿降到 0.3%。也就是说，两个修正不是可互换的加分项，而是分别管“块内运动是否均匀”和“语义是否还守着”。</p>
+</div>
+<div class="analysis results" data-part="results">
+<h4>Experiment Setup 与结果</h4>
+<p>主实验在 Wan2.1-T2V-1.3B、VBench 946 条提示、每条 5 个种子；教师 50 步。另一组把同学生不重新训练地改成 3 步，并在 Cosmos-Predict2.5-2B 上做 4 步迁移。</p>
+<p><strong>RQ1：600 次迭代能否在 VBench 上达到或超过高成本少步基线？</strong> 表 1：HorizonFlow 总分 85.64±0.16，Quality 86.69，Semantic 81.43，Multi-obj. 85.27，Spatial 88.32。Self-Forcing 为 84.03（38.4k 样本 + 初始化，192 A100-h + init），FastWan 与 CoDMD 约 83.9，却用了 190k–256k 样本和 1.2k–1.3k A100-h。教师 82.81。收益主要不在“再快一点的推理”，而在用约 51 A100-h 训练出更高的总分和空间一致性。</p>
+<p><strong>RQ2：CE 与 SC 是否对质量和卡顿都必要？训练墙钟与推理墙钟如何？</strong> 表 3：600 次迭代下 plain DMD 为 84.62，只加 CE 为 84.66，只加 SC 为 84.07，完整方法 85.57。表 S8：严重卡顿（<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>E</mi><mo>&#x0003E;</mo><mn>0.1</mn></mrow></math></span>）比例，FastWan 9.1%，plain DMD 6.8%，HorizonFlow 0.3%。表 S5：832×480、81 帧、一块 A100 上，教师 170.0 秒（100 NFE），HorizonFlow 与 rCM/CoDMD 同为 4 NFE、10.6 秒、21.0 GiB；FastWan 3 步 9.0 秒。理论步数从 50/100 降到 4，墙钟加速约 16 倍，与其他少步方法接近，显存几乎不变。训练时 HorizonFlow 每次迭代 43.6 秒，每次学生更新 87 秒，和 plain DMD 的 40.1/80 秒相近。失败边界：300 次迭代时完整方法 81.78，仍高于 plain DMD 的 80.99，但明显未饱和；3 步总分 85.23 仍好于 FastWan 的 83.91；在 Cosmos 上总分 83.83 略高于 NVIDIA 4-step 的 83.17，但 Semantic 79.68 低于对方的 82.27，迁移不是全面占优。</p>
+<div class="scroll">
+<table>
+<caption>Efficiency Breakdown（原文 Table 1 与 S5）。未报告项写 Not Reported。</caption>
+<thead><tr><th>Metric</th><th>Baseline（教师 50/100 步）</th><th>HorizonFlow</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>Frames / 分辨率</td><td>81 / 832×480</td><td>相同</td><td>—</td></tr>
+<tr><td>NFE / 推理墙钟（1×A100）</td><td>100 / 170.0 s</td><td>4 / 10.6 s</td><td>约 16× 更快</td></tr>
+<tr><td>GPU Memory</td><td>21.0 GiB</td><td>21.0 GiB</td><td>几乎不变</td></tr>
+<tr><td>训练样本 / A100-h</td><td>FastWan 256k / 1.3k</td><td>8.4k / 51</td><td>训练计算大幅下降</td></tr>
+<tr><td>VBench Total</td><td>教师 82.81；FastWan 83.91</td><td>85.64</td><td>质量不降反升</td></tr>
+<tr><td>Throughput/FPS</td><td>Not Reported（可用 81/10.6 粗算）</td><td>Not Reported as FPS</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="analysis" data-part="body">
+<h4>Contribution、Limitation 与迁移</h4>
+<p>贡献：New Mechanism（CE+SC 对 DMD 的解耦修正）+ Empirical Finding（600 次迭代即可超过高成本少步基线）。限制：主结果集中在 1.3B 级骨干；推理墙钟并不优于最快的 3 步方法；Semantic Commitment 的跨骨干表现不完整；卡顿指标依赖其 4 帧相位定义，换 VAE 或非 4 帧块需要重做。理论加速和墙钟加速一致地来自步数减少，而不是内核魔法。最小迁移实验：把 CE 的“只纠正多余不均匀”用到今日 Plan Big 的大模型规划块上，检查在 3× 加速时动态维度是否还能保住。Worth Deep Reading: YES，优先看第 4 节的 CE 定义、表 1 的主结果、表 3 的组件消融，以及附录表 S5 与 S8 的墙钟和卡顿证据。</p>
+</div>
+</details></article>
+</section>
+
+<section id="sec-b">
+<h2>Tier B</h2>
+<article class="paper" data-id="2611.28167" data-tier="B" data-fulltext="yes" id="p-2611.28167">
+<h3>VideoJSON: A Minimal Harness Beats Purpose-Built Memory for Ultra-Long Video Understanding</h3>
+<details><summary>展开 / 收起分析</summary>
+<div class="meta">
+<p><strong>Authors:</strong> Wenqi Marshall Guo, Kuan-Hao Huang, Junda Chen, Hao Zhang　<strong>Affiliation:</strong> 未核实</p>
+<p><strong>Date:</strong> Submitted on 20 Nov 2026，列入 Tuesday, 24 November 2026 New submissions</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.28167">abs</a> · <a href="https://arxiv.org/pdf/2611.28167">PDF</a> · <a href="https://arxiv.org/html/2611.28167">HTML</a> · 代码未核实</p>
+</div>
+<div class="analysis" data-part="body">
+<h4>人话版</h4>
+<p>面对数天到数周的视频问答，既有视频智能体往往先建复杂记忆图，再沿固定检索管线走。VideoJSON 反其道而行：把视频库预建成“每分钟一条 JSON 记录”，字段包括稠密描述、事件、实体、转写和时间戳；回答问题时，智能体在干净的 Docker 里写 Python/Bash，用 exec 查询这些记录，必要时再迭代。记忆在提问前一次性建好，问题之间复用，也不做小时/日级级联索引。用 Qwen-3.5-Flash 时，MM-Lifelong 的 Week 达到 41.50（MAGIC-Video 复现 26.25，GEB 报告 36.83），Day 34.75 对 GEB 的 17.58；换 DeepSeek 后 Week 59.75、Day 64.75，优势更大。但在 EgoLifeQA 上，Qwen-3.5-Flash 的 65.8 略低于 MAGIC-Video 复现的 68.6，说明最小 harness 不是处处都赢。</p>
+<h4>Background 与 Core Method</h4>
+<p>超长视频的难点是线索稀疏且跨时间分布。专用记忆图限制了智能体能问什么。VideoJSON 只保留分钟级 JSON 和两种工具：exec 返回程序输出，exec_qa 把输出再交给一次问答。消融表明，几乎全部调用都是 exec（99.28%），加上 exec_qa、Decision API 或小时级描述并不稳定增益，换成 MAGIC 索引还会把 Day 从 64.75 打到 27.00。索引阶段用 Qwen-3.8-Flash-Next 对 60 秒片段、1 fps 帧加 ASR 转写做批处理；作者在一块 B200 上用并发 16 为 MM-Lifelong Day 的 3 小时视频建索引，称明显快于 MAGIC-Video，但正文没有给出可引用的精确秒数，故墙钟加速记为未核实（见图 3）。</p>
+</div>
+<div class="analysis results" data-part="results">
+<h4>Experiment 与 Main Finding</h4>
+<p>主表还包含 Ego-R1-Bench（Qwen 74.0，DeepSeek 78.0）和 500 题 EgoMemReason（DeepSeek 仅用描述得到 52.2，超过原文最佳先验 39.6，排序项 86.0 尤其突出）。在 64 条 MediaStorm-Livestream 轨迹上对 Qwen-3.5-Flash 做 SFT 后，Week 从 38.50 升到 46.75（95% CI [1.25, 15.25]），Month 从 34.35 升到 39.73。五次重复的标准差约 0.75–2.71，说明领先幅度不是单次噪声。失败边界是 EgoLifeQA 上相对 MAGIC 的小幅落后，以及方法依赖描述质量和模型写代码的能力。</p>
+</div>
+<div class="analysis" data-part="body">
+<h4>Contribution、Limitation、Why It Matters</h4>
+<p>贡献是 Empirical Finding + System：最小 JSON harness 在多个超长视频基准上超过专用记忆。限制包括部分基线分数引自原论文或并行预印本，索引墙钟缺少精确表，代码未核实。它和今日 VTree、以及近日 BATON/VMSA 都在讨论“长视频该记什么”，但主张更激进：先把记忆做简单，把搜索策略交给能写程序的智能体。Potential Use：给长视频或长日志智能体一个可复现的弱记忆基线，再决定是否值得上图数据库。Connection：适合与 SAEPO/延迟后果工作对照——都在问“结构化记忆和学分，哪一层才是瓶颈”。一个值得记下的细节是：代码最常读的键是 clip_id（平均 89.2%）和 dense_caption（60.9%），在 EgoLife 上 start_time 与 day 也被约 90% 和 70% 的程序读到，说明智能体并不是把整份 JSON 糊进上下文，而是在按时间和片段过滤。这也解释了为何最小 harness 能在 Week/Day/Month 上拉开差距：这些题目更依赖跨分钟检索，而不是更精致的实体表。若要复现，应优先核对表 1 中标注为复现或引自他文的基线，避免把引用分和作者自己跑的分混在一起。</p>
+</div>
+</details></article>
+<article class="paper" data-id="2611.28402" data-tier="B" data-fulltext="yes" id="p-2611.28402">
+<h3>Plan Big, Paint Small: Semantic-Aware Computation Allocation for Efficient Autoregressive Video Generation</h3>
+<details><summary>展开 / 收起分析</summary>
+<div class="meta">
+<p><strong>Authors:</strong> Yixuan Luo, Yanjing Li　<strong>Affiliation:</strong> 未核实</p>
+<p><strong>Date:</strong> Submitted on 20 Nov 2026，列入 Tuesday, 24 November 2026 New submissions</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.28402">abs</a> · <a href="https://arxiv.org/pdf/2611.28402">PDF</a> · <a href="https://arxiv.org/html/2611.28402">HTML</a> · 代码未核实</p>
+</div>
+<div class="analysis" data-part="body">
+<h4>人话版</h4>
+<p>自回归视频扩散可以一块接一块地流式生成，但 14B 级模型对实时来说太慢。作者问：在一条 AR rollout 里，大模型真正需要出现在哪里？他们把共享潜空间和去噪日程的 Krea-Realtime-14B 与 Self-Forcing-1.3B 配对，提出 BigSmall：用 14B 在规划块（默认第一块，并按需再请）上“计划”，用 1.3B 在其余块上“涂色”，再配合跨模型 KV 与跳步配额。在标准 VBench（946 提示、五种子、832×480、81 帧）上，相对 14B 的 24.50 秒 DiT 时间（3.3 FPS），BigSmall 用 8.11 秒跑到 10.0 FPS，加速 3.02 倍，语义差为 +0.01（95% CI <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">[</mo><mo>&#x02212;</mo><mn>0.22</mn><mo>&#x0002C;</mo><mo>&#x0002B;</mo><mn>0.26</mn><mo stretchy="false">]</mo></mrow></math></span>），与 14B 几乎持平。更快变体 BigSmall-Fast 为 3.77 倍，语义差 −0.03。这是训练免费的推理分配，不是再蒸馏一个新学生。</p>
+<h4>Background 与 Core Method</h4>
+<p>旧方法要么把整段都交给大模型，要么希望小模型全程够用，要么做投机解码。作者观察到：谁先开始生成，往往决定了后续语义；小模型单独跑虽然有 5.17 倍加速，但语义差 −1.08，动态和多目标也下降。方法因此把 14B 放在规划块，1.3B 负责后续绘制，并在需要时再召回 14B。评测在一块 NVIDIA RTX PRO 6000 Blackwell 上进行，报告不含 VAE 的 DiT 时间，FPS 定义为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>81</mn><mo>&#x0002F;</mo><mi>T</mi></mrow></math></span>。</p>
+</div>
+<div class="analysis results" data-part="results">
+<h4>Experiment 与关键数字</h4>
+<p>分钟级 LoCoT2V-Bench 上，BigSmall 加速 3.14 倍，Avg 比 14B 高 1.78（CI <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">[</mo><mn>0.89</mn><mo>&#x0002C;</mo><mn>2.67</mn><mo stretchy="false">]</mo></mrow></math></span>）。消融最能说明机制：去掉规划块可到 3.98 倍，但语义差变成 −2.31，动态 65.3、多目标 84.5，明显变差。把每块 4 步中的 2 步交给 14B，加速 3.68 倍，语义差 −0.76，仍不如“第一块用大模型”。对 Self-Forcing、LongLive、CausVid 等渲染器，不重新校准阈值也能收回大部分相对 14B 规划器的语义缺口。Efficiency Breakdown：Frames 相同；DiT latency 24.50→8.11 秒；FPS 3.3→10.0；显存 Not Reported；VBench Total 84.25→84.32，质量基本不降。理论加速来自少跑 14B 步，墙钟 3.02 倍与该分配一致；不含 VAE，因此不是端到端壁钟的全部。</p>
+</div>
+<div class="analysis" data-part="body">
+<h4>Contribution、Limitation 与 Potential Use</h4>
+<p>贡献是 System + Empirical Finding：在共享日程的大小模型之间做语义感知的计算分配。限制：依赖成对的 14B/1.3B 家族模型；主测不含 VAE；规划阈值需要选择；代码未核实。它与今日 HorizonFlow、Draft Forcing  complementary——前者减训练步，后者减推理时大模型调用。最小实验是把 HorizonFlow 的卡顿正则加到小模型渲染块，看 3× 加速下动态维度能否再提高。与单模型加速比，Forcing-KV 只有 1.21 倍，Speculative Forcing 1.98 倍；投机解码甚至慢到 0.90 倍。BigSmall 能到 3 倍以上且语义区间覆盖 0，说明“让大模型先做承诺”比“每步都让小模型提议、大模型验收”更划算。分钟级生成平均 748 帧、约 47 秒，最长 64 秒，这时加速 3.14 倍并且 Avg 不降，说明分配规则至少能撑过比 81 帧更长的滚动上下文。跳步配额从 70% 收到 30% 时，加速从 3.01 降到 2.67，语义差从 −0.18 变为 +0.12，质量和速度仍然可调，而不是只有一个工作点。</p>
+</div>
+</details></article>
+<article class="paper" data-id="2611.29795" data-tier="B" data-fulltext="yes" id="p-2611.29795">
+<h3>Dimension Is Free, Horizon Is Not: When Evolution Strategies Rival Policy Gradients for LLM Fine-Tuning</h3>
+<details><summary>展开 / 收起分析</summary>
+<div class="meta">
+<p><strong>Authors:</strong> Qiyao Liang, Kajetan Schweighofer, Xin Qiu, Risto Miikkulainen　<strong>Affiliation:</strong> 未核实</p>
+<p><strong>Date:</strong> Submitted on 22 Nov 2026，31 pages，列入 Tuesday, 24 November 2026 New submissions</p>
+<p><strong>Links:</strong> <a href="https://arxiv.org/abs/2611.29795">abs</a> · <a href="https://arxiv.org/pdf/2611.29795">PDF</a> · <a href="https://arxiv.org/html/2611.29795">HTML</a> · 代码未核实</p>
+</div>
+<div class="analysis" data-part="body">
+<h4>人话版</h4>
+<p>GRPO 一类政策梯度（PG）主导了 LLM 微调，但最近有工作显示演化策略（ES）也能微调十亿参数模型。这篇论文问的不是“谁总分更高”，而是：两种方法作为同一梯度的不同估计器，在什么任务上更省样本。作者把关键量写成有效维度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>D</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 和有效视界 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span>。结论很硬：参数个数本身几乎不构成诅咒，真正让 PG 变贵的是视界——当终端学分落到与奖励相关方向重叠的填充 token 上时，PG 的相关方差按 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>k</mi><mo>&#x0002B;</mo><mi>&#x003B3;</mi><mi>&#x003B2;</mi><mi>F</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0002F;</mo><mi>k</mi></mrow></math></span> 膨胀。ES 对填充长度不敏感。因此短视界、低 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 的任务上 PG 通常更省；长思维链且只有结果奖励时，ES 开始有竞争力，甚至可能反过来。</p>
+<h4>Background 与 Core Method</h4>
+<p>常见直觉是“参数越多 ES 越没希望，序列越长 PG 越差”，但两者常被混在一起。作者用多技能密码锁测试床把填充长度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>F</mi></mrow></math></span>、学分方案 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B2;</mi></mrow></math></span>（逐步 vs 终端）和权重重叠 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B3;</mi></mrow></math></span> 拆开。表 2 显示：终端学分加局部填充时，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>F</mi><mo>&#x0003D;</mo><mn>4096</mn></mrow></math></span> 的方差相对值测到 612.9，预测 580.2；若改为逐步学分，该比值保持 1.0。表 4 的中位 rollout 数同样：逐步学分下 PG 几乎不随 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>F</mi></mrow></math></span> 变，终端学分下则会从几十涨到数千。</p>
+</div>
+<div class="analysis results" data-part="results">
+<h4>Experiment 与 Main Finding</h4>
+<p>在 Qwen2.5-7B-Instruct 的真实任务上，他们估计 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 与 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>D</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span>。MATH-500 平均 1104 个生成 token，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 约 434；TriviaQA 只有约 16 个 token，<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 约 5.5。表 7：短文本任务上全参数或 LoRA 的 PG 远强于 ES，例如 SQuAD 上 PG 约 0.82，ES 只有 0.378±0.097；TriviaQA 上 PG 约 0.55，ES 几乎停在基线附近。这与“视界短则 PG 更划算”一致。论文的对比按测得视界排序，而不是按任务名排序。失败边界也很清楚：MATH 上 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>D</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 估计极不稳定（表 5 区间 63–1011，信号份额只有 0.15），不宜过度解释；ES 在许多语言任务上仍然明显更弱，作者并没有宣称 ES 可以替换 GRPO。</p>
+</div>
+<div class="analysis" data-part="body">
+<h4>Contribution、Limitation 与 Why It Matters</h4>
+<p>贡献是 Empirical Finding + 一个可测量的分析框架（<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>D</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> vs <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span>）。限制：测试床是合成组合锁；真实任务的 ES 实现与超参搜索未必对称；没有把 SAEPO 这类 token 级学分直接代入他们的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B2;</mi></mrow></math></span> 理论。它之所以重要，是因为它给“要不要上过程奖励/token 学分”提供了方差视角：把 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B2;</mi></mrow></math></span> 从终端改到逐步，等价于阻止填充拉长有效视界。Potential Use：在长链 RLVR 里，先测 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span>，再决定加过程学分、缩短填充，还是认真考虑 ES。把这个结论接到今日的 SAEPO 上很自然：SAEPO 并没有把结果奖励变成逐步真值，但语义分改变了终端优势被广播到哪些 token，相当于部分降低那些与任务无关的填充所占用的有效视界。若测量发现某个数学任务的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 仍接近生成长度，就说明广播还在付钱；若 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>T</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 明显下降，则 token 级学分至少在方差意义上做对了。作者也提醒，名义参数量 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>D</mi></mrow></math></span> 不是 ES 的账单，有效维度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>D</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">f</mi></mrow></mrow></msub></mrow></math></span> 往往小得多，所以“模型太大不能用 ES”这句话需要先测量再下。</p>
+</div>
+</details></article>
+</section>
+
+<section id="sec-ideas">
+<h2>Idea Mining · 三项可证伪实验</h2>
+<p>以下是研究设想，不是已有实验结果。</p>
+<article class="paper" id="idea-1">
+<h3>Idea 1 · 最佳设想：把问题内稀疏特征对比写成延迟后果的动作学分</h3>
+<p><strong>Inspiration：</strong>SAEPO 用冻结 SAE 在同一道题的成功/失败轨迹之间做软对齐；SMB Bench 则证明，智能体的关键错误发生在数天前的下单，而回报要到季度末才出现。</p>
+<p><strong>Research Gap：</strong>现有 Agent RL（含原文 MaxRL/CISPO）仍主要使用轨迹末端或短程续写的结果奖励，很难指出哪一次撤销覆盖或哪一次短交应该被惩罚。</p>
+<p><strong>Hypothesis：</strong>在同一起始状态下，用成功续写与失败续写的状态/动作摘要做稀疏特征对比，再塑造逐步优势，密封店的利润和“中途撤销保护”次数会优于纯结果 MaxRL。</p>
+<p><strong>Proposed Method：</strong>把 SAEPO 的 token 换成“一日工具调用或状态摘要”，正确/错误改成同前缀下的高回报/低回报续写，保留软对齐、平衡系数和 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B1;</mi></mrow></math></span> 塑造。</p>
+<p><strong>Minimum Viable Experiment：</strong>沿用 SMB Bench 的 Day-60 共享状态，4 次更新、每步 16 条续写。Model：Qwen3.8-27B 或同级工具智能体。Dataset：SMB Bench 商店 5 验证、商店 6 密封。Baseline：原文 MaxRL/CISPO 与连续美元 RLOO。Metric：季度利润、缺货千克、Day-0 覆盖、撤销次数。Expected Contribution：一种面向延迟经营后果的可插拔学分，而不是又一个提示词。Novelty ★★★★☆ / Feasibility ★★★☆☆ / Compute Cost ★★★☆☆。Risk：特征可能对齐到文风而非决策；环境非平稳时成功组会漂移。Collision Risk：与 AnchorCredit、Attention PRM、过程奖励工作部分重叠，需强调延迟环境后果和动作片段对齐。Best Venue：ICML / NeurIPS / ICLR 的 Agent RL 或 LLM 智能体轨道。</p>
+</article>
+<article class="paper" id="idea-2">
+<h3>Idea 2 · 把 Chunk Evenness 接到大模型规划后的小模型涂色块</h3>
+<p><strong>Inspiration：</strong>HorizonFlow 用 CE 只纠正超过训练集的块内卡顿；Plan Big 用 14B 规划、1.3B 涂色换 3 倍加速。</p>
+<p><strong>Research Gap：</strong>BigSmall 的动态维度仍可能低于全程 14B（表 1 中 74.2 对 74.7，差异不大但消融里去掉规划块会掉到 65.3）。少步或小模型渲染块仍可能把运动挤进少数帧。</p>
+<p><strong>Hypothesis：</strong>在 1.3B 渲染块上加训练免费或轻量的 CE 约束（或对已有 Self-Forcing 学生补一轮 CE），3× 加速下的 Dynamic / 卡顿指标会接近全程 14B，且语义差仍覆盖 0。</p>
+<p><strong>Minimum Viable Experiment：</strong>同一对 Krea-14B / Self-Forcing-1.3B，VBench 946 提示、报告 DiT 时间和动态维度。Baseline：BigSmall 与 plain 1.3B。Metric：FPS、ΔSem、Dynamic、以及 HorizonFlow 的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>E</mi><mo>&#x0003E;</mo><mn>0.1</mn></mrow></math></span> 比例。Compute Cost ★★☆☆☆。Collision Risk：与 Draft Forcing、Mass Forcing 同时出现，差异化应放在“规划分配 + 块均匀度”而不是再做一个少步蒸馏。Best Venue：CVPR / ICCV / NeurIPS 的高效视频生成轨道。</p>
+</article>
+<article class="paper" id="idea-3">
+<h3>Idea 3 · 先预测评委漏洞，再禁止学分流向这些模式</h3>
+<p><strong>Inspiration：</strong>候选论文 <em>Which Loopholes Get Found?</em>（2611.29651）表明，GRPO 中最先被利用的漏洞，可由训练前的曝光度（策略倾向 × 评委假阳性率）预测；SAEPO 又会把优势写到与“正确轨迹”相似的 token 上。</p>
+<p><strong>Hypothesis：</strong>若在优势塑造时对已知高曝光漏洞模式施加负学分或屏蔽，评委被 hack 的首个模式会推迟出现，且任务准确率下降有限。</p>
+<p><strong>Minimum Viable Experiment：</strong>复用该文的 14 个漏洞家族与七个评委设定，在同一 GRPO 运行中比较“只报告曝光度”与“用曝光度约束 SAEPO/标准优势”。Metric：首次被利用的漏洞是否仍是最高曝光者、任务分、漏洞出现步数。这是防御性设想，Compute Cost ★★★☆☆。Collision Risk：与 reward hacking 文献高度重叠，必须把“训练前预测”和“token 级屏蔽”绑在一起才有增量。Best Venue：ACL / ICLR 安全与对齐轨道。</p>
+</article>
+</section>
+
+<section id="sec-collision">
+<h2>Collision Detection · ⚠️ Collision Warning: YES</h2>
+<p><strong>Collision 1：Token / 过程学分。</strong>SAEPO 与 KTAE、THR、GTPO 直接比较过，也与近日报告中的 Evidence-Based Credit Assignment、Budget Internalization、Breaking the Long Horizon、以及今日的 AnchorCredit、Attention PRM 撞在“不要把结果奖励广播到所有 token”这一方向上。已解决的是：在数学/代码 RLVR 里，用冻结 SAE 的问题内软对齐可以提高平均分，并且反转信号会变差。尚未解决的是：该方法能否迁到工具轨迹和延迟环境后果，以及它与可学习 PRM 谁更稳。差异化建议见 Idea 1，不要再做一道 MATH-500 上的新加权。</p>
+<p><strong>Collision 2：少步 / 投机视频生成。</strong>同一天至少还有 Mass Forcing、Draft Forcing、On-Policy Codec Distillation、FlowMap Distillation 与 HorizonFlow 并列；Plan Big 又与投机解码、SDVG、Speculative Forcing 比较。HorizonFlow 已占据“600 次迭代 + 卡顿可测”的位置，Plan Big 已占据“14B 规划 / 1.3B 涂色、3.02× DiT 加速”的位置。剩余缺口是把卡顿正则接到分配规则上（Idea 2），而不是再报一个接近的 VBench 总分。</p>
+<p><strong>Collision 3：长视频记忆与交接。</strong>VideoJSON 与今日 VTree、近日 BATON / VMSA / ESSENCE 都在讨论记什么、何时升级记忆。VideoJSON 的差异是最小 JSON + 程序查询在多个基准上赢了专用记忆，但 EgoLifeQA 上并未全面胜出。若继续做记忆图，需要先对这个弱基线认输或赢回来。</p>
+<p>Idea 均为假说。已有论文已经拥有的预算、分数或基准，不再当成新贡献。</p>
+</section>
+
+<section id="sec-reading">
+<h2>Reading Priority</h2>
+<h3>READ NOW</h3>
+<ul>
+<li><strong>SAEPO</strong>：最值得看 Method 3.3、Figure 2/5、Table 1–4 与 Table 5–6。先确认它改的是优势而不是目标，再看反转信号和最小编辑。</li>
+<li><strong>HorizonFlow</strong>：最值得看 Section 4 的 CE 公式、Table 1、Table 3、Table S5 与 S8。不要只记 85.64，同时记下 51 A100-h 和 10.6 秒推理。</li>
+</ul>
+<h3>READ THIS WEEK</h3>
+<ul>
+<li>SMB Bench（表 5、表 8、第 6 节剩余协调失败）</li>
+<li>Plan Big, Paint Small（表 1 与去掉规划块的消融）</li>
+<li>VideoJSON（表 1 与表 3，注意引用分与复现分）</li>
+<li>Dimension Is Free（表 2–4 的测试床，表 6–7 的真实任务）</li>
+</ul>
+<h3>SAVE</h3>
+<p>AnchorCredit、Attention PRM、Which Loopholes Get Found、ARC、Visual-RFT++、Tool-to-Self、Draft Forcing、Mass Forcing、On-Policy Codec Distillation、VTree、RefineKV。</p>
+<h3>SKIP</h3>
+<p>与三主线无关、或只有设定变更而无线索的普通应用论文；普通换损失的 Unlearning 工作今日不必先读。</p>
+</section>
+
+<section id="sec-watch">
+<h2>Candidate Pool / Watchlist · 48 篇真实去重论文</h2>
+<p>以下 48 篇均来自 Tuesday, 24 November 2026 的 New submissions，可在保存的原始 <code>lists/*_new.html</code> 中按 id 找回。正式展开的 6 篇已在上文；其余为观察名单中的优先项加完整清单。</p>
+<h3>优先观察（未正式展开）</h3>
+<ul><li><a href="https://arxiv.org/abs/2611.30881">AnchorCredit: Output-Anchored Credit Assignment for Structured Generation with Multiple Verifiable Rewards</a> （2611.30881，RL）。多奖励结构化生成的输出锚定学分。</li><li><a href="https://arxiv.org/abs/2611.29651">Which Loopholes Get Found? Predicting Reward Hacking of LLM Judges Before RL Training</a> （2611.29651，RL）。在 RL 训练前预测评委漏洞会被哪一种 hack。</li><li><a href="https://arxiv.org/abs/2611.30627">From Rewarding What Models Say to How They Think: Attention Process Reward Model for LLM Reinforcement Learning</a> （2611.30627，RL）。Attention Process Reward Model，按‘怎么想’给过程奖励。</li><li><a href="https://arxiv.org/abs/2611.30325">Verifiable On-Policy Distillation</a> （2611.30325，RL）。可验证的 on-policy 蒸馏，补稀疏 RLVR 信号。</li><li><a href="https://arxiv.org/abs/2611.29156">ARC: Adaptive Rollout Control for Efficient Synchronous LLM Reinforcement Learning</a> （2611.29156，RL）。同步 LLM RL 的自适应 rollout 控制（ARC）。</li><li><a href="https://arxiv.org/abs/2611.30193">Visual-RFT++: Extending Visual Reinforcement Fine-Tuning to Multimodal Tool Use</a> （2611.30193，RL）。Visual-RFT++：把视觉 RFT 扩展到多模态工具使用。</li><li><a href="https://arxiv.org/abs/2611.28558">From Reward Engineering to Data-Centric Reinforcement Learning for Effective Agentic Visual Tool Use</a> （2611.28558，RL）。数据中心式 RL，改进视觉工具调用的奖励工程。</li><li><a href="https://arxiv.org/abs/2611.28564">Tool-to-Self: Internalizing Visual Tool Capabilities via Scaffolded Reinforcement Learning</a> （2611.28564，Agent）。Tool-to-Self：把视觉工具能力内化，脚手架式 RL。</li><li><a href="https://arxiv.org/abs/2611.30328">Draft Forcing: Target-guided Speculative Drafting and Learned Verifier for Autoregressive Video Generation</a> （2611.30328，VideoAcc）。Draft Forcing：自回归视频的投机草稿与可学习校验。</li><li><a href="https://arxiv.org/abs/2611.29618">Mass Forcing: On-Policy Mass-Aware Distillation for Autoregressive Video Generation</a> （2611.29618，VideoAcc）。Mass Forcing：质量感知的 on-policy 自回归视频蒸馏。</li><li><a href="https://arxiv.org/abs/2611.31184">On-Policy Codec Distillation for Efficient All-in-One Video Generation</a> （2611.31184，VideoAcc）。On-Policy Codec Distillation：用编码信号剪条件 token。</li><li><a href="https://arxiv.org/abs/2611.28093">VTree: Question-Driven Growth of Hierarchical Memory for Agentic Long-Video Understanding</a> （2611.28093，Agent）。VTree：问题驱动的层次记忆，用于超长视频智能体。</li><li><a href="https://arxiv.org/abs/2611.29489">CAR: Reducing Decoder Output Shift in Visual Token Pruning via Coverage Selection and Attention Reallocation</a> （2611.29489，VideoAcc）。CAR：覆盖选择与注意力重分配的视觉 token 剪枝。</li><li><a href="https://arxiv.org/abs/2611.28660">Persuasion from Within: Model-Based Insider Attacks in Multi-Agent LLM Debate and Consensus</a> （2611.28660，Robust）。多智能体辩论中的内部渗透式说服攻击。</li><li><a href="https://arxiv.org/abs/2611.28171">RefineKV: Query-Adaptive KV Cache Compression via Attention-Error Bounds</a> （2611.28171，EffInf）。RefineKV：由注意力误差界驱动的查询自适应 KV 压缩。</li><li><a href="https://arxiv.org/abs/2611.30532">BEND: Spectral Bregman Losses for Multi-Image Unlearning in Diffusion Models</a> （2611.30532，Unlearning）。BEND：扩散模型多图遗忘的谱 Bregman 损失。</li></ul>
+<h3>完整 Candidate Pool</h3>
+<div class="scroll">
+<table>
+<thead><tr><th>#</th><th>arXiv</th><th>Title</th><th>Category</th><th>Status</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><a href="https://arxiv.org/abs/2611.29936">2611.29936</a></td><td>SAEPO: Sparse-Autoencoder-Guided Credit Assignment for Policy Optimization</td><td>RL</td><td>正式</td><td>SAE 引导的 token 级学分，今日 Tier S</td></tr>
+<tr><td>2</td><td><a href="https://arxiv.org/abs/2611.30881">2611.30881</a></td><td>AnchorCredit: Output-Anchored Credit Assignment for Structured Generation with Multiple Verifiable Rewards</td><td>RL</td><td>候选</td><td>多奖励结构化生成的输出锚定学分</td></tr>
+<tr><td>3</td><td><a href="https://arxiv.org/abs/2611.29795">2611.29795</a></td><td>Dimension Is Free, Horizon Is Not: When Evolution Strategies Rival Policy Gradients for LLM Fine-Tuning</td><td>RL</td><td>正式</td><td>ES 与政策梯度在维度/视界上的对照，今日 Tier B</td></tr>
+<tr><td>4</td><td><a href="https://arxiv.org/abs/2611.29651">2611.29651</a></td><td>Which Loopholes Get Found? Predicting Reward Hacking of LLM Judges Before RL Training</td><td>RL</td><td>候选</td><td>在 RL 训练前预测评委漏洞会被哪一种 hack</td></tr>
+<tr><td>5</td><td><a href="https://arxiv.org/abs/2611.30627">2611.30627</a></td><td>From Rewarding What Models Say to How They Think: Attention Process Reward Model for LLM Reinforcement Learning</td><td>RL</td><td>候选</td><td>Attention Process Reward Model，按‘怎么想’给过程奖励</td></tr>
+<tr><td>6</td><td><a href="https://arxiv.org/abs/2611.30325">2611.30325</a></td><td>Verifiable On-Policy Distillation</td><td>RL</td><td>候选</td><td>可验证的 on-policy 蒸馏，补稀疏 RLVR 信号</td></tr>
+<tr><td>7</td><td><a href="https://arxiv.org/abs/2611.29156">2611.29156</a></td><td>ARC: Adaptive Rollout Control for Efficient Synchronous LLM Reinforcement Learning</td><td>RL</td><td>候选</td><td>同步 LLM RL 的自适应 rollout 控制（ARC）</td></tr>
+<tr><td>8</td><td><a href="https://arxiv.org/abs/2611.29646">2611.29646</a></td><td>JKO-GRPO: Augmenting GRPO with Wasserstein Proximal Steps for Flow-Matching VLAs</td><td>RL</td><td>候选</td><td>JKO-GRPO：用 Wasserstein 近端步改进 Flow-VLA 的 GRPO</td></tr>
+<tr><td>9</td><td><a href="https://arxiv.org/abs/2611.29147">2611.29147</a></td><td>VeriLogic: Reinforcement Learning over Verifiable Logical Reasoning Traces</td><td>RL</td><td>候选</td><td>VeriLogic：在可验证逻辑轨迹上做 RL</td></tr>
+<tr><td>10</td><td><a href="https://arxiv.org/abs/2611.28558">2611.28558</a></td><td>From Reward Engineering to Data-Centric Reinforcement Learning for Effective Agentic Visual Tool Use</td><td>RL</td><td>候选</td><td>数据中心式 RL，改进视觉工具调用的奖励工程</td></tr>
+<tr><td>11</td><td><a href="https://arxiv.org/abs/2611.28564">2611.28564</a></td><td>Tool-to-Self: Internalizing Visual Tool Capabilities via Scaffolded Reinforcement Learning</td><td>Agent</td><td>候选</td><td>Tool-to-Self：把视觉工具能力内化，脚手架式 RL</td></tr>
+<tr><td>12</td><td><a href="https://arxiv.org/abs/2611.30193">2611.30193</a></td><td>Visual-RFT++: Extending Visual Reinforcement Fine-Tuning to Multimodal Tool Use</td><td>RL</td><td>候选</td><td>Visual-RFT++：把视觉 RFT 扩展到多模态工具使用</td></tr>
+<tr><td>13</td><td><a href="https://arxiv.org/abs/2611.28907">2611.28907</a></td><td>STRIDE: Strategy-to-Tactics Retrieval-Guided Skill Disclosure and Evolution for Agentic Reinforcement Learning</td><td>Agent</td><td>候选</td><td>STRIDE：策略到战术的技能披露与演化，Agentic RL</td></tr>
+<tr><td>14</td><td><a href="https://arxiv.org/abs/2611.28359">2611.28359</a></td><td>Contrastive On-Policy Distillation via Dual-Branch Supervision</td><td>RL</td><td>候选</td><td>对比式 on-policy 蒸馏：弱教师也可作对照</td></tr>
+<tr><td>15</td><td><a href="https://arxiv.org/abs/2611.28158">2611.28158</a></td><td>Measuring and Teaching Language Model Agents to Act on Delayed Consequences</td><td>Agent</td><td>正式</td><td>延迟后果智能体基准 SMB Bench，今日 Tier A</td></tr>
+<tr><td>16</td><td><a href="https://arxiv.org/abs/2611.28167">2611.28167</a></td><td>VideoJSON: A Minimal Harness Beats Purpose-Built Memory for Ultra-Long Video Understanding</td><td>Agent</td><td>正式</td><td>VideoJSON 最小 harness 超过专用记忆，今日 Tier B</td></tr>
+<tr><td>17</td><td><a href="https://arxiv.org/abs/2611.28093">2611.28093</a></td><td>VTree: Question-Driven Growth of Hierarchical Memory for Agentic Long-Video Understanding</td><td>Agent</td><td>候选</td><td>VTree：问题驱动的层次记忆，用于超长视频智能体</td></tr>
+<tr><td>18</td><td><a href="https://arxiv.org/abs/2611.30559">2611.30559</a></td><td>Learning What to Change: State-Verified Reinforcement Learning for Educational Agents</td><td>Agent</td><td>候选</td><td>State-Verified RL：教教育智能体‘该改什么状态’</td></tr>
+<tr><td>19</td><td><a href="https://arxiv.org/abs/2611.28298">2611.28298</a></td><td>Language Model Harnesses can be Compositional Generalizers</td><td>Agent</td><td>候选</td><td>语言模型 harness 可以成为组合泛化者</td></tr>
+<tr><td>20</td><td><a href="https://arxiv.org/abs/2611.28244">2611.28244</a></td><td>Demystifying the Autoresearch Harness: How Context and Skills Shape Self-Evolving Agents</td><td>Agent</td><td>候选</td><td>拆解 Autoresearch harness：上下文与技能如何塑造自我演化</td></tr>
+<tr><td>21</td><td><a href="https://arxiv.org/abs/2611.28660">2611.28660</a></td><td>Persuasion from Within: Model-Based Insider Attacks in Multi-Agent LLM Debate and Consensus</td><td>Robust</td><td>候选</td><td>多智能体辩论中的内部渗透式说服攻击</td></tr>
+<tr><td>22</td><td><a href="https://arxiv.org/abs/2611.28148">2611.28148</a></td><td>SYLVA: Self-Correcting Multi-Agent Markets over Frozen LLMs via Escrow Settlement, Step-Level Fault Isolation, and Contextual Routing</td><td>Agent</td><td>候选</td><td>SYLVA：冻结 LLM 上的自校正多智能体市场协议</td></tr>
+<tr><td>23</td><td><a href="https://arxiv.org/abs/2611.30090">2611.30090</a></td><td>Post-Training Agents for Long-Document Reasoning</td><td>Agent</td><td>候选</td><td>长文档推理的 post-training agents</td></tr>
+<tr><td>24</td><td><a href="https://arxiv.org/abs/2611.30997">2611.30997</a></td><td>Generalizing Agentic Robotics via Multi-Teacher On-Policy Distillation</td><td>Agent</td><td>候选</td><td>多教师 on-policy 蒸馏以泛化 agentic robotics</td></tr>
+<tr><td>25</td><td><a href="https://arxiv.org/abs/2611.29969">2611.29969</a></td><td>CARE-3D: Reinforcement Learning for Evidence Grounded Agentic Reasoning in Situated 3D Scenes</td><td>Agent</td><td>候选</td><td>CARE-3D：情景 3D 中证据接地的智能体推理 RL</td></tr>
+<tr><td>26</td><td><a href="https://arxiv.org/abs/2611.31201">2611.31201</a></td><td>Embo-Harness: Towards Understanding Frontier-Model-as-Policy Harness</td><td>Agent</td><td>候选</td><td>Embo-Harness：把前沿模型当策略时的 harness 设计</td></tr>
+<tr><td>27</td><td><a href="https://arxiv.org/abs/2611.28102">2611.28102</a></td><td>VideoGym: An Adaptive RL Environment for Long-Video Agents</td><td>Agent</td><td>候选</td><td>VideoGym：长视频智能体的自适应 RL 环境</td></tr>
+<tr><td>28</td><td><a href="https://arxiv.org/abs/2611.29431">2611.29431</a></td><td>HorizonFlow: Few-Step Video Distillation in 600 Iterations</td><td>VideoAcc</td><td>正式</td><td>HorizonFlow：600 次迭代的少步视频蒸馏，今日 Tier A</td></tr>
+<tr><td>29</td><td><a href="https://arxiv.org/abs/2611.28402">2611.28402</a></td><td>Plan Big, Paint Small: Semantic-Aware Computation Allocation for Efficient Autoregressive Video Generation</td><td>VideoAcc</td><td>正式</td><td>Plan Big, Paint Small：语义感知计算分配，今日 Tier B</td></tr>
+<tr><td>30</td><td><a href="https://arxiv.org/abs/2611.30328">2611.30328</a></td><td>Draft Forcing: Target-guided Speculative Drafting and Learned Verifier for Autoregressive Video Generation</td><td>VideoAcc</td><td>候选</td><td>Draft Forcing：自回归视频的投机草稿与可学习校验</td></tr>
+<tr><td>31</td><td><a href="https://arxiv.org/abs/2611.29618">2611.29618</a></td><td>Mass Forcing: On-Policy Mass-Aware Distillation for Autoregressive Video Generation</td><td>VideoAcc</td><td>候选</td><td>Mass Forcing：质量感知的 on-policy 自回归视频蒸馏</td></tr>
+<tr><td>32</td><td><a href="https://arxiv.org/abs/2611.31184">2611.31184</a></td><td>On-Policy Codec Distillation for Efficient All-in-One Video Generation</td><td>VideoAcc</td><td>候选</td><td>On-Policy Codec Distillation：用编码信号剪条件 token</td></tr>
+<tr><td>33</td><td><a href="https://arxiv.org/abs/2611.29489">2611.29489</a></td><td>CAR: Reducing Decoder Output Shift in Visual Token Pruning via Coverage Selection and Attention Reallocation</td><td>VideoAcc</td><td>候选</td><td>CAR：覆盖选择与注意力重分配的视觉 token 剪枝</td></tr>
+<tr><td>34</td><td><a href="https://arxiv.org/abs/2611.29327">2611.29327</a></td><td>FP-Prune: Rethinking Visual Token Pruning from an Information Gain Perspective</td><td>VideoAcc</td><td>候选</td><td>FP-Prune：从信息增益视角重思视觉 token 剪枝</td></tr>
+<tr><td>35</td><td><a href="https://arxiv.org/abs/2611.31164">2611.31164</a></td><td>Analyzing and Improving FlowMap Distillation of Autoregressive Video Models</td><td>VideoAcc</td><td>候选</td><td>分析并改进自回归视频模型的 FlowMap 蒸馏</td></tr>
+<tr><td>36</td><td><a href="https://arxiv.org/abs/2611.30541">2611.30541</a></td><td>SVUBench: A Comprehensive Benchmark for Proactive Streaming Video Understanding</td><td>VideoAcc</td><td>候选</td><td>SVUBench：主动式流式视频理解基准</td></tr>
+<tr><td>37</td><td><a href="https://arxiv.org/abs/2611.30040">2611.30040</a></td><td>Teaching How to Reason, Beyond What to Answer: Evidence-Faithful On-Policy Distillation for streaming video understanding</td><td>VideoAcc</td><td>候选</td><td>面向流式视频理解的证据忠实 on-policy 蒸馏</td></tr>
+<tr><td>38</td><td><a href="https://arxiv.org/abs/2611.30011">2611.30011</a></td><td>MORSE: Optimizing Streaming Memory Design via Open-World Auto-Research</td><td>VideoAcc</td><td>候选</td><td>MORSE：用开放世界自动研究优化流式记忆设计</td></tr>
+<tr><td>39</td><td><a href="https://arxiv.org/abs/2611.28171">2611.28171</a></td><td>RefineKV: Query-Adaptive KV Cache Compression via Attention-Error Bounds</td><td>EffInf</td><td>候选</td><td>RefineKV：由注意力误差界驱动的查询自适应 KV 压缩</td></tr>
+<tr><td>40</td><td><a href="https://arxiv.org/abs/2611.31105">2611.31105</a></td><td>LiveLoRA: Exact KV Cache Migration Across LoRA Updates for LLM Agents</td><td>EffInf</td><td>候选</td><td>LiveLoRA：LoRA 更新之间的精确 KV cache 迁移</td></tr>
+<tr><td>41</td><td><a href="https://arxiv.org/abs/2611.30027">2611.30027</a></td><td>Fast 4-bit KV-Cache Decoding on Hopper GPUs: Why Existing Kernels Are Slow and How to Fix Them</td><td>EffInf</td><td>候选</td><td>Hopper 上的 4-bit KV-Cache 解码内核为何慢、如何修</td></tr>
+<tr><td>42</td><td><a href="https://arxiv.org/abs/2611.29006">2611.29006</a></td><td>NoHairCache: Calibrate-Once KV Cache Eviction with One Power-Law Exponent</td><td>EffInf</td><td>候选</td><td>NoHairCache：一次校准的幂律 KV cache 驱逐</td></tr>
+<tr><td>43</td><td><a href="https://arxiv.org/abs/2611.30965">2611.30965</a></td><td>Beyond Self-Consistency: Recursive Self-Improvement at Test Time</td><td>Reasoning</td><td>候选</td><td>超越自洽：测试时递归自我改进</td></tr>
+<tr><td>44</td><td><a href="https://arxiv.org/abs/2611.30151">2611.30151</a></td><td>Revisiting Continual Learning in Language Models: A Three-Interface Diagnosis of Stability and Plasticity</td><td>Continual</td><td>候选</td><td>语言模型持续学习的三界面诊断</td></tr>
+<tr><td>45</td><td><a href="https://arxiv.org/abs/2611.29905">2611.29905</a></td><td>Bridging the Gap between Continual Learning and Test-Time Adaptation with Domain Preview</td><td>Continual</td><td>候选</td><td>用 domain preview 打通持续学习与测试时适应</td></tr>
+<tr><td>46</td><td><a href="https://arxiv.org/abs/2611.30532">2611.30532</a></td><td>BEND: Spectral Bregman Losses for Multi-Image Unlearning in Diffusion Models</td><td>Unlearning</td><td>候选</td><td>BEND：扩散模型多图遗忘的谱 Bregman 损失</td></tr>
+<tr><td>47</td><td><a href="https://arxiv.org/abs/2611.29368">2611.29368</a></td><td>SAE-Audit: Clinical-Trial Prediction via Inference-Time Optimization of Black-Box LLMs Audited by Sparse Autoencoder Evidence</td><td>Interp</td><td>候选</td><td>SAE-Audit：用稀疏自编码器审计黑盒 LLM</td></tr>
+<tr><td>48</td><td><a href="https://arxiv.org/abs/2611.30939">2611.30939</a></td><td>Beyond Patching: Consistent Circuit Discovery via Gradient Spectral Analysis</td><td>Interp</td><td>候选</td><td>Beyond Patching：梯度谱分析的一致电路发现</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="sec-stats">
+<h2>今日统计与时间边界</h2>
+<ul>
+<li>报告日期：2026-11-25，Asia/Shanghai（UTC+8），星期三</li>
+<li>主语料：arXiv New submissions for Tuesday, 24 November 2026（08:24 Asia/Shanghai 已可见）</li>
+<li>状态：非 BACKFILL</li>
+<li>解析规模：去重后该日新提交 1148 篇（跨所选类别的 primary new，不含 replacement）</li>
+<li>Candidate Pool：48；Formal Papers：6；Tier S/A/B：1/2/3</li>
+<li>RL / Agent / Video Acceleration / Unlearning：3 / 2 / 2 / 0（重叠：SMB Bench 同时计入 RL 与 Agent）</li>
+<li>近 7 日 Tier S 冷却遵守：未再将 SOAR、WEIR 等列入 Tier S</li>
+<li>公式：正文使用标准 LaTeX 定界符，由 render_math.py 转为 MathML</li>
+</ul>
+</section>
+
+<section id="sec-sources">
+<h2>Sources / Links</h2>
+<ul>
+<li>arXiv new lists（已保存）：<code>/workspace/radar/work-2026-11-25/lists/</code> 下 cs.LG / cs.AI / cs.CL / cs.CV / cs.MA / cs.RO / cs.DC / eess.IV / cs.MM</li>
+<li>正式论文 HTML 与 PDF：<code>work-2026-11-25/html/</code>、<code>pdf/</code></li>
+<li>抽取与表格：<code>work-2026-11-25/extracts/</code></li>
+<li>主要链接：
+  <a href="https://arxiv.org/abs/2611.29936">SAEPO</a> ·
+  <a href="https://arxiv.org/abs/2611.28158">SMB Bench</a> ·
+  <a href="https://huggingface.co/datasets/oro-agents/smb-bench">smb-bench dataset</a> ·
+  <a href="https://arxiv.org/abs/2611.29431">HorizonFlow</a> ·
+  <a href="https://github.com/XIANGLONGGUO/HorizonFlow-repo">HorizonFlow code</a> ·
+  <a href="https://arxiv.org/abs/2611.28167">VideoJSON</a> ·
+  <a href="https://arxiv.org/abs/2611.28402">Plan Big, Paint Small</a> ·
+  <a href="https://arxiv.org/abs/2611.29795">Dimension Is Free</a>
+</li>
+</ul>
+</section>
+
+<section id="sec-audit">
+<h2>Public Depth Audit</h2>
+<p>程序统计口径：分析段落中的 CJK（U+4E00–U+9FFF），不计标题、表格、元数据和链接。数字来自已保存的 arXiv HTML 原文，不是独立复现。</p>
+<div id="audit-content">
+<table>
+<thead><tr><th>arXiv</th><th>Tier</th><th>Body CJK</th><th>Method</th><th>Experiments+Results</th><th>Tables</th><th>Numeric facts</th><th>Full text</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td>2611.29936</td><td>S</td><td>4797</td><td>1002</td><td>936</td><td>3</td><td>155</td><td>yes</td><td class='pass'>PASS</td></tr><tr><td>2611.28158</td><td>A</td><td>1598</td><td>143</td><td>390</td><td>1</td><td>57</td><td>yes</td><td class='pass'>PASS</td></tr><tr><td>2611.29431</td><td>A</td><td>1219</td><td>0</td><td>269</td><td>1</td><td>70</td><td>yes</td><td class='pass'>PASS</td></tr><tr><td>2611.28167</td><td>B</td><td>735</td><td>0</td><td>96</td><td>0</td><td>41</td><td>yes</td><td class='pass'>PASS</td></tr><tr><td>2611.28402</td><td>B</td><td>680</td><td>0</td><td>142</td><td>0</td><td>50</td><td>yes</td><td class='pass'>PASS</td></tr><tr><td>2611.29795</td><td>B</td><td>757</td><td>0</td><td>142</td><td>0</td><td>25</td><td>yes</td><td class='pass'>PASS</td></tr>
+</tbody>
+</table>
+<p class="evidence">Tier S 门槛：正文 3500–5000 CJK，Method ≥1000，Experiments+Results ≥900，至少两张表、两组研究问题分析、最强基线、失败边界、可执行迁移方案。本表由程序统计。Idea 卡片未计入正式论文。all_pass=true，tier_s_pass=true，缺失章节=无。</p>
+</div>
+</section>
+
+<footer>
+<p>Daily AI Research Radar &amp; Idea Miner · 2026-11-25 · Asia/Shanghai · 本页自包含，无外部脚本。</p>
+</footer>
+</main>
+</body>
+</html>
