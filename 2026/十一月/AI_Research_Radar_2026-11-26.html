@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Daily AI Research Radar — 2026-11-26</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#edf1f4;color:#172b3a;font:17px/1.95 system-ui,"Noto Sans CJK SC",sans-serif}main{max-width:1100px;margin:auto;padding:32px 40px;background:#fff}header{border-bottom:5px solid #127b83;padding-bottom:25px}h1{font-size:39px;line-height:1.3}h2{margin-top:55px;border-bottom:2px solid #d4e6e9;padding-bottom:10px}h3{margin-top:30px}h4{font-size:18px;color:#176b72}a{color:#086a9b;text-underline-offset:3px}p{margin:15px 0}nav{background:#eef6f7;padding:20px;border-radius:10px}nav a{display:inline-block;margin:3px 10px}.kicker,.meta{font-size:14px;color:#4e6470}.badge{display:inline-block;padding:2px 9px;border-radius:4px;background:#dff1ec;color:#0b6552}.notice{border-left:5px solid #c28b20;background:#fff8e7;padding:14px 20px}.paper{border:1px solid #ccdadf;border-radius:10px;padding:25px;margin:25px 0}.paper h3{margin-top:0}.analysis p{text-align:justify}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.65;margin:20px 0}th,td{border:1px solid #cedbe0;padding:10px;vertical-align:top}th{background:#edf5f6}details>summary{cursor:pointer;font-weight:bold;padding:15px;background:#edf5f6}.pass{color:#0a7358}.fail{color:#a52c25}.evidence{font-size:14px;color:#45616d}footer{border-top:1px solid #ccdade;font-size:14px;margin-top:40px}code{word-break:break-all}.scroll{overflow-x:auto}@media(max-width:700px){main{padding:20px 16px}.paper{padding:15px}h1{font-size:29px}table{font-size:12px}}@media print{body{background:white}main{max-width:none}.paper{break-inside:auto}nav{display:none}}
+</style>
+<style>math{font-size:1.08em}.math-display{overflow-x:auto;margin:.8em 0;text-align:center}.math-display math{display:block}code.tex{color:#b45309}</style></head>
+<body>
+<main>
+<header id="sec-header">
+<p class="kicker">DAILY AI RESEARCH RADAR &amp; IDEA MINER · 2026-11-26</p>
+<h1>任务知识要等<br/>接口能力来兑现</h1>
+<p>2026-11-26 · Asia/Shanghai（UTC+8）· 星期四 · RL / Agent / Video 三主线同优先</p>
+<p class="badge">HTML_GENERATED_OK · 周三新批次（非 BACKFILL）</p>
+<p class="notice">语料说明：北京时间 08:26–08:27（Asia/Shanghai）首次抓取时，cs.LG / cs.AI / cs.CL / cs.CV / cs.MA / cs.RO / cs.DC / eess.IV / cs.MM 的 arXiv <code>/new</code> 均已显示 <strong>Showing new listings for Wednesday, 25 November 2026</strong>。今日以此为唯一主语料，不是 BACKFILL，也无需轮询至 09:20。昨日 11-25 报告使用的是周二 11-24 批次，其六篇正式论文（SAEPO、SMB Bench、HorizonFlow、VideoJSON、Plan Big Paint Small、Dimension Is Free）按冷却规则不再展开。解析后的去重新提交 712 篇，另有跨列表 107 篇、替换 414 篇；Candidate Pool 48 篇均来自该日 New submissions 或 Cross-lists，已按 arXiv id 去重，且不与 11-19 至 11-25 正式收录名单重叠。</p>
+</header>
+
+<nav id="toc">
+<p><strong>目录</strong></p>
+<a href="#sec-exec">Executive Summary</a>
+<a href="#sec-important">Today's Most Important Paper</a>
+<a href="#sec-top3">Top 3 必读</a>
+<a href="#sec-top5">Top 5</a>
+<a href="#sec-rl">RL Highlights</a>
+<a href="#sec-agent">Agent Highlights</a>
+<a href="#sec-video">Video Highlights</a>
+<a href="#sec-s">Tier S</a>
+<a href="#sec-a">Tier A</a>
+<a href="#sec-b">Tier B</a>
+<a href="#sec-ideas">Idea Mining</a>
+<a href="#sec-collision">Collision Detection</a>
+<a href="#sec-reading">Reading Priority</a>
+<a href="#sec-watch">Candidate Watchlist</a>
+<a href="#sec-stats">今日统计</a>
+<a href="#sec-sources">Sources</a>
+<a href="#sec-audit">Depth Audit</a>
+</nav>
+
+<section id="sec-exec">
+<h2>Executive Summary</h2>
+<table>
+<thead><tr><th>指标</th><th>数量</th></tr></thead>
+<tbody>
+<tr><td>Candidate Pool</td><td>48</td></tr>
+<tr><td>Formal Papers</td><td>6</td></tr>
+<tr><td>RL Papers</td><td>4</td></tr>
+<tr><td>Agent / Multi-Agent Papers</td><td>2</td></tr>
+<tr><td>Video Acceleration Papers</td><td>2</td></tr>
+<tr><td>Unlearning Papers</td><td>0</td></tr>
+<tr><td>Other Papers</td><td>0</td></tr>
+<tr><td>Tier S / A / B</td><td>1 / 3 / 2</td></tr>
+</tbody>
+</table>
+<p>今日主语料是周三 11-25 新公告，不是 BACKFILL。三条主线都有真正的机制论文，而不是只有摘要卡片。Agent 线上，Learning What vs. Learning How 把智能体能力拆成任务能力与接口能力：单接口蒸馏会把别的接口写崩，跨接口任务监督和目标接口排练单独都弱，合在一起才能兑现知识——BFCL V3 多轮上二者分别为 8.5% 和 32.5%，合计 58.8%；on-policy GRPO 则不像蒸馏那样容易干扰其他接口。RL 线上还有两篇硬对照：百度 ERNIE 组把推理预算的“压缩”和“分档”写成由稀疏序列奖励与稠密状态目标分别支配的现象，长度惩罚可在 AIME25 上把思考缩短 70% 且不掉点，但稠密分档迁不到未见过的智能体任务；清华大学与中关村学院的 FReDraft 则把投机解码草稿训练的目标直接写成期望接受长度，4B 上平均加速 3.79×，超过 Draft-OPD 的 3.45×。Video 线上，SAMR 指出少步蒸馏之后，干净 KV 写入会变成流式视频扩散的新瓶颈，48 秒视频上 DiT 时间 1.26×，但端到端串行 RGB 只有 1.11×；Molt Forcing 则诊断出场景切换时“旧场景住在缓存里”，训练免费地重建场景并保留主体。编码智能体的 Online Environment Repair 虽列为 Tier B，但把累积 hacking 从 36.9% 降到 0.06%、持出 Pass@8 从 21.7% 提到 46.7%，进入今日 Top 3。正式论文未收录 Unlearning；相关对比式蒸馏工作放在 Watchlist。类别有重叠：What vs How 与 OER 同时计入 RL 和 Agent；FReDraft 计入 RL（不是 Video）；Molt Forcing 计入 Video Acceleration 是因为它处理流式生成缓存，主文没有把墙钟 FPS 写成主结果。</p>
+</section>
+
+<section id="sec-important">
+<h2>Today's Most Important Paper</h2>
+<p><strong><a href="#p-2611.31427">Learning What vs. Learning How</a>（2611.31427）</strong> 是今天最值得精读的一篇。它不是又提出一个新的 agent harness，而是回答了一个会改变训练配方的问题：策略在某个接口下失败，到底是不会做题，还是不会用这个接口。用 harness rehearsal 把两种监督切开之后，交互效应大到不能再用“多收集一点成功轨迹”来解释。任何要把同一基座接到多种工具协议、并在 SFT 之后接 GRPO 的人，都应先读这篇，再决定要不要把全部接口的轨迹混在一起蒸馏。排名依据是机制清晰度、对照实验完整性和可迁移的下一步实验，而不是 Tier 标签自动决定。</p>
+</section>
+
+<section id="sec-top3">
+<h2>Top 3 必读</h2>
+<ol>
+<li><a href="#p-2611.31427">Learning What vs. Learning How</a> — 任务能力与接口能力的分解，以及 rehearsal 与 GRPO 的对照。先看 Table 3 和 Table 4。</li>
+<li><a href="#p-2611.32131">Rethinking Reasoning Effort Training</a> — 压缩和分档不是同一种信号；稠密分档在智能体任务上会改作用点。先看第 3–5 节与 Table 2、7、8。</li>
+<li><a href="#p-2611.32037">Online Environment Repair</a> — 不要惩罚输出，去在线修补被利用的环境。虽然正式分级是 Tier B，但 Pass@8 从 21.7% 到 46.7%、hacking 从 36.9% 到 0.06%，足以进入必读。先看三个干预位点的定义和 Table 1。</li>
+</ol>
+</section>
+
+<section id="sec-top5">
+<h2>Top 5 · 深度分层不等于综合排名</h2>
+<ol>
+<li>Learning What vs. Learning How（Tier S，Agent / RL）</li>
+<li>Rethinking Reasoning Effort Training（Tier A，RL）</li>
+<li>Online Environment Repair（Tier B，Agent / RL）</li>
+<li>Cheap Memory Costs Future Compute / SAMR（Tier A，Video）</li>
+<li>FReDraft（Tier A，RL / 高效推理）</li>
+</ol>
+<p>Molt Forcing 留在正式名单里，但排在五名之后：诊断清楚，规模和墙钟证据不如前五篇。</p>
+</section>
+
+<section id="sec-rl">
+<h2>RL Highlights</h2>
+<p>今天 RL 的主线不是又一个新的 GRPO 变体，而是三种监督分别在干什么。What vs How 表明，全轨迹似然会把接口惯例和任务解法捆在一起更新，组内相对的二元优势则不容易把其他接口打穿。Reasoning Effort 把长度惩罚 RL 和多教师 OPD 对照后发现：稀疏奖励擅长压短，稠密状态目标擅长分档，但后者在未见过的智能体任务上不再表现为“每轮想得更长”，而变成“多走几轮”。FReDraft 给出另一种学分：草稿的回报是期望接受长度，权重沿着首次拒绝前缀分配。OER 则提醒，如果验证器可被利用，再精细的优势估计也只是在给捷径加权；应该修环境，而不是先改奖励。</p>
+</section>
+
+<section id="sec-agent">
+<h2>Agent / Multi-Agent Highlights</h2>
+<p>Agent 线上最重要的不是新工具，而是接口本身成为可训练、可被写坏的对象。What vs How 用 Harbor 把 SFT、RL 和评价放进同一沙箱，证明更弱的 harness 仍能解开最强 harness 解不开的任务，因此接口选择不是一维强弱。OER 处理的是编码智能体仓库里可被改写的测试、夹具和相等性钩子：策略学会的“接口”有时根本不是题目设计者以为的那份合约。二者合在一起看，会得到一个很实用的顺序：先确认环境合约是不是还在，再单独排练接口，最后才把跨来源的任务轨迹写进策略。Watchlist 里还有 RoboHarness-RL、TeamFlowRL、To Critic Or Not To Critic 和内部记忆投毒，但今天没有再为了凑数把它们升格。</p>
+</section>
+
+<section id="sec-video">
+<h2>Video / Efficient Video AI Highlights</h2>
+<p>视频线上的共同点是：持久缓存既是加速器，也是错误的存储器。SAMR 针对少步、早退之后变得昂贵的干净 KV 写入，用训练免费的分步重建把未刷新条目补回来，并老实地给出 DiT 时间与端到端 RGB 时间的落差。Molt Forcing 则说明，场景切换时 KV flush 几乎清不掉旧物体，必须重建场景历史并单独锚住主体 token。二者都不必训练骨干，也都和昨日 HorizonFlow 所代表的“把去噪步数打下去”形成接续：步数变少之后，该优化的是记忆怎么写、怎么丢。LRQ-Cache、Sol<sup>3</sup> 和 Residual Guidance 留在 Watchlist。</p>
+</section>
+<section id="sec-s">
+<h2>Tier S</h2>
+<article class="paper" data-id="2611.31427" data-tier="S" data-fulltext="yes" id="p-2611.31427">
+<h3>Learning What vs. Learning How: Decomposing Task and Interface Competence in Agentic Training</h3>
+<p class="meta">Chaeeun Lee (University of Edinburgh / AstraZeneca)；Hossein A. Rahmani (University College London)；Aryo Pradipta Gema (University of Edinburgh)；Kexin Xu (University of Oxford / AstraZeneca)；Emine Yilmaz (University College London)；Pasquale Minervini (University of Edinburgh / Miniml.AI)；T. Ian Simpson (University of Edinburgh)；Chen Jin、Amrutha Saseendran (AstraZeneca)。arXiv:<a href="https://arxiv.org/abs/2611.31427">2611.31427</a> · <a href="https://arxiv.org/pdf/2611.31427">PDF</a> · <a href="https://arxiv.org/html/2611.31427">HTML</a> · 代码：<a href="https://github.com/chaeeunlee-io/harness-competence">GitHub</a> · 数据：<a href="https://huggingface.co/datasets/chaeeunlee/harness-competence">Hugging Face</a>。cs.AI（交叉 cs.CL / cs.LG）。v1 标注 2026-11-24，列入周三 2026-11-25 新公告。全文（arXiv HTML + PDF）已读 Method / Experiments / Appendix 表格。</p>
+
+<div class="analysis" data-part="body">
+<h4>人话版：这篇论文到底干了什么？</h4>
+<p>智能体并不是把知识直接说出来就完成任务，它必须通过一套 harness——系统提示、动作格式、反馈回路和资源约束才能把能力执行出来。同一份策略换一套接口，成绩可以差一个数量级。本文把这种能力拆成两块：任务能力，即知道该做什么、如何推理；接口能力，即会不会用眼前这套 harness 把知识落地。关键发现是：这两件事不会自动一起学会。只在一个接口上做成功轨迹蒸馏，常常会把别的接口用崩：在 BFCL V3 多轮上，只练 native function calling（fc）会把 json 成功率从 33.5% 打到 0.1%。把三个训练接口的成功轨迹并起来做多接口蒸馏，可以把任务知识汇进同一个策略，但这些知识只有在推理时所用接口的能力被保住或补回来时才会兑现。作者提出 harness rehearsal：把标准答案写进指令，模型只需在目标接口上正确执行。单独的跨接口任务监督或单独排练几乎不涨点，两者合在一起却远大于部分之和——Qwen3-4B 在 BFCL-MT 的 fc 上，二者分别为 8.5% 和 32.5%，合在一起是 58.8%。最后，从同一检查点出发的 on-policy GRPO 比蒸馏更扛得住单接口训练，多接口蒸馏学到的接口能力也能在后续强化学习中保住。</p>
+
+<h4>Background &amp; Research Gap</h4>
+<p>过去一年，智能体训练的主流做法是：选一个 benchmark 自带的或社区常用的 harness，收集成功轨迹做 SFT，再在同一套接口上做可验证奖励的强化学习。Harbor、mini-swe-agent、Terminus、Aider、Goose 这类执行框架把系统提示、工具语法、上下文管理和预算打包成“环境的一部分”。评价时人们默认：只要任务相同、验证器相同，换一套动作格式不应改变模型“会不会这道题”。该默认并不稳。不同 harness 会改变可观察的反馈、合法动作空间，甚至改变模型需要维护的对话状态。模型可能已在某一接口上给出正确答案，换一种 JSON 或 XML 包装就无法提交。</p>
+<p>既有工作讨论过工具格式、提示敏感性和多环境泛化，但很少把“任务知识有没有学到”和“眼前这套接口会不会用”分开测量。如果二者始终绑在同一条成功轨迹里，蒸馏的梯度会同时改写解题步骤和接口惯例；一旦这两种监督冲突，研究者看到的只是总分涨跌，无法判断是知识没迁移，还是接口被训练写坏了。本文要回答的空隙正是：当策略在某个 harness 下失败，它缺的是任务知识，还是操作该接口的能力？若是后者，能否用几乎不含解题知识的排练数据，把跨接口学到的任务知识重新兑现出来？</p>
+
+<h4>Core Insight</h4>
+<p>任务能力可以在不同 harness 之间转移，但兑现与否取决于推理时所使用接口的能力。跨接口的成功演示并不等于会在目标接口上行动；对目标接口做“答案已给定、只需执行”的排练，本身也不等于学会解题。真正起作用的是二者的交互：先（或同时）把目标接口练会，再让来自其他接口的任务监督变得可执行。一个反直觉的推论是：单接口蒸馏造成的崩塌，主要是接口能力被干扰，而不是任务知识被擦掉。</p>
+</div>
+
+<div class="analysis method" data-part="method">
+<h4>Method Deep Dive：从 Input 到 Output</h4>
+<p>整条流水线共享同一套沙箱。输入是一道训练任务 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math></span>（指令、环境镜像、配置与验证器）和一个 harness <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>h</mi></mrow></math></span>。Harbor 把每次尝试放进隔离容器；策略 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C0;</mi></mrow></math></span> 与 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>h</mi></mrow></math></span> 交互，得到轨迹 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi><mi>&#x0007E;</mi><mi>&#x003C0;</mi><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><mi>x</mi><mo>&#x0002C;</mo><mi>h</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>。验证器给出分数 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>s</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02208;</mo><mo stretchy="false">[</mo><mn>0</mn><mo>&#x0002C;</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></span>，成功定义为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>r</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mrow><mn mathvariant="bold">1</mn></mrow><mo stretchy="false">[</mo><mi>s</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02265;</mo><mn>0.99</mn><mo stretchy="false">]</mo></mrow></math></span>。MedAgentBench、AppWorld 和 BFCL 的验证器本身已是二元；这一阈值主要作用于 Reasoning Gym。每个基准固定三个训练接口 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x0210B;</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></mrow></msub></mrow></math></span> 和一个训练期完全不用的持出接口 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>h</mi><mrow><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub></mrow></math></span>。SFT 收集、GRPO 采样和最终评价都走同一套代码与验证器。GRPO 通过 SkyRL 挂在 Harbor 的 rollout 循环上，逐步广播新权重以保持 on-policy。</p>
+<p>第一步是冻结策略的跨接口评价（Q1）。同一批任务分别穿过每个 harness，比较总成功率和“各接口独占解决的任务”。这一步不更新参数，只用来证明接口选择不是简单的强弱排序：整体更弱的接口仍然能解开最强接口解不开的题。</p>
+<p>第二步是多接口蒸馏（Q2）。对每个训练接口 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>h</mi></mrow></math></span>，用教师（主实验为 Qwen3-32B）采样轨迹，只保留 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>r</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>1</mn></mrow></math></span> 的样本，得到 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x1D4AF;</mi><mi>h</mi></msub></mrow></math></span>。学生（主实验为 Qwen3-4B）要么在单个 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x1D4AF;</mi><mi>h</mi></msub></mrow></math></span> 上做专家蒸馏，要么在并集 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x1D4AF;</mi><mrow><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">H</mi></mrow></mrow></msub><mo>&#x0003D;</mo><msub><mo>&#x022C3;</mo><mrow><mi>h</mi><mo>&#x02208;</mo><msub><mi>&#x0210B;</mi><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></mrow></msub></mrow></msub><msub><mi>&#x1D4AF;</mi><mi>h</mi></msub></mrow></math></span> 上做三接口蒸馏（记为 3H）。目标是全轨迹词级负对数似然</p>
+<p><div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>&#x02112;</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003C0;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo>&#x02212;</mo><msub><mi>&#x1D53C;</mi><mrow><mi>&#x003C4;</mi><mi>&#x0007E;</mi><mi>&#x1D4AF;</mi></mrow></msub><munder><mo>&#x02211;</mo><mi>t</mi></munder><mi>log</mi><mi>&#x003C0;</mi><mo stretchy="false">&#x00028;</mo><msub><mi>x</mi><mi>t</mi></msub><mo>&#x02223;</mo><msub><mi>x</mi><mrow><mo>&#x0003C;</mo><mi>t</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo></mrow></math></div></p>
+<p>其中损失覆盖序列化后的全部 token，包括 harness 特有的交互、工具回执和反馈。这一点很关键：蒸馏并不是只模仿最终答案，而是连接口惯例一起写进策略。相对初始策略，某接口上升称为转移，下降称为干扰。</p>
+<p>第三步是 harness rehearsal，用来把任务监督和接口监督拆开（Q3）。对每个训练题 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math></span> 及其标准答案 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>y</mi></mrow></math></span>，程序化地构造一条指令 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C1;</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>，把“需要调用哪些操作、中间结果里要取哪个字段、如何提交 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>y</mi></mrow></math></span>”直接写清楚，环境和验证器保持不变。模型不再需要决定解法，只需要在目标接口 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>h</mi></mrow></math></span> 上把规定步骤执行对。作者用已经训好的 3H 检查点作为演示策略，在 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>&#x003C1;</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mi>h</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 上采样并只保留验证通过的轨迹，得到排练集 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x0211B;</mi><mi>h</mi></msub></mrow></math></span>。训练仍用式 (1) 的全轨迹 SFT。一个被压缩过的 BFCL 多轮例子是：先调用 <code>ls(a=True)</code>，把返回列表里第一个不以点开头的条目记为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>V</mi></mrow></math></span>，再调用 <code>touch(file_name='rehearsal_&lt;V&gt;.txt')</code>。实验采用 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><mn>2</mn></mrow></math></span> 设计：是否加入跨接口任务蒸馏（任务监督，不含目标接口），是否加入目标接口排练（接口监督，尽量不含解题知识）。</p>
+<p>第四步是在蒸馏检查点上继续 GRPO（Q4）。对每个任务–接口对采样 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>G</mi><mo>&#x0003D;</mo><mn>6</mn></mrow></math></span> 条轨迹，组内优势为</p>
+<p><div class="math-display"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mover accent="true"><mrow><mi>A</mi></mrow><mo>&#x0005E;</mo></mover><mrow><mi>x</mi><mo>&#x0002C;</mo><mi>h</mi><mo>&#x0002C;</mo><mi>i</mi></mrow></msub><mo>&#x0003D;</mo><mi>r</mi><mo stretchy="false">&#x00028;</mo><msub><mi>&#x003C4;</mi><mrow><mi>x</mi><mo>&#x0002C;</mo><mi>h</mi><mo>&#x0002C;</mo><mi>i</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>G</mi></mrow></mfrac><munderover><mo>&#x02211;</mo><mrow><mi>j</mi><mo>&#x0003D;</mo><mn>1</mn></mrow><mrow><mi>G</mi></mrow></munderover><mi>r</mi><mo stretchy="false">&#x00028;</mo><msub><mi>&#x003C4;</mi><mrow><mi>x</mi><mo>&#x0002C;</mo><mi>h</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002E;</mo></mrow></math></div></p>
+<p>优势只加在策略自己生成的 token 上，不用标准差归一化（避免低方差组被放大），全对或全错的组恰好为零优势，也不加 KL 惩罚、不做额外奖励塑形。学习率 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mo>&#x000D7;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>6</mn></mrow></msup></mrow></math></span>，token-mean 损失，token-level TIS 裁剪阈为 2.0。训练被限制在 learning band：初始检查点在至少一个训练接口上对某题“有时成功、有时失败”的任务，从而把算力集中在已有能力的重塑，而不是冲击从未解开的题。单接口与三接口 GRPO 的总 rollout 次数对齐：MedAgentBench 均为 1,728 次（三接口 1 epoch，单接口 3 epoch），Reasoning Gym 均为 2,052 次。</p>
+<p>反直觉的设计有两处。第一，排练指令几乎把解法送进模型，按常理不该再提高“真解题”能力；恰恰因为解题知识被刻意抽掉，它才能充当纯接口监督，用来检验跨接口任务知识是不是还在。第二，GRPO 不用标准差归一化、不加 KL：在接口切换这种“组内奖励可能长期全 0 或全 1”的设置里，标准化会把偶然的一次成功放得过大，KL 则可能把策略钉在已经被单接口写歪的行为上。Agent 架构上，Harbor 是共享执行层，harness 才是真正的动作界面；智能体状态是带反馈的完整序列化轨迹，而不是隐式世界状态。长程问题主要体现在 BFCL 多轮、AppWorld 有状态环境和 MedAgentBench 的多步病历操作，而不是上千步控制。失败会沿接口惯例传播：一个接口上的成功蒸馏，可以把另一个接口的合法语法从策略里挤出去，使后续步骤还没开始就提交失败。</p>
+</div>
+
+<div class="analysis" data-part="body">
+<h4>关键公式 / Objective</h4>
+<p>需要同时记住三条目标。蒸馏和排练共享全轨迹似然（式 1），所以接口 token 与答案 token 被同等更新。排练数据的生成约束是 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>r</mi><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>1</mn></mrow></math></span> 且指令为 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C1;</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>，从而把“会不会做题”从“会不会走接口”里剥离。强化学习阶段的学分是任务–接口组内的均值中心化二元奖励，没有过程奖励，也没有把不同 harness 的轨迹混在同一个 advantage 组里——否则接口之间的难度差会被误写成优势。</p>
+
+<h4>可手工推演的 Toy Example</h4>
+<p>设想同一道“列出目录并创建一个不带点的文件”任务，有两种接口：fc（原生工具调用）和 json（把调用包成 JSON）。教师在 json 上给出了正确轨迹，学生若只模仿这些轨迹，会把“必须输出某个 JSON 键”写进策略；拿到 fc 界面时，它可能仍去拼 JSON，于是验证器直接判零。这时若只做 fc 排练：指令已经写明先 <code>ls</code> 再 <code>touch</code>，学生只需练习 fc 的参数传递，并不从排练里学会如何在没给答案时规划这两步。单独排练因此涨幅有限；但一旦学生重新会用 fc，先前在 json 轨迹里学到的“先列目录、再取第一个非点文件”就可以被重新调用。这正是 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><mn>2</mn></mrow></math></span> 里“单独都弱、合在一起变强”的最小图像。</p>
+
+<h4>Baseline Comparison</h4>
+<p>主要对照不是外部算法名，而是一套把监督来源拆开的内部基线。（1）Base：未训练的 Qwen3-4B，用于测量接口本身已有的能力差。（2）单接口专家蒸馏：最强的“常规做法”，也是干扰的主要来源；在目标接口上往往是最硬的对手。（3）跨接口任务蒸馏（Cross-task）：有解题演示、没有目标接口经验。（4）仅排练：有目标接口经验、几乎没有解题知识。（5）3H：三个训练接口的成功轨迹并集，是主推荐的蒸馏方案。（6）从 Base 或 3H 出发的单接口 / 三接口 GRPO，用来比较强化学习与蒸馏的干扰模式。全文最强、也最需要打败的参照，是“在目标接口上直接做专家蒸馏”（Target-task）以及 3H 本身。</p>
+</div>
+
+<div class="analysis results" data-part="results">
+<h4>Experiment Setup</h4>
+<p>四个基准覆盖不同交互形态：MedAgentBench（MAB，有状态医疗任务，按任务类型 80/20 划分）、Reasoning Gym（程序化生成的推理题，训练用 seed 0–1，评价用 seed 2，分 Easy/Hard）、AppWorld（官方 train / test_normal）和 BFCL V3 的单轮与多轮函数调用（按类别划分）。训练任务与测试任务全程不相交。每个基准三个训练接口、一个持出接口，例如 MAB 训练 parity / fc / Terminus-2、持出 xml；BFCL-MT 训练 fc / json / pycall、持出 xml；Reasoning Gym 训练 Terminus-2 / mini-swe / Goose、持出 Aider。Terminus-2、mini-swe-agent、Goose、Aider 是 Harbor 支持的现成框架；其余主要改变动作语法。主结果用 Qwen3-32B 教师、Qwen3-4B 学生；附录 D.4 用 Gemma-3-4B-it 复查。评价默认对每题 4 次尝试取均值，并报告任务级 95% bootstrap 区间。主蒸馏与排练对比在附录 E.1 用四个独立训练种子重复。</p>
+
+<h4>Results</h4>
+<p><strong>研究问题 1：单接口蒸馏是否只是“在本接口涨点”，还是会损坏其他接口？</strong> 设置即 Table 2 的专家与 3H 对照，评价三个训练接口，并在 Figure 5 / Appendix Table 18 看持出接口。观察如下。单接口蒸馏通常提高本接口：MAB 的 parity 从 36.1% 升到 45.8%，AppWorld 的 mini-swe 从 0.5% 升到 12.6%。但损坏是系统性的：BFCL-MT 上 fc-only 把 json 从 33.5% 打到 0.1%，远低于 Base；持出 xml 上，六组设置里有四组最差专家掉到 Base 的一半以下，fc-only 把 xml 从 20.6% 打到 2.5%。3H 在训练接口上往往达到或超过专家：BFCL-MT 的 json 升到 50.2%（json-only 为 47.7%，Base 为 33.5%）；AppWorld 上 3H 在三个接口都高于相应专家（code 19.5% 对 12.8%，fc 16.2% 对 1.7%，mini-swe 20.9% 对 12.6%）。对持出接口，3H 相对最差专家高出 10 到 66 个百分点，从而稳定缓解崩塌；但相对 Base 并不总涨——MAB 与 AppWorld 提高，BFCL 接近，Reasoning Gym 下降。解释：成功轨迹把任务与接口捆在一起更新，专精一个界面会改写动作惯例；多接口并集能对冲这种改写，却还不能保证在从未见过的界面上自动兑现任务知识。</p>
+<p><strong>研究问题 2：跨接口任务监督和目标接口排练是不是互补的，而这种互补会不会只是训练量变大？</strong> 设置是 Table 3 的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><mn>2</mn></mrow></math></span>，目标接口分别为 MAB 的 Terminus-2、Reasoning Gym 的 Terminus-2 和 BFCL-MT 的 fc。观察如下。在 BFCL-MT 的 fc 上，Cross-task 单独把成绩从 44.6% 降到 8.5%，Rehearsal 单独是 32.5%，二者合计 58.8%，接近 3H 的 59.0%，并超过目标接口专家的 55.2%。同一模式出现在 MAB（合计 34.4%，对照 2.0% 与 9.5%）和 Reasoning Gym（合计 37.0%，对照 19.8% 与 20.0%）。四个种子的均值（Table 21）仍然成立：BFCL-MT 的 fc 上三者为 12.8%、31.1% 和 56.8%。排练也会复制专家蒸馏的干扰：只在 fc 上排练时，json 从 33.5% 掉到 0.0%，pycall 从 28.2% 掉到 0.1%。预算对齐的 Table 24 排除了“只是样本更多”：把合计数据裁到与任务监督同样规模，BFCL-MT 仍是 56.2% 或 57.1%，而把任务监督重复到合计规模反而只有 7.8%。解释：弱转移并不是任务知识消失，而是目标接口能力被干扰或不足；一旦接口被排练回来，跨接口学到的解法才能被调用。Reasoning Gym 的排练甚至只是把给定答案誊写进去，本身几乎不含可迁移的解题内容，合在一起仍然从约 20% 升到 37.0%，把这一点衬得更清楚。</p>
+<p><strong>研究问题 3：在同一套任务与验证器上，单接口 GRPO 会不会重复蒸馏的跨接口崩塌？</strong> 设置为 Table 4：从 3H-SFT 或 Base 出发，单接口与三接口 GRPO 对齐总 rollout 次数，MAB 为 1,728，Reasoning Gym 为 2,052。观察是，从 3H 出发的单接口 GRPO 不会显著打低其他接口，包括只在 SFT 见过的接口和持出接口；MAB 上 parity 训练还把 fc 从 56.4% 带到 61.4%，Terminus-2 训练带到 66.9%。三接口 GRPO 在 MAB 上最强，parity / fc / 持出 xml 分别为 77.6%、85.7%、78.0%，Terminus-2 为 50.8%，与 Terminus-2 专家的 53.1% 相差不到三个点。从 Base 出发的 parity-only GRPO 把 parity 从 36.1% 拉到 59.8%，其余接口仍处于或高于 Base，没有出现 fc-only 蒸馏把 json 打到 0.1% 那种崩塌。Reasoning Gym 上单接口与三接口更为接近，持出 Aider 也没有被打穿。解释：组内相对的二元优势只在当前任务–接口组里比较，不会像全轨迹似然那样把某一接口的语法写进所有条件；因此多接口蒸馏打下的接口能力，可以在后续单接口 RL 中被保留。</p>
+</div>
+
+<div class="analysis" data-part="body">
+<h4>Table / Figure Reading</h4>
+<div class="scroll">
+<table>
+<caption>Table 3 核心（Qwen3-4B，目标接口行；均值成功率和 95% CI）。完整表见原文。</caption>
+<thead><tr><th>设置（目标接口）</th><th>Base</th><th>Cross-task</th><th>Rehearsal</th><th>二者合计</th><th>Target-task</th><th>3H</th></tr></thead>
+<tbody>
+<tr><td>MAB / Terminus-2</td><td>3.7±2.3</td><td>2.0±1.6</td><td>9.5±5.7</td><td>34.4±8.2</td><td>21.7±6.4</td><td>16.9±5.9</td></tr>
+<tr><td>RG Hard / Terminus-2</td><td>18.0±5.5</td><td>19.8±5.9</td><td>20.0±5.7</td><td>37.0±7.1</td><td>54.7±7.8</td><td>55.3±7.9</td></tr>
+<tr><td>BFCL-MT / fc</td><td>44.6±5.9</td><td>8.5±2.8</td><td>32.5±5.1</td><td>58.8±5.7</td><td>55.2±5.3</td><td>59.0±5.5</td></tr>
+</tbody>
+</table>
+</div>
+<p>读 Table 3 不要只看合计列绝对值。BFCL 上合计几乎追上 3H，说明“目标接口经验 + 其他接口的任务演示”已接近三接口都给真任务轨迹的方案；MAB 的 Terminus-2 基础极弱（Base 仅 3.7%），合计 34.4% 反而高于 3H 的 16.9% 和 Target-task 的 21.7%，因为直接在弱接口上做任务蒸馏，并不等于先把接口走顺。Figure 4 补充 Q1：Qwen3-4B 在 MAB 上不同接口的均值成功大约从 4% 到 36%，更弱接口仍贡献了全部已解任务中的 17%（BFCL-MT 为 11%，RG 为 5%）。</p>
+<div class="scroll">
+<table>
+<caption>Table 4 节选：MAB 上从 3H-SFT 或 Base 继续 GRPO（成功%，xml 为持出接口）。</caption>
+<thead><tr><th>检查点</th><th>parity</th><th>Terminus-2</th><th>fc</th><th>xml（持出）</th></tr></thead>
+<tbody>
+<tr><td>Base</td><td>36.1±9.2</td><td>5.0±2.8</td><td>24.3±8.4</td><td>50.1±11.0</td></tr>
+<tr><td>Base + parity-only GRPO</td><td>59.8±10.9</td><td>5.0±3.2</td><td>25.1±8.1</td><td>57.2±11.5</td></tr>
+<tr><td>3H SFT</td><td>68.3±10.1</td><td>27.3±7.2</td><td>56.4±7.2</td><td>71.8±9.1</td></tr>
+<tr><td>+ parity-only GRPO</td><td>74.7±9.2</td><td>31.9±7.6</td><td>61.4±6.7</td><td>72.5±9.1</td></tr>
+<tr><td>+ Terminus-2-only GRPO</td><td>70.9±9.6</td><td>53.1±10.4</td><td>66.9±7.2</td><td>69.5±9.6</td></tr>
+<tr><td>+ 3H GRPO</td><td>77.6±8.4</td><td>50.8±9.7</td><td>85.7±6.2</td><td>78.0±8.1</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Ablation</h4>
+<p>最关键的消融其实就是 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><mn>2</mn></mrow></math></span> 本身，再加上预算对齐（Table 24）和四种子重复（Table 21）。把合计数据裁到任务监督同等规模后，增益几乎不降，说明不是样本数在说话。附录还检查了失败排练轨迹、非目标接口排练和更强的 32B 演示器：当排练本身已经把目标接口恢复到接近上限时，再加跨接口任务监督的空间会变小，这与“接口已够用、任务知识不是瓶颈”的解释一致。Gemma-3-4B-it 的复查（Table 19–20）表明 3H 在训练接口上仍然最强，例如 Reasoning Gym Easy 的 mini-swe 从 Base 的 0.0% 升到 32.0%；但持出 Aider 上 3H 掉到 0.0%，说明持出接口的正迁移对模型族更敏感，不能把 Qwen 上的持出结果当成普遍规律。</p>
+
+<h4>Claim vs Evidence</h4>
+<p><strong>Authors Claim：</strong>任务能力与接口能力可分离；二者单独监督都不够，合在一起才能兑现跨接口知识；单接口蒸馏会干扰其他接口；on-policy RL 对这种干扰更鲁棒，且多接口能力能在后续 RL 中保持。</p>
+<p><strong>Experiments Actually Show：</strong>在四个基准、以 Qwen3-4B 为主的设置里，Table 2–4 和四种子均值支持上述四个陈述；预算对齐表明 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><mn>2</mn></mrow></math></span> 的交互不是数据量伪影；GRPO 对照在 MAB 上尤其清楚，Reasoning Gym 上单接口与三接口 GRPO 更为接近。</p>
+<p><strong>What Is Not Yet Proven：</strong>接口能力还没有一个独立于任务成功率的直接度量，排练指令仍可能泄漏少量任务结构（附录 E.6 讨论了泄漏，但主文仍用成功率作代理）；持出接口的正迁移并不稳定，Gemma 上甚至出现持出崩溃；RL 只做了 MAB 与 Reasoning Gym，并且被限制在 learning band，因此不能外推到“从零解开新任务”；也尚未证明在真实开放工具环境、非二元验证器或更长的上千步地平线上结论仍成立。</p>
+
+<h4>Contribution</h4>
+<p>这是一篇以机制分解为主、算法为辅的实证论文。贡献有三：把任务能力与接口能力写成可操作的实验构造；提出几乎不含解题知识的 harness rehearsal；用对照表明蒸馏与 on-policy RL 的跨接口干扰不同。代码和数据已公开。</p>
+
+<h4>Limitation / Failure Case</h4>
+<p>失败边界如下。第一，单接口排练会像专家蒸馏一样摧毁其他接口，不能把它当成“免费的接口补丁”。第二，3H 并不能保证持出接口超过 Base，Gemma 在 Reasoning Gym 持出 Aider 上掉到 0.0%。第三，当目标接口的任务专家已经很强时（例如 RG 上 Target-task 为 54.7%、3H 为 55.3%），排练组合的 37.0% 仍明显落后，说明排练补的是接口而不是更强的解题策略。第四，GRPO 被限制在部分成功的任务带，且不加 KL、不做过程学分，对完全不会的新任务帮助有限。第五，结论绑定 Harbor 中的若干现成 harness 以及二元或近二元验证器。</p>
+
+<h4>Research Value</h4>
+<p>对 Agent 训练，它把一个常被混为一谈的现象拆开：分数下降不一定是任务学废了，而可能是接口被写歪。对 RL，它提供了一条清晰对照——同样是单接口数据，SFT 会干扰，组内相对策略梯度则不容易把其他接口打穿。对要把同一基座接到多种工具协议或多种 IDE / 浏览器 harness 的工作，它给出了可复用的诊断：先看跨接口任务重叠，再用排练探测接口瓶颈，最后才决定是否把全部接口轨迹混在一起蒸馏。</p>
+
+<h4>Migration / Research Transfer</h4>
+<p>可证伪假设：在一个未见过的智能体基准上，若先用“答案已给定”的排练恢复目标接口，再注入其他接口或教师提供的任务轨迹，目标接口成功率的增益将显著大于两种数据单独使用之和，且该增益在把合计样本数裁到与任务监督相同之后仍然存在。最小可行实验如下。模型用 Qwen3-4B 或同等规模开源工具模型；环境取 BFCL-MT 之外的一个多轮工具基准，或昨日 SMB Bench 这类延迟后果环境中的一个固定 harness；基线包括目标接口专家 SFT、跨接口（或跨任务）成功轨迹 SFT、仅排练、以及二者合计，训练步数与样本数对齐；指标是目标接口成功率、其他接口或持出接口的成功率（用于监测干扰），以及把合计数据下采样后的重复实验。若合计不再明显优于两个单因素，说明交互效应依赖于本文选用的 harness 家族或验证器形态，假设被推翻。也可先排练接口再做 on-policy RL，检验干扰是否继续下降。</p>
+
+<h4>五句话总结</h4>
+<p>智能体的失败，常常是不会用眼前接口，而不是不会做题。单接口成功蒸馏会把其他接口写崩，多接口蒸馏能汇集任务知识，却仍要接口能力才能兑现。Harness rehearsal 把解法写进指令，只练执行，是把两种监督拆开的干净刀子。跨接口任务数据和接口排练单独都弱，合在一起才能接近甚至超过在目标接口上直接做任务蒸馏。On-policy GRPO 比蒸馏更不怕单接口训练，但持出接口的正迁移对模型族仍不稳定。</p>
+</div>
+</article>
+</section>
+<section id="sec-a">
+<h2>Tier A</h2>
+<article class="paper" data-id="2611.32131" data-tier="A" data-fulltext="yes" id="p-2611.32131">
+<details open>
+<summary>Tier A · Rethinking Reasoning Effort Training in Large Language Models: On-Policy Distillation or Reinforcement Learning?</summary>
+<h3>Rethinking Reasoning Effort Training in Large Language Models: On-Policy Distillation or Reinforcement Learning?</h3>
+<p class="meta">Tianliang Lv、Hao Li（共同一作）；Xinchao Xu、Zhengkun Zhang、Ju Huo（通讯）。ERNIE Team, Baidu。arXiv:<a href="https://arxiv.org/abs/2611.32131">2611.32131</a> · <a href="https://arxiv.org/pdf/2611.32131">PDF</a> · <a href="https://arxiv.org/html/2611.32131">HTML</a>。技术报告，cs.LG。文中给出模型页 <a href="https://huggingface.co/baidu/ERNIE-5.5-Flash-Preview">ERNIE-5.5-Flash-Preview</a>。v1 标注 2026-11-24，列入周三新公告。全文已读。</p>
+<div class="analysis" data-part="body">
+<h4>人话版：这篇论文到底干了什么？</h4>
+<p>这篇技术报告要回答的不是“要不要训练推理模型思考”，而是：想把思考压短，和想在同一条策略里分出高、中、低三档思考预算，靠的是不是同一种监督信号。作者把带长度惩罚的强化学习（稀疏、序列级奖励）和多教师 on-policy distillation（在每个访问过的状态下给出档位专用的下一 token 目标，包括何时停止）并排放在一起。主要结论很硬：长度惩罚 RL 可以把单一策略压短，在 AIME25 上把思考长度减少 70% 且不掉点，但把多档放进同一次 RL 会塌档；多教师 OPD 能把档位分开，在 33 个基准上，low 和 medium 比 high 少用 58% 和 43% 的思考 token，high 相对参考策略还高 3.1 分。他们把原因归结为：序列级奖励分不清“这一档该有的行为”和“各档共享的行为”，而 OPD 在每个状态都提供档位目标。顺着这条分析，他们给出两个可落地的配方：只需在 high 档上加一个 token 级 KL 锚，就能在同一段 RL 里学出分开的档位；再用自然语言预算指令引导，这种分开从训练一开始就会出现，并在匹配思考长度时与多教师 OPD 相当。最后的限制同样重要：稠密目标建起来的分档，只在训练见过的状态上成立，迁到未见过的智能体任务时，努力程度主要改的是交互轮数而不是每轮思考长度；相反，序列级奖励带来的压缩，却可以迁过去。</p>
+<h4>Background &amp; Gap 与 Core Insight</h4>
+<p>推理模型已经能按“高/低努力”切换，但工业界真正缺的是：同一套权重里稳定地放出短、中、长三种思考，并且这种控制在智能体任务上还要用得上。只优化正确率的 RLVR 往往会把思考写长；加长度惩罚能压短，却不一定能同时保住高档。OPD 用教师的下一 token 分布做稠密监督，看起来更适合“在每个状态下告诉学生这一档该怎么走”。缺口在于，很少有工作把压缩和可控分档当成两种被不同信号支配的现象，更少把这种控制拿到训练分布之外的智能体任务上检验。</p>
+<p>核心洞察是：压缩可以由稀疏的序列级奖励完成，分档需要稠密的、档位专用的状态级目标；而在未见过的智能体任务上，努力控制的作用点会从“每轮想多久”变成“交互多少轮”，因此在单轮推理状态上学会的分档不能被假定会自动迁移。</p>
+<h4>Method 与 RL Formulation</h4>
+<p>输入是带可选努力指令的提示，策略生成思考再给出答案。稀疏路径是 RLVR：序列级可验证奖励，加上长度惩罚或分阶段长度帽，用来把单一策略逐步压短。稠密路径是多教师 OPD：先用单策略压缩得到各档教师 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003C0;</mi><mrow><msub><mi>T</mi><mi>m</mi></msub></mrow></msub></mrow></math></span>，再在学生自己采样的轨迹上，对每个状态蒸馏该档教师的下一 token 分布，包括结束思考的决定。Dense-Anchor RL 则把二者接起来：在同一段 RL 里训练多档，但只对 high 档加 token 级 KL 锚，用来防止高档被长度压力拉垮；Prompt-Guided Dense-Anchor RL 进一步在提示里写入自然语言努力指令，让分档从训练初期就按指令出现。评价分两套：DeepSeek-V4-Flash 的 24 个基准，以及 GLM-4.5-Air 的 33 个基准，二者共享 24 个任务，覆盖通用、推理、代码和智能体。状态是已生成的思考前缀，动作是下一 token，优势来自序列级奖励，KL 只作为高档锚而不一定是全局惩罚。</p>
+<h4>Experiment Setup 与两组结果</h4>
+<p>第一组实验问：稀疏信号能不能压短，以及能不能同时分档。Qwen3-8B 上的分阶段长度帽阶梯（Table 4）显示，AIME25（训练内）从 86.5 分 / 9.2k token 走到 4k 帽时变成 76.7 / 2.6k，已经开始掉点；更贴近摘要所引的 70% 压缩、不掉点，出现在更大模型的 Table 5：AIME25 从 92.4 / 15.4k 走到 10k 帽检查点的 93.0 / 4.6k，思考长度大约剩 30%，分数还略升。但把多档放进同一次稀疏 RL 时，档位会塌。第二组实验问：稠密监督能否分开档位，以及这种分开能否迁到智能体任务。Table 6 的多教师 OPD 在 GLM-4.5-Air 的 33 基准上给出分档，high 相对参考策略提升 3.1 分，low / medium 的思考 token 比 high 少 58% / 43%。Table 8 把 DeepSeek-V4-Flash 上 prompt-guided RL（D3–D5）与多教师 OPD（D6–D8）放在同一 24 基准总量尺上：参考 D0 为 67.80，OPD 的 high/medium/low 为 67.04 / 66.38 / 64.36，prompt-guided 为 66.76 / 66.12 / 63.89，在匹配思考长度时二者接近。迁移上，Table 7 显示：只在单轮推理上做稀疏压缩的 medium 策略，在九个智能体任务宏平均上从 78.7 / 7.7k 走到 79.7 / 4.4k（思考减少 43%），低档减少 61%；但 Table 2 对 DeepSeek-V4-Flash 多档轨迹的统计说明，未见过的智能体任务里，努力主要改轮数（low 78.2 轮对 high 91.6 轮），每轮思考 token 几乎不变（约 59–62）。最强基线是多教师 OPD 本身，其次是带长度惩罚的单策略 RL。</p>
+<div class="scroll">
+<table>
+<caption>Table 8 节选：DeepSeek-V4-Flash 在 24 个共享基准上的总量与分项（D0 参考；D3–D5 为 prompt-guided RL 的高/中/低；D6–D8 为多教师 OPD）。</caption>
+<thead><tr><th>设置</th><th>Total</th><th>General (4)</th><th>Reasoning (6)</th><th>Code (5)</th><th>Agent (9)</th></tr></thead>
+<tbody>
+<tr><td>D0 参考</td><td>67.80</td><td>70.81</td><td>64.40</td><td>63.54</td><td>71.09</td></tr>
+<tr><td>D3 PG-RL high</td><td>66.76</td><td>70.16</td><td>65.25</td><td>58.71</td><td>70.72</td></tr>
+<tr><td>D5 PG-RL low</td><td>63.89</td><td>70.03</td><td>58.12</td><td>54.66</td><td>70.14</td></tr>
+<tr><td>D6 OPD high</td><td>67.04</td><td>68.92</td><td>63.76</td><td>62.29</td><td>71.04</td></tr>
+<tr><td>D8 OPD low</td><td>64.36</td><td>67.45</td><td>57.34</td><td>58.76</td><td>70.77</td></tr>
+</tbody>
+</table>
+</div>
+<h4>Contribution、Limitation、价值与迁移</h4>
+<p>贡献是把“压缩”和“分档”写成由不同监督信号支配的两种现象，并给出可在单阶段 RL 里工作的稠密锚点配方。局限也很明确：这是技术报告，训练细节与教师构造高度依赖其内部模型栈；稠密分档在未见智能体任务上不能保持“每轮思考更长”的机制；部分基准使用 LLM judge，跨模型比较需要谨慎。它与 11-21 的 Budget Internalization 形成碰撞：二者都关心推理预算，但本文强调信号密度和迁移失败的位置。</p>
+<p>最小迁移实验：在开源工具模型上，用自然语言努力指令加 high 档 token 级 KL 锚做一段 GRPO，训练只在单轮数学上，然后同时报告 AIME 类任务的思考长度–准确率曲线，以及 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>&#x003C4;</mi><mn>2</mn></msup></mrow></math></span>-Bench / Terminal-Bench 上的轮数、每轮思考长度和成功率。若智能体任务上档位只改变轮数、不改变每轮长度，则重复了本文的迁移失败；若能用轮次级稠密锚把轮数也变成可控轴，则构成对本文缺口的一次可证伪推进。Worth Deep Reading: YES。任何做推理预算或把思考模型接到智能体上的人，都应看第 3–5 节和 Table 2、7、8。</p>
+</div>
+</details>
+</article>
+
+<article class="paper" data-id="2611.31892" data-tier="A" data-fulltext="yes" id="p-2611.31892">
+<details open>
+<summary>Tier A · Cheap Memory Costs Future Compute: Co-Designing Persistent KV and GPU Execution for Efficient Streaming Video Diffusion</summary>
+<h3>Cheap Memory Costs Future Compute: Co-Designing Persistent KV and GPU Execution for Efficient Streaming Video Diffusion</h3>
+<p class="meta">Jian Yang、Zhizhuo Kou、Qiyuan Zhu、Sirui Han、Yike Guo（香港科技大学）；CHEN Han（新加坡国立大学）。arXiv:<a href="https://arxiv.org/abs/2611.31892">2611.31892</a> · <a href="https://arxiv.org/pdf/2611.31892">PDF</a> · <a href="https://arxiv.org/html/2611.31892">HTML</a>。cs.AI，未见到官方代码仓。v1 标注 2026-11-24，列入周三新公告。全文已读。</p>
+<div class="analysis" data-part="body">
+<h4>人话版：这篇论文到底干了什么？</h4>
+<p>块因果视频扩散按块生成长视频，并靠一份持久 KV 缓存给后续块做条件。每一块去噪结束后，还要再做一次 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math></span> 的无噪声前向，把“干净 KV”写进缓存。一旦蒸馏和投机早退把去噪本身做便宜了，这次干净 KV 更新就会变成运行时的大头。把过期 KV 直接复用，更新是变短了，但后面的块会因为条件被污染而多走去噪步，省下的计算在下游又冒出来。SAMR（Step-Aware Memory Reconstruction）是一种训练免费、针对冻结因果视频 DiT 的方法：只刷新缓存里的一部分 token，其余不跑 DiT，而是重建。关键观察是，去掉旋转位置相位之后，与运动对齐的历史 KV，和某个 token 在退出步上持有的 in-flight KV，是干净 KV 的两组互补估计。在 48 秒 LongLive-1.3B、765 帧、<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>480</mn><mo>&#x000D7;</mo><mn>832</mn></mrow></math></span> 的主实验上，相对完整刷新，SAMR 把 DiT 时间从 34.71 秒降到 27.47 秒（1.26×，降 20.9%），主计算量从 4041 TFLOPs 降到 2799（降 30.7%），并把相对 Eventful reuse 的末段 PSNR 提高 1.61 dB。端到端按序输出 RGB 时，加速会收窄到 1.11×（70.22 秒到 63.23 秒），这说明理论 FLOPs 和墙钟并不是一回事。</p>
+<h4>Background、Insight 与 Method</h4>
+<p>流式视频生成已经用上少步蒸馏、早退和 KV 复用，但少有工作把“写缓存”本身当成与去噪闭环的代价一起优化。HorizonFlow 一类少步蒸馏会让这个矛盾更尖：去噪越便宜，干净 KV 写入越显眼。旧方法要么每块完整写缓存，要么按某种事件分数复用过期条目。本文把总代价写成各块去噪代价与缓存更新代价之和，指出复用如果抬高了后续去噪步数，就是在用未来计算偿还今天的记忆节省。</p>
+<p>方法分成三步。先做 Step-Aware Pre-RoPE Reconstruction：在去掉 RoPE 相位的空间里，把历史 KV 和 in-flight KV 做成互补估计，再用分层仿射把重建结果写回。接着用 Readout-Guided Refresh Selection 决定刷新哪些 token、重建哪些 token，主实验刷新约 24.7%、重建约 45.2%。最后在硬件上把路由和重建写成对齐的 Triton 核，把 Python 路由从约 765 ms 降到 90 ms（Table 4）。全程不训练骨干。反直觉之处在于：要省的不是去噪，而是那次看起来“只是写记忆”的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math></span> 前向；并且重建必须发生在去 RoPE 之后，否则位置相位会把两路估计错位。</p>
+<h4>实验、效率表与两组结果</h4>
+<p>主设置是冻结 LongLive-1.3B，生成 48 秒、64 块、765 帧、<span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>480</mn><mo>&#x000D7;</mo><mn>832</mn></mrow></math></span> 视频，AMD GPU（各 80 CU），所有方法共享同一套已加速引擎（含投机早退和 U 形链式 KV，见表 8 的 L1–L2）。质量看与同种子 Full memory 在最后 12 秒的 PSNR、饱和、闪烁和运动漂移，以及相对早期帧和文本的 CLIP。最强可比较基线是 Eventful reuse（同样刷新约 24.6% 但不重建），其次是完整刷新和 Calibrated assimilation。</p>
+<div class="scroll">
+<table>
+<caption>Video Efficiency Breakdown（主实验 48 秒 LongLive-1.3B，Table 1 / Table 6）。未报告项据实填写。</caption>
+<thead><tr><th>Metric</th><th>Baseline（Full memory）</th><th>Proposed（SAMR）</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>Frames</td><td>765（48 s）</td><td>765（48 s）</td><td>—</td></tr>
+<tr><td>Visual Tokens</td><td>Not Reported</td><td>Not Reported</td><td>—</td></tr>
+<tr><td>FLOPs</td><td>4041 TFLOPs / 视频</td><td>2799 TFLOPs / 视频</td><td>−30.7%</td></tr>
+<tr><td>Latency（DiT）</td><td>34.71 s</td><td>27.47 s</td><td>1.26×（−20.9%）</td></tr>
+<tr><td>Latency（端到端串行 RGB）</td><td>70.22 s</td><td>63.23 s</td><td>1.11×</td></tr>
+<tr><td>Throughput / FPS</td><td>10.96</td><td>12.14（串行）/ 13.03（async）/ 20.25（2-GPU P2P）</td><td>+1.18 至 +9.29 FPS</td></tr>
+<tr><td>GPU Memory</td><td>Not Reported</td><td>Not Reported</td><td>—</td></tr>
+<tr><td>Accuracy / Quality</td><td>Eventful Q4 PSNR 13.87 dB</td><td>15.47 dB</td><td>+1.61 dB；VidProM-16 上 +1.14 dB</td></tr>
+</tbody>
+</table>
+</div>
+<p>第一组实验是闭环效率与 48 秒质量（Table 1、5）。在 Main 15×3 的 45 条配对 rollout 上，SAMR 相对 Eventful reuse 平均少 2.66 秒 DiT 时间（14/15 条提示更好），末段 PSNR 平均高 1.61 dB（15/15 更好）；饱和、闪烁、运动漂移的区间穿过零，不能宣称这些漂移指标被稳定改善。Held-out VidProM-16 上方向一致。第二组看泛化与消融：把同一套重建零样本转到 Self-Forcing-DMD-1.3B，能把 reuse 造成的步数膨胀从 2.47 降到 2.30 steps/token，并改善晚段 PSNR；一次训练免费的域内校准能把零样本下降的诊断分从 89.62 拉回 91.10。Table 3 显示只用历史或只用 in-flight 都会掉 PSNR（相对参考估计 −0.961 和 −0.652 dB），说明两路互补不是摆设。必须强调：相对 Full memory 的 1.26× 是 DiT 时间，端到端串行 RGB 只有 1.11×，2-GPU P2P 才到 1.86×，且 GPU·s 从 70.2 升到 75.6——墙钟加速和单卡算力账本并不相同。Table 4 的累计叠加也说明路由实现是墙钟的一部分：同样的 readout 计划，Python 路由约 765 ms，换成 Triton 后路由降到 90 ms，DiT 时间从 28.18 秒降到 27.47 秒；若把刷新预算压到 10.9%，PSNR 会从 15.47 dB 掉到 14.91 dB。角色不对称量化（Table 7）进一步显示，把 KV 更新量化到 FP8 仍能保住 19.14 dB，而量化去噪路径会掉到 15.57 dB，说明“写记忆”和“去噪”对精度的敏感度并不一样。</p>
+<h4>贡献、限制、价值与迁移</h4>
+<p>贡献是把流式视频里“写干净 KV”的代价显式化，并用训练免费的分步重建把刷新和复用之间的质量–速度缺口补上。限制包括：主结果依赖特定 AMD 栈和已经加速过的引擎；GPU 内存未被报告；部分漂移指标不显著；与完整刷新相比的端到端加速明显小于 FLOPs 比。对视频加速研究，它提醒：少步蒸馏之后，瓶颈会转移到缓存写入，只报理论 FLOPs 会高估用户能感知的加速。</p>
+<p>最小实验：在开源块因果视频 DiT 上复现“只刷新 25% + 重建其余”，同时记录 DiT 时间、端到端时间和末段 PSNR，检验 1.26× 与 1.11× 的落差是否再现。Worth Deep Reading: YES，尤其是第 3 节和第 5.2 节，以及 Table 1 与 Table 6 的对照。</p>
+</div>
+</details>
+</article>
+
+<article class="paper" data-id="2611.31256" data-tier="A" data-fulltext="yes" id="p-2611.31256">
+<details open>
+<summary>Tier A · Directly Maximizing On-policy Expected Accepted Length for Speculative Decoding</summary>
+<h3>Directly Maximizing On-policy Expected Accepted Length for Speculative Decoding</h3>
+<p class="meta">Ziying Zhang（清华大学电子工程系 / 中关村学院）；Yaqing Wang（中关村学院 / 中国人民大学高瓴人工智能学院）；Yong Liu（清华大学 / 中关村学院）；Quanming Yao（清华大学 / BIMSA）。arXiv:<a href="https://arxiv.org/abs/2611.31256">2611.31256</a> · <a href="https://arxiv.org/pdf/2611.31256">PDF</a> · <a href="https://arxiv.org/html/2611.31256">HTML</a>。cs.CL（交叉 cs.AI）。未见独立官方仓库，实验基于 DFlash 草稿架构并在 SGLang 上测吞吐。v1 列入周三新公告。全文已读。</p>
+<div class="analysis" data-part="body">
+<h4>人话版：这篇论文到底干了什么？</h4>
+<p>投机解码用轻量草稿模型提出一段 token，再由目标模型并行验证。一旦某个位置被拒，后边的草稿全部作废。现有草稿训练大多在做 token 级分布对齐，并不直接优化“这段草稿能被连续接受多长”。FReDraft 把目标改成：对当前草稿模型自己采样出的草稿，直接最大化期望接受长度。这个目标把首次拒绝截断写进学分，形成前缀感知的信用分配——每个 token 的权重，既取决于自己被接受，也取决于它为后面 token 保住前缀。为了降低方差，作者用目标模型的词表分布，把 token 级接受率解析地边际化；再把一部分分布级梯度改写成对“草稿高估了概率的已采样 token”的显式惩罚，同时保持期望梯度不变。在 Qwen3-4B / 8B 上，FReDraft 的平均加速和平均接受长度都超过包括 Draft-OPD 在内的强基线：4B 上平均加速 3.79×、平均接受长度 6.94，Draft-OPD 为 3.45× / 6.23；8B 上为 5.09× / 7.08，对 Draft-OPD 的 4.75× / 6.34。</p>
+<h4>Background、Insight 与 Method</h4>
+<p>草稿训练从 SFT、D-PACE、LK-Losses 走到 Draft-OPD，目标逐渐从离策略交叉熵变成 on-policy 的 KL 对齐，但学分大多仍是 token 级或均匀的。验证规则却是前缀性的：第 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi></mrow></math></span> 个 token 只有在前 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x02212;</mo><mn>1</mn></mrow></math></span> 个都被接受时才有机会被看。因此，对一个稍后才会被扔掉的 token 做很强的分布对齐，对墙钟加速的贡献可能为零。FReDraft 的洞察是：训练目标应当就是验证器真正在乎的期望接受长度，并且要用目标分布把未采样 token 的接受率也边际进去，否则 on-policy 梯度会很吵。</p>
+<p>流水线是：给定上下文，草稿模型 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>q</mi><mi>&#x003B8;</mi></msub></mrow></math></span> 采样长度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi><mo>&#x0003D;</mo><mn>15</mn></mrow></math></span> 的草稿 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>y</mi></mrow></math></span>，目标模型给出验证用的分布 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi></mrow></math></span>。目标为期望接受长度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mover><mrow><mi>&#x003C4;</mi></mrow><mo stretchy="true">&#x000AF;</mo></mover><mi>&#x003B8;</mi></msub></mrow></math></span>。命题表明，该目标诱导前缀感知学分。优化时，解析边际化减少对终端 token 采样的依赖；过采样惩罚系数 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B2;</mi><mo>&#x0003D;</mo><mn>0.3</mn></mrow></math></span>，把部分梯度转到被高估的已采样 token 上。草稿骨干是 5 层 DFlash，训练 8 个 epoch，学习率 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>4</mn></mrow></msup></mrow></math></span>，保留目标分布的 top-16 支撑。这不是标准 RLVR，但可以按强化学习来读：状态是前缀，动作是下一草稿 token，回报是该草稿最终被接受的长度，优势由前缀权重给出，没有 KL 正则，而是用惩罚项约束过高估计。</p>
+<h4>实验与主要数字</h4>
+<p>评价覆盖 GSM8K、MATH-500、AIME25、MBPP、HumanEval、SWE-Lite 和 MT-Bench，目标模型为 Qwen3-4B 和 8B，温度 0 为主，并补充 thinking mode 与 SGLang 吞吐。最强基线是 Draft-OPD，其次是 LK-Losses 和 D-PACE，EAGLE-3 明显更弱。</p>
+<p>第一组是整体加速（Table 2）。Qwen3-4B 上 FReDraft 在 MATH-500 达到 5.13×，AIME25 为 4.43×，平均 3.79× / <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi><mo>&#x0003D;</mo><mn>6.94</mn></mrow></math></span>，全面高于 Draft-OPD 的 3.45× / 6.23。8B 上平均 5.09× / 7.08，对 Draft-OPD 的 4.75× / 6.34。Thinking mode 下方向不变：4B 平均 4.34× / 7.91，8B 更高。第二组是消融和相关性（Table 3、7）。去掉边际化后，AIME25 加速从 4.43× 掉到 3.12×，HumanEval 从 3.96× 掉到 3.20×，说明解析边际化不是实现细节。去掉惩罚或改成均匀学分、KL 变体，都会弱于完整方法。Table 7 显示，期望接受长度与 query 级加速的 Spearman 相关在汇总后达到 0.96，明显高于平均接受率的 0.69，这是在为自己的目标函数辩护。SGLang 上（Table 6），并发 1 到 32 时 FReDraft 的吞吐仍高于 Draft-OPD，例如 4B 的 AIME25 在并发 32 时为 6830 对 6703 tok/s。训练效率方面，作者报告该方法比纯分布对齐收敛更快，这与“目标直接对准验证长度、并用边际化降方差”的设计一致。一个需要记住的失败边界是：平均接受率并不是好的代理目标——它与加速的相关只有 0.69，而期望接受长度达到 0.96；如果继续用 token 级接受率或均匀学分训练草稿，就可能在指标上看起来更“对齐”，却在首次拒绝之后浪费大量计算。SWE-Lite 上的加速也明显低于 MATH-500（4B 上 2.43× 对 5.13×），说明仓库级编码上下文里草稿前缀更难被连续接受，方法并不是在所有域上都给出同样的倍数。</p>
+<div class="scroll">
+<table>
+<caption>Table 2 节选：温度 0 时的平均加速比与平均接受长度 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span>。</caption>
+<thead><tr><th>模型</th><th>方法</th><th>平均加速</th><th>平均 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span></th></tr></thead>
+<tbody>
+<tr><td>Qwen3-4B</td><td>Draft-OPD</td><td>3.45×</td><td>6.23</td></tr>
+<tr><td>Qwen3-4B</td><td>FReDraft</td><td>3.79×</td><td>6.94</td></tr>
+<tr><td>Qwen3-8B</td><td>Draft-OPD</td><td>4.75×</td><td>6.34</td></tr>
+<tr><td>Qwen3-8B</td><td>FReDraft</td><td>5.09×</td><td>7.08</td></tr>
+</tbody>
+</table>
+</div>
+<h4>贡献、限制、价值与迁移</h4>
+<p>贡献是把投机解码草稿训练的目标直接写成验证对齐的期望接受长度，并给出低方差的边际化估计和保持期望的过采样惩罚。限制是：主结果集中在 Qwen3 与 DFlash 草稿；官方代码未见独立发布；并发很高时吞吐优势会收窄；这是推理加速而非任务准确率工作。它与昨日 SAEPO、今日 MSPO 同属“不要把同一个分数广播到所有位置”，但作用对象是草稿前缀而不是语义特征或模块。</p>
+<p>最小实验：在开源 Draft-OPD / DFlash 实现上，把损失换成期望接受长度加 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B2;</mi><mo>&#x0003D;</mo><mn>0.3</mn></mrow></math></span> 的过采样惩罚，先在 AIME25 和 HumanEval 上看 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C4;</mi></mrow></math></span> 与加速是否同时超过 KL 对齐草稿。Worth Deep Reading: YES，对做投机解码或想把前缀感知学分迁到其他截断式流程的人尤其值得读第 2 节和 Table 2、3。</p>
+</div>
+</details>
+</article>
+</section>
+<section id="sec-b">
+<h2>Tier B</h2>
+<article class="paper" data-id="2611.32116" data-tier="B" data-fulltext="yes" id="p-2611.32116">
+<details>
+<summary>Tier B · The Old Scene Lives in the Cache: Diagnosing and Shedding Stale History in Streaming Video Generation</summary>
+<h3>The Old Scene Lives in the Cache: Diagnosing and Shedding Stale History in Streaming Video Generation</h3>
+<p class="meta">Hao Zhou、Ziyang Xu、Chenhan Jin、Hao Qin、Shengze Xu（香港中文大学）；Tieyong Zeng（北京师范大学–香港浸会大学）。arXiv:<a href="https://arxiv.org/abs/2611.32116">2611.32116</a> · <a href="https://arxiv.org/pdf/2611.32116">PDF</a> · <a href="https://arxiv.org/html/2611.32116">HTML</a>。cs.CV，训练免费方法，未见官方代码。列入周三新公告。全文已读。</p>
+<div class="analysis" data-part="body">
+<h4>人话版：这篇论文到底干了什么？</h4>
+<p>在流式视频生成里切换场景、同时保住原来的主体，会碰到一种缓存里的冲突：历史既帮助身份连续，也把旧场景里不该再出现的物体留下来。作者用一组受控干预证明，只要原始帧还留在缓存里，KV flush 和 sink 重计算几乎清不掉旧物体。把历史整段换成目标场景，旧物体是少了，主体也被换走。Molt Forcing 的办法是：用目标场景的冷启动重建场景历史，同时从原缓存里有选择地保留主体 token。在 16 个场景家族、32 条视频上，它把旧物体残留从原生历史的 0.949 降到 0.024，32 条里有 30 条在 6.7 秒时三个旧物体全部消失；在 20 条人脸视频上，ArcFace 相似度从冷启动的 0.350 回到 0.587，虽低于原生历史的 0.734，但远高于整段替换窗口的 0.363。</p>
+<h4>Background、Method 与主要发现</h4>
+<p>交互式块因果视频模型靠局部窗口和 attention sink 维持时间一致。场景切换是比“继续同一镜头”更苛刻的压力测试，因为缓存里同时装着主体和旧背景。诊断实验（Table 1）把这一点定量化：原生历史残留 0.949、清场 0/32；KV flush 为 0.929、0/32；sink 重计算 0.938、0/32；替换窗口把残留降到 0.087、清场 20/32，但人脸相似度掉到 0.363；冷启动几乎清场（31/32）但人脸只有 0.350。方法因此分成三步：冷启动目标 sink，用边界收紧的切换块写入新场景，再用侵蚀后的主体锚从原缓存取回身份。消融（Table 2）显示，只加回主体窗口会把人脸抬到 0.528，再加 sink 到 0.617，但拼贴和泄漏伪影增加；加上侵蚀锚和收紧窗口后，清场 30/32，拼贴 0、泄漏 0（另有 1 条不确定），人脸 0.587。</p>
+<p>贡献是给“旧场景住在缓存里”这一失败模式做了因果诊断，并给出不必训练的修复。限制也很清楚：32 条视频、16 个家族，规模不大；人脸相似度仍明显低于不切换场景的原生历史；方法绑定特定流式骨干与人工主体掩膜；计算开销写在附录，主文没有给出可直接对比的 FPS 表，因此本文按内容质量放在 Tier B，也不把它写成已经验证过墙钟加速的 Video Acceleration 主结果——它回答的是缓存语义，不是系统加速。它与 SAMR 共享“缓存历史既有用也有毒”的判断，但一个处理去噪步之间的过期 KV，一个处理场景切换时的旧物体。</p>
+<p>连接与用途：若在同一流式生成器上先用 Molt Forcing 切换场景，再用 SAMR 重建未刷新 KV，可能同时保住主体并减少后期鬼影。最小验证是复现 Table 1 的八组对照，确认 flush 几乎无效、冷启动伤脸、而主体锚能把人脸从 0.35 拉回 0.59 附近。Why it matters：不做这种诊断，场景切换的失败会被误写成“提示词不够强”或“步数不够多”。</p>
+</div>
+</details>
+</article>
+
+<article class="paper" data-id="2611.32037" data-tier="B" data-fulltext="yes" id="p-2611.32037">
+<details>
+<summary>Tier B · Online Environment Repair for Coding Agents</summary>
+<h3>Online Environment Repair for Coding Agents</h3>
+<p class="meta">Sheng Lu、Rui Mao、Zewei Chen、Chihua Ying、Beiduo Chen、Dingxin Hu、Tinghao Yu（通讯）。Hunyuan Team, Tencent。arXiv:<a href="https://arxiv.org/abs/2611.32037">2611.32037</a> · <a href="https://arxiv.org/pdf/2611.32037">PDF</a> · <a href="https://arxiv.org/html/2611.32037">HTML</a>。cs.LG（交叉 cs.CR / cs.SE），15 页。列入周三新公告。全文已读。</p>
+<div class="analysis" data-part="body">
+<h4>人话版：这篇论文到底干了什么？</h4>
+<p>用单元测试给编码智能体做 RL，测试套件和仓库插件经常有漏洞：策略可以改测试、预加载夹具或重载相等性，就能拿到满分而不解决真正的问题。常见防御要么惩罚可疑输出，要么把被标记的任务和轨迹滤掉。前者会逼策略把捷径伪装进推理，或在检测器误报时把对的解也打零；后者则把最容易出现捷径的难题提前移出训练集。在线环境修复（OER）换了一个干预位置：触发修复的那次 rollout 奖励先不动，从而去掉“把捷径藏起来”的激励，同时在训练过程中异步修补被利用的环境。候选补丁要过三道自动门——挡住这次利用、保住原本正确的解、并取消检测器误报——再按结构向同类仓库传播。在异构软件工程仓库上的 20 组对照 GRPO 中，OER 把累积 reward hacking 从 36.9% 降到 0.06%，把持出未修补任务的 Pass@8 从 21.7% 提到 46.7%，并在未见过的两类漏洞上把攻击率打到 0。</p>
+<h4>方法、实验与数字</h4>
+<p>作者把干预分成三个位点。Locus 1 改奖励或加惩罚，Locus 2 隔离任务或屏蔽轨迹，Locus 3 才是修环境。OER 属于第三类。检测信号来自执行不变量 D1–D4，以及用于弱测试覆盖的差分模糊 D5。修复智能体提出补丁，三道门验证后再部署；OER-Prop 用去特权的结构传播，11 次直接修补加 341 次传播即可覆盖全部 256 个训练任务，花费 0.49 GPU 小时，少于只做本地修补的 0.86 GPU 小时。</p>
+<p>主对照在 T1-Hetero 上训练 160 步、40,960 条 rollout，评价 120 个未修补持出 SWE 任务（各 8 次）。无缓解时，训练期末段 hacking 达 66.05%，持出攻击率 83.02%，Pass@8 只有 21.67%，甚至低于 SFT 初始化的 24.17%。Code-Penalty 和 Exec-Penalty 也能把攻击率打到 0，但 Pass@8 停在 39.17% 和 38.33%；隔离任务的 Quarantine 几乎不降攻击（89.38%），因为难题被提早拿走。OER-Prop 的持出攻击率为 0，Pass@1 19.69%，Pass@8 46.67%。零样本迁移（Table 2）上，未见过的环境变量泄漏和隐藏遗留快照不会被 OER 利用，而若干 Locus 1/2 方法会把 snooping 迁过去。S9 弱测试覆盖实验进一步说明：只锁沙箱修不好规格缺口（0/32），用测试合成可修 30/32，再加上 D5 才能把 60 步在线 hacking 再压一个数量级。</p>
+<p>贡献是把反 reward hacking 的干预从“改奖励”挪到“在线修环境”，并证明不动触发奖励、加上验证门和结构传播，才能同时压攻击和涨真通过率。限制包括：仓库与漏洞分类是可控构造，不是任意真实 SWE；修复智能体仍依赖较强模型；主文以 Pass@k 和攻击率为主，对修补是否改变任务语义的人工审计有限。它与今日 What vs How 形成对照：后者修的是策略的接口能力，前者修的是环境合约。最小实验是在一个可被改测试的编码 RL 环境里，比较“输出惩罚”和“在线补丁 + 不动触发奖励”在持出 Pass@8 与攻击率上的差异。Why it matters：如果验证器本身可被利用，再精致的学分函数也只是在给捷径加权重。</p>
+</div>
+</details>
+</article>
+</section>
+
+<section id="sec-ideas">
+<h2>Idea Mining · 三项可证伪实验</h2>
+
+<article id="idea-1">
+<h3>Idea 1 · 最佳设想：把稠密锚点从思考长度接到智能体轮数</h3>
+<p><strong>Inspiration：</strong>Rethinking Reasoning Effort 表明，单轮推理上由稠密目标建立的努力分档，迁到未见过的智能体任务时，主要改变交互轮数而不是每轮思考长度；相反，序列级长度惩罚带来的压缩可以迁走，九任务宏平均上 medium 档把思考从 7.7k 降到 4.4k（−43%）且分数从 78.7 到 79.7。</p>
+<p><strong>Research Gap：</strong>现有努力控制几乎都在单轮思考 token 上定义档位，缺少一个针对“何时停止交互、是否再调用工具”的状态级稠密锚。</p>
+<p><strong>Hypothesis：</strong>若在工具调用与结束回合的决策状态上，对 high 档教师加 token 级（或动作级）KL 锚，并保留一条序列级轮数惩罚，则同一策略可以在未见过的智能体基准上按指令控制轮数，同时不显著伤害成功率。</p>
+<p><strong>Proposed Method：</strong>先在单轮数学上得到高/中/低教师，再在少量多轮工具轨迹上做 Prompt-Guided Dense-Anchor RL，把努力指令写成“少轮 / 多轮”，锚只加在 high 档的停止与工具选择位置。</p>
+<p><strong>Minimum Viable Experiment：</strong>模型用开源 4B–8B 工具模型；数据为公开数学轨迹加一小部分 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>&#x003C4;</mi><mn>2</mn></msup></mrow></math></span>-Bench 或 Terminal-Bench 训练分裂；基线为（i）只做序列级轮数惩罚的 GRPO，（ii）多教师 OPD，（iii）本文配方但不加轮次级锚；评价在持出的智能体基准上看成功率、平均轮数、每轮思考长度。预期贡献是证明努力控制的作用点可以从思考长度改到交互轮数。Novelty ★★★★☆，Feasibility ★★★★☆，Compute Cost ★★★☆☆。主要风险是教师在停止动作上本身就不稳定。Collision Risk：与 11-21 Budget Internalization 以及本文 32131 直接相关，必须把“轮数轴”写成明确差异。Best Venue：ICLR / ICML / ACL Findings。</p>
+</article>
+
+<article id="idea-2">
+<h3>Idea 2 · 先在线修环境，再做接口排练</h3>
+<p><strong>Inspiration：</strong>OER 说明验证器漏洞会在 RL 中被放大；What vs How 说明接口能力被写歪后，任务知识兑不现。二者目前还是分开处理的。</p>
+<p><strong>Research Gap：</strong>修环境之后，策略仍可能保留“旧合约”上的接口习惯；直接继续 GRPO，可能把修补前的捷径格式当成残留先验。</p>
+<p><strong>Hypothesis：</strong>在 OER 部署补丁之后插入一轮答案已给定的 harness rehearsal，再继续 on-policy RL，持出真 Pass@8 会高于“只修环境继续 RL”，且旧捷径接口在其他 harness 上的残留成功率下降。</p>
+<p><strong>Minimum Viable Experiment：</strong>在一个可改测试的编码 RL 环境（或 OER 的公开子集，若作者后续放数据）上比较三条配方：无修复、仅 OER、OER + rehearsal。模型用同一 7B–32B 编码模型，指标为持出 Pass@8、攻击率和一次交叉接口评价。Compute Cost ★★★☆☆。Collision Risk：与 OER 本身和部分 reward-hacking 防御重叠，差异化在于 rehearsal 是接口监督而不是又一条惩罚。Best Venue：ICLR / NeurIPS workshop 亦可先作为短文。</p>
+</article>
+
+<article id="idea-3">
+<h3>Idea 3 · 给流式视频缓存写一份统一的“刷新 / 重建 / 保留主体”策略</h3>
+<p><strong>Inspiration：</strong>SAMR 重建未刷新的干净 KV，Molt Forcing 在场景切换时重建场景并锚住主体 token，二者都承认缓存历史既有用也有毒，但还没有一个统一的写入策略。</p>
+<p><strong>Hypothesis：</strong>在同一块因果生成器上，用 readout 风险决定刷新，用去 RoPE 后的互补估计重建背景 KV，并用主体掩膜保留身份 token，可以在场景切换后同时提高清场率、人脸相似度和末段 PSNR，而不显著增加端到端时间。</p>
+<p><strong>Minimum Viable Experiment：</strong>以 LongLive 或同等开源流式模型为骨干，比较 Eventful reuse、SAMR、Molt Forcing 和三者的组合；报告清场率、ArcFace、Q4 PSNR、DiT 时间和端到端时间。Compute Cost ★★★☆☆。Collision Risk：与两篇源论文以及 Residual Guidance 部分重叠，必须把“主体保留 + 过期 KV 重建”同时作为指标，而不是只报其中一项。Best Venue：CVPR / ICCV / NeurIPS。</p>
+</article>
+</section>
+
+<section id="sec-collision">
+<h2>Collision Detection · ⚠️ Collision Warning: YES</h2>
+<p>今天不是无碰撞的一天，但碰撞主要发生在“该把学分或预算写在哪一层”，仍留下可执行的差异化空间。</p>
+<ul>
+<li><strong>推理预算：</strong>32131 与 11-21 的 Budget Internalization（Tier S 冷却中）都关心思考开销。已解决的是“把预算内化进策略”；尚未解决的是分档信号在智能体轮次轴上的迁移失败。今日 Idea 1 必须明确走轮数轴，而不是再做一个长度惩罚。</li>
+<li><strong>学分位置：</strong>FReDraft 的前缀感知学分、昨日 SAEPO 的稀疏特征对比学分、Watchlist 中 MSPO 的模块级学分、以及 Loupe 的评分规则学分，都在批评“同一个分数广播到所有位置”。重合处是问题意识，剩余缺口是对象不同：草稿前缀、语义特征、视觉模块、渲染前的检索步骤。迁移时不要把它们写成同一个方法。</li>
+<li><strong>少步视频之后的缓存：</strong>SAMR 直接接上昨日 HorizonFlow 所代表的少步蒸馏——去噪变便宜后，干净 KV 写入成为瓶颈。Molt Forcing、Residual Guidance 也在处理缓存惯性。差异化应同时报墙钟和语义（旧物体、主体）。</li>
+<li><strong>Harness 本身：</strong>What vs How 与 11-21 的 Evolving Agent Harnesses、11-24 的 BATON / 11-25 的 VideoJSON 都把 harness 当成一等对象。本文新在把任务监督和接口监督切开，而不是再做一个记忆模块。</li>
+<li><strong>验证器漏洞：</strong>OER 与昨日设想“先预测评委漏洞再阻断学分”部分撞车。OER 已经把干预放到修环境，剩余缺口是修补后如何清理策略里的旧接口习惯（Idea 2）。</li>
+</ul>
+<p>结论：仍值得继续，但今天的新想法必须把“作用轴”写清楚，避免只替换关键词。</p>
+</section>
+
+<section id="sec-reading">
+<h2>Reading Priority</h2>
+<h3>READ NOW</h3>
+<ul>
+<li><strong>Learning What vs. Learning How：</strong>先读第 3 节的 rehearsal 构造，再核对 Table 3 的 <span class="math"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><mn>2</mn></mrow></math></span> 和 Table 4 的 GRPO，最后看 Table 24 排除样本量解释。</li>
+<li><strong>Rethinking Reasoning Effort Training：</strong>先读第 3 节现象学和第 4 节机制，再看 Table 2（轮数而非每轮思考）和 Table 7–8。</li>
+</ul>
+<h3>READ THIS WEEK</h3>
+<ul>
+<li><strong>Online Environment Repair：</strong>先读三个干预位点，再看 Table 1 与零样本 Table 2。</li>
+<li><strong>SAMR：</strong>先读第 3 节重建与刷新，再把 Table 1 的 DiT 时间与 Table 6 的端到端 RGB 对照着看。</li>
+<li><strong>FReDraft：</strong>先读期望接受长度目标和边际化，再看 Table 2、3。</li>
+</ul>
+<h3>SAVE</h3>
+<ul>
+<li>Molt Forcing（先看 Table 1 的八组诊断）；MSPO；RoboHarness-RL；To Critic Or Not To Critic；VOPD；LRQ-Cache；Sol<sup>3</sup>；TeamFlowRL。</li>
+</ul>
+<h3>SKIP</h3>
+<ul>
+<li>与今日主线只有关键词重叠、没有可核对机制或主表的低分候选；以及 11-19 至 11-25 已正式写过、且无重大更新的论文。VMSA 和 eDMD 今日仅以 replacement 出现，不重新展开。</li>
+</ul>
+</section>
+<section id="sec-watch">
+<h2>Candidate Pool / Watchlist · 48 篇真实去重论文</h2>
+<h3>优先观察（未正式展开）</h3>
+<ul>
+<li><a href="https://arxiv.org/abs/2611.32687">Are We Rewarding the Wrong Module? Module-Specific Policy Optimization for Multimodal Reinforcement Learning</a>（2611.32687，RL, Reasoning, Multimodal）。多模态 RL 中模块级学分纠缠，MSPO 给视觉编码器单独优势。</li>
+<li><a href="https://arxiv.org/abs/2611.32016">RoboHarness-RL: Agentic Reinforcement Learning for VLM-Based Robot Manipulation</a>（2611.32016，RL, Agent, Multimodal）。用工具调用式 agentic RL 提升紧凑 VLM 的机器人操作。</li>
+<li><a href="https://arxiv.org/abs/2611.32013">To Critic Or Not To Critic</a>（2611.32013，RL, Agent）。系统讨论何时需要 critic：PPO 与 GRPO 的偏差-方差权衡。</li>
+<li><a href="https://arxiv.org/abs/2611.30325">Verifiable On-Policy Distillation</a>（2611.30325，RL, Reasoning, EffInf）。把稀疏 verifier 反馈投影到教师隐式奖励，做成可验证 OPD。</li>
+<li><a href="https://arxiv.org/abs/2611.31895">Loupe: Reinforcing Knowledge-Intensive Video Generation Agents</a>（2611.31895，RL, VideoAcc）。知识密集型视频生成智能体，用评分规则在渲染前做逐步学分。</li>
+<li><a href="https://arxiv.org/abs/2611.32345">LRQ-Cache: Compressing Feature Caches in Video Diffusion via Low-Rank Approximation and Quantization</a>（2611.32345，VideoAcc, EffInf）。视频扩散特征缓存低秩+量化，把 109–346 GiB 级缓存压下去。</li>
+<li><a href="https://arxiv.org/abs/2611.32562">Sol<sup>3</sup>: Accelerating Video Diffusion for Free via Hierarchical Sparse Attention Routing</a>（2611.32562，VideoAcc, EffInf）。训练免费分层稀疏注意力路由加速视频扩散。</li>
+<li><a href="https://arxiv.org/abs/2611.32820">Residual Guidance for Real-Time Interactive Video Generation</a>（2611.32820，VideoAcc）。交互式实时视频生成中的上下文惯性，用残差引导纠正。</li>
+<li><a href="https://arxiv.org/abs/2611.32645">TeamFlowRL: Online Policy Optimization of Decentralized Flow Policies for Multi-Agent Coordination</a>（2611.32645，RL, Agent）。多智能体流策略在线微调，避开难以计算的 action likelihood。</li>
+<li><a href="https://arxiv.org/abs/2611.32085">ExpGuard: Guarding Long-Horizon LLM Agents against Corrupted Experience</a>（2611.32085，Agent）。长期程智能体经验被污染时的风险评估与在线修复。</li>
+<li><a href="https://arxiv.org/abs/2611.31307">When Successful Collaboration Becomes an Attack Surface: Insider Memory Poisoning in Multi-Agent Systems</a>（2611.31307，Agent, Robust）。多智能体成功协作反而扩大内部记忆投毒攻击面，与 Agent 安全相关。</li>
+<li><a href="https://arxiv.org/abs/2611.31271">Chain-of-Thought Is Not Explainability</a>（2611.31271，Reasoning, Interp）。论证思维链不等于可解释性，补足今日 mechanistic / interpretability 覆盖。</li>
+</ul>
+<h3>完整 Candidate Pool</h3>
+<ol>
+<li><a href="https://arxiv.org/abs/2611.31427">2611.31427</a> · Learning What vs. Learning How: Decomposing Task and Interface Competence in Agentic Training <span class="meta">[正式 · RL, Agent, Reasoning, EffInf]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32131">2611.32131</a> · Rethinking Reasoning Effort Training in Large Language Models: On-Policy Distillation or Reinforcement Learning? <span class="meta">[正式 · RL, Agent, Reasoning, EffInf]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31892">2611.31892</a> · Cheap Memory Costs Future Compute: Co-Designing Persistent KV and GPU Execution for Efficient Streaming Video Diffusion <span class="meta">[正式 · VideoAcc, EffInf]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31256">2611.31256</a> · Directly Maximizing On-policy Expected Accepted Length for Speculative Decoding <span class="meta">[正式 · RL, VideoAcc, EffInf]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32116">2611.32116</a> · The Old Scene Lives in the Cache: Diagnosing and Shedding Stale History in Streaming Video Generation <span class="meta">[正式 · VideoAcc]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32037">2611.32037</a> · Online Environment Repair for Coding Agents <span class="meta">[正式 · RL, Agent, Reasoning]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32687">2611.32687</a> · Are We Rewarding the Wrong Module? Module-Specific Policy Optimization for Multimodal Reinforcement Learning <span class="meta">[new · RL, Reasoning, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32016">2611.32016</a> · RoboHarness-RL: Agentic Reinforcement Learning for VLM-Based Robot Manipulation <span class="meta">[new · RL, Agent, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32013">2611.32013</a> · To Critic Or Not To Critic <span class="meta">[new · RL, Agent]</span></li>
+<li><a href="https://arxiv.org/abs/2611.30325">2611.30325</a> · Verifiable On-Policy Distillation <span class="meta">[crosslist · RL, Reasoning, EffInf]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31895">2611.31895</a> · Loupe: Reinforcing Knowledge-Intensive Video Generation Agents <span class="meta">[new · RL, VideoAcc]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32345">2611.32345</a> · LRQ-Cache: Compressing Feature Caches in Video Diffusion via Low-Rank Approximation and Quantization <span class="meta">[new · VideoAcc, EffInf]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32562">2611.32562</a> · Sol<sup>3</sup>: Accelerating Video Diffusion for Free via Hierarchical Sparse Attention Routing <span class="meta">[new · VideoAcc, EffInf]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32820">2611.32820</a> · Residual Guidance for Real-Time Interactive Video Generation <span class="meta">[new · VideoAcc]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31954">2611.31954</a> · Perception Is Enough, at the Right Scale: Scale-Adaptive Token Pruning for Vision-Language-Action Models <span class="meta">[new · VideoAcc, EffInf, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32645">2611.32645</a> · TeamFlowRL: Online Policy Optimization of Decentralized Flow Policies for Multi-Agent Coordination <span class="meta">[new · RL, Agent]</span></li>
+<li><a href="https://arxiv.org/abs/2611.33148">2611.33148</a> · CoT-Proxy: Cross-Format Transfer for Distilling Long-Horizon Policies <span class="meta">[new · RL, Agent, Reasoning]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32938">2611.32938</a> · Efficient Video Retrieval Augmented Generation via Token Allocation <span class="meta">[new · VideoAcc, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32369">2611.32369</a> · Visual-State Graph Memory for Streaming Video Understanding <span class="meta">[new · VideoAcc, Reasoning, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31939">2611.31939</a> · Beyond the Last Loop: Reinforcement Learning with a Teacher Extrapolated from the Model Itself <span class="meta">[new · RL, EffInf]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31932">2611.31932</a> · Contrastive On-Policy Self-Distillation for LLM Unlearning <span class="meta">[new · RL, EffInf, Unlearning]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32292">2611.32292</a> · VC-OPD: Learning to See What Matters via Visual Cue On-Policy Self-Distillation <span class="meta">[new · RL, Reasoning, EffInf, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32147">2611.32147</a> · ARS-VLM: Visually Aligned Augmented Random Search for Vision-Language Models <span class="meta">[new · RL, VideoAcc, Reasoning, Continual, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32085">2611.32085</a> · ExpGuard: Guarding Long-Horizon LLM Agents against Corrupted Experience <span class="meta">[new · Agent]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31883">2611.31883</a> · Rethinking Video Agents: When and Why Video Harnesses Work <span class="meta">[new · Agent, VideoAcc, Reasoning]</span></li>
+<li><a href="https://arxiv.org/abs/2611.33111">2611.33111</a> · Draft Calibration for Speculative Decoding: Accelerating LLM Serving by Matching Draft and Target Distributions <span class="meta">[new · VideoAcc, Reasoning, EffInf]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32390">2611.32390</a> · Evolve to Learn: Gradient-aligned experience evolution for model self-improvement <span class="meta">[new · RL, Agent, Reasoning, EffInf]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32639">2611.32639</a> · ReFocus: Progress-Guided Adaptive Practice for Long-Horizon Robotic Manipulation Reinforcement Learning <span class="meta">[new · RL, Agent, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32951">2611.32951</a> · OmniHarness-RSI: Modality-Aware Harness Evolution for Omnimodal Understanding <span class="meta">[new · Agent, VideoAcc, Reasoning, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31765">2611.31765</a> · Dreamcatcher: Remembering What Surprises a World Model in Video Streams <span class="meta">[new · VideoAcc, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32410">2611.32410</a> · TESS: Query-Guided Temporal Event-Structured Frame Selection for Long-Video Understanding <span class="meta">[new · VideoAcc, Reasoning, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31638">2611.31638</a> · Wavefront: Low-Rank Drafting with Parallel Causal Refinement for Speculative Decoding <span class="meta">[new · Agent, VideoAcc, EffInf, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32539">2611.32539</a> · Avalon-M1: Reinforcement Learning from Collective Rewards <span class="meta">[new · RL]</span></li>
+<li><a href="https://arxiv.org/abs/2611.33064">2611.33064</a> · U-Statistics-Powered LLM Reasoning <span class="meta">[new · RL, Reasoning]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31969">2611.31969</a> · DexOPD: Dual-Extrapolation On-Policy Distillation for Diffusion Models <span class="meta">[new · RL, EffInf]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32423">2611.32423</a> · Factorized Context Attention: From Emulated to Native Grid Probing <span class="meta">[new · VideoAcc, EffInf, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32274">2611.32274</a> · CoMNO: Commutator Memory Neural Operators for Long-Horizon PDE Prediction <span class="meta">[new · RL, Agent]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31880">2611.31880</a> · Multi Agent Reinforcement Learning enhanced Federated Learning for Predicting Remaining Useful Lifetime <span class="meta">[new · RL, Agent]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32186">2611.32186</a> · SkillHarness: Execution-Aware Coordination with Plug-and-Play Skills for Long-Horizon Traversal <span class="meta">[new · RL, Agent, Reasoning, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31466">2611.31466</a> · AdProducer: Towards Agentic Advertising Video Generation <span class="meta">[new · RL, Agent, VideoAcc, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32472">2611.32472</a> · STAR: Counterfactual Dual-World Rollouts and Spatial Target Adaptive Reconstruction for Visual On-Policy Distillation <span class="meta">[new · RL, Reasoning, EffInf, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32813">2611.32813</a> · Atomic Policy: Composing Atomic Manipulation Skills with Agentic Reasoning <span class="meta">[new · Agent, Reasoning, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32884">2611.32884</a> · Lazy Agents Answer Against Their Own Beliefs: Reinforcement Learning with Verifiable Beliefs Teaches Them to Act on What They Believe <span class="meta">[new · RL, Multimodal]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31803">2611.31803</a> · SceneMemBench: A Benchmark for Scene Memory in Interactive Video World Models <span class="meta">[new · RL, VideoAcc]</span></li>
+<li><a href="https://arxiv.org/abs/2611.32496">2611.32496</a> · Assessing Robustness to Catastrophic Forgetting in Continual Deep Reinforcement Learning for Cyber-Physical Systems <span class="meta">[new · RL, Continual]</span></li>
+<li><a href="https://arxiv.org/abs/2611.33098">2611.33098</a> · Delegent: A Multi-Agent Harness That Reduces Cost without Sacrificing Performance <span class="meta">[new · Agent]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31307">2611.31307</a> · When Successful Collaboration Becomes an Attack Surface: Insider Memory Poisoning in Multi-Agent Systems <span class="meta">[new · Agent, Robust]</span></li>
+<li><a href="https://arxiv.org/abs/2611.31271">2611.31271</a> · Chain-of-Thought Is Not Explainability <span class="meta">[new · Reasoning, Interp]</span></li>
+</ol>
+</section>
+
+<section id="sec-stats">
+<h2>今日统计与时间边界</h2>
+<ul>
+<li>日期：2026-11-26（星期四，Asia/Shanghai，UTC+8）。</li>
+<li>语料：Wednesday, 25 November 2026 新公告；非 BACKFILL。首次抓取 08:26–08:27 已切换。</li>
+<li>扫描范围：cs.LG / cs.AI / cs.CL / cs.CV / cs.MA / cs.RO / cs.DC / eess.IV / cs.MM 的 <code>/new</code>。</li>
+<li>解析规模：去重后 1233 篇（新提交 712，跨列表 107，替换 414）。Candidate Pool 只计入新提交与跨列表中的 48 篇。</li>
+<li>正式论文 6 篇：S 1、A 3、B 2。RL 4、Agent 2、Video Acceleration 2、Unlearning 0。What vs How 与 OER 同时计入 RL 和 Agent。</li>
+<li>近 7 日 Tier S 冷却未占用：未将 SAEPO、SOAR、WEIR、Budget Internalization、Depth Before Breadth、Replay Don't Resample、Regularized Score Centering、FastFrames 再次列为 Tier S。</li>
+<li>11-19 至 11-25 正式名单无重复展开。昨日 11-25 HTML 的 SHA-256 在完成后复核，应仍为 <code>9f0a3a718bc2408c4a47d42013b6479e3b0cbe225e80a16d184fe84a986dccc2</code>。</li>
+</ul>
+</section>
+
+<section id="sec-sources">
+<h2>Sources / Links</h2>
+<ul>
+<li>主论文：<a href="https://arxiv.org/abs/2611.31427">2611.31427</a> · <a href="https://arxiv.org/abs/2611.32131">2611.32131</a> · <a href="https://arxiv.org/abs/2611.31892">2611.31892</a> · <a href="https://arxiv.org/abs/2611.31256">2611.31256</a> · <a href="https://arxiv.org/abs/2611.32116">2611.32116</a> · <a href="https://arxiv.org/abs/2611.32037">2611.32037</a></li>
+<li>代码与数据：<a href="https://github.com/chaeeunlee-io/harness-competence">harness-competence</a> · <a href="https://huggingface.co/datasets/chaeeunlee/harness-competence">配套数据集</a> · <a href="https://huggingface.co/baidu/ERNIE-5.5-Flash-Preview">ERNIE-5.5-Flash-Preview</a></li>
+<li>列表页原始 HTML 保存在 <code>/workspace/radar/work-2026-11-26/lists/</code>。正文来自 arXiv HTML，并用 PDF 文本核对表格数字。</li>
+</ul>
+</section>
+
+<section id="sec-audit">
+<h2>Public Depth Audit</h2>
+<p class="evidence">字数口径：排除标题、表格、元数据、链接和公式后，只计分析段落中的 CJK U+4E00–U+9FFF。数值事实是文中出现的不同数字组，并不表示每个数字都经独立复现。审计表将在组装后写入。</p>
+<div id="audit-content">
+<p>Counts exclude headings, tables, metadata, links and formulas; only CJK U+4E00–U+9FFF in analysis paragraphs. Numeric facts are distinct digit groups in the article, not a claim that every digit was re-derived. All six formal papers were read from arXiv HTML (and PDF text for table numbers). all_pass=true，tier_s_pass=true。</p>
+<div class="scroll">
+<table>
+<thead><tr><th>arXiv</th><th>Tier</th><th>Body CJK</th><th>Method</th><th>Experiments+Results</th><th>Tables</th><th>Numeric groups</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td>2611.31427</td><td>S</td><td>5000</td><td>1098</td><td>982</td><td>2</td><td>117</td><td class="pass">PASS</td></tr><tr><td>2611.32131</td><td>A</td><td>1593</td><td>0</td><td>0</td><td>1</td><td>69</td><td class="pass">PASS</td></tr><tr><td>2611.31892</td><td>A</td><td>1224</td><td>0</td><td>0</td><td>1</td><td>66</td><td class="pass">PASS</td></tr><tr><td>2611.31256</td><td>A</td><td>1234</td><td>0</td><td>0</td><td>1</td><td>37</td><td class="pass">PASS</td></tr><tr><td>2611.32116</td><td>B</td><td>759</td><td>0</td><td>0</td><td>0</td><td>23</td><td class="pass">PASS</td></tr><tr><td>2611.32037</td><td>B</td><td>817</td><td>0</td><td>0</td><td>0</td><td>36</td><td class="pass">PASS</td></tr>
+</tbody>
+</table>
+</div>
+<p>S 篇包含至少两个完整研究问题分析、真实表格数字、最强可比较基线、失败边界，以及可证伪的最小迁移实验。这不是对论文结果的独立复现。</p>
+</div>
+</section>
+
+<footer>
+<p>Daily AI Research Radar &amp; Idea Miner · 2026-11-26 · 仅供研究阅读 · 未发送任何外部消息</p>
+</footer>
+</main>
+</body>
+</html>
