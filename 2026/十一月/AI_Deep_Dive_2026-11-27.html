@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Deep Dive 2026-11-27</title>
+<style>
+
+/* consistent with 11-23 / 11-20 */
+:root{--fg:#1a1a1a;--mut:#5b6472;--bg:#fbfaf7;--card:#fff;--ac:#9a3412;--ln:#e5e1d8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+font-family:"Noto Serif CJK SC","Source Han Serif SC","Songti SC","STSong","Georgia",serif;
+font-size:17px;line-height:1.8;letter-spacing:0}
+.wrap{max-width:820px;margin:0 auto;padding:28px 22px 80px}
+header h1{font-size:28px;line-height:1.35;margin:.2em 0;font-weight:700}
+.sub{color:var(--mut);font-size:15px}
+nav.toc{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:14px 20px;margin:22px 0}
+nav.toc ol{margin:.3em 0;padding-left:1.4em}nav.toc li{margin:.15em 0}
+nav.toc details summary{cursor:pointer;font-weight:600}
+nav.toc .secs{columns:2;font-size:14px;gap:12px}
+a{color:#1d4ed8;text-decoration:none;word-break:break-all}a:hover{text-decoration:underline}
+section.paper{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:8px 26px 26px;margin:30px 0}
+h2{font-size:23px;border-left:5px solid var(--ac);padding-left:12px;margin-top:1.4em;line-height:1.4}
+h3{font-size:18.5px;margin:1.55em 0 .5em;color:#7c2d12;border-bottom:1px dashed var(--ln);padding-bottom:4px}
+p{margin:.7em 0;text-align:start}
+.tag{display:inline-block;font-size:13px;padding:1px 9px;border-radius:999px;background:#fff1e6;color:#9a3412;border:1px solid #fdba74;margin-right:6px}
+.tag.bf{background:#eef2ff;color:#3730a3;border-color:#a5b4fc}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border:1px solid var(--ln);border-radius:8px}
+table{border-collapse:collapse;min-width:640px;width:100%;font-size:14.5px;line-height:1.6}
+th,td{border-bottom:1px solid var(--ln);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#f6f3ec;white-space:nowrap}tr:nth-child(even) td{background:#fcfbf8}
+.eq{overflow-x:auto;padding:10px 8px;margin:12px 0;background:#faf8f3;border-radius:6px}
+math{font-size:1.05em;font-family:"STIX Two Math","Cambria Math","Latin Modern Math","DejaVu Serif","Noto Serif",math,serif}
+math[display="block"]{display:block;margin:.35em 0}
+li{margin:.3em 0}
+.note{background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 16px;font-size:15px}
+footer{color:var(--mut);font-size:14px;margin-top:40px}
+.cite{color:var(--mut);font-size:14px}
+ul,ol{padding-left:1.4em}
+code,kbd{font-family:"SF Mono","Menlo","Consolas",monospace;font-size:0.92em}
+
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Daily Top Papers Deep Dive · 2026-11-27</h1>
+<p class="sub">Asia/Shanghai · 方向：Video Acceleration · Reinforcement Learning · Inference Acceleration · 3 篇 · 非 BACKFILL · 离线 MathML</p>
+</header>
+<nav class="toc">
+<ol>
+<li><a href="#overview">今日概览：检索、选题与去重</a></li>
+<li><a href="#p1">论文 1｜LiveVAE（Video Acceleration）</a>
+<details><summary>本节目录</summary>
+<div class="secs">
+<ol>
+<li><a href="#p1-s1">基本信息</a></li>
+<li><a href="#p1-s2">一句话定位</a></li>
+<li><a href="#p1-s3">人话版</a></li>
+<li><a href="#p1-s4">背景与缺口</a></li>
+<li><a href="#p1-s5">核心 insight</a></li>
+<li><a href="#p1-s6">方法逐步拆解</a></li>
+<li><a href="#p1-s7">核心公式</a></li>
+<li><a href="#p1-s8">Toy example</a></li>
+<li><a href="#p1-s9">Baselines</a></li>
+<li><a href="#p1-s10">实验设置</a></li>
+<li><a href="#p1-s11">指标教学</a></li>
+<li><a href="#p1-s12">可核验结果</a></li>
+<li><a href="#p1-s13">真实表图阅读</a></li>
+<li><a href="#p1-s14">Ablation</a></li>
+<li><a href="#p1-s15">Claim vs Evidence</a></li>
+<li><a href="#p1-s16">贡献</a></li>
+<li><a href="#p1-s17">局限</a></li>
+<li><a href="#p1-s18">复现要点</a></li>
+<li><a href="#p1-s19">研究价值</a></li>
+<li><a href="#p1-s20">可执行迁移</a></li>
+<li><a href="#p1-s21">方向专用分析</a></li>
+<li><a href="#p1-s22">Attack / Verification</a></li>
+<li><a href="#p1-s23">记忆总结</a></li>
+</ol>
+</div>
+</details></li>
+<li><a href="#p2">论文 2｜Maco-RL（Reinforcement Learning）</a>
+<details><summary>本节目录</summary>
+<div class="secs">
+<ol>
+<li><a href="#p2-s1">基本信息</a></li>
+<li><a href="#p2-s2">一句话定位</a></li>
+<li><a href="#p2-s3">人话版</a></li>
+<li><a href="#p2-s4">背景与缺口</a></li>
+<li><a href="#p2-s5">核心 insight</a></li>
+<li><a href="#p2-s6">方法逐步拆解</a></li>
+<li><a href="#p2-s7">核心公式</a></li>
+<li><a href="#p2-s8">Toy example</a></li>
+<li><a href="#p2-s9">Baselines</a></li>
+<li><a href="#p2-s10">实验设置</a></li>
+<li><a href="#p2-s11">指标教学</a></li>
+<li><a href="#p2-s12">可核验结果</a></li>
+<li><a href="#p2-s13">真实表图阅读</a></li>
+<li><a href="#p2-s14">Ablation</a></li>
+<li><a href="#p2-s15">Claim vs Evidence</a></li>
+<li><a href="#p2-s16">贡献</a></li>
+<li><a href="#p2-s17">局限</a></li>
+<li><a href="#p2-s18">复现要点</a></li>
+<li><a href="#p2-s19">研究价值</a></li>
+<li><a href="#p2-s20">可执行迁移</a></li>
+<li><a href="#p2-s21">方向专用分析</a></li>
+<li><a href="#p2-s22">Attack / Verification</a></li>
+<li><a href="#p2-s23">记忆总结</a></li>
+</ol>
+</div>
+</details></li>
+<li><a href="#p3">论文 3｜RankCast（Inference Acceleration）</a>
+<details><summary>本节目录</summary>
+<div class="secs">
+<ol>
+<li><a href="#p3-s1">基本信息</a></li>
+<li><a href="#p3-s2">一句话定位</a></li>
+<li><a href="#p3-s3">人话版</a></li>
+<li><a href="#p3-s4">背景与缺口</a></li>
+<li><a href="#p3-s5">核心 insight</a></li>
+<li><a href="#p3-s6">方法逐步拆解</a></li>
+<li><a href="#p3-s7">核心公式</a></li>
+<li><a href="#p3-s8">Toy example</a></li>
+<li><a href="#p3-s9">Baselines</a></li>
+<li><a href="#p3-s10">实验设置</a></li>
+<li><a href="#p3-s11">指标教学</a></li>
+<li><a href="#p3-s12">可核验结果</a></li>
+<li><a href="#p3-s13">真实表图阅读</a></li>
+<li><a href="#p3-s14">Ablation</a></li>
+<li><a href="#p3-s15">Claim vs Evidence</a></li>
+<li><a href="#p3-s16">贡献</a></li>
+<li><a href="#p3-s17">局限</a></li>
+<li><a href="#p3-s18">复现要点</a></li>
+<li><a href="#p3-s19">研究价值</a></li>
+<li><a href="#p3-s20">可执行迁移</a></li>
+<li><a href="#p3-s21">方向专用分析</a></li>
+<li><a href="#p3-s22">Attack / Verification</a></li>
+<li><a href="#p3-s23">记忆总结</a></li>
+</ol>
+</div>
+</details></li>
+<li><a href="#verify">核验说明</a></li>
+</ol>
+</nav>
+
+<section id="overview">
+<h2>今日概览：检索、选题与去重</h2>
+<p>日期为 2026-11-27（星期五，Asia/Shanghai）。检索于当日约 09:07（Asia/Shanghai，对应 01:07 UTC / 周四 20:07 ET）执行，正值 arXiv 周四 20:00 ET 新批次公布之后。该批次在 arXiv 新目页标注为 “Showing new listings for Thursday, 26 November 2026”，对应通常窗口为 2026-11-25 14:00 ET 至 2026-11-26 14:00 ET 提交的论文。三篇入选均为该新目中的新稿（或同日跨类列出），提交时间均在近 24–72 小时内，<strong>不是 BACKFILL</strong>。</p>
+<p>检索范围：直接抓取 cs.LG / cs.AI / cs.CL / cs.MA / cs.CV / cs.DC / cs.RO / eess.IV 的 <code>/list/*/new?show=2000</code> 新目页，并用标题与摘要关键词二次筛选 Reinforcement Learning（尤其 LLM/Agent RL）、Agent / Multi-Agent、Video Acceleration、Inference Acceleration。新目页计数（新稿 / 跨列 / 替换 / 合计）为：cs.LG 143 / 128 / 148 / 419；cs.AI 77 / 171 / 150 / 398；cs.CL 74 / 42 / 61 / 177；cs.MA 9 / 10 / 9 / 28；cs.CV 242 / 46 / 114 / 402；cs.DC 10 / 4 / 16 / 30。去重后当日上述类别共解析到 654 篇独特新稿。</p>
+<p>7 日已读不重复：2611.24697、2611.24479、2611.23835、2611.26172、2611.25380、2611.25689、2611.25813、2611.26334、2611.26435、2611.27227、2611.27074、2611.27477、2611.28298、2611.28349、2611.31184、2611.33148、2611.33064、2611.32954。昨日备用 Sol3（2611.32562）与 Lazy Agents（2611.32884）仍不纳入。</p>
+<p>方向轮换：昨日（11-26）覆盖了 Agent、纯 RL 与 Inference，<strong>未覆盖 Video</strong>。Video 在 11-20/21/23/24/25 连续出现后于 11-26 轮空，今日优先纳入可核验的 Video Acceleration。Agent 已连续覆盖 11-25 与 11-26，当日虽有 MGMem、PROVE 等候选，但没有明显强于混合任务 RL 主线的独立 Agent 文，故今日 Agent 轮空。最终选 3 篇，覆盖 Video Acceleration、RL for LLM/Agent、Inference Acceleration。</p>
+<ul>
+<li><strong>论文 1 · LiveVAE（2611.34912）</strong>：用因果窗注意力把视频 VAE 做成可流式的编解码器，并给出融合 / 编译 / FP8 推理栈。区别于近日稀疏注意力或缓存类视频加速，切入点是 VAE 本身的时延瓶颈。</li>
+<li><strong>论文 2 · Maco-RL（2611.34703）</strong>：在多个 agent 任务上直接做混合任务强化学习（MixRL），用梯度混合与 Tri-Buffer Sampling 稳定扩展任务类型。这是用户最高优先方向（LLM/Agent RL）。</li>
+<li><strong>论文 3 · RankCast（2611.33542）</strong>：在 PD 分离的 MoE 服务里，按 prefill 的 token 负载与 decode 的活跃专家数做秩级均衡。与昨日 LoomKV（KV 压缩）不在同一条线上。</li>
+</ul>
+<p>考虑但未入选（摘）：<strong>JetDiffusion（2611.33268）</strong>是很强的视频稀疏量化注意力系统，但与已读 Sol-Attn / ESTRA / 稀疏注意力视频加速线过近，故不用它填 Video 空位。<strong>PURA（2611.34521）</strong>做 Video-LLM token pruning，表完整，但偏理解侧压缩；<strong>DriftWAM（2611.33797）</strong>与 <strong>ShowNow（2611.34693）</strong>走世界模型少步 / 推测流式，也可核验，今日让位给更直接的流式 VAE。<strong>TORE（2611.34261）</strong>为扩散逐步加速。<strong>PROVE（2611.34215）</strong>讨论长程 LLM 串通，评价只有 10 条 held-out 序列，规模小于 Maco-RL。<strong>Any-Rate（2611.34402）</strong>、<strong>Asymmetric Speculative Decoding（2611.34010）</strong>、<strong>PipeAxes（2611.34615）</strong>、<strong>DFly2（2611.34776）</strong>均为 Inference 强候选，今日选与昨日 KV 缓存更正交的 MoE 服务均衡。</p>
+</section>
+
+<section class="paper" id="p1">
+
+<h2>论文 1｜LiveVAE：因果窗注意力把视频 VAE 做成可流式编解码 <span class="tag">NEW</span> Video Acceleration</h2>
+
+<h3 id="p1-s1">1. 基本信息</h3>
+
+<p>标题：LiveVAE: Causal Window Attention Makes Efficient Streaming Video VAE。作者：Jiachen An、Sijie Zhao、Le Li（共同一作），以及 Hongyu Liu、Zhiyuan Li、Tianyu Yang、Xiaoyu Kong、Xunliang Cai、Yong Zhang（项目负责人）、Chi-Man Pun、Xiaoming Wei、Xiaodong Cun。单位：粤港澳大湾区大学 GVC Lab、美团、香港科技大学、澳门大学。arXiv：<a href="https://arxiv.org/abs/2611.34912">2611.34912</a>。主类 cs.CV。提交时间 2026-11-25 18:57:14Z（约 2026-11-26 02:57 Asia/Shanghai），出现在 2026-11-26 周四 20:00 ET 新目（今日上午公布）。16 页、12 张表，非 BACKFILL。方向：Video Acceleration。PDF 共 3,155,943 字节，arXiv HTML 可访问。代码声明将发布于 GitHub MeiGen-AI/LiveVAE，检索时未独立确认仓库是否已公开。主评测在单卡 NVIDIA H100、warmup 后测量。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s2">2. 一句话定位</h3>
+
+<p>预训练视频 VAE 的有效感受野其实很局部；用因果窗注意力（CWA）重写成流式编解码器，再经三阶段蒸馏保住原潜空间，从而在不重训扩散主干的前提下同时加速编码与解码。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s3">3. 人话版</h3>
+
+<p>现在很多视频生成模型已经能“边出边看”，但把像素压进潜空间、再从潜空间解出来的视频 VAE，往往还在用很重的卷积或整帧注意力。编码端尤其被忽略，于是参考视频条件生成、流式编辑这类必须先编码的路径，会被 VAE 卡住。这篇论文先做了一个很具体的检查：已有视频 VAE 在编、解码一个图块时，梯度能量几乎都落在它的时空邻居上——空间上 7×7 邻域就能覆盖 95–100% 的梯度能量（Fig. 2）。既然并不真的需要全局建模，就把注意力限制在当前及之前若干潜帧的局部窗口里，并用滚动 KV cache 做流式推理。为了能直接替换官方 VAE，他们先分别蒸馏编码器和解码器，再联合微调。主结果在 MiniMax-H3 上：相对官方 VAE，编码快 5.2–6.2 倍、解码快 3.0–3.3 倍，而且 PSNR 还略高（Table 1）。再加上算子融合、分区编译和（仅在 1080p/2160p 启用的）FFN FP8，端到端加速被说到“至多 13.4×”。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s4">4. 背景与缺口</h3>
+
+<p>视频扩散模型由 VAE 与扩散/DiT 两部分组成。近年来采样步数和 DiT 注意力都被大幅加速，VAE 反而变成交互式生成和编辑的主要时延来源。已有加速路线多半只改解码器，编码器仍走官方权重，于是“先编码再生成”的流式条件任务受益有限。另一类工作用 KV cache 做因果注意，但仍在整段潜变量上计算，代价随帧数二次增长。缺口因此很清楚：需要一种同时覆盖编码与解码、缓存有界、并且能插入现有潜空间的流式 VAE。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s5">5. 核心 insight</h3>
+
+<p>视频 VAE 看起来像全局模型，有效感受野却是局部的。只要把注意力限制在大小为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi><mo>&#x000D7;</mo><mi>H</mi><mo>&#x000D7;</mo><mi>W</mi></mrow></math> 的因果窗，计算量从与全部时空 token 相关变成与窗口大小相关，KV cache 也只要保留 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi><mo>&#x02212;</mo><mn>1</mn></mrow></math> 帧。第二层 insight 是：要保住“即插即用”，必须先把学生编码器对齐教师潜空间，再让解码器适应学生潜变量，而不是一上来端到端对打。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s6">6. 方法逐步拆解</h3>
+
+<p>教师 VAE 的时间、空间压缩比为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>M</mi></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math>。输入视频 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x02208;</mo><msup><mi>&#x0211D;</mi><mrow><mi>M</mi><mi>f</mi><mo>&#x000D7;</mo><mi>S</mi><mi>h</mi><mo>&#x000D7;</mo><mi>S</mi><mi>w</mi><mo>&#x000D7;</mo><mn>3</mn></mrow></msup></mrow></math> 被编成 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi><mo>&#x02208;</mo><msup><mi>&#x0211D;</mi><mrow><mi>f</mi><mo>&#x000D7;</mo><mi>h</mi><mo>&#x000D7;</mo><mi>w</mi><mo>&#x000D7;</mo><mi>C</mi></mrow></msup></mrow></math>。学生编码器 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>E</mi><mi>S</mi></msub></mrow></math> 与解码器 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>D</mi><mi>S</mi></msub></mrow></math> 在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>f</mi><mo>&#x000D7;</mo><mi>h</mi><mo>&#x000D7;</mo><mi>w</mi></mrow></math> 潜网格上操作，token 索引为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>i</mi><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><mi>t</mi><mo>&#x0002C;</mo><mi>y</mi><mo>&#x0002C;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math>。</p>
+<p><strong>因果窗注意力（CWA）。</strong>对 token <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>i</mi></mrow></math>，窗口 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>W</mi><mo stretchy="false">&#x00028;</mo><mi>i</mi><mo stretchy="false">&#x00029;</mo></mrow></math> 包含满足 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn><mo>&#x02264;</mo><mi>t</mi><mo>&#x02212;</mo><mi>&#x003C4;</mi><mo>&#x0003C;</mo><mi>T</mi></mrow></math> 且空间距离不超过 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>H</mi><mo>&#x02212;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0002F;</mo><mn>2</mn></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>W</mi><mo>&#x02212;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0002F;</mo><mn>2</mn></mrow></math> 的邻居（奇数窗、边界向内平移而不补零）。在至多 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi><mi>H</mi><mi>W</mi></mrow></math> 个 token 上做标准缩放点积注意力，并对 query/key 施加与基础 DiT 对齐的 3D RoPE。为了调用成熟的二维邻域注意力核，窗口按潜帧切开：先在每一帧做 2D 窗注意力得到 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>O</mi><mi>&#x003C4;</mi></msub><mo stretchy="false">&#x00028;</mo><mi>i</mi><mo stretchy="false">&#x00029;</mo></mrow></math> 与 log-sum-exp <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>L</mi><mi>&#x003C4;</mi></msub><mo stretchy="false">&#x00028;</mo><mi>i</mi><mo stretchy="false">&#x00029;</mo></mrow></math>，再按权重合成 3D CWA。推理时每块维护滚动 KV cache：算完当前帧就写入，并丢掉 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x02212;</mo><mi>T</mi><mo>&#x0002B;</mo><mn>1</mn></mrow></math> 帧，缓存长度有界。复杂度为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>O</mi><mo stretchy="false">&#x00028;</mo><mi>n</mi><mi>T</mi><mi>H</mi><mi>W</mi><mo stretchy="false">&#x00029;</mo></mrow></math>，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>n</mi><mo>&#x0003D;</mo><mi>f</mi><mi>h</mi><mi>w</mi></mrow></math>。</p>
+<p><strong>网络。</strong>编、解码器都是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi><mo>&#x0003D;</mo><mn>12</mn></mrow></math> 个 CWA 块。H3 的隐维分别是 2048 与 2560，Wan2.2 是 2560 与 2496；注意力头维 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>d</mi><mo>&#x0003D;</mo><mn>64</mn></mrow></math>。默认窗为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mo>&#x000D7;</mo><mn>7</mn><mo>&#x000D7;</mo><mn>7</mn></mrow></math>。H3 学生总参数 2.08 B，低于教师 2.60 B（Table 1）。</p>
+<p><strong>三阶段蒸馏。</strong>Stage 1（80k step）只训编码器：潜空间 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x02113;</mi><mn>2</mn></msub></mrow></math> + 后验 KL，外加经冻结教师解码器回打的重建损失。Stage 2（200k step）只训解码器：教师编码器出潜变量，学生对像素。Stage 3（5k step）联合微调，并加 Real-ESRGAN U-Net 判别器的对抗损失；权重保持 EMA（decay 0.999）。像素重建始终是 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x02113;</mi><mn>1</mn></msub></mrow></math> + <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003BB;</mi><mi>p</mi></msub></mrow></math> LPIPS。</p>
+<p><strong>推理栈（第 3.4 节）。</strong>A：注意力算子融合；B：分区编译；C：除解码器最后一块外的 FFN 做 FP8，并用与部署一致的伪量化做 QAT。EMA 权重只在 FP8 下使用。Table 1 写明 FP8 仅用于 1080p 与 2160p。学生与教师的潜变量通道数保持一致，空间压缩比同样是 16，所以现有 MiniMax-H3 或 Wan2.2 的 DiT 不需要改输入形状。流式路径按潜帧推进：编码端吃进一个时间块（H3 对应若干像素帧），写出一帧潜变量并更新 cache；解码端每次只读当前潜帧加上至多 T−1 帧的历史 key/value，再写出对应像素块。这使交互式编辑可以在“新帧到达”时只做增量编解码，而不必重跑整段视频。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s7">7. 核心公式</h3>
+
+<p>因果窗（内部位置、奇数窗）为</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>W</mi><mo stretchy="false">&#x00028;</mo><mi>i</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo stretchy="false">&#x0007B;</mo><mo stretchy="false">&#x00028;</mo><mi>&#x003C4;</mi><mo>&#x0002C;</mo><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo>&#x0002C;</mo><msup><mi>x</mi><mi>&#x02032;</mi></msup><mo stretchy="false">&#x00029;</mo><mspace width="0.167em" /><mi>:</mi><mspace width="0.167em" /><mn>0</mn><mo>&#x02264;</mo><mi>t</mi><mo>&#x02212;</mo><mi>&#x003C4;</mi><mo>&#x0003C;</mo><mi>T</mi><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><mo stretchy="false">&#x0007C;</mo><msup><mi>y</mi><mi>&#x02032;</mi></msup><mo>&#x02212;</mo><mi>y</mi><mo stretchy="false">&#x0007C;</mo><mo>&#x02264;</mo><mo stretchy="false">&#x00028;</mo><mi>H</mi><mo>&#x02212;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0002F;</mo><mn>2</mn><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><mo stretchy="false">&#x0007C;</mo><msup><mi>x</mi><mi>&#x02032;</mi></msup><mo>&#x02212;</mo><mi>x</mi><mo stretchy="false">&#x0007C;</mo><mo>&#x02264;</mo><mo stretchy="false">&#x00028;</mo><mi>W</mi><mo>&#x02212;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0002F;</mo><mn>2</mn><mo stretchy="false">&#x0007D;</mo></mrow></math></div>
+<p>窗口内的 CWA 即</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">W</mi><mi mathvariant="normal">A</mi></mrow><mo stretchy="false">&#x00028;</mo><mi>i</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><munder><mo>&#x02211;</mo><mrow><mi>j</mi><mo>&#x02208;</mo><mi>W</mi><mo stretchy="false">&#x00028;</mo><mi>i</mi><mo stretchy="false">&#x00029;</mo></mrow></munder><mfrac><mrow><mi>exp</mi><mo stretchy="false">&#x00028;</mo><msub><mi>q</mi><mi>i</mi></msub><msubsup><mi>k</mi><mi>j</mi><mo>&#x022A4;</mo></msubsup><mo>&#x0002F;</mo><msqrt><mrow><mi>d</mi></mrow></msqrt><mo stretchy="false">&#x00029;</mo></mrow><mrow><msub><mo>&#x02211;</mo><mrow><mi>m</mi><mo>&#x02208;</mo><mi>W</mi><mo stretchy="false">&#x00028;</mo><mi>i</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><mi>exp</mi><mo stretchy="false">&#x00028;</mo><msub><mi>q</mi><mi>i</mi></msub><msubsup><mi>k</mi><mi>m</mi><mo>&#x022A4;</mo></msubsup><mo>&#x0002F;</mo><msqrt><mrow><mi>d</mi></mrow></msqrt><mo stretchy="false">&#x00029;</mo></mrow></mfrac><msub><mi>v</mi><mi>j</mi></msub></mrow></math></div>
+<p>重建损失与三阶段目标为</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi></mrow></mrow></msub><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x0002C;</mo><mover accent="true"><mi>x</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo fence="false" stretchy="false">&#x02016;</mo><mi>x</mi><mo>&#x02212;</mo><mover accent="true"><mi>x</mi><mo>&#x0005E;</mo></mover><msub><mo fence="false" stretchy="false">&#x02016;</mo><mn>1</mn></msub><mo>&#x0002B;</mo><msub><mi>&#x003BB;</mi><mi>p</mi></msub><mspace width="0.167em" /><mrow><mi mathvariant="normal">L</mi><mi mathvariant="normal">P</mi><mi mathvariant="normal">I</mi><mi mathvariant="normal">P</mi><mi mathvariant="normal">S</mi></mrow><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x0002C;</mo><mover accent="true"><mi>x</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>&#x02112;</mi><mi>E</mi></msub><mo>&#x0003D;</mo><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo>&#x0002B;</mo><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi></mrow></mrow></msub><mo minsize="1.2em" maxsize="1.2em">(</mo><mi>x</mi><mo>&#x0002C;</mo><msub><mi>D</mi><mi>T</mi></msub><mo stretchy="false">&#x00028;</mo><msub><mi>z</mi><mi>S</mi></msub><mo stretchy="false">&#x00029;</mo><mo minsize="1.2em" maxsize="1.2em">)</mo><mo>&#x0002C;</mo><mspace width="1em" /><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo>&#x0003D;</mo><msub><mi>&#x003BB;</mi><mi>z</mi></msub><mo fence="false" stretchy="false">&#x02016;</mo><msub><mi>z</mi><mi>S</mi></msub><mo>&#x02212;</mo><mi>z</mi><msubsup><mo fence="false" stretchy="false">&#x02016;</mo><mn>2</mn><mn>2</mn></msubsup><mo>&#x0002B;</mo><msub><mi>&#x003BB;</mi><mrow><mrow><mi mathvariant="normal">K</mi><mi mathvariant="normal">L</mi></mrow></mrow></msub><msub><mi>D</mi><mrow><mrow><mi mathvariant="normal">K</mi><mi mathvariant="normal">L</mi></mrow></mrow></msub><mo minsize="1.2em" maxsize="1.2em">(</mo><msub><mi>q</mi><mi>S</mi></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x02223;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo fence="false" stretchy="false">&#x02016;</mo><msub><mi>q</mi><mi>T</mi></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x02223;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo minsize="1.2em" maxsize="1.2em">)</mo></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>&#x02112;</mi><mi>D</mi></msub><mo>&#x0003D;</mo><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi></mrow></mrow></msub><mo minsize="1.2em" maxsize="1.2em">(</mo><mi>x</mi><mo>&#x0002C;</mo><msub><mi>D</mi><mi>S</mi></msub><mo stretchy="false">&#x00028;</mo><msub><mi>E</mi><mi>T</mi></msub><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo><mo minsize="1.2em" maxsize="1.2em">)</mo><mo>&#x0002C;</mo><mspace width="1em" /><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">j</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo>&#x0003D;</mo><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub><mo>&#x0002B;</mo><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi></mrow></mrow></msub><mo minsize="1.2em" maxsize="1.2em">(</mo><mi>x</mi><mo>&#x0002C;</mo><msub><mi>D</mi><mi>S</mi></msub><mo stretchy="false">&#x00028;</mo><msub><mi>z</mi><mi>S</mi></msub><mo stretchy="false">&#x00029;</mo><mo minsize="1.2em" maxsize="1.2em">)</mo><mo>&#x0002B;</mo><mi>w</mi><mspace width="0.167em" /><msub><mi>&#x02112;</mi><mi>G</mi></msub><mo minsize="1.2em" maxsize="1.2em">(</mo><msub><mi>D</mi><mi>S</mi></msub><mo stretchy="false">&#x00028;</mo><msub><mi>z</mi><mi>S</mi></msub><mo stretchy="false">&#x00029;</mo><mo minsize="1.2em" maxsize="1.2em">)</mo></mrow></math></div>
+<p>默认权重为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003BB;</mi><mi>p</mi></msub><mo>&#x0003D;</mo><mn>0.33</mn></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003BB;</mi><mi>z</mi></msub><mo>&#x0003D;</mo><mn>1.0</mn></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003BB;</mi><mrow><mrow><mi mathvariant="normal">K</mi><mi mathvariant="normal">L</mi></mrow></mrow></msub><mo>&#x0003D;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>3</mn></mrow></msup></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003BB;</mi><mrow><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">v</mi></mrow></mrow></msub><mo>&#x0003D;</mo><mn>0.1</mn></mrow></math>（第 4.1 节）。直觉：窗约束把全局注意变成局部因果聚合；<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x02112;</mi><mrow><mrow><mi mathvariant="normal">l</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">t</mi></mrow></mrow></msub></mrow></math> 把学生钉在教师潜空间里，对抗项只在联合阶段用来补感知细节。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s8">8. Toy example</h3>
+
+<p class="note">以下为本文自造算例，数字不是论文结果，只用来说明窗口与 cache 如何工作。</p>
+<p>假设潜网格为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>f</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math> 帧、每帧 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>3</mn><mo>&#x000D7;</mo><mn>3</mn></mrow></math> 个 token，窗为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi><mo>&#x0003D;</mo><mn>2</mn></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>H</mi><mo>&#x0003D;</mo><mi>W</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math>。看第 3 帧中心 token：它只能看见第 2、3 帧里自己周围最多 9 个位置，总共不超过 18 个 key，而不是全部 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>4</mn><mo>&#x000D7;</mo><mn>9</mn><mo>&#x0003D;</mo><mn>36</mn></mrow></math> 个 token。流式走到第 4 帧时，cache 丢掉第 2 帧、写入第 4 帧，驻留仍是 2 帧。若有人误以为“窗越大越好”，可以把 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi></mrow></math> 加到 4：计算和 cache 都近似翻倍，但若感受野本来就在 2 帧内，PSNR 可能几乎不动——这正是 Table 11 想检验的事情。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s9">9. Baselines</h3>
+
+<p>作者用公开权重、在同一批短视频上自己复现并做端到端重建（第 4.1 节）：TAEHV / TAEH3、LightTAE、LightVAE-Lite / Pro、Turbo-VAED、LynnReal-Omni、Solar-X、StreamRender-H3。只改解码器的方法会配对官方编码器。轻量 TAE 类在 720p H3 上可以把解码做到 20.3 ms（官方 1010.6 ms，约 49.8×），但 PSNR 只有 28.72，对 34.31（Table 1）。Solar-X 在 2160p 出现 OOM。LiveVAE 的对照锚点是官方教师，而不是这些以质量换速度的极小模型。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s10">10. 实验设置</h3>
+
+<p>教师为 MiniMax-H3 与 Wan2.2。训练数据是内部视频加 20% 图像，视频为 4–6 秒、8–30 FPS，H3 取 22 帧、Wan2.2 取 21 帧，训练分辨率 480p 或 720p，推理外推到 1080p（1920×1088，空间压缩 16）和 2160p。全局 batch 8，AdamW（<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B2;</mi><mn>1</mn></msub><mo>&#x0003D;</mo><mn>0.9</mn><mo>&#x0002C;</mo><msub><mi>&#x003B2;</mi><mn>2</mn></msub><mo>&#x0003D;</mo><mn>0.95</mn></mrow></math>，weight decay 0.01，学习率 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>4</mn></mrow></msup></mrow></math>，1k warmup 后余弦到 0）。时延在单卡 NVIDIA H100 上、warmup 之后测“单段视频的纯编码或纯解码毫秒数”；Mem 为峰值显存。训练数据规模、滤波器细节与精确评测片段来源，正文未完整给出（Not Reported）。Table 4 把评测片段加长到 H3 的 90 帧、Wan2.2 的 89 帧，用来检查短clip 结论会不会在更长序列上崩掉；正文称 Ours 在长片段上编码器仍有 5.4–6.4×、解码器 3.8–4.2× 的加速（相对官方，长clip 协议），具体单元格见 Table 4，此处不把短clip 的 5.2–6.2× 直接套到长视频。生成实验冻结下游 DiT，只替换 VAE，因而测到的是潜空间兼容性，不是联合微调后的生成上限。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s11">11. 指标教学</h3>
+
+<p>PSNR / SSIM / LPIPS 衡量重建：PSNR 高、LPIPS 低通常更好。需要分开看的是，LPIPS 与 PSNR 并不总是同向——H3 480p 上 Ours 的 PSNR 高于官方（33.06 vs 32.99），但 LPIPS 更差（.054 vs .041），SSIM 也略低（.904 vs .909）。生成质量用 VBench-2.0 的 Human / Creativity / Control / Physics / Communication 与总分，以及 CodeVideoBench 的 Structure / Style / Quality。加速比是官方时间除以该方法时间，必须看清比较的是编码、解码还是两者之和。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s12">12. 可核验结果</h3>
+
+<ol>
+<li>H3 480p：编码 623.0→119.5 ms（5.2×），解码 435.3→146.0 ms（3.0×），PSNR 32.99→33.06，显存 8.8→4.4 GB（Table 1）。</li>
+<li>H3 720p：编码 1453.5→234.3（6.2×），解码 1010.6→303.4（3.3×），PSNR 34.31→34.74（Table 1）。这与摘要“5.2–6.2× 编码、3.0–3.3× 解码且更高 PSNR”逐字对齐。</li>
+<li>H3 1080p / 2160p 的 Ours 同样 PSNR 更高（36.76 vs 35.86；39.05 vs 38.68），编码约 6.0–6.2×，解码 3.3×（Table 1）。</li>
+<li>Ours-Opt 在 1080p 编码 165.9 ms（18.7×）、解码 225.9 ms（9.5×）。官方编码+解码 3107.5+2152.0=5259.5 ms，Ours-Opt 为 391.8 ms，比值约 13.42，与引言“端到端至多 13.4×”一致；正文没有单独列出这一组合单元格。</li>
+<li>Wan2.2 上加速明显更小：720p 编码仅 1.5×、解码 5.0×，且 PSNR 低于官方（36.24 vs 37.66）。摘要的 5.2–6.2× 明确写的是 MiniMax-H3。</li>
+<li>VBench-2.0：Wan2.2 总分 0.582→0.581，几乎持平；H3 总分 0.680→0.665，Human 0.830→0.784、Physics 0.802→0.781（Table 2）。CodeVideoBench 总分 84.1→84.0。</li>
+<li>Table 12：480p 上加上 FP8（ABC）反而比 AB 更慢（编码 131.9 vs 78.6 ms），这解释了为何低分辨率不用 FP8。</li>
+<li>无 QAT 的 FP8 在 1080p 把 PSNR 从 36.76 打到 34.43，QAT 恢复到 36.63（Table 12）。</li>
+</ol>
+<p><span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s13">13. 真实表图阅读</h3>
+
+<p>先看 MiniMax-H3 这条主线。Table 1 的结构是按 480p/720p 与 1080p/2160p 分成两块，每一块同时给出质量、时延和显存。把官方、Ours、Ours-Opt 抽出来，横向对比最清楚：</p>
+<div class="tbl"><table><thead><tr><th>设置</th><th>Encoder / Decoder</th><th>Params</th><th>PSNR</th><th>SSIM</th><th>LPIPS</th><th>Enc. Time (ms)</th><th>Enc. 加速</th><th>Dec. Time (ms)</th><th>Dec. 加速</th><th>Mem</th></tr></thead><tbody>
+<tr><td>480p</td><td>H3（官方）</td><td>2.60 B</td><td>32.99</td><td>.909</td><td>.041</td><td>623.0</td><td>—</td><td>435.3</td><td>—</td><td>8.8 GB</td></tr>
+<tr><td>480p</td><td>Ours*</td><td>2.08 B</td><td>33.06</td><td>.904</td><td>.054</td><td>119.5</td><td>5.2×</td><td>146.0</td><td>3.0×</td><td>4.4 GB</td></tr>
+<tr><td>480p</td><td>Ours-Opt*</td><td>2.08 B</td><td>33.06</td><td>.904</td><td>.054</td><td>78.6</td><td>7.9×</td><td>78.6</td><td>5.5×</td><td>4.4 GB</td></tr>
+<tr><td>720p</td><td>H3（官方）</td><td>2.60 B</td><td>34.31</td><td>.923</td><td>.038</td><td>1453.5</td><td>—</td><td>1010.6</td><td>—</td><td>9.0 GB</td></tr>
+<tr><td>720p</td><td>Ours*</td><td>2.08 B</td><td>34.74</td><td>.922</td><td>.049</td><td>234.3</td><td>6.2×</td><td>303.4</td><td>3.3×</td><td>5.0 GB</td></tr>
+<tr><td>720p</td><td>Ours-Opt*</td><td>2.08 B</td><td>34.74</td><td>.922</td><td>.049</td><td>92.5</td><td>15.7×</td><td>126.7</td><td>8.0×</td><td>5.0 GB</td></tr>
+<tr><td>1080p</td><td>H3（官方）</td><td>2.60 B</td><td>35.86</td><td>.939</td><td>.035</td><td>3107.5</td><td>—</td><td>2152.0</td><td>—</td><td>9.2 GB</td></tr>
+<tr><td>1080p</td><td>Ours*</td><td>2.08 B</td><td>36.76</td><td>.942</td><td>.042</td><td>514.2</td><td>6.0×</td><td>660.2</td><td>3.3×</td><td>6.5 GB</td></tr>
+<tr><td>1080p</td><td>Ours-Opt*</td><td>2.08 B</td><td>36.63</td><td>.941</td><td>.041</td><td>165.9</td><td>18.7×</td><td>225.9</td><td>9.5×</td><td>7.8 GB</td></tr>
+<tr><td>2160p</td><td>H3（官方）</td><td>2.60 B</td><td>38.68</td><td>.962</td><td>.029</td><td>11465.1</td><td>—</td><td>8026.2</td><td>—</td><td>15.0 GB</td></tr>
+<tr><td>2160p</td><td>Ours*</td><td>2.08 B</td><td>39.05</td><td>.966</td><td>.034</td><td>1856.0</td><td>6.2×</td><td>2445.0</td><td>3.3×</td><td>14.1 GB</td></tr>
+<tr><td>2160p</td><td>Ours-Opt*</td><td>2.08 B</td><td>39.07</td><td>.966</td><td>.032</td><td>656.7</td><td>17.5×</td><td>912.2</td><td>8.8×</td><td>15.1 GB</td></tr>
+</tbody></table></div>
+<p class="cite">摘自 Table 1 的 MiniMax-H3 行（非全部 baseline）。时间单位为毫秒，单卡 NVIDIA H100、warmup 后测量。星号表示流式编解码。Ours-Opt 在 480p/720p 对应 Table 12 的 Ours+AB（无 FP8），在 1080p/2160p 对应 Ours+ABC（含 FFN FP8+QAT）。来源：https://arxiv.org/pdf/2611.34912 第 8 页 Table 1，以及第 16 页 Table 12。</p>
+<p>再看生成任务。重建变好并不自动等于生成变好：H3 的 VBench 总分下降 0.015，主要掉在 Human 与 Physics；R2V 总分几乎不动。</p>
+<div class="tbl"><table><thead><tr><th>VAE / 任务</th><th>Human</th><th>Creat.</th><th>Ctrl.</th><th>Phys.</th><th>Comm.</th><th>Total</th><th>R2V Structure</th><th>R2V Style</th><th>R2V Quality</th><th>R2V Total</th></tr></thead><tbody>
+<tr><td>Wan2.2 Official（T2V）</td><td>0.745</td><td>0.452</td><td>0.401</td><td>0.622</td><td>0.692</td><td>0.582</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>Wan2.2 Ours（T2V）</td><td>0.752</td><td>0.444</td><td>0.395</td><td>0.624</td><td>0.689</td><td>0.581</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>MiniMax-H3 Official（T2V）</td><td>0.830</td><td>0.514</td><td>0.495</td><td>0.802</td><td>0.761</td><td>0.680</td><td>75.3</td><td>86.7</td><td>90.3</td><td>84.1</td></tr>
+<tr><td>MiniMax-H3 Ours（T2V）</td><td>0.784</td><td>0.515</td><td>0.492</td><td>0.781</td><td>0.752</td><td>0.665</td><td>74.3</td><td>87.7</td><td>89.9</td><td>84.0</td></tr>
+</tbody></table></div>
+<p class="cite">Table 2：Text-to-Video 为 VBench-2.0，Reference-to-Video 为 CodeVideoBench，仅官方 MiniMax-H3 行报告 R2V。来源：https://arxiv.org/pdf/2611.34912 第 9 页 Table 2。</p>
+<p>Fig. 5 / Table 12 把系统优化拆开。注意力融合（A）在所有分辨率都明显降时延；再加编译（B）后 720p 编码从 130.3 降到 92.5 ms；FP8（C）只在 1080p/2160p 继续赚钱，480p 甚至回退。读 Table 12 时要注意单位：时间是毫秒，显存是 GB，两行之间不能做“质量除以时间”的复合分数，因为官方行不在这张表里。要把 13.4× 讲清楚，需要回到 Table 1 的官方 1080p 行做加法，而不是只看 Table 12 的内部比值。</p>
+<div class="tbl"><table><thead><tr><th>Runtime（H3）</th><th>480p Enc/Dec/Mem</th><th>720p Enc/Dec/Mem</th><th>1080p Enc/Dec/Mem</th><th>2160p Enc/Dec/Mem</th></tr></thead><tbody>
+<tr><td>Ours</td><td>119.5 / 146.0 / 4.40</td><td>234.3 / 303.4 / 5.04</td><td>514.2 / 660.2 / 6.48</td><td>1856.0 / 2445.0 / 14.12</td></tr>
+<tr><td>Ours + A（注意力融合）</td><td>74.1 / 85.3 / 4.40</td><td>130.3 / 174.7 / 5.04</td><td>281.1 / 376.8 / 6.48</td><td>1068.4 / 1494.5 / 14.11</td></tr>
+<tr><td>Ours + AB（+分区编译）</td><td>78.6 / 78.6 / 4.36</td><td>92.5 / 126.7 / 4.96</td><td>200.0 / 279.0 / 6.28</td><td>780.1 / 1135.1 / 13.34</td></tr>
+<tr><td>Ours + ABC（+FFN FP8+QAT）</td><td>131.9 / 127.8 / 5.78</td><td>127.4 / 130.8 / 6.39</td><td>165.9 / 225.9 / 7.77</td><td>656.7 / 912.2 / 15.05</td></tr>
+</tbody></table></div>
+<p class="cite">Table 12 上半：累积推理优化的时延（ms）与峰值显存（GB）。A=attention operator fusion，B=region-wise compilation，C=FFN FP8 with QAT。来源：https://arxiv.org/pdf/2611.34912 第 16 页 Table 12。</p>
+<div class="tbl"><table><thead><tr><th>质量</th><th>480p PSNR/SSIM/LPIPS</th><th>720p</th><th>1080p</th><th>2160p</th></tr></thead><tbody>
+<tr><td>Ours</td><td>33.06 / 0.904 / 0.054</td><td>34.74 / 0.922 / 0.049</td><td>36.76 / 0.942 / 0.042</td><td>39.05 / 0.966 / 0.034</td></tr>
+<tr><td>Ours+ABC 无 QAT</td><td>31.71 / 0.897 / 0.056</td><td>33.03 / 0.916 / 0.051</td><td>34.43 / 0.936 / 0.044</td><td>35.62 / 0.957 / 0.037</td></tr>
+<tr><td>Ours+ABC</td><td>33.00 / 0.903 / 0.054</td><td>34.66 / 0.921 / 0.048</td><td>36.63 / 0.941 / 0.041</td><td>39.07 / 0.966 / 0.032</td></tr>
+</tbody></table></div>
+<p class="cite">Table 12 下半：FP8 若不做 QAT，1080p PSNR 从 36.76 掉到 34.43；QAT 拉回到 36.63。来源：同 Table 12。</p>
+<p><span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s14">14. Ablation</h3>
+
+<p>Table 5 比较注意力分解，正文指出帧级 2D 分解是为了调用现成核，质量与直接 3D 窗接近（精确行列见该表）。Table 6 选择 RoPE。Table 7：训练掺 20% 图像，720p 上这一混合被采用。Table 8：去掉 Stage 3 联合微调，端到端重建变差。Table 9：对抗损失有助于感知项。窗大小方面，Table 10 显示解码器从 2×3×3 增到 2×7×7，720p PSNR 仅 34.23→34.31，再增到 2×16×16 也只有 34.45，时间几乎不动；编码器 2×7×7 相对 2×3×3 的 720p PSNR 从 33.10 到 33.44。Table 11：解码器把时间窗从 2 加到 4，720p PSNR 34.31→34.45，时间 302.5→364.6 ms。默认 2×7×7 是质量与流式缓存之间的折中，而不是“窗越大越好”。Table 8 的联合微调也很关键：若只做 Stage 1/2 的模块蒸馏、不做 Stage 3，解码器仍按教师潜变量的统计来生成，学生编码器的轻微漂移就会在端到端重建里放大。这解释了为什么“先对齐潜空间、再让解码器适应学生”不能在 Stage 1 结束后停手。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s15">15. Claim vs Evidence</h3>
+
+<p>摘要把“更高 PSNR + 5.2–6.2× / 3.0–3.3×”说成 MiniMax-H3 上的事实，Table 1 支持这一点，也支持 1080p/2160p 外推。需要收紧的是三句话。第一，“至多 13.4×”只在摘要和贡献列表出现，最吻合的是 1080p Ours-Opt 的编码+解码时间比，文中未写出该加法。第二，“几乎无损 / 匹配官方下游质量”与 Table 2 不完全同义：R2V 总分 84.1 vs 84.0 确实接近，但 H3 的 VBench 总分与 Human / Physics 有可见下降，结论自己也承认这一点。第三，Wan2.2 上编码加速只有约 1.4–1.6×，且重建 PSNR 低于教师，不能把 H3 的倍数说成方法的普遍倍数。另外，时延是单卡、单模块、短clip 的微基准，不是完整 DiT 采样的墙钟。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s16">16. 贡献</h3>
+
+<p>论文自己归纳了三点，均可在正文找到对应证据：（1）基于有效感受野的局部性观察，给出同时覆盖编、解码的流式 Transformer VAE；（2）三阶段蒸馏以保留教师潜空间，使 LiveVAE 可作为 drop-in 替换；（3）一套面向 H100 的推理优化，把端到端加速推到文中所称的 13.4×。我们额外强调：它明确把编码器纳入加速范围，这与只加速解码的基线不同。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s17">17. 局限</h3>
+
+<p>结论写得很直：细纹理、小字、小脸和快速运动上仍有感知缺口（Fig. 6），并且认为部分原因是教师潜空间来自卷积 VAE。VBench 的 Human Fidelity 与 Physics 低于官方解码器。训练数据不公开。默认窗对更长程光照或场景一致性是否足够，只在 89–90 帧的 Table 4 上做了重建复查，没有更长交互式会话。评测硬件是单卡 H100。代码与模型“将发布”，检索时未独立确认。另外，Ours 的 LPIPS 在多个分辨率上并不优于官方（例如 H3 480p 的 .054 对 .041），所以“质量更好”只在 PSNR（以及部分分辨率的 SSIM）上成立，不能理解成所有重建指标全面占优。若应用更关心感知损失而不是 PSNR，需要自己重看 Table 1 的 LPIPS 列，而不是只引用摘要。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s18">18. 复现要点</h3>
+
+<p>若复现，先冻结教师 VAE，严格按 Stage 1→2→3 的顺序与步数（80k / 200k / 5k）训练，损失权重取第 4.1 节的默认值，图像比例 20%，窗 2×7×7，12 层。联合阶段开 EMA 0.999，FP8 只对 FFN 做 QAT，并只用 FP8 下的 EMA 权重。评测必须自己跑端到端重建，不要混用官方编码器与学生解码器来代表“完整 LiveVAE”（Table 3 另有单组件替换）。时延协议：单卡 H100、warmup 后分别测编码与解码。缺了内部数据，则只能在公开视频集上近似，质量数字会不可比。建议同时记录软件栈（CUDA / 注意力核版本）与是否启用 A/B/C 三项优化，因为 Table 1 的 Ours 与 Ours-Opt 不是同一套推理配置；把 Opt 的时延拿去和别人的未优化实现比，会夸大架构本身的贡献。若只想复现架构而不涉及 FP8，应对照 Table 12 的 Ours 或 Ours+AB 行，而不是 Table 1 在 1080p/2160p 上的 Ours-Opt。对外报告时建议同时给出编码时间、解码时间和二者之和，并注明分辨率、帧数与是否启用 FP8，以免 5.2×、8.0× 与 13.4× 被混用到不同设置上。最后，生成分数应固定随机种子与提示集；本文 Table 2 未报告方差，单次点估计不足以支撑“几乎无损”的强表述。复现报告里至少应列出 Human 与 Physics 两项，避免只引用接近的总分。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s19">19. 研究价值</h3>
+
+<p>它把“视频生成加速”从 DiT 采样步数和注意力稀疏，下移到往往被当成固定前置模块的 VAE，并且用感受野证据给局部窗一个不是拍脑袋的理由。对做流式、可编辑、参考视频条件生成的人，编码器加速和有界 KV cache 是可直接用的系统设计约束。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s20">20. 可执行迁移</h3>
+
+<p>（1）在接入任何“更快的视频 VAE”前，先复制 Fig. 2 的有效感受野分析：若 7×7、2 帧已经覆盖绝大部分梯度，就不要为全局注意付费；若不是，就不该盲目套 CWA。（2）把官方 VAE 换成学生时，先做 Table 3 那种单侧替换：只换解码器或只换编码器，确认潜空间没有漂移，再上联合模型；并始终同时看 PSNR 与 VBench Human/Physics，而不是只看重建。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s21">21. 方向专用分析</h3>
+
+<p>今日 Video Acceleration 的关键不是再做一个稀疏 DiT，而是砍掉流水线里仍然同步、仍然全局的那一段。LiveVAE 的速度数字要和“是否还能当 drop-in 潜空间”一起读：加速来自有界窗与系统栈，兼容性来自蒸馏，而不是来自更少的扩散步。它与 CodecOPSD（编解码器）、D3-Cache / Hindsight Forcing（生成缓存或强迫）不在同一层，因此适合填补 11-26 空出的 Video 位置。若把 LiveVAE 接到已有的少步蒸馏或稀疏 DiT 上，理论上加速可以相乘，但本文没有做这种组合实验（Not Reported）。工程上更稳妥的是先单独替换 VAE、测量编码/解码/DiT 三段的时间占比，再决定下一刀砍在哪里。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s22">22. Attack / Verification</h3>
+
+<p>攻击这项主张，最有效的是换评测协议：用更长、更高运动强度、小字更多的视频，看 Fig. 6 的失败是否变成平均指标；把 VAE 接进完整 DiT 采样，看墙钟加速是否还接近 13.4×；检查不同随机种子与数据滤除规则。验证方面，Table 1 与 Table 12 的 480p/720p 行应当能在公开 H3/Wan2.2 权重上独立复现时延数量级；生成分数则要固定 VBench-2.0 与 CodeVideoBench 的协议版本。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34912">abs</a> · <a href="https://arxiv.org/pdf/2611.34912">pdf</a> · <a href="https://arxiv.org/html/2611.34912">html</a> · 项目页 <a href="https://livevae.github.io/">livevae.github.io</a>（文中给出，检索时未独立核验仓库状态）</span></p>
+
+<h3 id="p1-s23">23. 记忆总结</h3>
+
+<ul>
+<li>视频 VAE 的有效感受野高度局部：空间 7×7 可覆盖 95–100% 梯度能量。</li>
+<li>CWA 用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>T</mi><mo>&#x000D7;</mo><mi>H</mi><mo>&#x000D7;</mo><mi>W</mi></mrow></math> 因果窗加滚动 KV cache，使编、解码都可流式且缓存有界。</li>
+<li>三阶段蒸馏（先编码、再解码、再联合+对抗）是为了保住教师潜空间，便于 drop-in。</li>
+<li>H3 上相对官方：编码 5.2–6.2×、解码 3.0–3.3×，PSNR 更高（Table 1）。</li>
+<li>1080p 编码+解码时间比约为 13.4×，与“至多 13.4×”一致，但文中未写出该单元格。</li>
+<li>VBench 在 H3 上总分 0.680→0.665，Human 与 Physics 下降，不能称完全无损。</li>
+<li>FP8 只在高分辨率划算，且必须做 QAT，否则 1080p PSNR 会掉约 2.3 dB。</li>
+<li>默认 2×7×7 已接近窗增大的收益平台，再加时间窗主要增加时延。</li>
+<li>Wan2.2 上编码加速和 PSNR 优势都弱于 H3，不能把倍数当普遍结论。</li>
+<li>代码声称将发布；训练数据内部，时延是单卡 H100 微基准。</li>
+</ul>
+
+</section>
+<section class="paper" id="p2">
+
+<h2>论文 2｜Maco-RL：用混合任务强化学习直接扩展 agent 能力 <span class="tag">NEW</span> Reinforcement Learning</h2>
+
+<h3 id="p2-s1">1. 基本信息</h3>
+
+<p>标题：Maco-RL: Scaling Agent Capabilities with Mixed-Task Reinforcement Learning。作者：Jiacheng Zhang、Qixing Zhou（共同一作），Haiyang Wang、Qipeng Gu、Shuzhe Wu、Feiyang Pan、Lue Fan、Dandan Tu、Zhaoxiang Zhang。单位：中国科学院自动化研究所、华为技术有限公司。arXiv：<a href="https://arxiv.org/abs/2611.34703">2611.34703</a>。主类 cs.LG。提交时间 2026-11-25 16:59:27Z（约 2026-11-26 00:59 Asia/Shanghai），列入今日公布的周四批次。34 页，16 张表，非 BACKFILL。方向：Reinforcement Learning（LLM/Agent MixRL）。代码 Not Reported。训练加速器型号 Not Reported。训练基于 verl，环境在 Kubernetes 管理的 Docker 容器中运行。PDF 共 2,727,781 字节，arXiv HTML 可访问。Qwen3.5-27B 分 S1/S2 两阶段逐步加入任务类型；Qwen3.8-27B 则在单一阶段从一开始就同时使用全部四类任务。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s2">2. 一句话定位</h3>
+
+<p>不把各域专家再蒸馏回一个模型，而是在同一个策略上直接做混合任务强化学习（MixRL），用异步 rollout、梯度混合和 Tri-Buffer Sampling（TBS）在增加任务实例与任务类型时保持稳定与可扩展。TBS 把采样预算按 20%、60%、20% 分给 Frontier、Reinforcement 与 History；Claw 因存在部分奖励，不走 TBS 而改均匀采样。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s3">3. 人话版</h3>
+
+<p>训练能修代码、能操作终端、能做办公自动化、还能按需求文档开发新功能的 agent 时，常见做法是每个任务训一个专家，再想办法合并。MixRL 想走一条更直的路：一个策略同时在多种任务上做强化学习，并在训练中途把新任务加进来。这很诱人，也很容易翻车——任务时长差很多，异步 rollout 会过时，交替更新会让策略在任务间来回漂，稀疏奖励下反复采样永远失败的题还会浪费大量零优势更新。Maco-RL 的对策分三层。第一，rollout 和训练解耦，每个更新都按定额混入所有任务（他们称为梯度混合）。第二，用 TBS 把题目分进三个池：还没做对过的 Frontier、偶尔做对但还不稳的 Reinforcement、以及旧阶段的 History。第三，分两阶段扩展：S1 先训三类任务，S2 从该检查点继续，加入功能开发并扩大旧池。主表上，Qwen3.5-27B 的 Overall 从 43.6 走到 S2 的 60.1，超过 Qwen3.6-27B 的 49.8；Qwen3.8-27B 从 61.4 走到 67.0（Table 1）。值得先记住一个读表顺序：先看 Overall，再立刻回头看 SWE 与 FeatureBench，以及 Table 13 的置信区间。否则很容易把 Claw-Anything 从 12.0 到 64.6 的跃升，误当成五个基准同步变强。S1 在 FeatureBench Tests Passed 上从 37.9 掉到 28.6，说明“先扩展再补回来”是真实发生过的，而不是平滑曲线。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s4">4. 背景与缺口</h3>
+
+<p>Agent 强化学习已经能在 SWE-bench、终端基准等单域上取得进展，但能力扩展往往依赖“分域训练 + 事后合并”。多任务 RL 文献讨论过梯度冲突与调度，可对长程、稀疏奖励、工具调用的 agent 来说，真正卡住的常常是：异构任务的 rollout 时间差、异步策略滞后，以及增量加入新任务时旧能力回退。论文认为，在这种设置下，控制策略漂移比单纯缓解目标冲突更紧迫。缺口就是一套能直接、持续、稳定地在混合任务上做 RL 的训练框架，而不是再做一个新的 agent 脚手架。和训练一个更强的单域 SWE agent 不同，这里的难点是异构任务要在同一组参数上共存：终端任务步数短、SWE 轨迹更长、功能开发又会在 S2 才出现。如果框架不能在中途加任务，所谓持续扩展就只能停下来重新做混合或蒸馏。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s5">5. 核心 insight</h3>
+
+<p>两件关键判断。其一，每个更新都混合所有任务，比按任务交替更新更能抑制异步训练中的策略漂移；消融里交替更新会在 S2 第 25 步把奖励打到 0，并出现工具调用失败（Figure 7）。其二，稀疏奖励下“从未成功”的题目产生不了 GRPO 风格的非零优势，所以采样预算必须被显式切开：一部分继续探索，一部分强化刚会但还不稳的题（成功率为 0.25 附近的高斯权重），一部分回放旧任务。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s6">6. 方法逐步拆解</h3>
+
+<p><strong>任务与两阶段。</strong>共享策略覆盖四类任务：代码修复（SWE 风格）、终端操作（Terminal-Bench 风格）、办公自动化（Claw 风格），以及按产品需求文档做跨文件功能开发（CodeWorld / FeatureBench）。S1 只训前三类；S2 从 S1 检查点继续，扩大旧池并加入功能开发（Figure 2）。</p>
+<p><strong>异步混合训练。</strong>Rollout worker 按任务池独立采样，完成的轨迹进入共享缓存。Learner 按固定的每任务实例配额组装批次，保证每次更新都见到所有任务类型。定期把训练权重同步给 rollout，并丢弃超过版本滞后阈值的轨迹。更慢的任务会分到更多并发槽位，以免短任务先行填满缓存、长任务拖住更新（Table 5：S1 初期 64 张训练设备、32 张推理设备，槽位 Claw/SWE/TMax 为 4/16/12）。</p>
+<p><strong>TBS。</strong>新题目先跑一组初始 rollout：全失败进 Frontier，至少一次成功进 Reinforcement。Frontier 对连续失败的题会冷却、暂停采样，一旦首次成功就转入 Reinforcement 且不返回。Reinforcement 用最近一组成功率 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover accent="true"><mi>p</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math> 的高斯权重采样，均值与带宽都设为 0.25。History 均匀回放更早阶段的题，并用当前策略重新生成轨迹。三个池的配额满足 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B1;</mi><mi>F</mi></msub><mo>&#x0002B;</mo><msub><mi>&#x003B1;</mi><mi>R</mi></msub><mo>&#x0002B;</mo><msub><mi>&#x003B1;</mi><mi>H</mi></msub><mo>&#x0003D;</mo><mn>1</mn></mrow></math>。</p>
+<p><strong>优化器配置（Table 6）。</strong>Adam，学习率 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>6</mn></mrow></msup></mrow></math>，常数日程，无 warmup；BF16；RLOO 优势估计；每步 32 个实例、每实例 8 条 rollout；裁剪区间 0.20–0.28；关掉 KL 与熵奖励；开启 MTP 训练（系数 0.1）但关闭 MTP 推测解码；Thinking mode 关闭。S1 的 prompt/response 预算 16/128K，S2 为 16/96K；每 3（S1）或 2（S2）次更新同步一次权重。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s7">7. 核心公式</h3>
+
+<p>论文把可写成方程的核心放在 Reinforcement Buffer 的采样权重（公式 1）。设 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math> 最近一组 rollout 的成功率为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover accent="true"><mi>p</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math>，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>R</mi></mrow></math> 为对应任务的 Reinforcement 池，则</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>w</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>exp</mi><mo minsize="1.623em" maxsize="1.623em">(</mo><mo>&#x02212;</mo><mfrac><mrow><mo stretchy="false">&#x00028;</mo><mover accent="true"><mi>p</mi><mo>&#x0005E;</mo></mover><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mi>&#x003BC;</mi><msup><mo stretchy="false">&#x00029;</mo><mn>2</mn></msup></mrow><mrow><mn>2</mn><msup><mi>&#x003B8;</mi><mn>2</mn></msup></mrow></mfrac><mo minsize="1.623em" maxsize="1.623em">)</mo><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>P</mi><mi>R</mi></msub><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mfrac><mrow><mi>w</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow><mrow><msub><mo>&#x02211;</mo><mrow><mi>y</mi><mo>&#x02208;</mo><mi>R</mi></mrow></msub><mi>w</mi><mo stretchy="false">&#x00028;</mo><mi>y</mi><mo stretchy="false">&#x00029;</mo></mrow></mfrac><mo>&#x0002C;</mo><mspace width="1em" /><mi>&#x003BC;</mi><mo>&#x0003D;</mo><mi>&#x003B8;</mi><mo>&#x0003D;</mo><mn>0.25</mn></mrow></math></div>
+<p>直觉：权重在成功率 0.25 处最高，既避开全零奖励（没有优势信号），也不把预算全砸在已经接近必胜的题上。配额层则是硬约束</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>&#x003B1;</mi><mi>F</mi></msub><mo>&#x0002B;</mo><msub><mi>&#x003B1;</mi><mi>R</mi></msub><mo>&#x0002B;</mo><msub><mi>&#x003B1;</mi><mi>H</mi></msub><mo>&#x0003D;</mo><mn>1</mn></mrow></math></div>
+<p>优化端采用 RLOO：同一提示的 8 条 rollout 互为基线来估计优势，再在裁剪区间 [0.20, 0.28] 内做策略更新；文中关闭 KL。梯度混合本身不是新公式，而是把所有任务轨迹放进同一次参数更新，而不是按任务交替。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s8">8. Toy example</h3>
+
+<p class="note">以下为本文自造算例，数字不是论文结果，只用来解释 TBS 为什么把成功率瞄在 0.25 附近。</p>
+<p>假设 Reinforcement 池里有三道题，最近 8 次成功率分别是 1/8、2/8、7/8，即 0.125、0.25、0.875。取 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BC;</mi><mo>&#x0003D;</mo><mi>&#x003B8;</mi><mo>&#x0003D;</mo><mn>0.25</mn></mrow></math>，则偏离 0.25 的距离平方分别是 0.015625、0、0.390625，高斯权重大约是 0.88、1.00、0.04。于是采样会极度偏向“刚刚会一点”的第二题，几乎不再打已经很稳的第三题，同时仍给第一题不少机会。若没有这层权重、只均匀采样，计算会被第三题的高成功率和第一题的多次全零组稀释。Frontier 的冷却则防止某一道永远失败的题每个循环都占掉 8 次无信号 rollout。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s9">9. Baselines</h3>
+
+<p>主对照是同尺寸的 Qwen3.5/3.6/3.8-27B，以及更大或闭源的 Claude-Opus-5、DeepSeek-V4-Pro、GLM-5.3、GPT-5.6-Sol、Kimi-K3（Table 1）。消融里还有：按累计更新数对齐的三个单任务专家之和（Figure 1b、Table 14）；只训 Claw 的单任务 RL（Figure 5）；交替更新 vs 梯度混合（Figure 7）；Vanilla 采样 vs TBS（Table 15）。读前沿模型时必须看表注：部分 Terminal-Bench 与 SWE-bench 分数来自第三方榜单，不是同一套 harness 的作者复跑。同一张表里，GLM-5.3、GPT-5.6-Sol、Kimi-K3 的 Overall 分别为 64.4、62.8、56.9；Maco-RL-3.8 的 67.0 高于这些行，但仍低于 Claude-Opus-5 的 72.1。把“接近更大模型”读成“追上最强闭源模型”并不成立。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s10">10. 实验设置</h3>
+
+<p>S1 任务池 11,086 条，S2 再加 10,452 条并把全部 S1 实例留在 History，合计 21,538（Table 2）。Qwen3.8-27B 的训练池为 20,875 条。设备方面 Table 5 给出训练 64、推理 32 或 40，但芯片型号 Not Reported。评测基准为 Claw-Eval（Pass³）、Claw-Anything（Pass@1）、Terminal-Bench 2.1（Pass@1）、SWE-bench Verified（Pass@1）、FeatureBench 1.1 fast split（Resolved 与 Tests Passed）。Overall 是其中五项指标的未加权平均（Claw-Eval 用 Pass³，FeatureBench 用 Tests Passed）。最终评测配置见 Table 12（细节在附录 C）。TBS 只用于 SWE、Terminal-Bench 与 FeatureBench；Claw 因部分奖励能在成功阈值以下仍提供组内差异，故均匀采样（第 4.1 节与附录 A）。三个缓冲池的预算固定为 Frontier 20%、Reinforcement 60%、History 20%。Qwen3.8-27B 不走两阶段，而是在单一阶段同时使用四类任务。Table 11 显示该次训练使用 64 张训练设备与 96 张推理设备，训练并行为 TP/PP/CP = 8/8/1，推理为 TP/PP = 4/1；每更新按任务各取 8 个实例、共 256 条轨迹，并且打开 Thinking mode（与 Table 6 中 3.5 关闭思维模式不同）。芯片型号同样 Not Reported。Table 9 的终止规则也不宜省略：正常完成计入奖励 r；超出预算时，Claw 记 0 但仍参与梯度，SWE、TMax 与 CodeWorld 记 0.8r 并参与；基础设施失败则奖励为 0 且整条轨迹排除。Table 12 给出最终评测规模：Claw-Anything 288 题 1 次尝试，Claw-Eval 161 题 3 次，Terminal-Bench 2.1 共 89 题 3 次，FeatureBench 1.1 共 100 题 1 次，SWE-bench Verified 500 题 1 次。异步调度上，Table 8 把 generation slack 固定为 0.75；S1 的队列容量为 504 组、每环境反压阈值 168，S2 收紧到 112 与 28，消费顺序也从 FIFO 改为优先最新策略版本。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+<div class="tbl"><table><thead><tr><th>环境</th><th>3.5 S1 实例 / rollout 占比</th><th>3.5 S2 新增实例 / 占比</th><th>3.8 实例 / 占比</th></tr></thead><tbody>
+<tr><td>Claw-Anything</td><td>3,800 / 17.5%</td><td>1,546 / 5.0%</td><td>5,346 / 4.8%</td></tr>
+<tr><td>SWE</td><td>4,772 / 50.0%</td><td>3,013 / 32.5%</td><td>4,773 / 32.1%</td></tr>
+<tr><td>TMax</td><td>2,514 / 32.5%</td><td>2,789 / 27.5%</td><td>6,412 / 26.2%</td></tr>
+<tr><td>CodeWorld</td><td>—</td><td>3,104 / 35.0%</td><td>4,344 / 36.9%</td></tr>
+<tr><td>合计</td><td>11,086 / 100%</td><td>10,452 / 100%（History 另保留全部 S1，总计 21,538）</td><td>20,875 / 100%</td></tr>
+</tbody></table></div>
+<p class="cite">Table 2。S2 的新实例与 History Buffer 中的全部 11,086 条 S1 实例合并。来源：https://arxiv.org/pdf/2611.34703 Table 2。</p>
+
+<h3 id="p2-s11">11. 指标教学</h3>
+
+<p>Pass@1 是单次尝试成功率。Pass³（文中写作 Pass^3）是 Claw-Eval 上的三次相关成功率，比单次更稳，但不能直接与 Pass@1 比大小。FeatureBench 的 Resolved 更接近“整题通过”，Tests Passed 是测试点通过率，后者更细、也更容易在没完全解出时上升。Overall 把不同尺度的指标做未加权平均，所以 Claw-Anything 从 12.0 涨到 64.6 会强烈拉动总分；反之 SWE 只加 1.2 个点时，Overall 仍可能看起来很好看。Table 13 的 95% 置信区间是增益的区间，穿过 0 表示在该协议下还不能声称显著改进。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s12">12. 可核验结果</h3>
+
+<ol>
+<li>Qwen3.5-27B Overall 43.6 → S1 54.2 → S2 60.1，表内相对起点 +16.6（43.6+16.6=60.2，与 60.1 有 0.1 的四舍五入差）。S2 超过 Qwen3.6-27B 的 49.8（Table 1）。</li>
+<li>S2 在 Claw-Anything 上 12.0→64.6（+52.6），Claw-Eval 60.2→73.3，Terminal-Bench 40.5→54.3；SWE-bench 仅 67.4→68.6（+1.2）。</li>
+<li>S1 的 FeatureBench Tests Passed 是 28.6，低于起点 37.9，说明加入新能力前先发生了回退；S2 回到 39.9，略高于起点。</li>
+<li>Maco-RL-3.8：Overall 61.4→67.0（+5.7），SWE-bench 70.2→79.0（+8.8），是 27B 行里 SWE 改进最明显的一条（Table 1）。</li>
+<li>Table 13：3.5 的 Overall 增益 CI 为 [14.99, 20.79]，不含 0；但 SWE-bench 为 [-1.60, 4.00]，FeatureBench 为 [-3.10, 7.28]，都穿过 0。3.8 的 Overall 为 [2.67, 7.68]，SWE 为 [5.80, 11.80]；Claw-Eval、Terminal-Bench、FeatureBench、Claw-Anything 的 CI 都穿过 0。</li>
+<li>混合 vs 三专家合计：token 1.852B vs 1.821B，GPU hours 12,572.4 vs 13,090.6，best-so-far 均值 Pass@1 为 68.41 vs 64.28（Table 14）。</li>
+<li>在匹配的 Claw 实例数下，混合训练的 Claw-Eval 峰值 Pass@1 为 80.3%，Claw-only 为 76.5%，差 3.8 个点（Figure 5 正文）。</li>
+<li>TBS 在 FeatureBench step 25 达到 42.87%，Vanilla 为 39.78%（+3.09 pp，Table 15）。交替更新在 S2 第 25 步出现奖励塌缩（Figure 7）。</li>
+</ol>
+<p>还可以用训练筛题与轨迹形态做交叉核对，但不把它们算作主表成绩。Table 3 显示新实例要先做 8 次初筛再进入训练池：SWE 的 S1 新题 4,886 条中，全失败 3,157、部分成功 1,266、全对 349、无效 114，最终保留 4,772；CodeWorld 在 S2 的 3,122 条里全失败多达 2,566，全对仅 74，保留 3,104。功能开发池几乎全是零优势或极稀疏信号，正是 TBS 要处理的区域。Table 16 记录 Qwen3.8 训练前期（第 1–20 步）与后期（第 180–200 步）的轨迹形态：SWE 的响应从 54.8k 升到 74.9k token，步数从 46.6 升到 62.3；CodeWorld 的步数从 77.4 升到 110.7，但每步 token 从 514.2 降到 333.1。后面这条说明后期不一定只是“写得更长”，也可能是更频繁地调用工具。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s13">13. 真实表图阅读</h3>
+
+<p>先读 Table 1。把起点、两个阶段和同尺寸 Qwen 放在一起，能看到 Overall 的提升主要来自 Claw 与终端，而不是 SWE 或 FeatureBench 的全面爆发。S1 在 Tests Passed 上的回退不要被 Overall 的 54.2 盖住。</p>
+<div class="tbl"><table><thead><tr><th>模型</th><th>Claw-Eval Pass³</th><th>Claw-Anything Pass@1</th><th>Terminal-Bench 2.1 Pass@1</th><th>SWE-bench Verified Pass@1</th><th>FeatureBench Resolved</th><th>FeatureBench Tests Passed</th><th>Overall</th></tr></thead><tbody>
+<tr><td>Claude-Opus-5 (high)</td><td>73.9</td><td>34.7</td><td>87.6†</td><td>97.0‡</td><td>40.0</td><td>67.2</td><td>72.1</td></tr>
+<tr><td>DeepSeek-V4-Pro (high)</td><td>67.7</td><td>43.3</td><td>78.7†</td><td>96.4‡</td><td>11.0</td><td>38.9</td><td>65.0</td></tr>
+<tr><td>Qwen3.5-27B</td><td>60.2</td><td>12.0</td><td>40.5</td><td>67.4</td><td>3.0</td><td>37.9</td><td>43.6</td></tr>
+<tr><td>Qwen3.6-27B</td><td>68.3</td><td>14.2</td><td>56.2</td><td>71.2</td><td>4.0</td><td>39.0</td><td>49.8</td></tr>
+<tr><td>Qwen3.8-27B</td><td>71.4</td><td>46.0</td><td>68.9</td><td>70.2</td><td>9.0</td><td>50.3</td><td>61.4</td></tr>
+<tr><td>Maco-RL-3.5 (S1)</td><td>71.4</td><td>51.3</td><td>52.4</td><td>67.0</td><td>6.0</td><td>28.6</td><td>54.2</td></tr>
+<tr><td>Maco-RL-3.5 (S2)</td><td>73.3</td><td>64.6</td><td>54.3</td><td>68.6</td><td>6.0</td><td>39.9</td><td>60.1</td></tr>
+<tr><td>S2 相对 Qwen3.5-27B</td><td>+13.1</td><td>+52.6</td><td>+13.9</td><td>+1.2</td><td>+3.0</td><td>+2.0</td><td>+16.6</td></tr>
+<tr><td>Maco-RL-3.8</td><td>74.5</td><td>55.2</td><td>72.3</td><td>79.0</td><td>12.0</td><td>54.2</td><td>67.0</td></tr>
+<tr><td>相对 Qwen3.8-27B</td><td>+3.1</td><td>+9.2</td><td>+3.4</td><td>+8.8</td><td>+3.0</td><td>+3.9</td><td>+5.7</td></tr>
+</tbody></table></div>
+<p class="cite">Table 1 摘录（%）。Overall 为 Claw-Eval Pass³、FeatureBench Tests Passed 以及三个 Pass@1 的未加权平均（第 4.1 节）。† Terminal-Bench 2.1 来自 Artificial Analysis；‡ SWE-bench Verified 来自 Vals AI；其余为作者自评。来源：https://arxiv.org/pdf/2611.34703 第 6 页 Table 1。</p>
+<p>再读 Table 13。这张表把“看起来很大的点数”变成带不确定性的配对比较，而且 Claw-Anything 改用 150 题公共子集，3.5 的该行变成 12.00→71.33，Overall 变成 43.61→61.49，与 Table 1 的 60.1 不同口径。3.8 的若干分项 CI 穿过 0，说明 67.0 的总分更像是 SWE 等分项拉动的综合结果，而不是五项齐涨。</p>
+<div class="tbl"><table><thead><tr><th>指标</th><th>3.5 基座→S2</th><th>3.5 增益 95% CI (pp)</th><th>3.8 基座→Maco-RL-3.8</th><th>3.8 增益 95% CI (pp)</th></tr></thead><tbody>
+<tr><td>Claw-Eval Pass³</td><td>60.25→73.29</td><td>[6.83, 19.88]</td><td>71.43→74.53</td><td>[-2.48, 8.70]</td></tr>
+<tr><td>Claw-Anything Pass@1</td><td>12.00→71.33</td><td>[51.33, 67.33]</td><td>46.00→52.67</td><td>[-1.33, 14.67]</td></tr>
+<tr><td>Terminal-Bench 2.1 Pass@1</td><td>40.45→54.31</td><td>[5.24, 22.47]</td><td>68.91→72.28</td><td>[-1.50, 7.87]</td></tr>
+<tr><td>SWE-bench Verified Pass@1</td><td>67.40→68.60</td><td>[-1.60, 4.00]</td><td>70.20→79.00</td><td>[5.80, 11.80]</td></tr>
+<tr><td>FeatureBench Tests Passed</td><td>37.93→39.94</td><td>[-3.10, 7.28]</td><td>50.30→54.20</td><td>[-1.90, 9.92]</td></tr>
+<tr><td>Overall</td><td>43.61→61.49</td><td>[14.99, 20.79]</td><td>61.37→66.54</td><td>[2.67, 7.68]</td></tr>
+</tbody></table></div>
+<p class="cite">Table 13：配对比较。Claw-Anything 使用 150 题公共子集，故该行与 Overall 与 Table 1 不完全同口径。来源：https://arxiv.org/pdf/2611.34703 第 26 页 Table 13。</p>
+<p>Table 14 回答的是“混合是否比三个专家更值计算”。在几乎相同的 token 与更少的 GPU hours 上，混合训练的 best-so-far 均值更高。</p>
+<div class="tbl"><table><thead><tr><th>训练方式</th><th>消耗 token</th><th>GPU hours</th><th>Best-so-far 均值 Pass@1 (%)</th></tr></thead><tbody>
+<tr><td>三个专家模型合计</td><td>1.821B</td><td>13,090.6</td><td>64.28</td></tr>
+<tr><td>Maco-RL（混合任务）</td><td>1.852B</td><td>12,572.4</td><td>68.41</td></tr>
+</tbody></table></div>
+<p class="cite">Table 14：含训练、共享初筛与重启开销。来源：https://arxiv.org/pdf/2611.34703 第 26 页 Table 14。+4.13 pp（68.41−64.28）与正文 4.14 点一致（四舍五入）。</p>
+<p>Table 15 只看 Tests Passed 的话 TBS 全程领先；但正文同时写明，到 step 25 为止 Vanilla 累计解出的新实例更多。若只引用 42.87 vs 39.78 而不提探索次数，会把“学得更稳”说成“发现得更多”。</p>
+<div class="tbl"><table><thead><tr><th>Step</th><th>Vanilla Tests Passed (%)</th><th>TBS Tests Passed (%)</th><th>增益 (pp)</th></tr></thead><tbody>
+<tr><td>5</td><td>32.62</td><td>39.89</td><td>+7.27</td></tr>
+<tr><td>10</td><td>35.43</td><td>39.01</td><td>+3.58</td></tr>
+<tr><td>15</td><td>36.77</td><td>41.85</td><td>+5.08</td></tr>
+<tr><td>20</td><td>37.88</td><td>39.57</td><td>+1.69</td></tr>
+<tr><td>25</td><td>39.78</td><td>42.87</td><td>+3.09</td></tr>
+</tbody></table></div>
+<p class="cite">Table 15 的 Tests Passed 列。正文确认 step 25 为 42.87% vs 39.78%。同一表还报告累计新解出实例，Vanilla 多于 TBS，但平均通过率更低。来源：https://arxiv.org/pdf/2611.34703 Table 15。</p>
+<p><span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s14">14. Ablation</h3>
+
+<p>三组消融都有正文数字。混合 vs 单任务：在匹配 Claw 实例数时，混合把 Claw-Eval 峰值从 76.5% 提到 80.3%，说明存在正迁移，而不是简单的预算平摊。梯度混合 vs 交替更新：S2 里交替更新在约第 25 步奖励归零并伴随工具失败，梯度混合保持稳定（Figure 7）。TBS vs Vanilla：FeatureBench Tests Passed 在每个给出的检查点上 TBS 都更高，step 25 为 +3.09 pp；与此同时 Vanilla 解出更多新实例。TBS 的价值更像是把采样压在“可学且尚未稳定”的区域，而不是最大化完全解出的题目数。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s15">15. Claim vs Evidence</h3>
+
+<p>“27B 模型经 RL-only 后可与更大模型竞争”需要加限定：Maco-RL-3.8 的 Overall 67.0 高于表中 Qwen3.5-397B 等若干更大模型在作者坐标下的位置（Figure 1a），但低于 Claude-Opus-5 的 72.1，且部分前沿分来自第三方榜单。S2 相对 3.5 的 +16.6 Overall 被 Table 13 的综合 CI 支持，但 SWE 与 FeatureBench 的分项 CI 穿过 0，不能把五项改进说成同样可靠。S1 在 FeatureBench Tests Passed 上明显退步，说明“持续扩展任务类型”并不自动单调。代码与加速器型号缺失，外部复现成本高。奖励黑客与评分过松的问题在附录 F/G 中被作者自己记录，并做过规则修补——这是加分的诚实，也说明最终数字依赖于修补后的环境。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s16">16. 贡献</h3>
+
+<p>可核实的贡献有三条：（1）把 MixRL 做成可增量加入任务类型的两阶段流程，而不是一次性多任务；（2）用异步 rollout + 每步混合批次解决异构任务下的漂移与吞吐；（3）TBS 把探索、巩固与回放写成带配额的采样规则，并在 FeatureBench 上给出相对 Vanilla 的曲线。主结果展示了 27B 密集模型经纯 RL 后 Overall 的大幅度提升，尤其是 3.5 的 Claw-Anything 与 3.8 的 SWE-bench。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s17">17. 局限</h3>
+
+<p>结论没有单独开“Limitations”节，但证据里限制很清楚。训练硬件型号与代码未给出。评测不全是统一复跑。Table 1 与 Table 13 口径不完全一致。SWE 在 3.5 上几乎不动。S1 对 FeatureBench 有伤害。交替更新的崩溃说明方法对批次构成敏感。附录还记录了奖励黑客与评分协议漏洞，意味着环境本身在训练过程中被修过。3.5 的 Thinking mode 关闭，结果不能直接外推到长思维链 agent；3.8 在 Table 11 中打开了 Thinking mode，因此两代 27B 的训练配置本身就不是同一套超参，不宜只比较 Overall 增量。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s18">18. 复现要点</h3>
+
+<p>按 Table 6 固定优化器与批次：Adam <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>6</mn></mrow></msup></mrow></math>、RLOO、8 rollout、32 实例、无 KL、裁剪 [0.20, 0.28]、BF16。S1 与 S2 的同步频率、响应长度和槽位分配必须分开设置（Table 5–6）。实现 TBS 时，先做 8 次初筛再分池，Reinforcement 权重用 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BC;</mi><mo>&#x0003D;</mo><mi>&#x003B8;</mi><mo>&#x0003D;</mo><mn>0.25</mn></mrow></math>，History 均匀回放并重新 rollout。不要用交替任务更新去“简化”实现。评测要同时报告 Table 1 口径与 Table 13 的公共子集 + CI。若没有 64+32 级设备，至少应保持每更新的任务配额比例，否则梯度混合的稳定性结论可能不再成立。同步频率也不要随手改：S1 每 3 次更新同步一次、S2 每 2 次，滞后过大的轨迹会被丢弃，改稀同步会既浪费计算又放大漂移。奖励与终止规则应以附录 B.3 与环境修补后的版本为准，不要用论文早期被黑客的旧判定去复现最终分数。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s19">19. 研究价值</h3>
+
+<p>对 LLM/Agent RL 来说，这篇把“要不要把所有任务放进同一次更新”从一个偏好问题变成了有失败案例的实证问题：交替更新会崩，混合更新能继续涨。TBS 则针对稀疏奖励里零优势组的浪费，给出可实现的采样规则。它也提醒：Overall 被单个基准大幅拉动时，必须回头看分项与置信区间。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s20">20. 可执行迁移</h3>
+
+<p>（1）若你已经在跑多任务 agent RL，先把“按任务轮流更新”改成“每次更新都按定额混入所有任务”，并记录策略版本滞后；这是成本相对低、本文消融最强烈的一刀。（2）给训练题建三个池：全失败、部分成功、旧任务回放；部分成功池用峰值在低成功率（如 0.25）的权重，而不是均匀或只打难题。同时为完全失败的题加冷却，避免零优势组占满预算。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s21">21. 方向专用分析</h3>
+
+<p>这是典型的 RL-for-Agents 论文：环境是长程工具任务，信号是可验证的成功/测试通过，算法问题是信用分配之前的采样与稳定性。它与昨日的 U-Statistics 论文不同，几乎不谈估计器理论，而谈大规模混合训练如何不塌。Agent 连续两天后，今日用它覆盖 RL 主线而不是再选一篇记忆/脚手架 Agent 文，是因为贡献落在训练方法而非新的 agent 接口。若只关心单域 SWE，3.8 的 70.2→79.0 仍然有用，但 3.5 上同一指标几乎不动，说明 MixRL 的红利高度依赖起点模型和任务配比，不能把 3.8 的 SWE 增益自动写到所有 27B 上。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s22">22. Attack / Verification</h3>
+
+<p>最有效的质疑是换口径：只用 SWE-bench 与 FeatureBench 的 CI，3.5 的“全面提升”会大幅缩水；把第三方榜上的前沿模型改成同一 harness 复跑，Figure 1a 中“接近更大模型”的位置可能移动。验证上，应固定随机种子与评测尝试次数，重出 Table 13；并检查在未修补的旧环境里奖励是否仍可被黑客。若无法负担完整训练，至少应用公开检查点（若未来发布）复现五基准点估计。另一个可执行的审计是：只重跑 Table 13 的 150 题公共子集，确认 Claw-Anything 的 12.00→71.33 与 Overall 的 43.61→61.49 在相同协议下可复现，再决定是否采信 Table 1 的全量点估计。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.34703">abs</a> · <a href="https://arxiv.org/pdf/2611.34703">pdf</a> · <a href="https://arxiv.org/html/2611.34703">html</a></span></p>
+
+<h3 id="p2-s23">23. 记忆总结</h3>
+
+<ul>
+<li>MixRL 直接在一个策略上扩展任务实例与任务类型，不做分域专家再蒸馏。</li>
+<li>每个更新混合所有任务，是为了抑制异步训练中的策略漂移。</li>
+<li>交替更新在 S2 约第 25 步奖励塌缩；梯度混合保持稳定。</li>
+<li>TBS 把题分到 Frontier / Reinforcement / History，配额之和为 1。</li>
+<li>Reinforcement 权重是峰值在 0.25 的高斯，用来巩固“刚会但不稳”的题。</li>
+<li>Qwen3.5 Overall 43.6→S2 60.1；Qwen3.8 61.4→67.0（Table 1）。</li>
+<li>3.5 的 SWE 与 FeatureBench 增益 CI 穿过 0；S1 的 Tests Passed 先从 37.9 掉到 28.6。</li>
+<li>混合训练在相近 token / GPU hours 下，best-so-far 均值 68.41 vs 三专家 64.28。</li>
+<li>匹配 Claw 数据量时，混合比 Claw-only 的峰值 Pass@1 高 3.8 个点（80.3 vs 76.5）。</li>
+<li>代码与 GPU 型号 Not Reported；部分前沿分数来自第三方榜单。</li>
+</ul>
+
+</section>
+<section class="paper" id="p3">
+
+<h2>论文 3｜RankCast：按 prefill 与 decode 不同瓶颈做 MoE 秩级均衡 <span class="tag">NEW</span> Inference Acceleration</h2>
+
+<h3 id="p3-s1">1. 基本信息</h3>
+
+<p>标题：RankCast: Phase-Aware Rank Balancing in MoE Serving。作者：Kaidi Fu（伊利诺伊大学香槟分校），Xu-Hao Lu、Pingwei Sun、Jianchao Tan（通讯）、Yuchen Xie、Xunliang Cai（美团）。arXiv：<a href="https://arxiv.org/abs/2611.33542">2611.33542</a>。主类 cs.DC。提交时间 2026-11-24 23:37:38Z（约 2026-11-25 07:37 Asia/Shanghai），出现在今日公布的周四新目。23 页，11 张表，非 BACKFILL。方向：Inference Acceleration（MoE 服务）。实现基于 SGLang 与 DeepEP；公开代码仓库 Not Reported。评测模型为 Qwen3-235B-A22B-Instruct-2507（BF16，94 层 MoE，128 专家，k=8）与 Qwen3.5-397B-A17B（60 层，512 专家，k=10）。硬件为两台经 RoCE 互联的 8×H800 节点；服务栈版本为 SGLang 0.5.12、DeepEP 1.2.1 与 DeepGEMM。PDF 共 1,037,206 字节，arXiv HTML 可访问。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s2">2. 一句话定位</h3>
+
+<p>在 PD 分离的专家并行 MoE 推理里，prefill 的瓶颈是最忙一秩的 token 数，decode 的瓶颈是最忙一秩的活跃专家数；RankCast 用同一套“保住 Top-p、其余在 Top-L 里挑”的路由约束，分别用秩价格和专家关闭去压这两个最大值。默认候选宽度在 235B 上为 L=16，在 397B 上为 L=20，两阶段都保护每个 token 的 Top-2。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s3">3. 人话版</h3>
+
+<p>大 MoE 服务通常把专家权重切到不同 GPU（EP），每层都要等最慢的那张卡。训练时用的辅助损失只能管长期平均，管不住某一批请求打到同一组物理秩上。更麻烦的是，prefill 和 decode 慢的原因不一样：prefill 偏计算，多一个 token 就多一块 GEMM；decode 在中等批次下偏内存，一张卡上活跃专家越多，越要来回搬权重，token 再多一点反而不是主因。因此把同一套“再平衡专家放置”的办法同时用到两阶段，往往一边有效、另一边失效。RankCast 的做法是不改权重放置，只改这一层每个 token 最终选哪些专家：先保住模型最看好的 Top-p，剩下 k−p 个名额在更大的 Top-L 候选里，按阶段目标来挑。Prefill 给繁忙的秩标高价，让灵活名额流向空闲秩；decode 则在最忙的秩上关闭一部分专家。他们在两台 8×H800 节点上测 Qwen3-235B-A22B（EP=8）和 Qwen3.5-397B-A17B（EP=16），prefill 输入吞吐最多加约 19%，decode 的 TPOT 最多降约 10%，质量损失声明低于 1 个百分点。读这些数字时有两个容易混的地方。第一，19% 是 prefill 输入吞吐，10% 是 decode 的 TPOT 下降，二者不能加在一起叫“端到端 29%”。第二，LongBench 上的相对增益明显更小，说明当计算或通信瓶颈不在最忙专家秩上时，改路由的空间会变窄。因此这项工作更像给 PD 分离的 MoE 服务提供一把按阶段使用的扳手，而不是一张在所有负载上通用的加速卡。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s4">4. 背景与缺口</h3>
+
+<p>DeepSeek-V3 已提到域偏移会在推理时造成专家不均，并在服务中用冗余专家应对。UltraEP 报告训练与 prefill 中秩间不均衡可达 1.30–4.01，且热门专家随 microbatch、层和域变化。在线 EPLB 一类方法用历史负载做放置或复制，跟不上“每一批都在变”的瞬时不均，复制还会占用本可用于 KV 的显存。PD 分离之后，两个阶段的目标函数也不再相同。缺口是：在不重排权重、不破坏 token 最核心专家的前提下，对 prefill 的最大 token 负载和 decode 的最大活跃专家数分别做在线、按批的秩级均衡，并真正接到 SGLang/DeepEP 这类服务栈里。只做离线重放是不够的：价格要在每层、每批之间算完，还得和已有的 dispatch/combine 重叠，否则均衡带来的等待减少会被求解本身吃掉。这也是为什么开销数字（约 0.5–0.9%）必须和吞吐增益放在同一节里读。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s5">5. 核心 insight</h3>
+
+<p>第一，真正决定一层延迟的不是单个专家的长期利用率，而是当前这批数据在物理秩上的瞬时最大值。第二，每个 token 并不需要把 k 个专家都订死：只要保住预测的 Top-p，剩下的灵活名额就可以被价格或关闭决策挪走。第三，prefill 适合用运输问题的对偶价格一次性摊负载，decode 更适合从 Top-k 出发、在最忙秩上按代价关闭专家，因为 decode 的 GEMM 时间几乎不随每专家 token 数变化，而随活跃专家数近似线性变化（文中斜率 0.52 ms/专家，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>R</mi><mn>2</mn></msup><mo>&#x0003D;</mo><mn>0.99</mn></mrow></math>）。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s6">6. 方法逐步拆解</h3>
+
+<p>对 token <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>i</mi></mrow></math> 的路由分数 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>s</mi><mi>i</mi></msub></mrow></math>，定义候选集与保护集</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>C</mi><mi>i</mi></msub><mo>&#x0003D;</mo><msub><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">p</mi></mrow><mi>L</mi></msub><mo stretchy="false">&#x00028;</mo><msub><mi>s</mi><mi>i</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mspace width="1em" /><msub><mi>F</mi><mi>i</mi></msub><mo>&#x0003D;</mo><msub><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">p</mi></mrow><mi>p</mi></msub><mo stretchy="false">&#x00028;</mo><msub><mi>s</mi><mi>i</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mspace width="1em" /><mi>p</mi><mo>&#x02264;</mo><mi>k</mi><mo>&#x02264;</mo><mi>L</mi></mrow></math></div>
+<p>最终选择 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>E</mi><mi>i</mi></msub></mrow></math> 必须满足 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>F</mi><mi>i</mi></msub><mo>&#x02286;</mo><msub><mi>E</mi><mi>i</mi></msub><mo>&#x02286;</mo><msub><mi>C</mi><mi>i</mi></msub></mrow></math> 且 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x0007C;</mo><msub><mi>E</mi><mi>i</mi></msub><mo stretchy="false">&#x0007C;</mo><mo>&#x0003D;</mo><mi>k</mi></mrow></math>。默认评测里 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math>，保护前缀 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi><mo>&#x0003D;</mo><mn>2</mn></mrow></math>（Table 5）。价格和掩码用预测的下一层分数计算，目标层仍用本层真实分数做最终选择。</p>
+<p><strong>Prefill。</strong>灵活名额 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>d</mi><mo>&#x0003D;</mo><mi>k</mi><mo>&#x02212;</mo><mi>p</mi></mrow></math>。设 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>N</mi></mrow></math> 个 token、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>P</mi></mrow></math> 个 EP 秩，秩 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>q</mi></mrow></math> 的灵活负载目标为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>c</mi><mi>q</mi></msub></mrow></math>（扣除保护集后的均衡目标，总和为 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>N</mi><mi>d</mi></mrow></math>）。用 0-1 变量选择“token–秩–候选”对，最大化分数并满足每个 token 恰好 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>d</mi></mrow></math> 个灵活选择、每秩恰好 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>c</mi><mi>q</mi></msub></mrow></math> 个负载（公式 2）。对偶变量是 token 阈值 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B1;</mi><mi>i</mi></msub></mrow></math> 与秩价格 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B2;</mi><mi>q</mi></msub></mrow></math>：token 按 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>a</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>q</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></msub><mo>&#x02212;</mo><msub><mi>&#x003B2;</mi><mi>q</mi></msub></mrow></math> 排序，繁忙秩价格升高。实际只做一轮扫描，并用直方图交换残差分数，避免把每个分数送到所有秩。目标层最终取</p>
+<div class="eq"><div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msubsup><mi>E</mi><mi>i</mi><mrow><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></mrow></msubsup><mo>&#x0003D;</mo><msub><mi>F</mi><mi>i</mi></msub><mo>&#x0222A;</mo><msub><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">p</mi></mrow><mi>d</mi></msub><mo stretchy="false">&#x0007B;</mo><msub><mi>s</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>e</mi></mrow></msub><mo>&#x02212;</mo><msub><mi>&#x003B2;</mi><mrow><mi>&#x003C1;</mi><mo stretchy="false">&#x00028;</mo><mi>e</mi><mo stretchy="false">&#x00029;</mo></mrow></msub><mi>:</mi><mi>e</mi><mo>&#x02208;</mo><msub><mi>C</mi><mi>i</mi></msub><mi>&#x029F5;</mi><msub><mi>F</mi><mi>i</mi></msub><mo stretchy="false">&#x0007D;</mo></mrow></math></div></div>
+<p><strong>Decode。</strong>从原生 Top-k 集合 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>A</mi><mn>0</mn></msub></mrow></math> 出发，关闭无保护专家，最小化最忙秩上的活跃专家数 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>M</mi><mo stretchy="false">&#x00028;</mo><mi>A</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mo>max</mo><mi>r</mi></msub><mo stretchy="false">&#x0007C;</mo><mi>A</mi><mo>&#x02229;</mo><msub><mi>E</mi><mi>r</mi></msub><mo stretchy="false">&#x0007C;</mo></mrow></math>，同时保证保护集不被关、且每个 token 仍至少有 k 个候选（公式 6）。关闭代价把路由权重损失加到松弛度上（公式 7），每次在多个秩上联合关闭，降低量 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>&#x00394;</mi><mo>&#x022C6;</mo></msup></mrow></math> 由每秩可关数与 token 松弛共同限制（公式 8）。可选深度帽 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>D</mi></mrow></math> 限制总关闭量。解不出来时走修复步骤（附录 B.2）。</p>
+<p><strong>系统。</strong>实现接在 SGLang 与 DeepEP 的常规 prefill 路径和低时延 decode 路径上；核与模型执行重叠，元数据走已有通信通道。跨层预测用本层 gate 权重估计下一层路由。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s7">7. 核心公式</h3>
+
+<p>Prefill 的运输问题与中心化价格为</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mo>max</mo><mi>x</mi></msub><munder><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>q</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></munder><msub><mi>a</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>q</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></msub><msub><mi>x</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>q</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></msub><mspace width="1em" /><mrow><mi mathvariant="normal">s</mi><mo>&#x0002E;</mo><mi mathvariant="normal">t</mi><mo>&#x0002E;</mo></mrow><mspace width="1em" /><munder><mo>&#x02211;</mo><mrow><mi>q</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></munder><msub><mi>x</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>q</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></msub><mo>&#x0003D;</mo><mi>d</mi><mtext>&#x000A0;</mtext><mo>&#x02200;</mo><mi>i</mi><mo>&#x0002C;</mo><mspace width="1em" /><munder><mo>&#x02211;</mo><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></munder><msub><mi>x</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>q</mi><mo>&#x0002C;</mo><mi>j</mi></mrow></msub><mo>&#x0003D;</mo><msub><mi>c</mi><mi>q</mi></msub><mtext>&#x000A0;</mtext><mo>&#x02200;</mo><mi>q</mi></mrow></math></div>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>&#x003B2;</mi><mi>q</mi></msub><mo>&#x0003D;</mo><msub><mi>Q</mi><mi>q</mi></msub><mo stretchy="false">&#x00028;</mo><msub><mi>c</mi><mi>q</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x02212;</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>P</mi></mrow></mfrac><munder><mo>&#x02211;</mo><mrow><msup><mi>q</mi><mi>&#x02032;</mi></msup></mrow></munder><msub><mi>Q</mi><mrow><msup><mi>q</mi><mi>&#x02032;</mi></msup></mrow></msub><mo stretchy="false">&#x00028;</mo><msub><mi>c</mi><mrow><msup><mi>q</mi><mi>&#x02032;</mi></msup></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow></math></div>
+<p>Decode 的目标与关闭代价、可行降低量为</p>
+<div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mo>min</mo><mrow><mi>A</mi><mo>&#x02286;</mo><msub><mi>A</mi><mn>0</mn></msub></mrow></msub><mi>M</mi><mo stretchy="false">&#x00028;</mo><mi>A</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><msub><mo>max</mo><mi>r</mi></msub><mo stretchy="false">&#x0007C;</mo><mi>A</mi><mo>&#x02229;</mo><msub><mi>E</mi><mi>r</mi></msub><mo stretchy="false">&#x0007C;</mo><mspace width="1em" /><mrow><mi mathvariant="normal">s</mi><mo>&#x0002E;</mo><mi mathvariant="normal">t</mi><mo>&#x0002E;</mo></mrow><mspace width="1em" /><mi>P</mi><mo>&#x02286;</mo><mi>A</mi><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><mo stretchy="false">&#x0007C;</mo><msub><mi>C</mi><mi>i</mi></msub><mo>&#x02229;</mo><mi>A</mi><mo stretchy="false">&#x0007C;</mo><mo>&#x02265;</mo><mi>k</mi><mtext>&#x000A0;</mtext><mo>&#x02200;</mo><mi>i</mi></mrow></math></div>
+<div class="eq"><div class="eq"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi></mrow><mo stretchy="false">&#x00028;</mo><mi>e</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><munder><mo>&#x02211;</mo><mrow><mi>i</mi><mi>:</mi><mi>e</mi><mo>&#x02208;</mo><msub><mi>C</mi><mi>i</mi></msub></mrow></munder><mfrac><mrow><msub><mi>&#x003C9;</mi><mrow><mi>i</mi><mo>&#x0002C;</mo><mi>e</mi></mrow></msub></mrow><mrow><msub><mi>&#x003C3;</mi><mi>i</mi></msub><mo>&#x0002B;</mo><mn>1</mn></mrow></mfrac><mo>&#x0002C;</mo><mspace width="2em" /><msup><mi>&#x00394;</mi><mrow><mo>&#x022C6;</mo></mrow></msup><mo>&#x0003D;</mo><mo>max</mo><mo stretchy="false">&#x0007B;</mo><mn>0</mn><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><mo>min</mo><mo stretchy="false">&#x00028;</mo><msub><mo>min</mo><mi>r</mi></msub><mo stretchy="false">&#x00028;</mo><msub><mi>h</mi><mi>r</mi></msub><mo>&#x0002B;</mo><msub><mi>m</mi><mi>r</mi></msub><mo stretchy="false">&#x00029;</mo><mo>&#x0002C;</mo><mtext>&#x000A0;</mtext><msub><mo>min</mo><mi>i</mi></msub><mo stretchy="false">&#x00028;</mo><msub><mi>&#x0039B;</mi><mi>i</mi></msub><mo>&#x02212;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x0007D;</mo></mrow></math></div></div>
+<p>直觉：价格是“这张卡现在有多抢手”，把它从分数里减掉，灵活 token 就会让路；关闭代价则是“关它会伤害多少还没有备选的 token”。保护集保证每个 token 最核心的专家不被这两步卖掉。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s8">8. Toy example</h3>
+
+<p class="note">以下为本文自造算例，数字不是论文结果，只用来说明价格如何挪走灵活名额。</p>
+<p>设 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>3</mn></mrow></math>、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi><mo>&#x0003D;</mo><mn>2</mn></mrow></math>，所以只有 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>d</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math> 个灵活名额。两个 token 的保护专家分别已经落在秩 A 与秩 B，但他们的第三候选都最想去秩 A。若都选 A，则 A 的灵活负载为 2、B 为 0。RankCast 给 A 标更高的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>&#x003B2;</mi><mi>A</mi></msub></mrow></math>，于是第二个 token 的次优候选（在 B 上）按调整分数可能反超，最终负载变成 1 和 1。Decode 侧可以想象秩 A 上有 6 个活跃专家、秩 B 有 4 个：若两个专家都还可关，一次联合关闭会让 A 先关 2 个，把最大值从 6 降到 4，而不是只在 A 上关 1 个却发现 B 也是 4、最大值不动。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s9">9. Baselines</h3>
+
+<p>服务栈基线是 SGLang 原生 Top-k。放置类对照为在线 EPLB（每 50 个 forward 重平衡）以及带冗余专家的 EPLB-R（235B 加 8 个，397B 加 16 个）。Decode 的算法对照是 XShare 与 OEA，但二者没有开源的 EP 实现，因此只在离线、用真实 router 分数的条件下比较（Table 7）：它们在相同 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>M</mi></mrow></math> 下会挪动 1.9–6.0 倍的路由概率。不要把离线概率位移直接读成在线吞吐。放置类基线里还有一个容易漏看的细节：冗余专家会占用显存、减少并发，因而 EPLB-R 的吞吐增益在两款模型上都低于不加冗余的在线 EPLB。在 LongBench v2 上，EPLB 与 EPLB-R 只去掉 6–43% 的超额负载，吞吐变化落在 −1.2% 到 +0.9% 之间，几乎帮不上忙。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s10">10. 实验设置</h3>
+
+<p>模型：Qwen3-235B-A22B，EP=8，部署在两台 8×H800 中的 8 卡；Qwen3.5-397B-A17B 为 60 层、512 专家、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>10</mn></mrow></math>，EP=16，DP=16 注意力，用满 16 卡。除非另说，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math>。Prefill 负载包括 ShareGPT、CodeContests、LongBench，并报告每秩 2K/4K/8K（397B 还有 16K）的 chunk。Decode 发 1,024 个输出 token，报告中位 TPOT；235B 最多 96 并发，397B 最多 128。质量基准包括 MMLU-Redux 2.0、MATH-500、MMMLU、RULER、GPQA-Diamond、AIME 2025、IFEval strict、LiveCodeBench v5，变化以百分点计，重复次数见附录 D.1。更完整的部署细节在第 5.1 节：235B 把 prefill 与 decode 分到两台节点，每台 TP=8、EP=8；397B 则把两个阶段放进同一实例、用满 16 卡，注意力 DP=16、专家并行 EP=16。除非另说，235B 的候选宽度为 L=16，397B 为 L=20，保护前缀均为 p=2。Prefill 直方图箱数在 235B 上为 B=256，在 397B 上为 B=64；decode 默认开启质量权重、不加深度帽。Prefill 的 ShareGPT 与 CodeContests 提示会被裁切或拼接成 4,096 token，LongBench v2 则取 32,768 token 窗口。Decode 在自然长度之外，另有一组把 ShareGPT 拼到 1,024 token 的对照。在线 EPLB 每 50 次 forward 重平衡一次。求解器本身在 235B 上每层约 9–17 微秒，在 397B 上约 58 微秒，跑在专家计算的旁路流上，作者称几乎不会直接暴露到关键路径。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s11">11. 指标教学</h3>
+
+<p>不均衡是各 EP 秩 token 数的 max/mean。1.00 是完全均衡；1.75 表示最忙秩比平均值多 75% 的 token，多出来的部分就是“超额负载”。若从 1.75 降到 1.08，超额从 0.75 降到 0.08，相当于去掉约 89% 的超额。吞吐增益是输入 token/s 相对 Top-k 的百分比。TPOT 是每输出 token 时间，越小越好；表中 Δ 却是 1/TPOT 的增益，所以 +11.1% 对应的时延下降大约是 10%，两者不要混用。质量变化是百分点，不是把 0.7008 改成 0.7008−0.84。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s12">12. 可核验结果</h3>
+
+<ol>
+<li>235B ShareGPT 8K：RankCast prefill 吞吐 +19.4%，不均衡 1.75→1.08；同设置 EPLB 为 +13.8% / 1.11，EPLB-R 为 +6.6% / 1.46（Table 1）。这是摘要“最多约 19%”的来源。</li>
+<li>同一行的超额负载从 0.75 降到 0.08，去掉约 89%，满足“超过 75%”的声明；235B LongBench 8K 从 1.47→1.10，去掉约 79%。</li>
+<li>长上下文上放置基线几乎失效：235B LongBench 2K，EPLB 为 −0.4%，RankCast 为 +7.3%（Table 1）。</li>
+<li>397B CodeContests 8K：+14.6%，不均衡 1.55→1.03；LongBench 仍只有 +4.2% 左右，说明收益随负载结构变化。</li>
+<li>Decode：235B 的 1/TPOT 增益 6.1–8.2%，397B 为 8.8–11.1%（Table 3）。397B CodeContests 的 TPOT 52.19→46.97，约 −10.0%，对应摘要“最多约 10%”。</li>
+<li>自然长度的短 prompt（WildChat 中位 29）仍有 +6.1% / +10.8%，说明增益不只来自 tiled 输入。</li>
+<li>质量：235B 上 Both 的最大下降是 LiveCodeBench 的 −0.84 pp、RULER 的 −0.73 pp，均低于 1 个百分点；若干项 Prefill 单独也会掉 0.3–0.67 pp（Table 4）。397B 主表无 Both 列。</li>
+<li>开销：prefill 均衡约增加 0.5% 的 step 时间；decode shedding 在 235B 约 +0.7%，在 397B 约 +0.9%。作者声明 kernel 尚未充分优化，该开销是上界。</li>
+</ol>
+<p>附录还提供两组不宜写进主成绩、但有助于判断方法边界的数字。Table 7 的离线对比里，XShare 与 OEA 即使用真实 router 分数，在相同最忙秩活跃专家数 M 下仍会挪动 1.9–6.0 倍的路由概率，说明 RankCast 更保守。Table 11 把价格做离线回放：235B 的原生不均衡从 P=8 的 1.60 升到 P=64 的 5.30，RankCast 去掉 53–70% 的超额；397B 在 P=16 去掉 72%，在 P=128 仍去掉 51%，但原生不均衡已高达 9.34。也就是说，更大 EP 时不均衡会迅速恶化，本文在线实验并没有覆盖这些规模。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s13">13. 真实表图阅读</h3>
+
+<p>Table 1 应和 Table 6 一起读：前者是相对增益，后者是绝对千 token/s。例如 235B ShareGPT 8K 从 50.0 到 59.7，(59.7−50.0)/50.0=19.4%，与 Table 1 一致。LongBench 的绝对吞吐明显低于 ShareGPT（33.1 vs 50.0），相对增益也更小，说明瓶颈不完全在专家不均。</p>
+<div class="tbl"><table><thead><tr><th>模型 / 负载</th><th>每秩 token</th><th>吞吐增益 EPLB</th><th>EPLB-R</th><th>RankCast</th><th>不均衡 Baseline</th><th>EPLB</th><th>EPLB-R</th><th>RankCast</th></tr></thead><tbody>
+<tr><td>235B ShareGPT</td><td>2K</td><td>+13.3%</td><td>+7.0%</td><td>+16.4%</td><td>1.76</td><td>1.15</td><td>1.41</td><td>1.09</td></tr>
+<tr><td>235B ShareGPT</td><td>4K</td><td>+14.7%</td><td>+8.0%</td><td>+18.5%</td><td>1.75</td><td>1.13</td><td>1.42</td><td>1.08</td></tr>
+<tr><td>235B ShareGPT</td><td>8K</td><td>+13.8%</td><td>+6.6%</td><td>+19.4%</td><td>1.75</td><td>1.11</td><td>1.46</td><td>1.08</td></tr>
+<tr><td>235B CodeContests</td><td>8K</td><td>+14.2%</td><td>+7.5%</td><td>+19.3%</td><td>1.66</td><td>1.06</td><td>1.39</td><td>1.04</td></tr>
+<tr><td>235B LongBench</td><td>2K</td><td>−0.4%</td><td>−1.2%</td><td>+7.3%</td><td>1.66</td><td>1.60</td><td>1.61</td><td>1.16</td></tr>
+<tr><td>235B LongBench</td><td>8K</td><td>+0.9%</td><td>+0.3%</td><td>+4.3%</td><td>1.47</td><td>1.39</td><td>1.44</td><td>1.10</td></tr>
+<tr><td>397B ShareGPT</td><td>8K</td><td>+7.4%</td><td>+7.1%</td><td>+11.2%</td><td>1.50</td><td>1.11</td><td>1.17</td><td>1.07</td></tr>
+<tr><td>397B CodeContests</td><td>8K</td><td>+9.9%</td><td>+9.1%</td><td>+14.6%</td><td>1.55</td><td>1.06</td><td>1.17</td><td>1.03</td></tr>
+<tr><td>397B LongBench</td><td>8K</td><td>−0.2%</td><td>+0.2%</td><td>+4.2%</td><td>1.26</td><td>1.15</td><td>1.16</td><td>1.05</td></tr>
+</tbody></table></div>
+<p class="cite">摘自 Table 1。吞吐增益相对 SGLang 原生 Top-k。不均衡为跨 EP 秩的 max/mean token 数。Online EPLB 每 50 步重平衡；EPLB-R 在 235B 上加 8 个冗余专家，在 397B 上加 16 个。来源：https://arxiv.org/pdf/2611.33542 第 8 页 Table 1。</p>
+<div class="tbl"><table><thead><tr><th>负载</th><th>每秩 token</th><th>Baseline k tok/s</th><th>EPLB</th><th>EPLB-R</th><th>RankCast</th></tr></thead><tbody>
+<tr><td>235B ShareGPT</td><td>8K</td><td>50.0</td><td>57.0</td><td>53.4</td><td>59.7</td></tr>
+<tr><td>235B CodeContests</td><td>8K</td><td>51.5</td><td>58.8</td><td>55.3</td><td>61.4</td></tr>
+<tr><td>235B LongBench</td><td>8K</td><td>33.1</td><td>33.4</td><td>33.2</td><td>34.5</td></tr>
+<tr><td>397B ShareGPT</td><td>8K</td><td>123.2</td><td>132.7</td><td>132.4</td><td>136.9</td></tr>
+<tr><td>397B CodeContests</td><td>8K</td><td>124.6</td><td>137.0</td><td>136.0</td><td>142.8</td></tr>
+<tr><td>397B LongBench</td><td>8K</td><td>122.3</td><td>122.0</td><td>122.5</td><td>127.4</td></tr>
+</tbody></table></div>
+<p class="cite">摘自 Table 6 的绝对 prefill 输入吞吐（千 token/s）。来源：https://arxiv.org/pdf/2611.33542 Table 6。</p>
+<p>Table 3 要把 Δ 和原始毫秒一起看。同一行里 397B 的基线 TPOT 就比 235B 高一大截，绝对节省也更大。</p>
+<div class="tbl"><table><thead><tr><th>负载</th><th>中位 prompt</th><th>235B Baseline TPOT</th><th>235B RankCast</th><th>235B Δ 1/TPOT</th><th>397B Baseline</th><th>397B RankCast</th><th>397B Δ 1/TPOT</th></tr></thead><tbody>
+<tr><td>WildChat</td><td>29</td><td>27.68</td><td>26.10</td><td>+6.1%</td><td>41.74</td><td>37.67</td><td>+10.8%</td></tr>
+<tr><td>ShareGPT</td><td>91</td><td>27.69</td><td>26.11</td><td>+6.1%</td><td>40.76</td><td>37.48</td><td>+8.8%</td></tr>
+<tr><td>ShareGPT, tiled</td><td>1,024</td><td>27.59</td><td>25.58</td><td>+7.9%</td><td>37.53</td><td>34.16</td><td>+9.9%</td></tr>
+<tr><td>CodeContests</td><td>3.5K</td><td>27.41</td><td>25.33</td><td>+8.2%</td><td>52.19</td><td>46.97</td><td>+11.1%</td></tr>
+</tbody></table></div>
+<p class="cite">Table 3：中位 decode TPOT（ms），每请求 1,024 个输出 token；235B 最多 96 并发，397B 最多 128。Δ 是 1/TPOT 的相对增益，不是 TPOT 本身的下降比例。397B CodeContests 的 TPOT 从 52.19 降到 46.97，约 −10.0%，对应 +11.1% 的 1/TPOT。来源：https://arxiv.org/pdf/2611.33542 第 9 页 Table 3。</p>
+<p>Table 4 的基线是 [0,1] 准确率，后面是百分点变化。不要把 −0.84 读成准确率从 0.70 变成接近 0。</p>
+<div class="tbl"><table><thead><tr><th>基准</th><th>235B 基线准确率</th><th>Prefill (pp)</th><th>Decode (pp)</th><th>Both (pp)</th><th>397B 基线</th><th>Prefill (pp)</th><th>Decode (pp)</th></tr></thead><tbody>
+<tr><td>MMLU-Redux 2.0</td><td>0.9105</td><td>−0.02</td><td>−0.13</td><td>−0.17</td><td>0.9254</td><td>+0.18</td><td>−0.01</td></tr>
+<tr><td>MATH-500</td><td>0.9813</td><td>−0.07</td><td>−0.20</td><td>+0.00</td><td>0.9160</td><td>−0.07</td><td>−0.30</td></tr>
+<tr><td>RULER</td><td>0.8787</td><td>−0.40</td><td>−0.31</td><td>−0.73</td><td>0.9419</td><td>−0.20</td><td>+0.02</td></tr>
+<tr><td>GPQA-Diamond</td><td>0.7621</td><td>−0.67</td><td>−0.10</td><td>−0.46</td><td>0.8576</td><td>+0.03</td><td>−0.39</td></tr>
+<tr><td>IFEval strict</td><td>0.8848</td><td>−0.31</td><td>−0.65</td><td>−0.59</td><td>0.8854</td><td>+0.02</td><td>−0.19</td></tr>
+<tr><td>LiveCodeBench v5</td><td>0.7008</td><td>−0.43</td><td>−0.59</td><td>−0.84</td><td>0.8467</td><td>−0.43</td><td>−0.34</td></tr>
+</tbody></table></div>
+<p class="cite">摘自 Table 4。变化以百分点计。主表未给出 397B 的 Both 列。来源：https://arxiv.org/pdf/2611.33542 第 9 页 Table 4。</p>
+<p>Table 2 说明“每批价格”不是可有可无：在 ShareGPT 4K，只加慢偏置 η 已有 +14.7%，加上每批价格才到 +18.1%、不均衡 1.08；在 LongBench 32K，只加 η 是 −0.8%，加上价格才是 +7.4%。长上下文尤其依赖按批定价。</p>
+<div class="tbl"><table><thead><tr><th>负载</th><th>臂</th><th>吞吐增益</th><th>不均衡 (max/mean)</th></tr></thead><tbody>
+<tr><td>ShareGPT, 4K</td><td>Top-k</td><td>—</td><td>1.75</td></tr>
+<tr><td>ShareGPT, 4K</td><td>仅慢偏置 η</td><td>+14.7%</td><td>1.20</td></tr>
+<tr><td>ShareGPT, 4K</td><td>η + 每批价格</td><td>+18.1%</td><td>1.08</td></tr>
+<tr><td>LongBench v2, 32K</td><td>Top-k</td><td>—</td><td>1.66</td></tr>
+<tr><td>LongBench v2, 32K</td><td>仅慢偏置 η</td><td>−0.8%</td><td>1.65</td></tr>
+<tr><td>LongBench v2, 32K</td><td>η + 每批价格</td><td>+7.4%</td><td>1.16</td></tr>
+</tbody></table></div>
+<p class="cite">Table 2：Qwen3-235B prefill，每臂一次运行。来源：https://arxiv.org/pdf/2611.33542 Table 2。</p>
+<p><span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s14">14. Ablation</h3>
+
+<p>保护前缀 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi></mrow></math>：Table 5 在 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi><mo>&#x0003D;</mo><mn>2</mn></mrow></math> 时，235B prefill 上真实 top-1 落在预测 top-1 的比例为 77.8%，落在预测 top-2 为 91.4%；decode 在关闭之后仍有 99.4–99.5% 的 token 保住真实 top-1。正文还写，<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi></mrow></math> 在 0/1/2 之间对 prefill 吞吐影响不超过 0.3%。深度帽 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>D</mi></mrow></math> 与质量权重见 Table 9：关掉质量权重、<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>D</mi><mo>&#x0003D;</mo><mn>4</mn></mrow></math> 时，1/TPOT 可到 +7.7%，但 LiveCodeBench 降 1.49 pp，已经超过“低于 1 个点”的主结果承诺，说明质量权重不是装饰。候选宽度 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi></mrow></math> 与直方图箱数 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>B</mi></mrow></math> 的离线回放在附录 Table 10–11。η 单独 vs 完整价格见 Table 2，上文已读。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s15">15. Claim vs Evidence</h3>
+
+<p>“最多 19% prefill、最多 10% decode TPOT、质量代价低于 1 个百分点、去掉超过 75% 的超额负载”在 Table 1–4 上对得上，但要注意范围。19% 出现在 235B 的 ShareGPT/CodeContests 8K，不是 LongBench，也不是 397B 的全部设置。10% 是 TPOT 下降，表中最大 1/TPOT 增益是 11.1%。质量上，主结果开启质量权重；若关掉，Table 9 会出现 1.49 pp 的掉点，所以该声明不能离开默认配置。397B 的 Both 质量未在主表列出。实验只覆盖同一家族的两个模型、最多 EP=16，结论写明 group-limited 或 sigmoid 路由未测，也没有与专家放置联合测量。改变路由不是无损的，需要精确原路由的部署应改用放置方法。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s16">16. 贡献</h3>
+
+<p>可核验的贡献是：（1）把 prefill 与 decode 的不同最大值瓶颈写进同一个“保护 Top-p、灵活名额在 Top-L 中选择”的约束；（2）给出可在 DeepEP 通道上走的价格估计与关闭求解器，而不是只做离线仿真；（3）在 235B/397B 上同时报告吞吐、不均衡、TPOT、质量与开销，并把放置类基线比下去，尤其是长上下文。（4）用 Table 2 证明按批价格不是可选项：慢偏置 η 在稳定短上下文上能收回大部分收益，但在 32K LongBench 上几乎无效，必须每批重算价格。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s17">17. 局限</h3>
+
+<p>第 6 节写得很清楚：路由被改写，因此不是无损；未与放置/复制联合评测；只测一个家族的两个模型；group-limited 与 sigmoid 门控未测；最多 16 卡；kernel 与服务集成尚未充分优化，开销是上界。另外，XShare/OEA 没有在线 EP 对比，公开代码仓库 Not Reported，外部只能依据方程和附录 C 的参考实现去复现求解器。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s18">18. 复现要点</h3>
+
+<p>先在 SGLang + DeepEP 上接好 PD 分离与对应 EP 度（8 或 16）。保护集 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi><mo>&#x0003D;</mo><mn>2</mn></mrow></math>、候选 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi><mo>&#x0003D;</mo><mn>16</mn></mrow></math>，prefill 走公式 2–5 的一轮价格，decode 走公式 6–8 并打开质量权重与合理的 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>D</mi></mrow></math>。应用层必须用本层真实分数做最终 Top 选择，预测只用于算价格或掩码。评测要分开报 prefill 输入吞吐、max/mean、decode 中位 TPOT 与 1/TPOT，并列出 Table 4 那种分项质量，而不是只给平均值。附录 C 的 NumPy 参考实现可用于核对 GPU 掩码是否 bit-exact。硬件应按 8×H800 节点来对时延数量级，换卡后绝对值会变，相对增益是否还在需要重测。测量协议应包含 warmup、与基线交替跑、以及与 Table 6 交叉核对相对增益。若只报百分比不报绝对千 token/s，将无法发现 50.0→59.7 与 19.4% 是否同一组实验。Decode 侧要同时记录最忙秩活跃专家数，以便对照文中 14.4→9.7 和 0.52 ms/专家的线性拟合。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s19">19. 研究价值</h3>
+
+<p>它把 MoE 服务里一个常被混为一谈的问题拆开：同一套不均衡，在 prefill 和 decode 里不是同一个优化量。对做推理系统的人，这提供了“改路由但不改放置”的一条可部署路径，并且用长上下文上 EPLB 失效的例子，说明历史放置跟不上按批波动。它也把“改路由可加速”和“改路由是否近似无损”拆开报告：主配置下质量掉点不超过 0.84，但关掉质量权重就会超过 1 个百分点，因此系统论文同样需要把保护约束和质量权重当成方法的一部分，而不是事后补丁。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s20">20. 可执行迁移</h3>
+
+<p>（1）在现有 EP 服务里先打点：记录每一层最忙秩的 token 数（prefill）和活跃专家数（decode），看延迟是否随这两个最大值线性变化；如果 decode 已接近文中那种线性关系，关闭专家可能比复制专家更划算。（2）不要一上来改 k。先给每个 token 留一个保护前缀（Top-1 或 Top-2），只在剩余名额上做负载挪移，并像 Table 4 那样把质量和吞吐放在同一张决策表里，避免用关掉质量权重的激进帽去刷吞吐。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s21">21. 方向专用分析</h3>
+
+<p>相对昨日的 LoomKV（压缩 KV 以扩大容量），RankCast 动的是 MoE 路由与秩负载，不碰 KV 布局，二者正交。相对推测解码或量化，它也不改生成算法或数值精度，而是减少同步等待。这正是今日 Inference 选题避开“又一篇解码算法”的原因。收益上限受非专家部分的延迟约束：文中 decode 截距 20.1 ms 是 shedding 砍不掉的部分，所以不能指望活跃专家减半、TPOT 也减半。把 RankCast 接到推测解码或 KV 压缩上是自然的下一步，但本文没有提供组合数字（Not Reported）。若要做，应分别测量 prefill 与 decode 的时间占比，因为推测解码主要改 decode，而本文 19% 的头牌数字来自 prefill。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s22">22. Attack / Verification</h3>
+
+<p>攻击这项主张，可以换路由类型（sigmoid / 分组限制）、把 EP 拉到远大于 16、或把 RankCast 与 EPLB-R 同时打开看是否互伤。也可以专门构造“保护集已经很不均”的批次，因为灵活名额只有 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>d</mi><mo>&#x0003D;</mo><mi>k</mi><mo>&#x02212;</mo><mi>p</mi></mrow></math>。验证上，应复现 Table 1 与 Table 6 的对应关系，检查 19.4% 是否就是 50.0→59.7；并用附录参考实现对齐掩码。质量评测必须按附录重复次数重跑，单次点估计不够支撑 0.x 个百分点的差异。一个很便宜的健全性检查是：在关闭 RankCast 与打开它之间交替运行同一组请求，确认 Table 1 的不均衡下降与吞吐上升同时出现；如果吞吐升了但不均衡几乎不变，增益可能来自其他系统波动，而不是秩级均衡本身。<span class="cite">来源：<a href="https://arxiv.org/abs/2611.33542">abs</a> · <a href="https://arxiv.org/pdf/2611.33542">pdf</a> · <a href="https://arxiv.org/html/2611.33542">html</a></span></p>
+
+<h3 id="p3-s23">23. 记忆总结</h3>
+
+<ul>
+<li>Prefill 看最忙秩的 token 数，decode 看最忙秩的活跃专家数，两者不是同一目标。</li>
+<li>统一约束：保住 Top-p，其余 k−p 个名额只在 Top-L 里选。</li>
+<li>Prefill 用一轮对偶价格把灵活负载推向空闲秩；分数用直方图汇总。</li>
+<li>Decode 从 Top-k 出发，按代价在最忙的若干秩上联合关闭专家。</li>
+<li>235B ShareGPT 8K prefill +19.4%，不均衡 1.75→1.08，超额负载去掉约 89%。</li>
+<li>397B CodeContests 的 TPOT 52.19→46.97（约 −10%），1/TPOT +11.1%。</li>
+<li>长上下文上在线 EPLB 接近零收益，甚至为负；按批价格在 Table 2 里是关键增量。</li>
+<li>默认配置下质量下降不超过 0.84 pp；关掉质量权重会出现 1.49 pp 的掉点。</li>
+<li>开销约 0.5–0.9% 的 step 时间，且被作者视为尚未充分优化的上界。</li>
+<li>只评了同一家族两个模型、EP≤16；公开仓库 Not Reported；与放置方法尚未联合测量。</li>
+</ul>
+
+</section>
+
+<section id="verify">
+<h2>核验说明</h2>
+<h3>论文 1 · LiveVAE（2611.34912）</h3>
+<ul>
+<li><strong>来源：</strong><a href="https://arxiv.org/abs/2611.34912">abs</a>、<a href="https://arxiv.org/pdf/2611.34912">pdf</a>（3,155,943 字节，16 页）、<a href="https://arxiv.org/html/2611.34912">html</a>。工作副本：<code>/workspace/daily-deep-dive-2026-11-27/pdfs/2611.34912.pdf</code>。</li>
+<li><strong>抽取：</strong>第 3–5 节与 Table 1–12、Fig. 2 / 5 / 6 的文字终值；用 pdftotext -layout 与 arXiv HTML 交叉核对主表。</li>
+<li><strong>核验范围：</strong>MiniMax-H3 与 Wan2.2 的重建与时延、VBench-2.0 / CodeVideoBench 生成分、单组件替换、长视频、窗消融与累积推理优化。</li>
+<li><strong>抽查数字：</strong>H3 480p 编码 623.0→119.5（5.2×）、解码 435.3→146.0（3.0×）；720p 编码 6.2×、解码 3.3×；1080p Ours-Opt 编码+解码 5259.5/391.8 与文中“至多 13.4×”一致；VBench-2.0 上 H3 总分 0.680→0.665。</li>
+<li><strong>残余风险：</strong>训练数据为内部视频/图像集；13.4× 由摘要/引言给出，正文未单独写出 1080p 组合单元格；代码与模型声明将发布（GitHub MeiGen-AI/LiveVAE），检索时未独立确认仓库状态；评测在单卡 H100 上，未报告多卡或端到端 DiT 采样墙钟。</li>
+</ul>
+<h3>论文 2 · Maco-RL（2611.34703）</h3>
+<ul>
+<li><strong>来源：</strong><a href="https://arxiv.org/abs/2611.34703">abs</a>、<a href="https://arxiv.org/pdf/2611.34703">pdf</a>（2,727,781 字节，34 页）、<a href="https://arxiv.org/html/2611.34703">html</a>。工作副本：<code>/workspace/daily-deep-dive-2026-11-27/pdfs/2611.34703.pdf</code>。</li>
+<li><strong>抽取：</strong>第 3–5 节与 Table 1–2、13–16 及附录奖励/成本说明。</li>
+<li><strong>核验范围：</strong>五基准主表、S1/S2 任务池、配对置信区间、与三专家合计成本、TBS 相对 Vanilla 的 FeatureBench 曲线、交替更新在 S2 的崩溃描述。</li>
+<li><strong>抽查数字：</strong>Qwen3.5-27B Overall 43.6→S2 60.1；Qwen3.8-27B 61.4→67.0；Table 13 中 SWE-bench 在 3.5 上的 95% CI 穿过 0；Table 14 的 64.28 vs 68.41 与 12,572.4 GPU hours。</li>
+<li><strong>残余风险：</strong>训练所用 GPU/加速器型号 Not Reported；代码 Not Reported；部分前沿模型 Terminal-Bench / SWE 分数来自第三方榜单（表注 †/‡）；Table 13 的 Claw-Anything 使用 150 题公共子集，Overall 与 Table 1 不完全同口径；S1 在 FeatureBench Tests Passed 上低于起点。</li>
+</ul>
+<h3>论文 3 · RankCast（2611.33542）</h3>
+<ul>
+<li><strong>来源：</strong><a href="https://arxiv.org/abs/2611.33542">abs</a>、<a href="https://arxiv.org/pdf/2611.33542">pdf</a>（1,037,206 字节，23 页）、<a href="https://arxiv.org/html/2611.33542">html</a>。工作副本：<code>/workspace/daily-deep-dive-2026-11-27/pdfs/2611.33542.pdf</code>。</li>
+<li><strong>抽取：</strong>第 3–6 节与 Table 1–5、Appendix Table 6–11、结论中的限制声明。</li>
+<li><strong>核验范围：</strong>Qwen3-235B（EP=8）与 Qwen3.5-397B（EP=16）的 prefill 吞吐 / 不均衡、decode TPOT、质量变化、保护前缀准确率、η 消融与绝对吞吐表。</li>
+<li><strong>抽查数字：</strong>235B ShareGPT 8K prefill +19.4%、不均衡 1.75→1.08；397B CodeContests TPOT 52.19→46.97（时延约 −10%，1/TPOT +11.1%）；质量变化最大约 −0.84 pp；硬件为两台 8×H800 节点。</li>
+<li><strong>残余风险：</strong>公开代码仓库 Not Reported（文中给出方程、参考实现与 SGLang/DeepEP 集成描述）；只评测同一家族的两个模型；未与专家放置/复制联合测量；EP 最大为 16；作者声明 kernel 与服务集成尚未充分优化，开销是上界。</li>
+</ul>
+<h3>检索与页面核对</h3>
+<p>入选三篇 HTML 与 PDF 均可解码。本文件编码为 UTF-8；构建后用正则检查残留 TeX 定界符，并用 headless Chrome 截取页眉、公式区和宽表。目录锚点与每篇 23 个小节一一对应。中文字符数按去掉 HTML 标签后的 CJK 统一码统计，目标每篇 4500–7000。</p>
+</section>
+
+<footer>
+<p>Daily Top Papers Deep Dive · 2026-11-27 · Asia/Shanghai · 数学公式由 latex2mathml 离线渲染为 MathML，无 CDN。</p>
+</footer>
+</div>
+</body>
+</html>
